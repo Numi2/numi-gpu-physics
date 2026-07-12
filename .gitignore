@@ -1,0 +1,7 @@
+.build/
+.swiftpm/
+DerivedData/
+*.air
+*.metallib
+*.csv
+.DS_Store

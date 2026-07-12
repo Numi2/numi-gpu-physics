@@ -1,0 +1,207 @@
+import BirdFlowCore
+import BirdFlowMetal
+import Foundation
+
+private struct Arguments {
+    var steps = 256
+    var reportEvery = 32
+    var freeFlight = false
+    var reynolds: Float = 2_000
+    var referenceSpeed: Float = 8
+    var latticeSpeed: Float = 0.04
+    var resolutionScale = 1
+
+    init(_ values: [String]) throws {
+        var index = 1
+        while index < values.count {
+            switch values[index] {
+            case "--steps":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 0 else {
+                    throw CLIError.invalidArgument(
+                        "--steps requires a non-negative integer"
+                    )
+                }
+                steps = value
+            case "--report-every":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--report-every requires a positive integer"
+                    )
+                }
+                reportEvery = value
+            case "--free-flight":
+                freeFlight = true
+            case "--reynolds":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--reynolds requires a positive number"
+                    )
+                }
+                reynolds = value
+            case "--reference-speed":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--reference-speed requires a positive number"
+                    )
+                }
+                referenceSpeed = value
+            case "--lattice-speed":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--lattice-speed requires a positive number"
+                    )
+                }
+                latticeSpeed = value
+            case "--resolution-scale":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--resolution-scale requires a positive integer"
+                    )
+                }
+                resolutionScale = value
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow [options]
+
+      --steps N              Coupled fluid/body steps (default: 256)
+      --report-every N       CSV reporting interval (default: 32)
+      --free-flight          Integrate the bird's six-degree-of-freedom body
+      --reynolds VALUE       Demonstration Reynolds number (default: 2000)
+      --reference-speed MPS  Physical reference speed (default: 8)
+      --lattice-speed VALUE  Lattice reference velocity (default: 0.04)
+      --resolution-scale N   Scale grid, chord cells, and sponge together
+      --help                 Show this help
+    """
+}
+
+private enum CLIError: Error, CustomStringConvertible {
+    case invalidArgument(String)
+
+    var description: String {
+        switch self {
+        case .invalidArgument(let message): return message
+        }
+    }
+}
+
+private func makeConfiguration(
+    arguments: Arguments
+) throws -> SimulationConfiguration {
+    let scale = arguments.resolutionScale
+    let (gridX, overflowX) = 96.multipliedReportingOverflow(by: scale)
+    let (gridY, overflowY) = 112.multipliedReportingOverflow(by: scale)
+    let (gridZ, overflowZ) = 96.multipliedReportingOverflow(by: scale)
+    let (chordCells, overflowChord) = 12.multipliedReportingOverflow(by: scale)
+    let (spongeCells, overflowSponge) = 8.multipliedReportingOverflow(by: scale)
+    guard !overflowX,
+          !overflowY,
+          !overflowZ,
+          !overflowChord,
+          !overflowSponge else {
+        throw CLIError.invalidArgument("--resolution-scale is too large")
+    }
+
+    let grid = try GridSize(x: gridX, y: gridY, z: gridZ)
+    let scaling = try LatticeScaling(
+        characteristicLengthMeters: BirdParameters.demonstration.wingRootChordMeters,
+        characteristicLengthCells: chordCells,
+        referenceSpeedMetersPerSecond: arguments.referenceSpeed,
+        targetReynoldsNumber: arguments.reynolds,
+        physicalAirDensity: 1.225,
+        latticeReferenceSpeed: arguments.latticeSpeed
+    )
+
+    let farField = arguments.freeFlight
+        ? SIMD3<Float>.zero
+        : SIMD3<Float>(-arguments.referenceSpeed, 0, 0)
+
+    return try SimulationConfiguration(
+        grid: grid,
+        domainOriginMeters: .zero,
+        scaling: scaling,
+        physicalAirDensity: 1.225,
+        farFieldVelocityMetersPerSecond: farField,
+        spongeWidthCells: spongeCells,
+        spongeStrength: 0.06,
+        freeFlight: arguments.freeFlight,
+        fastMath: false
+    )
+}
+
+private func csv(_ snapshot: SimulationSnapshot) -> String {
+    let p = snapshot.body.positionMeters
+    let v = snapshot.body.linearVelocityMetersPerSecond
+    let f = snapshot.aerodynamicLoad.forceNewtons
+    let t = snapshot.aerodynamicLoad.torqueNewtonMeters
+    return [
+        String(snapshot.step), String(snapshot.timeSeconds),
+        String(p.x), String(p.y), String(p.z),
+        String(v.x), String(v.y), String(v.z),
+        String(f.x), String(f.y), String(f.z),
+        String(t.x), String(t.y), String(t.z)
+    ].joined(separator: ",")
+}
+
+do {
+    let arguments = try Arguments(CommandLine.arguments)
+    let configuration = try makeConfiguration(arguments: arguments)
+    let bird = BirdParameters.demonstration
+    let center = configuration.domainOriginMeters
+        + configuration.domainSizeMeters * 0.5
+    let initialState = BirdBodyState(
+        positionMeters: center,
+        linearVelocityMetersPerSecond: arguments.freeFlight
+            ? SIMD3<Float>(arguments.referenceSpeed, 0, 0)
+            : .zero
+    )
+
+    let simulation = try BirdFlowSimulation(
+        configuration: configuration,
+        bird: bird,
+        initialBodyState: initialState
+    )
+
+    print("step,time_s,px_m,py_m,pz_m,vx_mps,vy_mps,vz_mps,fx_N,fy_N,fz_N,tx_Nm,ty_Nm,tz_Nm")
+    print(csv(try simulation.snapshot()))
+
+    var remaining = arguments.steps
+    while remaining > 0 {
+        let count = min(arguments.reportEvery, remaining)
+        try simulation.advance(steps: count, batchSize: min(32, count))
+        print(csv(try simulation.snapshot()))
+        remaining -= count
+    }
+} catch {
+    let message = "birdflow: \(error)\n"
+    FileHandle.standardError.write(Data(message.utf8))
+    Foundation.exit(EXIT_FAILURE)
+}
