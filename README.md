@@ -63,6 +63,18 @@ The test suite includes live Metal regressions for moving-wing fixed-body and fr
 
 ## Run
 
+Native same-process Metal viewer:
+
+```bash
+swift run -c release birdflow-viewer
+```
+
+The viewer consumes completed density/velocity buffers without volume copies,
+drops visualization frames instead of waiting the solver, and records only
+compact samples/settings plus explicit derived keyframes or checkpoints. See
+[`Docs/VIEWER.md`](Docs/VIEWER.md) for controls, persistence, numerical
+separation, diagnostics, and verification.
+
 Canonical production-Metal shear-wave validation:
 
 ```bash
@@ -124,6 +136,42 @@ The full link-distance ladder produces `(CL, CD)=(7.45076, 9.58556)`, `(8.58688,
 The phase-resolved decomposition is available with `birdflow validate flapping-wing --decompose-loads --single-chord-cells 8 --cycles 1 --json`. On Apple M4 it completes in `9.84 s`; cover/uncover impulse contributes only `0.47%` of mean lift and `2.90%` of mean drag, while link exchange supplies the remainder. RMS topology fractions are `1.29%` lift and `3.01%` drag, and independently selected components close to total within `9.7e-6` coefficient. Geometry and topology double counting are therefore ruled out as dominant causes; link-force evaluation/normalization is the next fault domain.
 
 The follow-up force-law A/B check is available with `birdflow validate flapping-wing --compare-link-forces --single-chord-cells 8 --cycles 1 --json`. It evaluates Wen et al.'s Galilean-invariant momentum exchange and conventional momentum exchange on the same interpolated populations, then adds the separately measured cover/uncover impulse to each. On Apple M4 it completes in `12.23 s`. Conventional exchange changes mean lift from `7.52805` to `7.50904` (`-0.25%`) and mean drag from `9.48616` to `9.56192` (`+0.80%`); the Galilean-invariant closure remains below `9.7e-6` coefficient. Both estimators retain essentially the full published-load error, ruling out the wall-frame correction as the dominant cause. The next fault domain is coefficient/reference scaling or a link-momentum factor shared by both estimators.
+
+The CPU-only coefficient ledger removes the scaling branch without another solve:
+
+```bash
+python3 Scripts/audit-flapping-coefficients.py \
+  /tmp/birdflow-link-force-comparison.json \
+  --output ValidationArtifacts/flapping-wing-coefficient-ledger.json
+```
+
+It independently transcribes the paper's `CL=2L/(rho U2^2 S)` and `CD=2D/(rho U2^2 S)` definitions, derives `r2/R=0.5593218`, single-wing area `S=192` lattice cells squared, actual `U2=0.0350010`, and denominator `0.11760695065887139`. The same denominator inferred from every captured raw lift force agrees with zero relative difference; recomputed lift agrees within `5.33e-15`. Mean drag reprojected from 100 bin-averaged vectors differs by only `4.36e-4` because the original projection occurred before binning. An arbitrary denominator large enough to match published lift would still be `11.2%` larger than the one required to match drag, so a single missing scalar cannot reconcile both. Coefficient normalization is therefore cleared. The remaining load bias is in the link-population or momentum-transfer numerator shared by both force estimators.
+
+Decompose that common numerator with:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --decompose-link-numerator \
+  --single-chord-cells 8 \
+  --cycles 1 \
+  --json
+```
+
+The Apple M4 diagnostic completed in `18.23 s`. Mean `(CL, CD)` contributions were base reflection `(-6.751, -62.265)`, moving-wall population correction `(14.719, 72.263)`, interpolation residual `(-0.494, -0.711)`, and Galilean wall-frame correction `(0.019, -0.076)`, closing to the Galilean link total `(7.493, 9.211)` within `1.4e-5` coefficient. The moving-wall population term is `196%` of net mean lift and `785%` of net mean drag and is opposed by the base reflected populations. Interpolation and wall-frame terms are small. This identifies the cancellation between moving-wall correction and reflected populations as the dominant sensitivity; it does not by itself prove either term is incorrect.
+
+Close that force accounting against a fluid-only control volume with:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --momentum-budget \
+  --single-chord-cells 8 \
+  --cycles 1 \
+  --json
+```
+
+The fixed `68 x 68 x 25` near-wing volume remains clear of the swept solid and outside the sponge. Its raw storage-plus-flux balance gives mean `(CL, CD)=(1.18092, 2.04933)`; the separately reported virtual equilibrium-reservoir convention changes that to `(1.15774, 2.07231)`. Conventional boundary accounting on the identical deterministic flow gives `(7.50904, 9.56192)`, and moving the control surface one cell outward changes adjusted budget means by only `6.04e-5/1.07e-5`.
+
+A validation-only conservative moving-domain estimator now closes the raw population balance at `(CL, CD)=(1.18061, 2.04933)`. Maximum phase residuals are `0.002511/0.000247`, below the `0.005` tolerance. Its mean correction relative to legacy conventional total is `(-6.32843, -7.51260)`. The fixed-mask interpolated link rule is therefore not the dominant fault: the cover-only topology impulse omitted the population stencil suppressed and injected when cells uncover. Production remains unchanged until this estimator passes the canonical moving-wall cases and a short flapping refinement; this is not yet flapping-wing acceptance.
 
 A fixed-bird wind-tunnel case:
 

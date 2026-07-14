@@ -5,7 +5,7 @@ import Testing
 #if canImport(Metal)
 import Metal
 
-private func compactMetalTestCase(freeFlight: Bool = false) throws -> (
+func compactMetalTestCase(freeFlight: Bool = false) throws -> (
     configuration: SimulationConfiguration,
     bird: BirdParameters,
     state: BirdBodyState
@@ -486,6 +486,33 @@ func interpolatedBounceBackReferenceMatchesPublishedBranches() {
 }
 
 @Test
+func movingDomainReferenceIncludesCoveredAndUncoveredStencilImpulse() {
+    let covered = InterpolatedBounceBackReference
+        .conservativeCoveredBodyImpulse(
+            previousFluidMomentum: SIMD3<Double>(0.2, -0.3, 0.4)
+        )
+    #expect(covered == SIMD3<Double>(0.2, -0.3, 0.4))
+
+    let uncovered = InterpolatedBounceBackReference
+        .conservativeUncoveredBodyImpulse(
+            refillMomentum: SIMD3<Double>(1, 2, 3),
+            persistentNeighborStencils: [
+                MovingDomainNeighborStencil(
+                    directionFromUncoveredCell: SIMD3<Double>(1, 0, 0),
+                    oldSolidOutgoing: 0.2,
+                    suppressedNeighborIncoming: 0.3
+                ),
+                MovingDomainNeighborStencil(
+                    directionFromUncoveredCell: SIMD3<Double>(0, 1, 0),
+                    oldSolidOutgoing: 0.1,
+                    suppressedNeighborIncoming: 0.4
+                ),
+            ]
+        )
+    #expect(uncovered == SIMD3<Double>(-1.5, -2.5, -3))
+}
+
+@Test
 func productionMetalPrescribedWingInputFixtureValidatesSubcellLinks() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let audit = try MetalFlappingWingValidator.auditInputs(chordCells: 8)
@@ -573,5 +600,106 @@ func productionMetalPrescribedWingLinkForceEstimatorsCompare() throws {
     #expect(report.conventionalToGalileanMeanDragRatio.isFinite)
     #expect(report.maximumLinkLiftCoefficientDifference > 0)
     #expect(report.maximumLinkDragCoefficientDifference > 0)
+}
+
+@Test
+func productionMetalPrescribedWingLinkNumeratorDecompositionCloses() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalFlappingWingValidator
+        .diagnoseLinkNumeratorDecomposition(
+            chordCells: 8,
+            cycles: 1
+        )
+
+    #expect(report.galileanInvariantLinkExchange.phaseSamples.count == 100)
+    #expect(report.conventionalLinkExchange.phaseSamples.count == 100)
+    #expect(report.components.count == 4)
+    #expect(
+        report.components.allSatisfy {
+            $0.load.phaseSamples.count == 100
+        }
+    )
+    #expect(report.closurePassed)
+    #expect(
+        report.maximumConventionalLiftClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(
+        report.maximumConventionalDragClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(
+        report.maximumGalileanInvariantLiftClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(
+        report.maximumGalileanInvariantDragClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(
+        report.components.contains {
+            $0.name == report.dominantMeanLiftComponent
+        }
+    )
+    #expect(
+        report.components.contains {
+            $0.name == report.dominantMeanDragComponent
+        }
+    )
+}
+
+@Test
+func productionMetalPrescribedWingConservativeEstimatorClosesBudget() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalFlappingWingValidator
+        .diagnoseNearWingMomentumBudget(
+            chordCells: 8,
+            cycles: 1
+        )
+
+    #expect(
+        report.independentFluidMomentumBudget.phaseSamples.count == 100
+    )
+    #expect(report.conventionalBoundaryLoad.phaseSamples.count == 100)
+    #expect(report.rawFluidMomentumBudget.phaseSamples.count == 100)
+    #expect(
+        report.conservativeMovingDomainBoundaryLoad.phaseSamples.count == 100
+    )
+    #expect(report.controlSurfaceClearOfSolid)
+    #expect(report.controlSurfaceOutsideSponge)
+    #expect(report.maximumSolidControlSurfaceCrossingLinkCount == 0)
+    #expect(!report.conventionalClosurePassed)
+    #expect(report.boundaryLoadBiasDetected)
+    #expect(report.conservativeMovingDomainClosurePassed)
+    #expect(report.conventionalMeanLiftBiasFactor > 4)
+    #expect(report.conventionalMeanDragBiasFactor > 4)
+    #expect(
+        report.maximumConventionalLiftCoefficientResidual
+            > report.maximumAllowedCoefficientResidual
+    )
+    #expect(
+        report.maximumConventionalDragCoefficientResidual
+            > report.maximumAllowedCoefficientResidual
+    )
+    #expect(
+        report.maximumConservativeLiftCoefficientResidual
+            <= report.maximumAllowedCoefficientResidual
+    )
+    #expect(
+        report.maximumConservativeDragCoefficientResidual
+            <= report.maximumAllowedCoefficientResidual
+    )
+    #expect(
+        report.conservativeCorrectionRelativeToConventionalBoundaryLoad
+            .meanLiftCoefficient < -1
+    )
+    #expect(
+        report.conservativeCorrectionRelativeToConventionalBoundaryLoad
+            .meanDragCoefficient < -1
+    )
+    #expect(
+        report.classification
+            == "conservativeMovingDomainEstimatorCloses"
+    )
 }
 #endif

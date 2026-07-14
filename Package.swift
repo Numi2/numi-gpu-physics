@@ -9,7 +9,12 @@ let package = Package(
     products: [
         .library(name: "BirdFlowCore", targets: ["BirdFlowCore"]),
         .library(name: "BirdFlowMetal", targets: ["BirdFlowMetal"]),
-        .executable(name: "birdflow", targets: ["BirdFlowCLI"])
+        .library(
+            name: "BirdFlowVisualization",
+            targets: ["BirdFlowVisualization"]
+        ),
+        .executable(name: "birdflow", targets: ["BirdFlowCLI"]),
+        .executable(name: "birdflow-viewer", targets: ["BirdFlowViewerApp"])
     ],
     targets: [
         .target(name: "BirdFlowCore"),
@@ -24,6 +29,21 @@ let package = Package(
             name: "BirdFlowCLI",
             dependencies: ["BirdFlowCore", "BirdFlowMetal"]
         ),
+        .target(
+            name: "BirdFlowVisualization",
+            dependencies: ["BirdFlowCore", "BirdFlowMetal"],
+            resources: [
+                .copy("Metal")
+            ]
+        ),
+        .executableTarget(
+            name: "BirdFlowViewerApp",
+            dependencies: [
+                "BirdFlowCore",
+                "BirdFlowMetal",
+                "BirdFlowVisualization",
+            ]
+        ),
         .testTarget(
             name: "BirdFlowCoreTests",
             dependencies: ["BirdFlowCore"]
@@ -31,6 +51,14 @@ let package = Package(
         .testTarget(
             name: "BirdFlowMetalTests",
             dependencies: ["BirdFlowCore", "BirdFlowMetal"]
+        ),
+        .testTarget(
+            name: "BirdFlowVisualizationTests",
+            dependencies: [
+                "BirdFlowCore",
+                "BirdFlowMetal",
+                "BirdFlowVisualization",
+            ]
         )
     ]
 )

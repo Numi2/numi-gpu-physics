@@ -1,0 +1,78 @@
+{
+  "checks": {
+    "maximumAbsoluteLiftCoefficientResidual": 5.329070518200751e-15,
+    "maximumMeanDragCoefficientResidualFromBinCenterProjection": 0.0004361739297848999,
+    "maximumRelativeDenominatorDifference": 0.0,
+    "normalizationMatchesPaper": true,
+    "singleScalarCanMatchBothPublishedMeansWithinOnePercent": false
+  },
+  "derived": {
+    "actualAverageRadiusOfGyrationSpeed": 0.03500103430895403,
+    "cyclePathAtRadiusOfGyrationCells": 74.97221548977953,
+    "cycleSteps": 2142,
+    "fullCycleAngularTravelRadians": 5.585053606381854,
+    "paperCoefficientDenominator": 0.11760695065887139,
+    "radiusOfGyrationFraction": 0.5593218135819926,
+    "singleWingPlanformAreaCellsSquared": 192.0,
+    "spanCells": 24.0
+  },
+  "dragProjectionNote": "Raw forces are stored as 100 bin averages, while stored drag was projected before binning. Reprojection at each bin center is therefore an approximation; lift and its shared denominator reconstruct exactly.",
+  "estimators": {
+    "conventionalMovingBodyTotal": {
+      "inferredDenominatorFromRawLiftMaximum": 0.11760695065887153,
+      "inferredDenominatorFromRawLiftMedian": 0.11760695065887139,
+      "inferredDenominatorFromRawLiftMinimum": 0.11760695065887133,
+      "maximumAbsoluteDragCoefficientResidualFromBinCenterProjection": 0.0369798792510565,
+      "maximumAbsoluteLiftCoefficientResidual": 3.552713678800501e-15,
+      "meanDragCoefficientResidualFromBinCenterProjection": 0.0004241405784988217,
+      "publishedMeanDragError": 3.673679352297907,
+      "publishedMeanLiftError": 4.143174809616501,
+      "recomputedMeanDragCoefficientFromBinCenterProjection": 9.562347954801517,
+      "recomputedMeanLiftCoefficient": 7.509035222040092,
+      "relativeDenominatorDifference": 0.0,
+      "requiredDenominatorToMatchPublishedDrag": 0.549657176981086,
+      "requiredDenominatorToMatchPublishedLift": 0.6048731060645182,
+      "requiredLiftToDragDenominatorRatio": 1.1004552135327295,
+      "storedMeanDragCoefficient": 9.561923814223018,
+      "storedMeanLiftCoefficient": 7.509035222040092
+    },
+    "galileanInvariantTotal": {
+      "inferredDenominatorFromRawLiftMaximum": 0.11760695065887143,
+      "inferredDenominatorFromRawLiftMedian": 0.11760695065887139,
+      "inferredDenominatorFromRawLiftMinimum": 0.11760695065887135,
+      "maximumAbsoluteDragCoefficientResidualFromBinCenterProjection": 0.03676748320815548,
+      "maximumAbsoluteLiftCoefficientResidual": 5.329070518200751e-15,
+      "meanDragCoefficientResidualFromBinCenterProjection": 0.0004361739297848999,
+      "publishedMeanDragError": 3.636657308248469,
+      "publishedMeanLiftError": 4.1562017593266365,
+      "recomputedMeanDragCoefficientFromBinCenterProjection": 9.486600852676366,
+      "recomputedMeanLiftCoefficient": 7.52805456861689,
+      "relativeDenominatorDifference": 0.0,
+      "requiredDenominatorToMatchPublishedDrag": 0.5453031272732731,
+      "requiredDenominatorToMatchPublishedLift": 0.6064051658963137,
+      "requiredLiftToDragDenominatorRatio": 1.1120515096412051,
+      "storedMeanDragCoefficient": 9.486164678746581,
+      "storedMeanLiftCoefficient": 7.52805456861689
+    }
+  },
+  "input": {
+    "aspectRatio": 3.0,
+    "capturedWithoutNewFluidSimulation": true,
+    "chordCells": 8,
+    "density": 1.0,
+    "radialCentroidFraction": 0.5,
+    "targetLatticeRadiusOfGyrationSpeed": 0.035,
+    "totalStrokeAmplitudeDegrees": 160.0
+  },
+  "schemaVersion": 1,
+  "source": {
+    "doi": "10.3390/insects13050459",
+    "equation11": "CL = 2 * lift / (density * U2^2 * S)",
+    "equation12": "CD = 2 * drag / (density * U2^2 * S)",
+    "equation8": "Re = U2 * meanChord / kinematicViscosity",
+    "table2MeanDragCoefficient": 2.046,
+    "table2MeanLiftCoefficient": 1.46,
+    "url": "https://doi.org/10.3390/insects13050459"
+  },
+  "verdict": "coefficient normalization is cleared; the remaining bias is in the shared link-population or momentum-transfer numerator"
+}

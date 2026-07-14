@@ -34,7 +34,7 @@ public func normalizedVector(
 }
 
 @frozen
-public struct Quaternion: Sendable, Equatable {
+public struct Quaternion: Sendable, Equatable, Codable {
     public var vector: SIMD3<Float>
     public var scalar: Float
 

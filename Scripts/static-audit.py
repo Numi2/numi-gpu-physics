@@ -20,6 +20,10 @@ SWIFT_FILES = (
 )
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
 GPU_DATA = ROOT / "Sources/BirdFlowMetal/GPUData.swift"
+VIS_SHADER = ROOT / "Sources/BirdFlowVisualization/Metal/Visualization.metal"
+VISUALIZATION_FILES = tuple(
+    (ROOT / "Sources/BirdFlowVisualization").glob("*.swift")
+)
 
 REQUIRED_KERNELS = {
     "buildBirdGeometry",
@@ -27,16 +31,37 @@ REQUIRED_KERNELS = {
     "buildPrescribedFlappingWing",
     "preparePrescribedFlappingWing",
     "initializePopulations",
+    "extractMacroscopicFields",
     "initializeShearWave",
     "initializePlanarChannel",
     "initializeSphereCase",
     "initializeFixedWingCase",
     "updatePlanarWallVelocity",
     "stepFluidTRT",
+    "measureControlVolumeMomentumBeforeStep",
+    "measureControlVolumeMomentumAfterStep",
+    "reduceControlVolumeMomentumBudget",
+    "storeControlVolumeMomentumBeforeSample",
+    "storeControlVolumeMomentumAfterSample",
     "reduceForceTorque",
     "storeForceTorqueSample",
+    "storeRunSample",
     "gatherFloatValues",
     "integrateBirdBody",
+}
+
+REQUIRED_VISUALIZATION_KERNELS = {
+    "samplePressureSurface",
+    "renderFlowSlice",
+    "deriveFlowDiagnostics",
+    "summarizeQCriterion",
+    "advectTracerRibbons",
+    "classifyQCriterionCubes",
+    "scanTriangleBlocks",
+    "scanBlockSums",
+    "addTriangleBlockOffsets",
+    "prepareQCriterionIndirectDraw",
+    "emitQCriterionCubes",
 }
 
 
@@ -84,6 +109,10 @@ def main() -> int:
     swift = "\n".join(path.read_text(encoding="utf-8") for path in SWIFT_FILES)
     core = CORE.read_text(encoding="utf-8")
     gpu_data = GPU_DATA.read_text(encoding="utf-8")
+    visualization_shader = VIS_SHADER.read_text(encoding="utf-8")
+    visualization_swift = "\n".join(
+        path.read_text(encoding="utf-8") for path in VISUALIZATION_FILES
+    )
 
     kernels = set(re.findall(r"\bkernel\s+void\s+(\w+)\s*\(", shader))
     if kernels != REQUIRED_KERNELS:
@@ -177,6 +206,67 @@ def main() -> int:
     if shader.count("{") != shader.count("}"):
         fail("Metal source has unbalanced braces")
 
+    visualization_kernels = set(re.findall(
+        r"\bkernel\s+void\s+(\w+)\s*\(",
+        visualization_shader,
+    ))
+    if visualization_kernels != REQUIRED_VISUALIZATION_KERNELS:
+        fail(
+            "visualization Metal entry points differ from the expected set: "
+            f"expected={sorted(REQUIRED_VISUALIZATION_KERNELS)}, "
+            f"actual={sorted(visualization_kernels)}"
+        )
+    for kernel in (
+        "samplePressureSurface",
+        "renderFlowSlice",
+        "deriveFlowDiagnostics",
+        "advectTracerRibbons",
+    ):
+        signature = re.search(
+            rf"kernel\s+void\s+{kernel}\s*\((.*?)\)\s*\{{",
+            visualization_shader,
+            re.S,
+        )
+        if signature is None:
+            fail(f"unable to inspect visualization signature for {kernel}")
+        source = signature.group(1)
+        if not re.search(r"device\s+const\s+float\s*\*\s*density", source):
+            fail(f"{kernel} does not bind density read-only")
+        if not re.search(r"device\s+const\s+float4\s*\*\s*velocity", source):
+            fail(f"{kernel} does not bind velocity read-only")
+    if re.search(
+        r"device\s+(?!const\b)[^;,)]+\b(?:density|velocity)\s*\[\[buffer",
+        visualization_shader,
+    ):
+        fail("visualization shader declares a writable solver field binding")
+    if visualization_shader.count("{") != visualization_shader.count("}"):
+        fail("visualization Metal source has unbalanced braces")
+
+    solver_sources = "\n".join(
+        path.read_text(encoding="utf-8")
+        for folder in (ROOT / "Sources/BirdFlowCore", ROOT / "Sources/BirdFlowMetal")
+        for path in folder.rglob("*.swift")
+    )
+    for forbidden in ("BirdFlowVisualization", "SwiftUI", "MetalKit"):
+        if re.search(rf"\bimport\s+{forbidden}\b", solver_sources):
+            fail(f"solver module imports forbidden visualization dependency {forbidden}")
+    for forbidden_buffer in (
+        "populationsA", "populationsB", "reductionA", "reductionB",
+        "bodyStateBuffer", "solidMaskA", "solidMaskB",
+    ):
+        if forbidden_buffer in visualization_swift:
+            fail(
+                "visualization module names a private numerical buffer: "
+                f"{forbidden_buffer}"
+            )
+    lease_source = (
+        ROOT / "Sources/BirdFlowMetal/GPUFieldObservation.swift"
+    ).read_text(encoding="utf-8")
+    if "private let density: MTLBuffer" not in lease_source \
+            or "private let velocity: MTLBuffer" not in lease_source \
+            or "bindMacroscopicFields" not in lease_source:
+        fail("GPU field lease no longer hides solver-owned Metal buffers")
+
     shared_structs = {
         "GPUUniforms": [
             "grid", "originAndCellSize", "timeStepAndScales",
@@ -205,6 +295,10 @@ def main() -> int:
             "root", "chord", "span", "normal", "angularVelocity", "state",
         ],
         "GPUForceTorque": ["force", "torque"],
+        "GPURunSample": [
+            "timeAndPosition", "orientation", "linearVelocity",
+            "angularVelocityBody", "force", "torque", "step",
+        ],
     }
     for struct_name, expected_fields in shared_structs.items():
         metal_body = extract_braced_body(shader, f"struct {struct_name}")
@@ -243,6 +337,8 @@ def main() -> int:
         "private func encodePlanarReduction(": 3,
         "private func encodeCanonicalReduction(": 3,
         "private func encodeBodyIntegration(": 4,
+        "private func encodeRunSample(": 5,
+        "private func encodeExtractedMacroscopicFields(": 4,
     }
     for declaration, count in expected_swift_bindings.items():
         body = extract_braced_body(swift, declaration)
@@ -275,6 +371,7 @@ def main() -> int:
         "buildPrescribedFlappingWing": 8,
         "preparePrescribedFlappingWing": 3,
         "initializePopulations": 6,
+        "extractMacroscopicFields": 4,
         "initializeShearWave": 4,
         "initializePlanarChannel": 7,
         "initializeSphereCase": 7,
@@ -283,6 +380,7 @@ def main() -> int:
         "stepFluidTRT": 10,
         "reduceForceTorque": 3,
         "storeForceTorqueSample": 3,
+        "storeRunSample": 5,
         "gatherFloatValues": 4,
         "integrateBirdBody": 4,
     }
@@ -329,6 +427,11 @@ def main() -> int:
             ["populationsA", "currentSolidMask", "wallVelocity", "density", "velocity", "uniforms"],
             ["populationsA", "solid", "wallVelocity", "density", "velocity", "uniforms"],
         ),
+        "extractMacroscopicFields": (
+            "private func encodeExtractedMacroscopicFields(",
+            ["populations", "density", "velocity", "uniforms"],
+            ["populations", "density", "velocity", "uniforms"],
+        ),
         "initializeShearWave": (
             "private func encodeShearInitialization()",
             ["populationsA", "density", "velocity", "uniforms"],
@@ -368,6 +471,11 @@ def main() -> int:
             "private func encodeBodyIntegration(",
             ["bodyStateBuffer", "birdParametersBuffer", "loadBuffer", "uniforms"],
             ["body", "bird", "totalLoad", "uniforms"],
+        ),
+        "storeRunSample": (
+            "private func encodeRunSample(",
+            ["runSampleBuffer", "bodyStateBuffer", "loadBuffer", "indices", "sampleTime"],
+            ["samples", "body", "load", "indices", "time"],
         ),
     }
     for kernel, (declaration, expected_swift, expected_metal) in binding_contracts.items():
@@ -531,7 +639,8 @@ def main() -> int:
 
     print(
         "static-audit: kernels, pipelines, shared layouts, cross-language "
-        "D3Q19 tables, named buffer contracts, and braces are consistent"
+        "D3Q19 tables, named buffer contracts, read-only visualization fields, "
+        "one-way module boundaries, and braces are consistent"
     )
     return 0
 

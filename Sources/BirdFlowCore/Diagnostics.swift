@@ -1,7 +1,7 @@
 import Foundation
 
 @frozen
-public struct ForceTorque: Sendable, Equatable {
+public struct ForceTorque: Sendable, Equatable, Codable {
     public var forceNewtons: SIMD3<Float>
     public var torqueNewtonMeters: SIMD3<Float>
 
@@ -15,7 +15,7 @@ public struct ForceTorque: Sendable, Equatable {
 }
 
 @frozen
-public struct SimulationSnapshot: Sendable, Equatable {
+public struct SimulationSnapshot: Sendable, Equatable, Codable {
     public var step: UInt64
     public var timeSeconds: Float
     public var body: BirdBodyState

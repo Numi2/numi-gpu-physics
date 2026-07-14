@@ -183,6 +183,44 @@ struct GPUPreparedBirdGeometry {
     var rightAngularVelocity: SIMD4<Float>
 }
 
+extension GPUPreparedBirdGeometry {
+    var publicValue: BirdGeometryFrame {
+        BirdGeometryFrame(
+            bodyPosition: bodyPosition,
+            orientation: orientation,
+            linearVelocity: linearVelocity,
+            omegaBodyWorld: omegaBodyWorld,
+            leftRoot: leftRoot,
+            leftChord: leftChord,
+            leftSpan: leftSpan,
+            leftNormal: leftNormal,
+            leftAngularVelocity: leftAngularVelocity,
+            rightRoot: rightRoot,
+            rightChord: rightChord,
+            rightSpan: rightSpan,
+            rightNormal: rightNormal,
+            rightAngularVelocity: rightAngularVelocity
+        )
+    }
+
+    init(_ value: BirdGeometryFrame) {
+        bodyPosition = value.bodyPosition
+        orientation = value.orientation
+        linearVelocity = value.linearVelocity
+        omegaBodyWorld = value.omegaBodyWorld
+        leftRoot = value.leftRoot
+        leftChord = value.leftChord
+        leftSpan = value.leftSpan
+        leftNormal = value.leftNormal
+        leftAngularVelocity = value.leftAngularVelocity
+        rightRoot = value.rightRoot
+        rightChord = value.rightChord
+        rightSpan = value.rightSpan
+        rightNormal = value.rightNormal
+        rightAngularVelocity = value.rightAngularVelocity
+    }
+}
+
 /// Fixed Li--Nabawy benchmark inputs. Float4-only packing keeps the structure
 /// identical in Swift and Metal and lets the per-cell geometry kernel consume
 /// a single, cache-friendly constant record.
@@ -214,6 +252,38 @@ struct GPUForceTorque {
         ForceTorque(
             forceNewtons: force.xyz,
             torqueNewtonMeters: torque.xyz
+        )
+    }
+}
+
+struct GPURunSample {
+    var timeAndPosition: SIMD4<Float>
+    var orientation: SIMD4<Float>
+    var linearVelocity: SIMD4<Float>
+    var angularVelocityBody: SIMD4<Float>
+    var force: SIMD4<Float>
+    var torque: SIMD4<Float>
+    var step: SIMD4<UInt32>
+
+    var publicValue: RunSample {
+        let step64 = UInt64(step.x) | (UInt64(step.y) << 32)
+        return RunSample(
+            step: step64,
+            timeSeconds: timeAndPosition.x,
+            body: BirdBodyState(
+                positionMeters: SIMD3<Float>(
+                    timeAndPosition.y,
+                    timeAndPosition.z,
+                    timeAndPosition.w
+                ),
+                orientationBodyToWorld: Quaternion(simd4: orientation).normalized,
+                linearVelocityMetersPerSecond: linearVelocity.xyz,
+                angularVelocityBodyRadiansPerSecond: angularVelocityBody.xyz
+            ),
+            aerodynamicLoad: ForceTorque(
+                forceNewtons: force.xyz,
+                torqueNewtonMeters: torque.xyz
+            )
         )
     }
 }

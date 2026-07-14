@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "deviceName": "Apple M4",
+  "chordCells": 8,
+  "cycles": 1,
+  "runtimeSeconds": 43.75530695915222,
+  "timingContext": "three histories while a concurrent fixed-wing release validation was active; not a performance result",
+  "controlVolume": {
+    "minimum": [6, 6, 29],
+    "maximumExclusive": [74, 74, 54],
+    "minimumDomainBoundaryDistanceCells": 5,
+    "spongeWidthCells": 4,
+    "maximumSolidCrossingLinkCount": 0
+  },
+  "meanCoefficients": {
+    "negativeFluidMomentumStorageRate": {
+      "lift": 0.06745592927308598,
+      "drag": 1.131188867710158
+    },
+    "negativeControlSurfaceMomentumFlux": {
+      "lift": 1.1134598356596315,
+      "drag": 0.9181402181104162
+    },
+    "topologyReservoirCorrection": {
+      "lift": -0.02317333694969247,
+      "drag": 0.022983795672851123
+    },
+    "rawFluidMomentumBudget": {
+      "lift": 1.1809157649327178,
+      "drag": 2.0493290850771015
+    },
+    "independentFluidMomentumBudget": {
+      "lift": 1.1577424269413354,
+      "drag": 2.0723128809375195
+    },
+    "conventionalBoundaryLoad": {
+      "lift": 7.509035244663016,
+      "drag": 9.561923806981367
+    },
+    "conservativeMovingDomainBoundaryLoad": {
+      "lift": 1.1806052890988694,
+      "drag": 2.04932622961415
+    },
+    "conservativeCorrectionRelativeToConventionalBoundaryLoad": {
+      "lift": -6.328429955564145,
+      "drag": -7.51259757736721
+    },
+    "galileanInvariantBoundaryLoad": {
+      "lift": 7.52805456861689,
+      "drag": 9.486164678746581
+    }
+  },
+  "conventionalBoundaryToBudgetFactor": {
+    "lift": 6.485929054618217,
+    "drag": 4.614131338437431
+  },
+  "maximumConventionalCoefficientResidual": {
+    "lift": 9.830884784424843,
+    "drag": 12.523295768053286
+  },
+  "conservativeClosure": {
+    "maximumAllowedCoefficientResidual": 0.005,
+    "meanResidual": {
+      "lift": -0.0003104758338482744,
+      "drag": -0.000002855462951876775
+    },
+    "maximumCoefficientResidual": {
+      "lift": 0.0025110858243723166,
+      "drag": 0.0002466832609049341
+    },
+    "maximumForceResidual": 0.00029532431407433167,
+    "passed": true
+  },
+  "alternateSurfaceCheck": {
+    "minimum": [5, 5, 29],
+    "maximumExclusive": [75, 75, 54],
+    "minimumDomainBoundaryDistanceCells": 4,
+    "maximumSolidCrossingLinkCount": 0,
+    "meanLiftCoefficient": 1.1578028642200193,
+    "meanDragCoefficient": 2.0723236165166767,
+    "absoluteMeanDifference": {
+      "lift": 0.00006043727868387805,
+      "drag": 0.0000107355791571222
+    }
+  },
+  "controlSurfaceClearOfSolid": true,
+  "controlSurfaceOutsideSponge": true,
+  "conventionalClosurePassed": false,
+  "conservativeMovingDomainClosurePassed": true,
+  "boundaryLoadBiasDetected": true,
+  "classification": "conservativeMovingDomainEstimatorCloses",
+  "verdict": "fixed-mask interpolated link exchange is conservative; the legacy cover-only impulse omits the dominant newly uncovered population stencil"
+}

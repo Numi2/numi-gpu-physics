@@ -253,6 +253,50 @@ Interpolation reconstructs the boundary populations but does not create an indep
 
 The Apple M4 run completed in `12.23 s`. Galilean-invariant total `(CL, CD)` was `(7.52805, 9.48616)`; conventional moving-body total was `(7.50904, 9.56192)`. Conventional/Galilean mean ratios were `0.99747` in lift and `1.00799` in drag. Maximum phase-resolved link differences were `0.17720` lift coefficient and `0.12919` drag coefficient, while the independently run Galilean-invariant total still closed against link plus topology within `9.69e-6` lift coefficient, `1.96e-6` drag coefficient, and `1.15e-6` force units. Relative mean errors versus the published target remained `415.62%/363.64%` for Galilean-invariant exchange and `414.32%/367.35%` for conventional exchange. The wall-velocity term is therefore not the dominant cause; investigate coefficient/reference scaling and momentum-exchange factors shared by both equations next.
 
+Audit the coefficient denominator from the captured raw forces without another fluid run:
+
+```bash
+python3 Scripts/audit-flapping-coefficients.py \
+  /tmp/birdflow-link-force-comparison.json \
+  --output ValidationArtifacts/flapping-wing-coefficient-ledger.json
+```
+
+Li and Nabawy define `CL=2L/(rho U2^2 S)` and `CD=2D/(rho U2^2 S)`, where `U2` is the cycle-average wing speed at the radius of gyration and `S` is the single-wing planform area. An independent Python transcription gives `r2/R=0.5593218136`, full-cycle angular travel `5.5850536064 rad`, `2142` lattice steps, `U2=0.03500103431`, `S=192`, and coefficient denominator `0.11760695065887139` for the captured 8-cell case.
+
+The median denominator inferred independently from the captured `forceZ/CL` values is exactly `0.11760695065887139`; its relative difference from the paper-derived value is zero at binary-double precision. Recomputed mean lift is identical to the stored values, with a maximum phase residual of `5.33e-15`. Reprojecting the 100 bin-averaged force vectors gives mean drag residuals of only `4.36e-4` and `4.24e-4`; this small approximation exists because production drag is projected per step before forces are binned. For the Galilean-invariant history, matching the published lift would require denominator `0.6064052`, while matching drag would require `0.5453031`, an `11.2%` disagreement; no single missing scalar can reconcile both. Coefficient normalization is cleared. The next short diagnostic should decompose the common link numerator into reflected-population base exchange, interpolation residual, and moving-wall population correction before another refinement ladder.
+
+Run that link-numerator decomposition with:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --decompose-link-numerator \
+  --single-chord-cells 8 \
+  --cycles 1 \
+  --json
+```
+
+Six identical prescribed histories independently select Galilean link exchange, conventional link exchange, base reflection, moving-wall population correction, interpolation residual, and the Galilean wall-frame correction. The latter four satisfy `F_GI = F_base + F_wall-population + F_interpolation + F_wall-frame`; the first three satisfy conventional exchange. Selection is dispatch-uniform and affects only load accumulation.
+
+The Apple M4 diagnostic completed in `18.23 s`. Mean component `(CL, CD)` values were `(-6.75135, -62.26542)` for base reflection, `(14.71945, 72.26319)` for moving-wall population correction, `(-0.49416, -0.71106)` for interpolation residual, and `(0.01902, -0.07576)` for the Galilean wall-frame correction. They close to Galilean link exchange `(7.49296, 9.21095)` within `1.23e-5` lift coefficient, `7.14e-6` drag coefficient, and `1.55e-6` force units. Conventional closure is within `1.39e-5`, `6.03e-6`, and `1.65e-6`, respectively.
+
+The moving-wall population term is `196.44%` of net mean link lift and `784.54%` of net mean link drag, opposed primarily by base reflection at `-90.10%` and `-675.99%`. Interpolation residual contributes only `-6.59%/-7.72%`, and the Galilean wall-frame term contributes `0.25%/-0.82%`. The dominant numerical sensitivity is therefore cancellation between moving-wall population correction and reflected populations. This decomposition localizes the next investigation but does not establish that the moving-wall formula itself is wrong; the next check should close the boundary force against an independently measured fluid-momentum budget at the same phases.
+
+Run the independent near-wing momentum balance with:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --momentum-budget \
+  --single-chord-cells 8 \
+  --cycles 1 \
+  --json
+```
+
+The fixed control volume spans `[6,74) x [6,74) x [29,54)` on the `80 x 80 x 64` grid. Its closest streaming link is five cells from a domain boundary, outside the four-cell sponge, and no solid link crosses its surface. Before geometry can overwrite newly covered population slots, the diagnostic records fluid momentum and the exact outer streaming flux; after the fluid step it records the new momentum and an independently reconstructed cover/uncover equilibrium-reservoir correction. Phasewise body-equivalent force is `-(P_(n+1)-P_n)-Phi_out+J_reservoir`.
+
+On Apple M4 the original two-history check completed in `11.61 s`. Mean coefficient components were `(0.06746, 1.13119)` from negative storage, `(1.11346, 0.91814)` from negative outward flux, and `(-0.02317, 0.02298)` from the optional equilibrium-reservoir convention. Raw fluid storage plus flux gives `(CL, CD)=(1.18092, 2.04933)`; adding the reservoir convention gives `(1.15774, 2.07231)`. The same flow's conventional boundary load was `(7.50904, 9.56192)` and its Galilean-invariant load was `(7.52805, 9.48616)`. An alternate surface one cell farther out changed the adjusted budget means by only `6.04e-5` lift and `1.07e-5` drag coefficient.
+
+The follow-up validation-only conservative moving-domain estimator uses conventional exchange for persistent links, complete preserved momentum for newly covered cells, and the refill plus suppressed/injected neighbor stencil for newly uncovered cells. It produces mean `(CL, CD)=(1.18061, 2.04933)` against the raw fluid budget `(1.18092, 2.04933)`. Maximum phase residuals are `0.0025111` lift coefficient, `0.0002467` drag coefficient, and `0.0002954` force units, all below the tightened `0.005` coefficient tolerance. Its correction relative to the legacy conventional total is `(-6.32843, -7.51260)` in mean coefficient. This changes the diagnosis: the fixed-mask interpolated link equation is conservative, while the legacy cover-only conversion omits the dominant moving-domain impulse when cells uncover. Selector six is diagnostic only; production loads remain unchanged until canonical moving-wall and flapping regressions approve a switch. The raw budget's first-cycle drag is within `0.16%` of the published fifth-cycle mean and lift is `19.12%` low, but this is not the required fifth-cycle refinement and must not be reported as benchmark acceptance.
+
 Acceptance:
 
 - phase-resolved lift and drag reproduce timing and mean coefficients

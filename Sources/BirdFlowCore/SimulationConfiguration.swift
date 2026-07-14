@@ -24,7 +24,7 @@ public enum BirdFlowConfigurationError: Error, CustomStringConvertible, Equatabl
 }
 
 @frozen
-public struct GridSize: Sendable, Equatable {
+public struct GridSize: Sendable, Equatable, Codable {
     public var x: Int
     public var y: Int
     public var z: Int
@@ -52,7 +52,7 @@ public struct GridSize: Sendable, Equatable {
 }
 
 @frozen
-public struct LatticeScaling: Sendable, Equatable {
+public struct LatticeScaling: Sendable, Equatable, Codable {
     public let cellSizeMeters: Float
     public let timeStepSeconds: Float
     public let latticeReferenceSpeed: Float
@@ -145,7 +145,7 @@ public struct LatticeScaling: Sendable, Equatable {
 }
 
 @frozen
-public struct SimulationConfiguration: Sendable, Equatable {
+public struct SimulationConfiguration: Sendable, Equatable, Codable {
     public var grid: GridSize
     public var domainOriginMeters: SIMD3<Float>
     public var scaling: LatticeScaling

@@ -105,10 +105,19 @@ final class MetalBackend {
         }
     }
 
-    func makeSharedBuffer(length: Int) throws -> MTLBuffer {
+    func makeSharedBuffer(
+        length: Int,
+        hazardTrackingMode: MTLHazardTrackingMode = .default
+    ) throws -> MTLBuffer {
+        var options: MTLResourceOptions = [.storageModeShared]
+        if hazardTrackingMode == .untracked {
+            options.insert(.hazardTrackingModeUntracked)
+        } else if hazardTrackingMode == .tracked {
+            options.insert(.hazardTrackingModeTracked)
+        }
         guard let buffer = device.makeBuffer(
             length: length,
-            options: [.storageModeShared]
+            options: options
         ) else {
             throw BirdFlowError.allocationFailed(bytes: length)
         }

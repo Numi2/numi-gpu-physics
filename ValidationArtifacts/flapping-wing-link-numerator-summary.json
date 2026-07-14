@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "deviceName": "Apple M4",
+  "chordCells": 8,
+  "cycles": 1,
+  "runtimeSeconds": 18.229196906089783,
+  "closurePassed": true,
+  "dominantMeanLiftComponent": "movingWallPopulationCorrection",
+  "dominantMeanDragComponent": "movingWallPopulationCorrection",
+  "galileanInvariantLinkExchange": {
+    "maximumAbsoluteDragCoefficient": 14.324519019362834,
+    "maximumAbsoluteDragPhase": 0.925,
+    "maximumAbsoluteLiftCoefficient": 11.496547130174694,
+    "maximumAbsoluteLiftPhase": 0.255,
+    "meanDragCoefficient": 9.210954990687688,
+    "meanLiftCoefficient": 7.492962540368568,
+    "rmsDragCoefficient": 9.856426589579057,
+    "rmsLiftCoefficient": 8.16541519979786
+  },
+  "conventionalLinkExchange": {
+    "maximumAbsoluteDragCoefficient": 14.40682652495263,
+    "maximumAbsoluteDragPhase": 0.925,
+    "maximumAbsoluteLiftCoefficient": 11.496547130174694,
+    "maximumAbsoluteLiftPhase": 0.255,
+    "meanDragCoefficient": 9.286714181105303,
+    "meanLiftCoefficient": 7.473943185172242,
+    "rmsDragCoefficient": 9.935386068125853,
+    "rmsLiftCoefficient": 8.153472846215731
+  },
+  "components": [
+    {
+      "equation": "-(2*f_out)*c",
+      "load": {
+        "maximumAbsoluteDragCoefficient": 79.57083090753682,
+        "maximumAbsoluteDragPhase": 0.635,
+        "maximumAbsoluteLiftCoefficient": 15.749258516226188,
+        "maximumAbsoluteLiftPhase": 0.425,
+        "meanDragCoefficient": -62.265417915170836,
+        "meanLiftCoefficient": -6.751352243557608,
+        "rmsDragCoefficient": 66.77243471518265,
+        "rmsLiftCoefficient": 8.924271114350793
+      },
+      "meanDragFractionOfGalileanInvariantLink": -6.759930753990376,
+      "meanLiftFractionOfGalileanInvariantLink": -0.9010257567930559,
+      "name": "baseReflection",
+      "rmsDragFractionOfGalileanInvariantLink": 6.774507384428695,
+      "rmsLiftFractionOfGalileanInvariantLink": 1.0929353738890975
+    },
+    {
+      "equation": "-delta_f_wall*c",
+      "load": {
+        "maximumAbsoluteDragCoefficient": 89.13911347363094,
+        "maximumAbsoluteDragPhase": 0.655,
+        "maximumAbsoluteLiftCoefficient": 23.757574805148067,
+        "maximumAbsoluteLiftPhase": 0.425,
+        "meanDragCoefficient": 72.26319264427981,
+        "meanLiftCoefficient": 14.719450797190813,
+        "rmsDragCoefficient": 77.23953320384095,
+        "rmsLiftCoefficient": 17.059875801624806
+      },
+      "meanDragFractionOfGalileanInvariantLink": 7.845352921313609,
+      "meanLiftFractionOfGalileanInvariantLink": 1.9644367255126816,
+      "name": "movingWallPopulationCorrection",
+      "rmsDragFractionOfGalileanInvariantLink": 7.83646410814892,
+      "rmsLiftFractionOfGalileanInvariantLink": 2.0892845475937505
+    },
+    {
+      "equation": "-(f_in-f_out-delta_f_wall)*c",
+      "load": {
+        "maximumAbsoluteDragCoefficient": 2.0149364567206485,
+        "maximumAbsoluteDragPhase": 0.755,
+        "maximumAbsoluteLiftCoefficient": 1.4225282717538232,
+        "maximumAbsoluteLiftPhase": 0.745,
+        "meanDragCoefficient": -0.7110602186434507,
+        "meanLiftCoefficient": -0.4941559386471098,
+        "rmsDragCoefficient": 0.7931998853385597,
+        "rmsLiftCoefficient": 0.6107479709725183
+      },
+      "meanDragFractionOfGalileanInvariantLink": -0.07719723083679547,
+      "meanLiftFractionOfGalileanInvariantLink": -0.06594934059590307,
+      "name": "interpolationResidual",
+      "rmsDragFractionOfGalileanInvariantLink": 0.08047540131604991,
+      "rmsLiftFractionOfGalileanInvariantLink": 0.07479692777749229
+    },
+    {
+      "equation": "(f_in-f_out)*u_wall",
+      "load": {
+        "maximumAbsoluteDragCoefficient": 0.12919178468594478,
+        "maximumAbsoluteDragPhase": 0.765,
+        "maximumAbsoluteLiftCoefficient": 0.1771991276609689,
+        "maximumAbsoluteLiftPhase": 0.975,
+        "meanDragCoefficient": -0.07575921240231535,
+        "meanLiftCoefficient": 0.019019671439944322,
+        "rmsDragCoefficient": 0.08189454475595134,
+        "rmsLiftCoefficient": 0.06847326700630085
+      },
+      "meanDragFractionOfGalileanInvariantLink": -0.008224903115790732,
+      "meanLiftFractionOfGalileanInvariantLink": 0.0025383379854730694,
+      "name": "galileanWallFrameCorrection",
+      "rmsDragFractionOfGalileanInvariantLink": 0.008308745975193111,
+      "rmsLiftFractionOfGalileanInvariantLink": 0.008385766716185596
+    }
+  ],
+  "maximumConventionalLiftClosureError": 0.000013897022620668054,
+  "maximumConventionalDragClosureError": 0.000006025411376953116,
+  "maximumConventionalForceClosureError": 0.0000016418869184521717,
+  "maximumGalileanInvariantLiftClosureError": 0.000012279638783141422,
+  "maximumGalileanInvariantDragClosureError": 0.000007130197166915764,
+  "maximumGalileanInvariantForceClosureError": 0.0000015414015995999265,
+  "maximumAllowedCoefficientClosureError": 0.0001,
+  "verdict": "moving-wall population correction dominates the shared link numerator; investigate its cancellation against reflected populations"
+}

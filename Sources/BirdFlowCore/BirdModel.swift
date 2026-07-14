@@ -1,7 +1,7 @@
 import Foundation
 
 @frozen
-public struct WingKinematics: Sendable, Equatable {
+public struct WingKinematics: Sendable, Equatable, Codable {
     public var frequencyHz: Float
     public var strokeAmplitudeRadians: Float
     public var strokeBiasRadians: Float
@@ -50,7 +50,7 @@ public struct WingKinematicSample: Sendable, Equatable {
 }
 
 @frozen
-public struct BirdBodyState: Sendable, Equatable {
+public struct BirdBodyState: Sendable, Equatable, Codable {
     public var positionMeters: SIMD3<Float>
     public var orientationBodyToWorld: Quaternion
     public var linearVelocityMetersPerSecond: SIMD3<Float>
@@ -70,7 +70,7 @@ public struct BirdBodyState: Sendable, Equatable {
 }
 
 @frozen
-public struct BirdParameters: Sendable, Equatable {
+public struct BirdParameters: Sendable, Equatable, Codable {
     public var bodyRadiiMeters: SIMD3<Float>
     public var massKilograms: Float
     public var principalInertiaKilogramMetersSquared: SIMD3<Float>

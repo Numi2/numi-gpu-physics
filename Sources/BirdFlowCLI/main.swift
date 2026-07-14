@@ -109,6 +109,8 @@ private struct Arguments {
       birdflow validate flapping-wing [--chord-cells N] [--json]
       birdflow validate flapping-wing --decompose-loads [--json]
       birdflow validate flapping-wing --compare-link-forces [--json]
+      birdflow validate flapping-wing --decompose-link-numerator [--json]
+      birdflow validate flapping-wing --momentum-budget [--json]
     """
 }
 
@@ -421,6 +423,8 @@ private struct FlappingWingArguments {
     var auditInputs = false
     var decomposeLoads = false
     var compareLinkForces = false
+    var decomposeLinkNumerator = false
+    var diagnoseMomentumBudget = false
     var json = false
     var archivePath: String?
 
@@ -465,6 +469,10 @@ private struct FlappingWingArguments {
                 decomposeLoads = true
             case "--compare-link-forces":
                 compareLinkForces = true
+            case "--decompose-link-numerator":
+                decomposeLinkNumerator = true
+            case "--momentum-budget":
+                diagnoseMomentumBudget = true
             case "--json":
                 json = true
             case "--archive":
@@ -496,6 +504,9 @@ private struct FlappingWingArguments {
       --audit-inputs           Compare analytic inputs with Metal voxelization
       --decompose-loads        Split link and cover/uncover loads by phase
       --compare-link-forces    Compare GI and conventional link estimators
+      --decompose-link-numerator
+                                Split common link-force numerator terms
+      --momentum-budget        Close loads against a near-wing fluid budget
       --json                   Emit machine-readable JSON
       --archive DIRECTORY      Save loads and phase Q/vorticity fields
       --help                   Show this help
@@ -838,9 +849,134 @@ private func runFlappingWingValidation(_ values: [String]) throws {
     let archive = arguments.archivePath.map {
         URL(fileURLWithPath: $0, isDirectory: true)
     }
+    if arguments.diagnoseMomentumBudget {
+        guard !arguments.auditInputs,
+              !arguments.decomposeLoads,
+              !arguments.compareLinkForces,
+              !arguments.decomposeLinkNumerator,
+              archive == nil else {
+            throw CLIError.invalidArgument(
+                "--momentum-budget cannot be combined with another diagnostic or --archive"
+            )
+        }
+        let report = try MetalFlappingWingValidator
+            .diagnoseNearWingMomentumBudget(
+                chordCells: arguments.singleChordCells ?? 8,
+                cycles: arguments.cycles
+            )
+        if arguments.json {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            print(String(decoding: try encoder.encode(report), as: UTF8.self))
+        } else {
+            print("diagnostic_only: true")
+            print("device: \(report.deviceName)")
+            print(
+                "budget_mean_CL="
+                    + String(
+                        report.independentFluidMomentumBudget
+                            .meanLiftCoefficient
+                    )
+                    + " budget_mean_CD="
+                    + String(
+                        report.independentFluidMomentumBudget
+                            .meanDragCoefficient
+                    )
+            )
+            print(
+                "conventional_max_CL_residual="
+                    + String(
+                        report.maximumConventionalLiftCoefficientResidual
+                    )
+                    + " conventional_max_CD_residual="
+                    + String(
+                        report.maximumConventionalDragCoefficientResidual
+                    )
+            )
+            print(
+                "conventional_mean_lift_bias_factor="
+                    + String(report.conventionalMeanLiftBiasFactor)
+                    + " conventional_mean_drag_bias_factor="
+                    + String(report.conventionalMeanDragBiasFactor)
+            )
+            print(
+                "conservative_mean_CL="
+                    + String(
+                        report.conservativeMovingDomainBoundaryLoad
+                            .meanLiftCoefficient
+                    )
+                    + " conservative_mean_CD="
+                    + String(
+                        report.conservativeMovingDomainBoundaryLoad
+                            .meanDragCoefficient
+                    )
+            )
+            print(
+                "conservative_max_CL_residual="
+                    + String(
+                        report.maximumConservativeLiftCoefficientResidual
+                    )
+                    + " conservative_max_CD_residual="
+                    + String(
+                        report.maximumConservativeDragCoefficientResidual
+                    )
+            )
+            print("classification: \(report.classification)")
+            print(
+                "conventional_closure_passed: "
+                    + String(report.conventionalClosurePassed)
+            )
+            print(
+                "conservative_closure_passed: "
+                    + String(report.conservativeMovingDomainClosurePassed)
+            )
+        }
+        return
+    }
+    if arguments.decomposeLinkNumerator {
+        guard !arguments.auditInputs,
+              !arguments.decomposeLoads,
+              !arguments.compareLinkForces,
+              archive == nil else {
+            throw CLIError.invalidArgument(
+                "--decompose-link-numerator cannot be combined with another diagnostic or --archive"
+            )
+        }
+        let report = try MetalFlappingWingValidator
+            .diagnoseLinkNumeratorDecomposition(
+                chordCells: arguments.singleChordCells ?? 8,
+                cycles: arguments.cycles
+            )
+        if arguments.json {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            print(String(decoding: try encoder.encode(report), as: UTF8.self))
+        } else {
+            print("diagnostic_only: true")
+            print("device: \(report.deviceName)")
+            for component in report.components {
+                print(
+                    "component=\(component.name) "
+                        + "mean_CL=\(component.load.meanLiftCoefficient) "
+                        + "mean_CD=\(component.load.meanDragCoefficient)"
+                )
+            }
+            print(
+                "dominant_mean_lift_component: "
+                    + report.dominantMeanLiftComponent
+            )
+            print(
+                "dominant_mean_drag_component: "
+                    + report.dominantMeanDragComponent
+            )
+            print("closure_passed: \(report.closurePassed)")
+        }
+        return
+    }
     if arguments.compareLinkForces {
         guard !arguments.auditInputs,
               !arguments.decomposeLoads,
+              !arguments.decomposeLinkNumerator,
               archive == nil else {
             throw CLIError.invalidArgument(
                 "--compare-link-forces cannot be combined with --audit-inputs, --decompose-loads, or --archive"

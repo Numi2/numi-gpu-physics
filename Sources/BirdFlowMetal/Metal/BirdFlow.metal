@@ -109,6 +109,29 @@ struct GPUForceTorque {
     float4 torque;
 };
 
+struct GPUControlVolumeBounds {
+    uint4 minimum;
+    uint4 maximumExclusive;
+};
+
+struct GPUControlVolumeBudget {
+    float4 oldFluidMomentum;
+    float4 newFluidMomentum;
+    // xyz is outward flux; w counts solid links crossing the control surface.
+    float4 outwardMomentumFlux;
+    float4 topologyReservoirCorrection;
+};
+
+struct GPURunSample {
+    float4 timeAndPosition;
+    float4 orientation;
+    float4 linearVelocity;
+    float4 angularVelocityBody;
+    float4 force;
+    float4 torque;
+    uint4 step;
+};
+
 inline uint flatten(uint3 p, uint3 size) {
     return p.x + size.x * (p.y + size.y * p.z);
 }
@@ -840,6 +863,30 @@ kernel void initializePopulations(
     velocity[gid] = float4(initialVelocity, 0);
 }
 
+/// Reconstructs diagnostic moments from a restored population field without
+/// advancing or mutating the numerical state.
+kernel void extractMacroscopicFields(
+    device const float* populations [[buffer(0)]],
+    device float* density [[buffer(1)]],
+    device float4* velocity [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+    float rho = 0.0f;
+    float3 momentum = float3(0);
+    for (uint q = 0; q < Q; ++q) {
+        float value = populations[q * uniforms.grid.w + gid];
+        rho += value;
+        momentum += value * float3(C[q]);
+    }
+    rho = max(rho, 1.0e-8f);
+    density[gid] = rho;
+    velocity[gid] = float4(momentum / rho, 0);
+}
+
 /// Deterministic periodic shear-wave initialization used by the canonical
 /// validation harness. The subsequent evolution is performed by the same
 /// `stepFluidTRT` kernel as the articulated-bird solver.
@@ -1104,8 +1151,9 @@ kernel void stepFluidTRT(
         uint prescribedLoadComponent = prescribedComponentSelection
             ? uint(max(uniforms.caseParameters.x, 0.0f) + 0.5f)
             : 0u;
-        bool useConventionalLinkForce = prescribedComponentSelection
-            && uniforms.caseParameters.y > 0.5f;
+        uint prescribedLinkForceMode = prescribedComponentSelection
+            ? uint(max(uniforms.caseParameters.y, 0.0f) + 0.5f)
+            : 0u;
         bool includeLinkExchange = !prescribedComponentSelection
             || prescribedLoadComponent != 2u;
         bool includeTopologyImpulse = !prescribedComponentSelection
@@ -1144,8 +1192,9 @@ kernel void stepFluidTRT(
                         previousMomentum += previous * float3(C[q]);
                     }
                 }
-                float3 conversionImpulse = previousMomentum
-                    - previousDensity * wall;
+                float3 conversionImpulse = prescribedLinkForceMode == 6u
+                    ? previousMomentum
+                    : previousMomentum - previousDensity * wall;
                 cellForcePhysical = conversionImpulse
                     * uniforms.timeStepAndScales.w;
                 cellTorquePhysical = cross(
@@ -1169,6 +1218,46 @@ kernel void stepFluidTRT(
                     f[q] = value;
                     rho += value;
                     momentum += value * float3(C[q]);
+                }
+                if (accumulateLoads
+                    && includeTopologyImpulse
+                    && prescribedLinkForceMode == 6u) {
+                    // Exact moving-domain balance. The uncovered target skips
+                    // pull streaming, so populations that would have entered
+                    // it from persistent fluid neighbors are suppressed while
+                    // the old solid equilibrium also streams outward to those
+                    // neighbors. Both stencil contributions and the refill
+                    // momentum belong to the topology impulse.
+                    float3 topologyForceOnBody = -momentum;
+                    for (uint q = 1u; q < Q; ++q) {
+                        int3 neighborCell = int3(cell) + C[q];
+                        if (!inside(neighborCell, size)) {
+                            continue;
+                        }
+                        uint neighbor = flatten(uint3(neighborCell), size);
+                        bool persistentFluidNeighbor =
+                            solidPrevious[neighbor] == 0
+                            && solidCurrent[neighbor] == 0;
+                        if (!persistentFluidNeighbor) {
+                            continue;
+                        }
+                        float oldSolidOutgoing = populationsIn[
+                            q * uniforms.grid.w + gid
+                        ];
+                        float suppressedNeighborIncoming = populationsIn[
+                            OPP[q] * uniforms.grid.w + neighbor
+                        ];
+                        topologyForceOnBody -= (
+                            oldSolidOutgoing + suppressedNeighborIncoming
+                        ) * float3(C[q]);
+                    }
+                    forceOnBodyLattice += topologyForceOnBody;
+                    float3 topologyForcePhysical = topologyForceOnBody
+                        * uniforms.timeStepAndScales.w;
+                    cellTorquePhysical += cross(
+                        world - body.position.xyz,
+                        topologyForcePhysical
+                    );
                 }
             }
             else {
@@ -1304,7 +1393,18 @@ kernel void stepFluidTRT(
                                 && (selectedPart == 0u
                                 || selectedPart == uint(sourcePart))) {
                                 float3 linkForceLattice;
-                                if (useConventionalLinkForce) {
+                                if (prescribedLinkForceMode == 0u) {
+                                    // Wen et al. Eq. (5): evaluate momentum in
+                                    // the local wall frame. Production takes
+                                    // this first uniform branch.
+                                    linkForceLattice = -(
+                                        value * (direction - wall)
+                                        - reflected
+                                            * (-direction - wall)
+                                    );
+                                }
+                                else if (prescribedLinkForceMode == 1u
+                                    || prescribedLinkForceMode == 6u) {
                                     // Wen et al. Eq. (4), evaluated with the
                                     // incoming population already reconstructed
                                     // at the interpolated wall.
@@ -1312,16 +1412,28 @@ kernel void stepFluidTRT(
                                         value + reflected
                                     ) * direction;
                                 }
-                                else {
-                                    // Wen et al. Eq. (5): evaluate momentum in
-                                    // the local wall frame. It collapses exactly
-                                    // to conventional exchange for a stationary
-                                    // boundary.
-                                    linkForceLattice = -(
-                                        value * (direction - wall)
+                                else if (prescribedLinkForceMode == 2u) {
+                                    linkForceLattice = -2.0f
+                                        * reflected
+                                        * direction;
+                                }
+                                else if (prescribedLinkForceMode == 3u) {
+                                    linkForceLattice = -wallCorrection
+                                        * direction;
+                                }
+                                else if (prescribedLinkForceMode == 4u) {
+                                    float interpolationResidual = value
                                         - reflected
-                                            * (-direction - wall)
-                                    );
+                                        - wallCorrection;
+                                    linkForceLattice = -interpolationResidual
+                                        * direction;
+                                }
+                                else if (prescribedLinkForceMode == 5u) {
+                                    linkForceLattice = (value - reflected)
+                                        * wall;
+                                }
+                                else {
+                                    linkForceLattice = float3(0);
                                 }
                                 forceOnBodyLattice += linkForceLattice;
                                 float3 linkForcePhysical = linkForceLattice
@@ -1434,6 +1546,222 @@ kernel void stepFluidTRT(
     }
 }
 
+inline bool insideControlVolume(
+    int3 cell,
+    constant GPUControlVolumeBounds& bounds
+) {
+    return all(cell >= int3(bounds.minimum.xyz))
+        && all(cell < int3(bounds.maximumExclusive.xyz));
+}
+
+/// Captures P(n) and the exact streaming flux before geometry reuses dormant
+/// solid distribution slots for its link table.
+kernel void measureControlVolumeMomentumBeforeStep(
+    device const float* populationsBefore [[buffer(0)]],
+    device const uchar* solidBefore [[buffer(1)]],
+    device GPUControlVolumeBudget* partialBudgets [[buffer(2)]],
+    constant GPUControlVolumeBounds& bounds [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupOldMomentum[256];
+    threadgroup float4 groupOutwardFlux[256];
+
+    float3 oldMomentum = float3(0);
+    float3 outwardFlux = float3(0);
+    float solidCrossingLinkCount = 0.0f;
+
+    if (gid < uniforms.grid.w) {
+        uint3 cell = unflatten(gid, uniforms.grid.xyz);
+        if (insideControlVolume(int3(cell), bounds)) {
+            bool wasSolid = solidBefore[gid] != 0;
+
+            for (uint q = 0; q < Q; ++q) {
+                float3 direction = float3(C[q]);
+                if (!wasSolid) {
+                    float value = populationsBefore[
+                        q * uniforms.grid.w + gid
+                    ];
+                    oldMomentum += value * direction;
+                }
+                if (q == 0u) {
+                    continue;
+                }
+
+                int3 destination = int3(cell) + C[q];
+                if (!insideControlVolume(destination, bounds)) {
+                    if (wasSolid) {
+                        solidCrossingLinkCount += 1.0f;
+                    }
+                    else {
+                        float value = populationsBefore[
+                            q * uniforms.grid.w + gid
+                        ];
+                        outwardFlux += value * direction;
+                    }
+                }
+
+                int3 sourceCell = int3(cell) - C[q];
+                if (!insideControlVolume(sourceCell, bounds)) {
+                    uint source = flatten(uint3(sourceCell), uniforms.grid.xyz);
+                    if (solidBefore[source] != 0) {
+                        solidCrossingLinkCount += 1.0f;
+                    }
+                    else {
+                        float value = populationsBefore[
+                            q * uniforms.grid.w + source
+                        ];
+                        outwardFlux -= value * direction;
+                    }
+                }
+            }
+        }
+    }
+
+    groupOldMomentum[threadIndex] = float4(oldMomentum, 0);
+    groupOutwardFlux[threadIndex] = float4(
+        outwardFlux,
+        solidCrossingLinkCount
+    );
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    if (threadIndex == 0u) {
+        float4 oldTotal = float4(0);
+        float4 fluxTotal = float4(0);
+        for (uint index = 0; index < threadsPerThreadgroup; ++index) {
+            oldTotal += groupOldMomentum[index];
+            fluxTotal += groupOutwardFlux[index];
+        }
+        partialBudgets[threadgroupPosition].oldFluidMomentum = oldTotal;
+        partialBudgets[threadgroupPosition].newFluidMomentum = float4(0);
+        partialBudgets[threadgroupPosition].outwardMomentumFlux = fluxTotal;
+        partialBudgets[threadgroupPosition].topologyReservoirCorrection =
+            float4(0);
+    }
+}
+
+/// Captures P(n+1) after the fused stream/collision step. Geometry preserves
+/// the old density of every newly covered cell in coveredFluidMomentum.w, so
+/// the moving-occupancy reservoir correction does not reread overwritten
+/// distribution slots or reuse the force accumulator.
+kernel void measureControlVolumeMomentumAfterStep(
+    device const float* populationsAfter [[buffer(0)]],
+    device const uchar* solidBefore [[buffer(1)]],
+    device const uchar* solidAfter [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device const float4* coveredFluidMomentum [[buffer(4)]],
+    device GPUControlVolumeBudget* partialBudgets [[buffer(5)]],
+    constant GPUControlVolumeBounds& bounds [[buffer(6)]],
+    constant GPUUniforms& uniforms [[buffer(7)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupNewMomentum[256];
+    threadgroup float4 groupTopologyCorrection[256];
+    float3 newMomentum = float3(0);
+    float3 topologyCorrection = float3(0);
+
+    if (gid < uniforms.grid.w) {
+        uint3 cell = unflatten(gid, uniforms.grid.xyz);
+        if (insideControlVolume(int3(cell), bounds)) {
+            bool wasSolid = solidBefore[gid] != 0;
+            bool isSolid = solidAfter[gid] != 0;
+            if (!isSolid) {
+                for (uint q = 0; q < Q; ++q) {
+                    float value = populationsAfter[
+                        q * uniforms.grid.w + gid
+                    ];
+                    newMomentum += value * float3(C[q]);
+                }
+            }
+            if (wasSolid && !isSolid) {
+                topologyCorrection += newMomentum;
+            }
+            else if (!wasSolid && isSolid) {
+                topologyCorrection -= coveredFluidMomentum[gid].w
+                    * wallVelocity[gid].xyz;
+            }
+        }
+    }
+
+    groupNewMomentum[threadIndex] = float4(newMomentum, 0);
+    groupTopologyCorrection[threadIndex] = float4(topologyCorrection, 0);
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        float4 newTotal = float4(0);
+        float4 topologyTotal = float4(0);
+        for (uint index = 0; index < threadsPerThreadgroup; ++index) {
+            newTotal += groupNewMomentum[index];
+            topologyTotal += groupTopologyCorrection[index];
+        }
+        partialBudgets[threadgroupPosition].oldFluidMomentum = float4(0);
+        partialBudgets[threadgroupPosition].newFluidMomentum = newTotal;
+        partialBudgets[threadgroupPosition].outwardMomentumFlux = float4(0);
+        partialBudgets[threadgroupPosition].topologyReservoirCorrection =
+            topologyTotal;
+    }
+}
+
+kernel void reduceControlVolumeMomentumBudget(
+    device const GPUControlVolumeBudget* input [[buffer(0)]],
+    device GPUControlVolumeBudget* output [[buffer(1)]],
+    constant uint& inputCount [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint start = gid * 256u;
+    if (start >= inputCount) {
+        return;
+    }
+    float4 oldMomentum = float4(0);
+    float4 newMomentum = float4(0);
+    float4 outwardFlux = float4(0);
+    float4 topologyCorrection = float4(0);
+    uint end = min(start + 256u, inputCount);
+    for (uint index = start; index < end; ++index) {
+        oldMomentum += input[index].oldFluidMomentum;
+        newMomentum += input[index].newFluidMomentum;
+        outwardFlux += input[index].outwardMomentumFlux;
+        topologyCorrection += input[index].topologyReservoirCorrection;
+    }
+    output[gid].oldFluidMomentum = oldMomentum;
+    output[gid].newFluidMomentum = newMomentum;
+    output[gid].outwardMomentumFlux = outwardFlux;
+    output[gid].topologyReservoirCorrection = topologyCorrection;
+}
+
+kernel void storeControlVolumeMomentumBeforeSample(
+    device const GPUControlVolumeBudget* total [[buffer(0)]],
+    device GPUControlVolumeBudget* history [[buffer(1)]],
+    constant uint& sampleIndex [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid == 0u) {
+        history[sampleIndex].oldFluidMomentum = total[0].oldFluidMomentum;
+        history[sampleIndex].outwardMomentumFlux =
+            total[0].outwardMomentumFlux;
+        history[sampleIndex].newFluidMomentum = float4(0);
+        history[sampleIndex].topologyReservoirCorrection = float4(0);
+    }
+}
+
+kernel void storeControlVolumeMomentumAfterSample(
+    device const GPUControlVolumeBudget* total [[buffer(0)]],
+    device GPUControlVolumeBudget* history [[buffer(1)]],
+    constant uint& sampleIndex [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid == 0u) {
+        history[sampleIndex].newFluidMomentum = total[0].newFluidMomentum;
+        history[sampleIndex].topologyReservoirCorrection =
+            total[0].topologyReservoirCorrection;
+    }
+}
+
 kernel void reduceForceTorque(
     device const GPUForceTorque* input [[buffer(0)]],
     device GPUForceTorque* output [[buffer(1)]],
@@ -1469,6 +1797,29 @@ kernel void storeForceTorqueSample(
     if (gid == 0u) {
         history[sampleIndex] = totalLoad[0];
     }
+}
+
+/// Stores the compact record after the optional body integration dispatch, so
+/// each sample's pose and load refer to the same completed solver step.
+kernel void storeRunSample(
+    device GPURunSample* samples [[buffer(0)]],
+    constant GPUBirdBodyState& body [[buffer(1)]],
+    device const GPUForceTorque& load [[buffer(2)]],
+    constant uint4& indices [[buffer(3)]],
+    constant float& time [[buffer(4)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid != 0u) {
+        return;
+    }
+    uint sampleIndex = indices.x;
+    samples[sampleIndex].timeAndPosition = float4(time, body.position.xyz);
+    samples[sampleIndex].orientation = body.orientation;
+    samples[sampleIndex].linearVelocity = body.linearVelocity;
+    samples[sampleIndex].angularVelocityBody = body.angularVelocityBody;
+    samples[sampleIndex].force = load.force;
+    samples[sampleIndex].torque = load.torque;
+    samples[sampleIndex].step = uint4(indices.y, indices.z, 0, 0);
 }
 
 /// Audit-only sparse readback. Production keeps the link fractions in dormant

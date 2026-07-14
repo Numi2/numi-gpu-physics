@@ -1,5 +1,11 @@
 import Foundation
 
+struct MovingDomainNeighborStencil {
+    let directionFromUncoveredCell: SIMD3<Double>
+    let oldSolidOutgoing: Double
+    let suppressedNeighborIncoming: Double
+}
+
 /// CPU reference for the link-wise interpolated moving-boundary rule used by
 /// `stepFluidTRT`. It keeps canonical tests independent of the Metal compiler.
 enum InterpolatedBounceBackReference {
@@ -33,5 +39,24 @@ enum InterpolatedBounceBackReference {
         }
         return (reflected + movingWallCorrection) / (2 * q)
             + (2 * q - 1) * previousIncoming / (2 * q)
+    }
+
+    static func conservativeCoveredBodyImpulse(
+        previousFluidMomentum: SIMD3<Double>
+    ) -> SIMD3<Double> {
+        previousFluidMomentum
+    }
+
+    static func conservativeUncoveredBodyImpulse(
+        refillMomentum: SIMD3<Double>,
+        persistentNeighborStencils: [MovingDomainNeighborStencil]
+    ) -> SIMD3<Double> {
+        persistentNeighborStencils.reduce(-refillMomentum) {
+            partial, stencil in
+            partial - (
+                stencil.oldSolidOutgoing
+                    + stencil.suppressedNeighborIncoming
+            ) * stencil.directionFromUncoveredCell
+        }
     }
 }

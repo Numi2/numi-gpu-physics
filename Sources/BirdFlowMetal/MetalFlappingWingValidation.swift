@@ -92,6 +92,106 @@ public struct MetalFlappingWingLinkForceComparisonReport: Codable, Sendable {
     public let closurePassed: Bool
 }
 
+public struct MetalFlappingWingLinkNumeratorComponent: Codable, Sendable {
+    public let name: String
+    public let equation: String
+    public let load: MetalFlappingWingLoadComponentSummary
+    public let meanLiftFractionOfGalileanInvariantLink: Double
+    public let meanDragFractionOfGalileanInvariantLink: Double
+    public let rmsLiftFractionOfGalileanInvariantLink: Double
+    public let rmsDragFractionOfGalileanInvariantLink: Double
+}
+
+public struct MetalFlappingWingLinkNumeratorDecompositionReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let chordCells: Int
+    public let cycles: Int
+    public let runtimeSeconds: Double
+    public let galileanInvariantLinkExchange:
+        MetalFlappingWingLoadComponentSummary
+    public let conventionalLinkExchange:
+        MetalFlappingWingLoadComponentSummary
+    public let components: [MetalFlappingWingLinkNumeratorComponent]
+    public let dominantMeanLiftComponent: String
+    public let dominantMeanDragComponent: String
+    public let maximumConventionalLiftClosureError: Double
+    public let maximumConventionalDragClosureError: Double
+    public let maximumConventionalForceClosureError: Double
+    public let maximumGalileanInvariantLiftClosureError: Double
+    public let maximumGalileanInvariantDragClosureError: Double
+    public let maximumGalileanInvariantForceClosureError: Double
+    public let maximumAllowedCoefficientClosureError: Double
+    public let closurePassed: Bool
+}
+
+public struct MetalFlappingWingControlVolumeBounds: Codable, Sendable {
+    public let minimumX: Int
+    public let minimumY: Int
+    public let minimumZ: Int
+    public let maximumExclusiveX: Int
+    public let maximumExclusiveY: Int
+    public let maximumExclusiveZ: Int
+}
+
+public struct MetalFlappingWingMomentumBudgetReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let chordCells: Int
+    public let cycles: Int
+    public let runtimeSeconds: Double
+    public let controlVolume: MetalFlappingWingControlVolumeBounds
+    public let spongeWidthCells: Int
+    public let minimumControlSurfaceDistanceFromDomainBoundaryCells: Int
+    public let maximumSolidControlSurfaceCrossingLinkCount: Int
+    public let galileanInvariantBoundaryLoad:
+        MetalFlappingWingLoadComponentSummary
+    public let conventionalBoundaryLoad:
+        MetalFlappingWingLoadComponentSummary
+    public let conservativeMovingDomainBoundaryLoad:
+        MetalFlappingWingLoadComponentSummary
+    public let conservativeCorrectionRelativeToConventionalBoundaryLoad:
+        MetalFlappingWingLoadComponentSummary
+    public let negativeFluidMomentumStorageRate:
+        MetalFlappingWingLoadComponentSummary
+    public let negativeControlSurfaceMomentumFlux:
+        MetalFlappingWingLoadComponentSummary
+    public let topologyReservoirCorrection:
+        MetalFlappingWingLoadComponentSummary
+    public let rawFluidMomentumBudget:
+        MetalFlappingWingLoadComponentSummary
+    public let independentFluidMomentumBudget:
+        MetalFlappingWingLoadComponentSummary
+    public let galileanInvariantResidual:
+        MetalFlappingWingLoadComponentSummary
+    public let conventionalResidual:
+        MetalFlappingWingLoadComponentSummary
+    public let conservativeMovingDomainResidual:
+        MetalFlappingWingLoadComponentSummary
+    public let maximumGalileanInvariantLiftCoefficientResidual: Double
+    public let maximumGalileanInvariantDragCoefficientResidual: Double
+    public let maximumGalileanInvariantForceResidual: Double
+    public let maximumConventionalLiftCoefficientResidual: Double
+    public let maximumConventionalDragCoefficientResidual: Double
+    public let maximumConventionalForceResidual: Double
+    public let maximumConservativeLiftCoefficientResidual: Double
+    public let maximumConservativeDragCoefficientResidual: Double
+    public let maximumConservativeForceResidual: Double
+    public let galileanInvariantMeanLiftBiasFactor: Double
+    public let galileanInvariantMeanDragBiasFactor: Double
+    public let conventionalMeanLiftBiasFactor: Double
+    public let conventionalMeanDragBiasFactor: Double
+    public let maximumAllowedCoefficientResidual: Double
+    public let controlSurfaceClearOfSolid: Bool
+    public let controlSurfaceOutsideSponge: Bool
+    public let conventionalClosurePassed: Bool
+    public let conservativeMovingDomainClosurePassed: Bool
+    public let boundaryLoadBiasDetected: Bool
+    public let classification: String
+}
+
 private enum PrescribedWingLoadComponent: Float {
     case total = 0
     case linkExchange = 1
@@ -101,6 +201,52 @@ private enum PrescribedWingLoadComponent: Float {
 private enum PrescribedWingLinkForceEstimator: Float {
     case galileanInvariant = 0
     case conventional = 1
+    case baseReflection = 2
+    case movingWallPopulationCorrection = 3
+    case interpolationResidual = 4
+    case galileanWallFrameCorrection = 5
+    case conservativeMovingDomain = 6
+}
+
+private struct GPUControlVolumeBounds {
+    var minimum: SIMD4<UInt32>
+    var maximumExclusive: SIMD4<UInt32>
+}
+
+private struct GPUControlVolumeBudget {
+    var oldFluidMomentum: SIMD4<Float>
+    var newFluidMomentum: SIMD4<Float>
+    var outwardMomentumFlux: SIMD4<Float>
+    var topologyReservoirCorrection: SIMD4<Float>
+
+    static let zero = GPUControlVolumeBudget(
+        oldFluidMomentum: .zero,
+        newFluidMomentum: .zero,
+        outwardMomentumFlux: .zero,
+        topologyReservoirCorrection: .zero
+    )
+}
+
+private struct PrescribedWingMomentumBudgetStep {
+    let negativeStorage: ForceTorque
+    let negativeSurfaceFlux: ForceTorque
+    let topologyReservoirCorrection: ForceTorque
+    let rawTotal: ForceTorque
+    let total: ForceTorque
+    let solidControlSurfaceCrossingLinkCount: Int
+}
+
+private struct PrescribedWingMomentumBudgetCaseResult {
+    let boundaryLoad: [MetalFlappingWingPhaseSample]
+    let negativeStorage: [MetalFlappingWingPhaseSample]
+    let negativeSurfaceFlux: [MetalFlappingWingPhaseSample]
+    let topologyReservoirCorrection: [MetalFlappingWingPhaseSample]
+    let rawTotal: [MetalFlappingWingPhaseSample]
+    let total: [MetalFlappingWingPhaseSample]
+    let controlVolume: MetalFlappingWingControlVolumeBounds
+    let spongeWidthCells: Int
+    let minimumControlSurfaceDistanceFromDomainBoundaryCells: Int
+    let maximumSolidControlSurfaceCrossingLinkCount: Int
 }
 
 public struct MetalFlappingWingVortexMetric: Codable, Sendable {
@@ -525,6 +671,113 @@ public enum MetalFlappingWingValidator {
             galileanInvariantLink: galileanInvariantLink.phaseSamples,
             conventionalLink: conventionalLink.phaseSamples,
             topology: topology.phaseSamples
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    /// Splits the link-force numerator into algebraically independent terms
+    /// while replaying identical fixed-kinematics flow histories. Each run
+    /// changes only a dispatch-uniform load selector, so populations and wall
+    /// motion remain identical and no component-sized GPU buffers are added.
+    public static func diagnoseLinkNumeratorDecomposition(
+        chordCells: Int = 8,
+        cycles: Int = 1
+    ) throws -> MetalFlappingWingLinkNumeratorDecompositionReport {
+        guard chordCells >= 8, cycles >= 1 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "link numerator decomposition requires at least 8 chord cells and one cycle"
+            )
+        }
+#if canImport(Metal)
+        let started = Date()
+        let backend = try MetalBackend(fastMath: false)
+        func linkRun(
+            _ estimator: PrescribedWingLinkForceEstimator
+        ) throws -> MetalFlappingWingCaseResult {
+            try runCase(
+                backend: backend,
+                chordCells: chordCells,
+                cycles: cycles,
+                archiveDirectory: nil,
+                loadComponent: .linkExchange,
+                linkForceEstimator: estimator,
+                captureVortexDiagnostics: false
+            )
+        }
+        let galileanInvariant = try linkRun(.galileanInvariant)
+        let conventional = try linkRun(.conventional)
+        let baseReflection = try linkRun(.baseReflection)
+        let movingWall = try linkRun(.movingWallPopulationCorrection)
+        let interpolation = try linkRun(.interpolationResidual)
+        let galileanWallFrame = try linkRun(.galileanWallFrameCorrection)
+        return linkNumeratorDecompositionReport(
+            deviceName: backend.device.name,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            galileanInvariant: galileanInvariant.phaseSamples,
+            conventional: conventional.phaseSamples,
+            baseReflection: baseReflection.phaseSamples,
+            movingWallPopulationCorrection: movingWall.phaseSamples,
+            interpolationResidual: interpolation.phaseSamples,
+            galileanWallFrameCorrection: galileanWallFrame.phaseSamples
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    /// Closes the moving-boundary load against a fixed near-wing control
+    /// volume. The independent budget uses fluid momentum storage and the
+    /// post-collision population flux through a surface that is clear of both
+    /// the swept wing and the sponge. A separate topology-reservoir term
+    /// accounts for equilibrium momentum inserted or removed as lattice cells
+    /// uncover or cover; it does not reuse the link-force accumulator.
+    public static func diagnoseNearWingMomentumBudget(
+        chordCells: Int = 8,
+        cycles: Int = 1
+    ) throws -> MetalFlappingWingMomentumBudgetReport {
+        guard chordCells >= 8, cycles >= 1 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "momentum budget requires at least 8 chord cells and one cycle"
+            )
+        }
+#if canImport(Metal)
+        let started = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let galilean = try runMomentumBudgetCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles
+        )
+        let conventional = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .total,
+            linkForceEstimator: .conventional,
+            captureVortexDiagnostics: false
+        )
+        let conservative = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .total,
+            linkForceEstimator: .conservativeMovingDomain,
+            captureVortexDiagnostics: false
+        )
+        return momentumBudgetReport(
+            deviceName: backend.device.name,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            galilean: galilean,
+            conventionalBoundaryLoad: conventional.phaseSamples,
+            conservativeBoundaryLoad: conservative.phaseSamples
         )
 #else
         throw BirdFlowError.metalUnavailable
@@ -1351,6 +1604,428 @@ private extension MetalFlappingWingValidator {
         )
     }
 
+    static func loadClosureErrors(
+        total: [MetalFlappingWingPhaseSample],
+        components: [[MetalFlappingWingPhaseSample]]
+    ) -> (lift: Double, drag: Double, force: Double) {
+        precondition(components.allSatisfy { $0.count == total.count })
+        var maximumLift = 0.0
+        var maximumDrag = 0.0
+        var maximumForce = 0.0
+        for index in total.indices {
+            let sample = total[index]
+            var lift = 0.0
+            var drag = 0.0
+            var force = SIMD3<Double>.zero
+            for component in components {
+                let value = component[index]
+                precondition(abs(value.phase - sample.phase) < 1.0e-12)
+                lift += value.liftCoefficient
+                drag += value.dragCoefficient
+                force += SIMD3<Double>(
+                    value.forceX,
+                    value.forceY,
+                    value.forceZ
+                )
+            }
+            maximumLift = max(
+                maximumLift,
+                abs(sample.liftCoefficient - lift)
+            )
+            maximumDrag = max(
+                maximumDrag,
+                abs(sample.dragCoefficient - drag)
+            )
+            let difference = SIMD3<Double>(
+                sample.forceX,
+                sample.forceY,
+                sample.forceZ
+            ) - force
+            maximumForce = max(
+                maximumForce,
+                sqrt(dot(difference, difference))
+            )
+        }
+        return (maximumLift, maximumDrag, maximumForce)
+    }
+
+    static func linkNumeratorDecompositionReport(
+        deviceName: String,
+        chordCells: Int,
+        cycles: Int,
+        runtimeSeconds: Double,
+        galileanInvariant galileanSamples: [MetalFlappingWingPhaseSample],
+        conventional conventionalSamples: [MetalFlappingWingPhaseSample],
+        baseReflection baseSamples: [MetalFlappingWingPhaseSample],
+        movingWallPopulationCorrection wallSamples:
+            [MetalFlappingWingPhaseSample],
+        interpolationResidual interpolationSamples:
+            [MetalFlappingWingPhaseSample],
+        galileanWallFrameCorrection wallFrameSamples:
+            [MetalFlappingWingPhaseSample]
+    ) -> MetalFlappingWingLinkNumeratorDecompositionReport {
+        let galilean = loadComponentSummary(galileanSamples)
+        let conventional = loadComponentSummary(conventionalSamples)
+
+        func ratio(_ numerator: Double, _ denominator: Double) -> Double {
+            abs(denominator) > 1.0e-12 ? numerator / denominator : 0
+        }
+        func component(
+            name: String,
+            equation: String,
+            samples: [MetalFlappingWingPhaseSample]
+        ) -> MetalFlappingWingLinkNumeratorComponent {
+            let load = loadComponentSummary(samples)
+            return MetalFlappingWingLinkNumeratorComponent(
+                name: name,
+                equation: equation,
+                load: load,
+                meanLiftFractionOfGalileanInvariantLink: ratio(
+                    load.meanLiftCoefficient,
+                    galilean.meanLiftCoefficient
+                ),
+                meanDragFractionOfGalileanInvariantLink: ratio(
+                    load.meanDragCoefficient,
+                    galilean.meanDragCoefficient
+                ),
+                rmsLiftFractionOfGalileanInvariantLink: ratio(
+                    load.rmsLiftCoefficient,
+                    galilean.rmsLiftCoefficient
+                ),
+                rmsDragFractionOfGalileanInvariantLink: ratio(
+                    load.rmsDragCoefficient,
+                    galilean.rmsDragCoefficient
+                )
+            )
+        }
+
+        let components = [
+            component(
+                name: "baseReflection",
+                equation: "-(2*f_out)*c",
+                samples: baseSamples
+            ),
+            component(
+                name: "movingWallPopulationCorrection",
+                equation: "-delta_f_wall*c",
+                samples: wallSamples
+            ),
+            component(
+                name: "interpolationResidual",
+                equation: "-(f_in-f_out-delta_f_wall)*c",
+                samples: interpolationSamples
+            ),
+            component(
+                name: "galileanWallFrameCorrection",
+                equation: "(f_in-f_out)*u_wall",
+                samples: wallFrameSamples
+            ),
+        ]
+        let conventionalClosure = loadClosureErrors(
+            total: conventionalSamples,
+            components: [baseSamples, wallSamples, interpolationSamples]
+        )
+        let galileanClosure = loadClosureErrors(
+            total: galileanSamples,
+            components: [
+                baseSamples,
+                wallSamples,
+                interpolationSamples,
+                wallFrameSamples,
+            ]
+        )
+        let dominantLift = components.max {
+            abs($0.load.meanLiftCoefficient)
+                < abs($1.load.meanLiftCoefficient)
+        }!.name
+        let dominantDrag = components.max {
+            abs($0.load.meanDragCoefficient)
+                < abs($1.load.meanDragCoefficient)
+        }!.name
+        let tolerance = 1.0e-4
+        return MetalFlappingWingLinkNumeratorDecompositionReport(
+            schemaVersion: 1,
+            deviceName: deviceName,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: runtimeSeconds,
+            galileanInvariantLinkExchange: galilean,
+            conventionalLinkExchange: conventional,
+            components: components,
+            dominantMeanLiftComponent: dominantLift,
+            dominantMeanDragComponent: dominantDrag,
+            maximumConventionalLiftClosureError: conventionalClosure.lift,
+            maximumConventionalDragClosureError: conventionalClosure.drag,
+            maximumConventionalForceClosureError: conventionalClosure.force,
+            maximumGalileanInvariantLiftClosureError: galileanClosure.lift,
+            maximumGalileanInvariantDragClosureError: galileanClosure.drag,
+            maximumGalileanInvariantForceClosureError: galileanClosure.force,
+            maximumAllowedCoefficientClosureError: tolerance,
+            closurePassed: conventionalClosure.lift <= tolerance
+                && conventionalClosure.drag <= tolerance
+                && galileanClosure.lift <= tolerance
+                && galileanClosure.drag <= tolerance
+        )
+    }
+
+    static func momentumBudgetReport(
+        deviceName: String,
+        chordCells: Int,
+        cycles: Int,
+        runtimeSeconds: Double,
+        galilean: PrescribedWingMomentumBudgetCaseResult,
+        conventionalBoundaryLoad: [MetalFlappingWingPhaseSample],
+        conservativeBoundaryLoad: [MetalFlappingWingPhaseSample]
+    ) -> MetalFlappingWingMomentumBudgetReport {
+        func residual(
+            _ boundary: [MetalFlappingWingPhaseSample],
+            _ budget: [MetalFlappingWingPhaseSample]
+        ) -> [MetalFlappingWingPhaseSample] {
+            precondition(boundary.count == budget.count)
+            return boundary.indices.map { index in
+                let lhs = boundary[index]
+                let rhs = budget[index]
+                precondition(abs(lhs.phase - rhs.phase) < 1.0e-12)
+                return MetalFlappingWingPhaseSample(
+                    phase: lhs.phase,
+                    liftCoefficient: lhs.liftCoefficient
+                        - rhs.liftCoefficient,
+                    dragCoefficient: lhs.dragCoefficient
+                        - rhs.dragCoefficient,
+                    forceX: lhs.forceX - rhs.forceX,
+                    forceY: lhs.forceY - rhs.forceY,
+                    forceZ: lhs.forceZ - rhs.forceZ
+                )
+            }
+        }
+        func maxima(
+            _ samples: [MetalFlappingWingPhaseSample]
+        ) -> (lift: Double, drag: Double, force: Double) {
+            var lift = 0.0
+            var drag = 0.0
+            var force = 0.0
+            for sample in samples {
+                lift = max(lift, abs(sample.liftCoefficient))
+                drag = max(drag, abs(sample.dragCoefficient))
+                force = max(
+                    force,
+                    sqrt(
+                        sample.forceX * sample.forceX
+                            + sample.forceY * sample.forceY
+                            + sample.forceZ * sample.forceZ
+                    )
+                )
+            }
+            return (lift, drag, force)
+        }
+
+        let galileanResidual = residual(
+            galilean.boundaryLoad,
+            galilean.total
+        )
+        let conventionalResidual = residual(
+            conventionalBoundaryLoad,
+            galilean.total
+        )
+        let conservativeResidual = residual(
+            conservativeBoundaryLoad,
+            galilean.rawTotal
+        )
+        let conservativeCorrection = residual(
+            conservativeBoundaryLoad,
+            conventionalBoundaryLoad
+        )
+        let galileanMaximum = maxima(galileanResidual)
+        let conventionalMaximum = maxima(conventionalResidual)
+        let conservativeMaximum = maxima(conservativeResidual)
+        let tolerance = 0.005
+        let clear = galilean.maximumSolidControlSurfaceCrossingLinkCount == 0
+        let outsideSponge = galilean
+            .minimumControlSurfaceDistanceFromDomainBoundaryCells
+            >= galilean.spongeWidthCells
+        let passed = clear
+            && outsideSponge
+            && conventionalMaximum.lift <= tolerance
+            && conventionalMaximum.drag <= tolerance
+        let conservativePassed = clear
+            && outsideSponge
+            && conservativeMaximum.lift <= tolerance
+            && conservativeMaximum.drag <= tolerance
+        let validSurface = clear && outsideSponge
+        let biasDetected = validSurface && !passed
+        let galileanSummary = loadComponentSummary(galilean.boundaryLoad)
+        let conventionalSummary = loadComponentSummary(
+            conventionalBoundaryLoad
+        )
+        let conservativeSummary = loadComponentSummary(
+            conservativeBoundaryLoad
+        )
+        let rawBudgetSummary = loadComponentSummary(galilean.rawTotal)
+        let budgetSummary = loadComponentSummary(galilean.total)
+        func ratio(_ numerator: Double, _ denominator: Double) -> Double {
+            abs(denominator) > 1.0e-12 ? numerator / denominator : 0
+        }
+        return MetalFlappingWingMomentumBudgetReport(
+            schemaVersion: 1,
+            deviceName: deviceName,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: runtimeSeconds,
+            controlVolume: galilean.controlVolume,
+            spongeWidthCells: galilean.spongeWidthCells,
+            minimumControlSurfaceDistanceFromDomainBoundaryCells: galilean
+                .minimumControlSurfaceDistanceFromDomainBoundaryCells,
+            maximumSolidControlSurfaceCrossingLinkCount: galilean
+                .maximumSolidControlSurfaceCrossingLinkCount,
+            galileanInvariantBoundaryLoad: galileanSummary,
+            conventionalBoundaryLoad: conventionalSummary,
+            conservativeMovingDomainBoundaryLoad: conservativeSummary,
+            conservativeCorrectionRelativeToConventionalBoundaryLoad:
+                loadComponentSummary(conservativeCorrection),
+            negativeFluidMomentumStorageRate: loadComponentSummary(
+                galilean.negativeStorage
+            ),
+            negativeControlSurfaceMomentumFlux: loadComponentSummary(
+                galilean.negativeSurfaceFlux
+            ),
+            topologyReservoirCorrection: loadComponentSummary(
+                galilean.topologyReservoirCorrection
+            ),
+            rawFluidMomentumBudget: rawBudgetSummary,
+            independentFluidMomentumBudget: budgetSummary,
+            galileanInvariantResidual: loadComponentSummary(
+                galileanResidual
+            ),
+            conventionalResidual: loadComponentSummary(
+                conventionalResidual
+            ),
+            conservativeMovingDomainResidual: loadComponentSummary(
+                conservativeResidual
+            ),
+            maximumGalileanInvariantLiftCoefficientResidual:
+                galileanMaximum.lift,
+            maximumGalileanInvariantDragCoefficientResidual:
+                galileanMaximum.drag,
+            maximumGalileanInvariantForceResidual: galileanMaximum.force,
+            maximumConventionalLiftCoefficientResidual:
+                conventionalMaximum.lift,
+            maximumConventionalDragCoefficientResidual:
+                conventionalMaximum.drag,
+            maximumConventionalForceResidual: conventionalMaximum.force,
+            maximumConservativeLiftCoefficientResidual:
+                conservativeMaximum.lift,
+            maximumConservativeDragCoefficientResidual:
+                conservativeMaximum.drag,
+            maximumConservativeForceResidual: conservativeMaximum.force,
+            galileanInvariantMeanLiftBiasFactor: ratio(
+                galileanSummary.meanLiftCoefficient,
+                budgetSummary.meanLiftCoefficient
+            ),
+            galileanInvariantMeanDragBiasFactor: ratio(
+                galileanSummary.meanDragCoefficient,
+                budgetSummary.meanDragCoefficient
+            ),
+            conventionalMeanLiftBiasFactor: ratio(
+                conventionalSummary.meanLiftCoefficient,
+                budgetSummary.meanLiftCoefficient
+            ),
+            conventionalMeanDragBiasFactor: ratio(
+                conventionalSummary.meanDragCoefficient,
+                budgetSummary.meanDragCoefficient
+            ),
+            maximumAllowedCoefficientResidual: tolerance,
+            controlSurfaceClearOfSolid: clear,
+            controlSurfaceOutsideSponge: outsideSponge,
+            conventionalClosurePassed: passed,
+            conservativeMovingDomainClosurePassed: conservativePassed,
+            boundaryLoadBiasDetected: biasDetected,
+            classification: !validSurface
+                ? "invalidControlSurface"
+                : (conservativePassed
+                    ? "conservativeMovingDomainEstimatorCloses"
+                    : (passed
+                        ? "boundaryLoadMatchesDiscreteFluidMomentum"
+                        : "boundaryForceAccountingBiasDetected"))
+        )
+    }
+
+    static func runMomentumBudgetCase(
+        backend: MetalBackend,
+        chordCells: Int,
+        cycles: Int
+    ) throws -> PrescribedWingMomentumBudgetCaseResult {
+        let grid = try GridSize(
+            x: domainHorizontalChords * chordCells,
+            y: domainHorizontalChords * chordCells,
+            z: domainVerticalChords * chordCells
+        )
+        let cycleSteps = Int((
+            cycleTravelPerChord * Double(chordCells)
+                / latticeRadiusOfGyrationSpeed
+        ).rounded())
+        let root = SIMD3<Float>(
+            0.5 * Float(grid.x),
+            0.5 * Float(grid.y),
+            0.65 * Float(grid.z)
+        )
+        let simulation = try MetalPrescribedWingSimulation(
+            backend: backend,
+            grid: grid,
+            chordCells: chordCells,
+            cycleSteps: cycleSteps,
+            root: root,
+            loadComponent: .total,
+            linkForceEstimator: .galileanInvariant
+        )
+        if cycles > 1 {
+            _ = try simulation.advance(
+                to: (cycles - 1) * cycleSteps,
+                batchSize: 64,
+                captureFields: false
+            )
+        }
+        _ = try simulation.advance(
+            to: cycles * cycleSteps,
+            batchSize: 64,
+            captureFields: false,
+            recordEveryStepLoad: true,
+            recordEveryStepMomentumBudget: true
+        )
+        let boundary = phaseBinnedSamples(
+            loads: simulation.copyRecordedLoads(),
+            chordCells: chordCells,
+            cycleSteps: cycleSteps
+        )
+        let steps = simulation.copyRecordedMomentumBudgets()
+        func samples(
+            _ keyPath: KeyPath<PrescribedWingMomentumBudgetStep, ForceTorque>
+        ) -> [MetalFlappingWingPhaseSample] {
+            phaseBinnedSamples(
+                loads: steps.map { $0[keyPath: keyPath] },
+                chordCells: chordCells,
+                cycleSteps: cycleSteps
+            )
+        }
+        let metadata = simulation.controlVolumeMetadata
+        return PrescribedWingMomentumBudgetCaseResult(
+            boundaryLoad: boundary,
+            negativeStorage: samples(\.negativeStorage),
+            negativeSurfaceFlux: samples(\.negativeSurfaceFlux),
+            topologyReservoirCorrection: samples(
+                \.topologyReservoirCorrection
+            ),
+            rawTotal: samples(\.rawTotal),
+            total: samples(\.total),
+            controlVolume: metadata.bounds,
+            spongeWidthCells: metadata.spongeWidthCells,
+            minimumControlSurfaceDistanceFromDomainBoundaryCells:
+                metadata.minimumDomainDistanceCells,
+            maximumSolidControlSurfaceCrossingLinkCount: steps.map(
+                \.solidControlSurfaceCrossingLinkCount
+            ).max() ?? 0
+        )
+    }
+
     static func runCase(
         backend: MetalBackend,
         chordCells: Int,
@@ -1609,56 +2284,22 @@ private extension MetalFlappingWingValidator {
         grid: GridSize,
         retainFields: Bool
     ) -> FieldDiagnostics {
-        func index(_ x: Int, _ y: Int, _ z: Int) -> Int {
-            x + grid.x * (y + grid.y * z)
-        }
+        let reference = FlowDiagnosticsReference.compute(
+            velocity: velocity,
+            grid: grid
+        )
         var maximumQ = 0.0
         var maximumVorticity = 0.0
         var positiveCount = 0
-        var qField = retainFields ? [Float](repeating: 0, count: velocity.count) : nil
-        var vorticityField = retainFields
-            ? [SIMD3<Float>](repeating: .zero, count: velocity.count)
-            : nil
-        for z in 1..<(grid.z - 1) {
-            for y in 1..<(grid.y - 1) {
-                for x in 1..<(grid.x - 1) {
-                    let i = index(x, y, z)
-                    let dx = 0.5 * (velocity[index(x + 1, y, z)]
-                        - velocity[index(x - 1, y, z)])
-                    let dy = 0.5 * (velocity[index(x, y + 1, z)]
-                        - velocity[index(x, y - 1, z)])
-                    let dz = 0.5 * (velocity[index(x, y, z + 1)]
-                        - velocity[index(x, y, z - 1)])
-                    let gradient = [
-                        SIMD3<Double>(Double(dx.x), Double(dy.x), Double(dz.x)),
-                        SIMD3<Double>(Double(dx.y), Double(dy.y), Double(dz.y)),
-                        SIMD3<Double>(Double(dx.z), Double(dy.z), Double(dz.z)),
-                    ]
-                    var traceSquare = 0.0
-                    for row in 0..<3 {
-                        for column in 0..<3 {
-                            traceSquare += gradient[row][column]
-                                * gradient[column][row]
-                        }
-                    }
-                    let q = -0.5 * traceSquare
-                    let curl = SIMD3<Double>(
-                        gradient[2].y - gradient[1].z,
-                        gradient[0].z - gradient[2].x,
-                        gradient[1].x - gradient[0].y
-                    )
-                    let magnitude = sqrt(dot(curl, curl))
-                    if q > 0 {
-                        positiveCount += 1
-                        maximumQ = max(maximumQ, q)
-                    }
-                    maximumVorticity = max(maximumVorticity, magnitude)
-                    qField?[i] = Float(q)
-                    vorticityField?[i] = SIMD3<Float>(
-                        Float(curl.x), Float(curl.y), Float(curl.z)
-                    )
-                }
+        for i in reference.qCriterion.indices where reference.valid[i] != 0 {
+            let q = Double(reference.qCriterion[i])
+            let curl = reference.vorticity[i]
+            let magnitude = Double(vectorLength(curl))
+            if q > 0 {
+                positiveCount += 1
+                maximumQ = max(maximumQ, q)
             }
+            maximumVorticity = max(maximumVorticity, magnitude)
         }
         return FieldDiagnostics(
             metric: MetalFlappingWingVortexMetric(
@@ -1667,8 +2308,8 @@ private extension MetalFlappingWingValidator {
                 positiveQCellCount: positiveCount,
                 maximumVorticityMagnitude: maximumVorticity
             ),
-            qCriterion: qField,
-            vorticity: vorticityField
+            qCriterion: retainFields ? reference.qCriterion : nil,
+            vorticity: retainFields ? reference.vorticity : nil
         )
     }
 
@@ -1875,6 +2516,9 @@ private final class MetalPrescribedWingSimulation {
     private let reductionA: MTLBuffer
     private let reductionB: MTLBuffer
     private let loadHistory: MTLBuffer
+    private let momentumBudgetReductionA: MTLBuffer
+    private let momentumBudgetReductionB: MTLBuffer
+    private let momentumBudgetHistory: MTLBuffer
     private let bodyState: MTLBuffer
     private let preparePipeline: MTLComputePipelineState
     private let geometryPipeline: MTLComputePipelineState
@@ -1883,10 +2527,16 @@ private final class MetalPrescribedWingSimulation {
     private let reductionPipeline: MTLComputePipelineState
     private let gatherPipeline: MTLComputePipelineState
     private let storeLoadPipeline: MTLComputePipelineState
+    private let momentumBudgetBeforePipeline: MTLComputePipelineState
+    private let momentumBudgetAfterPipeline: MTLComputePipelineState
+    private let momentumBudgetReductionPipeline: MTLComputePipelineState
+    private let momentumBudgetStoreBeforePipeline: MTLComputePipelineState
+    private let momentumBudgetStoreAfterPipeline: MTLComputePipelineState
     private let partialLoadCount: Int
     private let cycleSteps: Int
     private let loadComponent: PrescribedWingLoadComponent
     private let linkForceEstimator: PrescribedWingLinkForceEstimator
+    private let momentumBudgetBounds: GPUControlVolumeBounds
     private var currentPopulations: MTLBuffer
     private var nextPopulations: MTLBuffer
     private var currentSolid: MTLBuffer
@@ -1970,6 +2620,21 @@ private final class MetalPrescribedWingSimulation {
         reductionPipeline = try backend.pipeline(named: "reduceForceTorque")
         gatherPipeline = try backend.pipeline(named: "gatherFloatValues")
         storeLoadPipeline = try backend.pipeline(named: "storeForceTorqueSample")
+        momentumBudgetBeforePipeline = try backend.pipeline(
+            named: "measureControlVolumeMomentumBeforeStep"
+        )
+        momentumBudgetAfterPipeline = try backend.pipeline(
+            named: "measureControlVolumeMomentumAfterStep"
+        )
+        momentumBudgetReductionPipeline = try backend.pipeline(
+            named: "reduceControlVolumeMomentumBudget"
+        )
+        momentumBudgetStoreBeforePipeline = try backend.pipeline(
+            named: "storeControlVolumeMomentumBeforeSample"
+        )
+        momentumBudgetStoreAfterPipeline = try backend.pipeline(
+            named: "storeControlVolumeMomentumAfterSample"
+        )
 
         let cells = grid.cellCount
         let populationBytes = D3Q19.count * cells * MemoryLayout<Float>.stride
@@ -1981,6 +2646,40 @@ private final class MetalPrescribedWingSimulation {
         let reductionBytes = partialLoadCount
             * MemoryLayout<GPUForceTorque>.stride
         let historyBytes = cycleSteps * MemoryLayout<GPUForceTorque>.stride
+        let momentumBudgetReductionBytes = partialLoadCount
+            * MemoryLayout<GPUControlVolumeBudget>.stride
+        let momentumBudgetHistoryBytes = cycleSteps
+            * MemoryLayout<GPUControlVolumeBudget>.stride
+        let horizontalHalfWidth = (17 * chordCells + 3) / 4
+        let verticalHalfWidth = (3 * chordCells + 1) / 2
+        let minimumX = Int(root.x) - horizontalHalfWidth
+        let minimumY = Int(root.y) - horizontalHalfWidth
+        let minimumZ = Int(floor(root.z - Float(verticalHalfWidth)))
+        let maximumX = Int(root.x) + horizontalHalfWidth
+        let maximumY = Int(root.y) + horizontalHalfWidth
+        let maximumZ = Int(ceil(root.z + Float(verticalHalfWidth)))
+        precondition(
+            minimumX > configuration.spongeWidthCells
+                && minimumY > configuration.spongeWidthCells
+                && minimumZ > configuration.spongeWidthCells
+                && maximumX + configuration.spongeWidthCells < grid.x
+                && maximumY + configuration.spongeWidthCells < grid.y
+                && maximumZ + configuration.spongeWidthCells < grid.z
+        )
+        momentumBudgetBounds = GPUControlVolumeBounds(
+            minimum: SIMD4<UInt32>(
+                UInt32(minimumX),
+                UInt32(minimumY),
+                UInt32(minimumZ),
+                0
+            ),
+            maximumExclusive: SIMD4<UInt32>(
+                UInt32(maximumX),
+                UInt32(maximumY),
+                UInt32(maximumZ),
+                0
+            )
+        )
         try backend.validateAllocationPlan(bufferLengths: [
             MemoryLayout<GPUFlappingWingParameters>.stride,
             MemoryLayout<GPUPreparedFlappingWing>.stride,
@@ -1988,6 +2687,8 @@ private final class MetalPrescribedWingSimulation {
             maskBytes, maskBytes, wallBytes,
             densityBytes, velocityBytes,
             reductionBytes, reductionBytes, historyBytes,
+            momentumBudgetReductionBytes, momentumBudgetReductionBytes,
+            momentumBudgetHistoryBytes,
             MemoryLayout<GPUBirdBodyState>.stride,
         ])
         populationsA = try backend.makePrivateBuffer(length: populationBytes)
@@ -2000,6 +2701,15 @@ private final class MetalPrescribedWingSimulation {
         reductionA = try backend.makeSharedBuffer(length: reductionBytes)
         reductionB = try backend.makeSharedBuffer(length: reductionBytes)
         loadHistory = try backend.makeSharedBuffer(length: historyBytes)
+        momentumBudgetReductionA = try backend.makeSharedBuffer(
+            length: momentumBudgetReductionBytes
+        )
+        momentumBudgetReductionB = try backend.makeSharedBuffer(
+            length: momentumBudgetReductionBytes
+        )
+        momentumBudgetHistory = try backend.makeSharedBuffer(
+            length: momentumBudgetHistoryBytes
+        )
         bodyState = try backend.makeSharedBuffer(
             value: GPUBirdBodyState(BirdBodyState(positionMeters: root))
         )
@@ -2015,7 +2725,8 @@ private final class MetalPrescribedWingSimulation {
         to targetStep: Int,
         batchSize: Int,
         captureFields: Bool,
-        recordEveryStepLoad: Bool = false
+        recordEveryStepLoad: Bool = false,
+        recordEveryStepMomentumBudget: Bool = false
     ) throws -> ForceTorque {
         guard targetStep >= stepIndex, batchSize > 0 else {
             throw BirdFlowError.invalidAdvanceRequest(
@@ -2043,6 +2754,18 @@ private final class MetalPrescribedWingSimulation {
                     commandBuffer: commandBuffer,
                     uniforms: &uniforms
                 )
+                if recordEveryStepMomentumBudget {
+                    let before = try encodeMomentumBudgetBeforeStep(
+                        commandBuffer: commandBuffer,
+                        uniforms: &uniforms
+                    )
+                    try encodeMomentumBudgetStore(
+                        commandBuffer: commandBuffer,
+                        budget: before,
+                        sampleIndex: (absoluteStep - 1) % cycleSteps,
+                        beforeStep: true
+                    )
+                }
                 try encodePrescribedGeometry(
                     commandBuffer: commandBuffer,
                     uniforms: &uniforms,
@@ -2052,6 +2775,18 @@ private final class MetalPrescribedWingSimulation {
                     commandBuffer: commandBuffer,
                     uniforms: &uniforms
                 )
+                if recordEveryStepMomentumBudget {
+                    let after = try encodeMomentumBudgetAfterStep(
+                        commandBuffer: commandBuffer,
+                        uniforms: &uniforms
+                    )
+                    try encodeMomentumBudgetStore(
+                        commandBuffer: commandBuffer,
+                        budget: after,
+                        sampleIndex: (absoluteStep - 1) % cycleSteps,
+                        beforeStep: false
+                    )
+                }
                 if final || recordEveryStepLoad {
                     let reduced = try encodePrescribedReduction(
                         commandBuffer: commandBuffer
@@ -2242,6 +2977,90 @@ private final class MetalPrescribedWingSimulation {
         let pointer = loadHistory.contents()
             .assumingMemoryBound(to: GPUForceTorque.self)
         return (0..<cycleSteps).map { pointer[$0].coreValue }
+    }
+
+    func copyRecordedMomentumBudgets() ->
+        [PrescribedWingMomentumBudgetStep]
+    {
+        let pointer = momentumBudgetHistory.contents()
+            .assumingMemoryBound(to: GPUControlVolumeBudget.self)
+        let scale = configuration.scaling.forceToPhysical
+        func load(_ latticeForce: SIMD3<Float>) -> ForceTorque {
+            ForceTorque(
+                forceNewtons: latticeForce * scale,
+                torqueNewtonMeters: .zero
+            )
+        }
+        return (0..<cycleSteps).map { index in
+            let raw = pointer[index]
+            let oldMomentum = SIMD3<Float>(
+                raw.oldFluidMomentum.x,
+                raw.oldFluidMomentum.y,
+                raw.oldFluidMomentum.z
+            )
+            let newMomentum = SIMD3<Float>(
+                raw.newFluidMomentum.x,
+                raw.newFluidMomentum.y,
+                raw.newFluidMomentum.z
+            )
+            let outwardFlux = SIMD3<Float>(
+                raw.outwardMomentumFlux.x,
+                raw.outwardMomentumFlux.y,
+                raw.outwardMomentumFlux.z
+            )
+            let topologyLattice = SIMD3<Float>(
+                raw.topologyReservoirCorrection.x,
+                raw.topologyReservoirCorrection.y,
+                raw.topologyReservoirCorrection.z
+            )
+            let negativeStorageLattice = oldMomentum - newMomentum
+            let negativeFluxLattice = -outwardFlux
+            let rawTotalLattice = negativeStorageLattice
+                + negativeFluxLattice
+            return PrescribedWingMomentumBudgetStep(
+                negativeStorage: load(negativeStorageLattice),
+                negativeSurfaceFlux: load(negativeFluxLattice),
+                topologyReservoirCorrection: load(topologyLattice),
+                rawTotal: load(rawTotalLattice),
+                total: load(
+                    rawTotalLattice + topologyLattice
+                ),
+                solidControlSurfaceCrossingLinkCount: Int(
+                    raw.outwardMomentumFlux.w.rounded()
+                )
+            )
+        }
+    }
+
+    var controlVolumeMetadata: (
+        bounds: MetalFlappingWingControlVolumeBounds,
+        spongeWidthCells: Int,
+        minimumDomainDistanceCells: Int
+    ) {
+        let minimum = momentumBudgetBounds.minimum
+        let maximum = momentumBudgetBounds.maximumExclusive
+        let bounds = MetalFlappingWingControlVolumeBounds(
+            minimumX: Int(minimum.x),
+            minimumY: Int(minimum.y),
+            minimumZ: Int(minimum.z),
+            maximumExclusiveX: Int(maximum.x),
+            maximumExclusiveY: Int(maximum.y),
+            maximumExclusiveZ: Int(maximum.z)
+        )
+        let grid = configuration.grid
+        let minimumDistance = min(
+            Int(minimum.x) - 1,
+            Int(minimum.y) - 1,
+            Int(minimum.z) - 1,
+            grid.x - 1 - Int(maximum.x),
+            grid.y - 1 - Int(maximum.y),
+            grid.z - 1 - Int(maximum.z)
+        )
+        return (
+            bounds,
+            configuration.spongeWidthCells,
+            minimumDistance
+        )
     }
 
     private func makeUniforms(
@@ -2479,6 +3298,141 @@ private final class MetalPrescribedWingSimulation {
         backend.dispatch1D(
             encoder: encoder,
             pipeline: storeLoadPipeline,
+            count: 1
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeMomentumBudgetBeforeStep(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms
+    ) throws -> MTLBuffer {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create pre-step control-volume momentum encoder."
+            )
+        }
+        var bounds = momentumBudgetBounds
+        encoder.setBuffer(currentPopulations, offset: 0, index: 0)
+        encoder.setBuffer(currentSolid, offset: 0, index: 1)
+        encoder.setBuffer(momentumBudgetReductionA, offset: 0, index: 2)
+        encoder.setBytes(
+            &bounds,
+            length: MemoryLayout<GPUControlVolumeBounds>.stride,
+            index: 3
+        )
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 4
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: momentumBudgetBeforePipeline,
+            count: configuration.grid.cellCount,
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+        return try encodeMomentumBudgetReduction(commandBuffer: commandBuffer)
+    }
+
+    private func encodeMomentumBudgetAfterStep(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms
+    ) throws -> MTLBuffer {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create post-step control-volume momentum encoder."
+            )
+        }
+        var bounds = momentumBudgetBounds
+        encoder.setBuffer(nextPopulations, offset: 0, index: 0)
+        encoder.setBuffer(currentSolid, offset: 0, index: 1)
+        encoder.setBuffer(nextSolid, offset: 0, index: 2)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 3)
+        encoder.setBuffer(velocity, offset: 0, index: 4)
+        encoder.setBuffer(momentumBudgetReductionA, offset: 0, index: 5)
+        encoder.setBytes(
+            &bounds,
+            length: MemoryLayout<GPUControlVolumeBounds>.stride,
+            index: 6
+        )
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 7
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: momentumBudgetAfterPipeline,
+            count: configuration.grid.cellCount,
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+        return try encodeMomentumBudgetReduction(commandBuffer: commandBuffer)
+    }
+
+    private func encodeMomentumBudgetReduction(
+        commandBuffer: MTLCommandBuffer
+    ) throws -> MTLBuffer {
+        var input = momentumBudgetReductionA
+        var output = momentumBudgetReductionB
+        var count = partialLoadCount
+        while count > 1 {
+            let outputCount = (count + 255) / 256
+            var count32 = UInt32(count)
+            guard let reductionEncoder = commandBuffer
+                .makeComputeCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to create control-volume reduction encoder."
+                )
+            }
+            reductionEncoder.setBuffer(input, offset: 0, index: 0)
+            reductionEncoder.setBuffer(output, offset: 0, index: 1)
+            reductionEncoder.setBytes(
+                &count32,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: reductionEncoder,
+                pipeline: momentumBudgetReductionPipeline,
+                count: outputCount
+            )
+            reductionEncoder.endEncoding()
+            count = outputCount
+            input = output
+            output = output === momentumBudgetReductionA
+                ? momentumBudgetReductionB
+                : momentumBudgetReductionA
+        }
+        return input
+    }
+
+    private func encodeMomentumBudgetStore(
+        commandBuffer: MTLCommandBuffer,
+        budget: MTLBuffer,
+        sampleIndex: Int,
+        beforeStep: Bool
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create control-volume history encoder."
+            )
+        }
+        var index32 = UInt32(sampleIndex)
+        encoder.setBuffer(budget, offset: 0, index: 0)
+        encoder.setBuffer(momentumBudgetHistory, offset: 0, index: 1)
+        encoder.setBytes(
+            &index32,
+            length: MemoryLayout<UInt32>.stride,
+            index: 2
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: beforeStep
+                ? momentumBudgetStoreBeforePipeline
+                : momentumBudgetStoreAfterPipeline,
             count: 1
         )
         encoder.endEncoding()

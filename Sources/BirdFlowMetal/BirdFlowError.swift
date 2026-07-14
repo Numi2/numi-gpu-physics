@@ -11,6 +11,7 @@ public enum BirdFlowError: Error, CustomStringConvertible {
     case bufferExceedsDeviceLimit(bytes: Int, limit: Int)
     case workingSetExceedsRecommendation(bytes: Int, recommended: Int)
     case invalidAdvanceRequest(steps: Int, batchSize: Int)
+    case invalidObservationBufferCount(Int)
     case commandBufferFailed(String)
     case simulationStateInvalidated(String)
 
@@ -36,6 +37,8 @@ public enum BirdFlowError: Error, CustomStringConvertible {
             return "The requested grid needs approximately \(bytes) bytes of Metal buffers, above this device's recommended \(recommended)-byte working set. Reduce the resolution scale or use a larger-memory device."
         case .invalidAdvanceRequest(let steps, let batchSize):
             return "Advance requires steps >= 0 and batchSize > 0; received steps=\(steps), batchSize=\(batchSize)."
+        case .invalidObservationBufferCount(let count):
+            return "Observation buffer count must be between 1 and 4; received \(count)."
         case .commandBufferFailed(let message):
             return "A Metal command buffer failed: \(message)"
         case .simulationStateInvalidated(let message):
