@@ -107,6 +107,8 @@ private struct Arguments {
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
       birdflow validate flapping-wing [--chord-cells N] [--json]
+      birdflow validate flapping-wing --decompose-loads [--json]
+      birdflow validate flapping-wing --compare-link-forces [--json]
     """
 }
 
@@ -417,6 +419,8 @@ private struct FlappingWingArguments {
     var singleChordCells: Int?
     var cycles = 5
     var auditInputs = false
+    var decomposeLoads = false
+    var compareLinkForces = false
     var json = false
     var archivePath: String?
 
@@ -457,6 +461,10 @@ private struct FlappingWingArguments {
                 cycles = value
             case "--audit-inputs":
                 auditInputs = true
+            case "--decompose-loads":
+                decomposeLoads = true
+            case "--compare-link-forces":
+                compareLinkForces = true
             case "--json":
                 json = true
             case "--archive":
@@ -486,6 +494,8 @@ private struct FlappingWingArguments {
       --single-chord-cells N   Run one diagnostic grid without a verdict
       --cycles N               Diagnostic cycles (default: 5)
       --audit-inputs           Compare analytic inputs with Metal voxelization
+      --decompose-loads        Split link and cover/uncover loads by phase
+      --compare-link-forces    Compare GI and conventional link estimators
       --json                   Emit machine-readable JSON
       --archive DIRECTORY      Save loads and phase Q/vorticity fields
       --help                   Show this help
@@ -808,7 +818,15 @@ private func printFlappingWingInputAudit(
                 + String(result.normalizedVoxelVolume) + " "
                 + "published_volume_ratio="
                 + String(result.normalizedPublishedThicknessVoxelVolume)
-                + " mismatch=\(result.mismatchedCellFraction)"
+                + " mismatch=\(result.mismatchedCellFraction) "
+                + "links=\(result.boundaryLinkCount) "
+                + "audited_links=\(result.auditedBoundaryLinkCount) "
+                + "max_link_error="
+                + String(result.maximumLinkFractionError) + " "
+                + "max_wall_position_error_cells="
+                + String(
+                    result.maximumInterpolatedWallPositionErrorCells
+                )
         )
     }
     print("metal_geometry_passed: \(audit.metalGeometryPassed)")
@@ -819,6 +837,101 @@ private func runFlappingWingValidation(_ values: [String]) throws {
     let arguments = try FlappingWingArguments(values)
     let archive = arguments.archivePath.map {
         URL(fileURLWithPath: $0, isDirectory: true)
+    }
+    if arguments.compareLinkForces {
+        guard !arguments.auditInputs,
+              !arguments.decomposeLoads,
+              archive == nil else {
+            throw CLIError.invalidArgument(
+                "--compare-link-forces cannot be combined with --audit-inputs, --decompose-loads, or --archive"
+            )
+        }
+        let report = try MetalFlappingWingValidator
+            .compareLinkForceEstimators(
+                chordCells: arguments.singleChordCells ?? 8,
+                cycles: arguments.cycles
+            )
+        if arguments.json {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            print(String(decoding: try encoder.encode(report), as: UTF8.self))
+        } else {
+            print("diagnostic_only: true")
+            print("device: \(report.deviceName)")
+            print(
+                "galilean_invariant_total_CL="
+                    + String(
+                        report.galileanInvariantTotal.meanLiftCoefficient
+                    )
+                    + " conventional_total_CL="
+                    + String(
+                        report.conventionalMovingBodyTotal
+                            .meanLiftCoefficient
+                    )
+            )
+            print(
+                "galilean_invariant_total_CD="
+                    + String(
+                        report.galileanInvariantTotal.meanDragCoefficient
+                    )
+                    + " conventional_total_CD="
+                    + String(
+                        report.conventionalMovingBodyTotal
+                            .meanDragCoefficient
+                    )
+            )
+            print(
+                "conventional_to_galilean_lift_ratio="
+                    + String(
+                        report.conventionalToGalileanMeanLiftRatio
+                    )
+                    + " conventional_to_galilean_drag_ratio="
+                    + String(
+                        report.conventionalToGalileanMeanDragRatio
+                    )
+            )
+            print("closure_passed: \(report.closurePassed)")
+        }
+        return
+    }
+    if arguments.decomposeLoads {
+        guard !arguments.auditInputs, archive == nil else {
+            throw CLIError.invalidArgument(
+                "--decompose-loads cannot be combined with --audit-inputs or --archive"
+            )
+        }
+        let report = try MetalFlappingWingValidator.diagnoseLoadDecomposition(
+            chordCells: arguments.singleChordCells ?? 8,
+            cycles: arguments.cycles
+        )
+        if arguments.json {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            print(String(decoding: try encoder.encode(report), as: UTF8.self))
+        } else {
+            print("diagnostic_only: true")
+            print("device: \(report.deviceName)")
+            print(
+                "total_CL=\(report.total.meanLiftCoefficient) "
+                    + "link_CL=\(report.linkExchange.meanLiftCoefficient) "
+                    + "topology_CL="
+                    + String(report.coverUncoverImpulse.meanLiftCoefficient)
+            )
+            print(
+                "total_CD=\(report.total.meanDragCoefficient) "
+                    + "link_CD=\(report.linkExchange.meanDragCoefficient) "
+                    + "topology_CD="
+                    + String(report.coverUncoverImpulse.meanDragCoefficient)
+            )
+            print(
+                "topology_rms_lift_fraction="
+                    + String(report.topologyRMSLiftFraction) + " "
+                    + "topology_rms_drag_fraction="
+                    + String(report.topologyRMSDragFraction)
+            )
+            print("closure_passed: \(report.closurePassed)")
+        }
+        return
     }
     if arguments.auditInputs {
         if let chord = arguments.singleChordCells {

@@ -35,6 +35,7 @@ REQUIRED_KERNELS = {
     "stepFluidTRT",
     "reduceForceTorque",
     "storeForceTorqueSample",
+    "gatherFloatValues",
     "integrateBirdBody",
 }
 
@@ -233,7 +234,7 @@ def main() -> int:
         "private func encodePlanarFluidStep(": 10,
         "private func encodeCanonicalFluidStep(": 10,
         "private func encodePrescribedPreparation(": 3,
-        "private func encodePrescribedGeometry(": 6,
+        "private func encodePrescribedGeometry(": 8,
         "private func encodePrescribedFluid(": 10,
         "private func encodePrescribedReduction(": 3,
         "private func encodePrescribedLoadStore(": 3,
@@ -271,7 +272,7 @@ def main() -> int:
     expected_buffers = {
         "buildBirdGeometry": 6,
         "prepareBirdGeometry": 4,
-        "buildPrescribedFlappingWing": 6,
+        "buildPrescribedFlappingWing": 8,
         "preparePrescribedFlappingWing": 3,
         "initializePopulations": 6,
         "initializeShearWave": 4,
@@ -282,6 +283,7 @@ def main() -> int:
         "stepFluidTRT": 10,
         "reduceForceTorque": 3,
         "storeForceTorqueSample": 3,
+        "gatherFloatValues": 4,
         "integrateBirdBody": 4,
     }
     for kernel, count in expected_buffers.items():
@@ -314,8 +316,8 @@ def main() -> int:
         ),
         "buildPrescribedFlappingWing": (
             "private func encodePrescribedGeometry(",
-            ["target", "wallVelocity", "currentSolid", "parameters", "prepared", "uniforms"],
-            ["solid", "wallVelocity", "solidPrevious", "wing", "prepared", "uniforms"],
+            ["target", "wallVelocity", "currentSolid", "parameters", "prepared", "uniforms", "currentPopulations", "velocity"],
+            ["solid", "wallVelocity", "solidPrevious", "wing", "prepared", "uniforms", "boundaryLinks", "coveredFluidMomentum"],
         ),
         "storeForceTorqueSample": (
             "private func encodePrescribedLoadStore(",

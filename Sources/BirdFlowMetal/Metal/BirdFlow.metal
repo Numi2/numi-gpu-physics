@@ -594,6 +594,103 @@ kernel void preparePrescribedFlappingWing(
     );
 }
 
+struct PrescribedWingBoundaryCoordinates {
+    float radial;
+    float normal;
+    float chord;
+    float radialRootViolation;
+    float radialTipViolation;
+    float normalViolation;
+    float leadingViolation;
+    float trailingViolation;
+};
+
+inline PrescribedWingBoundaryCoordinates prescribedWingBoundaryCoordinates(
+    float3 world,
+    constant GPUFlappingWingParameters& wing,
+    device const GPUPreparedFlappingWing& prepared,
+    constant GPUUniforms& uniforms
+) {
+    float3 relative = world - prepared.root.xyz;
+    float radial = dot(relative, prepared.span.xyz);
+    float normal = dot(relative, prepared.normal.xyz);
+    float chord = dot(relative, prepared.chord.xyz);
+    float radius = wing.geometry.x;
+    float chordMean = wing.rootAndChord.w;
+    float halfThickness = 0.5f * max(
+        wing.geometry.y,
+        uniforms.originAndCellSize.w
+    );
+    float radialFraction = clamp(radial / radius, 0.0f, 1.0f);
+    float betaBase = max(
+        radialFraction * (1.0f - radialFraction),
+        0.0f
+    );
+    float localChord = chordMean
+        * wing.geometry.w
+        * pow(betaBase, wing.geometry.z);
+    float leadingEdge = -0.25f * chordMean;
+
+    PrescribedWingBoundaryCoordinates result;
+    result.radial = radial;
+    result.normal = normal;
+    result.chord = chord;
+    result.radialRootViolation = -radial;
+    result.radialTipViolation = radial - radius;
+    result.normalViolation = abs(normal) - halfThickness;
+    result.leadingViolation = leadingEdge - chord;
+    result.trailingViolation = chord - (leadingEdge + localChord);
+    return result;
+}
+
+inline float prescribedWingMaximumViolation(
+    PrescribedWingBoundaryCoordinates value
+) {
+    return max(
+        max(value.radialRootViolation, value.radialTipViolation),
+        max(
+            value.normalViolation,
+            max(value.leadingViolation, value.trailingViolation)
+        )
+    );
+}
+
+/// Bracketed intersection with the complete analytic beta-planform surface.
+/// The returned q is measured from fluid to solid, matching the published
+/// interpolated bounce-back convention.
+inline float prescribedWingLinkFraction(
+    float3 fluidWorld,
+    float3 solidWorld,
+    constant GPUFlappingWingParameters& wing,
+    device const GPUPreparedFlappingWing& prepared,
+    constant GPUUniforms& uniforms
+) {
+    float lower = 0.0f;
+    float upper = 1.0f;
+    // Ten iterations bound the wall location to < 0.001 cell. This complete
+    // implicit solve also handles root/tip corners without assuming that the
+    // same face is closest at both lattice nodes.
+    for (uint iteration = 0u; iteration < 10u; ++iteration) {
+        float midpoint = 0.5f * (lower + upper);
+        float3 sample = mix(fluidWorld, solidWorld, midpoint);
+        float violation = prescribedWingMaximumViolation(
+            prescribedWingBoundaryCoordinates(
+                sample,
+                wing,
+                prepared,
+                uniforms
+            )
+        );
+        if (violation > 0.0f) {
+            lower = midpoint;
+        }
+        else {
+            upper = midpoint;
+        }
+    }
+    return clamp(0.5f * (lower + upper), 1.0e-4f, 1.0f);
+}
+
 /// Voxelizes the analytic beta-planform wing. The bounding-sphere and slab
 /// checks reject almost every cell before the only pow() in this kernel.
 kernel void buildPrescribedFlappingWing(
@@ -603,6 +700,8 @@ kernel void buildPrescribedFlappingWing(
     constant GPUFlappingWingParameters& wing [[buffer(3)]],
     device const GPUPreparedFlappingWing& prepared [[buffer(4)]],
     constant GPUUniforms& uniforms [[buffer(5)]],
+    device float* boundaryLinks [[buffer(6)]],
+    device float4* coveredFluidMomentum [[buffer(7)]],
     uint3 cell [[thread_position_in_grid]]
 ) {
     uint3 size = uniforms.grid.xyz;
@@ -620,7 +719,10 @@ kernel void buildPrescribedFlappingWing(
         + 2.0f * uniforms.originAndCellSize.w;
     if (!wasSolid && dot(relative, relative) > radius * radius) {
         solid[gid] = uchar(0);
-        wallVelocity[gid] = float4(0);
+        // Far-field cells cannot participate in a boundary link because the
+        // sphere includes a two-cell guard. Keep a positive implicit value so
+        // accidental use still classifies the cell as fluid.
+        wallVelocity[gid] = float4(0, 0, 0, radius);
         return;
     }
 
@@ -660,7 +762,55 @@ kernel void buildPrescribedFlappingWing(
     wallVelocity[gid] = float4(cross(
         prepared.angularVelocity.xyz,
         relative
-    ), 0);
+    ), isWing ? -1.0f : 1.0f);
+
+    if (isWing) {
+        if (uniforms.flags.z != 0u && !wasSolid) {
+            float previousDensity = 0.0f;
+            float3 previousMomentum = float3(0);
+            for (uint q = 0u; q < Q; ++q) {
+                float previous = boundaryLinks[
+                    q * uniforms.grid.w + gid
+                ];
+                previousDensity += previous;
+                previousMomentum += previous * float3(C[q]);
+            }
+            // The link table below reuses these distribution slots. Preserve
+            // the just-covered fluid state in the existing macroscopic field
+            // allocation so momentum exchange remains exact without another
+            // full-grid buffer.
+            coveredFluidMomentum[gid] = float4(
+                previousMomentum,
+                previousDensity
+            );
+        }
+        for (uint q = 1u; q < Q; ++q) {
+            int3 neighborCell = int3(cell) + C[q];
+            if (any(neighborCell < int3(0))
+                || any(neighborCell >= int3(size))) {
+                continue;
+            }
+            float3 neighborWorld = world
+                + float3(C[q]) * uniforms.originAndCellSize.w;
+            PrescribedWingBoundaryCoordinates neighbor =
+                prescribedWingBoundaryCoordinates(
+                    neighborWorld,
+                    wing,
+                    prepared,
+                    uniforms
+                );
+            if (prescribedWingMaximumViolation(neighbor) > 0.0f) {
+                boundaryLinks[q * uniforms.grid.w + gid] =
+                    prescribedWingLinkFraction(
+                        neighborWorld,
+                        world,
+                        wing,
+                        prepared,
+                        uniforms
+                    );
+            }
+        }
+    }
 }
 
 kernel void initializePopulations(
@@ -949,6 +1099,17 @@ kernel void stepFluidTRT(
         bool wasSolid = solidPrevious[gid] != 0;
         bool isSolid = solidCurrent[gid] != 0;
         bool captureFields = uniforms.flags.y != 0u;
+        bool prescribedComponentSelection =
+            uniforms.caseParameters.w < -0.5f;
+        uint prescribedLoadComponent = prescribedComponentSelection
+            ? uint(max(uniforms.caseParameters.x, 0.0f) + 0.5f)
+            : 0u;
+        bool useConventionalLinkForce = prescribedComponentSelection
+            && uniforms.caseParameters.y > 0.5f;
+        bool includeLinkExchange = !prescribedComponentSelection
+            || prescribedLoadComponent != 2u;
+        bool includeTopologyImpulse = !prescribedComponentSelection
+            || prescribedLoadComponent != 1u;
 
         if (isSolid) {
             float3 wall = wallVelocity[gid].xyz;
@@ -966,15 +1127,22 @@ kernel void stepFluidTRT(
 
             // A newly covered node transfers the difference between its
             // previous fluid momentum and the moving-solid equilibrium.
-            if (accumulateLoads && !wasSolid) {
+            if (accumulateLoads && !wasSolid && includeTopologyImpulse) {
                 float previousDensity = 0.0f;
                 float3 previousMomentum = float3(0);
-                for (uint q = 0; q < Q; ++q) {
-                    float previous = populationsIn[
-                        q * uniforms.grid.w + gid
-                    ];
-                    previousDensity += previous;
-                    previousMomentum += previous * float3(C[q]);
+                if (uniforms.caseParameters.w < -0.5f) {
+                    float4 preserved = velocity[gid];
+                    previousMomentum = preserved.xyz;
+                    previousDensity = preserved.w;
+                }
+                else {
+                    for (uint q = 0; q < Q; ++q) {
+                        float previous = populationsIn[
+                            q * uniforms.grid.w + gid
+                        ];
+                        previousDensity += previous;
+                        previousMomentum += previous * float3(C[q]);
+                    }
                 }
                 float3 conversionImpulse = previousMomentum
                     - previousDensity * wall;
@@ -1052,40 +1220,115 @@ kernel void stepFluidTRT(
                             float reflected = populationsIn[
                                 OPP[q] * uniforms.grid.w + gid
                             ];
+                            float3 direction = float3(C[q]);
+                            float linkFraction = 0.5f;
+                            float3 wall = wallVelocity[source].xyz;
+                            uint farther = 0u;
+                            bool interpolatedBoundary =
+                                uniforms.caseParameters.w < -0.5f;
+                            if (interpolatedBoundary) {
+                                linkFraction = clamp(
+                                    populationsIn[
+                                        q * uniforms.grid.w + source
+                                    ],
+                                    1.0e-4f,
+                                    1.0f
+                                );
+                                // Rigid velocity is affine in position, so
+                                // interpolation gives the velocity at the
+                                // actual link-wall intersection exactly.
+                                wall = mix(
+                                    wallVelocity[gid].xyz,
+                                    wallVelocity[source].xyz,
+                                    linkFraction
+                                );
+                                if (linkFraction <= 0.5f) {
+                                    int3 fartherCell = int3(cell) + C[q];
+                                    if (inside(fartherCell, size)) {
+                                        farther = flatten(
+                                            uint3(fartherCell),
+                                            size
+                                        );
+                                    }
+                                    if (!inside(fartherCell, size)
+                                        || solidCurrent[farther] != 0) {
+                                        // The published near-wall branch
+                                        // requires the next fluid node. A
+                                        // pathological concave/corner link
+                                        // falls back completely to the locked
+                                        // halfway rule instead of mixing two
+                                        // inconsistent boundary locations.
+                                        interpolatedBoundary = false;
+                                        linkFraction = 0.5f;
+                                        wall = wallVelocity[source].xyz;
+                                    }
+                                }
+                            }
                             float wallCorrection = 2.0f
                                 * W[q]
                                 * uniforms.farFieldLattice.w
                                 * dot(
-                                    float3(C[q]),
-                                    wallVelocity[source].xyz
+                                    direction,
+                                    wall
                                 )
                                 / CS2;
                             value = reflected + wallCorrection;
+                            if (interpolatedBoundary) {
+                                if (linkFraction <= 0.5f) {
+                                    float fartherOutgoing = populationsIn[
+                                        OPP[q] * uniforms.grid.w + farther
+                                    ];
+                                    value = 2.0f * linkFraction * reflected
+                                        + (1.0f - 2.0f * linkFraction)
+                                            * fartherOutgoing
+                                        + wallCorrection;
+                                }
+                                else {
+                                    float previousIncoming = populationsIn[
+                                        q * uniforms.grid.w + gid
+                                    ];
+                                    value = (reflected + wallCorrection)
+                                            / (2.0f * linkFraction)
+                                        + (2.0f * linkFraction - 1.0f)
+                                            * previousIncoming
+                                            / (2.0f * linkFraction);
+                                }
+                            }
 
                             // C[q] points from the solid source to this cell.
                             uint selectedPart = uint(
                                 uniforms.caseParameters.z + 0.5f
                             );
                             if (accumulateLoads
+                                && includeLinkExchange
                                 && (selectedPart == 0u
                                 || selectedPart == uint(sourcePart))) {
-                                // Evaluate momentum relative to the local wall
-                                // frame. This Galilean-invariant form reduces
-                                // moving-interface force bias while collapsing
-                                // exactly to conventional momentum exchange for
-                                // a stationary boundary.
-                                float3 direction = float3(C[q]);
-                                float3 wall = wallVelocity[source].xyz;
-                                float3 linkForceLattice = -(
-                                    value * (direction - wall)
-                                    - reflected * (-direction - wall)
-                                );
+                                float3 linkForceLattice;
+                                if (useConventionalLinkForce) {
+                                    // Wen et al. Eq. (4), evaluated with the
+                                    // incoming population already reconstructed
+                                    // at the interpolated wall.
+                                    linkForceLattice = -(
+                                        value + reflected
+                                    ) * direction;
+                                }
+                                else {
+                                    // Wen et al. Eq. (5): evaluate momentum in
+                                    // the local wall frame. It collapses exactly
+                                    // to conventional exchange for a stationary
+                                    // boundary.
+                                    linkForceLattice = -(
+                                        value * (direction - wall)
+                                        - reflected
+                                            * (-direction - wall)
+                                    );
+                                }
                                 forceOnBodyLattice += linkForceLattice;
                                 float3 linkForcePhysical = linkForceLattice
                                     * uniforms.timeStepAndScales.w;
                                 float3 boundaryPoint = world
-                                    - 0.5f
-                                    * float3(C[q])
+                                    - linkFraction
+                                    * direction
                                     * uniforms.originAndCellSize.w;
                                 cellTorquePhysical += cross(
                                     boundaryPoint - body.position.xyz,
@@ -1225,6 +1468,21 @@ kernel void storeForceTorqueSample(
 ) {
     if (gid == 0u) {
         history[sampleIndex] = totalLoad[0];
+    }
+}
+
+/// Audit-only sparse readback. Production keeps the link fractions in dormant
+/// solid-node distribution slots; this gathers just the boundary entries that
+/// the CPU geometry audit requests instead of copying the full Q*N buffer.
+kernel void gatherFloatValues(
+    device const float* values [[buffer(0)]],
+    device const uint* indices [[buffer(1)]],
+    device float* gathered [[buffer(2)]],
+    constant uint& count [[buffer(3)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid < count) {
+        gathered[gid] = values[indices[gid]];
     }
 }
 

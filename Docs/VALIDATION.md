@@ -16,7 +16,7 @@ The repository currently provides nine automated harnesses:
 - a production-Metal prescribed flapping-wing phase-load, periodicity, vortex-diagnostic, refinement, and batching gate; and
 - offline compilation and linking of every Metal entry point.
 
-`Scripts/validate.sh` runs the eight currently accepted build/canonical gates. The prescribed flapping command is intentionally separate because its locked literature gates currently fail. Sections 2, 4, 5, and 6 all execute the production fluid and momentum-exchange operators; section 3 still requires a forced-channel GPU mode. The fixed-wing gate isolates axis-aligned load accuracy and does not validate the procedural bird's geometry or kinematics. The failing flapping gate is the current evidence boundary for rotating voxel surfaces.
+`Scripts/validate.sh` runs the eight currently accepted build/canonical gates. The prescribed flapping command is intentionally separate because its locked literature load gates have not passed. Sections 2, 4, 5, and 6 all execute the production fluid and momentum-exchange operators; section 3 still requires a forced-channel GPU mode. The fixed-wing gate isolates axis-aligned load accuracy and does not validate the procedural bird's geometry or kinematics. The flapping gate is the current evidence boundary for rotating sub-cell moving surfaces.
 
 ## 1. Algebra and layout
 
@@ -188,7 +188,7 @@ swift run birdflow validate flapping-wing \
   --json
 ```
 
-Run this seconds-scale preflight before the full fluid ladder. It independently reconstructs the normalized beta area, radial centroid and radius of gyration from gamma-function moments, integrates the stroke and pitch rates, and reconstructs the coefficient denominator. It also builds the analytic voxel predicate on CPU and compares occupancy and rigid wall velocity cell-by-cell with the production Metal geometry kernel at phases `0`, `0.125`, `0.25`, and `0.375`.
+Run this preflight before the full fluid ladder. It independently reconstructs the normalized beta area, radial centroid and radius of gyration from gamma-function moments, integrates the stroke and pitch rates, and reconstructs the coefficient denominator. It also builds the analytic voxel predicate on CPU, compares occupancy and rigid wall velocity cell-by-cell with the production Metal geometry kernel, and compares a deterministic sample of up to 1,024 GPU link fractions per phase with independent CPU surface intersections at phases `0`, `0.125`, `0.25`, and `0.375`.
 
 ```bash
 swift run -c release birdflow validate flapping-wing \
@@ -201,10 +201,10 @@ The case uses `Re=100`, `AR=3`, radial centroid `r1/R=0.5`, zero root offset, an
 
 The compact uniform-grid ladder uses 8, 12, and 16 cells per chord in `10c x 10c x 8c` domains. It executes five cycles, records every reduced load of cycles four and five into a small GPU history buffer, and reports 100 phase bins without per-step CPU synchronization. At phases `4.55`, `4.65`, `4.75`, `4.85`, and `4.95`, it archives density, velocity, central-difference Q criterion, and vorticity fields. These correspond to the paper's LEV/TEV/tip-vortex ring formation, attached conical LEV, tube-like LEV/tip-vortex development, and late-half-stroke growth sequence. The Q archive makes that comparison possible, but the paper supplies qualitative vortex images rather than numeric Q thresholds, so automated acceptance checks capture completeness and finite positive-Q structure rather than claiming image-level topology agreement.
 
-Acceptance was locked before calibration:
+Scientific and operator acceptance gates are:
 
 - analytic normalized area is one and the reconstructed `r1/R`, `r2/R`, stroke travel, pitch travel, and kinematic derivatives agree within their encoded `1e-8...1e-12` tolerances;
-- CPU/Metal voxel mismatch is at most `1%`, solid-cell wall-velocity error is at most `1e-5`, occupied volume is within `25%` of both the published 5%-chord volume and the separately reported one-cell-regularized volume, and voxel radial moments are within `0.04` of the analytic values;
+- CPU/Metal voxel mismatch is at most `1%`, solid-cell wall-velocity error is at most `1e-5`, voxel radial moments are within `0.04` of the analytic values, and audited link-wall position is within `0.10` cell and strictly closer than halfway placement;
 - fifth-cycle mean lift and drag are each within `30%` of the tabulated source values;
 - mean lift and drag each change by at most `5%` between the two finest grids;
 - normalized half-stroke symmetry and fourth-to-fifth-cycle curve differences are each at most `15%`;
@@ -221,9 +221,37 @@ swift run birdflow validate flapping-wing \
   --json
 ```
 
-The independent input fixture passes every analytic identity. CPU and Metal masks match exactly at every audited phase, and maximum wall-velocity disagreement is below `8.3e-9`. The binary boundary itself fails its continuous-geometry gate: at phase `0.25`, occupied volume relative to the one-cell-regularized wing is `1.40625`, `1.39815`, and `0.71354` at 8, 12, and 16 cells per chord. Relative to the paper's actual 5%-chord thickness, the same values are `3.51563`, `2.33025`, and `0.89193`. This exposes both coarse-grid thickness regularization and non-monotonic parity/orientation alias; the surface is not geometrically converged on the compact ladder.
+The independent input fixture now passes every analytic and link-location gate. CPU and Metal masks match exactly at every audited phase, maximum wall-velocity disagreement is below `8.3e-9`, and the largest sampled link-wall error across the 8/12/16 ladder is below `0.00071` cell; fixed halfway placement reaches approximately `0.707` cell. At phase `0.25`, raw occupied volume relative to the one-cell-regularized wing remains `1.40625`, `1.39815`, and `0.71354`. Relative to the paper's actual 5%-chord thickness, the values remain `3.51563`, `2.33025`, and `0.89193`. These counts expose center-occupancy parity and thickness regularization, but the hydrodynamic boundary is now placed at the analytic sub-cell intersection instead of at each binary link midpoint.
 
-The completed Apple M4 strict-math fluid calibration produced `(CL, CD)` means of `(7.44525, 9.71093)`, `(8.58575, 9.58558)`, and `(8.60144, 9.67489)`. The finest result is `489.14%` high in lift and `372.87%` high in drag. Its lift peaks occur at phases `0.245` and `0.745`, each `0.005T` before the corresponding locked acceptance window. The 12-to-16-cell load changes are only `0.1823%` and `0.9231%`, finest half-stroke symmetry error is `0.2553%`, fourth-to-fifth-cycle difference is `0.1963%`, every vortex archive is finite, and batch differences are exactly zero. Those properties establish repeatability, but the new geometry fixture shows that the small force changes are an apparent plateau of the binary boundary rather than evidence of continuum grid convergence. The gates are not weakened to fit it. Until a sub-grid curved/moving boundary treatment passes the geometry and fluid ladders, this benchmark is an implemented failing risk detector, not quantitative flapping-wing validation.
+The completed link-distance Apple M4 release ladder produced `(CL, CD)` means of `(7.45076, 9.58556)`, `(8.58688, 9.50008)`, and `(8.60733, 9.61182)` at 8, 12, and 16 cells per chord. The finest errors remain `489.54%` in lift and `369.79%` in drag. Relative to the previous halfway run, lift changed by only `+0.074%`, `+0.013%`, and `+0.069%`; drag changed by `-1.291%`, `-0.892%`, and `-0.652%`. The new wall location is therefore not the dominant source of the absolute load bias.
+
+The 12-to-16-cell changes are `0.238%` in lift and `1.163%` in drag, finest half-stroke symmetry is `0.237%`, fourth-to-fifth-cycle difference is `0.210%`, all five vortex milestones are present, and batch density, velocity, and force differences are zero. Those repeatability/refinement gates pass. The finest lift peaks remain at phases `0.245` and `0.745`, `0.005T` before the locked windows, and the absolute coefficient gates fail. The `774 MB` archive completed in `634.61 s` with a `1.050 GB` peak memory footprint. This result narrows the next investigation to moving-boundary load accounting and phase-resolved force components rather than further tuning link placement.
+
+Use the cheap component diagnostic before another ladder:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --decompose-loads \
+  --single-chord-cells 8 \
+  --cycles 1 \
+  --json
+```
+
+It runs identical total, link-only, and cover/uncover-only fixed-kinematics histories. Because loads do not feed back into the prescribed flow, selection cannot alter the fluid solution. The Apple M4 diagnostic completed in `9.84 s` and closed total against the two independently selected components within `9.69e-6` lift coefficient and `1.96e-6` drag coefficient. Cover/uncover impulse supplied only `0.47%` of mean lift, `2.90%` of mean drag, `1.29%` of RMS lift, and `3.01%` of RMS drag. Link exchange supplied essentially all of the bias. Cell-conversion double counting is therefore not the dominant failure; the next targeted check is link-force evaluation and coefficient normalization.
+
+Compare the two source-backed link-force equations before another ladder:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --compare-link-forces \
+  --single-chord-cells 8 \
+  --cycles 1 \
+  --json
+```
+
+Interpolation reconstructs the boundary populations but does not create an independent third force equation. This diagnostic therefore compares Wen et al.'s Galilean-invariant equation with conventional momentum exchange evaluated on those same interpolated populations. It then combines conventional link exchange with the independently selected cover/uncover impulse to form the moving-body conventional total.
+
+The Apple M4 run completed in `12.23 s`. Galilean-invariant total `(CL, CD)` was `(7.52805, 9.48616)`; conventional moving-body total was `(7.50904, 9.56192)`. Conventional/Galilean mean ratios were `0.99747` in lift and `1.00799` in drag. Maximum phase-resolved link differences were `0.17720` lift coefficient and `0.12919` drag coefficient, while the independently run Galilean-invariant total still closed against link plus topology within `9.69e-6` lift coefficient, `1.96e-6` drag coefficient, and `1.15e-6` force units. Relative mean errors versus the published target remained `415.62%/363.64%` for Galilean-invariant exchange and `414.32%/367.35%` for conventional exchange. The wall-velocity term is therefore not the dominant cause; investigate coefficient/reference scaling and momentum-exchange factors shared by both equations next.
 
 Acceptance:
 

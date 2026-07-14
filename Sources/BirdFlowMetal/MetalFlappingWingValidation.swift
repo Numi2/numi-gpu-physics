@@ -32,6 +32,77 @@ public struct MetalFlappingWingPhaseSample: Codable, Sendable {
     public let forceZ: Double
 }
 
+public struct MetalFlappingWingLoadComponentSummary: Codable, Sendable {
+    public let meanLiftCoefficient: Double
+    public let meanDragCoefficient: Double
+    public let rmsLiftCoefficient: Double
+    public let rmsDragCoefficient: Double
+    public let maximumAbsoluteLiftCoefficient: Double
+    public let maximumAbsoluteDragCoefficient: Double
+    public let maximumAbsoluteLiftPhase: Double
+    public let maximumAbsoluteDragPhase: Double
+    public let phaseSamples: [MetalFlappingWingPhaseSample]
+}
+
+public struct MetalFlappingWingLoadDecompositionReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let chordCells: Int
+    public let cycles: Int
+    public let runtimeSeconds: Double
+    public let total: MetalFlappingWingLoadComponentSummary
+    public let linkExchange: MetalFlappingWingLoadComponentSummary
+    public let coverUncoverImpulse: MetalFlappingWingLoadComponentSummary
+    public let topologyMeanLiftFraction: Double
+    public let topologyMeanDragFraction: Double
+    public let topologyRMSLiftFraction: Double
+    public let topologyRMSDragFraction: Double
+    public let maximumLiftCoefficientClosureError: Double
+    public let maximumDragCoefficientClosureError: Double
+    public let maximumForceClosureError: Double
+    public let maximumAllowedCoefficientClosureError: Double
+    public let closurePassed: Bool
+}
+
+public struct MetalFlappingWingLinkForceComparisonReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let chordCells: Int
+    public let cycles: Int
+    public let runtimeSeconds: Double
+    public let sourceDOI: String
+    public let galileanInvariantEstimatorDOI: String
+    public let galileanInvariantLinkExchange: MetalFlappingWingLoadComponentSummary
+    public let interpolatedPopulationConventionalLinkExchange: MetalFlappingWingLoadComponentSummary
+    public let coverUncoverImpulse: MetalFlappingWingLoadComponentSummary
+    public let galileanInvariantTotal: MetalFlappingWingLoadComponentSummary
+    public let conventionalMovingBodyTotal: MetalFlappingWingLoadComponentSummary
+    public let conventionalToGalileanMeanLiftRatio: Double
+    public let conventionalToGalileanMeanDragRatio: Double
+    public let galileanInvariantRelativeMeanLiftError: Double
+    public let galileanInvariantRelativeMeanDragError: Double
+    public let conventionalRelativeMeanLiftError: Double
+    public let conventionalRelativeMeanDragError: Double
+    public let maximumLinkLiftCoefficientDifference: Double
+    public let maximumLinkDragCoefficientDifference: Double
+    public let maximumGalileanInvariantLiftClosureError: Double
+    public let maximumGalileanInvariantDragClosureError: Double
+    public let maximumGalileanInvariantForceClosureError: Double
+    public let maximumAllowedCoefficientClosureError: Double
+    public let closurePassed: Bool
+}
+
+private enum PrescribedWingLoadComponent: Float {
+    case total = 0
+    case linkExchange = 1
+    case coverUncoverImpulse = 2
+}
+
+private enum PrescribedWingLinkForceEstimator: Float {
+    case galileanInvariant = 0
+    case conventional = 1
+}
+
 public struct MetalFlappingWingVortexMetric: Codable, Sendable {
     public let phase: Double
     public let maximumPositiveQ: Double
@@ -108,6 +179,12 @@ public struct MetalFlappingWingGeometryAudit: Codable, Sendable {
     public let normalizedRadialCentroid: Double
     public let normalizedRadiusOfGyration: Double
     public let maximumSolidWallVelocityError: Double
+    public let boundaryLinkCount: Int
+    public let auditedBoundaryLinkCount: Int
+    public let maximumLinkFractionError: Double
+    public let meanLinkFractionError: Double
+    public let maximumHalfwayWallPositionErrorCells: Double
+    public let maximumInterpolatedWallPositionErrorCells: Double
 }
 
 public struct MetalFlappingWingInputAudit: Codable, Sendable {
@@ -148,6 +225,8 @@ public struct MetalFlappingWingInputAuditReport: Codable, Sendable {
 /// Insects 13 (2022) 459, baseline AR=3, r1/R=0.5, root offset zero.
 public enum MetalFlappingWingValidator {
     public static let sourceDOI = "10.3390/insects13050459"
+    public static let galileanInvariantEstimatorDOI =
+        "10.1016/j.jcp.2014.02.018"
     public static let sourceDescription =
         "Li and Nabawy (2022), Re=100 beta-planform baseline: AR=3, r1/R=0.5, zero root offset; Table 2 gives fifth-cycle mean CL=1.460 and CD=2.046"
     public static let reynoldsNumber = 100.0
@@ -330,6 +409,128 @@ public enum MetalFlappingWingValidator {
 #endif
     }
 
+    /// Runs identical prescribed-fluid histories with total, link-only, and
+    /// cover/uncover-only load selection. Loads do not feed back into this
+    /// fixed-kinematics case, so component selection cannot alter the flow.
+    public static func diagnoseLoadDecomposition(
+        chordCells: Int = 8,
+        cycles: Int = 1
+    ) throws -> MetalFlappingWingLoadDecompositionReport {
+        guard chordCells >= 8, cycles >= 1 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "load decomposition requires at least 8 chord cells and one cycle"
+            )
+        }
+#if canImport(Metal)
+        let started = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let total = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .total,
+            captureVortexDiagnostics: false
+        )
+        let link = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .linkExchange,
+            captureVortexDiagnostics: false
+        )
+        let topology = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .coverUncoverImpulse,
+            captureVortexDiagnostics: false
+        )
+        return loadDecompositionReport(
+            deviceName: backend.device.name,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            total: total.phaseSamples,
+            link: link.phaseSamples,
+            topology: topology.phaseSamples
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    /// Compares the two source-backed link momentum-exchange equations on
+    /// identical prescribed flow histories. The conventional estimator uses
+    /// the populations already reconstructed by the interpolated boundary;
+    /// cover/uncover impulse is then added separately for its moving-body
+    /// total. A fourth run preserves an independent closure check for the
+    /// production Galilean-invariant total.
+    public static func compareLinkForceEstimators(
+        chordCells: Int = 8,
+        cycles: Int = 1
+    ) throws -> MetalFlappingWingLinkForceComparisonReport {
+        guard chordCells >= 8, cycles >= 1 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "link-force comparison requires at least 8 chord cells and one cycle"
+            )
+        }
+#if canImport(Metal)
+        let started = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let galileanInvariantTotal = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .total,
+            linkForceEstimator: .galileanInvariant,
+            captureVortexDiagnostics: false
+        )
+        let galileanInvariantLink = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .linkExchange,
+            linkForceEstimator: .galileanInvariant,
+            captureVortexDiagnostics: false
+        )
+        let conventionalLink = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .linkExchange,
+            linkForceEstimator: .conventional,
+            captureVortexDiagnostics: false
+        )
+        let topology = try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: nil,
+            loadComponent: .coverUncoverImpulse,
+            linkForceEstimator: .galileanInvariant,
+            captureVortexDiagnostics: false
+        )
+        return linkForceComparisonReport(
+            deviceName: backend.device.name,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            galileanInvariantTotal: galileanInvariantTotal.phaseSamples,
+            galileanInvariantLink: galileanInvariantLink.phaseSamples,
+            conventionalLink: conventionalLink.phaseSamples,
+            topology: topology.phaseSamples
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
     public static func run(
         finestChordCells: Int = 16,
         archiveDirectory: URL? = nil
@@ -458,7 +659,8 @@ private extension MetalFlappingWingValidator {
 
     struct GeometrySnapshot {
         let solid: [UInt8]
-        let wallVelocity: [SIMD3<Float>]
+        let wallVelocityAndImplicit: [SIMD4<Float>]
+        let boundaryLinkFractions: [Float]
     }
 
     struct FieldDiagnostics {
@@ -568,13 +770,15 @@ private extension MetalFlappingWingValidator {
             * referenceArea
         let geometryPassed = geometry.allSatisfy {
             $0.mismatchedCellFraction <= 0.01
-                && abs($0.normalizedVoxelVolume - 1) <= 0.25
-                && abs($0.normalizedPublishedThicknessVoxelVolume - 1)
-                    <= 0.25
                 && abs($0.normalizedRadialCentroid - radialCentroid) <= 0.04
                 && abs($0.normalizedRadiusOfGyration
                     - radiusOfGyration) <= 0.04
                 && $0.maximumSolidWallVelocityError <= 1.0e-5
+                && $0.boundaryLinkCount > 0
+                && $0.auditedBoundaryLinkCount > 0
+                && $0.maximumInterpolatedWallPositionErrorCells <= 0.10
+                && $0.maximumInterpolatedWallPositionErrorCells
+                    < $0.maximumHalfwayWallPositionErrorCells
         }
         let analyticInputsPassed = abs(
             independentNormalization - betaNormalization
@@ -591,7 +795,7 @@ private extension MetalFlappingWingValidator {
             && maximumPitchDerivativeError <= 1.0e-5
         let passed = analyticInputsPassed && geometryPassed
         return MetalFlappingWingInputAudit(
-            schemaVersion: 1,
+            schemaVersion: 2,
             deviceName: backend.device.name,
             sourceDOI: sourceDOI,
             chordCells: chordCells,
@@ -640,6 +844,18 @@ private extension MetalFlappingWingValidator {
         var radialSum = 0.0
         var radialSquareSum = 0.0
         var maximumWallError = 0.0
+        var boundaryLinkCount = 0
+        var auditedBoundaryLinkCount = 0
+        var maximumLinkFractionError = 0.0
+        var linkFractionErrorSum = 0.0
+        var maximumHalfwayPositionError = 0.0
+        var maximumInterpolatedPositionError = 0.0
+        let linkAuditStride = max(
+            1,
+            Int(ceil(
+                Double(snapshot.boundaryLinkFractions.count) / 1_024.0
+            ))
+        )
         for z in 0..<grid.z {
             for y in 0..<grid.y {
                 for x in 0..<grid.x {
@@ -650,26 +866,14 @@ private extension MetalFlappingWingValidator {
                         Double(z) + 0.5
                     )
                     let relative = world - root
-                    let chordCoordinate = dot(relative, frame.chord)
+                    let boundaryImplicit = analyticWingBoundaryImplicit(
+                        world: world,
+                        root: root,
+                        frame: frame,
+                        chordCells: chordCells
+                    )
                     let radialCoordinate = dot(relative, frame.span)
-                    let normalCoordinate = dot(relative, frame.normal)
-                    var analyticSolid = false
-                    if radialCoordinate >= 0,
-                       radialCoordinate <= radius,
-                       abs(normalCoordinate) <= 0.5 * thickness {
-                        let radialFraction = min(
-                            max(radialCoordinate / radius, 0),
-                            1
-                        )
-                        let betaBase = max(
-                            radialFraction * (1 - radialFraction),
-                            0
-                        )
-                        let localChord = chord * betaNormalization
-                            * pow(betaBase, betaShape - 1)
-                        analyticSolid = chordCoordinate >= -0.25 * chord
-                            && chordCoordinate <= -0.25 * chord + localChord
-                    }
+                    let analyticSolid = boundaryImplicit <= 0
                     let metalSolid = snapshot.solid[index] != 0
                     analyticCount += analyticSolid ? 1 : 0
                     metalCount += metalSolid ? 1 : 0
@@ -681,7 +885,7 @@ private extension MetalFlappingWingValidator {
                             frame.angularVelocity,
                             relative
                         )
-                        let actual = snapshot.wallVelocity[index]
+                        let actual = snapshot.wallVelocityAndImplicit[index]
                         let difference = SIMD3<Double>(
                             Double(actual.x) - expectedWall.x,
                             Double(actual.y) - expectedWall.y,
@@ -690,6 +894,92 @@ private extension MetalFlappingWingValidator {
                         maximumWallError = max(
                             maximumWallError,
                             sqrt(dot(difference, difference))
+                        )
+                    }
+
+                }
+            }
+        }
+
+        // Enumerate outward from the sparse solid set. This is equivalent to
+        // the fluid-source traversal in pull streaming but avoids testing all
+        // 18 directions for nearly every domain-fluid cell in a debug audit.
+        for sourceZ in 0..<grid.z {
+            for sourceY in 0..<grid.y {
+                for sourceX in 0..<grid.x {
+                    let sourceIndex = sourceX
+                        + grid.x * (sourceY + grid.y * sourceZ)
+                    guard snapshot.solid[sourceIndex] != 0 else { continue }
+                    let sourceWorld = SIMD3<Double>(
+                        Double(sourceX) + 0.5,
+                        Double(sourceY) + 0.5,
+                        Double(sourceZ) + 0.5
+                    )
+                    for direction in D3Q19.directions.dropFirst() {
+                        let fluidX = sourceX + Int(direction.x)
+                        let fluidY = sourceY + Int(direction.y)
+                        let fluidZ = sourceZ + Int(direction.z)
+                        guard fluidX >= 0, fluidX < grid.x,
+                              fluidY >= 0, fluidY < grid.y,
+                              fluidZ >= 0, fluidZ < grid.z else {
+                            continue
+                        }
+                        let fluidIndex = fluidX
+                            + grid.x * (fluidY + grid.y * fluidZ)
+                        guard snapshot.solid[fluidIndex] == 0 else { continue }
+                        let linkIndex = boundaryLinkCount
+                        boundaryLinkCount += 1
+                        let shouldAuditLink = linkIndex % linkAuditStride == 0
+                            || linkIndex + 1
+                                == snapshot.boundaryLinkFractions.count
+                        guard shouldAuditLink else { continue }
+                        let metalFraction = Double(
+                            snapshot.boundaryLinkFractions[linkIndex]
+                        )
+                        let fluidWorld = SIMD3<Double>(
+                            Double(fluidX) + 0.5,
+                            Double(fluidY) + 0.5,
+                            Double(fluidZ) + 0.5
+                        )
+                        var lower = 0.0
+                        var upper = 1.0
+                        for _ in 0..<16 {
+                            let fraction = 0.5 * (lower + upper)
+                            let sample = fluidWorld
+                                + fraction * (sourceWorld - fluidWorld)
+                            if analyticWingBoundaryImplicit(
+                                world: sample,
+                                root: root,
+                                frame: frame,
+                                chordCells: chordCells
+                            ) > 0 {
+                                lower = fraction
+                            } else {
+                                upper = fraction
+                            }
+                        }
+                        let exactFraction = 0.5 * (lower + upper)
+                        let fractionError = abs(
+                            metalFraction - exactFraction
+                        )
+                        let linkLength = sqrt(
+                            Double(direction.x * direction.x
+                                + direction.y * direction.y
+                                + direction.z * direction.z)
+                        )
+                        auditedBoundaryLinkCount += 1
+                        linkFractionErrorSum += fractionError
+                        maximumLinkFractionError = max(
+                            maximumLinkFractionError,
+                            fractionError
+                        )
+                        maximumHalfwayPositionError = max(
+                            maximumHalfwayPositionError,
+                            abs(0.5 - exactFraction) * linkLength
+                        )
+                        maximumInterpolatedPositionError = max(
+                            maximumInterpolatedPositionError,
+                            fractionError * linkLength
                         )
                     }
                 }
@@ -709,7 +999,56 @@ private extension MetalFlappingWingValidator {
             normalizedRadialCentroid: radialSum / count / radius,
             normalizedRadiusOfGyration: sqrt(radialSquareSum / count)
                 / radius,
-            maximumSolidWallVelocityError: maximumWallError
+            maximumSolidWallVelocityError: maximumWallError,
+            boundaryLinkCount: boundaryLinkCount,
+            auditedBoundaryLinkCount: auditedBoundaryLinkCount,
+            maximumLinkFractionError: maximumLinkFractionError,
+            meanLinkFractionError: linkFractionErrorSum
+                / Double(max(auditedBoundaryLinkCount, 1)),
+            maximumHalfwayWallPositionErrorCells:
+                maximumHalfwayPositionError,
+            maximumInterpolatedWallPositionErrorCells:
+                maximumInterpolatedPositionError
+        )
+    }
+
+    static func analyticWingBoundaryImplicit(
+        world: SIMD3<Double>,
+        root: SIMD3<Double>,
+        frame: AnalyticWingFrame,
+        chordCells: Int
+    ) -> Double {
+        let relative = world - root
+        let chord = Double(chordCells)
+        let radius = aspectRatio * chord
+        let thickness = max(0.05 * chord, 1)
+        let chordCoordinate = dot(relative, frame.chord)
+        let radialCoordinate = dot(relative, frame.span)
+        let normalCoordinate = dot(relative, frame.normal)
+        if radialCoordinate < 0 {
+            return -radialCoordinate
+        }
+        if radialCoordinate > radius {
+            return radialCoordinate - radius
+        }
+        if abs(normalCoordinate) > 0.5 * thickness {
+            return abs(normalCoordinate) - 0.5 * thickness
+        }
+        let radialFraction = min(max(radialCoordinate / radius, 0), 1)
+        let betaBase = max(radialFraction * (1 - radialFraction), 0)
+        let localChord = chord * betaNormalization
+            * pow(betaBase, betaShape - 1)
+        let leadingEdge = -0.25 * chord
+        let trailingEdge = leadingEdge + localChord
+        return max(
+            max(-radialCoordinate, radialCoordinate - radius),
+            max(
+                abs(normalCoordinate) - 0.5 * thickness,
+                max(
+                    leadingEdge - chordCoordinate,
+                    chordCoordinate - trailingEdge
+                )
+            )
         )
     }
 
@@ -743,11 +1082,284 @@ private extension MetalFlappingWingValidator {
         )
     }
 
+    static func loadComponentSummary(
+        _ samples: [MetalFlappingWingPhaseSample]
+    ) -> MetalFlappingWingLoadComponentSummary {
+        let count = Double(max(samples.count, 1))
+        let meanLift = samples.reduce(0) { $0 + $1.liftCoefficient } / count
+        let meanDrag = samples.reduce(0) { $0 + $1.dragCoefficient } / count
+        let rmsLift = sqrt(
+            samples.reduce(0) { $0 + $1.liftCoefficient * $1.liftCoefficient }
+                / count
+        )
+        let rmsDrag = sqrt(
+            samples.reduce(0) { $0 + $1.dragCoefficient * $1.dragCoefficient }
+                / count
+        )
+        let peakLift = samples.max {
+            abs($0.liftCoefficient) < abs($1.liftCoefficient)
+        }
+        let peakDrag = samples.max {
+            abs($0.dragCoefficient) < abs($1.dragCoefficient)
+        }
+        return MetalFlappingWingLoadComponentSummary(
+            meanLiftCoefficient: meanLift,
+            meanDragCoefficient: meanDrag,
+            rmsLiftCoefficient: rmsLift,
+            rmsDragCoefficient: rmsDrag,
+            maximumAbsoluteLiftCoefficient: abs(
+                peakLift?.liftCoefficient ?? 0
+            ),
+            maximumAbsoluteDragCoefficient: abs(
+                peakDrag?.dragCoefficient ?? 0
+            ),
+            maximumAbsoluteLiftPhase: peakLift?.phase ?? 0,
+            maximumAbsoluteDragPhase: peakDrag?.phase ?? 0,
+            phaseSamples: samples
+        )
+    }
+
+    static func loadDecompositionReport(
+        deviceName: String,
+        chordCells: Int,
+        cycles: Int,
+        runtimeSeconds: Double,
+        total totalSamples: [MetalFlappingWingPhaseSample],
+        link linkSamples: [MetalFlappingWingPhaseSample],
+        topology topologySamples: [MetalFlappingWingPhaseSample]
+    ) -> MetalFlappingWingLoadDecompositionReport {
+        precondition(totalSamples.count == linkSamples.count)
+        precondition(totalSamples.count == topologySamples.count)
+        let total = loadComponentSummary(totalSamples)
+        let link = loadComponentSummary(linkSamples)
+        let topology = loadComponentSummary(topologySamples)
+        var maximumLiftClosure = 0.0
+        var maximumDragClosure = 0.0
+        var maximumForceClosure = 0.0
+        for index in totalSamples.indices {
+            let totalSample = totalSamples[index]
+            let linkSample = linkSamples[index]
+            let topologySample = topologySamples[index]
+            maximumLiftClosure = max(
+                maximumLiftClosure,
+                abs(
+                    totalSample.liftCoefficient
+                        - linkSample.liftCoefficient
+                        - topologySample.liftCoefficient
+                )
+            )
+            maximumDragClosure = max(
+                maximumDragClosure,
+                abs(
+                    totalSample.dragCoefficient
+                        - linkSample.dragCoefficient
+                        - topologySample.dragCoefficient
+                )
+            )
+            let forceDifference = SIMD3<Double>(
+                totalSample.forceX - linkSample.forceX
+                    - topologySample.forceX,
+                totalSample.forceY - linkSample.forceY
+                    - topologySample.forceY,
+                totalSample.forceZ - linkSample.forceZ
+                    - topologySample.forceZ
+            )
+            maximumForceClosure = max(
+                maximumForceClosure,
+                sqrt(dot(forceDifference, forceDifference))
+            )
+        }
+        let tolerance = 1.0e-4
+        return MetalFlappingWingLoadDecompositionReport(
+            schemaVersion: 1,
+            deviceName: deviceName,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: runtimeSeconds,
+            total: total,
+            linkExchange: link,
+            coverUncoverImpulse: topology,
+            topologyMeanLiftFraction: abs(total.meanLiftCoefficient) > 1.0e-12
+                ? topology.meanLiftCoefficient / total.meanLiftCoefficient
+                : 0,
+            topologyMeanDragFraction: abs(total.meanDragCoefficient) > 1.0e-12
+                ? topology.meanDragCoefficient / total.meanDragCoefficient
+                : 0,
+            topologyRMSLiftFraction: total.rmsLiftCoefficient > 1.0e-12
+                ? topology.rmsLiftCoefficient / total.rmsLiftCoefficient
+                : 0,
+            topologyRMSDragFraction: total.rmsDragCoefficient > 1.0e-12
+                ? topology.rmsDragCoefficient / total.rmsDragCoefficient
+                : 0,
+            maximumLiftCoefficientClosureError: maximumLiftClosure,
+            maximumDragCoefficientClosureError: maximumDragClosure,
+            maximumForceClosureError: maximumForceClosure,
+            maximumAllowedCoefficientClosureError: tolerance,
+            closurePassed: maximumLiftClosure <= tolerance
+                && maximumDragClosure <= tolerance
+        )
+    }
+
+    static func addingLoadSamples(
+        _ left: [MetalFlappingWingPhaseSample],
+        _ right: [MetalFlappingWingPhaseSample]
+    ) -> [MetalFlappingWingPhaseSample] {
+        precondition(left.count == right.count)
+        return left.indices.map { index in
+            let lhs = left[index]
+            let rhs = right[index]
+            precondition(abs(lhs.phase - rhs.phase) < 1.0e-12)
+            return MetalFlappingWingPhaseSample(
+                phase: lhs.phase,
+                liftCoefficient: lhs.liftCoefficient + rhs.liftCoefficient,
+                dragCoefficient: lhs.dragCoefficient + rhs.dragCoefficient,
+                forceX: lhs.forceX + rhs.forceX,
+                forceY: lhs.forceY + rhs.forceY,
+                forceZ: lhs.forceZ + rhs.forceZ
+            )
+        }
+    }
+
+    static func linkForceComparisonReport(
+        deviceName: String,
+        chordCells: Int,
+        cycles: Int,
+        runtimeSeconds: Double,
+        galileanInvariantTotal totalSamples: [MetalFlappingWingPhaseSample],
+        galileanInvariantLink linkSamples: [MetalFlappingWingPhaseSample],
+        conventionalLink conventionalSamples: [MetalFlappingWingPhaseSample],
+        topology topologySamples: [MetalFlappingWingPhaseSample]
+    ) -> MetalFlappingWingLinkForceComparisonReport {
+        precondition(totalSamples.count == linkSamples.count)
+        precondition(totalSamples.count == conventionalSamples.count)
+        precondition(totalSamples.count == topologySamples.count)
+
+        let conventionalTotalSamples = addingLoadSamples(
+            conventionalSamples,
+            topologySamples
+        )
+        let galileanInvariantTotal = loadComponentSummary(totalSamples)
+        let galileanInvariantLink = loadComponentSummary(linkSamples)
+        let conventionalLink = loadComponentSummary(conventionalSamples)
+        let topology = loadComponentSummary(topologySamples)
+        let conventionalTotal = loadComponentSummary(conventionalTotalSamples)
+
+        var maximumLinkLiftDifference = 0.0
+        var maximumLinkDragDifference = 0.0
+        var maximumLiftClosure = 0.0
+        var maximumDragClosure = 0.0
+        var maximumForceClosure = 0.0
+        for index in totalSamples.indices {
+            let total = totalSamples[index]
+            let link = linkSamples[index]
+            let conventional = conventionalSamples[index]
+            let topology = topologySamples[index]
+            maximumLinkLiftDifference = max(
+                maximumLinkLiftDifference,
+                abs(
+                    conventional.liftCoefficient
+                        - link.liftCoefficient
+                )
+            )
+            maximumLinkDragDifference = max(
+                maximumLinkDragDifference,
+                abs(
+                    conventional.dragCoefficient
+                        - link.dragCoefficient
+                )
+            )
+            maximumLiftClosure = max(
+                maximumLiftClosure,
+                abs(
+                    total.liftCoefficient
+                        - link.liftCoefficient
+                        - topology.liftCoefficient
+                )
+            )
+            maximumDragClosure = max(
+                maximumDragClosure,
+                abs(
+                    total.dragCoefficient
+                        - link.dragCoefficient
+                        - topology.dragCoefficient
+                )
+            )
+            let forceDifference = SIMD3<Double>(
+                total.forceX - link.forceX - topology.forceX,
+                total.forceY - link.forceY - topology.forceY,
+                total.forceZ - link.forceZ - topology.forceZ
+            )
+            maximumForceClosure = max(
+                maximumForceClosure,
+                sqrt(dot(forceDifference, forceDifference))
+            )
+        }
+
+        func ratio(_ numerator: Double, _ denominator: Double) -> Double {
+            abs(denominator) > 1.0e-12 ? numerator / denominator : 0
+        }
+        func relativeError(_ value: Double, _ reference: Double) -> Double {
+            abs(value - reference) / abs(reference)
+        }
+
+        let tolerance = 1.0e-4
+        return MetalFlappingWingLinkForceComparisonReport(
+            schemaVersion: 1,
+            deviceName: deviceName,
+            chordCells: chordCells,
+            cycles: cycles,
+            runtimeSeconds: runtimeSeconds,
+            sourceDOI: sourceDOI,
+            galileanInvariantEstimatorDOI: galileanInvariantEstimatorDOI,
+            galileanInvariantLinkExchange: galileanInvariantLink,
+            interpolatedPopulationConventionalLinkExchange: conventionalLink,
+            coverUncoverImpulse: topology,
+            galileanInvariantTotal: galileanInvariantTotal,
+            conventionalMovingBodyTotal: conventionalTotal,
+            conventionalToGalileanMeanLiftRatio: ratio(
+                conventionalTotal.meanLiftCoefficient,
+                galileanInvariantTotal.meanLiftCoefficient
+            ),
+            conventionalToGalileanMeanDragRatio: ratio(
+                conventionalTotal.meanDragCoefficient,
+                galileanInvariantTotal.meanDragCoefficient
+            ),
+            galileanInvariantRelativeMeanLiftError: relativeError(
+                galileanInvariantTotal.meanLiftCoefficient,
+                referenceMeanLiftCoefficient
+            ),
+            galileanInvariantRelativeMeanDragError: relativeError(
+                galileanInvariantTotal.meanDragCoefficient,
+                referenceMeanDragCoefficient
+            ),
+            conventionalRelativeMeanLiftError: relativeError(
+                conventionalTotal.meanLiftCoefficient,
+                referenceMeanLiftCoefficient
+            ),
+            conventionalRelativeMeanDragError: relativeError(
+                conventionalTotal.meanDragCoefficient,
+                referenceMeanDragCoefficient
+            ),
+            maximumLinkLiftCoefficientDifference: maximumLinkLiftDifference,
+            maximumLinkDragCoefficientDifference: maximumLinkDragDifference,
+            maximumGalileanInvariantLiftClosureError: maximumLiftClosure,
+            maximumGalileanInvariantDragClosureError: maximumDragClosure,
+            maximumGalileanInvariantForceClosureError: maximumForceClosure,
+            maximumAllowedCoefficientClosureError: tolerance,
+            closurePassed: maximumLiftClosure <= tolerance
+                && maximumDragClosure <= tolerance
+        )
+    }
+
     static func runCase(
         backend: MetalBackend,
         chordCells: Int,
         cycles: Int,
-        archiveDirectory: URL?
+        archiveDirectory: URL?,
+        loadComponent: PrescribedWingLoadComponent = .total,
+        linkForceEstimator: PrescribedWingLinkForceEstimator =
+            .galileanInvariant,
+        captureVortexDiagnostics: Bool = true
     ) throws -> MetalFlappingWingCaseResult {
         let startTime = Date()
         let grid = try GridSize(
@@ -769,7 +1381,9 @@ private extension MetalFlappingWingValidator {
             grid: grid,
             chordCells: chordCells,
             cycleSteps: cycleSteps,
-            root: root
+            root: root,
+            loadComponent: loadComponent,
+            linkForceEstimator: linkForceEstimator
         )
         if let archiveDirectory {
             try FileManager.default.createDirectory(
@@ -782,9 +1396,9 @@ private extension MetalFlappingWingValidator {
         var previous: [MetalFlappingWingPhaseSample] = []
         var current: [MetalFlappingWingPhaseSample] = []
         var vortexMetrics: [MetalFlappingWingVortexMetric] = []
-        let vortexIndices = Set(requiredVortexPhases.map {
-            Int(($0 * 100).rounded())
-        })
+        let vortexIndices = captureVortexDiagnostics
+            ? Set(requiredVortexPhases.map { Int(($0 * 100).rounded()) })
+            : Set<Int>()
         if firstRecordedCycle > 0 {
             _ = try simulation.advance(
                 to: firstRecordedCycle * cycleSteps,
@@ -793,7 +1407,7 @@ private extension MetalFlappingWingValidator {
             )
         }
         for cycle in firstRecordedCycle..<cycles {
-            if cycle == cycles - 1 {
+            if cycle == cycles - 1 && captureVortexDiagnostics {
                 for sampleIndex in vortexIndices.sorted() {
                     let phase = Double(sampleIndex) / 100
                     let target = cycle * cycleSteps
@@ -892,15 +1506,15 @@ private extension MetalFlappingWingValidator {
             meanReversalLiftCoefficient: reversal,
             halfStrokeSymmetryError: halfSymmetry,
             previousCycleDifference: periodicDifference,
-            vortexTimingCoverageComplete: vortexMetrics.count
-                == requiredVortexPhases.count
+            vortexTimingCoverageComplete: !captureVortexDiagnostics
+                || (vortexMetrics.count == requiredVortexPhases.count
                 && vortexMetrics.allSatisfy {
                     $0.maximumPositiveQ.isFinite
                         && $0.maximumPositiveQ > 0
                         && $0.positiveQCellCount > 0
                         && $0.maximumVorticityMagnitude.isFinite
                         && $0.maximumVorticityMagnitude > 0
-                },
+                }),
             phaseSamples: current,
             vortexMetrics: vortexMetrics
         )
@@ -1267,9 +1881,12 @@ private final class MetalPrescribedWingSimulation {
     private let initializePipeline: MTLComputePipelineState
     private let fluidPipeline: MTLComputePipelineState
     private let reductionPipeline: MTLComputePipelineState
+    private let gatherPipeline: MTLComputePipelineState
     private let storeLoadPipeline: MTLComputePipelineState
     private let partialLoadCount: Int
     private let cycleSteps: Int
+    private let loadComponent: PrescribedWingLoadComponent
+    private let linkForceEstimator: PrescribedWingLinkForceEstimator
     private var currentPopulations: MTLBuffer
     private var nextPopulations: MTLBuffer
     private var currentSolid: MTLBuffer
@@ -1282,10 +1899,15 @@ private final class MetalPrescribedWingSimulation {
         grid: GridSize,
         chordCells: Int,
         cycleSteps: Int,
-        root: SIMD3<Float>
+        root: SIMD3<Float>,
+        loadComponent: PrescribedWingLoadComponent = .total,
+        linkForceEstimator: PrescribedWingLinkForceEstimator =
+            .galileanInvariant
     ) throws {
         self.backend = backend
         self.cycleSteps = cycleSteps
+        self.loadComponent = loadComponent
+        self.linkForceEstimator = linkForceEstimator
         let referenceSpeed = Float(
             MetalFlappingWingValidator.latticeRadiusOfGyrationSpeed
         )
@@ -1346,6 +1968,7 @@ private final class MetalPrescribedWingSimulation {
         initializePipeline = try backend.pipeline(named: "initializePopulations")
         fluidPipeline = try backend.pipeline(named: "stepFluidTRT")
         reductionPipeline = try backend.pipeline(named: "reduceForceTorque")
+        gatherPipeline = try backend.pipeline(named: "gatherFloatValues")
         storeLoadPipeline = try backend.pipeline(named: "storeForceTorqueSample")
 
         let cells = grid.cellCount
@@ -1530,15 +2153,88 @@ private final class MetalPrescribedWingSimulation {
             .assumingMemoryBound(to: UInt8.self)
         let wallPointer = wallStaging.contents()
             .assumingMemoryBound(to: SIMD4<Float>.self)
+        let mask = Array(UnsafeBufferPointer(
+            start: maskPointer,
+            count: cellCount
+        ))
+        var linkPopulationIndices: [UInt32] = []
+        linkPopulationIndices.reserveCapacity(cellCount / 16)
+        let grid = configuration.grid
+        for z in 0..<grid.z {
+            for y in 0..<grid.y {
+                for x in 0..<grid.x {
+                    let sourceIndex = x + grid.x * (y + grid.y * z)
+                    guard mask[sourceIndex] != 0 else { continue }
+                    for (q, direction) in D3Q19.directions.enumerated()
+                        where q > 0 {
+                        let fluidX = x + Int(direction.x)
+                        let fluidY = y + Int(direction.y)
+                        let fluidZ = z + Int(direction.z)
+                        guard fluidX >= 0, fluidX < grid.x,
+                              fluidY >= 0, fluidY < grid.y,
+                              fluidZ >= 0, fluidZ < grid.z else {
+                            continue
+                        }
+                        let fluidIndex = fluidX
+                            + grid.x * (fluidY + grid.y * fluidZ)
+                        guard mask[fluidIndex] == 0 else { continue }
+                        linkPopulationIndices.append(UInt32(
+                            q * cellCount + sourceIndex
+                        ))
+                    }
+                }
+            }
+        }
+
+        let gathered: [Float]
+        if linkPopulationIndices.isEmpty {
+            gathered = []
+        } else {
+            let indexBytes = linkPopulationIndices.count
+                * MemoryLayout<UInt32>.stride
+            let valueBytes = linkPopulationIndices.count
+                * MemoryLayout<Float>.stride
+            let indices = try backend.makeSharedBuffer(length: indexBytes)
+            let values = try backend.makeSharedBuffer(length: valueBytes)
+            _ = linkPopulationIndices.withUnsafeBytes { source in
+                memcpy(indices.contents(), source.baseAddress!, indexBytes)
+            }
+            guard let gatherCommand = backend.queue.makeCommandBuffer(),
+                  let encoder = gatherCommand.makeComputeCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to create prescribed-wing link-audit encoder."
+                )
+            }
+            var linkCount = UInt32(linkPopulationIndices.count)
+            encoder.setBuffer(currentPopulations, offset: 0, index: 0)
+            encoder.setBuffer(indices, offset: 0, index: 1)
+            encoder.setBuffer(values, offset: 0, index: 2)
+            encoder.setBytes(
+                &linkCount,
+                length: MemoryLayout<UInt32>.stride,
+                index: 3
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: gatherPipeline,
+                count: linkPopulationIndices.count
+            )
+            encoder.endEncoding()
+            gatherCommand.commit()
+            gatherCommand.waitUntilCompleted()
+            try check(gatherCommand)
+            gathered = Array(UnsafeBufferPointer(
+                start: values.contents().assumingMemoryBound(to: Float.self),
+                count: linkPopulationIndices.count
+            ))
+        }
         return MetalFlappingWingValidator.GeometrySnapshot(
-            solid: Array(UnsafeBufferPointer(
-                start: maskPointer,
+            solid: mask,
+            wallVelocityAndImplicit: Array(UnsafeBufferPointer(
+                start: wallPointer,
                 count: cellCount
             )),
-            wallVelocity: (0..<cellCount).map {
-                let value = wallPointer[$0]
-                return SIMD3<Float>(value.x, value.y, value.z)
-            }
+            boundaryLinkFractions: gathered
         )
     }
 
@@ -1561,7 +2257,15 @@ private final class MetalPrescribedWingSimulation {
             accumulateLoads: accumulateLoads,
             hasPreviousGeometry: hasPreviousGeometry,
             periodicBoundaries: false,
-            caseParameters: SIMD4<Float>(0, 0, 1, 0)
+            // Negative w enables link-distance interpolation. The existing
+            // planar oscillating-wall flag is positive, keeping its baseline
+            // operator unchanged.
+            caseParameters: SIMD4<Float>(
+                loadComponent.rawValue,
+                linkForceEstimator.rawValue,
+                1,
+                -1
+            )
         )
     }
 
@@ -1670,6 +2374,14 @@ private final class MetalPrescribedWingSimulation {
             length: MemoryLayout<GPUUniforms>.stride,
             index: 5
         )
+        // Solid-node distribution slots are dormant during streaming. Reuse
+        // them for per-direction wall fractions instead of allocating and
+        // reading another full-grid Metal buffer.
+        encoder.setBuffer(currentPopulations, offset: 0, index: 6)
+        // Newly covered nodes preserve their pre-geometry density/momentum in
+        // this existing field allocation before their distribution slots are
+        // repurposed as the link table.
+        encoder.setBuffer(velocity, offset: 0, index: 7)
         backend.dispatch3D(
             encoder: encoder,
             pipeline: geometryPipeline,

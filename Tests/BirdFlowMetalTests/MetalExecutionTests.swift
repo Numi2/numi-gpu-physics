@@ -444,13 +444,55 @@ func productionMetalPrescribedWingSmokeCapturesPhaseDiagnostics() throws {
 }
 
 @Test
-func productionMetalPrescribedWingInputFixtureLocalizesVoxelBias() throws {
+func interpolatedBounceBackReferenceMatchesPublishedBranches() {
+    let correction = 0.07
+    let reflected = 0.31
+    let farther = 0.19
+    let previous = 0.23
+
+    #expect(abs(
+        InterpolatedBounceBackReference.population(
+            linkFraction: 0.5,
+            reflected: reflected,
+            fartherOutgoing: farther,
+            previousIncoming: previous,
+            movingWallCorrection: correction
+        ) - (reflected + correction)
+    ) < 1.0e-15)
+    #expect(abs(
+        InterpolatedBounceBackReference.population(
+            linkFraction: 0.25,
+            reflected: reflected,
+            fartherOutgoing: farther,
+            previousIncoming: previous,
+            movingWallCorrection: correction
+        ) - (0.5 * reflected + 0.5 * farther + correction)
+    ) < 1.0e-15)
+    #expect(abs(
+        InterpolatedBounceBackReference.population(
+            linkFraction: 0.75,
+            reflected: reflected,
+            fartherOutgoing: farther,
+            previousIncoming: previous,
+            movingWallCorrection: correction
+        ) - ((reflected + correction) / 1.5 + previous / 3)
+    ) < 1.0e-15)
+    #expect(abs(
+        InterpolatedBounceBackReference.linkFraction(
+            fluidImplicit: 0.25,
+            solidImplicit: -0.75
+        ) - 0.25
+    ) < 1.0e-15)
+}
+
+@Test
+func productionMetalPrescribedWingInputFixtureValidatesSubcellLinks() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let audit = try MetalFlappingWingValidator.auditInputs(chordCells: 8)
 
     #expect(audit.analyticInputsPassed)
-    #expect(!audit.metalGeometryPassed)
-    #expect(!audit.passed)
+    #expect(audit.metalGeometryPassed)
+    #expect(audit.passed)
     #expect(abs(audit.normalizedPlanformArea - 1) < 1.0e-12)
     #expect(abs(audit.normalizedRadialCentroid - 0.5) < 1.0e-12)
     #expect(
@@ -464,6 +506,11 @@ func productionMetalPrescribedWingInputFixtureLocalizesVoxelBias() throws {
         audit.geometry.allSatisfy {
             $0.mismatchedCellFraction <= 0.01
                 && $0.maximumSolidWallVelocityError <= 1.0e-5
+                && $0.boundaryLinkCount > 0
+                && $0.auditedBoundaryLinkCount > 0
+                && $0.maximumInterpolatedWallPositionErrorCells <= 0.10
+                && $0.maximumInterpolatedWallPositionErrorCells
+                    < $0.maximumHalfwayWallPositionErrorCells
         }
     )
     let midstroke = try #require(
@@ -472,5 +519,59 @@ func productionMetalPrescribedWingInputFixtureLocalizesVoxelBias() throws {
     #expect(midstroke.mismatchedCellCount == 0)
     #expect(midstroke.normalizedVoxelVolume > 1.4)
     #expect(midstroke.normalizedPublishedThicknessVoxelVolume > 3.5)
+    #expect(midstroke.maximumLinkFractionError < 0.10)
+}
+
+@Test
+func productionMetalPrescribedWingLoadDecompositionCloses() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalFlappingWingValidator.diagnoseLoadDecomposition(
+        chordCells: 8,
+        cycles: 1
+    )
+
+    #expect(report.total.phaseSamples.count == 100)
+    #expect(report.linkExchange.phaseSamples.count == 100)
+    #expect(report.coverUncoverImpulse.phaseSamples.count == 100)
+    #expect(report.closurePassed)
+    #expect(
+        report.maximumLiftCoefficientClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(
+        report.maximumDragCoefficientClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(report.total.meanLiftCoefficient.isFinite)
+    #expect(report.total.meanDragCoefficient.isFinite)
+}
+
+@Test
+func productionMetalPrescribedWingLinkForceEstimatorsCompare() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalFlappingWingValidator.compareLinkForceEstimators(
+        chordCells: 8,
+        cycles: 1
+    )
+
+    #expect(report.galileanInvariantLinkExchange.phaseSamples.count == 100)
+    #expect(
+        report.interpolatedPopulationConventionalLinkExchange
+            .phaseSamples.count == 100
+    )
+    #expect(report.conventionalMovingBodyTotal.phaseSamples.count == 100)
+    #expect(report.closurePassed)
+    #expect(
+        report.maximumGalileanInvariantLiftClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(
+        report.maximumGalileanInvariantDragClosureError
+            <= report.maximumAllowedCoefficientClosureError
+    )
+    #expect(report.conventionalToGalileanMeanLiftRatio.isFinite)
+    #expect(report.conventionalToGalileanMeanDragRatio.isFinite)
+    #expect(report.maximumLinkLiftCoefficientDifference > 0)
+    #expect(report.maximumLinkDragCoefficientDifference > 0)
 }
 #endif
