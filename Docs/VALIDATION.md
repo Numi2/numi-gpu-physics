@@ -667,7 +667,7 @@ topology-changing discriminator is:
 It uses a `56 x 24 x 24` periodic domain so a radius-`3.25` voxel sphere can
 translate `40` cells over 500 steps without touching the momentum-budget
 surface. Wall speed and c8/c12/c16 viscosities exactly match the fixed-wall
-gate. The Apple M4 release run takes `1.09 s` and fails at load steps `276`,
+gate. The Apple M4 release run takes `1.17 s` and fails at load steps `276`,
 `282`, and `287`; final populations, macroscopic fields, and loads are
 non-finite in every case. Each requested trajectory produces 1,280 cover and
 1,280 uncover events over 220 transition steps, with zero solid links crossing
@@ -676,13 +676,30 @@ the control surface. The expected failure is archived in
 Residual statistics after explosive growth are not treated as a momentum-
 closure result; finiteness fails first.
 
-Together, the passing fixed planar wall and failing cell-crossing sphere
-confirm the topology-changing moving-boundary path without yet separating two
-changes: curved moving-link reconstruction and cell cover/uncover refill. The
-highest-ROI next gate is therefore a fixed-occupancy sphere with the same
-halfway links, wall speed, viscosities, and 500 steps. It changes only topology
-relative to the failed case and should settle that distinction in seconds
-before any collision rewrite or bird rerun.
+The fixed-occupancy curved-link discriminator is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --json
+```
+
+It holds the identical sphere mask fixed while retaining uniform wall lattice
+velocity `0.08`. All topology counts are exactly zero, but the c8/c12/c16
+cases become non-finite much earlier at steps `71`, `71`, and `72`. The Apple
+M4 release run takes `1.17 s`; its expected failure is archived in
+`ValidationArtifacts/measured-wing-high-re-fixed-occupancy-sphere-stability.json`.
+Cover/uncover refill is therefore not required for the instability, and curved
+moving-link forcing is sufficient under this stress.
+
+This gate intentionally applies uniform translational wall velocity to a fixed
+sphere, so some wall velocity is normal to a surface that does not move. It is
+an operator discriminator, not a physical stationary-sphere experiment. The
+highest-ROI next gate is a matched normal-only versus tangential-only fixed-
+sphere A/B. It costs roughly two seconds and will distinguish normal moving-
+boundary reconstruction from physically consistent tangential curved-link
+exchange before any stabilization, collision rewrite, or bird rerun.
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

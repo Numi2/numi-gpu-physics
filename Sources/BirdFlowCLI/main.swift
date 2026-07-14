@@ -104,7 +104,7 @@ private struct Arguments {
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
       birdflow validate moving-wall [--resolution N] [--json]
-      birdflow validate translating-body [--high-re-stability] [--json]
+      birdflow validate translating-body [--high-re-stability] [--fixed-occupancy] [--json]
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
       birdflow validate flapping-wing [--chord-cells N] [--json]
@@ -347,6 +347,7 @@ private struct MeasuredBirdReplayArguments {
 
 private struct TranslatingBodyArguments {
     var highReStability = false
+    var fixedOccupancy = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -355,6 +356,8 @@ private struct TranslatingBodyArguments {
             switch values[index] {
             case "--high-re-stability":
                 highReStability = true
+            case "--fixed-occupancy":
+                fixedOccupancy = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -367,12 +370,18 @@ private struct TranslatingBodyArguments {
             }
             index += 1
         }
+        if fixedOccupancy && !highReStability {
+            throw CLIError.invalidArgument(
+                "--fixed-occupancy requires --high-re-stability"
+            )
+        }
     }
 
     static let help = """
     birdflow validate translating-body [options]
 
       --high-re-stability  Run locked 500-step c8/c12/c16 cell-crossing cases
+      --fixed-occupancy    Hold the curved sphere fixed while retaining wall speed
       --json               Emit the machine-readable validation report
       --help               Show this help
 
@@ -381,6 +390,7 @@ private struct TranslatingBodyArguments {
     closes the production boundary load against an independent fluid-momentum
     budget while comparing the legacy and conservative estimators. The high-Re
     gate uses the published-condition relaxation margins and a longer domain.
+    Fixed occupancy removes only cover, uncover, and refill from that case.
     """
 }
 
@@ -1199,8 +1209,10 @@ private func runMovingWallValidation(_ values: [String]) throws {
 private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
-        let report = try MetalTranslatingBodyTopologyValidator
-            .runHighReStability()
+        let report = try arguments.fixedOccupancy
+            ? MetalTranslatingBodyTopologyValidator
+                .runHighReFixedOccupancyStability()
+            : MetalTranslatingBodyTopologyValidator.runHighReStability()
         if arguments.json {
             try printJSON(report)
         } else {
@@ -1220,7 +1232,9 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
         }
         guard report.passed else {
             throw MetalTranslatingBodyTopologyValidationError.failed(
-                "matched high-Re cell-crossing stability gate failed"
+                arguments.fixedOccupancy
+                    ? "matched high-Re fixed-occupancy sphere gate failed"
+                    : "matched high-Re cell-crossing stability gate failed"
             )
         }
         return

@@ -126,7 +126,8 @@ struct GPUPreparedMeasuredWingPoint {
 
 struct GPUTranslatingSphereParameters {
     float4 initialCenterAndRadius;
-    float4 velocity;
+    float4 geometryVelocity;
+    float4 wallVelocity;
 };
 
 struct GPUForceTorque {
@@ -1537,7 +1538,7 @@ kernel void initializeTranslatingSphereTopology(
     float radius = parameters.initialCenterAndRadius.w;
     bool isSphere = dot(relative, relative) <= radius * radius;
     uchar part = isSphere ? uchar(1) : uchar(0);
-    float3 wall = parameters.velocity.xyz;
+    float3 wall = parameters.wallVelocity.xyz;
     float3 initialVelocity = isSphere ? wall : float3(0);
 
     solidA[gid] = part;
@@ -1574,7 +1575,7 @@ kernel void buildTranslatingSphereTopology(
 
     uint3 cell = unflatten(gid, uniforms.grid.xyz);
     float3 center = parameters.initialCenterAndRadius.xyz
-        + parameters.velocity.xyz * uniforms.timeStepAndScales.x;
+        + parameters.geometryVelocity.xyz * uniforms.timeStepAndScales.x;
     float3 relative = float3(cell) + 0.5f - center;
     float radius = parameters.initialCenterAndRadius.w;
     bool isSphere = dot(relative, relative) <= radius * radius;
@@ -1595,7 +1596,7 @@ kernel void buildTranslatingSphereTopology(
     }
 
     solidCurrent[gid] = isSphere ? uchar(1) : uchar(0);
-    wallVelocity[gid] = float4(parameters.velocity.xyz, 0);
+    wallVelocity[gid] = float4(parameters.wallVelocity.xyz, 0);
     if (isSphere) {
         for (uint q = 1; q < Q; ++q) {
             boundaryLinks[q * uniforms.grid.w + gid] = 0.5f;

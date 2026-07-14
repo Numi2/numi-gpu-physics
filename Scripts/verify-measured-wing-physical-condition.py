@@ -133,6 +133,18 @@ def main() -> None:
         raise SystemExit(
             "cell-crossing moving-boundary path must remain confirmed"
         )
+    if decision["fixedOccupancyCurvedSphereStabilityPassed"]:
+        raise SystemExit(
+            "fixed-occupancy curved-sphere gate must retain its failed verdict"
+        )
+    if decision["coverUncoverRefillRequiredForInstability"]:
+        raise SystemExit(
+            "cover/uncover refill must not be required after the fixed-sphere failure"
+        )
+    if not decision["curvedNormalMovingLinkPathConfirmed"]:
+        raise SystemExit(
+            "curved normal moving-link path must remain confirmed"
+        )
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
     feasibilities = []
     for key in (
@@ -247,6 +259,71 @@ def main() -> None:
                 f"{translating_path} has a contaminated control surface"
             )
 
+    fixed_sphere_path = Path(
+        decision["fixedOccupancyCurvedSphereStabilityArtifact"]
+    )
+    fixed_sphere = json.loads(
+        fixed_sphere_path.read_text(encoding="utf-8")
+    )
+    fixed_sphere_audit_hash = fixed_sphere["sourceLocks"][
+        "physicalConditionAudit"
+    ]["sha256"]
+    if fixed_sphere_audit_hash != actual_audit_hash:
+        raise SystemExit(
+            f"{fixed_sphere_path} has a stale physical-condition audit hash"
+        )
+    locked_planar_hash = fixed_sphere["sourceLocks"][
+        "fixedPlanarWallArtifact"
+    ]["sha256"]
+    if locked_planar_hash != fixed_wall_hash:
+        raise SystemExit(
+            f"{fixed_sphere_path} has a stale fixed-wall artifact hash"
+        )
+    translating_hash = hashlib.sha256(
+        translating_path.read_bytes()
+    ).hexdigest()
+    locked_translating_hash = fixed_sphere["sourceLocks"][
+        "translatingSphereArtifact"
+    ]["sha256"]
+    if locked_translating_hash != translating_hash:
+        raise SystemExit(
+            f"{fixed_sphere_path} has a stale translating artifact hash"
+        )
+    if fixed_sphere["passed"]:
+        raise SystemExit(f"{fixed_sphere_path} must retain its failed verdict")
+    if fixed_sphere["topologyChanges"]:
+        raise SystemExit(f"{fixed_sphere_path} must retain fixed occupancy")
+    fixed_sphere_cases = fixed_sphere["cases"]
+    if [case["matchedBirdChordCells"] for case in fixed_sphere_cases] != [
+        8,
+        12,
+        16,
+    ]:
+        raise SystemExit(f"{fixed_sphere_path} has unexpected matched cases")
+    if [case["firstNonFiniteLoadStep"] for case in fixed_sphere_cases] != [
+        71,
+        71,
+        72,
+    ]:
+        raise SystemExit(
+            f"{fixed_sphere_path} has changed non-finite load steps"
+        )
+    for case in fixed_sphere_cases:
+        if case["passed"]:
+            raise SystemExit(f"{fixed_sphere_path} contains a passing case")
+        if case["loadsFinite"] or case["populationsFinite"]:
+            raise SystemExit(
+                f"{fixed_sphere_path} must retain its non-finite diagnosis"
+            )
+        if case["newlyCoveredCellEvents"] != 0:
+            raise SystemExit(f"{fixed_sphere_path} contains cover events")
+        if case["newlyUncoveredCellEvents"] != 0:
+            raise SystemExit(f"{fixed_sphere_path} contains uncover events")
+        if case["topologyTransitionSteps"] != 0:
+            raise SystemExit(
+                f"{fixed_sphere_path} contains topology transitions"
+            )
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -274,6 +351,17 @@ def main() -> None:
         )
     )
     print(f"translating_body_classification: {translating['classification']}")
+    print(
+        "fixed_occupancy_sphere_first_non_finite_steps: "
+        + ",".join(
+            str(case["firstNonFiniteLoadStep"])
+            for case in fixed_sphere_cases
+        )
+    )
+    print(
+        "fixed_occupancy_sphere_classification: "
+        f"{fixed_sphere['classification']}"
+    )
     print("passed: true")
 
 

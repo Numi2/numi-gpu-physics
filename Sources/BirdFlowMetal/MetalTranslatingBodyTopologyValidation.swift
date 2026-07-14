@@ -104,6 +104,7 @@ public struct MetalHighReTranslatingBodyStabilityReport:
     public let domainCells: SIMD3<Int>
     public let sphereRadiusCells: Double
     public let translationSpeedLattice: Double
+    public let wallVelocityLattice: Double
     public let requestedSteps: Int
     public let displacementCells: Double
     public let runtimeSeconds: Double
@@ -130,6 +131,25 @@ public enum MetalTranslatingBodyTopologyValidator {
     public static func runHighReStability(
         steps: Int = 500
     ) throws -> MetalHighReTranslatingBodyStabilityReport {
+        try runHighReStability(
+            steps: steps,
+            topologyChanges: true
+        )
+    }
+
+    public static func runHighReFixedOccupancyStability(
+        steps: Int = 500
+    ) throws -> MetalHighReTranslatingBodyStabilityReport {
+        try runHighReStability(
+            steps: steps,
+            topologyChanges: false
+        )
+    }
+
+    private static func runHighReStability(
+        steps: Int,
+        topologyChanges: Bool
+    ) throws -> MetalHighReTranslatingBodyStabilityReport {
         guard steps == 500 else {
             throw MetalTranslatingBodyTopologyValidationError.failed(
                 "high-Re translating-body stability uses a locked 500-step contract"
@@ -139,7 +159,8 @@ public enum MetalTranslatingBodyTopologyValidator {
         let startTime = Date()
         let backend = try MetalBackend(fastMath: false)
         let domain = try GridSize(x: 56, y: 24, z: 24)
-        let speed: Float = 0.08
+        let wallSpeed: Float = 0.08
+        let geometrySpeed: Float = topologyChanges ? wallSpeed : 0
         let maximumMassDrift = 1.0e-3
         let maximumAbsolutePopulation = 10.0
         let maximumForceResidual = 5.0e-4
@@ -153,7 +174,8 @@ public enum MetalTranslatingBodyTopologyValidator {
             let caseConfiguration = MetalTranslatingBodyCaseConfiguration(
                 grid: domain,
                 sphereRadiusCells: Float(sphereRadiusCells),
-                translationSpeedLattice: speed,
+                geometryTranslationSpeedLattice: geometrySpeed,
+                wallVelocityLattice: wallSpeed,
                 latticeKinematicViscosity: viscosity,
                 initialCenter: SIMD3<Float>(8, 12, 12),
                 controlMinimum: SIMD3<UInt32>(2, 2, 2),
@@ -235,9 +257,13 @@ public enum MetalTranslatingBodyTopologyValidator {
             let passed = loadsFinite
                 && populationsFinite
                 && fieldsFinite
-                && coveredEvents > 0
-                && uncoveredEvents > 0
-                && transitionSteps > 0
+                && (topologyChanges
+                    ? coveredEvents > 0
+                        && uncoveredEvents > 0
+                        && transitionSteps > 0
+                    : coveredEvents == 0
+                        && uncoveredEvents == 0
+                        && transitionSteps == 0)
                 && maximumSurfaceLinks == 0
                 && (massDrift ?? .infinity) <= maximumMassDrift
                 && (maximumAbsolute ?? .infinity)
@@ -276,23 +302,35 @@ public enum MetalTranslatingBodyTopologyValidator {
             )
         }
         let passed = cases.allSatisfy(\.passed)
-        let classification = passed
-            ? "high-re-cell-crossing-stable-deforming-interpolation-path-suspect"
-            : "high-re-cell-crossing-unstable-moving-boundary-path-confirmed"
-        let verdict = passed
-            ? "Matched high-Re TRT remains finite and momentum-consistent across cell cover and uncover transitions. Isolate deforming measured-surface interpolation before another bird replay."
-            : "Matched high-Re TRT fails when a translating sphere and cell cover and uncover transitions are added to the fixed-wall case. Run a fixed-occupancy moving-wall sphere to separate curved-link reconstruction from topology refill before another bird replay."
+        let classification: String
+        let verdict: String
+        if topologyChanges {
+            classification = passed
+                ? "high-re-cell-crossing-stable-deforming-interpolation-path-suspect"
+                : "high-re-cell-crossing-unstable-moving-boundary-path-confirmed"
+            verdict = passed
+                ? "Matched high-Re TRT remains finite and momentum-consistent across cell cover and uncover transitions. Isolate deforming measured-surface interpolation before another bird replay."
+                : "Matched high-Re TRT fails when a translating sphere and cell cover and uncover transitions are added to the fixed-wall case. Run a fixed-occupancy moving-wall sphere to separate curved-link reconstruction from topology refill before another bird replay."
+        } else {
+            classification = passed
+                ? "high-re-fixed-occupancy-sphere-stable-topology-refill-path-confirmed"
+                : "high-re-fixed-occupancy-sphere-unstable-curved-normal-wall-path-confirmed"
+            verdict = passed
+                ? "Matched high-Re TRT remains finite and momentum-consistent on a fixed-occupancy curved halfway-link sphere. Cell cover, uncover, and refill are isolated as the remaining difference from the failed translating sphere."
+                : "Matched high-Re TRT fails on a fixed-occupancy curved halfway-link sphere under uniform translational wall velocity, which includes a normal component. This curved normal-wall stress is sufficient without cell cover, uncover, or refill."
+        }
         return MetalHighReTranslatingBodyStabilityReport(
             schemaVersion: 1,
             deviceName: backend.device.name,
             productionKernel: "stepFluidTRT",
             topologyKernel: "buildTranslatingSphereTopology",
-            topologyChanges: true,
+            topologyChanges: topologyChanges,
             domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
             sphereRadiusCells: sphereRadiusCells,
-            translationSpeedLattice: Double(speed),
+            translationSpeedLattice: Double(geometrySpeed),
+            wallVelocityLattice: Double(wallSpeed),
             requestedSteps: steps,
-            displacementCells: Double(speed) * Double(steps),
+            displacementCells: Double(geometrySpeed) * Double(steps),
             runtimeSeconds: Date().timeIntervalSince(startTime),
             maximumAllowedRelativePopulationMassDrift: maximumMassDrift,
             maximumAllowedAbsolutePopulation: maximumAbsolutePopulation,
@@ -538,7 +576,8 @@ import Metal
 private struct MetalTranslatingBodyCaseConfiguration {
     let grid: GridSize
     let sphereRadiusCells: Float
-    let translationSpeedLattice: Float
+    let geometryTranslationSpeedLattice: Float
+    let wallVelocityLattice: Float
     let latticeKinematicViscosity: Float
     let initialCenter: SIMD3<Float>
     let controlMinimum: SIMD3<UInt32>
@@ -554,7 +593,11 @@ private struct MetalTranslatingBodyCaseConfiguration {
             sphereRadiusCells: Float(
                 MetalTranslatingBodyTopologyValidator.sphereRadiusCells
             ),
-            translationSpeedLattice: Float(
+            geometryTranslationSpeedLattice: Float(
+                MetalTranslatingBodyTopologyValidator
+                    .translationSpeedLattice
+            ),
+            wallVelocityLattice: Float(
                 MetalTranslatingBodyTopologyValidator
                     .translationSpeedLattice
             ),
@@ -568,7 +611,8 @@ private struct MetalTranslatingBodyCaseConfiguration {
 
 private struct GPUTranslatingTopologyParameters {
     var initialCenterAndRadius: SIMD4<Float>
-    var velocity: SIMD4<Float>
+    var geometryVelocity: SIMD4<Float>
+    var wallVelocity: SIMD4<Float>
 }
 
 private struct GPUTranslatingTopologyBounds {
@@ -632,7 +676,7 @@ private final class MetalTranslatingBodyTopologySimulation {
         self.backend = backend
         self.linkForceMode = linkForceMode
         let grid = caseConfiguration.grid
-        let referenceSpeed = caseConfiguration.translationSpeedLattice
+        let referenceSpeed = caseConfiguration.wallVelocityLattice
         let characteristicLengthCells = 8
         let targetReynoldsNumber = referenceSpeed
             * Float(characteristicLengthCells)
@@ -664,7 +708,13 @@ private final class MetalTranslatingBodyTopologySimulation {
                     center,
                     caseConfiguration.sphereRadiusCells
                 ),
-                velocity: SIMD4<Float>(referenceSpeed, 0, 0, 0)
+                geometryVelocity: SIMD4<Float>(
+                    caseConfiguration.geometryTranslationSpeedLattice,
+                    0,
+                    0,
+                    0
+                ),
+                wallVelocity: SIMD4<Float>(referenceSpeed, 0, 0, 0)
             )
         )
         bodyState = try backend.makeSharedBuffer(

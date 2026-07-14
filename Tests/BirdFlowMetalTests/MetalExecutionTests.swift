@@ -523,6 +523,8 @@ func productionMetalHighReTranslatingBodyLocalizesInstability() throws {
     #expect(report.productionKernel == "stepFluidTRT")
     #expect(report.topologyKernel == "buildTranslatingSphereTopology")
     #expect(report.topologyChanges)
+    #expect(report.translationSpeedLattice > 0)
+    #expect(report.wallVelocityLattice > 0)
     #expect(report.cases.map(\.matchedBirdChordCells) == [8, 12, 16])
     #expect(report.cases.allSatisfy {
         guard let firstInvalid = $0.firstNonFiniteLoadStep else {
@@ -536,6 +538,38 @@ func productionMetalHighReTranslatingBodyLocalizesInstability() throws {
             && $0.newlyCoveredCellEvents > 0
             && $0.newlyUncoveredCellEvents > 0
             && $0.topologyTransitionSteps > 0
+            && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && !$0.passed
+    })
+    #expect(!report.passed)
+}
+
+@Test
+func productionMetalHighReFixedOccupancySphereLocalizesCurvedLinkInstability()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runHighReFixedOccupancyStability()
+
+    #expect(report.productionKernel == "stepFluidTRT")
+    #expect(report.topologyKernel == "buildTranslatingSphereTopology")
+    #expect(!report.topologyChanges)
+    #expect(report.translationSpeedLattice == 0)
+    #expect(report.wallVelocityLattice > 0)
+    #expect(report.cases.map(\.matchedBirdChordCells) == [8, 12, 16])
+    #expect(report.cases.allSatisfy {
+        guard let firstInvalid = $0.firstNonFiniteLoadStep else {
+            return false
+        }
+        return (50...100).contains(firstInvalid)
+            && $0.finiteLoadSteps == firstInvalid - 1
+            && !$0.populationsFinite
+            && !$0.fieldsFinite
+            && !$0.loadsFinite
+            && $0.newlyCoveredCellEvents == 0
+            && $0.newlyUncoveredCellEvents == 0
+            && $0.topologyTransitionSteps == 0
             && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
             && !$0.passed
     })

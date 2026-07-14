@@ -274,13 +274,28 @@ The radius-`3.25` sphere translates 40 cells through a `56 x 24 x 24` periodic
 domain over 500 steps. The c8/c12/c16 cases become non-finite at steps `276`,
 `282`, and `287` respectively, despite zero solid crossings of the independent
 control surface. All three requested paths contain 1,280 cover and 1,280
-uncover events. The Apple M4 run takes `1.09 s`, returns a failed validation
+uncover events. The Apple M4 run takes `1.17 s`, returns a failed validation
 status, and is archived in
 `ValidationArtifacts/measured-wing-high-re-translating-body-stability.json`.
 
-This confirms the topology-changing moving-boundary path but does not yet
-prove whether curved halfway-link reconstruction or cover/uncover refill
-initiates the instability. A fixed-occupancy moving-wall sphere at the same
-three conditions is the highest-ROI next experiment: it removes only topology
-from the failed case, costs seconds, and avoids both a speculative collision
-rewrite and another bird replay.
+The fixed-occupancy comparison is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --json
+```
+
+With the sphere mask fixed and all cover/uncover counts exactly zero, the same
+three cases fail earlier at steps `71`, `71`, and `72`. The `1.17 s` Apple M4
+record is
+`ValidationArtifacts/measured-wing-high-re-fixed-occupancy-sphere-stability.json`.
+Thus topology refill is not necessary; curved moving-link boundary forcing is
+already sufficient under this operator stress.
+
+Uniform translation on a fixed sphere includes a nonphysical normal wall
+component. The next highest-ROI experiment is therefore a normal-only versus
+tangential-only fixed-sphere A/B. It preserves the seconds-scale cost while
+determining whether the normal moving-boundary correction or tangential curved
+exchange should be stabilized before any bird rerun.
