@@ -8,13 +8,16 @@ struct GPUUniforms {
     var latticeAndSponge: SIMD4<Float>
     var farFieldLattice: SIMD4<Float>
     var gravity: SIMD4<Float>
+    var caseParameters: SIMD4<Float>
     var flags: SIMD4<UInt32>
 
     init(
         configuration: SimulationConfiguration,
         time: Float,
         captureMacroscopicFields: Bool = true,
-        hasPreviousGeometry: Bool = false
+        hasPreviousGeometry: Bool = false,
+        periodicBoundaries: Bool = false,
+        shearWaveAmplitude: Float = 0
     ) {
         grid = SIMD4<UInt32>(
             UInt32(configuration.grid.x),
@@ -55,11 +58,12 @@ struct GPUUniforms {
             configuration.gravityMetersPerSecondSquared.z,
             0
         )
+        caseParameters = SIMD4<Float>(shearWaveAmplitude, 0, 0, 0)
         flags = SIMD4<UInt32>(
             configuration.freeFlight ? 1 : 0,
             captureMacroscopicFields ? 1 : 0,
             hasPreviousGeometry ? 1 : 0,
-            0
+            periodicBoundaries ? 1 : 0
         )
     }
 }

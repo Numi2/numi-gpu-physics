@@ -50,6 +50,7 @@ struct GPUUniforms {
     float4 latticeAndSponge;
     float4 farFieldLattice;
     float4 gravity;
+    float4 caseParameters;
     uint4 flags;
 };
 
@@ -464,6 +465,41 @@ kernel void initializePopulations(
     velocity[gid] = float4(initialVelocity, 0);
 }
 
+/// Deterministic periodic shear-wave initialization used by the canonical
+/// validation harness. The subsequent evolution is performed by the same
+/// `stepFluidTRT` kernel as the articulated-bird solver.
+kernel void initializeShearWave(
+    device float* populations [[buffer(0)]],
+    device float* density [[buffer(1)]],
+    device float4* velocity [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    float phase = 2.0f
+        * 3.14159265358979323846f
+        * float(cell.y)
+        / float(uniforms.grid.y);
+    float3 initialVelocity = float3(
+        uniforms.caseParameters.x * sin(phase),
+        0,
+        0
+    );
+    for (uint q = 0; q < Q; ++q) {
+        populations[q * uniforms.grid.w + gid] = equilibrium(
+            q,
+            1.0f,
+            initialVelocity
+        );
+    }
+    density[gid] = 1.0f;
+    velocity[gid] = float4(initialVelocity, 0);
+}
+
 inline bool inside(int3 p, uint3 size) {
     return p.x >= 0
         && p.y >= 0
@@ -590,11 +626,34 @@ kernel void stepFluidTRT(
                     float value;
 
                     if (!interiorDomain && !inside(sourceCell, size)) {
-                        value = equilibrium(
-                            q,
-                            uniforms.farFieldLattice.w,
-                            uniforms.farFieldLattice.xyz
-                        );
+                        if (uniforms.flags.w != 0u) {
+                            sourceCell.x = sourceCell.x < 0
+                                ? int(size.x) - 1
+                                : (sourceCell.x >= int(size.x)
+                                    ? 0
+                                    : sourceCell.x);
+                            sourceCell.y = sourceCell.y < 0
+                                ? int(size.y) - 1
+                                : (sourceCell.y >= int(size.y)
+                                    ? 0
+                                    : sourceCell.y);
+                            sourceCell.z = sourceCell.z < 0
+                                ? int(size.z) - 1
+                                : (sourceCell.z >= int(size.z)
+                                    ? 0
+                                    : sourceCell.z);
+                            uint source = flatten(uint3(sourceCell), size);
+                            value = populationsIn[
+                                q * uniforms.grid.w + source
+                            ];
+                        }
+                        else {
+                            value = equilibrium(
+                                q,
+                                uniforms.farFieldLattice.w,
+                                uniforms.farFieldLattice.xyz
+                            );
+                        }
                     }
                     else {
                         uint source = flatten(uint3(sourceCell), size);

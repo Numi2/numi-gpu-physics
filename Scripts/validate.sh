@@ -11,6 +11,7 @@ python3 Reference/shear_wave_convergence.py
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
   Scripts/check-metal.sh
+  swift run birdflow validate shear-wave --json
 else
-  echo "Metal compiler check skipped: this host is not macOS."
+  echo "Metal compiler and production shear-wave checks skipped: this host is not macOS."
 fi

@@ -275,4 +275,33 @@ func metalRigidBodyIntegratorMatchesCPUReferenceOneStep() throws {
         ) < 1e-6
     )
 }
+
+@Test
+func productionMetalShearWavePassesCanonicalGates() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalShearWaveValidator.run()
+
+    #expect(report.productionKernel == "stepFluidTRT")
+    #expect(report.cases.map(\.resolution) == [16, 24, 32])
+    #expect(report.finestRelativeDecayError < report.maximumAllowedDecayError)
+    #expect(
+        report.maximumRelativeMassDrift < report.maximumAllowedMassDrift
+    )
+    #expect(
+        report.estimatedOrder >= report.minimumRequiredConvergenceOrder
+    )
+    #expect(
+        report.maximumPopulationDifferenceFromCPU
+            < report.maximumAllowedCPUReferenceDifference
+    )
+    #expect(
+        report.maximumBatchDensityDifference
+            < report.maximumAllowedBatchDifference
+    )
+    #expect(
+        report.maximumBatchVelocityDifference
+            < report.maximumAllowedBatchDifference
+    )
+    #expect(report.passed)
+}
 #endif

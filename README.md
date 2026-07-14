@@ -4,7 +4,7 @@ BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Appl
 
 The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
 
-This repository is a complete vertical slice, not a validated research result. The validation command compiles and executes the Swift/Metal path on a supported Mac and runs the independent reference checks. It does not yet implement the full canonical GPU boundary ladder in `Docs/VALIDATION.md`; those cases, grid convergence, and measured geometry/kinematics remain mandatory before aerodynamic results are treated as quantitative.
+This repository is a complete vertical slice, not a validated research result. The validation command compiles and executes the Swift/Metal path on a supported Mac, runs the independent reference checks, and now executes periodic shear-wave decay/refinement on the production fluid kernel. It does not yet implement the full canonical moving-boundary ladder in `Docs/VALIDATION.md`; those cases, aerodynamic-load grid convergence, and measured geometry/kinematics remain mandatory before bird-flight results are treated as quantitative.
 
 ## Implemented solver
 
@@ -52,11 +52,22 @@ swift test
 ./Scripts/validate.sh
 ```
 
-`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave accuracy and grid-convergence references.
+`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the strict-math production-Metal shear-wave harness.
 
-The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The reference shear wave remains an independent NumPy implementation; it is not a Metal shear-wave comparison.
+The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against an independent CPU implementation, and command-buffer batch invariance.
 
 ## Run
+
+Canonical production-Metal shear-wave validation:
+
+```bash
+swift run -c release birdflow validate shear-wave \
+  --resolution 32 \
+  --archive ValidationArtifacts/shear-wave \
+  --json
+```
+
+The optional archive contains `report.json`, a format manifest, and final density/velocity fields for each refinement grid.
 
 A fixed-bird wind-tunnel case:
 
@@ -103,6 +114,7 @@ Sources/BirdFlowCore/
 Sources/BirdFlowMetal/
   MetalBackend.swift            device, runtime compilation, pipelines
   BirdFlowSimulation.swift      state ownership and step command graph
+  MetalShearWaveValidation.swift production-kernel canonical validation
   GPUData.swift                 Swift/MSL-compatible data layouts
   Metal/BirdFlow.metal          geometry, fluid, reduction, body kernels
 

@@ -100,6 +100,100 @@ private struct Arguments {
       --lattice-speed VALUE  Lattice reference velocity (default: 0.04)
       --resolution-scale N   Scale grid, chord cells, and sponge together
       --help                 Show this help
+
+    Canonical GPU validation:
+      birdflow validate shear-wave [--resolution N] [--json]
+    """
+}
+
+private struct ShearWaveArguments {
+    var finestResolution = 32
+    var finestSteps = 120
+    var viscosity: Float = 0.03
+    var amplitude: Float = 0.01
+    var json = false
+    var archivePath: String?
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--resolution":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 32 else {
+                    throw CLIError.invalidArgument(
+                        "--resolution requires an integer of at least 32"
+                    )
+                }
+                finestResolution = value
+            case "--steps":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 16 else {
+                    throw CLIError.invalidArgument(
+                        "--steps requires an integer of at least 16"
+                    )
+                }
+                finestSteps = value
+            case "--viscosity":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--viscosity requires a positive number"
+                    )
+                }
+                viscosity = value
+            case "--amplitude":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--amplitude requires a positive number"
+                    )
+                }
+                amplitude = value
+            case "--json":
+                json = true
+            case "--archive":
+                index += 1
+                guard index < values.count, !values[index].isEmpty else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output directory"
+                    )
+                }
+                archivePath = values[index]
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown shear-wave option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow validate shear-wave [options]
+
+      --resolution N       Finest cubic grid (default: 32, minimum: 32)
+      --steps N            Finest-grid steps (default: 120, minimum: 16)
+      --viscosity VALUE    Lattice kinematic viscosity (default: 0.03)
+      --amplitude VALUE    Initial lattice velocity amplitude (default: 0.01)
+      --json               Emit the machine-readable validation report
+      --archive DIRECTORY  Save report.json and final Float32 fields
+      --help               Show this help
+
+    The command runs a three-grid refinement ladder, an eight-step
+    cell-by-cell CPU comparison, and a command-buffer batch-invariance check
+    against the production stepFluidTRT Metal kernel.
     """
 }
 
@@ -171,8 +265,8 @@ private func csv(_ snapshot: SimulationSnapshot) -> String {
     ].joined(separator: ",")
 }
 
-do {
-    let arguments = try Arguments(CommandLine.arguments)
+private func runBirdSimulation(_ values: [String]) throws {
+    let arguments = try Arguments(values)
     let configuration = try makeConfiguration(arguments: arguments)
     let bird = BirdParameters.demonstration
     let center = configuration.domainOriginMeters
@@ -200,6 +294,76 @@ do {
         print(csv(try simulation.snapshot()))
         remaining -= count
     }
+}
+
+private func printShearWaveReport(
+    _ report: MetalShearWaveValidationReport
+) {
+    print("production_kernel: \(report.productionKernel)")
+    print("device: \(report.deviceName)")
+    for result in report.cases {
+        print(
+            "resolution=\(result.resolution) steps=\(result.steps) "
+                + "decay_error=\(result.relativeDecayError) "
+                + "mass_drift=\(result.relativeMassDrift)"
+        )
+    }
+    print("estimated_order: \(report.estimatedOrder)")
+    print(
+        "maximum_population_difference_from_cpu: "
+            + String(report.maximumPopulationDifferenceFromCPU)
+    )
+    print(
+        "maximum_batch_density_difference: "
+            + String(report.maximumBatchDensityDifference)
+    )
+    print(
+        "maximum_batch_velocity_difference: "
+            + String(report.maximumBatchVelocityDifference)
+    )
+    print("passed: \(report.passed)")
+}
+
+private func runShearWaveValidation(_ values: [String]) throws {
+    let arguments = try ShearWaveArguments(values)
+    let report = try MetalShearWaveValidator.run(
+        finestResolution: arguments.finestResolution,
+        finestSteps: arguments.finestSteps,
+        viscosity: arguments.viscosity,
+        initialAmplitude: arguments.amplitude,
+        archiveDirectory: arguments.archivePath.map {
+            URL(fileURLWithPath: $0, isDirectory: true)
+        }
+    )
+    if arguments.json {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        print(String(decoding: try encoder.encode(report), as: UTF8.self))
+    } else {
+        printShearWaveReport(report)
+    }
+    guard report.passed else {
+        throw MetalShearWaveValidationError.failed(
+            "one or more numerical acceptance gates were exceeded"
+        )
+    }
+}
+
+private func run(_ values: [String]) throws {
+    if values.count > 1, values[1] == "validate" {
+        guard values.count > 2, values[2] == "shear-wave" else {
+            throw CLIError.invalidArgument(
+                "Use: birdflow validate shear-wave [options]"
+            )
+        }
+        try runShearWaveValidation(values)
+    } else {
+        try runBirdSimulation(values)
+    }
+}
+
+do {
+    try run(CommandLine.arguments)
 } catch {
     let message = "birdflow: \(error)\n"
     FileHandle.standardError.write(Data(message.utf8))

@@ -1,6 +1,6 @@
 # Build, Metal optimization, and verification report
 
-Date: 2026-07-12
+Date: 2026-07-14
 
 ## Delivered implementation
 
@@ -12,6 +12,7 @@ Date: 2026-07-12
 - Optional six-degree-of-freedom rigid-body update
 - Physical/lattice scaling, initial Mach/domain-fit guards, and field readback
 - macOS Metal compilation plus live Metal execution regression
+- production-Metal periodic shear-wave validation and raw-field archive mode
 - physical-domain-preserving `--resolution-scale` control and allocation preflight
 
 ## GPU optimization pass
@@ -57,7 +58,7 @@ swift build -c release
 
 Results:
 
-- 18 Swift tests passed in debug and release configurations.
+- 19 Swift tests passed in debug and release configurations.
 - Live Metal tests matched moving-wing fixed-body and free-flight multi-command-buffer advances against synchronized one-step advances, including loads, captured fields, and rigid-body state.
 - A direct strict-math CPU/Metal rigid-body step matched position, linear/angular velocity, and orientation within `1e-6` under nonzero force and torque.
 - Cross-language audit passed for kernel/pipeline names, shared layouts, Swift/Metal D3Q19 direction/weight/opposite tables, and named buffer contracts.
@@ -65,10 +66,15 @@ Results:
 - Periodic shear-wave relative mass drift: `1.1879386363489175e-14`.
 - Periodic shear-wave relative decay error: `0.002892715023138497` (about `0.289%`).
 - Four-grid independent reference convergence order: `1.9861403033324327`.
+- Production-Metal finest-grid shear-wave decay error: `0.0028964498775389` (about `0.290%`).
+- Production-Metal three-grid convergence order: `1.9870657216321463`.
+- Production-Metal maximum actual population-mass drift: `2.9401853382824776e-6` (below the `5e-6` single-precision gate).
+- Production-Metal maximum steps 1–8 cell-population difference from the CPU implementation: `1.7881393432617188e-7`.
+- Production-Metal batched-versus-stepwise density and velocity differences: exactly zero in the default validation case.
 - The default fixed-bird and free-flight release executables completed live Metal runs on the M4.
 
 ## Verification boundary
 
-The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. They do not yet execute the periodic shear wave, channel, planar moving wall, sphere, or isolated wing on the production Metal solver.
+The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. They do not yet execute channel flow, a planar moving wall, a sphere, or an isolated wing on the production Metal solver.
 
 Quantitative aerodynamic use still requires the complete ladder in `Docs/VALIDATION.md`, including Metal-versus-reference field comparisons, canonical boundary cases, two-finest-grid load convergence, measured bird geometry and kinematics, and free-flight momentum/body-step refinement. Free-flight studies must also add runtime Mach/domain monitoring and either model wing inertial/hinge/actuator reactions or justify the current massless-wing approximation. The optimization timings above are engineering evidence only and are not aerodynamic validation.

@@ -10,7 +10,10 @@ from fractions import Fraction
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SHADER = ROOT / "Sources/BirdFlowMetal/Metal/BirdFlow.metal"
-SWIFT = ROOT / "Sources/BirdFlowMetal/BirdFlowSimulation.swift"
+SWIFT_FILES = (
+    ROOT / "Sources/BirdFlowMetal/BirdFlowSimulation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalShearWaveValidation.swift",
+)
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
 GPU_DATA = ROOT / "Sources/BirdFlowMetal/GPUData.swift"
 
@@ -18,6 +21,7 @@ REQUIRED_KERNELS = {
     "buildBirdGeometry",
     "prepareBirdGeometry",
     "initializePopulations",
+    "initializeShearWave",
     "stepFluidTRT",
     "reduceForceTorque",
     "integrateBirdBody",
@@ -65,7 +69,7 @@ def extract_braced_body(source: str, declaration: str) -> str:
 
 def main() -> int:
     shader = SHADER.read_text(encoding="utf-8")
-    swift = SWIFT.read_text(encoding="utf-8")
+    swift = "\n".join(path.read_text(encoding="utf-8") for path in SWIFT_FILES)
     core = CORE.read_text(encoding="utf-8")
     gpu_data = GPU_DATA.read_text(encoding="utf-8")
 
@@ -160,7 +164,8 @@ def main() -> int:
     shared_structs = {
         "GPUUniforms": [
             "grid", "originAndCellSize", "timeStepAndScales",
-            "latticeAndSponge", "farFieldLattice", "gravity", "flags",
+            "latticeAndSponge", "farFieldLattice", "gravity",
+            "caseParameters", "flags",
         ],
         "GPUBirdParameters": [
             "bodyRadiiAndMass", "inertia", "wingGeometry0",
@@ -196,9 +201,11 @@ def main() -> int:
 
     expected_swift_bindings = {
         "private func encodeInitialization()": 6,
+        "private func encodeShearInitialization()": 4,
         "private func encodeGeometryPreparation(": 4,
         "private func encodeGeometry(": 6,
         "private func encodeFluidStep(": 10,
+        "private func encodeShearFluidStep(": 10,
         "private func encodeReduction(": 3,
         "private func encodeBodyIntegration(": 4,
     }
@@ -231,6 +238,7 @@ def main() -> int:
         "buildBirdGeometry": 6,
         "prepareBirdGeometry": 4,
         "initializePopulations": 6,
+        "initializeShearWave": 4,
         "stepFluidTRT": 10,
         "reduceForceTorque": 3,
         "integrateBirdBody": 4,
@@ -262,6 +270,11 @@ def main() -> int:
             "private func encodeInitialization()",
             ["populationsA", "currentSolidMask", "wallVelocity", "density", "velocity", "uniforms"],
             ["populationsA", "solid", "wallVelocity", "density", "velocity", "uniforms"],
+        ),
+        "initializeShearWave": (
+            "private func encodeShearInitialization()",
+            ["populationsA", "density", "velocity", "uniforms"],
+            ["populations", "density", "velocity", "uniforms"],
         ),
         "stepFluidTRT": (
             "private func encodeFluidStep(",
@@ -313,6 +326,37 @@ def main() -> int:
                 f"binding contract differs for {kernel}: "
                 f"Swift={swift_names}, Metal={metal_names}"
             )
+
+    shear_step_body = extract_braced_body(
+        swift,
+        "private func encodeShearFluidStep(",
+    )
+    shear_step_pairs = re.findall(
+        r"encoder\.setBuffer\(\s*(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        shear_step_body,
+        re.S,
+    ) + re.findall(
+        r"encoder\.setBytes\(\s*&?(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        shear_step_body,
+        re.S,
+    )
+    shear_step_names = [
+        name
+        for name, _ in sorted(
+            shear_step_pairs,
+            key=lambda pair: int(pair[1]),
+        )
+    ]
+    expected_shear_step = [
+        "currentPopulations", "nextPopulations", "solidMaskA",
+        "solidMaskB", "wallVelocity", "density", "velocity",
+        "partialLoads", "bodyState", "uniforms",
+    ]
+    if shear_step_names != expected_shear_step:
+        fail(
+            "alternate shear-wave stepFluidTRT bindings differ: "
+            f"Swift={shear_step_names}"
+        )
 
     print(
         "static-audit: kernels, pipelines, shared layouts, cross-language "

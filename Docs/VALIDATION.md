@@ -4,14 +4,15 @@ Aerodynamic output is not accepted as quantitative until this sequence passes. E
 
 ## Current automated coverage
 
-`Scripts/validate.sh` currently provides four gates:
+`Scripts/validate.sh` currently provides five gates:
 
 - Swift algebra, scaling, rigid-body, and layout tests;
 - live strict-math Metal moving-wing fixed-body and free-flight batch-partition regressions, plus CPU/GPU rigid-body one-step parity;
-- an independent NumPy periodic shear-wave decay/convergence reference; and
+- an independent NumPy periodic shear-wave decay/convergence reference;
+- a production-Metal periodic shear-wave refinement, cell-by-cell CPU comparison, population-mass, and command-buffer batch-invariance check; and
 - offline compilation and linking of every Metal entry point.
 
-This is a compilation and regression gate, not completion of the benchmark ladder below. The production Metal solver does not yet expose periodic boundaries, channel forcing, planar moving walls, or selectable canonical sphere/isolated-wing cases, so sections 2–6 still require dedicated GPU case modes and comparison tooling. The procedural bird already contains finite wings, but that is not a canonical case harness. The live Metal regression does not replace a cell-for-cell Metal-versus-reference shear-wave test.
+This is a compilation and regression gate, not completion of the benchmark ladder below. Section 2 now runs on the production fluid kernel. Channel forcing, planar moving walls, and selectable canonical sphere/isolated-wing cases are still absent, so sections 3–6 require dedicated GPU case modes and comparison tooling. The procedural bird already contains finite wings, but that is not a canonical case harness.
 
 ## 1. Algebra and layout
 
@@ -34,7 +35,19 @@ Acceptance:
 ```bash
 python3 Reference/shear_wave_reference.py
 python3 Reference/shear_wave_convergence.py
+swift run -c release birdflow validate shear-wave --resolution 32 --json
 ```
+
+To archive the machine-readable report and final raw fields for all three grids:
+
+```bash
+swift run -c release birdflow validate shear-wave \
+  --resolution 32 \
+  --archive ValidationArtifacts/shear-wave-m4 \
+  --json
+```
+
+The archive contains `report.json`, an encoding manifest, and little-endian Float32 density and interleaved XYZ velocity fields in x-fast cell order.
 
 The analytic amplitude is:
 
@@ -42,13 +55,21 @@ The analytic amplitude is:
 A(t) = A(0) exp(-nu k^2 t)
 ```
 
-Acceptance:
+Independent Float64 reference acceptance:
 
 - relative mass drift below `1e-6`
 - relative decay error below `3%`
-- approximately second-order convergence under refinement
+- convergence order at least `1.8`
 
-The same case should then run on Metal and be compared cell-for-cell with the reference for the first several steps.
+Production strict-math Metal acceptance:
+
+- actual population-mass drift below `5e-6` over the default 120-step finest case
+- relative decay error below `3%`
+- convergence order at least `1.8` over `16^3`, `24^3`, and `32^3`
+- maximum cell-population difference below `5e-6` against the host CPU reference implementation over steps 1–8
+- density and velocity differences below `1e-7` between stepwise and batched command-buffer execution
+
+The Metal mass threshold is five parts per million because it measures the real single-precision distribution field; it is intentionally distinct from the Float64 NumPy threshold rather than hiding the observed GPU roundoff in diagnostic density.
 
 ## 3. Laminar channel flow
 

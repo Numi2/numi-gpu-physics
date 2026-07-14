@@ -65,7 +65,7 @@ omegaMinus = 1 / tauMinus
 
 ## Streaming and far field
 
-The main kernel uses pull streaming. Each fluid cell reads the population arriving from `cell - c_q`. Sources outside the domain are supplied with far-field equilibrium. A quadratic sponge in the outer band relaxes post-collision populations toward that state.
+The main kernel uses pull streaming. Each fluid cell reads the population arriving from `cell - c_q`. In bird cases, sources outside the domain are supplied with far-field equilibrium and a quadratic sponge in the outer band relaxes post-collision populations toward that state. The canonical shear-wave harness selects periodic wrapping in all three axes and disables geometry and sponge relaxation while retaining the same `stepFluidTRT` streaming and TRT collision implementation.
 
 ## Moving bird boundary
 
