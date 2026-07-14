@@ -104,7 +104,7 @@ private struct Arguments {
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
       birdflow validate moving-wall [--resolution N] [--json]
-      birdflow validate translating-body [--json]
+      birdflow validate translating-body [--high-re-stability] [--json]
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
       birdflow validate flapping-wing [--chord-cells N] [--json]
@@ -346,12 +346,15 @@ private struct MeasuredBirdReplayArguments {
 }
 
 private struct TranslatingBodyArguments {
+    var highReStability = false
     var json = false
 
     init(_ values: [String]) throws {
         var index = 3
         while index < values.count {
             switch values[index] {
+            case "--high-re-stability":
+                highReStability = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -369,13 +372,15 @@ private struct TranslatingBodyArguments {
     static let help = """
     birdflow validate translating-body [options]
 
-      --json  Emit the machine-readable validation report and phase history
-      --help  Show this help
+      --high-re-stability  Run locked 500-step c8/c12/c16 cell-crossing cases
+      --json               Emit the machine-readable validation report
+      --help               Show this help
 
     The command translates a compact voxel sphere through two lattice cells
     in a periodic quiescent domain. It requires cover and uncover events, then
     closes the production boundary load against an independent fluid-momentum
-    budget while comparing the legacy and conservative estimators.
+    budget while comparing the legacy and conservative estimators. The high-Re
+    gate uses the published-condition relaxation margins and a longer domain.
     """
 }
 
@@ -474,11 +479,13 @@ private struct MovingWallArguments {
     var finestResolution = 32
     var viscosity: Float = 0.1
     var amplitude: Float = 0.01
+    var highReStability = false
     var json = false
     var archivePath: String?
 
     init(_ values: [String]) throws {
         var index = 3
+        var customizedStandardCase = false
         while index < values.count {
             switch values[index] {
             case "--resolution":
@@ -491,6 +498,7 @@ private struct MovingWallArguments {
                     )
                 }
                 finestResolution = value
+                customizedStandardCase = true
             case "--viscosity":
                 index += 1
                 guard index < values.count,
@@ -501,6 +509,7 @@ private struct MovingWallArguments {
                     )
                 }
                 viscosity = value
+                customizedStandardCase = true
             case "--amplitude":
                 index += 1
                 guard index < values.count,
@@ -511,6 +520,9 @@ private struct MovingWallArguments {
                     )
                 }
                 amplitude = value
+                customizedStandardCase = true
+            case "--high-re-stability":
+                highReStability = true
             case "--json":
                 json = true
             case "--archive":
@@ -531,6 +543,11 @@ private struct MovingWallArguments {
             }
             index += 1
         }
+        if highReStability && (customizedStandardCase || archivePath != nil) {
+            throw CLIError.invalidArgument(
+                "--high-re-stability uses a locked 16^3, 500-step contract and cannot be combined with resolution, viscosity, amplitude, or archive options"
+            )
+        }
     }
 
     static let help = """
@@ -539,6 +556,8 @@ private struct MovingWallArguments {
       --resolution N       Finest cubic grid (default: 32, minimum: 32)
       --viscosity VALUE    Lattice kinematic viscosity (default: 0.1)
       --amplitude VALUE    Wall lattice velocity amplitude (default: 0.01)
+      --high-re-stability  Run the locked 500-step fixed-wall cases matching
+                           measured-wing c8/c12/c16 TRT relaxation margins
       --json               Emit the machine-readable validation report
       --archive DIRECTORY  Save report.json and final Float32 fields
       --help               Show this help
@@ -546,7 +565,8 @@ private struct MovingWallArguments {
     The command runs transient translating-wall Couette flow and a finite-gap
     oscillating Stokes layer on three grids. It checks profiles, no-penetration,
     isolated top-wall momentum-exchange force, force phase, convergence, and
-    dynamic-wall command-buffer batch invariance.
+    dynamic-wall command-buffer batch invariance. The high-Re gate removes all
+    cover/uncover topology changes to isolate collision stability.
     """
 }
 
@@ -1111,6 +1131,31 @@ private func runShearWaveValidation(_ values: [String]) throws {
 
 private func runMovingWallValidation(_ values: [String]) throws {
     let arguments = try MovingWallArguments(values)
+    if arguments.highReStability {
+        let report = try MetalMovingWallValidator.runHighReStability()
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("production_kernel: \(report.productionKernel)")
+            print("device: \(report.deviceName)")
+            print("classification: \(report.classification)")
+            for result in report.cases {
+                print(
+                    "matched_c=\(result.matchedBirdChordCells) "
+                        + "tau_margin=\(result.tauPlusMarginAboveHalf) "
+                        + "finite_steps=\(result.finiteSteps)/\(result.requestedSteps) "
+                        + "passed=\(result.passed)"
+                )
+            }
+            print("passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MetalMovingWallValidationError.failed(
+                "matched high-Re fixed-wall stability gate failed"
+            )
+        }
+        return
+    }
     let report = try MetalMovingWallValidator.run(
         finestResolution: arguments.finestResolution,
         viscosity: arguments.viscosity,
@@ -1153,6 +1198,33 @@ private func runMovingWallValidation(_ values: [String]) throws {
 
 private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
+    if arguments.highReStability {
+        let report = try MetalTranslatingBodyTopologyValidator
+            .runHighReStability()
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("production_kernel: \(report.productionKernel)")
+            print("topology_kernel: \(report.topologyKernel)")
+            print("device: \(report.deviceName)")
+            print("classification: \(report.classification)")
+            for result in report.cases {
+                print(
+                    "matched_c=\(result.matchedBirdChordCells) "
+                        + "finite_steps=\(result.finiteLoadSteps)/\(result.requestedSteps) "
+                        + "transition_steps=\(result.topologyTransitionSteps) "
+                        + "passed=\(result.passed)"
+                )
+            }
+            print("passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "matched high-Re cell-crossing stability gate failed"
+            )
+        }
+        return
+    }
     let report = try MetalTranslatingBodyTopologyValidator.run()
     if arguments.json {
         let encoder = JSONEncoder()

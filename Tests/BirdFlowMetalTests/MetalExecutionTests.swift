@@ -462,6 +462,28 @@ func productionMetalMovingWallPassesCanonicalGates() throws {
 }
 
 @Test
+func productionMetalHighReFixedMovingWallRemainsFinite() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalMovingWallValidator.runHighReStability()
+
+    #expect(report.productionKernel == "stepFluidTRT")
+    #expect(!report.topologyChanges)
+    #expect(report.cases.map(\.matchedBirdChordCells) == [8, 12, 16])
+    #expect(report.cases.allSatisfy {
+        $0.finiteSteps == report.requestedSteps
+            && $0.firstNonFiniteStep == nil
+            && $0.fieldsFinite
+            && $0.loadsFinite
+            && ($0.relativePopulationMassDrift ?? .infinity)
+                <= report.maximumAllowedRelativePopulationMassDrift
+            && ($0.maximumAbsolutePopulation ?? .infinity)
+                <= report.maximumAllowedAbsolutePopulation
+            && $0.passed
+    })
+    #expect(report.passed)
+}
+
+@Test
 func productionMetalTranslatingBodyTopologyClosesMomentumBudget() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalTranslatingBodyTopologyValidator.run()
@@ -490,6 +512,34 @@ func productionMetalTranslatingBodyTopologyClosesMomentumBudget() throws {
             <= report.maximumAllowedRawBudgetDifferenceBetweenRuns
     )
     #expect(report.passed)
+}
+
+@Test
+func productionMetalHighReTranslatingBodyLocalizesInstability() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runHighReStability()
+
+    #expect(report.productionKernel == "stepFluidTRT")
+    #expect(report.topologyKernel == "buildTranslatingSphereTopology")
+    #expect(report.topologyChanges)
+    #expect(report.cases.map(\.matchedBirdChordCells) == [8, 12, 16])
+    #expect(report.cases.allSatisfy {
+        guard let firstInvalid = $0.firstNonFiniteLoadStep else {
+            return false
+        }
+        return (200...400).contains(firstInvalid)
+            && $0.finiteLoadSteps == firstInvalid - 1
+            && !$0.populationsFinite
+            && !$0.fieldsFinite
+            && !$0.loadsFinite
+            && $0.newlyCoveredCellEvents > 0
+            && $0.newlyUncoveredCellEvents > 0
+            && $0.topologyTransitionSteps > 0
+            && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && !$0.passed
+    })
+    #expect(!report.passed)
 }
 
 @Test

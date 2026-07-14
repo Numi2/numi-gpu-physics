@@ -87,6 +87,15 @@
     "eightCellFeasibilityArtifact": "ValidationArtifacts/measured-wing-published-condition-feasibility-c8.json",
     "twelveCellOneCycleFeasibilityPassed": false,
     "twelveCellFeasibilityArtifact": "ValidationArtifacts/measured-wing-published-condition-feasibility-c12.json",
+    "sixteenCellOneCycleFeasibilityPassed": false,
+    "sixteenCellFeasibilityArtifact": "ValidationArtifacts/measured-wing-published-condition-feasibility-c16.json",
+    "fixedMovingWallHighReStabilityPassed": true,
+    "fixedMovingWallHighReStabilityArtifact": "ValidationArtifacts/measured-wing-high-re-fixed-moving-wall-stability.json",
+    "collisionOnlyStabilitySuspect": false,
+    "movingTopologyPathSuspect": true,
+    "highReTranslatingBodyStabilityPassed": false,
+    "highReTranslatingBodyStabilityArtifact": "ValidationArtifacts/measured-wing-high-re-translating-body-stability.json",
+    "cellCrossingMovingBoundaryPathConfirmed": true,
     "authoritativeHierarchy": [
       "Use the literal Re=9367.4 to reproduce the published numerical target.",
       "Use equation 8's Uref=7.1758 m/s and equation 9's denominator for force coefficients.",
@@ -94,7 +103,7 @@
       "Retain Re=9315.65 as an arithmetic-closure sensitivity point.",
       "Do not use Table 3's 7.58 m/s for normalization."
     ],
-    "nextGate": "Run one 16-cell cycle at the published condition as the final low-complexity resolution discriminator. The 12-cell case increased the TRT margin by 50% but became non-finite earlier in phase, so a 16-cell failure should stop resolution-only escalation and trigger a stabilized-collision canonical before any five-cycle ladder."
+    "nextGate": "Run a fixed-occupancy sphere with the same curved halfway links, 0.08 wall lattice speed, 500 steps, and c8, c12, and c16 viscosities. This changes only cell cover, uncover, and refill relative to the failed translating sphere. If the fixed sphere passes, topology conversion and refill are isolated; if it fails, curved moving-link population reconstruction is already sufficient. Do not rerun the bird or change collision physics before this discriminator."
   },
-  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state. A published CFD convention for the same wing is locked, with its internal rounding discrepancies explicit. The current single-precision TRT path becomes non-finite during both eight- and twelve-cell one-cycle feasibility runs; the twelve-cell failure occurs earlier in phase despite a 50% larger relaxation margin. Source-backed inputs are ready, but a quantitative published-condition replay is not."
+  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state. A published CFD convention for the same wing is locked, with its internal rounding discrepancies explicit. The current single-precision TRT path becomes non-finite during eight-, twelve-, and sixteen-cell one-cycle feasibility runs. Failure stays near 300-430 lattice steps and moves earlier in physical phase as resolution rises, despite the sixteen-cell relaxation margin being twice the eight-cell margin. A fixed 16-cubed planar moving-wall canonical remains finite for 500 steps at all three matched relaxation margins. Adding a translating halfway-link sphere and cell cover/uncover transitions makes the same three cases non-finite at steps 276, 282, and 287. Resolution-only escalation and collision-only TRT instability are rejected, and the topology-changing moving-boundary path is confirmed. One fixed-occupancy curved-sphere discriminator remains necessary to separate curved moving-link reconstruction from cover/uncover refill. Source-backed inputs are ready, but a quantitative published-condition replay is not."
 }

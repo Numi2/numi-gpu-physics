@@ -631,11 +631,58 @@ and mean force remain invalid. The run takes `15.81 s` and is locked in
 `ValidationArtifacts/measured-wing-published-condition-feasibility-c12.json`.
 This rules out a simple monotonic cure from the first resolution increase.
 
-One 16-cell cycle is the final low-complexity resolution discriminator before
-stabilized-collision work. It doubles the eight-cell relaxation margin and
-reuses the same gate; if it fails, stop resolution-only escalation and first
-qualify a regularized, central-moment, or cumulant collision path on canonical
-high-Re moving-wall cases.
+The one-cycle 16-cell discriminator also fails. Although its relaxation margin
+is `0.000263453`, twice the eight-cell value, the first non-finite load arrives
+at step `334/3976`, phase `0.084004`—earlier again in nondimensional time.
+Geometry passes before the failure. The Apple M4 run takes `41.85 s` and is
+locked in
+`ValidationArtifacts/measured-wing-published-condition-feasibility-c16.json`.
+Failures now stay within 334–430 lattice steps while moving earlier in physical
+phase as resolution rises, so resolution-only escalation is closed.
+
+The collision/topology discriminator is a sub-second release command:
+
+```bash
+.build/release/birdflow validate moving-wall --high-re-stability --json
+```
+
+It runs the production `stepFluidTRT` kernel for 500 steps in a fixed `16^3`
+periodic planar channel at wall lattice speed `0.08`, using the exact c8, c12,
+and c16 viscosities and relaxation margins. No cell is covered or uncovered.
+All three cases remain finite on Apple M4 in `0.95 s`; every case completes all
+500 steps, all final populations are positive, and the worst relative
+population-mass drift is `1.23647e-5` against the `5e-5` gate. The result is
+locked in
+`ValidationArtifacts/measured-wing-high-re-fixed-moving-wall-stability.json`.
+
+This clears collision-only TRT instability under the matched stress. The
+topology-changing discriminator is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --json
+```
+
+It uses a `56 x 24 x 24` periodic domain so a radius-`3.25` voxel sphere can
+translate `40` cells over 500 steps without touching the momentum-budget
+surface. Wall speed and c8/c12/c16 viscosities exactly match the fixed-wall
+gate. The Apple M4 release run takes `1.09 s` and fails at load steps `276`,
+`282`, and `287`; final populations, macroscopic fields, and loads are
+non-finite in every case. Each requested trajectory produces 1,280 cover and
+1,280 uncover events over 220 transition steps, with zero solid links crossing
+the control surface. The expected failure is archived in
+`ValidationArtifacts/measured-wing-high-re-translating-body-stability.json`.
+Residual statistics after explosive growth are not treated as a momentum-
+closure result; finiteness fails first.
+
+Together, the passing fixed planar wall and failing cell-crossing sphere
+confirm the topology-changing moving-boundary path without yet separating two
+changes: curved moving-link reconstruction and cell cover/uncover refill. The
+highest-ROI next gate is therefore a fixed-occupancy sphere with the same
+halfway links, wall speed, viscosities, and 500 steps. It changes only topology
+relative to the failed case and should settle that distinction in seconds
+before any collision rewrite or bird rerun.
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

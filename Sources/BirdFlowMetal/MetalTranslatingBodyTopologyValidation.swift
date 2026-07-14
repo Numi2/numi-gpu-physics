@@ -66,6 +66,57 @@ public struct MetalTranslatingBodyTopologyValidationReport:
     public let samples: [MetalTranslatingBodyTopologySample]
 }
 
+public struct MetalHighReTranslatingBodyCaseResult: Codable, Sendable {
+    public let matchedBirdChordCells: Int
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let tauPlusMarginAboveHalf: Double
+    public let requestedSteps: Int
+    public let finiteLoadSteps: Int
+    public let firstNonFiniteLoadStep: Int?
+    public let initialPopulationMass: Double
+    public let finalPopulationMass: Double?
+    public let relativePopulationMassDrift: Double?
+    public let minimumPopulation: Double?
+    public let maximumPopulation: Double?
+    public let maximumAbsolutePopulation: Double?
+    public let populationsFinite: Bool
+    public let fieldsFinite: Bool
+    public let loadsFinite: Bool
+    public let newlyCoveredCellEvents: Int
+    public let newlyUncoveredCellEvents: Int
+    public let topologyTransitionSteps: Int
+    public let maximumSolidControlSurfaceCrossingLinkCount: Int
+    public let conservativeRMSForceResidual: Double?
+    public let maximumConservativeForceResidual: Double?
+    public let conservativeRelativeRMSResidual: Double?
+    public let passed: Bool
+}
+
+public struct MetalHighReTranslatingBodyStabilityReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let topologyKernel: String
+    public let topologyChanges: Bool
+    public let domainCells: SIMD3<Int>
+    public let sphereRadiusCells: Double
+    public let translationSpeedLattice: Double
+    public let requestedSteps: Int
+    public let displacementCells: Double
+    public let runtimeSeconds: Double
+    public let maximumAllowedRelativePopulationMassDrift: Double
+    public let maximumAllowedAbsolutePopulation: Double
+    public let maximumAllowedConservativeForceResidual: Double
+    public let maximumAllowedConservativeRelativeRMSResidual: Double
+    public let classification: String
+    public let scientificVerdict: String
+    public let cases: [MetalHighReTranslatingBodyCaseResult]
+    public let passed: Bool
+}
+
 public enum MetalTranslatingBodyTopologyValidator {
     public static let gridResolution = 24
     public static let sphereRadiusCells = 3.25
@@ -76,18 +127,204 @@ public enum MetalTranslatingBodyTopologyValidator {
     public static let minimumImprovementFactor = 5.0
     public static let maximumRawBudgetDifference = 1.0e-7
 
+    public static func runHighReStability(
+        steps: Int = 500
+    ) throws -> MetalHighReTranslatingBodyStabilityReport {
+        guard steps == 500 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "high-Re translating-body stability uses a locked 500-step contract"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let domain = try GridSize(x: 56, y: 24, z: 24)
+        let speed: Float = 0.08
+        let maximumMassDrift = 1.0e-3
+        let maximumAbsolutePopulation = 10.0
+        let maximumForceResidual = 5.0e-4
+        let maximumRelativeResidual = 5.0e-3
+        let matchedViscosities: [(Int, Float)] = [
+            (8, 4.382_427_9e-5),
+            (12, 6.582_454_1e-5),
+            (16, 8.782_491_2e-5),
+        ]
+        let cases = try matchedViscosities.map { chordCells, viscosity in
+            let caseConfiguration = MetalTranslatingBodyCaseConfiguration(
+                grid: domain,
+                sphereRadiusCells: Float(sphereRadiusCells),
+                translationSpeedLattice: speed,
+                latticeKinematicViscosity: viscosity,
+                initialCenter: SIMD3<Float>(8, 12, 12),
+                controlMinimum: SIMD3<UInt32>(2, 2, 2),
+                controlMaximumExclusive: SIMD3<UInt32>(54, 22, 22)
+            )
+            let simulation = try MetalTranslatingBodyTopologySimulation(
+                backend: backend,
+                linkForceMode: 6,
+                caseConfiguration: caseConfiguration
+            )
+            let initialPopulations = try simulation.copyPopulations()
+            let initialMass = initialPopulations.reduce(0.0) {
+                $0 + Double($1)
+            }
+            let history = try simulation.run(steps: steps)
+            let finalPopulations = try simulation.copyPopulations()
+            let populationsFinite = finalPopulations.allSatisfy(\.isFinite)
+            let fieldsFinite = populationsFinite
+                && macroscopicFieldsAreFinite(
+                    populations: finalPopulations,
+                    cellCount: domain.cellCount
+                )
+            let firstInvalidIndex = history.firstIndex {
+                !vectorIsFinite($0.measuredForce)
+                    || !vectorIsFinite($0.rawBudgetForce)
+            }
+            let loadsFinite = firstInvalidIndex == nil
+            let finiteLoadSteps = firstInvalidIndex ?? history.count
+            let finalMassValue = finalPopulations.reduce(0.0) {
+                $0 + Double($1)
+            }
+            let finalMass = populationsFinite ? finalMassValue : nil
+            let massDrift = finalMass.map {
+                abs($0 - initialMass) / max(abs(initialMass), 1.0e-30)
+            }
+            let minimum = populationsFinite
+                ? finalPopulations.min().map(Double.init)
+                : nil
+            let maximum = populationsFinite
+                ? finalPopulations.max().map(Double.init)
+                : nil
+            let maximumAbsolute = populationsFinite
+                ? finalPopulations.lazy.map { abs(Double($0)) }.max()
+                : nil
+            let finiteHistory = history.prefix(finiteLoadSteps)
+            let residuals = finiteHistory.map {
+                doubleVector($0.measuredForce - $0.rawBudgetForce)
+            }
+            let rawForces = finiteHistory.map {
+                doubleVector($0.rawBudgetForce)
+            }
+            let residualSquared = residuals.reduce(0.0) {
+                $0 + squaredMagnitude($1)
+            }
+            let budgetSquared = rawForces.reduce(0.0) {
+                $0 + squaredMagnitude($1)
+            }
+            let rmsResidual = residuals.isEmpty
+                ? nil
+                : sqrt(residualSquared / Double(residuals.count))
+            let maximumResidual = residuals.map(magnitude).max()
+            let relativeResidual = residuals.isEmpty
+                ? nil
+                : sqrt(residualSquared / max(budgetSquared, 1.0e-30))
+            let coveredEvents = history.reduce(0) {
+                $0 + $1.newlyCoveredCells
+            }
+            let uncoveredEvents = history.reduce(0) {
+                $0 + $1.newlyUncoveredCells
+            }
+            let transitionSteps = history.reduce(0) {
+                $0 + (($1.newlyCoveredCells > 0
+                    || $1.newlyUncoveredCells > 0) ? 1 : 0)
+            }
+            let maximumSurfaceLinks = history.map(
+                \.solidControlSurfaceCrossingLinkCount
+            ).max() ?? 0
+            let tauPlus = simulation.tauPlus
+            let passed = loadsFinite
+                && populationsFinite
+                && fieldsFinite
+                && coveredEvents > 0
+                && uncoveredEvents > 0
+                && transitionSteps > 0
+                && maximumSurfaceLinks == 0
+                && (massDrift ?? .infinity) <= maximumMassDrift
+                && (maximumAbsolute ?? .infinity)
+                    <= maximumAbsolutePopulation
+                && (maximumResidual ?? .infinity) <= maximumForceResidual
+                && (relativeResidual ?? .infinity)
+                    <= maximumRelativeResidual
+
+            return MetalHighReTranslatingBodyCaseResult(
+                matchedBirdChordCells: chordCells,
+                latticeKinematicViscosity:
+                    Double(simulation.latticeKinematicViscosity),
+                tauPlus: Double(tauPlus),
+                tauPlusMarginAboveHalf: Double(tauPlus - 0.5),
+                requestedSteps: steps,
+                finiteLoadSteps: finiteLoadSteps,
+                firstNonFiniteLoadStep: firstInvalidIndex.map { $0 + 1 },
+                initialPopulationMass: initialMass,
+                finalPopulationMass: finalMass,
+                relativePopulationMassDrift: massDrift,
+                minimumPopulation: minimum,
+                maximumPopulation: maximum,
+                maximumAbsolutePopulation: maximumAbsolute,
+                populationsFinite: populationsFinite,
+                fieldsFinite: fieldsFinite,
+                loadsFinite: loadsFinite,
+                newlyCoveredCellEvents: coveredEvents,
+                newlyUncoveredCellEvents: uncoveredEvents,
+                topologyTransitionSteps: transitionSteps,
+                maximumSolidControlSurfaceCrossingLinkCount:
+                    maximumSurfaceLinks,
+                conservativeRMSForceResidual: rmsResidual,
+                maximumConservativeForceResidual: maximumResidual,
+                conservativeRelativeRMSResidual: relativeResidual,
+                passed: passed
+            )
+        }
+        let passed = cases.allSatisfy(\.passed)
+        let classification = passed
+            ? "high-re-cell-crossing-stable-deforming-interpolation-path-suspect"
+            : "high-re-cell-crossing-unstable-moving-boundary-path-confirmed"
+        let verdict = passed
+            ? "Matched high-Re TRT remains finite and momentum-consistent across cell cover and uncover transitions. Isolate deforming measured-surface interpolation before another bird replay."
+            : "Matched high-Re TRT fails when a translating sphere and cell cover and uncover transitions are added to the fixed-wall case. Run a fixed-occupancy moving-wall sphere to separate curved-link reconstruction from topology refill before another bird replay."
+        return MetalHighReTranslatingBodyStabilityReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            topologyKernel: "buildTranslatingSphereTopology",
+            topologyChanges: true,
+            domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
+            sphereRadiusCells: sphereRadiusCells,
+            translationSpeedLattice: Double(speed),
+            requestedSteps: steps,
+            displacementCells: Double(speed) * Double(steps),
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            maximumAllowedRelativePopulationMassDrift: maximumMassDrift,
+            maximumAllowedAbsolutePopulation: maximumAbsolutePopulation,
+            maximumAllowedConservativeForceResidual: maximumForceResidual,
+            maximumAllowedConservativeRelativeRMSResidual:
+                maximumRelativeResidual,
+            classification: classification,
+            scientificVerdict: verdict,
+            cases: cases,
+            passed: passed
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
     public static func run() throws
         -> MetalTranslatingBodyTopologyValidationReport
     {
 #if canImport(Metal)
         let backend = try MetalBackend(fastMath: false)
+        let caseConfiguration = try MetalTranslatingBodyCaseConfiguration
+            .standard()
         let legacy = try MetalTranslatingBodyTopologySimulation(
             backend: backend,
-            linkForceMode: 0
+            linkForceMode: 0,
+            caseConfiguration: caseConfiguration
         ).run(steps: steps)
         let conservative = try MetalTranslatingBodyTopologySimulation(
             backend: backend,
-            linkForceMode: 6
+            linkForceMode: 6,
+            caseConfiguration: caseConfiguration
         ).run(steps: steps)
         guard legacy.count == conservative.count,
               conservative.count == steps else {
@@ -256,10 +493,78 @@ public enum MetalTranslatingBodyTopologyValidator {
     private static func magnitude(_ value: SIMD3<Double>) -> Double {
         sqrt(squaredMagnitude(value))
     }
+
+    private static func vectorIsFinite(_ value: SIMD3<Float>) -> Bool {
+        value.x.isFinite && value.y.isFinite && value.z.isFinite
+    }
+
+    private static func macroscopicFieldsAreFinite(
+        populations: [Float],
+        cellCount: Int
+    ) -> Bool {
+        guard populations.count == D3Q19.count * cellCount else {
+            return false
+        }
+        for cell in 0..<cellCount {
+            var density: Float = 0
+            var momentum = SIMD3<Float>.zero
+            for q in 0..<D3Q19.count {
+                let population = populations[q * cellCount + cell]
+                let direction = D3Q19.directions[q]
+                density += population
+                momentum += SIMD3<Float>(
+                    Float(direction.x),
+                    Float(direction.y),
+                    Float(direction.z)
+                ) * population
+            }
+            guard density.isFinite, density != 0 else {
+                return false
+            }
+            let velocity = momentum / density
+            guard velocity.x.isFinite,
+                  velocity.y.isFinite,
+                  velocity.z.isFinite else {
+                return false
+            }
+        }
+        return true
+    }
 }
 
 #if canImport(Metal)
 import Metal
+
+private struct MetalTranslatingBodyCaseConfiguration {
+    let grid: GridSize
+    let sphereRadiusCells: Float
+    let translationSpeedLattice: Float
+    let latticeKinematicViscosity: Float
+    let initialCenter: SIMD3<Float>
+    let controlMinimum: SIMD3<UInt32>
+    let controlMaximumExclusive: SIMD3<UInt32>
+
+    static func standard() throws -> Self {
+        Self(
+            grid: try GridSize(
+                x: MetalTranslatingBodyTopologyValidator.gridResolution,
+                y: MetalTranslatingBodyTopologyValidator.gridResolution,
+                z: MetalTranslatingBodyTopologyValidator.gridResolution
+            ),
+            sphereRadiusCells: Float(
+                MetalTranslatingBodyTopologyValidator.sphereRadiusCells
+            ),
+            translationSpeedLattice: Float(
+                MetalTranslatingBodyTopologyValidator
+                    .translationSpeedLattice
+            ),
+            latticeKinematicViscosity: 0.1,
+            initialCenter: SIMD3<Float>(8, 12, 12),
+            controlMinimum: SIMD3<UInt32>(2, 2, 2),
+            controlMaximumExclusive: SIMD3<UInt32>(22, 22, 22)
+        )
+    }
+}
 
 private struct GPUTranslatingTopologyParameters {
     var initialCenterAndRadius: SIMD4<Float>
@@ -319,22 +624,24 @@ private final class MetalTranslatingBodyTopologySimulation {
     private var currentSolid: MTLBuffer
     private var nextSolid: MTLBuffer
 
-    init(backend: MetalBackend, linkForceMode: UInt32) throws {
+    init(
+        backend: MetalBackend,
+        linkForceMode: UInt32,
+        caseConfiguration: MetalTranslatingBodyCaseConfiguration
+    ) throws {
         self.backend = backend
         self.linkForceMode = linkForceMode
-        let grid = try GridSize(
-            x: MetalTranslatingBodyTopologyValidator.gridResolution,
-            y: MetalTranslatingBodyTopologyValidator.gridResolution,
-            z: MetalTranslatingBodyTopologyValidator.gridResolution
-        )
-        let referenceSpeed = Float(
-            MetalTranslatingBodyTopologyValidator.translationSpeedLattice
-        )
+        let grid = caseConfiguration.grid
+        let referenceSpeed = caseConfiguration.translationSpeedLattice
+        let characteristicLengthCells = 8
+        let targetReynoldsNumber = referenceSpeed
+            * Float(characteristicLengthCells)
+            / caseConfiguration.latticeKinematicViscosity
         let scaling = try LatticeScaling(
             characteristicLengthMeters: 8,
-            characteristicLengthCells: 8,
+            characteristicLengthCells: characteristicLengthCells,
             referenceSpeedMetersPerSecond: referenceSpeed,
-            targetReynoldsNumber: 4,
+            targetReynoldsNumber: targetReynoldsNumber,
             physicalAirDensity: 1,
             latticeReferenceSpeed: referenceSpeed
         )
@@ -350,13 +657,12 @@ private final class MetalTranslatingBodyTopologySimulation {
             gravityMetersPerSecondSquared: .zero,
             fastMath: false
         )
-        let center = SIMD3<Float>(8, 12, 12)
+        let center = caseConfiguration.initialCenter
         parameters = try backend.makeSharedBuffer(
             value: GPUTranslatingTopologyParameters(
                 initialCenterAndRadius: SIMD4<Float>(
                     center,
-                    Float(MetalTranslatingBodyTopologyValidator
-                        .sphereRadiusCells)
+                    caseConfiguration.sphereRadiusCells
                 ),
                 velocity: SIMD4<Float>(referenceSpeed, 0, 0, 0)
             )
@@ -365,8 +671,11 @@ private final class MetalTranslatingBodyTopologySimulation {
             value: GPUBirdBodyState(BirdBodyState(positionMeters: center))
         )
         bounds = GPUTranslatingTopologyBounds(
-            minimum: SIMD4<UInt32>(2, 2, 2, 0),
-            maximumExclusive: SIMD4<UInt32>(22, 22, 22, 0)
+            minimum: SIMD4<UInt32>(caseConfiguration.controlMinimum, 0),
+            maximumExclusive: SIMD4<UInt32>(
+                caseConfiguration.controlMaximumExclusive,
+                0
+            )
         )
         initializePipeline = try backend.pipeline(
             named: "initializeTranslatingSphereTopology"
@@ -426,6 +735,40 @@ private final class MetalTranslatingBodyTopologySimulation {
         currentSolid = solidA
         nextSolid = solidB
         try initializeTopologyCanonical()
+    }
+
+    var latticeKinematicViscosity: Float {
+        configuration.scaling.latticeKinematicViscosity
+    }
+
+    var tauPlus: Float {
+        configuration.scaling.tauPlus
+    }
+
+    func copyPopulations() throws -> [Float] {
+        let staging = try backend.makeSharedBuffer(
+            length: currentPopulations.length
+        )
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let blit = commandBuffer.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to read translating-body populations."
+            )
+        }
+        blit.copy(
+            from: currentPopulations,
+            sourceOffset: 0,
+            to: staging,
+            destinationOffset: 0,
+            size: currentPopulations.length
+        )
+        blit.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+        let count = staging.length / MemoryLayout<Float>.stride
+        let pointer = staging.contents().assumingMemoryBound(to: Float.self)
+        return Array(UnsafeBufferPointer(start: pointer, count: count))
     }
 
     func run(steps: Int) throws -> [MetalTranslatingBodyTopologyStep] {
@@ -499,6 +842,9 @@ private final class MetalTranslatingBodyTopologySimulation {
         GPUUniforms(
             configuration: configuration,
             time: time,
+            // The velocity buffer carries preserved newly covered momentum
+            // from geometry into the fluid step; field capture would replace
+            // that validation-only scratch value before the impulse is read.
             captureMacroscopicFields: false,
             accumulateLoads: true,
             hasPreviousGeometry: true,

@@ -113,11 +113,32 @@ def main() -> None:
         raise SystemExit("eight-cell feasibility result must remain failed")
     if decision["twelveCellOneCycleFeasibilityPassed"]:
         raise SystemExit("twelve-cell feasibility result must remain failed")
+    if decision["sixteenCellOneCycleFeasibilityPassed"]:
+        raise SystemExit("sixteen-cell feasibility result must remain failed")
+    if not decision["fixedMovingWallHighReStabilityPassed"]:
+        raise SystemExit("fixed moving-wall high-Re stability gate must pass")
+    if decision["collisionOnlyStabilitySuspect"]:
+        raise SystemExit(
+            "collision-only stability must be cleared by the fixed-wall gate"
+        )
+    if not decision["movingTopologyPathSuspect"]:
+        raise SystemExit(
+            "moving-topology path must remain suspect after the fixed-wall gate"
+        )
+    if decision["highReTranslatingBodyStabilityPassed"]:
+        raise SystemExit(
+            "high-Re translating-body gate must retain its failed verdict"
+        )
+    if not decision["cellCrossingMovingBoundaryPathConfirmed"]:
+        raise SystemExit(
+            "cell-crossing moving-boundary path must remain confirmed"
+        )
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
     feasibilities = []
     for key in (
         "eightCellFeasibilityArtifact",
         "twelveCellFeasibilityArtifact",
+        "sixteenCellFeasibilityArtifact",
     ):
         feasibility_path = Path(decision[key])
         feasibility = json.loads(feasibility_path.read_text(encoding="utf-8"))
@@ -134,6 +155,98 @@ def main() -> None:
             )
         feasibilities.append(feasibility)
 
+    fixed_wall_path = Path(decision["fixedMovingWallHighReStabilityArtifact"])
+    fixed_wall = json.loads(fixed_wall_path.read_text(encoding="utf-8"))
+    fixed_wall_audit_hash = fixed_wall["sourceLocks"][
+        "physicalConditionAudit"
+    ]["sha256"]
+    if fixed_wall_audit_hash != actual_audit_hash:
+        raise SystemExit(
+            f"{fixed_wall_path} has a stale physical-condition audit hash"
+        )
+    if not fixed_wall["passed"]:
+        raise SystemExit(f"{fixed_wall_path} must retain its passing verdict")
+    if fixed_wall["topologyChanges"]:
+        raise SystemExit(f"{fixed_wall_path} must isolate fixed topology")
+    fixed_wall_cases = fixed_wall["cases"]
+    if [case["matchedBirdChordCells"] for case in fixed_wall_cases] != [
+        8,
+        12,
+        16,
+    ]:
+        raise SystemExit(f"{fixed_wall_path} has unexpected matched cases")
+    for case in fixed_wall_cases:
+        if not case["passed"]:
+            raise SystemExit(f"{fixed_wall_path} contains a failed case")
+        if case["finiteSteps"] != case["requestedSteps"]:
+            raise SystemExit(f"{fixed_wall_path} contains an incomplete case")
+        if case["firstNonFiniteStep"] is not None:
+            raise SystemExit(f"{fixed_wall_path} contains a non-finite step")
+        if (
+            case["relativePopulationMassDrift"]
+            > fixed_wall["maximumAllowedRelativePopulationMassDrift"]
+        ):
+            raise SystemExit(f"{fixed_wall_path} exceeds its mass-drift gate")
+        if (
+            case["maximumAbsolutePopulation"]
+            > fixed_wall["maximumAllowedAbsolutePopulation"]
+        ):
+            raise SystemExit(f"{fixed_wall_path} exceeds its population gate")
+
+    translating_path = Path(
+        decision["highReTranslatingBodyStabilityArtifact"]
+    )
+    translating = json.loads(translating_path.read_text(encoding="utf-8"))
+    translating_audit_hash = translating["sourceLocks"][
+        "physicalConditionAudit"
+    ]["sha256"]
+    if translating_audit_hash != actual_audit_hash:
+        raise SystemExit(
+            f"{translating_path} has a stale physical-condition audit hash"
+        )
+    fixed_wall_hash = hashlib.sha256(fixed_wall_path.read_bytes()).hexdigest()
+    locked_fixed_wall_hash = translating["sourceLocks"][
+        "fixedMovingWallArtifact"
+    ]["sha256"]
+    if locked_fixed_wall_hash != fixed_wall_hash:
+        raise SystemExit(
+            f"{translating_path} has a stale fixed-wall artifact hash"
+        )
+    if translating["passed"]:
+        raise SystemExit(f"{translating_path} must retain its failed verdict")
+    if not translating["topologyChanges"]:
+        raise SystemExit(f"{translating_path} must exercise topology changes")
+    translating_cases = translating["cases"]
+    if [case["matchedBirdChordCells"] for case in translating_cases] != [
+        8,
+        12,
+        16,
+    ]:
+        raise SystemExit(f"{translating_path} has unexpected matched cases")
+    if [case["firstNonFiniteLoadStep"] for case in translating_cases] != [
+        276,
+        282,
+        287,
+    ]:
+        raise SystemExit(
+            f"{translating_path} has changed non-finite load steps"
+        )
+    for case in translating_cases:
+        if case["passed"]:
+            raise SystemExit(f"{translating_path} contains a passing case")
+        if case["loadsFinite"] or case["populationsFinite"]:
+            raise SystemExit(
+                f"{translating_path} must retain its non-finite diagnosis"
+            )
+        if case["newlyCoveredCellEvents"] <= 0:
+            raise SystemExit(f"{translating_path} has no cover events")
+        if case["newlyUncoveredCellEvents"] <= 0:
+            raise SystemExit(f"{translating_path} has no uncover events")
+        if case["maximumSolidControlSurfaceCrossingLinkCount"] != 0:
+            raise SystemExit(
+                f"{translating_path} has a contaminated control surface"
+            )
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -148,6 +261,19 @@ def main() -> None:
         print(
             f"c{chord_cells}_first_non_finite_load_step: {failure_step}"
         )
+    print(f"fixed_wall_classification: {fixed_wall['classification']}")
+    print(
+        "fixed_wall_maximum_mass_drift: "
+        f"{max(case['relativePopulationMassDrift'] for case in fixed_wall_cases):.12g}"
+    )
+    print(
+        "translating_body_first_non_finite_steps: "
+        + ",".join(
+            str(case["firstNonFiniteLoadStep"])
+            for case in translating_cases
+        )
+    )
+    print(f"translating_body_classification: {translating['classification']}")
     print("passed: true")
 
 

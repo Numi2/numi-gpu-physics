@@ -66,6 +66,44 @@ public struct MetalMovingWallValidationReport: Codable, Sendable {
     public let oscillatingCases: [MetalOscillatingWallCaseResult]
 }
 
+public struct MetalHighReMovingWallCaseResult: Codable, Sendable {
+    public let matchedBirdChordCells: Int
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let tauPlusMarginAboveHalf: Double
+    public let requestedSteps: Int
+    public let finiteSteps: Int
+    public let firstNonFiniteStep: Int?
+    public let initialPopulationMass: Double
+    public let finalPopulationMass: Double?
+    public let relativePopulationMassDrift: Double?
+    public let minimumPopulation: Double?
+    public let maximumPopulation: Double?
+    public let maximumAbsolutePopulation: Double?
+    public let maximumDensityDeviation: Double
+    public let maximumVelocityMagnitude: Double
+    public let fieldsFinite: Bool
+    public let loadsFinite: Bool
+    public let passed: Bool
+}
+
+public struct MetalHighReMovingWallStabilityReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let topologyChanges: Bool
+    public let domainResolution: Int
+    public let wallLatticeVelocity: Double
+    public let requestedSteps: Int
+    public let runtimeSeconds: Double
+    public let maximumAllowedRelativePopulationMassDrift: Double
+    public let maximumAllowedAbsolutePopulation: Double
+    public let classification: String
+    public let scientificVerdict: String
+    public let cases: [MetalHighReMovingWallCaseResult]
+    public let passed: Bool
+}
+
 public enum MetalMovingWallValidator {
     public static let maximumProfileError = 0.01
     public static let maximumCouetteForceError = 0.01
@@ -75,6 +113,66 @@ public enum MetalMovingWallValidator {
     public static let minimumProfileConvergenceOrder = 1.5
     public static let minimumForceConvergenceOrder = 1.0
     public static let maximumBatchDifference = 1.0e-7
+
+    public static func runHighReStability(
+        steps: Int = 500
+    ) throws -> MetalHighReMovingWallStabilityReport {
+        guard steps >= 100 else {
+            throw MetalMovingWallValidationError.invalidRequest(
+                "high-Re moving-wall stability requires at least 100 steps"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let resolution = 16
+        let wallVelocity: Float = 0.08
+        let maximumMassDrift = 5.0e-5
+        let maximumAbsolutePopulation = 10.0
+        let matchedViscosities: [(Int, Float)] = [
+            (8, 4.382_427_9e-5),
+            (12, 6.582_454_1e-5),
+            (16, 8.782_491_2e-5),
+        ]
+        let cases = try matchedViscosities.map { chordCells, viscosity in
+            try runHighReFixedWallCase(
+                backend: backend,
+                resolution: resolution,
+                matchedBirdChordCells: chordCells,
+                viscosity: viscosity,
+                wallVelocity: wallVelocity,
+                steps: steps,
+                maximumMassDrift: maximumMassDrift,
+                maximumAbsolutePopulation: maximumAbsolutePopulation
+            )
+        }
+        let passed = cases.allSatisfy(\.passed)
+        let classification = passed
+            ? "fixed-wall-trt-stable-moving-topology-path-suspect"
+            : "fixed-wall-trt-unstable-collision-path-suspect"
+        let verdict = passed
+            ? "Matched high-Re TRT remains finite without cover/uncover topology. Isolate interpolated moving-boundary and topology forcing before changing collision physics."
+            : "Matched high-Re TRT becomes non-finite with a fixed wall and no topology changes. Qualify a stabilized collision operator on this canonical before another bird replay."
+        return MetalHighReMovingWallStabilityReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            topologyChanges: false,
+            domainResolution: resolution,
+            wallLatticeVelocity: Double(wallVelocity),
+            requestedSteps: steps,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            maximumAllowedRelativePopulationMassDrift: maximumMassDrift,
+            maximumAllowedAbsolutePopulation: maximumAbsolutePopulation,
+            classification: classification,
+            scientificVerdict: verdict,
+            cases: cases,
+            passed: passed
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
 
     public static func run(
         finestResolution: Int = 32,
@@ -285,6 +383,117 @@ private extension MetalMovingWallValidator {
         let density: Double
         let velocity: Double
         let force: Double
+    }
+
+    static func runHighReFixedWallCase(
+        backend: MetalBackend,
+        resolution: Int,
+        matchedBirdChordCells: Int,
+        viscosity: Float,
+        wallVelocity: Float,
+        steps: Int,
+        maximumMassDrift: Double,
+        maximumAbsolutePopulation: Double
+    ) throws -> MetalHighReMovingWallCaseResult {
+        let simulation = try MetalPlanarWallSimulation(
+            backend: backend,
+            resolution: resolution,
+            viscosity: viscosity,
+            amplitude: wallVelocity,
+            angularFrequency: 0,
+            oscillating: false
+        )
+        let initialPopulations = try simulation.copyPopulations()
+        let initialMass = initialPopulations.reduce(0.0) {
+            $0 + Double($1)
+        }
+        var finiteSteps = 0
+        var firstNonFiniteStep: Int?
+        var fieldsFinite = true
+        var loadsFinite = true
+        var maximumDensityDeviation = 0.0
+        var maximumVelocityMagnitude = 0.0
+
+        for step in 1...steps {
+            let load = try simulation.advance(steps: 1, batchSize: 1)
+            let fields = simulation.copyFields()
+            let loadFinite = load.forceNewtons.x.isFinite
+                && load.forceNewtons.y.isFinite
+                && load.forceNewtons.z.isFinite
+                && load.torqueNewtonMeters.x.isFinite
+                && load.torqueNewtonMeters.y.isFinite
+                && load.torqueNewtonMeters.z.isFinite
+            let fieldFinite = fields.density.allSatisfy(\.isFinite)
+                && fields.velocity.allSatisfy {
+                    $0.x.isFinite && $0.y.isFinite && $0.z.isFinite
+                }
+            loadsFinite = loadsFinite && loadFinite
+            fieldsFinite = fieldsFinite && fieldFinite
+            guard loadFinite, fieldFinite else {
+                firstNonFiniteStep = step
+                break
+            }
+            finiteSteps = step
+            maximumDensityDeviation = max(
+                maximumDensityDeviation,
+                fields.density.lazy.map {
+                    abs(Double($0) - 1)
+                }.max() ?? 0
+            )
+            maximumVelocityMagnitude = max(
+                maximumVelocityMagnitude,
+                fields.velocity.lazy.map {
+                    hypot(hypot(Double($0.x), Double($0.y)), Double($0.z))
+                }.max() ?? 0
+            )
+        }
+
+        let finalPopulations = try simulation.copyPopulations()
+        let populationsFinite = finalPopulations.allSatisfy(\.isFinite)
+        let finalMassValue = finalPopulations.reduce(0.0) {
+            $0 + Double($1)
+        }
+        let finalMass = populationsFinite ? finalMassValue : nil
+        let massDrift = finalMass.map {
+            abs($0 - initialMass) / max(abs(initialMass), 1.0e-30)
+        }
+        let minimum = populationsFinite
+            ? finalPopulations.min().map(Double.init)
+            : nil
+        let maximum = populationsFinite
+            ? finalPopulations.max().map(Double.init)
+            : nil
+        let maximumAbsolute = populationsFinite
+            ? finalPopulations.lazy.map { abs(Double($0)) }.max()
+            : nil
+        let passed = finiteSteps == steps
+            && firstNonFiniteStep == nil
+            && fieldsFinite
+            && loadsFinite
+            && populationsFinite
+            && (massDrift ?? .infinity) <= maximumMassDrift
+            && (maximumAbsolute ?? .infinity) <= maximumAbsolutePopulation
+        let tauPlus = Float(0.5) + 3 * viscosity
+        return MetalHighReMovingWallCaseResult(
+            matchedBirdChordCells: matchedBirdChordCells,
+            latticeKinematicViscosity: Double(viscosity),
+            tauPlus: Double(tauPlus),
+            tauPlusMarginAboveHalf: Double(tauPlus - 0.5),
+            requestedSteps: steps,
+            finiteSteps: finiteSteps,
+            firstNonFiniteStep: firstNonFiniteStep,
+            initialPopulationMass: initialMass,
+            finalPopulationMass: finalMass,
+            relativePopulationMassDrift: massDrift,
+            minimumPopulation: minimum,
+            maximumPopulation: maximum,
+            maximumAbsolutePopulation: maximumAbsolute,
+            maximumDensityDeviation: maximumDensityDeviation,
+            maximumVelocityMagnitude: maximumVelocityMagnitude,
+            fieldsFinite: fieldsFinite,
+            loadsFinite: loadsFinite,
+            passed: passed
+        )
     }
 
     static func runTransientCouette(
@@ -952,6 +1161,32 @@ private final class MetalPlanarWallSimulation {
                 return SIMD3<Float>(value.x, value.y, value.z)
             }
         )
+    }
+
+    func copyPopulations() throws -> [Float] {
+        let staging = try backend.makeSharedBuffer(
+            length: currentPopulations.length
+        )
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let blit = commandBuffer.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create planar-wall population readback."
+            )
+        }
+        blit.copy(
+            from: currentPopulations,
+            sourceOffset: 0,
+            to: staging,
+            destinationOffset: 0,
+            size: currentPopulations.length
+        )
+        blit.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+        let count = staging.length / MemoryLayout<Float>.stride
+        let pointer = staging.contents().assumingMemoryBound(to: Float.self)
+        return Array(UnsafeBufferPointer(start: pointer, count: count))
     }
 
     private func makeUniforms(time: Float, capture: Bool) -> GPUUniforms {

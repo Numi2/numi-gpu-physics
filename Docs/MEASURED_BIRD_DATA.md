@@ -242,6 +242,45 @@ first non-finite load moves earlier from phase `0.179719` to `0.144102`.
 Resolution from 8 to 12 cells does not provide a monotonic stability cure. The
 12-cell failure is retained in
 `ValidationArtifacts/measured-wing-published-condition-feasibility-c12.json`.
-One 16-cell cycle is the final cheap resolution discriminator; another failure
-should redirect effort to a stabilized collision operator rather than a
-five-cycle resolution ladder.
+The 16-cell cycle also fails despite doubling the eight-cell relaxation
+margin: its first non-finite load appears at step `334/3976`, phase `0.084004`,
+earlier than both coarser failures. The record is
+`ValidationArtifacts/measured-wing-published-condition-feasibility-c16.json`.
+Resolution-only escalation is therefore closed.
+
+The fixed-topology collision discriminator is:
+
+```bash
+.build/release/birdflow validate moving-wall --high-re-stability --json
+```
+
+It reuses production `stepFluidTRT`, wall lattice speed `0.08`, and the exact
+c8/c12/c16 viscosities for 500 steps in a fixed `16^3` planar channel. All
+three cases pass on Apple M4 in `0.95 s`, with finite loads and fields,
+positive final populations, and worst relative mass drift `1.23647e-5`. The
+archive is
+`ValidationArtifacts/measured-wing-high-re-fixed-moving-wall-stability.json`.
+Because the same collision kernel survives when occupancy is fixed, changing
+collision physics has low diagnostic ROI. The matching topology-changing test
+is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --json
+```
+
+The radius-`3.25` sphere translates 40 cells through a `56 x 24 x 24` periodic
+domain over 500 steps. The c8/c12/c16 cases become non-finite at steps `276`,
+`282`, and `287` respectively, despite zero solid crossings of the independent
+control surface. All three requested paths contain 1,280 cover and 1,280
+uncover events. The Apple M4 run takes `1.09 s`, returns a failed validation
+status, and is archived in
+`ValidationArtifacts/measured-wing-high-re-translating-body-stability.json`.
+
+This confirms the topology-changing moving-boundary path but does not yet
+prove whether curved halfway-link reconstruction or cover/uncover refill
+initiates the instability. A fixed-occupancy moving-wall sphere at the same
+three conditions is the highest-ROI next experiment: it removes only topology
+from the failed case, costs seconds, and avoids both a speculative collision
+rewrite and another bird replay.
