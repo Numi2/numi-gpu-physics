@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "auditIdentifier": "maeda-2017-hovering-wing-source-audit-v1",
+  "generatedBy": "Scripts/import-measured-wing-grid.py",
+  "sourceLocks": {
+    "maedaWingGrid": {
+      "datasetDOI": "10.6084/m9.figshare.5406124.v1",
+      "articleDOI": "10.1098/rsos.170307",
+      "license": "CC-BY-4.0",
+      "sourceFile": "rsos170307_si_008.zip",
+      "md5": "805a482f5a6e6f8395f74e0706629190",
+      "sha256": "5e32b920bfff91ab4ef8c8d872662ce4c6f45180421e42bcaab7729290499375",
+      "digestVerified": true
+    },
+    "songDryadCandidate": {
+      "datasetDOI": "10.5061/dryad.8ch1b",
+      "articleDOI": "10.1098/rsos.160230",
+      "license": "CC0-1.0",
+      "sourceFile": "Data.tar",
+      "md5": "3f6e0ba062ac3cb110abec98d8e828b0",
+      "sha256": "ad12ea08b512efe2021a5fbe637a939c2fb88837ca2607b25ac8850d79f1fe5e",
+      "digestVerified": true,
+      "qualification": "reference-curves-only",
+      "containsRawReconstructedGeometry": false
+    }
+  },
+  "measuredWingGrid": {
+    "species": "Amazilia amazilia",
+    "specimenIdentifier": "single zoo individual; sex and exact age unreported; at least 10 years old",
+    "measuredSide": "right",
+    "flightMode": "hover",
+    "frequencyHz": 28.8,
+    "frameCount": 17,
+    "surfaceDimensions": [201, 401, 1],
+    "shortestPathDimensions": [1, 51, 1],
+    "sourcePhaseRange": [0.019, 0.939],
+    "sourcePhaseInterval": 0.0575,
+    "sourceAxes": ["backward", "right", "up"],
+    "birdFlowAxes": ["forward", "left", "up"],
+    "sourceToBirdFlow": [
+      [-1, 0, 0],
+      [0, -1, 0],
+      [0, 0, 1]
+    ],
+    "metersPerSourceUnit": 0.01810849385399078,
+    "scaleLock": "cycle-mean deposited shortest path equals published 0.0700 m",
+    "meanShortestPathLengthMeters": 0.07,
+    "minimumShortestPathLengthMeters": 0.06906276720493927,
+    "maximumShortestPathLengthMeters": 0.07134535989267361,
+    "meanSurfaceAreaSquareMeters": 0.0013679693013765443,
+    "publishedMeanSurfaceAreaSquareMeters": 0.001365,
+    "publishedMeanAreaRelativeError": 0.0021753123637687903,
+    "minimumSurfaceAreaSquareMeters": 0.0012509655690549522,
+    "maximumSurfaceAreaSquareMeters": 0.0014794485928819729,
+    "areaPeakToPeakRelativeToMinimum": 0.18264533371580272,
+    "maximumWingBaseDriftMeters": 1.2715181257621266e-17,
+    "maximumLinearTwistFitRMSRadians": 0.1404380866224566,
+    "maximumLinearTwistFitMaximumRadians": 0.1961225784524343
+  },
+  "schema1Readiness": {
+    "sourceIntegrityPassed": true,
+    "measuredRightWingSurfaceAndMotionAvailable": true,
+    "analyticProxyKinematicsDerived": true,
+    "readyForCompleteCoupledBirdReplay": false,
+    "blockingFields": [
+      "geometry.bodyRadiiMeters",
+      "geometry.massKilograms",
+      "geometry.principalInertiaKilogramMetersSquared",
+      "geometry.wingRootOffsetMeters relative to body COM",
+      "geometry.tailLengthMeters",
+      "geometry.tailHalfWidthMeters",
+      "geometry.tailThicknessMeters",
+      "measured left-wing surface/kinematics",
+      "measured or explicitly regularized wing thickness"
+    ],
+    "scientificVerdict": "Measured right-wing ingestion is qualified, but whole-bird schema-1 replay is blocked. Do not substitute another specimen's body or estimated inertia without an explicit derived-input tier."
+  }
+}

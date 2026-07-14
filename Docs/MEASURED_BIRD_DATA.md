@@ -9,6 +9,38 @@ carried into every replay archive.
 No measured specimen is bundled. `Examples/measured-bird-schema-v1.json` is
 explicitly a synthetic conformance fixture and must not be cited as bird data.
 
+## Published-source qualification
+
+Use the source importer before constructing a specimen JSON:
+
+```bash
+python3 Scripts/import-measured-wing-grid.py \
+  --input /path/to/rsos170307_si_008.zip \
+  --song-dryad-tar /path/to/Data.tar \
+  --output /tmp/measured-wing-source-audit.json
+```
+
+The importer verifies both deposited digests, parses all 17 PLOT3D surfaces,
+registers the paper's backward/right/up coordinates to BirdFlow's
+forward/left/up axes, locks the otherwise undocumented grid scale against the
+published `70.0 mm` mean shortest-path length, and independently checks the
+published mean wing area. It also fits the current rigid-span/linear-twist
+proxy at every phase and reports the angular residual instead of hiding wing
+bending and nonlinear twist.
+
+The qualified Maeda et al. source is a measured `201 x 401` right-wing surface
+over one hovering cycle, not a complete bird. The checked Song et al. Dryad
+`Data.tar` contains numerical MATLAB figure sources but does not contain the
+reconstructed wing or body meshes described in its article. The compact locked
+result is `ValidationArtifacts/measured-wing-source-audit.json`; the full
+per-frame report is regenerated from the original archives.
+
+`--require-complete-bird` deliberately exits with status `2` for these sources.
+They do not report the body radii, body-COM wing root, principal inertia, tail
+geometry, measured left wing, or a physical wing thickness required by schema
+1. Combining those values from another specimen would create a hybrid model,
+not measured-bird input.
+
 ## Preflight before Metal
 
 ```bash
@@ -110,3 +142,10 @@ mesh/SDF or cut-link geometry tier when surface fidelity matters, two-finest-gri
 load convergence, stationary cycle statistics, force balance, left/right
 part-load symmetry for symmetric motion, and the free-flight gates in
 `Docs/VALIDATION.md`.
+
+The Maeda source audit sharpens the geometry decision: its measured area varies
+by `18.26%` over the cycle and the current linear-twist proxy reaches an
+`8.05 deg` worst-phase spanwise RMS / `11.24 deg` maximum section-angle
+residual. A fixed tapered proxy therefore remains useful for preflight only;
+direct surface-grid or SDF replay is the next geometry tier before quantitative
+use of that wing.
