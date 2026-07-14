@@ -125,6 +125,7 @@ private struct MeasuredWingReplayArguments {
     var halfThicknessCells: Float = 0.75
     var fluidCycle = false
     var thicknessLadder = false
+    var stationarity = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -162,6 +163,8 @@ private struct MeasuredWingReplayArguments {
                 fluidCycle = true
             case "--thickness-ladder":
                 thicknessLadder = true
+            case "--stationarity":
+                stationarity = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -184,6 +187,11 @@ private struct MeasuredWingReplayArguments {
                 "--thickness-ladder already runs fluid cycles and cannot be combined with --fluid-cycle"
             )
         }
+        if stationarity && (fluidCycle || thicknessLadder) {
+            throw CLIError.invalidArgument(
+                "--stationarity cannot be combined with --fluid-cycle or --thickness-ladder"
+            )
+        }
         if thicknessLadder && halfThicknessCells != 0.75 {
             throw CLIError.invalidArgument(
                 "--thickness-ladder uses fixed 0.5/0.75/1.0 cases and cannot be combined with --half-thickness-cells"
@@ -198,6 +206,7 @@ private struct MeasuredWingReplayArguments {
       --half-thickness-cells V Numerical sheet half-thickness (default: 0.75)
       --fluid-cycle            Also run one startup cycle through stepFluidTRT
       --thickness-ladder       Run 0.5/0.75/1.0-cell fluid sensitivity gate
+      --stationarity           Run five cycles and compare cycles four/five
       --json                   Emit the machine-readable replay report
       --help                   Show this help
 
@@ -920,6 +929,39 @@ private func runMeasuredWingReplay(_ values: [String]) throws {
     let dataset = try MeasuredWingSurfaceDatasetLoader.load(
         from: URL(fileURLWithPath: arguments.inputPath!)
     )
+    if arguments.stationarity {
+        let report = try MetalFlappingWingValidator
+            .runMeasuredSurfaceStationarity(
+                dataset,
+                chordCells: arguments.chordCells,
+                halfThicknessCells: arguments.halfThicknessCells
+            )
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("input_sha256: \(report.inputSHA256)")
+            print("chord_cells: \(report.chordCells)")
+            print("cycles: \(report.cycles)")
+            print("cycle_steps: \(report.cycleSteps)")
+            print("runtime_s: \(report.runtimeSeconds)")
+            print(
+                "relative_mean_force_vector_difference: "
+                    + String(report.relativeMeanForceVectorDifference)
+            )
+            print(
+                "relative_vertical_force_difference: "
+                    + String(report.relativeMeanVerticalForceDifference)
+            )
+            print(
+                "normalized_phase_force_difference: "
+                    + String(report.normalizedPhaseResolvedForceDifference)
+            )
+            print("classification: \(report.classification)")
+            print("passed: \(report.passed)")
+        }
+        return
+    }
     if arguments.thicknessLadder {
         let report = try MetalFlappingWingValidator
             .auditMeasuredSurfaceThicknessSensitivity(

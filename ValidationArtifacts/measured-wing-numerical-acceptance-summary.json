@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "datasetIdentifier": "maeda-2017-hovering-right-wing-surface-v1",
+  "inputSHA256": "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887",
+  "refinement": {
+    "artifact": "measured-wing-thickness-refinement-summary.json",
+    "artifactSHA256": "b36d37896321d856a77d9c97a8774f36498f78e5d7ddbd2b478261d3188517ec",
+    "finestGridThicknessSensitivityPassed": true,
+    "finestTwoCenterLoadRefinementPassed": true,
+    "maximumPairwiseThicknessForceEnvelopeAt16Cells": 0.039322565414842026,
+    "centerForceVectorChange12To16": 0.027647355382899953
+  },
+  "stationarity": {
+    "artifact": "measured-wing-stationarity-c16.json",
+    "artifactSHA256": "c9c3a4bae5e069cae738291195a6f17844aea2875238e2d0834b870faa4b23d6",
+    "cycles": 5,
+    "relativeMeanForceVectorDifferenceCycles4To5": 0.0034031629873007897,
+    "relativeMeanVerticalForceDifferenceCycles4To5": 0.0024063099332018462,
+    "normalizedPhaseResolvedForceDifferenceCycles4To5": 0.001722324005444274,
+    "passed": true
+  },
+  "startupToStationaryDifference": {
+    "relativeMeanForceVectorDifference": 0.23763561675879608,
+    "relativeMeanVerticalForceDifference": 0.11006084226059451
+  },
+  "wingOnlyNumericalAcceptancePassed": true,
+  "quantitativePhysicalAcceptancePassed": false,
+  "remainingPhysicalBoundaries": [
+    "diagnostic Reynolds number and density are not measured flight conditions",
+    "body, left wing, mass, inertia, center-of-mass registration, tail, and physical membrane thickness remain unavailable"
+  ]
+}

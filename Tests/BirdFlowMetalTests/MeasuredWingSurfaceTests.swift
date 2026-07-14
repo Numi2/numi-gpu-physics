@@ -112,4 +112,28 @@ func measuredWingSurfaceThicknessEnvelopeIsReportedWithoutHidingEndpoints() thro
     #expect(report.classification == "numerical-thickness-sensitive")
     #expect(!report.passed)
 }
+
+@Test
+func measuredWingStationarityKeepsIndependentCycleHistories() throws {
+    let dataset = try MeasuredWingSurfaceDatasetLoader.load(
+        from: measuredWingSurfaceURL
+    )
+    let report = try MetalFlappingWingValidator.runMeasuredSurfaceStationarity(
+        dataset,
+        chordCells: 8,
+        cycles: 2
+    )
+    #expect(report.cycles == 2)
+    #expect(report.cycleSteps == 1_992)
+    #expect(report.phaseSamples.count == 100)
+    #expect(report.penultimateCycleMeanForceNewtons.count == 3)
+    #expect(report.finalCycleMeanForceNewtons.count == 3)
+    #expect(report.relativeMeanForceVectorDifference.isFinite)
+    #expect(report.relativeMeanVerticalForceDifference.isFinite)
+    #expect(report.normalizedPhaseResolvedForceDifference.isFinite)
+    #expect(report.phaseSamples.allSatisfy {
+        $0.penultimateCycleForceNewtons.allSatisfy(\.isFinite)
+            && $0.finalCycleForceNewtons.allSatisfy(\.isFinite)
+    })
+}
 #endif

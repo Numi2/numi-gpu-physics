@@ -334,6 +334,36 @@ public struct MetalMeasuredWingThicknessSensitivityReport: Codable, Sendable {
     public let cases: [MetalMeasuredWingSurfaceReplayReport]
 }
 
+public struct MetalMeasuredWingStationarityPhaseSample: Codable, Sendable {
+    public let phase: Double
+    public let penultimateCycleForceNewtons: [Double]
+    public let finalCycleForceNewtons: [Double]
+}
+
+public struct MetalMeasuredWingStationarityReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let inputSHA256: String
+    public let chordCells: Int
+    public let halfThicknessCells: Double
+    public let cycles: Int
+    public let cycleSteps: Int
+    public let runtimeSeconds: Double
+    public let diagnosticReynoldsNumber: Double
+    public let diagnosticAirDensityKilogramsPerCubicMeter: Double
+    public let penultimateCycleMeanForceNewtons: [Double]
+    public let finalCycleMeanForceNewtons: [Double]
+    public let relativeMeanForceVectorDifference: Double
+    public let relativeMeanVerticalForceDifference: Double
+    public let normalizedPhaseResolvedForceDifference: Double
+    public let maximumPhaseForceDifferenceRelativeToFinalCycleRMS: Double
+    public let maximumAllowedRelativeDifference: Double
+    public let classification: String
+    public let passed: Bool
+    public let phaseSamples: [MetalMeasuredWingStationarityPhaseSample]
+}
+
 public struct MetalFlappingWingValidationReport: Codable, Sendable {
     public let schemaVersion: Int
     public let deviceName: String
@@ -973,23 +1003,13 @@ public extension MetalFlappingWingValidator {
                     * maximumLatticeSpeed)
         ))
         let cycleSteps = max(256, ((rawCycleSteps + 7) / 8) * 8)
-        let radiusCells = Int(ceil(
-            dataset.maximumRootRelativeRadiusMeters
-                / (referenceChordMeters / Float(chordCells))
-        ))
-        // The near-wing momentum-control volume adds four cells beyond the
-        // measured radius and must remain strictly outside the sponge. Scale
-        // this margin with the resolution-dependent sponge instead of relying
-        // on the eight-cell case's fixed ten-cell allowance.
-        let spongeCells = max(4, chordCells / 2)
-        let halfDomain = radiusCells + max(10, spongeCells + 5)
-        let grid = try GridSize(
-            x: 2 * halfDomain,
-            y: 2 * halfDomain,
-            z: 2 * halfDomain
+        let domain = try measuredSurfaceDomain(
+            dataset: dataset,
+            chordCells: chordCells,
+            referenceChordMeters: referenceChordMeters
         )
-        let cellSize = referenceChordMeters / Float(chordCells)
-        let root = SIMD3<Float>(repeating: Float(halfDomain) * cellSize)
+        let grid = domain.grid
+        let root = domain.root
         let backend = try MetalBackend(fastMath: false)
         let simulation = try MetalPrescribedWingSimulation(
             backend: backend,
@@ -1215,12 +1235,228 @@ public extension MetalFlappingWingValidator {
             cases: reports
         )
     }
+
+    static func runMeasuredSurfaceStationarity(
+        _ dataset: MeasuredWingSurfaceDataset,
+        chordCells: Int = 16,
+        halfThicknessCells: Float = 0.75,
+        cycles: Int = 5,
+        maximumAllowedRelativeDifference: Double = 0.05
+    ) throws -> MetalMeasuredWingStationarityReport {
+        guard chordCells >= 8 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "stationarity chord resolution must be at least 8"
+            )
+        }
+        guard cycles >= 2 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "stationarity requires at least two cycles"
+            )
+        }
+        guard (0.5...2).contains(halfThicknessCells),
+              maximumAllowedRelativeDifference > 0,
+              maximumAllowedRelativeDifference < 1 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "invalid stationarity thickness or relative-difference limit"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let maximumLatticeSpeed: Float = 0.08
+        let referenceChordMeters: Float = 0.0195
+        let rawCycleSteps = Int(ceil(
+            dataset.maximumPointSpeedMetersPerSecond * Float(chordCells)
+                / (referenceChordMeters * dataset.frequencyHz
+                    * maximumLatticeSpeed)
+        ))
+        let cycleSteps = max(256, ((rawCycleSteps + 7) / 8) * 8)
+        let domain = try measuredSurfaceDomain(
+            dataset: dataset,
+            chordCells: chordCells,
+            referenceChordMeters: referenceChordMeters
+        )
+        let backend = try MetalBackend(fastMath: false)
+        let simulation = try MetalPrescribedWingSimulation(
+            backend: backend,
+            grid: domain.grid,
+            chordCells: chordCells,
+            cycleSteps: cycleSteps,
+            root: domain.root,
+            measuredSurface: dataset,
+            measuredHalfThicknessCells: halfThicknessCells
+        )
+        if cycles > 2 {
+            _ = try simulation.advance(
+                to: (cycles - 2) * cycleSteps,
+                batchSize: 64,
+                captureFields: false
+            )
+        }
+        _ = try simulation.advance(
+            to: (cycles - 1) * cycleSteps,
+            batchSize: 64,
+            captureFields: false,
+            recordEveryStepLoad: true
+        )
+        let penultimateLoads = simulation.copyRecordedLoads()
+        _ = try simulation.advance(
+            to: cycles * cycleSteps,
+            batchSize: 64,
+            captureFields: false,
+            recordEveryStepLoad: true
+        )
+        let finalLoads = simulation.copyRecordedLoads()
+
+        func vector(_ load: ForceTorque) -> SIMD3<Double> {
+            SIMD3<Double>(
+                Double(load.forceNewtons.x),
+                Double(load.forceNewtons.y),
+                Double(load.forceNewtons.z)
+            )
+        }
+        func length(_ value: SIMD3<Double>) -> Double {
+            sqrt(value.x * value.x + value.y * value.y + value.z * value.z)
+        }
+        func mean(_ loads: [ForceTorque]) -> SIMD3<Double> {
+            loads.reduce(SIMD3<Double>.zero) { $0 + vector($1) }
+                / Double(loads.count)
+        }
+        func phaseBins(_ loads: [ForceTorque]) -> [SIMD3<Double>] {
+            var sums = [SIMD3<Double>](repeating: .zero, count: 100)
+            var counts = [Int](repeating: 0, count: 100)
+            for index in loads.indices {
+                let phase = min(
+                    (Double(index) + 1) / Double(cycleSteps),
+                    1 - Double.ulpOfOne
+                )
+                let bin = min(99, Int(floor(phase * 100)))
+                sums[bin] += vector(loads[index])
+                counts[bin] += 1
+            }
+            return sums.indices.map {
+                sums[$0] / Double(max(counts[$0], 1))
+            }
+        }
+
+        let penultimateMean = mean(penultimateLoads)
+        let finalMean = mean(finalLoads)
+        let relativeMeanDifference = length(finalMean - penultimateMean)
+            / max(length(finalMean), 1.0e-30)
+        let relativeVerticalDifference = abs(finalMean.z - penultimateMean.z)
+            / max(abs(finalMean.z), 1.0e-30)
+        let penultimatePhase = phaseBins(penultimateLoads)
+        let finalPhase = phaseBins(finalLoads)
+        var squaredDifference = 0.0
+        var squaredReference = 0.0
+        var maximumDifference = 0.0
+        for index in finalPhase.indices {
+            let difference = finalPhase[index] - penultimatePhase[index]
+            let differenceSquared = difference.x * difference.x
+                + difference.y * difference.y
+                + difference.z * difference.z
+            let referenceSquared = finalPhase[index].x * finalPhase[index].x
+                + finalPhase[index].y * finalPhase[index].y
+                + finalPhase[index].z * finalPhase[index].z
+            squaredDifference += differenceSquared
+            squaredReference += referenceSquared
+            maximumDifference = max(maximumDifference, sqrt(differenceSquared))
+        }
+        let normalizedPhaseDifference = sqrt(
+            squaredDifference / max(squaredReference, 1.0e-30)
+        )
+        let finalCycleRMS = sqrt(
+            squaredReference / Double(finalPhase.count)
+        )
+        let maximumPhaseDifference = maximumDifference
+            / max(finalCycleRMS, 1.0e-30)
+        let finite = [
+            relativeMeanDifference,
+            relativeVerticalDifference,
+            normalizedPhaseDifference,
+            maximumPhaseDifference,
+        ].allSatisfy(\.isFinite)
+        let passed = finite
+            && relativeMeanDifference <= maximumAllowedRelativeDifference
+            && relativeVerticalDifference <= maximumAllowedRelativeDifference
+            && normalizedPhaseDifference <= maximumAllowedRelativeDifference
+        return MetalMeasuredWingStationarityReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: dataset.datasetIdentifier,
+            inputSHA256: dataset.inputSHA256,
+            chordCells: chordCells,
+            halfThicknessCells: Double(halfThicknessCells),
+            cycles: cycles,
+            cycleSteps: cycleSteps,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            diagnosticReynoldsNumber: reynoldsNumber,
+            diagnosticAirDensityKilogramsPerCubicMeter: 1,
+            penultimateCycleMeanForceNewtons: [
+                penultimateMean.x, penultimateMean.y, penultimateMean.z,
+            ],
+            finalCycleMeanForceNewtons: [
+                finalMean.x, finalMean.y, finalMean.z,
+            ],
+            relativeMeanForceVectorDifference: relativeMeanDifference,
+            relativeMeanVerticalForceDifference: relativeVerticalDifference,
+            normalizedPhaseResolvedForceDifference: normalizedPhaseDifference,
+            maximumPhaseForceDifferenceRelativeToFinalCycleRMS:
+                maximumPhaseDifference,
+            maximumAllowedRelativeDifference:
+                maximumAllowedRelativeDifference,
+            classification: passed ? "cycle-stationary" : "cycle-transient",
+            passed: passed,
+            phaseSamples: finalPhase.indices.map { index in
+                MetalMeasuredWingStationarityPhaseSample(
+                    phase: (Double(index) + 0.5) / 100,
+                    penultimateCycleForceNewtons: [
+                        penultimatePhase[index].x,
+                        penultimatePhase[index].y,
+                        penultimatePhase[index].z,
+                    ],
+                    finalCycleForceNewtons: [
+                        finalPhase[index].x,
+                        finalPhase[index].y,
+                        finalPhase[index].z,
+                    ]
+                )
+            }
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
 }
 
 #if canImport(Metal)
 import Metal
 
 private extension MetalFlappingWingValidator {
+    static func measuredSurfaceDomain(
+        dataset: MeasuredWingSurfaceDataset,
+        chordCells: Int,
+        referenceChordMeters: Float
+    ) throws -> (grid: GridSize, root: SIMD3<Float>) {
+        let radiusCells = Int(ceil(
+            dataset.maximumRootRelativeRadiusMeters
+                / (referenceChordMeters / Float(chordCells))
+        ))
+        // The near-wing momentum-control volume adds four cells beyond the
+        // measured radius and must remain strictly outside the sponge.
+        let spongeCells = max(4, chordCells / 2)
+        let halfDomain = radiusCells + max(10, spongeCells + 5)
+        let grid = try GridSize(
+            x: 2 * halfDomain,
+            y: 2 * halfDomain,
+            z: 2 * halfDomain
+        )
+        let cellSize = referenceChordMeters / Float(chordCells)
+        return (
+            grid,
+            SIMD3<Float>(repeating: Float(halfDomain) * cellSize)
+        )
+    }
+
     struct BatchDifference {
         let density: Double
         let velocity: Double

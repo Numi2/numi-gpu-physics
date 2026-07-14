@@ -187,7 +187,14 @@ the vertical-force envelope is `5.1810%`, narrowly exceeding the `5%`
 sensitivity ceiling. At 12 chord cells the full-vector envelope contracts to
 `5.2535%` and the vertical envelope to `4.4475%`; all individual cases still
 pass, but full-vector thickness independence remains narrowly uncleared. The
-next measured-surface gate is therefore the same ladder at 16 chord cells. It
-will determine whether the observed contraction crosses the acceptance line;
-running a conventional load ladder at only the arbitrary `0.75` value would
-still hide this risk.
+16 chord cells the envelopes contract again to `3.9323%` and `3.3543%`, so
+finest-grid thickness sensitivity clears. The `0.75`-cell mean-force vector
+changes `2.7647%` from 12 to 16 cells, also clearing the finest-two `5%` gate.
+This closes startup engineering refinement for the measured right-wing tier.
+The subsequent five-cycle 16-cell stationarity run compares cycles four and
+five and passes: mean force-vector difference is `0.3403%`, vertical difference
+is `0.2406%`, and the complete phase-curve RMS difference is `0.1722%`. The
+stationary vertical force is `11.01%` below the first-cycle value, confirming
+that the stationarity gate was necessary. This closes wing-only numerical
+acceptance, but it does not supply the missing complete-bird or measured-flight
+inputs needed for quantitative physical interpretation.

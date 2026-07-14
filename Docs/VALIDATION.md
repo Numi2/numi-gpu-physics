@@ -510,6 +510,57 @@ The control-volume margin now scales with the resolution-dependent sponge, and
 invalid clearance throws a descriptive request error instead of trapping on a
 precondition.
 
+At 16 chord cells the thickness gate clears. All three cases pass in
+`155.48 s`; the full force-vector envelope is `3.9323%` and the vertical-force
+envelope is `3.3543%`. These are reductions of `25.15%` and `24.58%`
+respectively from the 12-cell envelopes. The center `0.75`-cell case changes
+only `2.7647%` in force-vector norm and `2.7570%` in vertical force from 12 to
+16 cells. Both the finest-grid thickness sensitivity and finest-two startup
+load refinement therefore pass the `5%` engineering gate. The three-grid
+conclusion and artifact hashes are locked in
+`ValidationArtifacts/measured-wing-thickness-refinement-summary.json`.
+
+This clears the wing-only *startup engineering refinement* gate, not
+quantitative bird-flight acceptance. The forces are still first-cycle
+transients at diagnostic `Re=100` and `1 kg/m^3`; complete specimen geometry
+and physical membrane thickness remain unavailable.
+
+Cycle stationarity is measured independently at the cleared 16-cell,
+`0.75`-cell-half-thickness point:
+
+```bash
+.build/release/birdflow replay measured-wing \
+  --input ValidationInputs/maeda-hovering-right-wing-surface-v1.json \
+  --chord-cells 16 \
+  --half-thickness-cells 0.75 \
+  --stationarity \
+  --json
+```
+
+The command runs five complete cycles, records cycles four and five in the
+same one-cycle GPU history buffer, copies cycle four before reuse, and compares
+raw three-component force in 100 phase bins. Mean force-vector, mean vertical
+force, and normalized phase-resolved RMS differences must each remain below
+`5%`; raw force is used because a deforming measured surface has no unique
+rigid-wing lift/drag projection.
+
+The Apple M4 release run takes `277.12 s` and passes. Cycle-four-to-five
+differences are `0.3403%` for the mean force vector, `0.2406%` vertically, and
+`0.1722%` for the complete phase-resolved curve. The maximum single-bin force
+difference is `0.3739%` of final-cycle RMS force. The stationary final mean is
+`[-0.000777677, 0.0000116009, 0.0118172] N`. It differs from the first-cycle
+16-cell center result by `23.76%` in force-vector norm and `11.01%` vertically,
+demonstrating why startup loads could not be promoted directly.
+
+The stationarity report is
+`ValidationArtifacts/measured-wing-stationarity-c16.json`; the consolidated
+numerical verdict and SHA-locked dependencies are in
+`ValidationArtifacts/measured-wing-numerical-acceptance-summary.json`.
+Wing-only numerical acceptance is now cleared. Quantitative physical
+acceptance remains open because `Re=100` and `1 kg/m^3` are diagnostic inputs,
+not measured specimen flight conditions, and complete-bird fields remain
+missing.
+
 The locked compact input SHA-256 is
 `5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887`.
 

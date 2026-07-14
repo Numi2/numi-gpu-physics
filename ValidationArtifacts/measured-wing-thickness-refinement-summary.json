@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "datasetIdentifier": "maeda-2017-hovering-right-wing-surface-v1",
+  "inputSHA256": "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887",
+  "maximumAllowedRelativeSensitivity": 0.05,
+  "grids": [
+    {
+      "chordCells": 8,
+      "artifact": "measured-wing-thickness-sensitivity-c8.json",
+      "artifactSHA256": "cc0870e99dc741d2e1a4ab1065c25a3ea6284bb5d9b188c5dce2d50bb595a5b2",
+      "maximumPairwiseRelativeMeanForceVectorDifference": 0.06741639384772043,
+      "relativeMeanVerticalForceEnvelope": 0.05180998382170827,
+      "passed": false
+    },
+    {
+      "chordCells": 12,
+      "artifact": "measured-wing-thickness-sensitivity-c12.json",
+      "artifactSHA256": "483ae297b18ee66939d29b1540de7dc049daa047eb0a25d81951f7272045da6e",
+      "maximumPairwiseRelativeMeanForceVectorDifference": 0.05253451308480542,
+      "relativeMeanVerticalForceEnvelope": 0.044475422585867966,
+      "passed": false
+    },
+    {
+      "chordCells": 16,
+      "artifact": "measured-wing-thickness-sensitivity-c16.json",
+      "artifactSHA256": "6122136a698a21be66bb6faf3beff22104aa5bf2073196b50e0df575a2e85ce3",
+      "maximumPairwiseRelativeMeanForceVectorDifference": 0.039322565414842026,
+      "relativeMeanVerticalForceEnvelope": 0.03354308010257967,
+      "passed": true
+    }
+  ],
+  "centerThicknessRefinement": {
+    "halfThicknessCells": 0.75,
+    "relativeMeanForceVectorChange8To12": 0.06801233555309542,
+    "relativeMeanVerticalForceChange8To12": 0.06825927677712529,
+    "relativeMeanForceVectorChange12To16": 0.027647355382899953,
+    "relativeMeanVerticalForceChange12To16": 0.02757046745299893,
+    "finestTwoPassed": true
+  },
+  "allUnderlyingGeometryAndFluidCasesPassed": true,
+  "finestGridThicknessSensitivityPassed": true,
+  "startupEngineeringRefinementPassed": true,
+  "quantitativeCompleteBirdAcceptancePassed": false,
+  "remainingBoundaries": [
+    "startup-cycle forces are not cycle-stationary loads",
+    "diagnostic Reynolds number and density are not measured flight conditions",
+    "body, left wing, mass, inertia, center-of-mass registration, tail, and physical membrane thickness remain unavailable"
+  ]
+}
