@@ -1,6 +1,107 @@
 @testable import BirdFlowMetal
 import BirdFlowCore
+import Foundation
 import Testing
+
+private var measuredFixtureURL: URL {
+    URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .appendingPathComponent("Examples/measured-bird-schema-v1.json")
+}
+
+@Test
+func measuredBirdFixtureAuditsAndReplaysThroughProductionMetal() throws {
+    let loaded = try MeasuredBirdDatasetLoader.load(from: measuredFixtureURL)
+    let audit = try MeasuredBirdReplay.audit(loaded, chordCells: 12)
+
+    #expect(audit.passed)
+    #expect(audit.geometryRepresentation == "registeredAnalyticProxyV1")
+    #expect(audit.kinematicKeyframeCount == 4)
+    #expect(audit.estimatedMaximumLatticeMach <= 0.15)
+    #expect(audit.sourceSHA256.count == 64)
+
+    let dataset = loaded.dataset
+    let scaling = try LatticeScaling(
+        characteristicLengthMeters: dataset.geometry.wingRootChordMeters,
+        characteristicLengthCells: 12,
+        referenceSpeedMetersPerSecond:
+            dataset.replay.referenceSpeedMetersPerSecond,
+        targetReynoldsNumber: dataset.replay.targetReynoldsNumber,
+        physicalAirDensity: dataset.replay.physicalAirDensity,
+        latticeReferenceSpeed: dataset.replay.latticeReferenceSpeed
+    )
+    let configuration = try SimulationConfiguration(
+        grid: audit.grid,
+        domainOriginMeters: dataset.replay.domainOriginMeters,
+        scaling: scaling,
+        physicalAirDensity: dataset.replay.physicalAirDensity,
+        farFieldVelocityMetersPerSecond:
+            dataset.replay.farFieldVelocityMetersPerSecond,
+        spongeWidthCells: 10,
+        spongeStrength: dataset.replay.spongeStrength,
+        gravityMetersPerSecondSquared:
+            dataset.replay.gravityMetersPerSecondSquared
+    )
+    let simulation = try BirdFlowSimulation(
+        configuration: configuration,
+        bird: dataset.geometry.birdParameters(
+            measuredKinematics: dataset.kinematics
+        ),
+        initialBodyState: BirdBodyState(
+            positionMeters: dataset.replay.bodyPositionMeters,
+            orientationBodyToWorld:
+                dataset.replay.bodyOrientationBodyToWorld
+        )
+    )
+    let frame = try #require(simulation.acquireLatestGPUFieldFrame())
+    #expect(
+        abs(
+            frame.metadata.geometry.leftChord.w
+                - dataset.kinematics.keyframes[0].left.tipTwistRadians
+        ) < 1e-6
+    )
+    #expect(
+        abs(
+            frame.metadata.geometry.leftAngularVelocity.w
+                - dataset.kinematics.keyframes[0]
+                    .left.tipTwistRateRadiansPerSecond
+        ) < 1e-5
+    )
+    frame.releaseImmediately()
+
+    let report = try MeasuredBirdReplay.run(
+        loaded,
+        chordCells: 12,
+        steps: 2,
+        batchSize: 1
+    )
+    #expect(report.passed)
+    #expect(report.samples.count == 2)
+    #expect(report.samples.allSatisfy {
+        $0.aerodynamicLoad.forceNewtons.x.isFinite
+            && $0.aerodynamicLoad.forceNewtons.y.isFinite
+            && $0.aerodynamicLoad.forceNewtons.z.isFinite
+    })
+}
+
+@Test
+func measuredBirdLoaderRejectsUnknownKeys() throws {
+    let source = try String(contentsOf: measuredFixtureURL, encoding: .utf8)
+    let invalid = source.replacingOccurrences(
+        of: "\"schemaVersion\": 1,",
+        with: "\"schemaVersion\": 1, \"unknownScientificUnit\": 7,"
+    )
+    let url = FileManager.default.temporaryDirectory
+        .appendingPathComponent("birdflow-invalid-measured-\(UUID()).json")
+    try Data(invalid.utf8).write(to: url)
+    defer { try? FileManager.default.removeItem(at: url) }
+
+    #expect(throws: MeasuredBirdReplayError.self) {
+        _ = try MeasuredBirdDatasetLoader.load(from: url)
+    }
+}
 
 #if canImport(Metal)
 import Metal

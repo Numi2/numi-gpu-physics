@@ -425,14 +425,53 @@ Acceptance:
 
 ## 7. Complete measured bird
 
-Import measured body/wing geometry and measured stroke, deviation, pitch, and twist histories.
+The first ingestion/replay tier is implemented:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/specimen.json \
+  --chord-cells 12 \
+  --audit-only \
+  --json
+
+.build/release/birdflow replay measured-bird \
+  --input /path/to/specimen.json \
+  --chord-cells 12 \
+  --cycles 5 \
+  --archive /path/to/specimen-replay-c12 \
+  --json
+```
+
+Schema 1 requires explicit provenance, SI units, the COM-centered principal-axis
+frame, study/domain conditions, registered morphometrics, and independent
+left/right stroke, deviation, pitch, and tip-twist pose and physical rate
+histories. Periodic cubic-Hermite interpolation supplies consistent pose and
+wall velocity. Preflight rejects invalid phase order/coverage, unresolved
+domain clearance, under-resolved thickness, and estimated lattice Mach above
+`0.15` before Metal allocation. Archives retain the exact input bytes and
+SHA-256 with per-step physical loads.
+
+`registeredAnalyticProxyV1` is currently the only geometry representation. It
+is measured morphometrics registered to the analytic body/wing/tail proxy, not
+a scanned surface. The bundled example is a synthetic conformance fixture. The
+data contract is in `Docs/MEASURED_BIRD_DATA.md`.
 
 Acceptance:
 
+- an actual measured dataset, rather than the conformance fixture, passes the
+  preflight and its input SHA-256/provenance are retained in every archive
 - for prescribed or trimmed periodic hovering/level flight, mean vertical force balances weight within study tolerance
 - for prescribed or trimmed steady forward flight, mean thrust balances drag
 - left/right loads agree for symmetric motion
 - cycle statistics are stationary before reporting
+- mean loads change below `5%` between the two finest registered grids
+
+Status: ingestion and total-load prescribed replay are complete. No actual
+measured specimen has been supplied, per-part left/right load reporting is not
+yet exposed, and surface-scan/SDF ingestion is not implemented. Therefore the
+complete measured-bird acceptance gate remains open without weakening it.
+The synthetic release conformance result is recorded in
+`ValidationArtifacts/measured-bird-replay-summary.json`.
 
 ## 8. Free flight
 

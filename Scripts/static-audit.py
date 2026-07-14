@@ -285,6 +285,9 @@ def main() -> int:
             "position", "orientation", "linearVelocity",
             "angularVelocityBody",
         ],
+        "GPUMeasuredWingKeyframe": [
+            "phase", "leftAngles", "leftRates", "rightAngles", "rightRates",
+        ],
         "GPUPreparedBirdGeometry": [
             "bodyPosition", "orientation", "linearVelocity", "omegaBodyWorld",
             "leftRoot", "leftChord", "leftSpan", "leftNormal",
@@ -324,7 +327,7 @@ def main() -> int:
         "private func encodePlanarInitialization()": 7,
         "private func encodeCanonicalInitialization()": 7,
         "private func encodePlanarWallUpdate(": 2,
-        "private func encodeGeometryPreparation(": 4,
+        "private func encodeGeometryPreparation(": 5,
         "private func encodeGeometry(": 6,
         "private func encodeFluidStep(": 10,
         "private func encodeShearFluidStep(": 10,
@@ -377,7 +380,7 @@ def main() -> int:
 
     expected_buffers = {
         "buildBirdGeometry": 6,
-        "prepareBirdGeometry": 4,
+        "prepareBirdGeometry": 5,
         "buildPrescribedFlappingWing": 8,
         "preparePrescribedFlappingWing": 3,
         "initializePopulations": 6,
@@ -411,8 +414,8 @@ def main() -> int:
     binding_contracts = {
         "prepareBirdGeometry": (
             "private func encodeGeometryPreparation(",
-            ["preparedGeometryBuffer", "birdParametersBuffer", "bodyStateBuffer", "uniforms"],
-            ["prepared", "bird", "body", "uniforms"],
+            ["preparedGeometryBuffer", "birdParametersBuffer", "bodyStateBuffer", "measuredKinematicsBuffer", "uniforms"],
+            ["prepared", "bird", "body", "measuredKeyframes", "uniforms"],
         ),
         "buildBirdGeometry": (
             "private func encodeGeometry(",

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "datasetIdentifier": "birdflow-synthetic-ingestion-conformance-v1",
+  "provenance": {
+    "specimenIdentifier": "synthetic-conformance-fixture-not-a-bird-measurement",
+    "geometryCitation": "BirdFlowMetal development geometry; synthetic fixture only",
+    "kinematicsCitation": "BirdFlowMetal analytic waveform sampled for ingestion tests; synthetic fixture only",
+    "dataLicense": "repository test fixture",
+    "processingDescription": "Four periodic keyframes generated analytically to exercise independent stroke, deviation, pitch, twist, and rate ingestion. Do not use for scientific claims."
+  },
+  "units": {
+    "length": "meter",
+    "mass": "kilogram",
+    "time": "second",
+    "angle": "radian",
+    "angularRate": "radianPerSecond"
+  },
+  "coordinateFrame": {
+    "handedness": "rightHanded",
+    "origin": "centerOfMass",
+    "xAxis": "forward",
+    "yAxis": "left",
+    "zAxis": "up"
+  },
+  "geometryRepresentation": "registeredAnalyticProxyV1",
+  "geometry": {
+    "bodyRadiiMeters": [0.18, 0.065, 0.075],
+    "massKilograms": 0.42,
+    "principalInertiaKilogramMetersSquared": [0.0024, 0.0068, 0.0074],
+    "wingSpanMeters": 0.34,
+    "wingRootChordMeters": 0.14,
+    "wingTipChordMeters": 0.055,
+    "wingThicknessMeters": 0.018,
+    "wingSweepMeters": 0.055,
+    "wingRootOffsetMeters": [0.02, 0.055, 0.02],
+    "tailLengthMeters": 0.17,
+    "tailHalfWidthMeters": 0.11,
+    "tailThicknessMeters": 0.018
+  },
+  "kinematics": {
+    "frequencyHz": 4.5,
+    "keyframes": [
+      {
+        "phase": 0,
+        "left": {
+          "strokeRadians": 0.034906585,
+          "deviationRadians": 0.025789003,
+          "pitchRadians": 0.549351849,
+          "tipTwistRadians": -0.034674339,
+          "strokeRateRadiansPerSecond": 20.726169242,
+          "deviationRateRadiansPerSecond": 2.357198304,
+          "pitchRateRadiansPerSecond": 2.462407366,
+          "tipTwistRateRadiansPerSecond": 4.836434705
+        },
+        "right": {
+          "strokeRadians": 0.034906585,
+          "deviationRadians": 0.025789003,
+          "pitchRadians": 0.549351849,
+          "tipTwistRadians": -0.034674339,
+          "strokeRateRadiansPerSecond": 20.726169242,
+          "deviationRateRadiansPerSecond": 2.357198304,
+          "pitchRateRadiansPerSecond": 2.462407366,
+          "tipTwistRateRadiansPerSecond": 4.836434705
+        }
+      },
+      {
+        "phase": 0.25,
+        "left": {
+          "strokeRadians": 0.767944871,
+          "deviationRadians": 0.083368836,
+          "pitchRadians": 0.226716186,
+          "tipTwistRadians": 0.171053887,
+          "strokeRateRadiansPerSecond": 0,
+          "deviationRateRadiansPerSecond": -0.729166883,
+          "pitchRateRadiansPerSecond": -11.584715838,
+          "tipTwistRateRadiansPerSecond": 0.980393851
+        },
+        "right": {
+          "strokeRadians": 0.767944871,
+          "deviationRadians": 0.083368836,
+          "pitchRadians": 0.226716186,
+          "tipTwistRadians": 0.171053887,
+          "strokeRateRadiansPerSecond": 0,
+          "deviationRateRadiansPerSecond": -0.729166883,
+          "pitchRateRadiansPerSecond": -11.584715838,
+          "tipTwistRateRadiansPerSecond": 0.980393851
+        }
+      },
+      {
+        "phase": 0.5,
+        "left": {
+          "strokeRadians": 0.034906585,
+          "deviationRadians": -0.025789003,
+          "pitchRadians": -0.270099169,
+          "tipTwistRadians": 0.034674339,
+          "strokeRateRadiansPerSecond": -20.726169242,
+          "deviationRateRadiansPerSecond": -2.357198304,
+          "pitchRateRadiansPerSecond": -2.462407366,
+          "tipTwistRateRadiansPerSecond": -4.836434705
+        },
+        "right": {
+          "strokeRadians": 0.034906585,
+          "deviationRadians": -0.025789003,
+          "pitchRadians": -0.270099169,
+          "tipTwistRadians": 0.034674339,
+          "strokeRateRadiansPerSecond": -20.726169242,
+          "deviationRateRadiansPerSecond": -2.357198304,
+          "pitchRateRadiansPerSecond": -2.462407366,
+          "tipTwistRateRadiansPerSecond": -4.836434705
+        }
+      },
+      {
+        "phase": 0.75,
+        "left": {
+          "strokeRadians": -0.698131701,
+          "deviationRadians": -0.083368836,
+          "pitchRadians": 0.052536495,
+          "tipTwistRadians": -0.171053887,
+          "strokeRateRadiansPerSecond": 0,
+          "deviationRateRadiansPerSecond": 0.729166883,
+          "pitchRateRadiansPerSecond": 11.584715838,
+          "tipTwistRateRadiansPerSecond": -0.980393851
+        },
+        "right": {
+          "strokeRadians": -0.698131701,
+          "deviationRadians": -0.083368836,
+          "pitchRadians": 0.052536495,
+          "tipTwistRadians": -0.171053887,
+          "strokeRateRadiansPerSecond": 0,
+          "deviationRateRadiansPerSecond": 0.729166883,
+          "pitchRateRadiansPerSecond": 11.584715838,
+          "tipTwistRateRadiansPerSecond": -0.980393851
+        }
+      }
+    ]
+  },
+  "replay": {
+    "domainOriginMeters": [0, 0, 0],
+    "domainSizeMeters": [1.4, 1.6, 1.4],
+    "bodyPositionMeters": [0.7, 0.8, 0.7],
+    "bodyOrientationBodyToWorld": {
+      "vector": [0, 0, 0],
+      "scalar": 1
+    },
+    "farFieldVelocityMetersPerSecond": [-8, 0, 0],
+    "gravityMetersPerSecondSquared": [0, 0, 0],
+    "referenceSpeedMetersPerSecond": 8,
+    "targetReynoldsNumber": 2000,
+    "physicalAirDensity": 1.225,
+    "latticeReferenceSpeed": 0.04,
+    "spongeStrength": 0.06
+  }
+}

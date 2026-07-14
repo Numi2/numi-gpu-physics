@@ -31,6 +31,7 @@ public final class BirdFlowSimulation: @unchecked Sendable {
 
     private let backend: MetalBackend
     private let birdParametersBuffer: MTLBuffer
+    private let measuredKinematicsBuffer: MTLBuffer
     private let bodyStateBuffer: MTLBuffer
     private let preparedGeometryBuffer: MTLBuffer
     private let populationsA: MTLBuffer
@@ -128,8 +129,12 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         let firstReductionCount = max(1, (cellCount + 255) / 256)
         let reductionBytes = firstReductionCount
             * MemoryLayout<GPUForceTorque>.stride
+        let measuredKeyframes = bird.measuredWingKinematics?.keyframes ?? []
+        let measuredKinematicsBytes = max(1, measuredKeyframes.count)
+            * MemoryLayout<GPUMeasuredWingKeyframe>.stride
         var allocationLengths = [
             MemoryLayout<GPUBirdParameters>.stride,
+            measuredKinematicsBytes,
             MemoryLayout<GPUBirdBodyState>.stride,
             MemoryLayout<GPUPreparedBirdGeometry>.stride,
             populationBytes,
@@ -151,6 +156,16 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         birdParametersBuffer = try backend.makeSharedBuffer(
             value: GPUBirdParameters(bird)
         )
+        measuredKinematicsBuffer = try backend.makeSharedBuffer(
+            length: measuredKinematicsBytes
+        )
+        if !measuredKeyframes.isEmpty {
+            let pointer = measuredKinematicsBuffer.contents()
+                .assumingMemoryBound(to: GPUMeasuredWingKeyframe.self)
+            for (index, keyframe) in measuredKeyframes.enumerated() {
+                pointer[index] = GPUMeasuredWingKeyframe(keyframe)
+            }
+        }
         bodyStateBuffer = try backend.makeSharedBuffer(
             value: GPUBirdBodyState(initialBodyState)
         )
@@ -719,10 +734,11 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         encoder.setBuffer(preparedGeometryBuffer, offset: 0, index: 0)
         encoder.setBuffer(birdParametersBuffer, offset: 0, index: 1)
         encoder.setBuffer(bodyStateBuffer, offset: 0, index: 2)
+        encoder.setBuffer(measuredKinematicsBuffer, offset: 0, index: 3)
         encoder.setBytes(
             &uniforms,
             length: MemoryLayout<GPUUniforms>.stride,
-            index: 3
+            index: 4
         )
         backend.dispatch1D(
             encoder: encoder,

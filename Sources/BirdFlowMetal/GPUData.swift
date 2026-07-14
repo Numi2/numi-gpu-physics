@@ -120,8 +120,46 @@ struct GPUBirdParameters {
         wingKinematics1 = SIMD4<Float>(
             parameters.wingKinematics.pitchAmplitudeRadians,
             parameters.wingKinematics.pitchPhaseRadians,
-            0,
-            0
+            Float(parameters.measuredWingKinematics?.keyframes.count ?? 0),
+            parameters.measuredWingKinematics == nil ? 0 : 1
+        )
+    }
+}
+
+/// One measured periodic keyframe. Float4-only packing is shared verbatim
+/// with Metal; the preparation kernel is the sole consumer per fluid step.
+struct GPUMeasuredWingKeyframe {
+    var phase: SIMD4<Float>
+    var leftAngles: SIMD4<Float>
+    var leftRates: SIMD4<Float>
+    var rightAngles: SIMD4<Float>
+    var rightRates: SIMD4<Float>
+
+    init(_ keyframe: MeasuredWingKeyframe) {
+        phase = SIMD4<Float>(keyframe.phase, 0, 0, 0)
+        leftAngles = SIMD4<Float>(
+            keyframe.left.strokeRadians,
+            keyframe.left.deviationRadians,
+            keyframe.left.pitchRadians,
+            keyframe.left.tipTwistRadians
+        )
+        leftRates = SIMD4<Float>(
+            keyframe.left.strokeRateRadiansPerSecond,
+            keyframe.left.deviationRateRadiansPerSecond,
+            keyframe.left.pitchRateRadiansPerSecond,
+            keyframe.left.tipTwistRateRadiansPerSecond
+        )
+        rightAngles = SIMD4<Float>(
+            keyframe.right.strokeRadians,
+            keyframe.right.deviationRadians,
+            keyframe.right.pitchRadians,
+            keyframe.right.tipTwistRadians
+        )
+        rightRates = SIMD4<Float>(
+            keyframe.right.strokeRateRadiansPerSecond,
+            keyframe.right.deviationRateRadiansPerSecond,
+            keyframe.right.pitchRateRadiansPerSecond,
+            keyframe.right.tipTwistRateRadiansPerSecond
         )
     }
 }

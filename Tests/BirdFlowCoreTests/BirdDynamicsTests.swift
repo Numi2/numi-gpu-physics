@@ -107,3 +107,91 @@ func birdInitialPoseInsideSpongeIsRejected() throws {
         )
     }
 }
+
+private func measuredTestKinematics() -> MeasuredWingKinematics {
+    let states = (0..<4).map { index -> MeasuredWingKeyframe in
+        let phase = Float(index) * 0.25
+        let angle = 2 * Float.pi * phase
+        let state = MeasuredWingState(
+            strokeRadians: sin(angle),
+            deviationRadians: 0.1 * cos(angle),
+            pitchRadians: 0.2 * sin(angle),
+            tipTwistRadians: 0.05 * cos(angle),
+            strokeRateRadiansPerSecond: 2 * Float.pi * 5 * cos(angle),
+            deviationRateRadiansPerSecond:
+                -0.1 * 2 * Float.pi * 5 * sin(angle),
+            pitchRateRadiansPerSecond:
+                0.2 * 2 * Float.pi * 5 * cos(angle),
+            tipTwistRateRadiansPerSecond:
+                -0.05 * 2 * Float.pi * 5 * sin(angle)
+        )
+        return MeasuredWingKeyframe(
+            phase: phase,
+            left: state,
+            right: state
+        )
+    }
+    return MeasuredWingKinematics(frequencyHz: 5, keyframes: states)
+}
+
+@Test
+func measuredWingHermiteInterpolationIsPeriodicAndHitsRatesAtKnots() throws {
+    let kinematics = measuredTestKinematics()
+    try kinematics.validate()
+
+    let phase0 = kinematics.sample(atPhase: 0).left
+    let phase1 = kinematics.sample(atPhase: 1).left
+    let negative = kinematics.sample(atPhase: -0.25).left
+    let phase75 = kinematics.sample(atPhase: 0.75).left
+
+    #expect(abs(phase0.strokeRadians) < 1e-7)
+    #expect(
+        abs(phase0.strokeRateRadiansPerSecond - 10 * Float.pi) < 1e-5
+    )
+    #expect(phase0 == phase1)
+    #expect(negative == phase75)
+}
+
+@Test
+func measuredWingKinematicsRejectNonIncreasingPhase() {
+    var kinematics = measuredTestKinematics()
+    kinematics.keyframes[2].phase = kinematics.keyframes[1].phase
+
+    #expect(throws: MeasuredBirdDatasetError.self) {
+        try kinematics.validate()
+    }
+}
+
+@Test
+func measuredWingMachBoundFindsRateExtremaBetweenKeyframes() throws {
+    let angles: [Float] = [0, 1, 0, -1]
+    let frames = angles.enumerated().map { index, angle in
+        let state = MeasuredWingState(
+            strokeRadians: angle,
+            deviationRadians: 0,
+            pitchRadians: 0,
+            strokeRateRadiansPerSecond: 0,
+            pitchRateRadiansPerSecond: 0
+        )
+        return MeasuredWingKeyframe(
+            phase: Float(index) * 0.25,
+            left: state,
+            right: state
+        )
+    }
+    let kinematics = MeasuredWingKinematics(
+        frequencyHz: 1,
+        keyframes: frames
+    )
+    try kinematics.validate()
+
+    #expect(abs(kinematics.maximumAngularRateRadiansPerSecond - 6) < 1e-5)
+    #expect(
+        abs(
+            kinematics.maximumSurfaceSpeedMetersPerSecond(
+                wingSpanMeters: 0.5,
+                maximumChordMeters: 0.1
+            ) - 3
+        ) < 1e-5
+    )
+}

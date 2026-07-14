@@ -1,0 +1,42 @@
+{
+  "artifactSchema": 1,
+  "case": "measured-bird-ingestion-conformance",
+  "date": "2026-07-14",
+  "device": "Apple M4",
+  "input": {
+    "path": "Examples/measured-bird-schema-v1.json",
+    "sha256": "6083d22a9846e8b65d71213170ee6a10b38814664a23fda2c67f7d39a7557562",
+    "datasetIdentifier": "birdflow-synthetic-ingestion-conformance-v1",
+    "specimenIdentifier": "synthetic-conformance-fixture-not-a-bird-measurement",
+    "geometryRepresentation": "registeredAnalyticProxyV1",
+    "kinematicKeyframes": 4
+  },
+  "audit": {
+    "passed": true,
+    "grid": [120, 138, 120],
+    "chordCells": 12,
+    "stepsPerCycle": 3810,
+    "maximumEstimatedLatticeMach": 0.14670132,
+    "unknownKeyNegativeControlPassed": true
+  },
+  "productionMetalSmoke": {
+    "passed": true,
+    "steps": 2,
+    "batchSize": 1,
+    "solverRuntimeSeconds": 0.03575612511485815,
+    "processWallSeconds": 0.09,
+    "archiveInputByteComparisonPassed": true,
+    "archiveSHA256ComparisonPassed": true,
+    "phaseLoadRows": 2
+  },
+  "regressions": {
+    "periodicHermitePoseRateConsistencyPassed": true,
+    "measuredTwistReachedMetalFramePassed": true,
+    "measuredTwistRateReachedMetalFramePassed": true,
+    "fullSwiftTestCount": 55,
+    "fullSwiftTestsPassed": true,
+    "offlineMetalCompilationPassed": true,
+    "staticAuditPassed": true
+  },
+  "scientificVerdict": "Ingestion and prescribed-replay plumbing accepted. The input is synthetic, geometry is an analytic proxy, and no quantitative bird-flight result is claimed."
+}

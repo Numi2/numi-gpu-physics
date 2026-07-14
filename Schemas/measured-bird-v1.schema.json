@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://birdflowmetal.local/schemas/measured-bird-v1.schema.json",
+  "title": "BirdFlowMetal measured-bird prescribed replay input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "datasetIdentifier",
+    "provenance",
+    "units",
+    "coordinateFrame",
+    "geometryRepresentation",
+    "geometry",
+    "kinematics",
+    "replay"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "datasetIdentifier": { "type": "string", "minLength": 1 },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "specimenIdentifier",
+        "geometryCitation",
+        "kinematicsCitation",
+        "dataLicense",
+        "processingDescription"
+      ],
+      "properties": {
+        "specimenIdentifier": { "type": "string", "minLength": 1 },
+        "geometryCitation": { "type": "string", "minLength": 1 },
+        "kinematicsCitation": { "type": "string", "minLength": 1 },
+        "dataLicense": { "type": "string", "minLength": 1 },
+        "processingDescription": { "type": "string", "minLength": 1 }
+      }
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "mass", "time", "angle", "angularRate"],
+      "properties": {
+        "length": { "const": "meter" },
+        "mass": { "const": "kilogram" },
+        "time": { "const": "second" },
+        "angle": { "const": "radian" },
+        "angularRate": { "const": "radianPerSecond" }
+      }
+    },
+    "coordinateFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handedness", "origin", "xAxis", "yAxis", "zAxis"],
+      "properties": {
+        "handedness": { "const": "rightHanded" },
+        "origin": { "const": "centerOfMass" },
+        "xAxis": { "const": "forward" },
+        "yAxis": { "const": "left" },
+        "zAxis": { "const": "up" }
+      }
+    },
+    "geometryRepresentation": { "const": "registeredAnalyticProxyV1" },
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bodyRadiiMeters",
+        "massKilograms",
+        "principalInertiaKilogramMetersSquared",
+        "wingSpanMeters",
+        "wingRootChordMeters",
+        "wingTipChordMeters",
+        "wingThicknessMeters",
+        "wingSweepMeters",
+        "wingRootOffsetMeters",
+        "tailLengthMeters",
+        "tailHalfWidthMeters",
+        "tailThicknessMeters"
+      ],
+      "properties": {
+        "bodyRadiiMeters": { "$ref": "#/$defs/positiveVector3" },
+        "massKilograms": { "type": "number", "exclusiveMinimum": 0 },
+        "principalInertiaKilogramMetersSquared": {
+          "$ref": "#/$defs/positiveVector3"
+        },
+        "wingSpanMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "wingRootChordMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "wingTipChordMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "wingThicknessMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "wingSweepMeters": { "type": "number" },
+        "wingRootOffsetMeters": { "$ref": "#/$defs/vector3" },
+        "tailLengthMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "tailHalfWidthMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "tailThicknessMeters": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "kinematics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frequencyHz", "keyframes"],
+      "properties": {
+        "frequencyHz": { "type": "number", "exclusiveMinimum": 0 },
+        "keyframes": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4096,
+          "items": { "$ref": "#/$defs/keyframe" }
+        }
+      }
+    },
+    "replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domainOriginMeters",
+        "domainSizeMeters",
+        "bodyPositionMeters",
+        "bodyOrientationBodyToWorld",
+        "farFieldVelocityMetersPerSecond",
+        "gravityMetersPerSecondSquared",
+        "referenceSpeedMetersPerSecond",
+        "targetReynoldsNumber",
+        "physicalAirDensity",
+        "latticeReferenceSpeed",
+        "spongeStrength"
+      ],
+      "properties": {
+        "domainOriginMeters": { "$ref": "#/$defs/vector3" },
+        "domainSizeMeters": { "$ref": "#/$defs/positiveVector3" },
+        "bodyPositionMeters": { "$ref": "#/$defs/vector3" },
+        "bodyOrientationBodyToWorld": { "$ref": "#/$defs/quaternion" },
+        "farFieldVelocityMetersPerSecond": { "$ref": "#/$defs/vector3" },
+        "gravityMetersPerSecondSquared": { "$ref": "#/$defs/vector3" },
+        "referenceSpeedMetersPerSecond": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "targetReynoldsNumber": { "type": "number", "exclusiveMinimum": 0 },
+        "physicalAirDensity": { "type": "number", "exclusiveMinimum": 0 },
+        "latticeReferenceSpeed": { "type": "number", "exclusiveMinimum": 0 },
+        "spongeStrength": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "positiveVector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number", "exclusiveMinimum": 0 }
+    },
+    "quaternion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vector", "scalar"],
+      "properties": {
+        "vector": { "$ref": "#/$defs/vector3" },
+        "scalar": { "type": "number" }
+      }
+    },
+    "wingState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strokeRadians",
+        "deviationRadians",
+        "pitchRadians",
+        "tipTwistRadians",
+        "strokeRateRadiansPerSecond",
+        "deviationRateRadiansPerSecond",
+        "pitchRateRadiansPerSecond",
+        "tipTwistRateRadiansPerSecond"
+      ],
+      "properties": {
+        "strokeRadians": { "type": "number" },
+        "deviationRadians": { "type": "number" },
+        "pitchRadians": { "type": "number" },
+        "tipTwistRadians": { "type": "number" },
+        "strokeRateRadiansPerSecond": { "type": "number" },
+        "deviationRateRadiansPerSecond": { "type": "number" },
+        "pitchRateRadiansPerSecond": { "type": "number" },
+        "tipTwistRateRadiansPerSecond": { "type": "number" }
+      }
+    },
+    "keyframe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase", "left", "right"],
+      "properties": {
+        "phase": { "type": "number", "minimum": 0, "exclusiveMaximum": 1 },
+        "left": { "$ref": "#/$defs/wingState" },
+        "right": { "$ref": "#/$defs/wingState" }
+      }
+    }
+  }
+}

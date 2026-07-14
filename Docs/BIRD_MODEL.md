@@ -49,3 +49,17 @@ measured surface mesh
 For rigid articulated segments, each segment can retain a local signed-distance volume and be transformed on the GPU. Deforming wings require a narrow-band distance update or cut-link calculation from the deformed surface.
 
 The fluid boundary interface should expose only occupancy/intersection, boundary point, normal when required, local wall velocity, and part identifier. This keeps geometry independent from collision and body integration.
+
+## Implemented measured-data tier
+
+Schema 1 and `birdflow replay measured-bird` now ingest registered SI
+morphometrics, mass/inertia, study conditions, and independent periodic
+left/right stroke, deviation, pitch, and tip-twist histories with physical
+rates. Metal samples the table once per timestep with periodic cubic-Hermite
+interpolation and includes linear root-to-tip twist velocity in the wall field.
+
+The current `registeredAnalyticProxyV1` representation maps those measurements
+onto the existing ellipsoid/tapered-wing/tapered-tail signed-distance functions.
+It is intentionally not called a measured surface mesh. The mesh-to-SDF/cut-link
+path above remains required when surface detail materially affects loads. See
+`Docs/MEASURED_BIRD_DATA.md` for the exact contract.

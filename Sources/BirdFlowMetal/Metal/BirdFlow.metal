@@ -64,6 +64,14 @@ struct GPUBirdParameters {
     float4 wingKinematics1;
 };
 
+struct GPUMeasuredWingKeyframe {
+    float4 phase;
+    float4 leftAngles;
+    float4 leftRates;
+    float4 rightAngles;
+    float4 rightRates;
+};
+
 struct GPUBirdBodyState {
     float4 position;
     float4 orientation;
@@ -251,14 +259,86 @@ struct WingFrame {
     float3 span;
     float3 normal;
     float3 relativeAngularVelocity;
+    float tipTwist;
+    float tipTwistRate;
 };
+
+struct MeasuredWingKinematicState {
+    float4 angles;
+    float4 rates;
+};
+
+inline MeasuredWingKinematicState measuredWingKinematics(
+    device const GPUMeasuredWingKeyframe* keyframes,
+    uint count,
+    float frequency,
+    float phase,
+    bool left
+) {
+    uint low = 0u;
+    uint high = count;
+    while (low < high) {
+        uint middle = low + (high - low) / 2u;
+        if (keyframes[middle].phase.x <= phase) {
+            low = middle + 1u;
+        }
+        else {
+            high = middle;
+        }
+    }
+    uint upper = low == count ? 0u : low;
+    uint lower = upper == 0u ? count - 1u : upper - 1u;
+    float phase0 = keyframes[lower].phase.x;
+    float phase1 = upper == 0u ? 1.0f : keyframes[upper].phase.x;
+    float adjustedPhase = upper == 0u && phase < phase0
+        ? phase + 1.0f
+        : phase;
+    float interval = phase1 - phase0;
+    float fraction = (adjustedPhase - phase0) / interval;
+    float seconds = interval / frequency;
+    float t2 = fraction * fraction;
+    float t3 = t2 * fraction;
+    float h00 = 2.0f * t3 - 3.0f * t2 + 1.0f;
+    float h10 = t3 - 2.0f * t2 + fraction;
+    float h01 = -2.0f * t3 + 3.0f * t2;
+    float h11 = t3 - t2;
+    float4 angles0 = left
+        ? keyframes[lower].leftAngles
+        : keyframes[lower].rightAngles;
+    float4 rates0 = left
+        ? keyframes[lower].leftRates
+        : keyframes[lower].rightRates;
+    float4 angles1 = left
+        ? keyframes[upper].leftAngles
+        : keyframes[upper].rightAngles;
+    float4 rates1 = left
+        ? keyframes[upper].leftRates
+        : keyframes[upper].rightRates;
+
+    MeasuredWingKinematicState result;
+    result.angles = h00 * angles0
+        + h10 * seconds * rates0
+        + h01 * angles1
+        + h11 * seconds * rates1;
+    result.rates = (
+        (6.0f * t2 - 6.0f * fraction) * angles0
+        + (3.0f * t2 - 4.0f * fraction + 1.0f) * seconds * rates0
+        + (-6.0f * t2 + 6.0f * fraction) * angles1
+        + (3.0f * t2 - 2.0f * fraction) * seconds * rates1
+    ) / seconds;
+    return result;
+}
 
 inline WingFrame makeWingFrame(
     float side,
     float stroke,
     float strokeRate,
+    float deviation,
+    float deviationRate,
     float pitch,
     float pitchRate,
+    float tipTwist,
+    float tipTwistRate,
     constant GPUBirdParameters& bird,
     constant GPUBirdBodyState& body
 ) {
@@ -276,10 +356,28 @@ inline WingFrame makeWingFrame(
         + quaternionRotate(orientation, rootLocal);
 
     float signedStroke = side * stroke;
-    float3 span = rotateAroundAxis(side * bodyY, bodyX, signedStroke);
-    float3 normal = rotateAroundAxis(side * bodyZ, bodyX, signedStroke);
-    float3 chord = rotateAroundAxis(bodyX, span, pitch);
-    normal = rotateAroundAxis(normal, span, pitch);
+    float3 spanAfterStroke = rotateAroundAxis(
+        side * bodyY,
+        bodyX,
+        signedStroke
+    );
+    float3 normalAfterStroke = rotateAroundAxis(
+        side * bodyZ,
+        bodyX,
+        signedStroke
+    );
+    float3 span = rotateAroundAxis(
+        spanAfterStroke,
+        normalAfterStroke,
+        deviation
+    );
+    float3 chordBeforePitch = rotateAroundAxis(
+        bodyX,
+        normalAfterStroke,
+        deviation
+    );
+    float3 chord = rotateAroundAxis(chordBeforePitch, span, pitch);
+    float3 normal = rotateAroundAxis(normalAfterStroke, span, pitch);
 
     WingFrame frame;
     frame.root = root;
@@ -287,7 +385,10 @@ inline WingFrame makeWingFrame(
     frame.span = normalize(span);
     frame.normal = normalize(normal);
     frame.relativeAngularVelocity = bodyX * (side * strokeRate)
+        + normalAfterStroke * deviationRate
         + frame.span * pitchRate;
+    frame.tipTwist = tipTwist;
+    frame.tipTwistRate = tipTwistRate;
     return frame;
 }
 
@@ -295,7 +396,8 @@ kernel void prepareBirdGeometry(
     device GPUPreparedBirdGeometry* prepared [[buffer(0)]],
     constant GPUBirdParameters& bird [[buffer(1)]],
     constant GPUBirdBodyState& body [[buffer(2)]],
-    constant GPUUniforms& uniforms [[buffer(3)]],
+    device const GPUMeasuredWingKeyframe* measuredKeyframes [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
     uint gid [[thread_position_in_grid]]
 ) {
     if (gid != 0u) {
@@ -318,21 +420,60 @@ kernel void prepareBirdGeometry(
         * bird.wingKinematics1.x
         * cos(phase + bird.wingKinematics1.y);
 
+    float4 leftAngles = float4(stroke, 0.0f, pitch, 0.0f);
+    float4 leftRates = float4(strokeRate, 0.0f, pitchRate, 0.0f);
+    float4 rightAngles = leftAngles;
+    float4 rightRates = leftRates;
+    if (bird.wingKinematics1.w > 0.5f) {
+        uint count = uint(bird.wingKinematics1.z);
+        float cyclePhase = fmod(
+            uniforms.timeStepAndScales.x * bird.wingKinematics0.x,
+            1.0f
+        );
+        cyclePhase = cyclePhase < 0.0f ? cyclePhase + 1.0f : cyclePhase;
+        MeasuredWingKinematicState leftMeasured = measuredWingKinematics(
+            measuredKeyframes,
+            count,
+            bird.wingKinematics0.x,
+            cyclePhase,
+            true
+        );
+        MeasuredWingKinematicState rightMeasured = measuredWingKinematics(
+            measuredKeyframes,
+            count,
+            bird.wingKinematics0.x,
+            cyclePhase,
+            false
+        );
+        leftAngles = leftMeasured.angles;
+        leftRates = leftMeasured.rates;
+        rightAngles = rightMeasured.angles;
+        rightRates = rightMeasured.rates;
+    }
+
     WingFrame left = makeWingFrame(
         1.0f,
-        stroke,
-        strokeRate,
-        pitch,
-        pitchRate,
+        leftAngles.x,
+        leftRates.x,
+        leftAngles.y,
+        leftRates.y,
+        leftAngles.z,
+        leftRates.z,
+        leftAngles.w,
+        leftRates.w,
         bird,
         body
     );
     WingFrame right = makeWingFrame(
         -1.0f,
-        stroke,
-        strokeRate,
-        pitch,
-        pitchRate,
+        rightAngles.x,
+        rightRates.x,
+        rightAngles.y,
+        rightRates.y,
+        rightAngles.z,
+        rightRates.z,
+        rightAngles.w,
+        rightRates.w,
         bird,
         body
     );
@@ -364,20 +505,20 @@ kernel void prepareBirdGeometry(
         geometryRadius
     );
     prepared[0].leftRoot = float4(left.root, 0);
-    prepared[0].leftChord = float4(left.chord, 0);
+    prepared[0].leftChord = float4(left.chord, left.tipTwist);
     prepared[0].leftSpan = float4(left.span, 0);
     prepared[0].leftNormal = float4(left.normal, 0);
     prepared[0].leftAngularVelocity = float4(
         left.relativeAngularVelocity,
-        0
+        left.tipTwistRate
     );
     prepared[0].rightRoot = float4(right.root, 0);
-    prepared[0].rightChord = float4(right.chord, 0);
+    prepared[0].rightChord = float4(right.chord, right.tipTwist);
     prepared[0].rightSpan = float4(right.span, 0);
     prepared[0].rightNormal = float4(right.normal, 0);
     prepared[0].rightAngularVelocity = float4(
         right.relativeAngularVelocity,
-        0
+        right.tipTwistRate
     );
 }
 
@@ -427,6 +568,8 @@ kernel void buildBirdGeometry(
             frame.span = prepared.leftSpan.xyz;
             frame.normal = prepared.leftNormal.xyz;
             frame.relativeAngularVelocity = prepared.leftAngularVelocity.xyz;
+            frame.tipTwist = prepared.leftChord.w;
+            frame.tipTwistRate = prepared.leftAngularVelocity.w;
         }
         else {
             frame.root = prepared.rightRoot.xyz;
@@ -434,12 +577,29 @@ kernel void buildBirdGeometry(
             frame.span = prepared.rightSpan.xyz;
             frame.normal = prepared.rightNormal.xyz;
             frame.relativeAngularVelocity = prepared.rightAngularVelocity.xyz;
+            frame.tipTwist = prepared.rightChord.w;
+            frame.tipTwistRate = prepared.rightAngularVelocity.w;
         }
         float3 relative = world - frame.root;
-        float3 local = float3(
+        float3 localUntwisted = float3(
             dot(relative, frame.chord),
             dot(relative, frame.span),
             dot(relative, frame.normal)
+        );
+        float spanFraction = clamp(
+            localUntwisted.y / max(bird.wingGeometry0.x, 1.0e-6f),
+            0.0f,
+            1.0f
+        );
+        float twist = frame.tipTwist * spanFraction;
+        float twistCosine = cos(twist);
+        float twistSine = sin(twist);
+        float3 local = float3(
+            twistCosine * localUntwisted.x
+                + twistSine * localUntwisted.z,
+            localUntwisted.y,
+            -twistSine * localUntwisted.x
+                + twistCosine * localUntwisted.z
         );
         float distance = sdTaperedWing(
             local,
@@ -456,6 +616,10 @@ kernel void buildBirdGeometry(
                 + cross(
                     frame.relativeAngularVelocity,
                     world - frame.root
+                )
+                + cross(
+                    frame.span * (spanFraction * frame.tipTwistRate),
+                    world - (frame.root + frame.span * localUntwisted.y)
                 );
             bestPart = wing == 0 ? 2 : 3;
         }

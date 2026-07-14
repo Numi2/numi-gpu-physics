@@ -4,13 +4,13 @@ BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Appl
 
 The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
 
-This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The promoted fixed-thickness flapping benchmark now passes: finest mean coefficients are within `4%` of the published values and the 20-to-24-cell changes are `1.904%` lift and `3.054%` drag under the unchanged `5%` gate. Forced channel flow, bird-load grid convergence, measured geometry/kinematics, and free-flight refinement remain mandatory before complete-bird results are treated as quantitative.
+This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The promoted fixed-thickness flapping benchmark now passes: finest mean coefficients are within `4%` of the published values and the 20-to-24-cell changes are `1.904%` lift and `3.054%` drag under the unchanged `5%` gate. A versioned measured-data preflight and prescribed replay path is implemented, but no measured specimen is bundled and the first geometry tier is an explicitly labeled analytic proxy. Forced channel flow, actual measured data, bird-load grid convergence, higher-fidelity measured surface geometry where required, and free-flight refinement remain mandatory before complete-bird results are treated as quantitative.
 
 ## Implemented solver
 
 The fluid state consists of 19 distribution populations per lattice cell. Density, velocity, and isothermal pressure are moments of those populations. The collision operator is TRT; populations are stored direction-major so adjacent GPU threads access adjacent cells.
 
-The bird consists of a rigid body, two evaluated flapping-wing boundaries, and a tail. Wing stroke and pitch are prescribed analytically. Every fluid step performs:
+The bird consists of a rigid body, two evaluated flapping-wing boundaries, and a tail. The development model uses analytic stroke/pitch; measured replay uses independent left/right periodic stroke, deviation, pitch, and twist tables. Every fluid step performs:
 
 ```text
 update articulated bird boundary and wall velocity
@@ -28,6 +28,7 @@ The solver tracks previous and current occupancy masks. Newly uncovered nodes ar
 The production GPU path also:
 
 - prepares articulated wing frames once per timestep and culls geometry work outside a conservative bound;
+- samples measured periodic keyframes with one GPU thread per timestep, preserving physical angular rates for wall velocity without per-cell table reads;
 - stores occupancy and part identity together in byte masks;
 - folds the first deterministic load-reduction level into the fluid threadgroups instead of writing one load record per cell;
 - stores density and velocity only for the final externally visible step of an `advance` call;
@@ -216,6 +217,31 @@ This fixes force accounting. The promoted five-cycle ladder clears the
 published mean-load gates, and the fixed-thickness 20/24 archive composite now
 clears both two-finest-grid convergence gates. The prescribed flapping-wing
 canonical is accepted; this does not validate the procedural complete bird.
+
+Measured-data preflight without starting Metal:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/specimen.json \
+  --chord-cells 12 \
+  --audit-only \
+  --json
+```
+
+Prescribed replay with exact-input provenance and phase-load archive:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/specimen.json \
+  --chord-cells 12 \
+  --cycles 5 \
+  --archive /path/to/specimen-replay-c12 \
+  --json
+```
+
+The schema, coordinate/rotation conventions, interpolation, and scientific
+boundary are documented in [`Docs/MEASURED_BIRD_DATA.md`](Docs/MEASURED_BIRD_DATA.md).
+The bundled JSON is a synthetic ingestion fixture, not measured bird data.
 
 A fixed-bird wind-tunnel case:
 

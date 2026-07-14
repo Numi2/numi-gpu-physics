@@ -87,6 +87,9 @@ public struct BirdParameters: Sendable, Equatable, Codable {
     public var tailThicknessMeters: Float
 
     public var wingKinematics: WingKinematics
+    /// When present, the GPU samples these measured periodic keyframes instead
+    /// of the analytic sinusoid. Kept optional for checkpoint compatibility.
+    public var measuredWingKinematics: MeasuredWingKinematics?
 
     public init(
         bodyRadiiMeters: SIMD3<Float>,
@@ -101,7 +104,8 @@ public struct BirdParameters: Sendable, Equatable, Codable {
         tailLengthMeters: Float,
         tailHalfWidthMeters: Float,
         tailThicknessMeters: Float,
-        wingKinematics: WingKinematics
+        wingKinematics: WingKinematics,
+        measuredWingKinematics: MeasuredWingKinematics? = nil
     ) {
         self.bodyRadiiMeters = bodyRadiiMeters
         self.massKilograms = massKilograms
@@ -116,6 +120,7 @@ public struct BirdParameters: Sendable, Equatable, Codable {
         self.tailHalfWidthMeters = tailHalfWidthMeters
         self.tailThicknessMeters = tailThicknessMeters
         self.wingKinematics = wingKinematics
+        self.measuredWingKinematics = measuredWingKinematics
     }
 
     /// A numerically convenient development case, not a calibrated species.
@@ -144,6 +149,23 @@ public struct BirdParameters: Sendable, Equatable, Codable {
 
 
     private var localHalfExtentMeters: SIMD3<Float> {
+        if let measuredWingKinematics {
+            let crossSectionRadius = abs(wingSweepMeters)
+                + 0.5 * max(wingRootChordMeters, wingTipChordMeters)
+                + 0.5 * wingThicknessMeters
+            let wingExtent = absoluteComponents(wingRootOffsetMeters)
+                + SIMD3<Float>(
+                    repeating: wingSpanMeters + crossSectionRadius
+                )
+            return maximumComponents(
+                wingExtent,
+                SIMD3<Float>(
+                    bodyRadiiMeters.x + tailLengthMeters,
+                    max(bodyRadiiMeters.y, tailHalfWidthMeters),
+                    bodyRadiiMeters.z + 0.5 * tailThicknessMeters
+                )
+            )
+        }
         let maximumChord = max(wingRootChordMeters, wingTipChordMeters)
         let maximumStroke = abs(wingKinematics.strokeBiasRadians)
             + abs(wingKinematics.strokeAmplitudeRadians)
@@ -166,6 +188,14 @@ public struct BirdParameters: Sendable, Equatable, Codable {
     }
 
     public var maximumPrescribedWingSpeedMetersPerSecond: Float {
+        if let measuredWingKinematics {
+            let chord = max(wingRootChordMeters, wingTipChordMeters)
+            return measuredWingKinematics
+                .maximumSurfaceSpeedMetersPerSecond(
+                    wingSpanMeters: wingSpanMeters,
+                    maximumChordMeters: chord
+                )
+        }
         let angularFrequency = 2 * Float.pi * wingKinematics.frequencyHz
         let strokeContribution = angularFrequency
             * abs(wingKinematics.strokeAmplitudeRadians)
@@ -177,6 +207,7 @@ public struct BirdParameters: Sendable, Equatable, Codable {
     }
 
     public func validate(for configuration: SimulationConfiguration) throws {
+        try measuredWingKinematics?.validate()
         let dx = configuration.scaling.cellSizeMeters
         guard massKilograms > 0,
               bodyRadiiMeters.minimumComponent > 0,
@@ -188,7 +219,8 @@ public struct BirdParameters: Sendable, Equatable, Codable {
               tailLengthMeters > 0,
               tailHalfWidthMeters > 0,
               tailThicknessMeters >= 1.5 * dx,
-              wingKinematics.frequencyHz >= 0 else {
+              wingKinematics.frequencyHz >= 0,
+              measuredWingKinematics?.frequencyHz ?? wingKinematics.frequencyHz >= 0 else {
             throw BirdFlowConfigurationError.invalidPhysicalScale(
                 "Bird dimensions, mass, inertia, and wing frequency must be positive; thin surfaces must be at least 1.5 grid cells thick."
             )
@@ -260,6 +292,17 @@ public struct BirdParameters: Sendable, Equatable, Codable {
 
 private func absoluteComponents(_ value: SIMD3<Float>) -> SIMD3<Float> {
     SIMD3<Float>(abs(value.x), abs(value.y), abs(value.z))
+}
+
+private func maximumComponents(
+    _ first: SIMD3<Float>,
+    _ second: SIMD3<Float>
+) -> SIMD3<Float> {
+    SIMD3<Float>(
+        max(first.x, second.x),
+        max(first.y, second.y),
+        max(first.z, second.z)
+    )
 }
 
 private extension SIMD3 where Scalar == Float {

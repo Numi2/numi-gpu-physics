@@ -112,6 +112,123 @@ private struct Arguments {
       birdflow validate flapping-wing --compare-link-forces [--json]
       birdflow validate flapping-wing --decompose-link-numerator [--json]
       birdflow validate flapping-wing --momentum-budget [--json]
+
+    Measured prescribed replay:
+      birdflow replay measured-bird --input DATASET.json [--audit-only] [--json]
+    """
+}
+
+private struct MeasuredBirdReplayArguments {
+    var inputPath: String?
+    var chordCells = 12
+    var cycles: Float = 1
+    var steps: Int?
+    var batchSize = 32
+    var archivePath: String?
+    var auditOnly = false
+    var json = false
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--input":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--input requires a measured-bird JSON path"
+                    )
+                }
+                inputPath = values[index]
+            case "--chord-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 8 else {
+                    throw CLIError.invalidArgument(
+                        "--chord-cells requires an integer of at least 8"
+                    )
+                }
+                chordCells = value
+            case "--cycles":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--cycles requires a positive number"
+                    )
+                }
+                cycles = value
+            case "--steps":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--steps requires a positive integer"
+                    )
+                }
+                steps = value
+            case "--batch-size":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--batch-size requires a positive integer"
+                    )
+                }
+                batchSize = value
+            case "--archive":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output directory"
+                    )
+                }
+                archivePath = values[index]
+            case "--audit-only":
+                auditOnly = true
+            case "--json":
+                json = true
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown measured-bird replay option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+        guard inputPath != nil else {
+            throw CLIError.invalidArgument(
+                "measured-bird replay requires --input DATASET.json"
+            )
+        }
+        if auditOnly, archivePath != nil {
+            throw CLIError.invalidArgument(
+                "--audit-only cannot be combined with --archive"
+            )
+        }
+    }
+
+    static let help = """
+    birdflow replay measured-bird --input DATASET.json [options]
+
+      --audit-only       Validate schema, provenance, units, frame, grid, and Mach without starting Metal
+      --chord-cells N    Root-chord resolution (default: 12; minimum: 8)
+      --cycles VALUE     Prescribed cycles when --steps is absent (default: 1)
+      --steps N          Explicit fluid-step count
+      --batch-size N     Command-buffer batch size (default: 32)
+      --archive DIR      Save exact input, SHA-linked report, and phase loads
+      --json             Emit machine-readable audit or replay report
+      --help             Show this help
+
+    The input must use schema 1, SI units, the COM-centered BirdFlow principal
+    axes, registeredAnalyticProxyV1 geometry, and periodic left/right stroke,
+    deviation, pitch, and tip-twist angles plus physical angular rates.
     """
 }
 
@@ -650,6 +767,62 @@ private func runBirdSimulation(_ values: [String]) throws {
         try simulation.advance(steps: count, batchSize: min(32, count))
         print(csv(try simulation.snapshot()))
         remaining -= count
+    }
+}
+
+private func printJSON<T: Encodable>(_ value: T) throws {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    print(String(decoding: try encoder.encode(value), as: UTF8.self))
+}
+
+private func runMeasuredBirdReplay(_ values: [String]) throws {
+    let arguments = try MeasuredBirdReplayArguments(values)
+    let input = URL(fileURLWithPath: arguments.inputPath!)
+    let loaded = try MeasuredBirdDatasetLoader.load(from: input)
+    if arguments.auditOnly {
+        let audit = try MeasuredBirdReplay.audit(
+            loaded,
+            chordCells: arguments.chordCells
+        )
+        if arguments.json {
+            try printJSON(audit)
+        } else {
+            print("dataset: \(audit.datasetIdentifier)")
+            print("source_sha256: \(audit.sourceSHA256)")
+            print("geometry: \(audit.geometryRepresentation)")
+            print("keyframes: \(audit.kinematicKeyframeCount)")
+            print(
+                "grid: \(audit.grid.x)x\(audit.grid.y)x\(audit.grid.z)"
+            )
+            print("estimated_maximum_mach: \(audit.estimatedMaximumLatticeMach)")
+            print("passed: \(audit.passed)")
+            print("scientific_verdict: \(audit.scientificVerdict)")
+        }
+        return
+    }
+    let report = try MeasuredBirdReplay.run(
+        loaded,
+        chordCells: arguments.chordCells,
+        cycles: arguments.cycles,
+        steps: arguments.steps,
+        batchSize: arguments.batchSize,
+        archiveDirectory: arguments.archivePath.map {
+            URL(fileURLWithPath: $0, isDirectory: true)
+        }
+    )
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("dataset: \(report.audit.datasetIdentifier)")
+        print("device: \(report.deviceName)")
+        print("steps: \(report.steps)")
+        print("cycles: \(report.cycles)")
+        print("mean_force_N: \(report.meanForceNewtons)")
+        print("mean_torque_Nm: \(report.meanTorqueNewtonMeters)")
+        print("runtime_s: \(report.runtimeSeconds)")
+        print("passed: \(report.passed)")
+        print("scientific_verdict: \(report.scientificVerdict)")
     }
 }
 
@@ -1258,6 +1431,13 @@ private func run(_ values: [String]) throws {
                 "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing> [options]"
             )
         }
+    } else if values.count > 1, values[1] == "replay" {
+        guard values.count > 2, values[2] == "measured-bird" else {
+            throw CLIError.invalidArgument(
+                "Use: birdflow replay measured-bird --input DATASET.json [options]"
+            )
+        }
+        try runMeasuredBirdReplay(values)
     } else {
         try runBirdSimulation(values)
     }
