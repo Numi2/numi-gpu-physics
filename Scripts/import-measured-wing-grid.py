@@ -421,7 +421,7 @@ def build_audit(wing_grid_zip: Path, song_tar: Path | None) -> dict[str, object]
             "nonBlockingTransformWork": [
                 "fit a fixed tapered planform and report surface-distance residuals",
                 "differentiate the periodic proxy angles into physical angular rates",
-                "choose a phase-zero interpolation policy for the unobserved 0.94T-to-0.019T gap",
+                "run measured-surface half-thickness and grid-refinement sensitivity",
             ],
             "scientificVerdict": (
                 "Measured right-wing ingestion is qualified, but whole-bird "
@@ -590,6 +590,9 @@ def main() -> int:
         arguments.output.write_text(encoded, encoding="utf-8")
     else:
         sys.stdout.write(encoded)
+    if not report["schema1Readiness"]["sourceIntegrityPassed"]:
+        print("measured source digest does not match its published lock", file=sys.stderr)
+        return 3
     if arguments.surface_output:
         try:
             surface = build_surface_dataset(
@@ -604,9 +607,6 @@ def main() -> int:
         except (OSError, ValueError, zipfile.BadZipFile) as error:
             print(f"measured-wing surface conversion failed: {error}", file=sys.stderr)
             return 1
-    if not report["schema1Readiness"]["sourceIntegrityPassed"]:
-        print("measured source digest does not match its published lock", file=sys.stderr)
-        return 3
     if (
         arguments.require_complete_bird
         and not report["schema1Readiness"]["readyForCompleteCoupledBirdReplay"]

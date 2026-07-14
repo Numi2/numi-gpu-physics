@@ -115,6 +115,95 @@ private struct Arguments {
 
     Measured prescribed replay:
       birdflow replay measured-bird --input DATASET.json [--audit-only] [--json]
+      birdflow replay measured-wing --input SURFACE.json [--fluid-cycle] [--json]
+    """
+}
+
+private struct MeasuredWingReplayArguments {
+    var inputPath: String?
+    var chordCells = 8
+    var halfThicknessCells: Float = 0.75
+    var fluidCycle = false
+    var thicknessLadder = false
+    var json = false
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--input":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--input requires a measured-wing surface JSON path"
+                    )
+                }
+                inputPath = values[index]
+            case "--chord-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]), value >= 8 else {
+                    throw CLIError.invalidArgument(
+                        "--chord-cells requires an integer of at least 8"
+                    )
+                }
+                chordCells = value
+            case "--half-thickness-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      (0.5...2).contains(value) else {
+                    throw CLIError.invalidArgument(
+                        "--half-thickness-cells requires a value in [0.5, 2]"
+                    )
+                }
+                halfThicknessCells = value
+            case "--fluid-cycle":
+                fluidCycle = true
+            case "--thickness-ladder":
+                thicknessLadder = true
+            case "--json":
+                json = true
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown measured-wing replay option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+        guard inputPath != nil else {
+            throw CLIError.invalidArgument(
+                "measured-wing replay requires --input SURFACE.json"
+            )
+        }
+        if thicknessLadder && fluidCycle {
+            throw CLIError.invalidArgument(
+                "--thickness-ladder already runs fluid cycles and cannot be combined with --fluid-cycle"
+            )
+        }
+        if thicknessLadder && halfThicknessCells != 0.75 {
+            throw CLIError.invalidArgument(
+                "--thickness-ladder uses fixed 0.5/0.75/1.0 cases and cannot be combined with --half-thickness-cells"
+            )
+        }
+    }
+
+    static let help = """
+    birdflow replay measured-wing --input SURFACE.json [options]
+
+      --chord-cells N          Mean-chord resolution (default: 8; minimum: 8)
+      --half-thickness-cells V Numerical sheet half-thickness (default: 0.75)
+      --fluid-cycle            Also run one startup cycle through stepFluidTRT
+      --thickness-ladder       Run 0.5/0.75/1.0-cell fluid sensitivity gate
+      --json                   Emit the machine-readable replay report
+      --help                   Show this help
+
+    Geometry-only mode audits every measured source phase. --fluid-cycle is a
+    transient engineering diagnostic, not complete-bird or quantitative force
+    acceptance. The thickness ladder applies a 5% full-envelope criterion.
     """
 }
 
@@ -826,6 +915,67 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
     }
 }
 
+private func runMeasuredWingReplay(_ values: [String]) throws {
+    let arguments = try MeasuredWingReplayArguments(values)
+    let dataset = try MeasuredWingSurfaceDatasetLoader.load(
+        from: URL(fileURLWithPath: arguments.inputPath!)
+    )
+    if arguments.thicknessLadder {
+        let report = try MetalFlappingWingValidator
+            .auditMeasuredSurfaceThicknessSensitivity(
+                dataset,
+                chordCells: arguments.chordCells
+            )
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("input_sha256: \(report.inputSHA256)")
+            print("chord_cells: \(report.chordCells)")
+            print("runtime_s: \(report.runtimeSeconds)")
+            print(
+                "maximum_pairwise_force_vector_difference: "
+                    + String(
+                        report.maximumPairwiseRelativeMeanForceVectorDifference
+                    )
+            )
+            print(
+                "vertical_force_envelope: "
+                    + String(report.relativeMeanVerticalForceEnvelope)
+            )
+            print("classification: \(report.classification)")
+            print("passed: \(report.passed)")
+        }
+        return
+    }
+    let report = try MetalFlappingWingValidator.auditMeasuredSurface(
+        dataset,
+        chordCells: arguments.chordCells,
+        halfThicknessCells: arguments.halfThicknessCells,
+        runFluidCycle: arguments.fluidCycle
+    )
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("dataset: \(report.datasetIdentifier)")
+        print("scientific_tier: \(report.scientificTier)")
+        print("input_sha256: \(report.inputSHA256)")
+        print("device: \(report.deviceName)")
+        print("cycle_steps: \(report.cycleSteps)")
+        print("runtime_s: \(report.runtimeSeconds)")
+        print("maximum_lattice_point_speed: \(report.maximumLatticePointSpeed)")
+        print("diagnostic_reynolds: \(report.diagnosticReynoldsNumber)")
+        print("prepared_position_error_m: \(report.maximumPreparedPositionErrorMeters)")
+        print("prepared_velocity_error_mps: \(report.maximumPreparedVelocityErrorMetersPerSecond)")
+        print("fluid_cycle_executed: \(report.fluidCycleExecuted)")
+        if let mean = report.startupCycleMeanForceNewtons {
+            print("startup_cycle_mean_force_N: \(mean)")
+        }
+        print("passed: \(report.passed)")
+        print("complete_bird_replay_ready: \(report.completeBirdReplayReady)")
+    }
+}
+
 private func printShearWaveReport(
     _ report: MetalShearWaveValidationReport
 ) {
@@ -1432,12 +1582,21 @@ private func run(_ values: [String]) throws {
             )
         }
     } else if values.count > 1, values[1] == "replay" {
-        guard values.count > 2, values[2] == "measured-bird" else {
+        guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow replay measured-bird --input DATASET.json [options]"
+                "Use: birdflow replay <measured-bird|measured-wing> --input DATASET.json [options]"
             )
         }
-        try runMeasuredBirdReplay(values)
+        switch values[2] {
+        case "measured-bird":
+            try runMeasuredBirdReplay(values)
+        case "measured-wing":
+            try runMeasuredWingReplay(values)
+        default:
+            throw CLIError.invalidArgument(
+                "Use: birdflow replay <measured-bird|measured-wing> --input DATASET.json [options]"
+            )
+        }
     } else {
         try runBirdSimulation(values)
     }

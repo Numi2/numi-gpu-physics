@@ -112,6 +112,18 @@ struct GPUPreparedFlappingWing {
     float4 state;
 };
 
+struct GPUMeasuredWingSurfaceParameters {
+    uint4 counts;
+    uint4 pointCounts;
+    float4 rootAndHalfThickness;
+    float4 timingAndBounds;
+};
+
+struct GPUPreparedMeasuredWingPoint {
+    float4 position;
+    float4 velocity;
+};
+
 struct GPUTranslatingSphereParameters {
     float4 initialCenterAndRadius;
     float4 velocity;
@@ -1001,6 +1013,320 @@ kernel void buildPrescribedFlappingWing(
                         uniforms
                     );
             }
+        }
+    }
+}
+
+/// Interpolates the complete compact measured surface once per step. Position
+/// and velocity come from the same periodic linear segment, so moving-wall
+/// momentum cannot drift from the geometry phase.
+kernel void prepareMeasuredWingSurface(
+    device const float4* sourcePoints [[buffer(0)]],
+    device const float* phases [[buffer(1)]],
+    device GPUPreparedMeasuredWingPoint* prepared [[buffer(2)]],
+    constant GPUMeasuredWingSurfaceParameters& surface [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint pointCount = surface.pointCounts.z;
+    uint frameCount = surface.counts.z;
+    if (gid >= pointCount) {
+        return;
+    }
+
+    float phase = unitCyclePhase(
+        uniforms.timeStepAndScales.x,
+        surface.timingAndBounds.x
+    );
+    uint first = frameCount - 1u;
+    uint second = 0u;
+    float adjustedPhase = phase < phases[0] ? phase + 1.0f : phase;
+    float phaseSpan = phases[0] + 1.0f - phases[first];
+    for (uint frame = 0u; frame + 1u < frameCount; ++frame) {
+        if (phase >= phases[frame] && phase < phases[frame + 1u]) {
+            first = frame;
+            second = frame + 1u;
+            adjustedPhase = phase;
+            phaseSpan = phases[second] - phases[first];
+            break;
+        }
+    }
+    float blend = (adjustedPhase - phases[first]) / phaseSpan;
+    float3 firstPoint = sourcePoints[first * pointCount + gid].xyz;
+    float3 secondPoint = sourcePoints[second * pointCount + gid].xyz;
+    float3 delta = secondPoint - firstPoint;
+    prepared[gid].position = float4(
+        surface.rootAndHalfThickness.xyz + mix(firstPoint, secondPoint, blend),
+        0
+    );
+    prepared[gid].velocity = float4(
+        delta * (surface.timingAndBounds.y / phaseSpan)
+            * uniforms.timeStepAndScales.z,
+        0
+    );
+}
+
+struct MeasuredTriangleClosestPoint {
+    float3 position;
+    float3 barycentric;
+};
+
+inline MeasuredTriangleClosestPoint measuredTriangleClosestPoint(
+    float3 point,
+    float3 a,
+    float3 b,
+    float3 c
+) {
+    float3 ab = b - a;
+    float3 ac = c - a;
+    float3 ap = point - a;
+    float d1 = dot(ab, ap);
+    float d2 = dot(ac, ap);
+    if (d1 <= 0.0f && d2 <= 0.0f) {
+        return { a, float3(1, 0, 0) };
+    }
+
+    float3 bp = point - b;
+    float d3 = dot(ab, bp);
+    float d4 = dot(ac, bp);
+    if (d3 >= 0.0f && d4 <= d3) {
+        return { b, float3(0, 1, 0) };
+    }
+
+    float vc = d1 * d4 - d3 * d2;
+    if (vc <= 0.0f && d1 >= 0.0f && d3 <= 0.0f) {
+        float v = d1 / (d1 - d3);
+        return { a + v * ab, float3(1.0f - v, v, 0) };
+    }
+
+    float3 cp = point - c;
+    float d5 = dot(ab, cp);
+    float d6 = dot(ac, cp);
+    if (d6 >= 0.0f && d5 <= d6) {
+        return { c, float3(0, 0, 1) };
+    }
+
+    float vb = d5 * d2 - d1 * d6;
+    if (vb <= 0.0f && d2 >= 0.0f && d6 <= 0.0f) {
+        float w = d2 / (d2 - d6);
+        return { a + w * ac, float3(1.0f - w, 0, w) };
+    }
+
+    float va = d3 * d6 - d5 * d4;
+    if (va <= 0.0f && (d4 - d3) >= 0.0f && (d5 - d6) >= 0.0f) {
+        float w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+        return { b + w * (c - b), float3(0, 1.0f - w, w) };
+    }
+
+    float inverse = 1.0f / max(va + vb + vc, 1.0e-20f);
+    float v = vb * inverse;
+    float w = vc * inverse;
+    return {
+        a + ab * v + ac * w,
+        float3(1.0f - v - w, v, w)
+    };
+}
+
+inline void considerMeasuredTriangle(
+    float3 world,
+    uint ia,
+    uint ib,
+    uint ic,
+    device const GPUPreparedMeasuredWingPoint* prepared,
+    thread float& bestDistanceSquared,
+    thread float3& bestVelocity
+) {
+    MeasuredTriangleClosestPoint closest = measuredTriangleClosestPoint(
+        world,
+        prepared[ia].position.xyz,
+        prepared[ib].position.xyz,
+        prepared[ic].position.xyz
+    );
+    float distanceSquared = length_squared(world - closest.position);
+    if (distanceSquared < bestDistanceSquared) {
+        bestDistanceSquared = distanceSquared;
+        bestVelocity = closest.barycentric.x * prepared[ia].velocity.xyz
+            + closest.barycentric.y * prepared[ib].velocity.xyz
+            + closest.barycentric.z * prepared[ic].velocity.xyz;
+    }
+}
+
+kernel void clearMeasuredWingSurface(
+    device uchar* solid [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device atomic_uint* distanceKeys [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+    solid[gid] = uchar(0);
+    wallVelocity[gid] = float4(0, 0, 0, 16.0f);
+    atomic_store_explicit(&distanceKeys[gid], UINT_MAX, memory_order_relaxed);
+}
+
+/// One thread owns one structured surface triangle and visits only its small
+/// expanded voxel AABB. The 20 high bits encode quantized distance and the 12
+/// low bits encode triangle identity, making the atomic minimum deterministic.
+kernel void rasterizeMeasuredWingSurface(
+    device const GPUPreparedMeasuredWingPoint* prepared [[buffer(0)]],
+    device atomic_uint* distanceKeys [[buffer(1)]],
+    constant GPUMeasuredWingSurfaceParameters& surface [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    uint triangle [[thread_position_in_grid]]
+) {
+    uint chordCount = surface.counts.x;
+    uint spanCount = surface.counts.y;
+    uint triangleCount = 2u * (chordCount - 1u) * (spanCount - 1u);
+    if (triangle >= triangleCount || triangle >= 4096u) {
+        return;
+    }
+    uint quad = triangle >> 1u;
+    uint chord = quad % (chordCount - 1u);
+    uint span = quad / (chordCount - 1u);
+    uint lowerLeft = chord + chordCount * span;
+    uint lowerRight = lowerLeft + 1u;
+    uint upperLeft = lowerLeft + chordCount;
+    uint upperRight = upperLeft + 1u;
+    uint ia = (triangle & 1u) == 0u ? lowerLeft : upperRight;
+    uint ib = (triangle & 1u) == 0u ? lowerRight : upperLeft;
+    uint ic = (triangle & 1u) == 0u ? upperLeft : lowerRight;
+    float3 a = prepared[ia].position.xyz;
+    float3 b = prepared[ib].position.xyz;
+    float3 c = prepared[ic].position.xyz;
+    float cellSize = uniforms.originAndCellSize.w;
+    float guard = surface.rootAndHalfThickness.w + 2.0f * cellSize;
+    float3 lowerWorld = min(a, min(b, c)) - guard;
+    float3 upperWorld = max(a, max(b, c)) + guard;
+    int3 lower = int3(floor(
+        (lowerWorld - uniforms.originAndCellSize.xyz) / cellSize - 0.5f
+    ));
+    int3 upper = int3(ceil(
+        (upperWorld - uniforms.originAndCellSize.xyz) / cellSize - 0.5f
+    ));
+    lower = clamp(lower, int3(0), int3(uniforms.grid.xyz) - 1);
+    upper = clamp(upper, int3(0), int3(uniforms.grid.xyz) - 1);
+    for (int z = lower.z; z <= upper.z; ++z) {
+        for (int y = lower.y; y <= upper.y; ++y) {
+            for (int x = lower.x; x <= upper.x; ++x) {
+                uint3 cell = uint3(x, y, z);
+                float3 world = cellPosition(cell, uniforms);
+                MeasuredTriangleClosestPoint closest =
+                    measuredTriangleClosestPoint(world, a, b, c);
+                float distanceCells = length(world - closest.position) / cellSize;
+                uint distanceBin = min(
+                    uint(round(distanceCells * 65536.0f)),
+                    0xFFFFFu
+                );
+                uint key = (distanceBin << 12u) | triangle;
+                uint gid = flatten(cell, uniforms.grid.xyz);
+                atomic_fetch_min_explicit(
+                    &distanceKeys[gid], key, memory_order_relaxed
+                );
+            }
+        }
+    }
+}
+
+/// Resolves the winning triangle into occupancy, the matching interpolated
+/// wall velocity, and signed distance used by the following link pass.
+kernel void resolveMeasuredWingSurface(
+    device uchar* solid [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device const uchar* solidPrevious [[buffer(2)]],
+    constant GPUMeasuredWingSurfaceParameters& surface [[buffer(3)]],
+    device const GPUPreparedMeasuredWingPoint* prepared [[buffer(4)]],
+    device const atomic_uint* distanceKeys [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    device const float* previousPopulations [[buffer(7)]],
+    device float4* coveredFluidMomentum [[buffer(8)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+    bool wasSolid = uniforms.flags.z != 0u && solidPrevious[gid] != 0;
+    uint key = atomic_load_explicit(&distanceKeys[gid], memory_order_relaxed);
+    if (key == UINT_MAX) {
+        return;
+    }
+    uint chordCount = surface.counts.x;
+    uint triangle = key & 0xFFFu;
+    uint quad = triangle >> 1u;
+    uint chord = quad % (chordCount - 1u);
+    uint span = quad / (chordCount - 1u);
+    uint lowerLeft = chord + chordCount * span;
+    uint lowerRight = lowerLeft + 1u;
+    uint upperLeft = lowerLeft + chordCount;
+    uint upperRight = upperLeft + 1u;
+    uint ia = (triangle & 1u) == 0u ? lowerLeft : upperRight;
+    uint ib = (triangle & 1u) == 0u ? lowerRight : upperLeft;
+    uint ic = (triangle & 1u) == 0u ? upperLeft : lowerRight;
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    float3 world = cellPosition(cell, uniforms);
+    MeasuredTriangleClosestPoint closest = measuredTriangleClosestPoint(
+        world,
+        prepared[ia].position.xyz,
+        prepared[ib].position.xyz,
+        prepared[ic].position.xyz
+    );
+    float3 bestVelocity = closest.barycentric.x * prepared[ia].velocity.xyz
+        + closest.barycentric.y * prepared[ib].velocity.xyz
+        + closest.barycentric.z * prepared[ic].velocity.xyz;
+    float signedDistance = length(world - closest.position)
+        - surface.rootAndHalfThickness.w;
+    bool isWing = signedDistance <= 0.0f;
+    solid[gid] = isWing ? uchar(1) : uchar(0);
+    wallVelocity[gid] = float4(
+        bestVelocity,
+        signedDistance / uniforms.originAndCellSize.w
+    );
+    if (isWing && uniforms.flags.z != 0u && !wasSolid) {
+        float previousDensity = 0.0f;
+        float3 previousMomentum = float3(0);
+        for (uint q = 0u; q < Q; ++q) {
+            float previous = previousPopulations[q * uniforms.grid.w + gid];
+            previousDensity += previous;
+            previousMomentum += previous * float3(C[q]);
+        }
+        coveredFluidMomentum[gid] = float4(previousMomentum, previousDensity);
+    }
+}
+
+/// Runs after sampleMeasuredWingSurface in a separate encoder, providing a
+/// command-buffer synchronization point before neighbor implicit values are
+/// consumed. Fractions are linearly reconstructed from signed distances.
+kernel void buildMeasuredWingSurfaceLinks(
+    device const uchar* solid [[buffer(0)]],
+    device const float4* wallVelocity [[buffer(1)]],
+    device float* boundaryLinks [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    uint3 cell [[thread_position_in_grid]]
+) {
+    uint3 size = uniforms.grid.xyz;
+    if (any(cell >= size)) {
+        return;
+    }
+    uint gid = flatten(cell, size);
+    if (solid[gid] == 0) {
+        return;
+    }
+    float solidDistance = min(wallVelocity[gid].w, 0.0f);
+    for (uint q = 1u; q < Q; ++q) {
+        int3 neighborCell = int3(cell) + C[q];
+        if (any(neighborCell < int3(0))
+            || any(neighborCell >= int3(size))) {
+            continue;
+        }
+        uint neighbor = flatten(uint3(neighborCell), size);
+        if (solid[neighbor] == 0) {
+            float fluidDistance = max(wallVelocity[neighbor].w, 0.0f);
+            boundaryLinks[q * uniforms.grid.w + gid] = clamp(
+                fluidDistance / max(fluidDistance - solidDistance, 1.0e-6f),
+                1.0e-4f,
+                1.0f
+            );
         }
     }
 }

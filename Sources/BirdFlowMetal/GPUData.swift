@@ -280,6 +280,20 @@ struct GPUPreparedFlappingWing {
     var state: SIMD4<Float>
 }
 
+/// Compact structured measured surface shared by the preparation and topology
+/// kernels. Counts and float4-only records keep Swift/Metal packing explicit.
+struct GPUMeasuredWingSurfaceParameters {
+    var counts: SIMD4<UInt32>
+    var pointCounts: SIMD4<UInt32>
+    var rootAndHalfThickness: SIMD4<Float>
+    var timingAndBounds: SIMD4<Float>
+}
+
+struct GPUPreparedMeasuredWingPoint {
+    var position: SIMD4<Float>
+    var velocity: SIMD4<Float>
+}
+
 struct GPUForceTorque {
     var force: SIMD4<Float>
     var torque: SIMD4<Float>

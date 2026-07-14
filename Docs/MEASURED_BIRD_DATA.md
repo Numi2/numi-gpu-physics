@@ -143,9 +143,48 @@ load convergence, stationary cycle statistics, force balance, left/right
 part-load symmetry for symmetric motion, and the free-flight gates in
 `Docs/VALIDATION.md`.
 
-The Maeda source audit sharpens the geometry decision: its measured area varies
+The Maeda source audit sharpened the geometry decision: its measured area varies
 by `18.26%` over the cycle and the current linear-twist proxy reaches an
 `8.05 deg` worst-phase spanwise RMS / `11.24 deg` maximum section-angle
-residual. A fixed tapered proxy therefore remains useful for preflight only;
-direct surface-grid or SDF replay is the next geometry tier before quantitative
-use of that wing.
+residual. A fixed tapered proxy therefore remains useful for preflight only.
+
+## Wing-only measured-surface tier
+
+`Scripts/import-measured-wing-grid.py --surface-output` converts the locked
+Maeda archive into
+`ValidationInputs/maeda-hovering-right-wing-surface-v1.json`. This is not a
+schema-1 complete-bird input. It retains all 17 measured phases with a
+deterministic endpoint-inclusive `21 x 41` structured surface per phase,
+BirdFlow axes, per-frame measured-root registration, the published `28.8 Hz`
+frequency, source hashes, and the explicit periodic interpolation policy.
+
+Run the Metal boundary gate with:
+
+```bash
+.build/release/birdflow replay measured-wing \
+  --input ValidationInputs/maeda-hovering-right-wing-surface-v1.json \
+  --chord-cells 8 \
+  --json
+```
+
+The geometry and wall velocity use the same piecewise-linear phase segment.
+The Metal implementation uses triangle-driven atomic voxel rasterization,
+rather than searching the compact triangle set from every cell. A separate
+resolve pass reconstructs the winning triangle's barycentric wall velocity,
+and another synchronized pass constructs boundary-link fractions from signed
+distance. The production cover/uncover momentum reservoir and
+`stepFluidTRT` path are reused unchanged.
+
+The remaining scientific unknowns are explicit: physical membrane thickness,
+the left wing, body/COM registration, mass, inertia, and tail. Therefore
+`--fluid-cycle` is a startup engineering diagnostic; it is not a quantitative
+complete-bird result.
+
+The promoted eight-cell `--thickness-ladder` runs `0.5/0.75/1.0`-cell
+half-thickness cases through the complete fluid path. Every case passes its
+geometry and fluid checks, but the full force-vector envelope is `6.7416%` and
+the vertical-force envelope is `5.1810%`, narrowly exceeding the `5%`
+sensitivity ceiling. Therefore thickness independence is not yet cleared. The
+next measured-surface gate is the same ladder at 12 chord cells to determine
+whether the uncertainty contracts under spatial refinement; running a full
+8/12/16 load ladder at only the arbitrary `0.75` value would hide this risk.

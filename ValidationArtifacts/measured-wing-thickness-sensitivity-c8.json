@@ -1,0 +1,484 @@
+{
+  "allCaseGeometryAndFluidPassed" : true,
+  "baselineHalfThicknessCells" : 0.75,
+  "cases" : [
+    {
+      "chordCells" : 8,
+      "completeBirdReplayReady" : false,
+      "cycleSteps" : 1992,
+      "datasetIdentifier" : "maeda-2017-hovering-right-wing-surface-v1",
+      "deviceName" : "Apple M4",
+      "diagnosticAirDensityKilogramsPerCubicMeter" : 1,
+      "diagnosticReynoldsNumber" : 100,
+      "fluidCycleExecuted" : true,
+      "geometryKernelSequence" : [
+        "prepareMeasuredWingSurface",
+        "clearMeasuredWingSurface",
+        "rasterizeMeasuredWingSurface",
+        "resolveMeasuredWingSurface",
+        "buildMeasuredWingSurfaceLinks"
+      ],
+      "halfThicknessCells" : 0.5,
+      "inputSHA256" : "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887",
+      "maximumLatticePointSpeed" : 0.0797477662563324,
+      "maximumPhysicalPointSpeedMetersPerSecond" : 11.151799201965332,
+      "maximumPreparedPositionErrorMeters" : 9.125060707049215e-09,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "passed" : true,
+      "phaseAudits" : [
+        {
+          "maximumBoundaryLinkFraction" : 0.9977682828903198,
+          "maximumLatticeWallSpeed" : 0.030999276787042618,
+          "minimumBoundaryLinkFraction" : 0.002284335670992732,
+          "phase" : 0.01899999938905239,
+          "solidCellCount" : 244
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9998568296432495,
+          "maximumLatticeWallSpeed" : 0.05137040466070175,
+          "minimumBoundaryLinkFraction" : 0.00023970607435330749,
+          "phase" : 0.07649999856948853,
+          "solidCellCount" : 260
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9999512434005737,
+          "maximumLatticeWallSpeed" : 0.07971815019845963,
+          "minimumBoundaryLinkFraction" : 0.006958183366805315,
+          "phase" : 0.1340000033378601,
+          "solidCellCount" : 271
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9998123645782471,
+          "maximumLatticeWallSpeed" : 0.07699205726385117,
+          "minimumBoundaryLinkFraction" : 0.00017350089910905808,
+          "phase" : 0.1914999932050705,
+          "solidCellCount" : 275
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9992949962615967,
+          "maximumLatticeWallSpeed" : 0.07734032720327377,
+          "minimumBoundaryLinkFraction" : 0.0013727974146604538,
+          "phase" : 0.24899999797344208,
+          "solidCellCount" : 270
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9997261762619019,
+          "maximumLatticeWallSpeed" : 0.06846600770950317,
+          "minimumBoundaryLinkFraction" : 0.006627980154007673,
+          "phase" : 0.30649998784065247,
+          "solidCellCount" : 278
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.999830424785614,
+          "maximumLatticeWallSpeed" : 0.0553896427154541,
+          "minimumBoundaryLinkFraction" : 0.0032109273597598076,
+          "phase" : 0.36399999260902405,
+          "solidCellCount" : 284
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9988622665405273,
+          "maximumLatticeWallSpeed" : 0.041311487555503845,
+          "minimumBoundaryLinkFraction" : 0.006214377470314503,
+          "phase" : 0.42149999737739563,
+          "solidCellCount" : 275
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9997742176055908,
+          "maximumLatticeWallSpeed" : 0.02295132912695408,
+          "minimumBoundaryLinkFraction" : 0.008877099491655827,
+          "phase" : 0.4790000021457672,
+          "solidCellCount" : 270
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9967503547668457,
+          "maximumLatticeWallSpeed" : 0.04131527617573738,
+          "minimumBoundaryLinkFraction" : 0.0007083092932589352,
+          "phase" : 0.5364999771118164,
+          "solidCellCount" : 255
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.999030351638794,
+          "maximumLatticeWallSpeed" : 0.05994381010532379,
+          "minimumBoundaryLinkFraction" : 0.008238770067691803,
+          "phase" : 0.593999981880188,
+          "solidCellCount" : 249
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9989021420478821,
+          "maximumLatticeWallSpeed" : 0.07605797797441483,
+          "minimumBoundaryLinkFraction" : 0.0001054720050888136,
+          "phase" : 0.6514999866485596,
+          "solidCellCount" : 249
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9983963370323181,
+          "maximumLatticeWallSpeed" : 0.07021394371986389,
+          "minimumBoundaryLinkFraction" : 0.0040818797424435616,
+          "phase" : 0.7089999914169312,
+          "solidCellCount" : 243
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9998831152915955,
+          "maximumLatticeWallSpeed" : 0.07446710020303726,
+          "minimumBoundaryLinkFraction" : 0.00010139148071175441,
+          "phase" : 0.7664999961853027,
+          "solidCellCount" : 238
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9999130368232727,
+          "maximumLatticeWallSpeed" : 0.07457038760185242,
+          "minimumBoundaryLinkFraction" : 0.007264339830726385,
+          "phase" : 0.8240000009536743,
+          "solidCellCount" : 243
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9988659620285034,
+          "maximumLatticeWallSpeed" : 0.05451280251145363,
+          "minimumBoundaryLinkFraction" : 0.0037652887403964996,
+          "phase" : 0.8815000057220459,
+          "solidCellCount" : 236
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9994587302207947,
+          "maximumLatticeWallSpeed" : 0.025995781645178795,
+          "minimumBoundaryLinkFraction" : 9.999999747378752e-05,
+          "phase" : 0.9390000104904175,
+          "solidCellCount" : 239
+        }
+      ],
+      "productionFluidKernel" : "stepFluidTRT",
+      "runtimeSeconds" : 3.724966049194336,
+      "schemaVersion" : 1,
+      "scientificTier" : "measured-wing-only",
+      "sourceDatasetDOI" : "10.6084\/m9.figshare.5406124.v1",
+      "sourceMD5" : "805a482f5a6e6f8395f74e0706629190",
+      "startupCycleMeanForceNewtons" : [
+        0.0012872886112760228,
+        0.0006405286826137228,
+        0.011370886607192845
+      ]
+    },
+    {
+      "chordCells" : 8,
+      "completeBirdReplayReady" : false,
+      "cycleSteps" : 1992,
+      "datasetIdentifier" : "maeda-2017-hovering-right-wing-surface-v1",
+      "deviceName" : "Apple M4",
+      "diagnosticAirDensityKilogramsPerCubicMeter" : 1,
+      "diagnosticReynoldsNumber" : 100,
+      "fluidCycleExecuted" : true,
+      "geometryKernelSequence" : [
+        "prepareMeasuredWingSurface",
+        "clearMeasuredWingSurface",
+        "rasterizeMeasuredWingSurface",
+        "resolveMeasuredWingSurface",
+        "buildMeasuredWingSurfaceLinks"
+      ],
+      "halfThicknessCells" : 0.75,
+      "inputSHA256" : "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887",
+      "maximumLatticePointSpeed" : 0.0797477662563324,
+      "maximumPhysicalPointSpeedMetersPerSecond" : 11.151799201965332,
+      "maximumPreparedPositionErrorMeters" : 9.125060707049215e-09,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "passed" : true,
+      "phaseAudits" : [
+        {
+          "maximumBoundaryLinkFraction" : 0.9989432692527771,
+          "maximumLatticeWallSpeed" : 0.031211750581860542,
+          "minimumBoundaryLinkFraction" : 0.0006809524493291974,
+          "phase" : 0.01899999938905239,
+          "solidCellCount" : 394
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9990837574005127,
+          "maximumLatticeWallSpeed" : 0.05137040466070175,
+          "minimumBoundaryLinkFraction" : 9.999999747378752e-05,
+          "phase" : 0.07649999856948853,
+          "solidCellCount" : 411
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9999285340309143,
+          "maximumLatticeWallSpeed" : 0.07971815019845963,
+          "minimumBoundaryLinkFraction" : 0.001696358434855938,
+          "phase" : 0.1340000033378601,
+          "solidCellCount" : 417
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9978309869766235,
+          "maximumLatticeWallSpeed" : 0.07699205726385117,
+          "minimumBoundaryLinkFraction" : 0.0008077469537965953,
+          "phase" : 0.1914999932050705,
+          "solidCellCount" : 436
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9999141097068787,
+          "maximumLatticeWallSpeed" : 0.07734032720327377,
+          "minimumBoundaryLinkFraction" : 0.0007277359254658222,
+          "phase" : 0.24899999797344208,
+          "solidCellCount" : 434
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.999228298664093,
+          "maximumLatticeWallSpeed" : 0.06846600770950317,
+          "minimumBoundaryLinkFraction" : 0.0013751087244600058,
+          "phase" : 0.30649998784065247,
+          "solidCellCount" : 428
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9984060525894165,
+          "maximumLatticeWallSpeed" : 0.05653214827179909,
+          "minimumBoundaryLinkFraction" : 0.001462765852920711,
+          "phase" : 0.36399999260902405,
+          "solidCellCount" : 433
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9997130632400513,
+          "maximumLatticeWallSpeed" : 0.041311487555503845,
+          "minimumBoundaryLinkFraction" : 0.0004444748628884554,
+          "phase" : 0.42149999737739563,
+          "solidCellCount" : 430
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9989314079284668,
+          "maximumLatticeWallSpeed" : 0.02296026423573494,
+          "minimumBoundaryLinkFraction" : 0.002970829838886857,
+          "phase" : 0.4790000021457672,
+          "solidCellCount" : 434
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9994206428527832,
+          "maximumLatticeWallSpeed" : 0.04228399321436882,
+          "minimumBoundaryLinkFraction" : 0.003689373377710581,
+          "phase" : 0.5364999771118164,
+          "solidCellCount" : 415
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9979644417762756,
+          "maximumLatticeWallSpeed" : 0.05994381010532379,
+          "minimumBoundaryLinkFraction" : 0.0008872721809893847,
+          "phase" : 0.593999981880188,
+          "solidCellCount" : 402
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.999270498752594,
+          "maximumLatticeWallSpeed" : 0.07605797797441483,
+          "minimumBoundaryLinkFraction" : 0.00289079244248569,
+          "phase" : 0.6514999866485596,
+          "solidCellCount" : 391
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9990487694740295,
+          "maximumLatticeWallSpeed" : 0.07184432446956635,
+          "minimumBoundaryLinkFraction" : 0.0008504462894052267,
+          "phase" : 0.7089999914169312,
+          "solidCellCount" : 389
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9974830150604248,
+          "maximumLatticeWallSpeed" : 0.07487113773822784,
+          "minimumBoundaryLinkFraction" : 0.001450860989280045,
+          "phase" : 0.7664999961853027,
+          "solidCellCount" : 394
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.997277557849884,
+          "maximumLatticeWallSpeed" : 0.07457038760185242,
+          "minimumBoundaryLinkFraction" : 0.005379622336477041,
+          "phase" : 0.8240000009536743,
+          "solidCellCount" : 373
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9993988871574402,
+          "maximumLatticeWallSpeed" : 0.05451280251145363,
+          "minimumBoundaryLinkFraction" : 0.002470608102157712,
+          "phase" : 0.8815000057220459,
+          "solidCellCount" : 370
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9985096454620361,
+          "maximumLatticeWallSpeed" : 0.025995781645178795,
+          "minimumBoundaryLinkFraction" : 0.005357424728572369,
+          "phase" : 0.9390000104904175,
+          "solidCellCount" : 376
+        }
+      ],
+      "productionFluidKernel" : "stepFluidTRT",
+      "runtimeSeconds" : 3.7458759546279907,
+      "schemaVersion" : 1,
+      "scientificTier" : "measured-wing-only",
+      "sourceDatasetDOI" : "10.6084\/m9.figshare.5406124.v1",
+      "sourceMD5" : "805a482f5a6e6f8395f74e0706629190",
+      "startupCycleMeanForceNewtons" : [
+        0.0015168768142436043,
+        0.000548557171469038,
+        0.011885429444502155
+      ]
+    },
+    {
+      "chordCells" : 8,
+      "completeBirdReplayReady" : false,
+      "cycleSteps" : 1992,
+      "datasetIdentifier" : "maeda-2017-hovering-right-wing-surface-v1",
+      "deviceName" : "Apple M4",
+      "diagnosticAirDensityKilogramsPerCubicMeter" : 1,
+      "diagnosticReynoldsNumber" : 100,
+      "fluidCycleExecuted" : true,
+      "geometryKernelSequence" : [
+        "prepareMeasuredWingSurface",
+        "clearMeasuredWingSurface",
+        "rasterizeMeasuredWingSurface",
+        "resolveMeasuredWingSurface",
+        "buildMeasuredWingSurfaceLinks"
+      ],
+      "halfThicknessCells" : 1,
+      "inputSHA256" : "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887",
+      "maximumLatticePointSpeed" : 0.0797477662563324,
+      "maximumPhysicalPointSpeedMetersPerSecond" : 11.151799201965332,
+      "maximumPreparedPositionErrorMeters" : 9.125060707049215e-09,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "passed" : true,
+      "phaseAudits" : [
+        {
+          "maximumBoundaryLinkFraction" : 0.9998022317886353,
+          "maximumLatticeWallSpeed" : 0.03124929778277874,
+          "minimumBoundaryLinkFraction" : 0.004671545699238777,
+          "phase" : 0.01899999938905239,
+          "solidCellCount" : 551
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9981098771095276,
+          "maximumLatticeWallSpeed" : 0.05146801844239235,
+          "minimumBoundaryLinkFraction" : 0.0005026459111832082,
+          "phase" : 0.07649999856948853,
+          "solidCellCount" : 571
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9974166750907898,
+          "maximumLatticeWallSpeed" : 0.07971886545419693,
+          "minimumBoundaryLinkFraction" : 0.001704304595477879,
+          "phase" : 0.1340000033378601,
+          "solidCellCount" : 596
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9996505379676819,
+          "maximumLatticeWallSpeed" : 0.0770622119307518,
+          "minimumBoundaryLinkFraction" : 0.0014129959745332599,
+          "phase" : 0.1914999932050705,
+          "solidCellCount" : 609
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9985339045524597,
+          "maximumLatticeWallSpeed" : 0.07748088985681534,
+          "minimumBoundaryLinkFraction" : 0.001946267788298428,
+          "phase" : 0.24899999797344208,
+          "solidCellCount" : 598
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9972366690635681,
+          "maximumLatticeWallSpeed" : 0.06846600770950317,
+          "minimumBoundaryLinkFraction" : 0.001533461268991232,
+          "phase" : 0.30649998784065247,
+          "solidCellCount" : 604
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9985610246658325,
+          "maximumLatticeWallSpeed" : 0.05653214827179909,
+          "minimumBoundaryLinkFraction" : 0.0034610864240676165,
+          "phase" : 0.36399999260902405,
+          "solidCellCount" : 608
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9997450709342957,
+          "maximumLatticeWallSpeed" : 0.041311487555503845,
+          "minimumBoundaryLinkFraction" : 0.0001284286263398826,
+          "phase" : 0.42149999737739563,
+          "solidCellCount" : 601
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9994680881500244,
+          "maximumLatticeWallSpeed" : 0.02344568632543087,
+          "minimumBoundaryLinkFraction" : 0.0010021051857620478,
+          "phase" : 0.4790000021457672,
+          "solidCellCount" : 599
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9976838231086731,
+          "maximumLatticeWallSpeed" : 0.04228399321436882,
+          "minimumBoundaryLinkFraction" : 0.003488164162263274,
+          "phase" : 0.5364999771118164,
+          "solidCellCount" : 578
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9978295564651489,
+          "maximumLatticeWallSpeed" : 0.05994381010532379,
+          "minimumBoundaryLinkFraction" : 0.0007291843648999929,
+          "phase" : 0.593999981880188,
+          "solidCellCount" : 561
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9998779892921448,
+          "maximumLatticeWallSpeed" : 0.0760856419801712,
+          "minimumBoundaryLinkFraction" : 0.0030881899874657393,
+          "phase" : 0.6514999866485596,
+          "solidCellCount" : 551
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9992660880088806,
+          "maximumLatticeWallSpeed" : 0.07184432446956635,
+          "minimumBoundaryLinkFraction" : 0.004779675044119358,
+          "phase" : 0.7089999914169312,
+          "solidCellCount" : 561
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9996293187141418,
+          "maximumLatticeWallSpeed" : 0.07487113773822784,
+          "minimumBoundaryLinkFraction" : 0.0007284223102033138,
+          "phase" : 0.7664999961853027,
+          "solidCellCount" : 550
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9999396800994873,
+          "maximumLatticeWallSpeed" : 0.07457038760185242,
+          "minimumBoundaryLinkFraction" : 0.0006841549184173346,
+          "phase" : 0.8240000009536743,
+          "solidCellCount" : 536
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9998986124992371,
+          "maximumLatticeWallSpeed" : 0.05451280251145363,
+          "minimumBoundaryLinkFraction" : 0.0015998897142708302,
+          "phase" : 0.8815000057220459,
+          "solidCellCount" : 537
+        },
+        {
+          "maximumBoundaryLinkFraction" : 0.9994389414787292,
+          "maximumLatticeWallSpeed" : 0.026148168370127678,
+          "minimumBoundaryLinkFraction" : 0.0035405622329562902,
+          "phase" : 0.9390000104904175,
+          "solidCellCount" : 537
+        }
+      ],
+      "productionFluidKernel" : "stepFluidTRT",
+      "runtimeSeconds" : 3.8164979219436646,
+      "schemaVersion" : 1,
+      "scientificTier" : "measured-wing-only",
+      "sourceDatasetDOI" : "10.6084\/m9.figshare.5406124.v1",
+      "sourceMD5" : "805a482f5a6e6f8395f74e0706629190",
+      "startupCycleMeanForceNewtons" : [
+        0.0017680856798977466,
+        0.0004319437187123879,
+        0.011986670514426557
+      ]
+    }
+  ],
+  "chordCells" : 8,
+  "classification" : "numerical-thickness-sensitive",
+  "datasetIdentifier" : "maeda-2017-hovering-right-wing-surface-v1",
+  "inputSHA256" : "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887",
+  "maximumAllowedRelativeSensitivity" : 0.05,
+  "maximumPairwiseRelativeMeanForceVectorDifference" : 0.06741639384772043,
+  "passed" : false,
+  "relativeMeanVerticalForceEnvelope" : 0.05180998382170827,
+  "runtimeSeconds" : 11.291023969650269,
+  "schemaVersion" : 1
+}

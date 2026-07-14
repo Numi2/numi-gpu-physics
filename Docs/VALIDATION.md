@@ -423,7 +423,82 @@ Acceptance:
 - vortex topology is reviewed at matching nondimensional times from the archived Q/vorticity fields
 - mean loads change below `5%` between the two finest grids
 
-## 7. Complete measured bird
+## 7. Measured right-wing surface
+
+The Maeda et al. measured `201 x 401 x 17` PLOT3D sequence now has a distinct
+wing-only replay tier. Generate its deterministic `21 x 41 x 17` runtime input
+and audit every deposited phase on Metal:
+
+```bash
+python3 Scripts/import-measured-wing-grid.py \
+  --input /path/to/rsos170307_si_008.zip \
+  --song-dryad-tar /path/to/Data.tar \
+  --surface-output ValidationInputs/maeda-hovering-right-wing-surface-v1.json
+
+.build/release/birdflow replay measured-wing \
+  --input ValidationInputs/maeda-hovering-right-wing-surface-v1.json \
+  --chord-cells 8 \
+  --json
+```
+
+Periodic position uses the two adjacent measured frames, including the
+last-to-first wrap; wall velocity is the analytic derivative of that exact
+linear segment. Metal prepares the compact vertices once per step, clears the
+topology field, rasterizes one thread per measured triangle into deterministic
+atomic distance/triangle keys, resolves occupancy and wall velocity, and then
+builds signed-distance link fractions after an encoder synchronization point.
+This avoids a grid-cell by triangle search and retains the conservative
+cover/uncover estimator used by `stepFluidTRT`.
+
+The default geometry gate checks all 17 phases, CPU/Metal prepared-point
+parity, nonempty topology, finite wall speed, and boundary-link range. Add
+`--fluid-cycle` to exercise one startup cycle through the production fluid and
+load kernels. That startup force is diagnostic only: the source has no body,
+left wing, mass, inertia, tail, or measured physical wing thickness. The
+default `0.75`-cell half-thickness is explicitly numerical regularization.
+
+Thickness sensitivity is a separate local gate:
+
+```bash
+.build/release/birdflow replay measured-wing \
+  --input ValidationInputs/maeda-hovering-right-wing-surface-v1.json \
+  --chord-cells 8 \
+  --thickness-ladder \
+  --json
+```
+
+It runs complete `0.5`, `0.75`, and `1.0`-cell-half-thickness startup cycles
+and compares the full endpoint envelope against the same `5%` sensitivity
+ceiling used for finest-grid mean loads. Comparisons are normalized by the
+`0.75`-cell mean-force magnitude and vertical force; comparing only each
+endpoint with the center is intentionally insufficient because it hides the
+full uncertain range.
+
+The local Apple M4 wing-only gate passes with `1992` steps per cycle, maximum
+lattice point speed `0.0797478`, maximum prepared-position error
+`9.13e-9 m`, and maximum prepared-velocity error `9.83e-7 m/s`. In the locked
+release run, the 17-phase geometry gate takes `0.143 s`. The optional one-cycle
+production-fluid diagnostic takes `3.32 s`, also passes, and records startup mean
+force `[0.00151688, 0.000548557, 0.0118854] N` in
+`ValidationArtifacts/measured-wing-surface-one-cycle.json`. No weight or
+published-force comparison is made because the deposit lacks specimen mass and
+complete geometry. This diagnostic uses the existing canonical `Re=100` and
+`1 kg/m^3` density; both are recorded in the report and are not claimed as the
+specimen's measured flight condition.
+
+The locked eight-cell thickness ladder takes `11.29 s`. All three individual
+geometry/fluid cases pass, but the combined gate is classified
+`numerical-thickness-sensitive`: the maximum pairwise mean-force-vector
+difference is `6.7416%` and the vertical-force envelope is `5.1810%`. The
+result is retained in
+`ValidationArtifacts/measured-wing-thickness-sensitivity-c8.json`. This does
+not invalidate the measured boundary implementation; it prevents the arbitrary
+`0.75`-cell regularization from being treated as quantitatively cleared.
+
+The locked compact input SHA-256 is
+`5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887`.
+
+## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:
 
@@ -451,10 +526,10 @@ domain clearance, under-resolved thickness, and estimated lattice Mach above
 `0.15` before Metal allocation. Archives retain the exact input bytes and
 SHA-256 with per-step physical loads.
 
-`registeredAnalyticProxyV1` is currently the only geometry representation. It
-is measured morphometrics registered to the analytic body/wing/tail proxy, not
-a scanned surface. The bundled example is a synthetic conformance fixture. The
-data contract is in `Docs/MEASURED_BIRD_DATA.md`.
+`registeredAnalyticProxyV1` remains the only *complete-bird* geometry
+representation. The measured surface tier above is intentionally wing-only and
+cannot satisfy schema 1. The bundled complete-bird example is a synthetic
+conformance fixture. The data contract is in `Docs/MEASURED_BIRD_DATA.md`.
 
 Acceptance:
 
@@ -466,14 +541,15 @@ Acceptance:
 - cycle statistics are stationary before reporting
 - mean loads change below `5%` between the two finest registered grids
 
-Status: ingestion and total-load prescribed replay are complete. No actual
-measured specimen has been supplied, per-part left/right load reporting is not
-yet exposed, and surface-scan/SDF ingestion is not implemented. Therefore the
-complete measured-bird acceptance gate remains open without weakening it.
+Status: complete-bird ingestion and total-load prescribed replay are complete,
+and measured right-wing surface replay is implemented separately. No actual
+complete measured specimen has been supplied, and per-part left/right load
+reporting is not yet exposed. Therefore the complete measured-bird acceptance
+gate remains open without weakening it.
 The synthetic release conformance result is recorded in
 `ValidationArtifacts/measured-bird-replay-summary.json`.
 
-## 8. Free flight
+## 9. Free flight
 
 Enable six-degree-of-freedom coupling after prescribed-motion loads pass.
 

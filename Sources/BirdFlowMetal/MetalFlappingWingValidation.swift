@@ -283,6 +283,57 @@ public struct MetalFlappingWingCaseResult: Codable, Sendable {
     public let vortexMetrics: [MetalFlappingWingVortexMetric]
 }
 
+public struct MetalMeasuredWingSurfacePhaseAudit: Codable, Sendable {
+    public let phase: Double
+    public let solidCellCount: Int
+    public let minimumBoundaryLinkFraction: Double
+    public let maximumBoundaryLinkFraction: Double
+    public let maximumLatticeWallSpeed: Double
+}
+
+public struct MetalMeasuredWingSurfaceReplayReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let scientificTier: String
+    public let sourceDatasetDOI: String
+    public let sourceMD5: String
+    public let inputSHA256: String
+    public let completeBirdReplayReady: Bool
+    public let chordCells: Int
+    public let cycleSteps: Int
+    public let runtimeSeconds: Double
+    public let halfThicknessCells: Double
+    public let maximumPhysicalPointSpeedMetersPerSecond: Double
+    public let maximumLatticePointSpeed: Double
+    public let diagnosticReynoldsNumber: Double
+    public let diagnosticAirDensityKilogramsPerCubicMeter: Double
+    public let maximumPreparedPositionErrorMeters: Double
+    public let maximumPreparedVelocityErrorMetersPerSecond: Double
+    public let geometryKernelSequence: [String]
+    public let productionFluidKernel: String
+    public let phaseAudits: [MetalMeasuredWingSurfacePhaseAudit]
+    public let fluidCycleExecuted: Bool
+    public let startupCycleMeanForceNewtons: [Double]?
+    public let passed: Bool
+}
+
+public struct MetalMeasuredWingThicknessSensitivityReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let inputSHA256: String
+    public let chordCells: Int
+    public let runtimeSeconds: Double
+    public let baselineHalfThicknessCells: Double
+    public let maximumAllowedRelativeSensitivity: Double
+    public let maximumPairwiseRelativeMeanForceVectorDifference: Double
+    public let relativeMeanVerticalForceEnvelope: Double
+    public let allCaseGeometryAndFluidPassed: Bool
+    public let classification: String
+    public let passed: Bool
+    public let cases: [MetalMeasuredWingSurfaceReplayReport]
+}
+
 public struct MetalFlappingWingValidationReport: Codable, Sendable {
     public let schemaVersion: Int
     public let deviceName: String
@@ -897,6 +948,267 @@ public enum MetalFlappingWingValidator {
 #else
         throw BirdFlowError.metalUnavailable
 #endif
+    }
+}
+
+public extension MetalFlappingWingValidator {
+    static func auditMeasuredSurface(
+        _ dataset: MeasuredWingSurfaceDataset,
+        chordCells: Int = 8,
+        halfThicknessCells: Float = 0.75,
+        runFluidCycle: Bool = false
+    ) throws -> MetalMeasuredWingSurfaceReplayReport {
+        guard chordCells >= 8 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "measured-surface chord resolution must be at least 8"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let maximumLatticeSpeed: Float = 0.08
+        let referenceChordMeters: Float = 0.0195
+        let rawCycleSteps = Int(ceil(
+            dataset.maximumPointSpeedMetersPerSecond * Float(chordCells)
+                / (referenceChordMeters * dataset.frequencyHz
+                    * maximumLatticeSpeed)
+        ))
+        let cycleSteps = max(256, ((rawCycleSteps + 7) / 8) * 8)
+        let radiusCells = Int(ceil(
+            dataset.maximumRootRelativeRadiusMeters
+                / (referenceChordMeters / Float(chordCells))
+        ))
+        let halfDomain = radiusCells + 10
+        let grid = try GridSize(
+            x: 2 * halfDomain,
+            y: 2 * halfDomain,
+            z: 2 * halfDomain
+        )
+        let cellSize = referenceChordMeters / Float(chordCells)
+        let root = SIMD3<Float>(repeating: Float(halfDomain) * cellSize)
+        let backend = try MetalBackend(fastMath: false)
+        let simulation = try MetalPrescribedWingSimulation(
+            backend: backend,
+            grid: grid,
+            chordCells: chordCells,
+            cycleSteps: cycleSteps,
+            root: root,
+            measuredSurface: dataset,
+            measuredHalfThicknessCells: halfThicknessCells
+        )
+
+        var startupMean: [Double]?
+        if runFluidCycle {
+            _ = try simulation.advance(
+                to: cycleSteps,
+                batchSize: 8,
+                captureFields: false,
+                recordEveryStepLoad: true
+            )
+            let loads = simulation.copyRecordedLoads()
+            let inverse = 1.0 / Double(loads.count)
+            startupMean = [
+                loads.reduce(0.0) { $0 + Double($1.forceNewtons.x) } * inverse,
+                loads.reduce(0.0) { $0 + Double($1.forceNewtons.y) } * inverse,
+                loads.reduce(0.0) { $0 + Double($1.forceNewtons.z) } * inverse,
+            ]
+        }
+
+        var maximumPositionError = 0.0
+        var maximumVelocityError = 0.0
+        var phaseAudits: [MetalMeasuredWingSurfacePhaseAudit] = []
+        for phase in dataset.phases {
+            let prepared = try simulation.copyPreparedMeasuredPoints(
+                phase: Double(phase)
+            )
+            for point in 0..<dataset.pointsPerFrame {
+                let expected = dataset.state(phase: phase, pointIndex: point)
+                let actual = prepared[point]
+                let positionDelta = SIMD3<Float>(
+                    actual.position.x,
+                    actual.position.y,
+                    actual.position.z
+                )
+                    - root - expected.positionMeters
+                let velocityDelta = SIMD3<Float>(
+                    actual.velocity.x,
+                    actual.velocity.y,
+                    actual.velocity.z
+                )
+                    / simulation.measuredVelocityToLattice
+                    - expected.velocityMetersPerSecond
+                maximumPositionError = max(
+                    maximumPositionError,
+                    Double(sqrt(
+                        positionDelta.x * positionDelta.x
+                            + positionDelta.y * positionDelta.y
+                            + positionDelta.z * positionDelta.z
+                    ))
+                )
+                maximumVelocityError = max(
+                    maximumVelocityError,
+                    Double(sqrt(
+                        velocityDelta.x * velocityDelta.x
+                            + velocityDelta.y * velocityDelta.y
+                            + velocityDelta.z * velocityDelta.z
+                    ))
+                )
+            }
+            let geometry = try simulation.copyGeometry(phase: Double(phase))
+            let links = geometry.boundaryLinkFractions
+            let wallMaximum = geometry.wallVelocityAndImplicit.enumerated()
+                .filter { geometry.solid[$0.offset] != 0 }
+                .map { value -> Double in
+                    let velocity = value.element
+                    return Double(sqrt(
+                        velocity.x * velocity.x
+                            + velocity.y * velocity.y
+                            + velocity.z * velocity.z
+                    ))
+                }
+                .max() ?? 0
+            phaseAudits.append(MetalMeasuredWingSurfacePhaseAudit(
+                phase: Double(phase),
+                solidCellCount: geometry.solid.reduce(0) {
+                    $0 + ($1 == 0 ? 0 : 1)
+                },
+                minimumBoundaryLinkFraction: Double(links.min() ?? 0),
+                maximumBoundaryLinkFraction: Double(links.max() ?? 0),
+                maximumLatticeWallSpeed: wallMaximum
+            ))
+        }
+        let finiteTopology = phaseAudits.allSatisfy {
+            $0.solidCellCount > 0
+                && $0.minimumBoundaryLinkFraction >= 0.999e-4
+                && $0.maximumBoundaryLinkFraction <= 1
+                && $0.maximumLatticeWallSpeed.isFinite
+        }
+        let finiteStartupForce = startupMean?.allSatisfy(\.isFinite)
+            ?? !runFluidCycle
+        let passed = finiteTopology
+            && maximumPositionError <= 2.0e-6
+            && maximumVelocityError <= 2.0e-3
+            && finiteStartupForce
+            && !dataset.completeBirdReplayReady
+        return MetalMeasuredWingSurfaceReplayReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: dataset.datasetIdentifier,
+            scientificTier: dataset.scientificTier,
+            sourceDatasetDOI: dataset.sourceDatasetDOI,
+            sourceMD5: dataset.sourceMD5,
+            inputSHA256: dataset.inputSHA256,
+            completeBirdReplayReady: dataset.completeBirdReplayReady,
+            chordCells: chordCells,
+            cycleSteps: cycleSteps,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            halfThicknessCells: Double(halfThicknessCells),
+            maximumPhysicalPointSpeedMetersPerSecond:
+                Double(dataset.maximumPointSpeedMetersPerSecond),
+            maximumLatticePointSpeed: Double(
+                dataset.maximumPointSpeedMetersPerSecond
+                    * simulation.measuredVelocityToLattice
+            ),
+            diagnosticReynoldsNumber: reynoldsNumber,
+            diagnosticAirDensityKilogramsPerCubicMeter: 1,
+            maximumPreparedPositionErrorMeters: maximumPositionError,
+            maximumPreparedVelocityErrorMetersPerSecond: maximumVelocityError,
+            geometryKernelSequence: [
+                "prepareMeasuredWingSurface",
+                "clearMeasuredWingSurface",
+                "rasterizeMeasuredWingSurface",
+                "resolveMeasuredWingSurface",
+                "buildMeasuredWingSurfaceLinks",
+            ],
+            productionFluidKernel: "stepFluidTRT",
+            phaseAudits: phaseAudits,
+            fluidCycleExecuted: runFluidCycle,
+            startupCycleMeanForceNewtons: startupMean,
+            passed: passed
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    static func auditMeasuredSurfaceThicknessSensitivity(
+        _ dataset: MeasuredWingSurfaceDataset,
+        chordCells: Int = 8,
+        maximumAllowedRelativeSensitivity: Double = 0.05
+    ) throws -> MetalMeasuredWingThicknessSensitivityReport {
+        guard maximumAllowedRelativeSensitivity > 0,
+              maximumAllowedRelativeSensitivity < 1 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "maximum thickness sensitivity must be in (0, 1)"
+            )
+        }
+        let startTime = Date()
+        let thicknesses: [Float] = [0.5, 0.75, 1.0]
+        let reports = try thicknesses.map {
+            try auditMeasuredSurface(
+                dataset,
+                chordCells: chordCells,
+                halfThicknessCells: $0,
+                runFluidCycle: true
+            )
+        }
+        guard let baselineForce = reports[1].startupCycleMeanForceNewtons,
+              baselineForce.count == 3,
+              reports.allSatisfy({
+                  $0.startupCycleMeanForceNewtons?.count == 3
+              }) else {
+            throw MetalFlappingWingValidationError.failed(
+                "thickness ladder did not produce three-component mean forces"
+            )
+        }
+        func magnitude(_ vector: [Double]) -> Double {
+            sqrt(vector.reduce(0) { $0 + $1 * $1 })
+        }
+        let denominator = max(magnitude(baselineForce), 1.0e-30)
+        var maximumPairwiseDifference = 0.0
+        for first in 0..<reports.count {
+            for second in (first + 1)..<reports.count {
+                let firstForce = reports[first].startupCycleMeanForceNewtons!
+                let secondForce = reports[second].startupCycleMeanForceNewtons!
+                let delta = zip(firstForce, secondForce).map {
+                    $0.0 - $0.1
+                }
+                maximumPairwiseDifference = max(
+                    maximumPairwiseDifference,
+                    magnitude(delta) / denominator
+                )
+            }
+        }
+        let verticalForces = reports.map {
+            $0.startupCycleMeanForceNewtons![2]
+        }
+        let verticalEnvelope = (
+            verticalForces.max()! - verticalForces.min()!
+        ) / max(abs(baselineForce[2]), 1.0e-30)
+        let allCasesPassed = reports.allSatisfy {
+            $0.passed && $0.fluidCycleExecuted
+        }
+        let passed = allCasesPassed
+            && maximumPairwiseDifference <= maximumAllowedRelativeSensitivity
+            && verticalEnvelope <= maximumAllowedRelativeSensitivity
+        return MetalMeasuredWingThicknessSensitivityReport(
+            schemaVersion: 1,
+            datasetIdentifier: dataset.datasetIdentifier,
+            inputSHA256: dataset.inputSHA256,
+            chordCells: chordCells,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            baselineHalfThicknessCells: 0.75,
+            maximumAllowedRelativeSensitivity:
+                maximumAllowedRelativeSensitivity,
+            maximumPairwiseRelativeMeanForceVectorDifference:
+                maximumPairwiseDifference,
+            relativeMeanVerticalForceEnvelope: verticalEnvelope,
+            allCaseGeometryAndFluidPassed: allCasesPassed,
+            classification: passed
+                ? "thickness-insensitive-at-this-grid"
+                : "numerical-thickness-sensitive",
+            passed: passed,
+            cases: reports
+        )
     }
 }
 
@@ -2506,6 +2818,9 @@ private final class MetalPrescribedWingSimulation {
     private let configuration: SimulationConfiguration
     private let parameters: MTLBuffer
     private let prepared: MTLBuffer
+    private let measuredSourcePoints: MTLBuffer?
+    private let measuredPhases: MTLBuffer?
+    private let measuredDistanceKeys: MTLBuffer?
     private let populationsA: MTLBuffer
     private let populationsB: MTLBuffer
     private let solidA: MTLBuffer
@@ -2522,6 +2837,10 @@ private final class MetalPrescribedWingSimulation {
     private let bodyState: MTLBuffer
     private let preparePipeline: MTLComputePipelineState
     private let geometryPipeline: MTLComputePipelineState
+    private let measuredLinkPipeline: MTLComputePipelineState?
+    private let measuredClearPipeline: MTLComputePipelineState?
+    private let measuredRasterPipeline: MTLComputePipelineState?
+    private let measuredTriangleCount: Int
     private let initializePipeline: MTLComputePipelineState
     private let fluidPipeline: MTLComputePipelineState
     private let reductionPipeline: MTLComputePipelineState
@@ -2552,24 +2871,38 @@ private final class MetalPrescribedWingSimulation {
         root: SIMD3<Float>,
         loadComponent: PrescribedWingLoadComponent = .total,
         linkForceEstimator: PrescribedWingLinkForceEstimator =
-            .conservativeMovingDomain
+            .conservativeMovingDomain,
+        measuredSurface: MeasuredWingSurfaceDataset? = nil,
+        measuredHalfThicknessCells: Float = 0.75
     ) throws {
         self.backend = backend
         self.cycleSteps = cycleSteps
         self.loadComponent = loadComponent
         self.linkForceEstimator = linkForceEstimator
-        let referenceSpeed = Float(
-            MetalFlappingWingValidator.latticeRadiusOfGyrationSpeed
-        )
+        let referenceSpeed = measuredSurface?.maximumPointSpeedMetersPerSecond
+            ?? Float(MetalFlappingWingValidator.latticeRadiusOfGyrationSpeed)
+        let characteristicLength = measuredSurface == nil
+            ? Float(chordCells)
+            : Float(0.0195)
+        let latticeReferenceSpeed = measuredSurface == nil
+            ? referenceSpeed
+            : referenceSpeed
+                / (measuredSurface!.frequencyHz * Float(cycleSteps))
+                / (characteristicLength / Float(chordCells))
+        if measuredSurface != nil && latticeReferenceSpeed > 0.08 {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "measured surface requires more cycle steps: maximum lattice wall speed \(latticeReferenceSpeed) exceeds 0.08"
+            )
+        }
         let scaling = try LatticeScaling(
-            characteristicLengthMeters: Float(chordCells),
+            characteristicLengthMeters: characteristicLength,
             characteristicLengthCells: chordCells,
             referenceSpeedMetersPerSecond: referenceSpeed,
             targetReynoldsNumber: Float(
                 MetalFlappingWingValidator.reynoldsNumber
             ),
             physicalAirDensity: 1,
-            latticeReferenceSpeed: referenceSpeed
+            latticeReferenceSpeed: latticeReferenceSpeed
         )
         configuration = try SimulationConfiguration(
             grid: grid,
@@ -2583,38 +2916,115 @@ private final class MetalPrescribedWingSimulation {
             gravityMetersPerSecondSquared: .zero,
             fastMath: false
         )
-        let gpuParameters = GPUFlappingWingParameters(
-            rootAndChord: SIMD4<Float>(root, Float(chordCells)),
-            geometry: SIMD4<Float>(
-                Float(MetalFlappingWingValidator.aspectRatio)
-                    * Float(chordCells),
-                0.05 * Float(chordCells),
-                Float(MetalFlappingWingValidator.betaShape - 1),
-                Float(MetalFlappingWingValidator.betaNormalization)
-            ),
-            kinematics0: SIMD4<Float>(
-                Float(cycleSteps),
-                Float(MetalFlappingWingValidator.strokeHalfAmplitudeRadians),
-                Float(MetalFlappingWingValidator.accelerationDuration),
-                Float(MetalFlappingWingValidator.pitchDuration)
-            ),
-            kinematics1: SIMD4<Float>(
-                45 * .pi / 180,
-                135 * .pi / 180,
-                Float(MetalFlappingWingValidator.maximumStrokeRateRadiansPerCycle),
-                referenceSpeed
+        if let measuredSurface {
+            guard measuredHalfThicknessCells >= 0.5,
+                  measuredHalfThicknessCells <= 2 else {
+                throw MetalFlappingWingValidationError.invalidRequest(
+                    "measured half thickness must be in [0.5, 2] cells"
+                )
+            }
+            let gpuParameters = GPUMeasuredWingSurfaceParameters(
+                counts: SIMD4<UInt32>(
+                    UInt32(measuredSurface.chordCount),
+                    UInt32(measuredSurface.spanCount),
+                    UInt32(measuredSurface.frameCount),
+                    0
+                ),
+                pointCounts: SIMD4<UInt32>(
+                    UInt32(measuredSurface.verticesPerFrame),
+                    UInt32(measuredSurface.pathsPerFrame),
+                    UInt32(measuredSurface.pointsPerFrame),
+                    0
+                ),
+                rootAndHalfThickness: SIMD4<Float>(
+                    root,
+                    measuredHalfThicknessCells * scaling.cellSizeMeters
+                ),
+                timingAndBounds: SIMD4<Float>(
+                    Float(cycleSteps),
+                    measuredSurface.frequencyHz,
+                    measuredSurface.maximumRootRelativeRadiusMeters,
+                    0
+                )
             )
-        )
-        parameters = try backend.makeSharedBuffer(value: gpuParameters)
-        prepared = try backend.makePrivateBuffer(
-            length: MemoryLayout<GPUPreparedFlappingWing>.stride
-        )
-        preparePipeline = try backend.pipeline(
-            named: "preparePrescribedFlappingWing"
-        )
-        geometryPipeline = try backend.pipeline(
-            named: "buildPrescribedFlappingWing"
-        )
+            parameters = try backend.makeSharedBuffer(value: gpuParameters)
+            prepared = try backend.makePrivateBuffer(
+                length: measuredSurface.pointsPerFrame
+                    * MemoryLayout<GPUPreparedMeasuredWingPoint>.stride
+            )
+            let packed = measuredSurface.packedPoints()
+            let pointsBuffer = try backend.makeSharedBuffer(
+                length: packed.count * MemoryLayout<SIMD4<Float>>.stride
+            )
+            _ = packed.withUnsafeBytes { bytes in
+                memcpy(pointsBuffer.contents(), bytes.baseAddress!, bytes.count)
+            }
+            measuredSourcePoints = pointsBuffer
+            let phaseBuffer = try backend.makeSharedBuffer(
+                length: measuredSurface.phases.count * MemoryLayout<Float>.stride
+            )
+            _ = measuredSurface.phases.withUnsafeBytes { bytes in
+                memcpy(phaseBuffer.contents(), bytes.baseAddress!, bytes.count)
+            }
+            measuredPhases = phaseBuffer
+            preparePipeline = try backend.pipeline(
+                named: "prepareMeasuredWingSurface"
+            )
+            geometryPipeline = try backend.pipeline(
+                named: "resolveMeasuredWingSurface"
+            )
+            measuredLinkPipeline = try backend.pipeline(
+                named: "buildMeasuredWingSurfaceLinks"
+            )
+            measuredClearPipeline = try backend.pipeline(
+                named: "clearMeasuredWingSurface"
+            )
+            measuredRasterPipeline = try backend.pipeline(
+                named: "rasterizeMeasuredWingSurface"
+            )
+            measuredTriangleCount = 2
+                * (measuredSurface.chordCount - 1)
+                * (measuredSurface.spanCount - 1)
+        } else {
+            let gpuParameters = GPUFlappingWingParameters(
+                rootAndChord: SIMD4<Float>(root, Float(chordCells)),
+                geometry: SIMD4<Float>(
+                    Float(MetalFlappingWingValidator.aspectRatio)
+                        * Float(chordCells),
+                    0.05 * Float(chordCells),
+                    Float(MetalFlappingWingValidator.betaShape - 1),
+                    Float(MetalFlappingWingValidator.betaNormalization)
+                ),
+                kinematics0: SIMD4<Float>(
+                    Float(cycleSteps),
+                    Float(MetalFlappingWingValidator.strokeHalfAmplitudeRadians),
+                    Float(MetalFlappingWingValidator.accelerationDuration),
+                    Float(MetalFlappingWingValidator.pitchDuration)
+                ),
+                kinematics1: SIMD4<Float>(
+                    45 * .pi / 180,
+                    135 * .pi / 180,
+                    Float(MetalFlappingWingValidator.maximumStrokeRateRadiansPerCycle),
+                    referenceSpeed
+                )
+            )
+            parameters = try backend.makeSharedBuffer(value: gpuParameters)
+            prepared = try backend.makePrivateBuffer(
+                length: MemoryLayout<GPUPreparedFlappingWing>.stride
+            )
+            measuredSourcePoints = nil
+            measuredPhases = nil
+            preparePipeline = try backend.pipeline(
+                named: "preparePrescribedFlappingWing"
+            )
+            geometryPipeline = try backend.pipeline(
+                named: "buildPrescribedFlappingWing"
+            )
+            measuredLinkPipeline = nil
+            measuredClearPipeline = nil
+            measuredRasterPipeline = nil
+            measuredTriangleCount = 0
+        }
         initializePipeline = try backend.pipeline(named: "initializePopulations")
         fluidPipeline = try backend.pipeline(named: "stepFluidTRT")
         reductionPipeline = try backend.pipeline(named: "reduceForceTorque")
@@ -2642,6 +3052,7 @@ private final class MetalPrescribedWingSimulation {
         let wallBytes = cells * MemoryLayout<SIMD4<Float>>.stride
         let densityBytes = cells * MemoryLayout<Float>.stride
         let velocityBytes = cells * MemoryLayout<SIMD4<Float>>.stride
+        let measuredDistanceBytes = cells * MemoryLayout<UInt32>.stride
         partialLoadCount = max(1, (cells + 255) / 256)
         let reductionBytes = partialLoadCount
             * MemoryLayout<GPUForceTorque>.stride
@@ -2650,14 +3061,21 @@ private final class MetalPrescribedWingSimulation {
             * MemoryLayout<GPUControlVolumeBudget>.stride
         let momentumBudgetHistoryBytes = cycleSteps
             * MemoryLayout<GPUControlVolumeBudget>.stride
-        let horizontalHalfWidth = (17 * chordCells + 3) / 4
-        let verticalHalfWidth = (3 * chordCells + 1) / 2
-        let minimumX = Int(root.x) - horizontalHalfWidth
-        let minimumY = Int(root.y) - horizontalHalfWidth
-        let minimumZ = Int(floor(root.z - Float(verticalHalfWidth)))
-        let maximumX = Int(root.x) + horizontalHalfWidth
-        let maximumY = Int(root.y) + horizontalHalfWidth
-        let maximumZ = Int(ceil(root.z + Float(verticalHalfWidth)))
+        let horizontalHalfWidth = measuredSurface.map {
+            Int(ceil(
+                $0.maximumRootRelativeRadiusMeters / scaling.cellSizeMeters
+            )) + 4
+        } ?? (17 * chordCells + 3) / 4
+        let verticalHalfWidth = measuredSurface == nil
+            ? (3 * chordCells + 1) / 2
+            : horizontalHalfWidth
+        let rootCell = root / scaling.cellSizeMeters
+        let minimumX = Int(rootCell.x) - horizontalHalfWidth
+        let minimumY = Int(rootCell.y) - horizontalHalfWidth
+        let minimumZ = Int(floor(rootCell.z - Float(verticalHalfWidth)))
+        let maximumX = Int(rootCell.x) + horizontalHalfWidth
+        let maximumY = Int(rootCell.y) + horizontalHalfWidth
+        let maximumZ = Int(ceil(rootCell.z + Float(verticalHalfWidth)))
         precondition(
             minimumX > configuration.spongeWidthCells
                 && minimumY > configuration.spongeWidthCells
@@ -2690,6 +3108,7 @@ private final class MetalPrescribedWingSimulation {
             momentumBudgetReductionBytes, momentumBudgetReductionBytes,
             momentumBudgetHistoryBytes,
             MemoryLayout<GPUBirdBodyState>.stride,
+            measuredSurface == nil ? 0 : measuredDistanceBytes,
         ])
         populationsA = try backend.makePrivateBuffer(length: populationBytes)
         populationsB = try backend.makePrivateBuffer(length: populationBytes)
@@ -2713,6 +3132,9 @@ private final class MetalPrescribedWingSimulation {
         bodyState = try backend.makeSharedBuffer(
             value: GPUBirdBodyState(BirdBodyState(positionMeters: root))
         )
+        measuredDistanceKeys = measuredSurface == nil
+            ? nil
+            : try backend.makePrivateBuffer(length: measuredDistanceBytes)
         currentPopulations = populationsA
         nextPopulations = populationsB
         currentSolid = solidA
@@ -2828,6 +3250,60 @@ private final class MetalPrescribedWingSimulation {
                 return SIMD3<Float>(value.x, value.y, value.z)
             }
         )
+    }
+
+    var measuredVelocityToLattice: Float {
+        configuration.scaling.velocityToLattice
+    }
+
+    func copyPreparedMeasuredPoints(
+        phase: Double
+    ) throws -> [GPUPreparedMeasuredWingPoint] {
+        guard measuredSourcePoints != nil else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "prepared measured points requested for an analytic wing"
+            )
+        }
+        let staging = try backend.makeSharedBuffer(length: prepared.length)
+        guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create measured-wing prepared-point audit buffer."
+            )
+        }
+        var uniforms = makeUniforms(
+            time: Float(phase * Double(cycleSteps)),
+            captureFields: false,
+            accumulateLoads: false,
+            hasPreviousGeometry: false
+        )
+        try encodePrescribedPreparation(
+            commandBuffer: commandBuffer,
+            uniforms: &uniforms
+        )
+        guard let blit = commandBuffer.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create measured-wing prepared-point audit blit."
+            )
+        }
+        blit.copy(
+            from: prepared,
+            sourceOffset: 0,
+            to: staging,
+            destinationOffset: 0,
+            size: prepared.length
+        )
+        blit.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+        let count = prepared.length
+            / MemoryLayout<GPUPreparedMeasuredWingPoint>.stride
+        return Array(UnsafeBufferPointer(
+            start: staging.contents().assumingMemoryBound(
+                to: GPUPreparedMeasuredWingPoint.self
+            ),
+            count: count
+        ))
     }
 
     func copyGeometry(
@@ -3153,6 +3629,13 @@ private final class MetalPrescribedWingSimulation {
         commandBuffer: MTLCommandBuffer,
         uniforms: inout GPUUniforms
     ) throws {
+        if measuredSourcePoints != nil {
+            try encodeMeasuredPreparation(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms
+            )
+            return
+        }
         guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
             throw BirdFlowError.commandBufferFailed(
                 "Unable to create prescribed-wing preparation encoder."
@@ -3173,11 +3656,47 @@ private final class MetalPrescribedWingSimulation {
         encoder.endEncoding()
     }
 
+    private func encodeMeasuredPreparation(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let measuredSourcePoints, let measuredPhases,
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create measured-wing preparation encoder."
+            )
+        }
+        encoder.setBuffer(measuredSourcePoints, offset: 0, index: 0)
+        encoder.setBuffer(measuredPhases, offset: 0, index: 1)
+        encoder.setBuffer(prepared, offset: 0, index: 2)
+        encoder.setBuffer(parameters, offset: 0, index: 3)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 4
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: preparePipeline,
+            count: prepared.length
+                / MemoryLayout<GPUPreparedMeasuredWingPoint>.stride
+        )
+        encoder.endEncoding()
+    }
+
     private func encodePrescribedGeometry(
         commandBuffer: MTLCommandBuffer,
         uniforms: inout GPUUniforms,
         target: MTLBuffer
     ) throws {
+        if measuredDistanceKeys != nil {
+            try encodeMeasuredGeometry(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms,
+                target: target
+            )
+            return
+        }
         guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
             throw BirdFlowError.commandBufferFailed(
                 "Unable to create prescribed-wing geometry encoder."
@@ -3204,6 +3723,118 @@ private final class MetalPrescribedWingSimulation {
         backend.dispatch3D(
             encoder: encoder,
             pipeline: geometryPipeline,
+            width: configuration.grid.x,
+            height: configuration.grid.y,
+            depth: configuration.grid.z
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeMeasuredGeometry(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        target: MTLBuffer
+    ) throws {
+        guard let measuredDistanceKeys,
+              let measuredClearPipeline,
+              let measuredRasterPipeline else {
+            throw BirdFlowError.commandBufferFailed(
+                "Measured-wing geometry resources are incomplete."
+            )
+        }
+        guard let clearEncoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create measured-wing clear encoder."
+            )
+        }
+        clearEncoder.setBuffer(target, offset: 0, index: 0)
+        clearEncoder.setBuffer(wallVelocity, offset: 0, index: 1)
+        clearEncoder.setBuffer(measuredDistanceKeys, offset: 0, index: 2)
+        clearEncoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        backend.dispatch1D(
+            encoder: clearEncoder,
+            pipeline: measuredClearPipeline,
+            count: configuration.grid.cellCount
+        )
+        clearEncoder.endEncoding()
+
+        guard let rasterEncoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create measured-wing raster encoder."
+            )
+        }
+        rasterEncoder.setBuffer(prepared, offset: 0, index: 0)
+        rasterEncoder.setBuffer(measuredDistanceKeys, offset: 0, index: 1)
+        rasterEncoder.setBuffer(parameters, offset: 0, index: 2)
+        rasterEncoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        backend.dispatch1D(
+            encoder: rasterEncoder,
+            pipeline: measuredRasterPipeline,
+            count: measuredTriangleCount
+        )
+        rasterEncoder.endEncoding()
+
+        guard let resolveEncoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create measured-wing resolve encoder."
+            )
+        }
+        resolveEncoder.setBuffer(target, offset: 0, index: 0)
+        resolveEncoder.setBuffer(wallVelocity, offset: 0, index: 1)
+        resolveEncoder.setBuffer(currentSolid, offset: 0, index: 2)
+        resolveEncoder.setBuffer(parameters, offset: 0, index: 3)
+        resolveEncoder.setBuffer(prepared, offset: 0, index: 4)
+        resolveEncoder.setBuffer(measuredDistanceKeys, offset: 0, index: 5)
+        resolveEncoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 6
+        )
+        resolveEncoder.setBuffer(currentPopulations, offset: 0, index: 7)
+        resolveEncoder.setBuffer(velocity, offset: 0, index: 8)
+        backend.dispatch1D(
+            encoder: resolveEncoder,
+            pipeline: geometryPipeline,
+            count: configuration.grid.cellCount
+        )
+        resolveEncoder.endEncoding()
+        try encodeMeasuredLinks(
+            commandBuffer: commandBuffer,
+            uniforms: &uniforms,
+            target: target
+        )
+    }
+
+    private func encodeMeasuredLinks(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        target: MTLBuffer
+    ) throws {
+        guard let measuredLinkPipeline,
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create measured-wing link encoder."
+            )
+        }
+        encoder.setBuffer(target, offset: 0, index: 0)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 1)
+        encoder.setBuffer(currentPopulations, offset: 0, index: 2)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        backend.dispatch3D(
+            encoder: encoder,
+            pipeline: measuredLinkPipeline,
             width: configuration.grid.x,
             height: configuration.grid.y,
             depth: configuration.grid.z
