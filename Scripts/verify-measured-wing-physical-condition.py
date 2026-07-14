@@ -145,6 +145,22 @@ def main() -> None:
         raise SystemExit(
             "curved normal moving-link path must remain confirmed"
         )
+    if not decision["fixedOccupancyWallDecompositionCompleted"]:
+        raise SystemExit(
+            "fixed-occupancy wall decomposition must remain complete"
+        )
+    if decision["tangentialOnlyCurvedSphereStabilityPassed"]:
+        raise SystemExit(
+            "tangential-only curved-sphere gate must retain its failed verdict"
+        )
+    if decision["normalOnlyCurvedSphereStabilityPassed"]:
+        raise SystemExit(
+            "normal-only curved-sphere gate must retain its failed verdict"
+        )
+    if not decision["generalCurvedMovingLinkInstabilityConfirmed"]:
+        raise SystemExit(
+            "general curved moving-link instability must remain confirmed"
+        )
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
     feasibilities = []
     for key in (
@@ -324,6 +340,61 @@ def main() -> None:
                 f"{fixed_sphere_path} contains topology transitions"
             )
 
+    decomposition_path = Path(
+        decision["fixedOccupancyWallDecompositionArtifact"]
+    )
+    decomposition = json.loads(
+        decomposition_path.read_text(encoding="utf-8")
+    )
+    decomposition_audit_hash = decomposition["sourceLocks"][
+        "physicalConditionAudit"
+    ]["sha256"]
+    if decomposition_audit_hash != actual_audit_hash:
+        raise SystemExit(
+            f"{decomposition_path} has a stale physical-condition audit hash"
+        )
+    fixed_sphere_hash = hashlib.sha256(
+        fixed_sphere_path.read_bytes()
+    ).hexdigest()
+    locked_fixed_sphere_hash = decomposition["sourceLocks"][
+        "uniformFixedOccupancySphereArtifact"
+    ]["sha256"]
+    if locked_fixed_sphere_hash != fixed_sphere_hash:
+        raise SystemExit(
+            f"{decomposition_path} has a stale fixed-sphere artifact hash"
+        )
+    if not decomposition["diagnosticCompleted"]:
+        raise SystemExit(f"{decomposition_path} must remain complete")
+    if (
+        decomposition["classification"]
+        != "general-curved-moving-link-instability-confirmed"
+    ):
+        raise SystemExit(f"{decomposition_path} has changed classification")
+    components = {
+        result["wallVelocityMode"]: result
+        for result in decomposition["componentResults"]
+    }
+    expected_component_steps = {
+        "normal-only": [86, 86, 86],
+        "tangential-only": [186, 187, 189],
+    }
+    if set(components) != set(expected_component_steps):
+        raise SystemExit(f"{decomposition_path} has unexpected components")
+    for mode, expected_steps in expected_component_steps.items():
+        component = components[mode]
+        if component["firstNonFiniteLoadSteps"] != expected_steps:
+            raise SystemExit(
+                f"{decomposition_path} has changed {mode} failure steps"
+            )
+        if component["passed"]:
+            raise SystemExit(
+                f"{decomposition_path} contains a passing {mode} case"
+            )
+        if component["newlyCoveredCellEvents"] != 0:
+            raise SystemExit(f"{decomposition_path} contains cover events")
+        if component["newlyUncoveredCellEvents"] != 0:
+            raise SystemExit(f"{decomposition_path} contains uncover events")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -362,6 +433,15 @@ def main() -> None:
         "fixed_occupancy_sphere_classification: "
         f"{fixed_sphere['classification']}"
     )
+    print(
+        "wall_component_first_non_finite_steps: "
+        + ";".join(
+            f"{mode}="
+            + ",".join(str(step) for step in expected_component_steps[mode])
+            for mode in ("normal-only", "tangential-only")
+        )
+    )
+    print(f"wall_decomposition_classification: {decomposition['classification']}")
     print("passed: true")
 
 

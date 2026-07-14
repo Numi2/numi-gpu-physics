@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "reportIdentifier": "maeda-dong-high-re-fixed-occupancy-wall-decomposition-v1",
+  "classification": "general-curved-moving-link-instability-confirmed",
+  "generatedBy": ".build/release/birdflow validate translating-body --high-re-stability --fixed-occupancy --decompose-wall-velocity --json",
+  "deviceName": "Apple M4",
+  "runtimeSeconds": 3.045154094696045,
+  "sourceLocks": {
+    "physicalConditionAudit": {
+      "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
+      "sha256": "80214fa9c3b4df3ce4a8a396b45474d4d4fb95a7f664f1993adf4a03b5356dda"
+    },
+    "uniformFixedOccupancySphereArtifact": {
+      "path": "ValidationArtifacts/measured-wing-high-re-fixed-occupancy-sphere-stability.json",
+      "sha256": "ce0acd3c8a8c49285989706e5954074070536a720d6ae2d75bf7ac33cca3794e"
+    },
+    "publishedConditionDOI": "10.1155/2022/5433184"
+  },
+  "productionKernel": "stepFluidTRT",
+  "topologyKernel": "buildTranslatingSphereTopology",
+  "topologyChanges": false,
+  "domainCells": [56, 24, 24],
+  "sphereRadiusCells": 3.25,
+  "maximumWallVelocityLattice": 0.07999999821186066,
+  "requestedStepsPerComponent": 500,
+  "projectionDefinitions": {
+    "normalOnly": "u_n = dot(u, n) * n",
+    "tangentialOnly": "u_t = u - dot(u, n) * n",
+    "normalDefinition": "normalized vector from sphere center to voxel center"
+  },
+  "componentResults": [
+    {
+      "wallVelocityMode": "normal-only",
+      "runtimeSeconds": 1.5936850309371948,
+      "matchedBirdChordCells": [8, 12, 16],
+      "firstNonFiniteLoadSteps": [86, 86, 86],
+      "initialPopulationMass": 32256.000479876995,
+      "newlyCoveredCellEvents": 0,
+      "newlyUncoveredCellEvents": 0,
+      "topologyTransitionSteps": 0,
+      "populationsFiniteAtEnd": false,
+      "loadsFiniteAtEnd": false,
+      "passed": false
+    },
+    {
+      "wallVelocityMode": "tangential-only",
+      "runtimeSeconds": 1.4479990005493164,
+      "matchedBirdChordCells": [8, 12, 16],
+      "firstNonFiniteLoadSteps": [186, 187, 189],
+      "initialPopulationMass": 32256.000478938222,
+      "newlyCoveredCellEvents": 0,
+      "newlyUncoveredCellEvents": 0,
+      "topologyTransitionSteps": 0,
+      "populationsFiniteAtEnd": false,
+      "loadsFiniteAtEnd": false,
+      "passed": false
+    }
+  ],
+  "diagnosticCompleted": true,
+  "scientificVerdict": "Normal-only forcing becomes non-finite at step 86 for all three matched relaxation margins. Tangential-only forcing also becomes non-finite, at steps 186, 187, and 189. The instability is therefore a general curved moving-link and low-relaxation interaction rather than a normal-only defect, although the normal component is more aggressive. The next discriminator is the same curved fixed sphere with a stationary wall in uniform 0.08 lattice flow."
+}

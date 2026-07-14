@@ -577,6 +577,41 @@ func productionMetalHighReFixedOccupancySphereLocalizesCurvedLinkInstability()
 }
 
 @Test
+func productionMetalHighReWallComponentDecompositionConfirmsGeneralInstability()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runHighReFixedOccupancyWallDecomposition()
+
+    #expect(report.diagnosticCompleted)
+    #expect(
+        report.classification
+            == "general-curved-moving-link-instability-confirmed"
+    )
+    #expect(!report.tangential.passed)
+    #expect(!report.normal.passed)
+    #expect(report.tangential.wallVelocityMode == "tangential-only")
+    #expect(report.normal.wallVelocityMode == "normal-only")
+    #expect(
+        report.tangential.cases.compactMap(\.firstNonFiniteLoadStep)
+            == [186, 187, 189]
+    )
+    #expect(
+        report.normal.cases.compactMap(\.firstNonFiniteLoadStep)
+            == [86, 86, 86]
+    )
+    #expect(
+        (report.tangential.cases + report.normal.cases).allSatisfy {
+            $0.newlyCoveredCellEvents == 0
+                && $0.newlyUncoveredCellEvents == 0
+                && $0.topologyTransitionSteps == 0
+                && !$0.passed
+        }
+    )
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

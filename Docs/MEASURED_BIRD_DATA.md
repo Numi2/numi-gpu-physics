@@ -295,7 +295,24 @@ Thus topology refill is not necessary; curved moving-link boundary forcing is
 already sufficient under this operator stress.
 
 Uniform translation on a fixed sphere includes a nonphysical normal wall
-component. The next highest-ROI experiment is therefore a normal-only versus
-tangential-only fixed-sphere A/B. It preserves the seconds-scale cost while
-determining whether the normal moving-boundary correction or tangential curved
-exchange should be stabilized before any bird rerun.
+component. The component A/B is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --decompose-wall-velocity \
+  --json
+```
+
+Normal-only c8/c12/c16 all fail at step `86`; tangential-only cases fail at
+steps `186`, `187`, and `189`. The `3.05 s` Apple M4 run has no topology
+events and is archived in
+`ValidationArtifacts/measured-wing-high-re-fixed-occupancy-wall-decomposition.json`.
+Thus the low-margin instability is general to curved moving links rather than
+normal-only, although normal forcing grows unstable sooner.
+
+The next highest-ROI experiment is a stationary-wall sphere in uniform lattice
+flow `0.08`. It removes only the moving-wall population correction, separating
+that term from general curved halfway bounce-back/TRT instability in about one
+second before any bird rerun.

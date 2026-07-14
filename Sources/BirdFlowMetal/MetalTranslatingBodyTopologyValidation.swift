@@ -105,6 +105,7 @@ public struct MetalHighReTranslatingBodyStabilityReport:
     public let sphereRadiusCells: Double
     public let translationSpeedLattice: Double
     public let wallVelocityLattice: Double
+    public let wallVelocityMode: String
     public let requestedSteps: Int
     public let displacementCells: Double
     public let runtimeSeconds: Double
@@ -118,6 +119,23 @@ public struct MetalHighReTranslatingBodyStabilityReport:
     public let passed: Bool
 }
 
+public struct MetalHighReFixedOccupancyWallDecompositionReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let topologyKernel: String
+    public let requestedStepsPerComponent: Int
+    public let maximumWallVelocityLattice: Double
+    public let runtimeSeconds: Double
+    public let tangential: MetalHighReTranslatingBodyStabilityReport
+    public let normal: MetalHighReTranslatingBodyStabilityReport
+    public let classification: String
+    public let scientificVerdict: String
+    public let diagnosticCompleted: Bool
+}
+
 public enum MetalTranslatingBodyTopologyValidator {
     public static let gridResolution = 24
     public static let sphereRadiusCells = 3.25
@@ -128,12 +146,27 @@ public enum MetalTranslatingBodyTopologyValidator {
     public static let minimumImprovementFactor = 5.0
     public static let maximumRawBudgetDifference = 1.0e-7
 
+    private enum HighReSphereWallMode: Float {
+        case uniform = 0
+        case tangential = 1
+        case normal = 2
+
+        var name: String {
+            switch self {
+            case .uniform: return "uniform"
+            case .tangential: return "tangential-only"
+            case .normal: return "normal-only"
+            }
+        }
+    }
+
     public static func runHighReStability(
         steps: Int = 500
     ) throws -> MetalHighReTranslatingBodyStabilityReport {
         try runHighReStability(
             steps: steps,
-            topologyChanges: true
+            topologyChanges: true,
+            wallMode: .uniform
         )
     }
 
@@ -142,13 +175,73 @@ public enum MetalTranslatingBodyTopologyValidator {
     ) throws -> MetalHighReTranslatingBodyStabilityReport {
         try runHighReStability(
             steps: steps,
-            topologyChanges: false
+            topologyChanges: false,
+            wallMode: .uniform
+        )
+    }
+
+    public static func runHighReFixedOccupancyWallDecomposition(
+        steps: Int = 500
+    ) throws -> MetalHighReFixedOccupancyWallDecompositionReport {
+        let startTime = Date()
+        let tangential = try runHighReStability(
+            steps: steps,
+            topologyChanges: false,
+            wallMode: .tangential
+        )
+        let normal = try runHighReStability(
+            steps: steps,
+            topologyChanges: false,
+            wallMode: .normal
+        )
+        let diagnosticCompleted = [tangential, normal].allSatisfy {
+            !$0.topologyChanges
+                && $0.cases.count == 3
+                && $0.cases.allSatisfy { result in
+                    result.newlyCoveredCellEvents == 0
+                        && result.newlyUncoveredCellEvents == 0
+                        && result.topologyTransitionSteps == 0
+                        && (result.passed
+                            ? result.finiteLoadSteps == result.requestedSteps
+                            : result.firstNonFiniteLoadStep != nil)
+                }
+        }
+        let classification: String
+        let verdict: String
+        switch (tangential.passed, normal.passed) {
+        case (true, false):
+            classification = "normal-moving-wall-instability-confirmed"
+            verdict = "Tangential-only curved moving-wall exchange remains finite while normal-only exchange becomes non-finite. Stabilize the normal moving-boundary reconstruction before another bird replay."
+        case (false, true):
+            classification = "tangential-curved-link-instability-confirmed"
+            verdict = "Normal-only exchange remains finite while tangential-only curved moving-wall exchange becomes non-finite. Stabilize curved tangential link exchange before another bird replay."
+        case (false, false):
+            classification = "general-curved-moving-link-instability-confirmed"
+            verdict = "Both normal-only and tangential-only fixed-sphere cases become non-finite. The low-relaxation curved moving-link interaction is general rather than confined to one wall-velocity component."
+        case (true, true):
+            classification = "mixed-wall-component-coupling-suspect"
+            verdict = "Normal-only and tangential-only cases remain finite separately, while the uniform combined case fails. Isolate mixed-component coupling in the moving-wall reconstruction."
+        }
+        return MetalHighReFixedOccupancyWallDecompositionReport(
+            schemaVersion: 1,
+            deviceName: tangential.deviceName,
+            productionKernel: tangential.productionKernel,
+            topologyKernel: tangential.topologyKernel,
+            requestedStepsPerComponent: steps,
+            maximumWallVelocityLattice: tangential.wallVelocityLattice,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            tangential: tangential,
+            normal: normal,
+            classification: classification,
+            scientificVerdict: verdict,
+            diagnosticCompleted: diagnosticCompleted
         )
     }
 
     private static func runHighReStability(
         steps: Int,
-        topologyChanges: Bool
+        topologyChanges: Bool,
+        wallMode: HighReSphereWallMode
     ) throws -> MetalHighReTranslatingBodyStabilityReport {
         guard steps == 500 else {
             throw MetalTranslatingBodyTopologyValidationError.failed(
@@ -176,6 +269,7 @@ public enum MetalTranslatingBodyTopologyValidator {
                 sphereRadiusCells: Float(sphereRadiusCells),
                 geometryTranslationSpeedLattice: geometrySpeed,
                 wallVelocityLattice: wallSpeed,
+                wallVelocityMode: wallMode.rawValue,
                 latticeKinematicViscosity: viscosity,
                 initialCenter: SIMD3<Float>(8, 12, 12),
                 controlMinimum: SIMD3<UInt32>(2, 2, 2),
@@ -311,13 +405,20 @@ public enum MetalTranslatingBodyTopologyValidator {
             verdict = passed
                 ? "Matched high-Re TRT remains finite and momentum-consistent across cell cover and uncover transitions. Isolate deforming measured-surface interpolation before another bird replay."
                 : "Matched high-Re TRT fails when a translating sphere and cell cover and uncover transitions are added to the fixed-wall case. Run a fixed-occupancy moving-wall sphere to separate curved-link reconstruction from topology refill before another bird replay."
-        } else {
+        } else if wallMode == .uniform {
             classification = passed
                 ? "high-re-fixed-occupancy-sphere-stable-topology-refill-path-confirmed"
                 : "high-re-fixed-occupancy-sphere-unstable-curved-normal-wall-path-confirmed"
             verdict = passed
                 ? "Matched high-Re TRT remains finite and momentum-consistent on a fixed-occupancy curved halfway-link sphere. Cell cover, uncover, and refill are isolated as the remaining difference from the failed translating sphere."
                 : "Matched high-Re TRT fails on a fixed-occupancy curved halfway-link sphere under uniform translational wall velocity, which includes a normal component. This curved normal-wall stress is sufficient without cell cover, uncover, or refill."
+        } else {
+            classification = passed
+                ? "high-re-fixed-occupancy-\(wallMode.name)-stable"
+                : "high-re-fixed-occupancy-\(wallMode.name)-unstable"
+            verdict = passed
+                ? "The fixed-occupancy \(wallMode.name) curved-sphere case remains finite at all three matched relaxation margins."
+                : "The fixed-occupancy \(wallMode.name) curved-sphere case becomes non-finite at one or more matched relaxation margins."
         }
         return MetalHighReTranslatingBodyStabilityReport(
             schemaVersion: 1,
@@ -329,6 +430,7 @@ public enum MetalTranslatingBodyTopologyValidator {
             sphereRadiusCells: sphereRadiusCells,
             translationSpeedLattice: Double(geometrySpeed),
             wallVelocityLattice: Double(wallSpeed),
+            wallVelocityMode: wallMode.name,
             requestedSteps: steps,
             displacementCells: Double(geometrySpeed) * Double(steps),
             runtimeSeconds: Date().timeIntervalSince(startTime),
@@ -578,6 +680,7 @@ private struct MetalTranslatingBodyCaseConfiguration {
     let sphereRadiusCells: Float
     let geometryTranslationSpeedLattice: Float
     let wallVelocityLattice: Float
+    let wallVelocityMode: Float
     let latticeKinematicViscosity: Float
     let initialCenter: SIMD3<Float>
     let controlMinimum: SIMD3<UInt32>
@@ -601,6 +704,7 @@ private struct MetalTranslatingBodyCaseConfiguration {
                 MetalTranslatingBodyTopologyValidator
                     .translationSpeedLattice
             ),
+            wallVelocityMode: 0,
             latticeKinematicViscosity: 0.1,
             initialCenter: SIMD3<Float>(8, 12, 12),
             controlMinimum: SIMD3<UInt32>(2, 2, 2),
@@ -714,7 +818,12 @@ private final class MetalTranslatingBodyTopologySimulation {
                     0,
                     0
                 ),
-                wallVelocity: SIMD4<Float>(referenceSpeed, 0, 0, 0)
+                wallVelocity: SIMD4<Float>(
+                    referenceSpeed,
+                    0,
+                    0,
+                    caseConfiguration.wallVelocityMode
+                )
             )
         )
         bodyState = try backend.makeSharedBuffer(

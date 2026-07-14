@@ -127,8 +127,24 @@ struct GPUPreparedMeasuredWingPoint {
 struct GPUTranslatingSphereParameters {
     float4 initialCenterAndRadius;
     float4 geometryVelocity;
+    // xyz is the reference wall velocity. w selects uniform (0),
+    // tangential-only (1), or normal-only (2) validation projection.
     float4 wallVelocity;
 };
+
+inline float3 translatingSphereWallVelocity(
+    constant GPUTranslatingSphereParameters& parameters,
+    float3 relative
+) {
+    float3 wall = parameters.wallVelocity.xyz;
+    uint mode = uint(max(parameters.wallVelocity.w, 0.0f) + 0.5f);
+    if (mode == 0u) {
+        return wall;
+    }
+    float3 normal = relative / max(length(relative), 1.0e-6f);
+    float3 normalWall = dot(wall, normal) * normal;
+    return mode == 1u ? wall - normalWall : normalWall;
+}
 
 struct GPUForceTorque {
     float4 force;
@@ -1538,7 +1554,7 @@ kernel void initializeTranslatingSphereTopology(
     float radius = parameters.initialCenterAndRadius.w;
     bool isSphere = dot(relative, relative) <= radius * radius;
     uchar part = isSphere ? uchar(1) : uchar(0);
-    float3 wall = parameters.wallVelocity.xyz;
+    float3 wall = translatingSphereWallVelocity(parameters, relative);
     float3 initialVelocity = isSphere ? wall : float3(0);
 
     solidA[gid] = part;
@@ -1596,7 +1612,8 @@ kernel void buildTranslatingSphereTopology(
     }
 
     solidCurrent[gid] = isSphere ? uchar(1) : uchar(0);
-    wallVelocity[gid] = float4(parameters.wallVelocity.xyz, 0);
+    float3 wall = translatingSphereWallVelocity(parameters, relative);
+    wallVelocity[gid] = float4(wall, 0);
     if (isSphere) {
         for (uint q = 1; q < Q; ++q) {
             boundaryLinks[q * uniforms.grid.w + gid] = 0.5f;

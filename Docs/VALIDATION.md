@@ -694,12 +694,31 @@ Cover/uncover refill is therefore not required for the instability, and curved
 moving-link forcing is sufficient under this stress.
 
 This gate intentionally applies uniform translational wall velocity to a fixed
-sphere, so some wall velocity is normal to a surface that does not move. It is
-an operator discriminator, not a physical stationary-sphere experiment. The
-highest-ROI next gate is a matched normal-only versus tangential-only fixed-
-sphere A/B. It costs roughly two seconds and will distinguish normal moving-
-boundary reconstruction from physically consistent tangential curved-link
-exchange before any stabilization, collision rewrite, or bird rerun.
+sphere, so some wall velocity is normal to a surface that does not move. The
+component discriminator is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --decompose-wall-velocity \
+  --json
+```
+
+At every sphere voxel it evaluates `u_n = (u dot n)n` and
+`u_t = u - (u dot n)n` as separate 500-step histories. Normal-only c8/c12/c16
+all become non-finite at step `86`. Tangential-only cases also fail, at steps
+`186`, `187`, and `189`. The combined Apple M4 run takes `3.05 s`, contains no
+topology events, and is archived in
+`ValidationArtifacts/measured-wing-high-re-fixed-occupancy-wall-decomposition.json`.
+The interaction is therefore general to curved moving links at these low TRT
+relaxation margins, although normal forcing is more aggressive.
+
+The highest-ROI next gate is the same fixed sphere with a stationary wall in
+uniform lattice flow `0.08`. It removes only the moving-wall population
+correction. A pass isolates that correction; a failure identifies general
+curved halfway bounce-back/TRT instability. Either result costs about one
+second and gives a concrete stabilization target before another bird replay.
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

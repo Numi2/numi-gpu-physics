@@ -8,15 +8,15 @@
   "sourceLocks": {
     "physicalConditionAudit": {
       "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
-      "sha256": "ce8ddf87a970f686c0593a398500f67bd1c55f7714144331af6c27cc83635001"
+      "sha256": "80214fa9c3b4df3ce4a8a396b45474d4d4fb95a7f664f1993adf4a03b5356dda"
     },
     "fixedPlanarWallArtifact": {
       "path": "ValidationArtifacts/measured-wing-high-re-fixed-moving-wall-stability.json",
-      "sha256": "e9ad2232c79e876348e2712f3e43f2c57847bd5c187e79fd10c575b5a97daa79"
+      "sha256": "aa0221003e39412872a444f821174ad6875f0e68579dea6c0477153306eaa78a"
     },
     "translatingSphereArtifact": {
       "path": "ValidationArtifacts/measured-wing-high-re-translating-body-stability.json",
-      "sha256": "d2bf1902635b7ce899f4b49b301e53dce19873a5ec7953a71913fd760f82b9d7"
+      "sha256": "68ddf5c266fe47e65ac2d4a5ba3d2d0eea6784c8cca29c3b4648c7ede9c87fd6"
     },
     "publishedConditionDOI": "10.1155/2022/5433184"
   },
@@ -27,6 +27,7 @@
   "sphereRadiusCells": 3.25,
   "translationSpeedLattice": 0.0,
   "wallVelocityLattice": 0.07999999821186066,
+  "wallVelocityMode": "uniform",
   "requestedSteps": 500,
   "displacementCells": 0.0,
   "maximumAllowedRelativePopulationMassDrift": 0.001,
