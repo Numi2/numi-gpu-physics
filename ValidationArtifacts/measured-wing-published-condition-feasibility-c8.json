@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "reportIdentifier": "maeda-dong-published-condition-feasibility-c8-v1",
+  "classification": "published-condition-one-cycle-unstable",
+  "generatedBy": ".build/release/birdflow replay measured-wing --input ValidationInputs/maeda-hovering-right-wing-surface-v1.json --chord-cells 8 --half-thickness-cells 0.75 --published-condition --json",
+  "deviceName": "Apple M4",
+  "runtimeSeconds": 5.706853032112122,
+  "sourceLocks": {
+    "measuredWingInput": {
+      "path": "ValidationInputs/maeda-hovering-right-wing-surface-v1.json",
+      "sha256": "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887"
+    },
+    "physicalConditionAudit": {
+      "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
+      "sha256": "2e7e20cd616ec49dba8ad9ba9c0f4fd5d73ed9a27d15e75fe30adbd3be72adc1"
+    },
+    "publishedConditionDOI": "10.1155/2022/5433184"
+  },
+  "numericalSetup": {
+    "chordCells": 8,
+    "halfThicknessCells": 0.75,
+    "cycleSteps": 1992,
+    "reynoldsNumber": 9367.400390625,
+    "physicalAirDensityKilogramsPerCubicMeter": 1.2050000429153442,
+    "referenceSpeedMetersPerSecond": 7.17579984664917,
+    "referenceSpeedDefinition": "Dong et al. equation 8 average wingtip speed, 2 Phi f R",
+    "maximumPhysicalPointSpeedMetersPerSecond": 11.151799201965332,
+    "maximumLatticePointSpeed": 0.0797477662563324,
+    "latticeKinematicViscosity": 0.000043824278691317886,
+    "tauPlus": 0.5001314878463745,
+    "tauPlusMarginAboveHalf": 0.00013148784637451172
+  },
+  "stabilityGate": {
+    "fluidCycleExecuted": true,
+    "initialPopulationMass": 512000.0076286569,
+    "finalPopulationMass": null,
+    "relativePopulationMassDrift": null,
+    "maximumAllowedRelativePopulationMassDrift": 0.001,
+    "minimumPopulation": null,
+    "maximumPopulation": null,
+    "maximumAbsolutePopulation": null,
+    "maximumAllowedAbsolutePopulation": 10.0,
+    "populationsFinite": false,
+    "loadsFinite": false,
+    "finiteLoadStepCount": 357,
+    "firstNonFiniteLoadStep": 358,
+    "firstNonFiniteLoadPhase": 0.17971887550200802,
+    "fluidStabilityPassed": false,
+    "passed": false
+  },
+  "geometryAudit": {
+    "passedBeforeFluidInstability": true,
+    "maximumPreparedPositionErrorMeters": 9.125060707049215e-9,
+    "maximumPreparedVelocityErrorMetersPerSecond": 9.830249609876773e-7,
+    "sourcePhaseCount": 17,
+    "allSourcePhasesHadFiniteClosedTopology": true
+  },
+  "scientificVerdict": "The source-backed published condition is not numerically feasible at eight cells per mean chord with the current single-precision TRT collision path. Loads first become non-finite at step 358 of 1992 (phase 0.17972), while geometry preparation and topology remain valid. Do not run or interpret a five-cycle refinement ladder from this point, and do not weaken finite-value or mass gates to promote it."
+}

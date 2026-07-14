@@ -198,3 +198,50 @@ stationary vertical force is `11.01%` below the first-cycle value, confirming
 that the stationarity gate was necessary. This closes wing-only numerical
 acceptance, but it does not supply the missing complete-bird or measured-flight
 inputs needed for quantitative physical interpretation.
+
+## Physical-condition provenance
+
+The Maeda experiment reports approximately `22 deg C`, but it does not report
+pressure, humidity, density, viscosity, Reynolds number, a force-coefficient
+reference speed, or aerodynamic loads. Those omissions are source facts, not
+values to fill with a generic sea-level atmosphere. The phase-resolved
+supplement does show a wingtip relative-wind peak of roughly `11.2 m/s`; that
+is a measured kinematic maximum, not a declared normalization velocity. The
+compact replay independently reaches `11.1517992 m/s` under its locked
+piecewise-linear interpolation and uses that maximum only to choose a safe
+timestep and lattice Mach number.
+
+Dong et al. later published CFD for the Maeda wing and declared a reproducible
+numerical convention: `Uref=7.1758 m/s`, `rho=1.205 kg/m^3`,
+`mu=1.81e-5 Pa s`, and `Re=9367.4`. This condition may be used for a
+paper-comparable numerical replay, but `rho=1.205 kg/m^3` must not be described
+as a measured greenhouse density. The printed rounded inputs reconstruct
+`Re=9315.6549`, a `0.5524%` difference; that closure gap and the paper's
+inconsistent table-3 speed are retained in
+`ValidationArtifacts/measured-wing-physical-condition-audit.json`.
+
+Run the sub-second arithmetic gate before any physical-condition CFD:
+
+```bash
+python3 Scripts/verify-measured-wing-physical-condition.py
+```
+
+This separation has high leverage: it prevents the cleared `Re=100` numerical
+histories from being rescaled into a false physical claim while giving local
+Metal feasibility runs an explicit, published target.
+
+The promoted eight-cell one-cycle gate now runs with
+`--published-condition`. It fails honestly on Apple M4: the geometric audit
+still passes, but `tau+=0.500131488` and the first non-finite load appears at
+step `358/1992` (`t/T=0.179719`). The final populations are non-finite, so the
+run has no valid mean force or mass-drift result. The compact failure record is
+`ValidationArtifacts/measured-wing-published-condition-feasibility-c8.json`.
+This blocks the five-cycle published-condition ladder. A one-cycle 12-cell run
+was therefore run: its TRT relaxation margin increases by `50.18%`, but the
+first non-finite load moves earlier from phase `0.179719` to `0.144102`.
+Resolution from 8 to 12 cells does not provide a monotonic stability cure. The
+12-cell failure is retained in
+`ValidationArtifacts/measured-wing-published-condition-feasibility-c12.json`.
+One 16-cell cycle is the final cheap resolution discriminator; another failure
+should redirect effort to a stabilized collision operator rather than a
+five-cycle resolution ladder.

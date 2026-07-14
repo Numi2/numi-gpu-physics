@@ -291,6 +291,58 @@ public struct MetalMeasuredWingSurfacePhaseAudit: Codable, Sendable {
     public let maximumLatticeWallSpeed: Double
 }
 
+public enum MetalMeasuredWingFluidCondition: String, Codable, Sendable {
+    case diagnosticRe100 = "diagnostic-re100-rho1"
+    case dong2022Published = "dong-2022-published"
+
+    public var sourceDOI: String? {
+        switch self {
+        case .diagnosticRe100:
+            nil
+        case .dong2022Published:
+            "10.1155/2022/5433184"
+        }
+    }
+
+    public var reynoldsNumber: Float {
+        switch self {
+        case .diagnosticRe100:
+            100
+        case .dong2022Published:
+            9_367.4
+        }
+    }
+
+    public var physicalAirDensityKilogramsPerCubicMeter: Float {
+        switch self {
+        case .diagnosticRe100:
+            1
+        case .dong2022Published:
+            1.205
+        }
+    }
+
+    public func referenceSpeedMetersPerSecond(
+        for dataset: MeasuredWingSurfaceDataset
+    ) -> Float {
+        switch self {
+        case .diagnosticRe100:
+            dataset.maximumPointSpeedMetersPerSecond
+        case .dong2022Published:
+            7.1758
+        }
+    }
+
+    public var referenceSpeedDefinition: String {
+        switch self {
+        case .diagnosticRe100:
+            "maximum deposited piecewise-linear point speed"
+        case .dong2022Published:
+            "Dong et al. equation 8 average wingtip speed, 2 Phi f R"
+        }
+    }
+}
+
 public struct MetalMeasuredWingSurfaceReplayReport: Codable, Sendable {
     public let schemaVersion: Int
     public let deviceName: String
@@ -306,6 +358,15 @@ public struct MetalMeasuredWingSurfaceReplayReport: Codable, Sendable {
     public let halfThicknessCells: Double
     public let maximumPhysicalPointSpeedMetersPerSecond: Double
     public let maximumLatticePointSpeed: Double
+    public let fluidConditionIdentifier: String
+    public let fluidConditionSourceDOI: String?
+    public let reynoldsNumber: Double
+    public let physicalAirDensityKilogramsPerCubicMeter: Double
+    public let referenceSpeedMetersPerSecond: Double
+    public let referenceSpeedDefinition: String
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let tauPlusMarginAboveHalf: Double
     public let diagnosticReynoldsNumber: Double
     public let diagnosticAirDensityKilogramsPerCubicMeter: Double
     public let maximumPreparedPositionErrorMeters: Double
@@ -315,6 +376,20 @@ public struct MetalMeasuredWingSurfaceReplayReport: Codable, Sendable {
     public let phaseAudits: [MetalMeasuredWingSurfacePhaseAudit]
     public let fluidCycleExecuted: Bool
     public let startupCycleMeanForceNewtons: [Double]?
+    public let initialPopulationMass: Double?
+    public let finalPopulationMass: Double?
+    public let relativePopulationMassDrift: Double?
+    public let minimumPopulation: Double?
+    public let maximumPopulation: Double?
+    public let maximumAbsolutePopulation: Double?
+    public let maximumAllowedRelativePopulationMassDrift: Double
+    public let maximumAllowedAbsolutePopulation: Double
+    public let populationsFinite: Bool?
+    public let loadsFinite: Bool?
+    public let finiteLoadStepCount: Int?
+    public let firstNonFiniteLoadStep: Int?
+    public let fluidStabilityPassed: Bool?
+    public let fluidStabilityVerdict: String?
     public let passed: Bool
 }
 
@@ -986,7 +1061,8 @@ public extension MetalFlappingWingValidator {
         _ dataset: MeasuredWingSurfaceDataset,
         chordCells: Int = 8,
         halfThicknessCells: Float = 0.75,
-        runFluidCycle: Bool = false
+        runFluidCycle: Bool = false,
+        fluidCondition: MetalMeasuredWingFluidCondition = .diagnosticRe100
     ) throws -> MetalMeasuredWingSurfaceReplayReport {
         guard chordCells >= 8 else {
             throw MetalFlappingWingValidationError.invalidRequest(
@@ -1018,24 +1094,118 @@ public extension MetalFlappingWingValidator {
             cycleSteps: cycleSteps,
             root: root,
             measuredSurface: dataset,
-            measuredHalfThicknessCells: halfThicknessCells
+            measuredHalfThicknessCells: halfThicknessCells,
+            measuredFluidCondition: fluidCondition
         )
 
         var startupMean: [Double]?
+        var initialPopulationMass: Double?
+        var finalPopulationMass: Double?
+        var relativePopulationMassDrift: Double?
+        var minimumPopulation: Double?
+        var maximumPopulation: Double?
+        var maximumAbsolutePopulation: Double?
+        var populationsFinite: Bool?
+        var loadsFinite: Bool?
+        var finiteLoadStepCount: Int?
+        var firstNonFiniteLoadStep: Int?
+        var fluidStabilityPassed: Bool?
+        var fluidStabilityVerdict: String?
+        let maximumAllowedRelativePopulationMassDrift = 1.0e-3
+        let maximumAllowedAbsolutePopulation = 10.0
         if runFluidCycle {
+            let initialPopulations = try simulation.copyPopulations()
+            let initialFinite = initialPopulations.allSatisfy(\.isFinite)
+            let initialMass = initialPopulations.reduce(0.0) {
+                $0 + Double($1)
+            }
             _ = try simulation.advance(
                 to: cycleSteps,
                 batchSize: 8,
-                captureFields: false,
+                captureFields: true,
                 recordEveryStepLoad: true
             )
             let loads = simulation.copyRecordedLoads()
-            let inverse = 1.0 / Double(loads.count)
-            startupMean = [
-                loads.reduce(0.0) { $0 + Double($1.forceNewtons.x) } * inverse,
-                loads.reduce(0.0) { $0 + Double($1.forceNewtons.y) } * inverse,
-                loads.reduce(0.0) { $0 + Double($1.forceNewtons.z) } * inverse,
-            ]
+            func loadIsFinite(_ load: ForceTorque) -> Bool {
+                load.forceNewtons.x.isFinite
+                    && load.forceNewtons.y.isFinite
+                    && load.forceNewtons.z.isFinite
+                    && load.torqueNewtonMeters.x.isFinite
+                    && load.torqueNewtonMeters.y.isFinite
+                    && load.torqueNewtonMeters.z.isFinite
+            }
+            let firstInvalidLoad = loads.firstIndex {
+                !loadIsFinite($0)
+            }
+            let finiteLoads = firstInvalidLoad == nil
+            if finiteLoads {
+                let inverse = 1.0 / Double(loads.count)
+                startupMean = [
+                    loads.reduce(0.0) {
+                        $0 + Double($1.forceNewtons.x)
+                    } * inverse,
+                    loads.reduce(0.0) {
+                        $0 + Double($1.forceNewtons.y)
+                    } * inverse,
+                    loads.reduce(0.0) {
+                        $0 + Double($1.forceNewtons.z)
+                    } * inverse,
+                ]
+            }
+            let finalPopulations = try simulation.copyPopulations()
+            let finalFinite = finalPopulations.allSatisfy(\.isFinite)
+            let finalMass = finalPopulations.reduce(0.0) {
+                $0 + Double($1)
+            }
+            let finitePopulations = initialFinite && finalFinite
+            let massDrift = finitePopulations
+                ? abs(finalMass - initialMass)
+                    / max(abs(initialMass), 1.0e-30)
+                : nil
+            let minimum = finalFinite
+                ? finalPopulations.min().map(Double.init)
+                : nil
+            let maximum = finalFinite
+                ? finalPopulations.max().map(Double.init)
+                : nil
+            let maximumAbsolute = finalFinite
+                ? finalPopulations.lazy.map { abs(Double($0)) }.max()
+                : nil
+            initialPopulationMass = initialFinite ? initialMass : nil
+            finalPopulationMass = finalFinite ? finalMass : nil
+            relativePopulationMassDrift = massDrift
+            minimumPopulation = minimum
+            maximumPopulation = maximum
+            maximumAbsolutePopulation = maximumAbsolute
+            populationsFinite = finitePopulations
+            loadsFinite = finiteLoads
+            finiteLoadStepCount = loads.reduce(0) {
+                $0 + (loadIsFinite($1) ? 1 : 0)
+            }
+            firstNonFiniteLoadStep = firstInvalidLoad.map { $0 + 1 }
+            fluidStabilityPassed = finitePopulations
+                && finiteLoads
+                && (massDrift?.isFinite ?? false)
+                && (massDrift ?? .infinity)
+                    <= maximumAllowedRelativePopulationMassDrift
+                && (maximumAbsolute ?? .infinity)
+                    <= maximumAllowedAbsolutePopulation
+                && simulation.scaling.tauPlus - 0.5 >= 0.000_05
+            if !finiteLoads {
+                fluidStabilityVerdict = "non-finite load at step \((firstInvalidLoad ?? -1) + 1) of \(cycleSteps)"
+            } else if !finitePopulations {
+                fluidStabilityVerdict =
+                    "non-finite population field after one cycle"
+            } else if (massDrift ?? .infinity)
+                > maximumAllowedRelativePopulationMassDrift {
+                fluidStabilityVerdict = "population mass drift exceeded limit"
+            } else if (maximumAbsolute ?? .infinity)
+                > maximumAllowedAbsolutePopulation {
+                fluidStabilityVerdict =
+                    "population magnitude exceeded stability limit"
+            } else {
+                fluidStabilityVerdict = "one-cycle stability gate passed"
+            }
         }
 
         var maximumPositionError = 0.0
@@ -1107,12 +1277,12 @@ public extension MetalFlappingWingValidator {
                 && $0.maximumBoundaryLinkFraction <= 1
                 && $0.maximumLatticeWallSpeed.isFinite
         }
-        let finiteStartupForce = startupMean?.allSatisfy(\.isFinite)
-            ?? !runFluidCycle
+        let finiteStartupForce = loadsFinite ?? !runFluidCycle
         let passed = finiteTopology
             && maximumPositionError <= 2.0e-6
             && maximumVelocityError <= 2.0e-3
             && finiteStartupForce
+            && (fluidStabilityPassed ?? true)
             && !dataset.completeBirdReplayReady
         return MetalMeasuredWingSurfaceReplayReport(
             schemaVersion: 1,
@@ -1133,8 +1303,27 @@ public extension MetalFlappingWingValidator {
                 dataset.maximumPointSpeedMetersPerSecond
                     * simulation.measuredVelocityToLattice
             ),
-            diagnosticReynoldsNumber: reynoldsNumber,
-            diagnosticAirDensityKilogramsPerCubicMeter: 1,
+            fluidConditionIdentifier: fluidCondition.rawValue,
+            fluidConditionSourceDOI: fluidCondition.sourceDOI,
+            reynoldsNumber: Double(fluidCondition.reynoldsNumber),
+            physicalAirDensityKilogramsPerCubicMeter: Double(
+                fluidCondition.physicalAirDensityKilogramsPerCubicMeter
+            ),
+            referenceSpeedMetersPerSecond: Double(
+                fluidCondition.referenceSpeedMetersPerSecond(for: dataset)
+            ),
+            referenceSpeedDefinition: fluidCondition.referenceSpeedDefinition,
+            latticeKinematicViscosity: Double(
+                simulation.scaling.latticeKinematicViscosity
+            ),
+            tauPlus: Double(simulation.scaling.tauPlus),
+            tauPlusMarginAboveHalf: Double(
+                simulation.scaling.tauPlus - 0.5
+            ),
+            diagnosticReynoldsNumber: Double(fluidCondition.reynoldsNumber),
+            diagnosticAirDensityKilogramsPerCubicMeter: Double(
+                fluidCondition.physicalAirDensityKilogramsPerCubicMeter
+            ),
             maximumPreparedPositionErrorMeters: maximumPositionError,
             maximumPreparedVelocityErrorMetersPerSecond: maximumVelocityError,
             geometryKernelSequence: [
@@ -1148,6 +1337,22 @@ public extension MetalFlappingWingValidator {
             phaseAudits: phaseAudits,
             fluidCycleExecuted: runFluidCycle,
             startupCycleMeanForceNewtons: startupMean,
+            initialPopulationMass: initialPopulationMass,
+            finalPopulationMass: finalPopulationMass,
+            relativePopulationMassDrift: relativePopulationMassDrift,
+            minimumPopulation: minimumPopulation,
+            maximumPopulation: maximumPopulation,
+            maximumAbsolutePopulation: maximumAbsolutePopulation,
+            maximumAllowedRelativePopulationMassDrift:
+                maximumAllowedRelativePopulationMassDrift,
+            maximumAllowedAbsolutePopulation:
+                maximumAllowedAbsolutePopulation,
+            populationsFinite: populationsFinite,
+            loadsFinite: loadsFinite,
+            finiteLoadStepCount: finiteLoadStepCount,
+            firstNonFiniteLoadStep: firstNonFiniteLoadStep,
+            fluidStabilityPassed: fluidStabilityPassed,
+            fluidStabilityVerdict: fluidStabilityVerdict,
             passed: passed
         )
 #else
@@ -3114,14 +3319,17 @@ private final class MetalPrescribedWingSimulation {
         linkForceEstimator: PrescribedWingLinkForceEstimator =
             .conservativeMovingDomain,
         measuredSurface: MeasuredWingSurfaceDataset? = nil,
-        measuredHalfThicknessCells: Float = 0.75
+        measuredHalfThicknessCells: Float = 0.75,
+        measuredFluidCondition: MetalMeasuredWingFluidCondition =
+            .diagnosticRe100
     ) throws {
         self.backend = backend
         self.cycleSteps = cycleSteps
         self.loadComponent = loadComponent
         self.linkForceEstimator = linkForceEstimator
-        let referenceSpeed = measuredSurface?.maximumPointSpeedMetersPerSecond
-            ?? Float(MetalFlappingWingValidator.latticeRadiusOfGyrationSpeed)
+        let referenceSpeed = measuredSurface.map {
+            measuredFluidCondition.referenceSpeedMetersPerSecond(for: $0)
+        } ?? Float(MetalFlappingWingValidator.latticeRadiusOfGyrationSpeed)
         let characteristicLength = measuredSurface == nil
             ? Float(chordCells)
             : Float(0.0195)
@@ -3130,26 +3338,37 @@ private final class MetalPrescribedWingSimulation {
             : referenceSpeed
                 / (measuredSurface!.frequencyHz * Float(cycleSteps))
                 / (characteristicLength / Float(chordCells))
-        if measuredSurface != nil && latticeReferenceSpeed > 0.08 {
+        let maximumMeasuredLatticeWallSpeed = measuredSurface.map {
+            $0.maximumPointSpeedMetersPerSecond
+                / ($0.frequencyHz * Float(cycleSteps))
+                / (characteristicLength / Float(chordCells))
+        }
+        if let maximumMeasuredLatticeWallSpeed,
+           maximumMeasuredLatticeWallSpeed > 0.08 {
             throw MetalFlappingWingValidationError.invalidRequest(
-                "measured surface requires more cycle steps: maximum lattice wall speed \(latticeReferenceSpeed) exceeds 0.08"
+                "measured surface requires more cycle steps: maximum lattice wall speed \(maximumMeasuredLatticeWallSpeed) exceeds 0.08"
             )
         }
+        let targetReynoldsNumber = measuredSurface == nil
+            ? Float(MetalFlappingWingValidator.reynoldsNumber)
+            : measuredFluidCondition.reynoldsNumber
+        let physicalAirDensity = measuredSurface == nil
+            ? Float(1)
+            : measuredFluidCondition
+                .physicalAirDensityKilogramsPerCubicMeter
         let scaling = try LatticeScaling(
             characteristicLengthMeters: characteristicLength,
             characteristicLengthCells: chordCells,
             referenceSpeedMetersPerSecond: referenceSpeed,
-            targetReynoldsNumber: Float(
-                MetalFlappingWingValidator.reynoldsNumber
-            ),
-            physicalAirDensity: 1,
+            targetReynoldsNumber: targetReynoldsNumber,
+            physicalAirDensity: physicalAirDensity,
             latticeReferenceSpeed: latticeReferenceSpeed
         )
         configuration = try SimulationConfiguration(
             grid: grid,
             domainOriginMeters: .zero,
             scaling: scaling,
-            physicalAirDensity: 1,
+            physicalAirDensity: physicalAirDensity,
             farFieldVelocityMetersPerSecond: .zero,
             spongeWidthCells: max(4, chordCells / 2),
             spongeStrength: 0.04,
@@ -3495,6 +3714,36 @@ private final class MetalPrescribedWingSimulation {
                 return SIMD3<Float>(value.x, value.y, value.z)
             }
         )
+    }
+
+    func copyPopulations() throws -> [Float] {
+        let staging = try backend.makeSharedBuffer(
+            length: currentPopulations.length
+        )
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let blit = commandBuffer.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing population readback."
+            )
+        }
+        blit.copy(
+            from: currentPopulations,
+            sourceOffset: 0,
+            to: staging,
+            destinationOffset: 0,
+            size: currentPopulations.length
+        )
+        blit.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+        let count = staging.length / MemoryLayout<Float>.stride
+        let pointer = staging.contents().assumingMemoryBound(to: Float.self)
+        return Array(UnsafeBufferPointer(start: pointer, count: count))
+    }
+
+    var scaling: LatticeScaling {
+        configuration.scaling
     }
 
     var measuredVelocityToLattice: Float {

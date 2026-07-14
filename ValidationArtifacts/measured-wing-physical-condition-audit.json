@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "auditIdentifier": "maeda-dong-hovering-wing-physical-condition-v1",
+  "scope": "Source-backed physical and numerical normalization for the Maeda et al. measured right-wing replay",
+  "sources": {
+    "maedaArticle": {
+      "doi": "10.1098/rsos.170307",
+      "role": "original geometry and kinematics experiment",
+      "evidenceLocations": ["Methods 2.1", "Methods 2.3", "Table 1"]
+    },
+    "maedaSupplement": {
+      "doi": "10.6084/m9.figshare.5357443.v2",
+      "collectionDOI": "10.6084/m9.figshare.c.3866650",
+      "sourceFile": "rsos170307_si_001.pdf",
+      "md5": "51734a99e596170e1b7a85716b9eb5b6",
+      "digestVerified": true,
+      "role": "phase-resolved kinematics, relative-wind speed, and local chord",
+      "evidenceLocations": ["Figure S2", "Figure S9", "Figure S10"]
+    },
+    "dongNumericalStudy": {
+      "doi": "10.1155/2022/5433184",
+      "role": "published CFD convention applied to the Maeda wing",
+      "evidenceLocations": ["Table 1", "Equation 8", "Equation 9", "Table 3"]
+    }
+  },
+  "originalExperiment": {
+    "airTemperatureCelsius": 22.0,
+    "airTemperatureQualification": "approximate",
+    "airPressurePascals": null,
+    "relativeHumidity": null,
+    "airDensityKilogramsPerCubicMeter": null,
+    "dynamicViscosityPascalSeconds": null,
+    "kinematicViscositySquareMetersPerSecond": null,
+    "reynoldsNumber": null,
+    "reynoldsReferenceLengthDefinition": null,
+    "reynoldsReferenceSpeedDefinition": null,
+    "forceCoefficientDenominatorDefinition": null,
+    "aerodynamicForceHistoryAvailable": false,
+    "sourceBoundary": "Maeda et al. explicitly state that direct aerodynamic assessment by CFD was underway and would be presented elsewhere. Temperature alone is insufficient to reconstruct a measured density or viscosity."
+  },
+  "measuredKinematics": {
+    "frequencyHertz": 28.8,
+    "strokeAmplitudePeakToPeakDegrees": 103.0,
+    "meanWingLengthMeters": 0.0693,
+    "meanChordMeters": 0.0195,
+    "meanSingleWingAreaSquareMeters": 0.001365,
+    "supplementWingtipPeakRelativeWindMetersPerSecond": 11.2,
+    "supplementWingtipPeakRelativeWindQualification": "approximately read from Figure S9; not defined as a coefficient reference speed",
+    "compactReplayMaximumPiecewiseLinearPointSpeedMetersPerSecond": 11.151799201965332,
+    "compactReplayMaximumPointSpeedQualification": "reproducible derivative of the deposited geometry after locked scaling and interpolation; used only for timestep and lattice-Mach safety"
+  },
+  "publishedNumericalConvention": {
+    "source": "Dong et al. 2022 equations 8 and 9",
+    "targetReynoldsNumber": 9367.4,
+    "referenceLengthMeters": 0.0195,
+    "referenceLengthDefinition": "cycle-mean chord",
+    "referenceSpeedMetersPerSecond": 7.1758,
+    "referenceSpeedDefinition": "average wingtip speed, 2 * peak-to-peak stroke amplitude radians * frequency * mean wing length",
+    "airDensityKilogramsPerCubicMeter": 1.205,
+    "dynamicViscosityPascalSeconds": 0.0000181,
+    "referenceAreaSquareMeters": 0.001365,
+    "referenceAreaDefinition": "cycle-mean single-wing area",
+    "forceCoefficientDenominatorDefinition": "0.5 * air density * reference speed squared * reference area",
+    "forceCoefficientDenominatorNewtons": 0.04234775132965649,
+    "classification": "published numerical replay condition, not a measured atmospheric condition"
+  },
+  "independentReconstruction": {
+    "referenceSpeedFromRoundedInputsMetersPerSecond": 7.175799744658748,
+    "referenceSpeedRelativeDifferenceFromEquation8Literal": 3.558292307314693e-8,
+    "reynoldsFromRoundedEquation8Inputs": 9315.654944757953,
+    "relativeDifferenceFromPublishedReynolds": 0.00552395064180529,
+    "dynamicViscosityRequiredForExactPublishedReynoldsPascalSeconds": 0.000018000016493383323,
+    "airDensityRequiredForExactPublishedReynoldsKilogramsPerCubicMeter": 1.211693334170965,
+    "table3AverageWingtipSpeedMetersPerSecond": 7.58,
+    "table3RelativeDifferenceFromEquation8Speed": 0.056328251863789244,
+    "closureVerdict": "Equation 8 speed closes from the printed morphology and kinematics. Its printed density, chord, speed, and viscosity yield Re=9315.65 rather than 9367.4, consistent with mixed rounded inputs. Table 3's 7.58 m/s is inconsistent with equation 8 and is not used for normalization."
+  },
+  "replayDecision": {
+    "existingDiagnosticReynoldsNumber": 100.0,
+    "existingDiagnosticAirDensityKilogramsPerCubicMeter": 1.0,
+    "existingLoadsCanBeRelabelledAsPublishedCondition": false,
+    "reasonExistingLoadsCannotBeRelabelled": "Reynolds number changes the fluid solution; density and reference-speed changes also alter dimensional force conversion. Raw Re=100 loads cannot be converted into a Re=9367.4 solution by a scalar rescale.",
+    "sourceBackedNumericalInputsReady": true,
+    "sourceBackedNumericalReplayReady": false,
+    "measuredAtmosphericReplayReady": false,
+    "eightCellOneCycleFeasibilityPassed": false,
+    "eightCellFeasibilityArtifact": "ValidationArtifacts/measured-wing-published-condition-feasibility-c8.json",
+    "twelveCellOneCycleFeasibilityPassed": false,
+    "twelveCellFeasibilityArtifact": "ValidationArtifacts/measured-wing-published-condition-feasibility-c12.json",
+    "authoritativeHierarchy": [
+      "Use the literal Re=9367.4 to reproduce the published numerical target.",
+      "Use equation 8's Uref=7.1758 m/s and equation 9's denominator for force coefficients.",
+      "Use rho=1.205 kg/m^3 only as the published CFD density, never as a measured greenhouse density.",
+      "Retain Re=9315.65 as an arithmetic-closure sensitivity point.",
+      "Do not use Table 3's 7.58 m/s for normalization."
+    ],
+    "nextGate": "Run one 16-cell cycle at the published condition as the final low-complexity resolution discriminator. The 12-cell case increased the TRT margin by 50% but became non-finite earlier in phase, so a 16-cell failure should stop resolution-only escalation and trigger a stabilized-collision canonical before any five-cycle ladder."
+  },
+  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state. A published CFD convention for the same wing is locked, with its internal rounding discrepancies explicit. The current single-precision TRT path becomes non-finite during both eight- and twelve-cell one-cycle feasibility runs; the twelve-cell failure occurs earlier in phase despite a 50% larger relaxation margin. Source-backed inputs are ready, but a quantitative published-condition replay is not."
+}

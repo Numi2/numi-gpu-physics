@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "reportIdentifier": "maeda-dong-published-condition-feasibility-c12-v1",
+  "classification": "published-condition-one-cycle-unstable",
+  "generatedBy": ".build/release/birdflow replay measured-wing --input ValidationInputs/maeda-hovering-right-wing-surface-v1.json --chord-cells 12 --half-thickness-cells 0.75 --published-condition --json",
+  "deviceName": "Apple M4",
+  "runtimeSeconds": 15.808025002479553,
+  "sourceLocks": {
+    "measuredWingInput": {
+      "path": "ValidationInputs/maeda-hovering-right-wing-surface-v1.json",
+      "sha256": "5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887"
+    },
+    "physicalConditionAudit": {
+      "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
+      "sha256": "2e7e20cd616ec49dba8ad9ba9c0f4fd5d73ed9a27d15e75fe30adbd3be72adc1"
+    },
+    "publishedConditionDOI": "10.1155/2022/5433184"
+  },
+  "numericalSetup": {
+    "chordCells": 12,
+    "halfThicknessCells": 0.75,
+    "cycleSteps": 2984,
+    "reynoldsNumber": 9367.400390625,
+    "physicalAirDensityKilogramsPerCubicMeter": 1.2050000429153442,
+    "referenceSpeedMetersPerSecond": 7.17579984664917,
+    "referenceSpeedDefinition": "Dong et al. equation 8 average wingtip speed, 2 Phi f R",
+    "maximumPhysicalPointSpeedMetersPerSecond": 11.151799201965332,
+    "maximumLatticePointSpeed": 0.07985466718673706,
+    "latticeKinematicViscosity": 0.00006582454079762101,
+    "tauPlus": 0.5001974701881409,
+    "tauPlusMarginAboveHalf": 0.00019747018814086914
+  },
+  "stabilityGate": {
+    "fluidCycleExecuted": true,
+    "initialPopulationMass": 1331000.0198335648,
+    "finalPopulationMass": null,
+    "relativePopulationMassDrift": null,
+    "maximumAllowedRelativePopulationMassDrift": 0.001,
+    "minimumPopulation": null,
+    "maximumPopulation": null,
+    "maximumAbsolutePopulation": null,
+    "maximumAllowedAbsolutePopulation": 10.0,
+    "populationsFinite": false,
+    "loadsFinite": false,
+    "finiteLoadStepCount": 429,
+    "firstNonFiniteLoadStep": 430,
+    "firstNonFiniteLoadPhase": 0.14410187667560323,
+    "fluidStabilityPassed": false,
+    "passed": false
+  },
+  "comparisonWithEightCells": {
+    "tauPlusMarginRatio": 1.50181323662738,
+    "eightCellFirstNonFiniteLoadPhase": 0.17971887550200802,
+    "twelveCellFirstNonFiniteLoadPhase": 0.14410187667560323,
+    "failurePhaseMovedEarlier": true,
+    "simpleRelaxationMarginImprovementSupported": false
+  },
+  "geometryAudit": {
+    "passedBeforeFluidInstability": true,
+    "maximumPreparedPositionErrorMeters": 2.5076626997133644e-8,
+    "maximumPreparedVelocityErrorMetersPerSecond": 9.830249609876773e-7,
+    "sourcePhaseCount": 17,
+    "allSourcePhasesHadFiniteClosedTopology": true
+  },
+  "scientificVerdict": "The source-backed published condition remains numerically unstable at twelve cells per mean chord. Increasing the TRT relaxation margin by 50% did not delay the failure in nondimensional time: the first non-finite load moved from phase 0.17972 at eight cells to 0.14410 at twelve cells. Do not promote a five-cycle ladder. One 16-cell cycle is the final low-complexity resolution discriminator before stabilized-collision work."
+}

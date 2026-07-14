@@ -561,6 +561,84 @@ acceptance remains open because `Re=100` and `1 kg/m^3` are diagnostic inputs,
 not measured specimen flight conditions, and complete-bird fields remain
 missing.
 
+### Physical-condition source contract
+
+The original Maeda et al. article reports an approximate greenhouse air
+temperature of `22 deg C`, but neither the article, the complete nine-page
+supplement, nor the deposited wing-grid README reports pressure, humidity,
+density, viscosity, Reynolds number, an aerodynamic reference-speed
+definition, or measured force. The article explicitly defers direct CFD
+assessment. Consequently, `22 deg C` is not enough to reconstruct a measured
+atmospheric state, and the existing `Re=100`, `1 kg/m^3` histories cannot be
+relabelled or scalar-rescaled into physical results.
+
+A later published CFD study by Dong et al. applies a numerical convention to
+the same Maeda wing. Its equations 8 and 9 define mean chord `0.0195 m`,
+average wingtip speed `Uref = 2 Phi f R = 7.1758 m/s`, density `1.205 kg/m^3`,
+dynamic viscosity `1.81e-5 Pa s`, reported `Re=9367.4`, and force denominator
+`0.5 rho Uref^2 S = 0.0423477513 N` for mean single-wing area `0.001365 m^2`.
+This is a source-backed *published numerical condition*, not a measurement of
+the greenhouse atmosphere.
+
+The source is internally imperfect and the audit preserves that fact. Direct
+substitution of the rounded printed values gives `Re=9315.6549`, `0.5524%`
+below the reported value. Equation 8's speed closes independently to
+`7.1757997 m/s`, while table 3 separately prints `7.58 m/s`, `5.63%` higher.
+For reproducibility, the published numerical target uses literal `Re=9367.4`
+and equations 8-9 use `Uref=7.1758 m/s`; `Re=9315.6549` is retained only as an
+arithmetic-closure sensitivity point, and table 3's speed is not used.
+
+The machine-readable evidence boundary and recomputation are locked in
+`ValidationArtifacts/measured-wing-physical-condition-audit.json`. Verify it
+without a fluid simulation:
+
+```bash
+python3 Scripts/verify-measured-wing-physical-condition.py
+```
+
+The local published-condition feasibility gate is explicit and does not alter
+the diagnostic default:
+
+```bash
+.build/release/birdflow replay measured-wing \
+  --input ValidationInputs/maeda-hovering-right-wing-surface-v1.json \
+  --chord-cells 8 \
+  --half-thickness-cells 0.75 \
+  --published-condition \
+  --json
+```
+
+`--published-condition` selects `Re=9367.4` and `1.205 kg/m^3`, runs one
+cycle, and records actual population-mass drift, population extrema, finite
+load coverage, lattice viscosity, and TRT relaxation margin. Geometry remains
+valid, but the Apple M4 release run fails the fluid gate: `tau+=0.500131488`,
+only `0.000131488` above the lower relaxation limit, and the first non-finite
+load occurs at step `358/1992` (`t/T=0.179719`). Only 357 load steps are finite;
+the final population field is non-finite, so mass drift and dimensional force
+cannot be reported. Runtime is `5.71 s`.
+
+The failure is retained in
+`ValidationArtifacts/measured-wing-published-condition-feasibility-c8.json`.
+It blocks a five-cycle published-condition ladder; clamping populations or
+weakening finite-value gates would hide the instability rather than validate
+the flow.
+
+The one-cycle 12-cell discriminator also fails. Its relaxation margin rises by
+`50.18%` to `0.000197470`, but the first non-finite load occurs at step
+`430/2984`, phase `0.144102`—earlier in nondimensional time than the eight-cell
+failure at phase `0.179719`. Geometry again passes, while final population mass
+and mean force remain invalid. The run takes `15.81 s` and is locked in
+`ValidationArtifacts/measured-wing-published-condition-feasibility-c12.json`.
+This rules out a simple monotonic cure from the first resolution increase.
+
+One 16-cell cycle is the final low-complexity resolution discriminator before
+stabilized-collision work. It doubles the eight-cell relaxation margin and
+reuses the same gate; if it fails, stop resolution-only escalation and first
+qualify a regularized, central-moment, or cumulant collision path on canonical
+high-Re moving-wall cases.
+Even a passing numerical gate would not supply the missing specimen body,
+mass, left wing, tail, physical feather thickness, pressure, or humidity.
+
 The locked compact input SHA-256 is
 `5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887`.
 

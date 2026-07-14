@@ -56,6 +56,24 @@ func measuredWingSurfaceLoaderLocksPeriodicMeasuredGeometry() throws {
     }
 }
 
+@Test
+func measuredWingPublishedFluidConditionLocksPaperConvention() throws {
+    let dataset = try MeasuredWingSurfaceDatasetLoader.load(
+        from: measuredWingSurfaceURL
+    )
+    let condition = MetalMeasuredWingFluidCondition.dong2022Published
+    #expect(condition.sourceDOI == "10.1155/2022/5433184")
+    #expect(abs(condition.reynoldsNumber - 9_367.4) < 1.0e-3)
+    #expect(
+        abs(condition.physicalAirDensityKilogramsPerCubicMeter - 1.205)
+            < 1.0e-6
+    )
+    #expect(
+        abs(condition.referenceSpeedMetersPerSecond(for: dataset) - 7.1758)
+            < 1.0e-6
+    )
+}
+
 #if canImport(Metal)
 @Test
 func measuredWingSurfaceMetalPhasesMatchCPUAndCloseTopology() throws {

@@ -126,6 +126,7 @@ private struct MeasuredWingReplayArguments {
     var fluidCycle = false
     var thicknessLadder = false
     var stationarity = false
+    var publishedCondition = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -165,6 +166,8 @@ private struct MeasuredWingReplayArguments {
                 thicknessLadder = true
             case "--stationarity":
                 stationarity = true
+            case "--published-condition":
+                publishedCondition = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -197,6 +200,14 @@ private struct MeasuredWingReplayArguments {
                 "--thickness-ladder uses fixed 0.5/0.75/1.0 cases and cannot be combined with --half-thickness-cells"
             )
         }
+        if publishedCondition && (thicknessLadder || stationarity) {
+            throw CLIError.invalidArgument(
+                "--published-condition is a one-cycle feasibility gate and cannot be combined with --thickness-ladder or --stationarity"
+            )
+        }
+        if publishedCondition {
+            fluidCycle = true
+        }
     }
 
     static let help = """
@@ -207,12 +218,16 @@ private struct MeasuredWingReplayArguments {
       --fluid-cycle            Also run one startup cycle through stepFluidTRT
       --thickness-ladder       Run 0.5/0.75/1.0-cell fluid sensitivity gate
       --stationarity           Run five cycles and compare cycles four/five
+      --published-condition    Run one cycle at Dong et al. Re=9367.4,
+                               rho=1.205 kg/m^3 instead of diagnostic Re=100
       --json                   Emit the machine-readable replay report
       --help                   Show this help
 
     Geometry-only mode audits every measured source phase. --fluid-cycle is a
     transient engineering diagnostic, not complete-bird or quantitative force
-    acceptance. The thickness ladder applies a 5% full-envelope criterion.
+    acceptance. --published-condition is a local numerical-stability gate, not
+    a measured greenhouse condition. The thickness ladder applies a 5% full-
+    envelope criterion.
     """
 }
 
@@ -994,7 +1009,10 @@ private func runMeasuredWingReplay(_ values: [String]) throws {
         dataset,
         chordCells: arguments.chordCells,
         halfThicknessCells: arguments.halfThicknessCells,
-        runFluidCycle: arguments.fluidCycle
+        runFluidCycle: arguments.fluidCycle,
+        fluidCondition: arguments.publishedCondition
+            ? .dong2022Published
+            : .diagnosticRe100
     )
     if arguments.json {
         try printJSON(report)
@@ -1006,12 +1024,32 @@ private func runMeasuredWingReplay(_ values: [String]) throws {
         print("cycle_steps: \(report.cycleSteps)")
         print("runtime_s: \(report.runtimeSeconds)")
         print("maximum_lattice_point_speed: \(report.maximumLatticePointSpeed)")
-        print("diagnostic_reynolds: \(report.diagnosticReynoldsNumber)")
+        print("fluid_condition: \(report.fluidConditionIdentifier)")
+        print("reynolds: \(report.reynoldsNumber)")
+        print("air_density_kg_m3: \(report.physicalAirDensityKilogramsPerCubicMeter)")
+        print("reference_speed_mps: \(report.referenceSpeedMetersPerSecond)")
+        print("tau_plus: \(report.tauPlus)")
+        print("tau_plus_margin_above_half: \(report.tauPlusMarginAboveHalf)")
         print("prepared_position_error_m: \(report.maximumPreparedPositionErrorMeters)")
         print("prepared_velocity_error_mps: \(report.maximumPreparedVelocityErrorMetersPerSecond)")
         print("fluid_cycle_executed: \(report.fluidCycleExecuted)")
         if let mean = report.startupCycleMeanForceNewtons {
             print("startup_cycle_mean_force_N: \(mean)")
+        }
+        if let drift = report.relativePopulationMassDrift {
+            print("relative_population_mass_drift: \(drift)")
+        }
+        if let maximum = report.maximumAbsolutePopulation {
+            print("maximum_absolute_population: \(maximum)")
+        }
+        if let stability = report.fluidStabilityPassed {
+            print("fluid_stability_passed: \(stability)")
+        }
+        if let step = report.firstNonFiniteLoadStep {
+            print("first_non_finite_load_step: \(step)")
+        }
+        if let verdict = report.fluidStabilityVerdict {
+            print("fluid_stability_verdict: \(verdict)")
         }
         print("passed: \(report.passed)")
         print("complete_bird_replay_ready: \(report.completeBirdReplayReady)")
