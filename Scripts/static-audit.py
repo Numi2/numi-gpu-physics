@@ -14,6 +14,8 @@ SWIFT_FILES = (
     ROOT / "Sources/BirdFlowMetal/BirdFlowSimulation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalShearWaveValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalMovingWallValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalSphereValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalWingValidation.swift",
 )
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
 GPU_DATA = ROOT / "Sources/BirdFlowMetal/GPUData.swift"
@@ -24,6 +26,8 @@ REQUIRED_KERNELS = {
     "initializePopulations",
     "initializeShearWave",
     "initializePlanarChannel",
+    "initializeSphereCase",
+    "initializeFixedWingCase",
     "updatePlanarWallVelocity",
     "stepFluidTRT",
     "reduceForceTorque",
@@ -210,14 +214,17 @@ def main() -> int:
         "private func encodeInitialization()": 6,
         "private func encodeShearInitialization()": 4,
         "private func encodePlanarInitialization()": 7,
+        "private func encodeCanonicalInitialization()": 7,
         "private func encodePlanarWallUpdate(": 2,
         "private func encodeGeometryPreparation(": 4,
         "private func encodeGeometry(": 6,
         "private func encodeFluidStep(": 10,
         "private func encodeShearFluidStep(": 10,
         "private func encodePlanarFluidStep(": 10,
+        "private func encodeCanonicalFluidStep(": 10,
         "private func encodeReduction(": 3,
         "private func encodePlanarReduction(": 3,
+        "private func encodeCanonicalReduction(": 3,
         "private func encodeBodyIntegration(": 4,
     }
     for declaration, count in expected_swift_bindings.items():
@@ -251,6 +258,8 @@ def main() -> int:
         "initializePopulations": 6,
         "initializeShearWave": 4,
         "initializePlanarChannel": 7,
+        "initializeSphereCase": 7,
+        "initializeFixedWingCase": 7,
         "updatePlanarWallVelocity": 2,
         "stepFluidTRT": 10,
         "reduceForceTorque": 3,
@@ -291,6 +300,16 @@ def main() -> int:
         ),
         "initializePlanarChannel": (
             "private func encodePlanarInitialization()",
+            ["populationsA", "solidMaskA", "solidMaskB", "wallVelocity", "density", "velocity", "uniforms"],
+            ["populations", "solidA", "solidB", "wallVelocity", "density", "velocity", "uniforms"],
+        ),
+        "initializeSphereCase": (
+            "private func encodeCanonicalInitialization()",
+            ["populationsA", "solidMaskA", "solidMaskB", "wallVelocity", "density", "velocity", "uniforms"],
+            ["populations", "solidA", "solidB", "wallVelocity", "density", "velocity", "uniforms"],
+        ),
+        "initializeFixedWingCase": (
+            "private func encodeCanonicalInitialization()",
             ["populationsA", "solidMaskA", "solidMaskB", "wallVelocity", "density", "velocity", "uniforms"],
             ["populations", "solidA", "solidB", "wallVelocity", "density", "velocity", "uniforms"],
         ),
@@ -410,6 +429,37 @@ def main() -> int:
         fail(
             "alternate planar-wall stepFluidTRT bindings differ: "
             f"Swift={planar_step_names}"
+        )
+
+    canonical_step_body = extract_braced_body(
+        swift,
+        "private func encodeCanonicalFluidStep(",
+    )
+    canonical_step_pairs = re.findall(
+        r"encoder\.setBuffer\(\s*(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        canonical_step_body,
+        re.S,
+    ) + re.findall(
+        r"encoder\.setBytes\(\s*&?(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        canonical_step_body,
+        re.S,
+    )
+    canonical_step_names = [
+        name
+        for name, _ in sorted(
+            canonical_step_pairs,
+            key=lambda pair: int(pair[1]),
+        )
+    ]
+    expected_canonical_step = [
+        "currentPopulations", "nextPopulations", "solidMaskA",
+        "solidMaskB", "wallVelocity", "density", "velocity",
+        "reductionA", "bodyState", "uniforms",
+    ]
+    if canonical_step_names != expected_canonical_step:
+        fail(
+            "alternate static-canonical stepFluidTRT bindings differ: "
+            f"Swift={canonical_step_names}"
         )
 
     print(

@@ -4,16 +4,18 @@ Aerodynamic output is not accepted as quantitative until this sequence passes. E
 
 ## Current automated coverage
 
-`Scripts/validate.sh` currently provides six gates:
+`Scripts/validate.sh` currently provides eight gates:
 
 - Swift algebra, scaling, rigid-body, and layout tests;
 - live strict-math Metal moving-wing fixed-body and free-flight batch-partition regressions, plus CPU/GPU rigid-body one-step parity;
 - an independent NumPy periodic shear-wave decay/convergence reference;
 - a production-Metal periodic shear-wave refinement, cell-by-cell CPU comparison, population-mass, and command-buffer batch-invariance check;
-- production-Metal transient Couette and oscillating Stokes-layer profile, no-penetration, wall-force, phase, refinement, and batching checks; and
+- production-Metal transient Couette and oscillating Stokes-layer profile, no-penetration, wall-force, phase, refinement, and batching checks;
+- production-Metal fixed-sphere steady drag, curved-boundary symmetry, torque leakage, refinement, and batching checks;
+- production-Metal fixed finite-wing lift/drag, symmetry, leakage, refinement, and batching checks; and
 - offline compilation and linking of every Metal entry point.
 
-This is a compilation and regression gate, not completion of the benchmark ladder below. Sections 2 and 4 now run on the production fluid and moving-wall momentum-exchange operators. Channel forcing and selectable canonical sphere/isolated-wing cases are still absent, so sections 3, 5, and 6 require dedicated GPU case modes and comparison tooling. The procedural bird already contains finite wings, but that is not a canonical case harness.
+This is a compilation and canonical regression gate, not completion of the bird-flight benchmark ladder below. Sections 2, 4, and 5 now run on the production fluid and momentum-exchange operators. Channel forcing and the prescribed flapping-wing comparison are still absent, so sections 3 and 6 require dedicated GPU case modes and comparison tooling. The fixed-wing gate isolates load accuracy; it does not validate the procedural bird's geometry or kinematics.
 
 ## 1. Algebra and layout
 
@@ -113,13 +115,64 @@ The transient Couette profile is already within `8e-5` on the coarsest grid and 
 
 ## 5. Canonical body
 
-Use a sphere and then a finite wing at documented Reynolds numbers.
+The fixed-sphere production-Metal gate is available:
 
-Acceptance:
+```bash
+swift run -c release birdflow validate sphere --resolution 160 --json
+```
 
-- mean drag lies within selected experimental or trusted numerical uncertainty
-- symmetry is preserved under symmetric conditions
-- force changes below `3%` between the two finest grids
+To archive the report and final fields for all three grids:
+
+```bash
+swift run -c release birdflow validate sphere \
+  --resolution 160 \
+  --archive ValidationArtifacts/sphere-m4 \
+  --json
+```
+
+The case uses uniform flow at `Re=100`, lattice speed `0.04`, and a fixed voxelized sphere in geometrically similar `10D x 6D x 6D` domains. The refinement ladder is `80 x 48 x 48`, `120 x 72 x 72`, and `160 x 96 x 96`, with 8, 12, and 16 cells across the diameter. The sphere center is 3D from the inlet, leaving 6.5D from its downstream surface to the outlet. One initialization kernel writes both masks, zero wall velocity, populations, density, and velocity; all subsequent evolution and loads use the production `stepFluidTRT` and deterministic reduction kernels.
+
+The reference is `Cd=1.09` from the uniform-flow `Re=100` entry reported by [Bagchi and Balachandar, JFM 2002](https://electronicsandbooks.com/edt/manual/Magazine/J/Journal%20of%20Fluid%20Mechanics/2002%20Volume%20466/S0022112002001490.pdf). A later particle-resolved DNS validation used a cubic 30D domain and reported convergence from `Cd=1.16` at 15 cells per diameter to `1.096` at 31 and `1.091` at 61, demonstrating why this repository's smaller domain and 16-cell finest sphere must retain a wider engineering tolerance ([Homann et al., JFM 2016](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/96C8D7F0210BB5029FD23A7168C290E8/S0022112016002287a.pdf/particle-resolved-direct-numerical-simulation-of-homogeneous-isotropic-turbulence-modified-by-small-fixed-spheres.pdf)).
+
+Automated sphere acceptance:
+
+- every grid reaches a load window whose drag range is at most `1%`; samples are separated by a grid-independent `0.16D/U`
+- finest-grid drag is within `15%` of `Cd=1.09`
+- drag changes by at most `3%` between the two finest grids
+- side-force/drag and torque/(drag diameter) ratios remain below `1e-3`
+- normalized mirrored-velocity error remains below `1e-3`
+- density, velocity, and load differences remain below `1e-7` between stepwise and batched execution
+
+The default Apple M4 run produced finest `Cd=1.2170706918439962` (`11.6579%` relative error), a finest-two drag change of `0.02885%`, normalized finest velocity-symmetry error `2.6488133134475767e-6`, and exactly zero batch differences. These establish a curved-body production regression; they do not establish publication-grade absolute sphere drag.
+
+The fixed finite-wing production-Metal gate is also available:
+
+```bash
+swift run -c release birdflow validate wing --resolution 400 --json
+```
+
+To archive the report and final fields for all three grids:
+
+```bash
+swift run -c release birdflow validate wing \
+  --resolution 400 \
+  --archive ValidationArtifacts/wing-m4 \
+  --json
+```
+
+The case follows the `Re=100`, aspect-ratio-2 rectangular flat plate at 30 degrees in [Taira and Colonius, JFM 2009](https://authors.library.caltech.edu/records/frnmk-28536). Figure 3 gives approximately `CL=0.75` and `CD=0.75` at `U*t/c=13`. The harness represents the nominally thin plate as an axis-aligned one-cell voxel surface and inclines the uniform stream by 30 degrees, which is equivalent to inclining the plate in an unbounded domain while avoiding resolution-dependent diagonal voxel aliasing.
+
+The grid ladder is `240 x 240 x 144`, `320 x 320 x 192`, and `400 x 400 x 240`, with 24, 32, and 40 cells per chord and 48, 64, and 80 cells across the span. The domain is `10c x 10c x 6c`; the shorter spanwise extent and one-cell boundary regularization remain engineering limitations relative to the source study. Lattice speed is `0.08` (Mach `0.139`); a separate `0.04` calibration at 8–16 cells per chord changed coefficients by less than `0.5%`, while refinement changed lift materially, identifying boundary resolution rather than compressibility as the dominant error.
+
+Automated wing acceptance:
+
+- finest lift and drag are each within `20%` of the approximate published values
+- lift and drag each change by at most `3%` between the two finest grids
+- side-force ratio and roll/yaw moment coefficient remain below `1e-3`
+- normalized span-mirrored velocity error remains below `1e-3`
+- density, velocity, and load differences remain below `1e-7` between stepwise and batched execution
+
+The accepted Apple M4 run produced `(CL, CD)` values of `(0.724617, 0.702652)`, `(0.747062, 0.705491)`, and `(0.761354, 0.707108)`. The finest result differs from the approximate reference by `1.514%` in lift and `5.719%` in drag. The 32-to-40-cells-per-chord changes are `1.877%` and `0.229%`; finest normalized span-symmetry error is `7.074e-7`; batch differences are exactly zero. The full ladder took `1569.51 s` and `9.17 GB` peak unified-memory footprint on Apple M4, so it is a release/calibration gate. The ordinary test suite instead locks an 8-cells-per-chord diagnostic in about two seconds.
 
 For the included bird case, `birdflow --resolution-scale N` preserves physical domain size, geometry, Reynolds number, and sponge thickness by scaling the grid, chord cells, and sponge cells together. Multiply the number of timesteps by `N` to preserve physical duration. This supports a refinement run, but accepted convergence still requires archived fields, identical nondimensional sample times, and the canonical cases above.
 

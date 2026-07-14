@@ -4,7 +4,7 @@ BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Appl
 
 The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
 
-This repository is a complete vertical slice, not a validated research result. The validation command compiles and executes the Swift/Metal path on a supported Mac, runs the independent reference checks, and executes periodic shear-wave plus translating/oscillating planar-wall refinement on the production fluid and momentum-exchange kernels. It does not yet implement the full canonical-body ladder in `Docs/VALIDATION.md`; channel flow, sphere/wing cases, aerodynamic-load grid convergence, and measured geometry/kinematics remain mandatory before bird-flight results are treated as quantitative.
+This repository is a complete vertical slice, not a validated bird-flight research result. The validation command compiles and executes the Swift/Metal path on a supported Mac, runs the independent reference checks, and executes periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, and fixed finite-wing refinement on the production fluid and momentum-exchange kernels. It does not yet implement the full ladder in `Docs/VALIDATION.md`; forced channel flow, prescribed flapping-wing comparison, bird-load grid convergence, and measured geometry/kinematics remain mandatory before bird-flight results are treated as quantitative.
 
 ## Implemented solver
 
@@ -31,6 +31,7 @@ The production GPU path also:
 - stores occupancy and part identity together in byte masks;
 - folds the first deterministic load-reduction level into the fluid threadgroups instead of writing one load record per cell;
 - stores density and velocity only for the final externally visible step of an `advance` call;
+- skips threadgroup load accumulation on intermediate steps of static steady canonical cases while retaining it on every coupled bird step;
 - queues command-buffer batches without an intermediate CPU wait; and
 - omits the rigid-body dispatch entirely for fixed-bird cases.
 
@@ -52,9 +53,9 @@ swift test
 ./Scripts/validate.sh
 ```
 
-`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the strict-math production-Metal shear-wave and moving-wall harnesses.
+`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the strict-math production-Metal shear-wave, moving-wall, fixed-sphere, and fixed-wing harnesses. The fixed-wing release tier uses roughly 9.2 GB peak unified memory and took about 26 minutes on the documented Apple M4 host.
 
-The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against a host CPU reference, and command-buffer batch invariance. The moving-wall harness checks transient Couette and finite-gap oscillating Stokes profiles, isolated upper-wall force and phase, no-penetration, refinement, and dynamic-wall batch invariance.
+The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against a host CPU reference, and command-buffer batch invariance. The moving-wall harness checks transient Couette and finite-gap oscillating Stokes profiles, isolated upper-wall force and phase, no-penetration, refinement, and dynamic-wall batch invariance. The fixed-sphere harness checks steady drag, symmetry, torque leakage, refinement, and batching. A fast 80-cell fixed-wing regression locks the production initializer and final loads; `validate.sh` owns the expensive 240/320/400 quantitative wing sweep.
 
 ## Run
 
@@ -77,6 +78,28 @@ swift run -c release birdflow validate moving-wall \
   --archive ValidationArtifacts/moving-wall \
   --json
 ```
+
+Canonical production-Metal fixed-sphere validation:
+
+```bash
+swift run -c release birdflow validate sphere \
+  --resolution 160 \
+  --archive ValidationArtifacts/sphere \
+  --json
+```
+
+The sphere ladder uses `80 x 48 x 48`, `120 x 72 x 72`, and `160 x 96 x 96` domains with 8, 12, and 16 cells across the diameter. It is a compact engineering gate against a published `Re=100`, `Cd=1.09` reference, not a substitute for the wider-domain and finer-resolution study required for publication-quality drag.
+
+Canonical production-Metal fixed finite-wing validation:
+
+```bash
+swift run -c release birdflow validate wing \
+  --resolution 400 \
+  --archive ValidationArtifacts/wing \
+  --json
+```
+
+The wing ladder uses `240 x 240 x 144`, `320 x 320 x 192`, and `400 x 400 x 240` domains with 24, 32, and 40 cells per chord. It runs the `Re=100`, aspect-ratio-2 flat plate at 30 degrees through `U*t/c=13` and compares with the approximate `CL=0.75`, `CD=0.75` values in Taira and Colonius (JFM 2009). This validates the isolated fixed-wing operator; it does not validate the procedural flapping bird.
 
 A fixed-bird wind-tunnel case:
 
@@ -125,6 +148,8 @@ Sources/BirdFlowMetal/
   BirdFlowSimulation.swift      state ownership and step command graph
   MetalShearWaveValidation.swift production-kernel canonical validation
   MetalMovingWallValidation.swift planar-wall profile/load validation
+  MetalSphereValidation.swift    curved-body external-flow validation
+  MetalWingValidation.swift      finite-wing load/refinement validation
   GPUData.swift                 Swift/MSL-compatible data layouts
   Metal/BirdFlow.metal          geometry, fluid, reduction, body kernels
 

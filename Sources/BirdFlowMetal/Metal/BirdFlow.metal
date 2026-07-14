@@ -551,6 +551,98 @@ kernel void initializePlanarChannel(
     velocity[gid] = float4(initialVelocity, 0);
 }
 
+/// Initializes uniform external flow around a fixed voxelized sphere. The
+/// sphere is body part 1 so the production momentum-exchange path can isolate
+/// its force and torque from any future canonical-case geometry.
+kernel void initializeSphereCase(
+    device float* populations [[buffer(0)]],
+    device uchar* solidA [[buffer(1)]],
+    device uchar* solidB [[buffer(2)]],
+    device float4* wallVelocity [[buffer(3)]],
+    device float* density [[buffer(4)]],
+    device float4* velocity [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    float3 center = float3(
+        uniforms.caseParameters.y * float(uniforms.grid.x),
+        0.5f * float(uniforms.grid.y),
+        0.5f * float(uniforms.grid.z)
+    );
+    float3 relative = float3(cell) + 0.5f - center;
+    bool isSphere = dot(relative, relative)
+        <= uniforms.caseParameters.x * uniforms.caseParameters.x;
+    uchar part = isSphere ? uchar(1) : uchar(0);
+    float3 initialVelocity = isSphere
+        ? float3(0)
+        : uniforms.farFieldLattice.xyz;
+
+    solidA[gid] = part;
+    solidB[gid] = part;
+    wallVelocity[gid] = float4(0);
+    for (uint q = 0; q < Q; ++q) {
+        populations[q * uniforms.grid.w + gid] = equilibrium(
+            q,
+            1.0f,
+            initialVelocity
+        );
+    }
+    density[gid] = 1.0f;
+    velocity[gid] = float4(initialVelocity, 0);
+}
+
+/// Initializes uniform external flow around the fixed rectangular validation
+/// wing. The nominally thin plate is regularized as a one-cell voxel surface,
+/// matching the production occupancy/bounce-back representation rather than
+/// introducing a separate immersed-surface operator.
+kernel void initializeFixedWingCase(
+    device float* populations [[buffer(0)]],
+    device uchar* solidA [[buffer(1)]],
+    device uchar* solidB [[buffer(2)]],
+    device float4* wallVelocity [[buffer(3)]],
+    device float* density [[buffer(4)]],
+    device float4* velocity [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    float3 center = float3(
+        0.3f * float(uniforms.grid.x),
+        0.5f * float(uniforms.grid.y) + 0.5f,
+        0.5f * float(uniforms.grid.z)
+    );
+    float3 relative = float3(cell) + 0.5f - center;
+    bool isWing = abs(relative.x) <= uniforms.caseParameters.x
+        && abs(relative.z) <= uniforms.caseParameters.y
+        && abs(relative.y) <= 0.5f;
+    uchar part = isWing ? uchar(1) : uchar(0);
+    float3 initialVelocity = isWing
+        ? float3(0)
+        : uniforms.farFieldLattice.xyz;
+
+    solidA[gid] = part;
+    solidB[gid] = part;
+    wallVelocity[gid] = float4(0);
+    for (uint q = 0; q < Q; ++q) {
+        populations[q * uniforms.grid.w + gid] = equilibrium(
+            q,
+            1.0f,
+            initialVelocity
+        );
+    }
+    density[gid] = 1.0f;
+    velocity[gid] = float4(initialVelocity, 0);
+}
+
 /// Updates only the N_x by N_z upper-wall plane, avoiding a full-volume
 /// geometry pass for the planar canonical case.
 kernel void updatePlanarWallVelocity(
@@ -616,9 +708,12 @@ kernel void stepFluidTRT(
     uint threadsPerThreadgroup [[threads_per_threadgroup]]
 ) {
     // The host always launches complete 256-lane groups. Padded lanes still
-    // participate in the barrier and contribute a zero load.
+    // participate in the barrier and contribute a zero load when load
+    // accumulation is enabled. Canonical steady cases disable this work on
+    // intermediate steps through gravity.w, which is otherwise unused.
     threadgroup float4 groupForces[256];
     threadgroup float4 groupTorques[256];
+    bool accumulateLoads = uniforms.gravity.w != 0.0f;
     float3 cellForcePhysical = float3(0);
     float3 cellTorquePhysical = float3(0);
 
@@ -646,7 +741,7 @@ kernel void stepFluidTRT(
 
             // A newly covered node transfers the difference between its
             // previous fluid momentum and the moving-solid equilibrium.
-            if (!wasSolid) {
+            if (accumulateLoads && !wasSolid) {
                 float previousDensity = 0.0f;
                 float3 previousMomentum = float3(0);
                 for (uint q = 0; q < Q; ++q) {
@@ -746,8 +841,9 @@ kernel void stepFluidTRT(
                             uint selectedPart = uint(
                                 uniforms.caseParameters.z + 0.5f
                             );
-                            if (selectedPart == 0u
-                                || selectedPart == uint(sourcePart)) {
+                            if (accumulateLoads
+                                && (selectedPart == 0u
+                                || selectedPart == uint(sourcePart))) {
                                 float3 linkForceLattice = -(value + reflected)
                                     * float3(C[q]);
                                 forceOnBodyLattice += linkForceLattice;
@@ -829,9 +925,18 @@ kernel void stepFluidTRT(
                 );
             }
 
-            cellForcePhysical = forceOnBodyLattice
-                * uniforms.timeStepAndScales.w;
+            if (accumulateLoads) {
+                cellForcePhysical = forceOnBodyLattice
+                    * uniforms.timeStepAndScales.w;
+            }
         }
+    }
+
+    // This branch is uniform across the dispatch. Avoiding the threadgroup
+    // barrier and serial 256-lane sum materially reduces bandwidth-bound
+    // steady validation while the coupled solver keeps the default-on path.
+    if (!accumulateLoads) {
+        return;
     }
 
     groupForces[threadIndex] = float4(cellForcePhysical, 0);

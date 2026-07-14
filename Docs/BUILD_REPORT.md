@@ -14,6 +14,8 @@ Date: 2026-07-14
 - macOS Metal compilation plus live Metal execution regression
 - production-Metal periodic shear-wave validation and raw-field archive mode
 - production-Metal translating/oscillating planar-wall validation and archive mode
+- production-Metal fixed-sphere external-flow validation and archive mode
+- production-Metal fixed finite-wing external-flow validation and archive mode
 - physical-domain-preserving `--resolution-scale` control and allocation preflight
 
 ## GPU optimization pass
@@ -28,12 +30,15 @@ The strict-math execution path now includes:
 - density/velocity diagnostic stores only on the final visible step;
 - one CPU/GPU synchronization after a multi-command-buffer `advance` call;
 - no body-integration encoder or dispatch in fixed-bird mode;
-- one initial geometry build and initialization of only the population buffer that is first consumed; and
-- an interior-domain streaming fast path.
+- one initial geometry build and initialization of only the population buffer that is first consumed;
+- an interior-domain streaming fast path;
+- a sphere initializer that writes static geometry, populations, and diagnostic fields in one coalesced pass while retaining the production fluid/load kernels;
+- a shared static-canonical sphere/wing orchestration path and a one-pass fixed-wing initializer; and
+- uniform skipping of boundary-load arithmetic, the threadgroup barrier, and first-stage reduction on non-final static steady steps, while coupled bird steps retain per-step loads.
 
 At the default `96 x 112 x 96` grid, removing the full-cell load buffer and packing masks reduces persistent Metal buffers by `41.34375 MiB`. Fusing the first reduction removes `63 MiB` of global load-record write/read traffic per step. Suppressing internal diagnostic stores removes `19.6875 MiB` per non-captured step, and single-buffer initialization avoids `74.8125 MiB` of startup stores.
 
-The pre-change and optimized strict-math CLI snapshots printed identical body loads and torques at steps 4 and 32. An unarchived local timing snapshot used `/usr/bin/time -p .build/release/birdflow --steps 32 --report-every 32`: it measured `0.28 s` before the pass and optimized samples of `0.19, 0.13, 0.14, 0.14, 0.14 s` (median `0.14 s`). The workspace has no Git metadata or archived raw timing artifact, so this result is indicative only. It includes process startup and runtime shader/library work and is not a reproducible Metal counter study.
+The pre-change and optimized strict-math CLI snapshots printed identical body loads and torques at steps 4 and 32. An unarchived local timing snapshot used `/usr/bin/time -p .build/release/birdflow --steps 32 --report-every 32`: it measured `0.28 s` before the pass and optimized samples of `0.19, 0.13, 0.14, 0.14, 0.14 s` (median `0.14 s`). Those raw timing samples were not archived, so this result is indicative only. It includes process startup and runtime shader/library work and is not a reproducible Metal counter study.
 
 ## Verification completed on the available host
 
@@ -48,18 +53,26 @@ NumPy 2.2.5
 Target: arm64-apple-macosx26.0
 ```
 
-Commands completed successfully:
+Validation components completed successfully:
 
 ```bash
 bash -n Scripts/validate.sh Scripts/check-metal.sh
-./Scripts/validate.sh
+swift test
+python3 Scripts/static-audit.py
+python3 Reference/shear_wave_reference.py
+python3 Reference/shear_wave_convergence.py
+Scripts/check-metal.sh
+swift run birdflow validate shear-wave --json
+swift run birdflow validate moving-wall --json
+swift run birdflow validate sphere --json
+.build/release/birdflow validate wing --json
 swift test -c release
 swift build -c release
 ```
 
 Results:
 
-- 20 Swift tests passed in debug and release configurations.
+- 22 Swift tests passed in debug and release configurations; the added fast fixed-wing test locks the 80-cell production result.
 - Live Metal tests matched moving-wing fixed-body and free-flight multi-command-buffer advances against synchronized one-step advances, including loads, captured fields, and rigid-body state.
 - A direct strict-math CPU/Metal rigid-body step matched position, linear/angular velocity, and orientation within `1e-6` under nonzero force and torque.
 - Cross-language audit passed for kernel/pipeline names, shared layouts, Swift/Metal D3Q19 direction/weight/opposite tables, and named buffer contracts.
@@ -77,10 +90,17 @@ Results:
 - Oscillating moving-wall profile and force convergence orders: `1.986436490328703` and `2.0208052383958144`.
 - Maximum moving-wall cross-flow speed across all cases: `1.296122945859679e-6`; dynamic-wall batched-versus-stepwise density, velocity, and selected-wall force differences were exactly zero.
 - The moving-wall case exposed and fixed a periodic-edge/solid-corner bug: wrapped links now execute solid bounce-back instead of reading solid populations directly.
+- Production-Metal `Re=100` fixed-sphere finest-grid drag coefficient: `1.2170706918439962`, an `11.657861637063863%` difference from the published `Cd=1.09` compact-gate reference.
+- Fixed-sphere drag change between the two finest grids: `0.00028850222554029217` (`0.02885%`); finest normalized mirrored-velocity error: `2.6488133134475767e-6`.
+- Fixed-sphere side-force and torque leakage passed `1e-3`; batched-versus-stepwise density, velocity, and load differences were exactly zero.
+- A rejected 5D cubic trial produced finest `Cd=1.357528228258264` (`24.54%` high). Expanding to a `10D x 6D x 6D` domain reduced the result inside the unchanged `15%` absolute-drag gate, directly demonstrating boundary-proximity contamination rather than hiding it by relaxing acceptance.
+- Production-Metal `Re=100`, aspect-ratio-2 fixed-wing finest coefficients were `CL=0.761354209564864` and `CD=0.7071078500190809`, versus approximate published values of `0.75` and `0.75` at `U*t/c=13`.
+- Fixed-wing changes from 32 to 40 cells per chord were `1.8772254779546624%` in lift and `0.2286832450047148%` in drag, both below the unchanged `3%` gate. Finest normalized span symmetry was `7.073535397279364e-7`; batch density, velocity, and load differences were exactly zero.
+- The accepted `240/320/400` wing ladder took `1569.51 s` with a `9.173911952 GB` peak unified-memory footprint on Apple M4. A separate unoptimized 400-only calibration took `1160.28 s`; because the workloads differ, this supports only the narrow claim that intermediate reduction work was removed without changing coefficients, not a formal speedup percentage.
 - The default fixed-bird and free-flight release executables completed live Metal runs on the M4.
 
 ## Verification boundary
 
-The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, translating and oscillating planar-wall profiles and forces, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. They do not yet execute forced channel flow, a sphere, or an isolated wing on the production Metal solver.
+The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, translating and oscillating planar-wall profiles and forces, fixed-sphere curved-boundary drag/refinement/symmetry, isolated fixed-wing lift/drag/refinement/symmetry, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. They do not yet execute forced channel flow or a prescribed flapping-wing literature case on the production Metal solver.
 
 Quantitative aerodynamic use still requires the complete ladder in `Docs/VALIDATION.md`, including Metal-versus-reference field comparisons, canonical boundary cases, two-finest-grid load convergence, measured bird geometry and kinematics, and free-flight momentum/body-step refinement. Free-flight studies must also add runtime Mach/domain monitoring and either model wing inertial/hinge/actuator reactions or justify the current massless-wing approximation. The optimization timings above are engineering evidence only and are not aerodynamic validation.

@@ -359,4 +359,69 @@ func productionMetalMovingWallPassesCanonicalGates() throws {
     )
     #expect(report.passed)
 }
+
+@Test
+func productionMetalFixedSpherePassesCanonicalGates() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalSphereValidator.run()
+
+    #expect(report.productionKernel == "stepFluidTRT")
+    #expect(report.cases.map(\.resolution) == [80, 120, 160])
+    #expect(report.cases.map(\.crossflowResolution) == [48, 72, 96])
+    #expect(report.cases.map(\.diameterCells) == [8, 12, 16])
+    #expect(report.cases.allSatisfy {
+        $0.reachedSteadyState
+            && $0.steadyWindowRelativeRange
+                <= report.maximumAllowedSteadyWindowRange
+            && $0.sideForceToDragRatio
+                <= report.maximumAllowedSideForceRatio
+            && $0.torqueToDragDiameterRatio
+                <= report.maximumAllowedTorqueRatio
+            && $0.normalizedVelocitySymmetryError
+                <= report.maximumAllowedVelocitySymmetryError
+    })
+    #expect(
+        report.cases.last!.relativeDragError
+            <= report.maximumAllowedFinestDragError
+    )
+    #expect(
+        report.relativeFinestTwoDragChange
+            <= report.maximumAllowedFinestTwoDragChange
+    )
+    #expect(
+        report.maximumBatchDensityDifference
+            <= report.maximumAllowedBatchDifference
+    )
+    #expect(
+        report.maximumBatchVelocityDifference
+            <= report.maximumAllowedBatchDifference
+    )
+    #expect(
+        report.maximumBatchForceDifference
+            <= report.maximumAllowedBatchDifference
+    )
+    #expect(report.passed)
+}
+
+@Test
+func productionMetalFixedWingDiagnosticMatchesLockedBaseline() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let result = try MetalWingValidator.runSingleCase(resolution: 80)
+
+    #expect(result.resolution == 80)
+    #expect(result.chordCells == 8)
+    #expect(result.spanCells == 16)
+    #expect(result.steps == 1_300)
+    #expect(abs(result.liftCoefficient - 0.542_694_722_624_437_9) < 1e-6)
+    #expect(abs(result.dragCoefficient - 0.672_869_301_552_491) < 1e-6)
+    #expect(result.sideForceRatio < MetalWingValidator.maximumSideForceRatio)
+    #expect(
+        result.rollYawMomentCoefficient
+            < MetalWingValidator.maximumRollYawMomentCoefficient
+    )
+    #expect(
+        result.normalizedSpanSymmetryError
+            < MetalWingValidator.maximumSpanSymmetryError
+    )
+}
 #endif

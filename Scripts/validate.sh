@@ -13,6 +13,8 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   Scripts/check-metal.sh
   swift run birdflow validate shear-wave --json
   swift run birdflow validate moving-wall --json
+  swift run birdflow validate sphere --json
+  swift run -c release birdflow validate wing --json
 else
-  echo "Metal compiler and production shear-wave checks skipped: this host is not macOS."
+  echo "Metal compiler and production GPU canonical checks skipped: this host is not macOS."
 fi

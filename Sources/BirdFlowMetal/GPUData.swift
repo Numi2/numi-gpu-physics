@@ -15,6 +15,7 @@ struct GPUUniforms {
         configuration: SimulationConfiguration,
         time: Float,
         captureMacroscopicFields: Bool = true,
+        accumulateLoads: Bool = true,
         hasPreviousGeometry: Bool = false,
         periodicBoundaries: Bool = false,
         shearWaveAmplitude: Float = 0,
@@ -57,7 +58,7 @@ struct GPUUniforms {
             configuration.gravityMetersPerSecondSquared.x,
             configuration.gravityMetersPerSecondSquared.y,
             configuration.gravityMetersPerSecondSquared.z,
-            0
+            accumulateLoads ? 1 : 0
         )
         self.caseParameters = caseParameters
             ?? SIMD4<Float>(shearWaveAmplitude, 0, 0, 0)

@@ -69,6 +69,10 @@ The main kernel uses pull streaming. Each fluid cell reads the population arrivi
 
 The moving-wall harness represents the first and last y planes as stationary lower and driven upper solid parts. A plane-sized update kernel changes only upper-wall velocity each step. The production fluid kernel performs halfway moving-wall bounce-back, while its existing deterministic load reduction can select the upper-wall part for comparison with analytic transient-Couette and finite-gap Stokes shear force. Bird runs leave the selection value zero and continue to reduce loads from every body part.
 
+The fixed-sphere harness represents the curved surface with the same byte-mask occupancy and halfway-link bounce-back used by the bird. A sphere-specific initialization kernel writes both static masks, wall velocities, populations, density, and velocity in one coalesced volume pass; it does not introduce an alternate collision, streaming, boundary, or force operator. The production fluid kernel selects part 1 for sphere-only momentum exchange. Nonperiodic far-field populations and the quadratic sponge remain active, exercising the external-flow boundary path that the planar periodic cases intentionally bypass.
+
+The fixed-wing harness uses the same static-canonical orchestration and production operators. Its initializer writes an axis-aligned, one-cell-thick rectangular part-1 surface in one volume pass. The incoming velocity is inclined by the angle of attack, and reported lift/drag are projections normal and parallel to that stream. This avoids diagonal voxel-mask aliasing while preserving the relative wing/flow orientation of the unbounded canonical problem.
+
 ## Moving bird boundary
 
 One GPU thread first prepares the normalized body pose and both articulated wing frames for the timestep. The geometry kernel dispatches over the Cartesian grid, rejects cells outside a conservative body-centered bound unless they were solid at the previous step, and evaluates the detailed signed-distance functions only inside that region. It writes wall velocity and a byte mask whose value is zero for fluid or `1...4` for body, left wing, right wing, or tail.
@@ -100,6 +104,8 @@ torque = (boundaryPoint - center) × force
 When a moving boundary newly covers a cell, its fluid-to-solid conversion impulse uses the cell center for the torque arm. This topology-change contribution is distinct from halfway-link exchange.
 
 Each fluid threadgroup performs the first deterministic reduction level in threadgroup memory and writes one partial force/torque pair. Subsequent deterministic reduction passes produce one pair without floating-point atomics. The first level retains ascending cell-index summation order.
+
+Coupled bird steps accumulate loads on every step because the rigid-body update consumes them. Static steady canonical cases only require the final load: a uniform flag disables boundary-load arithmetic, the threadgroup barrier, and the 256-lane first-level sum on intermediate steps. The final canonical step takes the unchanged deterministic path. Locked 8- and 16-cells-per-chord wing cases reproduced the pre-optimization coefficients exactly.
 
 Density and velocity are recovered before collision on every step because collision requires them. Their diagnostic buffers are written only on the final externally visible step of an `advance` call; initialization also populates them. On a captured step the kernel accumulates moments from the final post-collision, post-sponge populations, so readback is co-temporal with the stored fluid state, including inside the sponge band.
 

@@ -104,6 +104,8 @@ private struct Arguments {
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
       birdflow validate moving-wall [--resolution N] [--json]
+      birdflow validate sphere [--resolution N] [--json]
+      birdflow validate wing [--resolution N] [--json]
     """
 }
 
@@ -275,6 +277,137 @@ private struct MovingWallArguments {
     oscillating Stokes layer on three grids. It checks profiles, no-penetration,
     isolated top-wall momentum-exchange force, force phase, convergence, and
     dynamic-wall command-buffer batch invariance.
+    """
+}
+
+private struct SphereArguments {
+    var finestResolution = 160
+    var json = false
+    var archivePath: String?
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--resolution":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 160,
+                      value.isMultiple(of: 40) else {
+                    throw CLIError.invalidArgument(
+                        "--resolution requires a multiple of 40 of at least 160"
+                    )
+                }
+                finestResolution = value
+            case "--json":
+                json = true
+            case "--archive":
+                index += 1
+                guard index < values.count, !values[index].isEmpty else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output directory"
+                    )
+                }
+                archivePath = values[index]
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown sphere option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow validate sphere [options]
+
+      --resolution N       Finest streamwise grid (default: 160; multiple of 40)
+      --json               Emit the machine-readable validation report
+      --archive DIRECTORY  Save report.json and final Float32 fields
+      --help               Show this help
+
+    The command runs Re=100 flow around a fixed voxelized sphere on a
+    geometrically similar 80/120/160 streamwise grid ladder in 10D x 6D x 6D
+    domains. It checks steady drag against
+    the published Cd=1.09 reference, refinement change, force/field symmetry,
+    torque leakage, and command-buffer batch invariance. The compact box is an
+    engineering gate, not a publication-grade drag calculation.
+    """
+}
+
+private struct WingArguments {
+    var finestResolution = 400
+    var singleResolution: Int?
+    var json = false
+    var archivePath: String?
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--resolution":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 400,
+                      value.isMultiple(of: 200) else {
+                    throw CLIError.invalidArgument(
+                        "--resolution requires a multiple of 200 of at least 400"
+                    )
+                }
+                finestResolution = value
+            case "--single-resolution":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 80,
+                      value.isMultiple(of: 10) else {
+                    throw CLIError.invalidArgument(
+                        "--single-resolution requires a multiple of 10 of at least 80"
+                    )
+                }
+                singleResolution = value
+            case "--json":
+                json = true
+            case "--archive":
+                index += 1
+                guard index < values.count, !values[index].isEmpty else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output directory"
+                    )
+                }
+                archivePath = values[index]
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown wing option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow validate wing [options]
+
+      --resolution N       Finest streamwise grid (default: 400; multiple of 200)
+      --single-resolution N
+                           Run one diagnostic grid without a pass/fail verdict
+      --json               Emit machine-readable JSON
+      --archive DIRECTORY  Save JSON metadata and final Float32 fields
+      --help               Show this help
+
+    The command runs an AR=2 rectangular plate at Re=100 and alpha=30 degrees
+    through U*t/c=13 on a 240/320/400 streamwise grid ladder. It checks lift,
+    drag, span symmetry, side force, roll/yaw moment leakage,
+    refinement, and command-buffer batch invariance against the production
+    fluid and momentum-exchange kernels.
     """
 }
 
@@ -472,11 +605,113 @@ private func runMovingWallValidation(_ values: [String]) throws {
     }
 }
 
+private func runSphereValidation(_ values: [String]) throws {
+    let arguments = try SphereArguments(values)
+    let report = try MetalSphereValidator.run(
+        finestResolution: arguments.finestResolution,
+        archiveDirectory: arguments.archivePath.map {
+            URL(fileURLWithPath: $0, isDirectory: true)
+        }
+    )
+    if arguments.json {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        print(String(decoding: try encoder.encode(report), as: UTF8.self))
+    } else {
+        print("production_kernel: \(report.productionKernel)")
+        print("device: \(report.deviceName)")
+        for result in report.cases {
+            print(
+                "resolution=\(result.resolution) "
+                    + "diameter=\(result.diameterCells) "
+                    + "steps=\(result.steps) "
+                    + "Cd=\(result.dragCoefficient) "
+                    + "drag_error=\(result.relativeDragError) "
+                    + "steady_range=\(result.steadyWindowRelativeRange)"
+            )
+        }
+        print(
+            "finest_two_drag_change: "
+                + String(report.relativeFinestTwoDragChange)
+        )
+        print("passed: \(report.passed)")
+    }
+    guard report.passed else {
+        throw MetalSphereValidationError.failed(
+            "one or more fixed-sphere acceptance gates were exceeded"
+        )
+    }
+}
+
+private func runWingValidation(_ values: [String]) throws {
+    let arguments = try WingArguments(values)
+    if let resolution = arguments.singleResolution {
+        let result = try MetalWingValidator.runSingleCase(
+            resolution: resolution,
+            archiveDirectory: arguments.archivePath.map {
+                URL(fileURLWithPath: $0, isDirectory: true)
+            }
+        )
+        if arguments.json {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            print(String(decoding: try encoder.encode(result), as: UTF8.self))
+        } else {
+            print("diagnostic_only: true")
+            print(
+                "resolution=\(result.resolution) "
+                    + "chord=\(result.chordCells) "
+                    + "steps=\(result.steps) "
+                    + "CL=\(result.liftCoefficient) "
+                    + "CD=\(result.dragCoefficient)"
+            )
+        }
+        return
+    }
+    let report = try MetalWingValidator.run(
+        finestResolution: arguments.finestResolution,
+        archiveDirectory: arguments.archivePath.map {
+            URL(fileURLWithPath: $0, isDirectory: true)
+        }
+    )
+    if arguments.json {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        print(String(decoding: try encoder.encode(report), as: UTF8.self))
+    } else {
+        print("production_kernel: \(report.productionKernel)")
+        print("device: \(report.deviceName)")
+        for result in report.cases {
+            print(
+                "resolution=\(result.resolution) "
+                    + "chord=\(result.chordCells) "
+                    + "steps=\(result.steps) "
+                    + "CL=\(result.liftCoefficient) "
+                    + "CD=\(result.dragCoefficient)"
+            )
+        }
+        print(
+            "finest_two_lift_change: "
+                + String(report.relativeFinestTwoLiftChange)
+        )
+        print(
+            "finest_two_drag_change: "
+                + String(report.relativeFinestTwoDragChange)
+        )
+        print("passed: \(report.passed)")
+    }
+    guard report.passed else {
+        throw MetalWingValidationError.failed(
+            "one or more fixed-wing acceptance gates were exceeded"
+        )
+    }
+}
+
 private func run(_ values: [String]) throws {
     if values.count > 1, values[1] == "validate" {
         guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing> [options]"
             )
         }
         switch values[2] {
@@ -484,9 +719,13 @@ private func run(_ values: [String]) throws {
             try runShearWaveValidation(values)
         case "moving-wall":
             try runMovingWallValidation(values)
+        case "sphere":
+            try runSphereValidation(values)
+        case "wing":
+            try runWingValidation(values)
         default:
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing> [options]"
             )
         }
     } else {
