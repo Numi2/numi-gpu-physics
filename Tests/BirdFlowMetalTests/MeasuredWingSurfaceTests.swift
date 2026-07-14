@@ -78,6 +78,20 @@ func measuredWingSurfaceMetalPhasesMatchCPUAndCloseTopology() throws {
 }
 
 @Test
+func measuredWingSurfaceTwelveCellDomainClearsControlVolumeAndSponge() throws {
+    let dataset = try MeasuredWingSurfaceDatasetLoader.load(
+        from: measuredWingSurfaceURL
+    )
+    let report = try MetalFlappingWingValidator.auditMeasuredSurface(
+        dataset,
+        chordCells: 12
+    )
+    #expect(report.passed)
+    #expect(report.chordCells == 12)
+    #expect(report.phaseAudits.allSatisfy { $0.solidCellCount > 0 })
+}
+
+@Test
 func measuredWingSurfaceThicknessEnvelopeIsReportedWithoutHidingEndpoints() throws {
     let dataset = try MeasuredWingSurfaceDatasetLoader.load(
         from: measuredWingSurfaceURL

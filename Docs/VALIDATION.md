@@ -495,6 +495,21 @@ result is retained in
 not invalidate the measured boundary implementation; it prevents the arbitrary
 `0.75`-cell regularization from being treated as quantitatively cleared.
 
+The same gate at 12 chord cells is retained in
+`ValidationArtifacts/measured-wing-thickness-sensitivity-c12.json`. Its three
+cases all pass and complete in `44.00 s`. The force-vector envelope contracts
+by `22.07%`, from `6.7416%` to `5.2535%`; the vertical envelope contracts by
+`14.16%`, from `5.1810%` to `4.4475%`. Vertical sensitivity therefore clears,
+but the full vector remains above the `5%` gate and the classification remains
+`numerical-thickness-sensitive`. The `0.75`-cell mean-force vector also changes
+`6.80%` from 8 to 12 chord cells, so load refinement is not yet cleared.
+
+The 12-cell run exposed and fixed a harness defect: the measured-wing domain
+previously used a fixed ten-cell clearance that only fit the eight-cell sponge.
+The control-volume margin now scales with the resolution-dependent sponge, and
+invalid clearance throws a descriptive request error instead of trapping on a
+precondition.
+
 The locked compact input SHA-256 is
 `5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887`.
 

@@ -184,7 +184,10 @@ The promoted eight-cell `--thickness-ladder` runs `0.5/0.75/1.0`-cell
 half-thickness cases through the complete fluid path. Every case passes its
 geometry and fluid checks, but the full force-vector envelope is `6.7416%` and
 the vertical-force envelope is `5.1810%`, narrowly exceeding the `5%`
-sensitivity ceiling. Therefore thickness independence is not yet cleared. The
-next measured-surface gate is the same ladder at 12 chord cells to determine
-whether the uncertainty contracts under spatial refinement; running a full
-8/12/16 load ladder at only the arbitrary `0.75` value would hide this risk.
+sensitivity ceiling. At 12 chord cells the full-vector envelope contracts to
+`5.2535%` and the vertical envelope to `4.4475%`; all individual cases still
+pass, but full-vector thickness independence remains narrowly uncleared. The
+next measured-surface gate is therefore the same ladder at 16 chord cells. It
+will determine whether the observed contraction crosses the acceptance line;
+running a conventional load ladder at only the arbitrary `0.75` value would
+still hide this risk.

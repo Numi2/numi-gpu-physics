@@ -977,7 +977,12 @@ public extension MetalFlappingWingValidator {
             dataset.maximumRootRelativeRadiusMeters
                 / (referenceChordMeters / Float(chordCells))
         ))
-        let halfDomain = radiusCells + 10
+        // The near-wing momentum-control volume adds four cells beyond the
+        // measured radius and must remain strictly outside the sponge. Scale
+        // this margin with the resolution-dependent sponge instead of relying
+        // on the eight-cell case's fixed ten-cell allowance.
+        let spongeCells = max(4, chordCells / 2)
+        let halfDomain = radiusCells + max(10, spongeCells + 5)
         let grid = try GridSize(
             x: 2 * halfDomain,
             y: 2 * halfDomain,
@@ -3076,14 +3081,18 @@ private final class MetalPrescribedWingSimulation {
         let maximumX = Int(rootCell.x) + horizontalHalfWidth
         let maximumY = Int(rootCell.y) + horizontalHalfWidth
         let maximumZ = Int(ceil(rootCell.z + Float(verticalHalfWidth)))
-        precondition(
+        guard
             minimumX > configuration.spongeWidthCells
                 && minimumY > configuration.spongeWidthCells
                 && minimumZ > configuration.spongeWidthCells
                 && maximumX + configuration.spongeWidthCells < grid.x
                 && maximumY + configuration.spongeWidthCells < grid.y
                 && maximumZ + configuration.spongeWidthCells < grid.z
-        )
+        else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "near-wing control volume overlaps the sponge or domain boundary"
+            )
+        }
         momentumBudgetBounds = GPUControlVolumeBounds(
             minimum: SIMD4<UInt32>(
                 UInt32(minimumX),
