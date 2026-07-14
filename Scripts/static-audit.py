@@ -16,6 +16,7 @@ SWIFT_FILES = (
     ROOT / "Sources/BirdFlowMetal/MetalMovingWallValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalSphereValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalWingValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalFlappingWingValidation.swift",
 )
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
 GPU_DATA = ROOT / "Sources/BirdFlowMetal/GPUData.swift"
@@ -23,6 +24,8 @@ GPU_DATA = ROOT / "Sources/BirdFlowMetal/GPUData.swift"
 REQUIRED_KERNELS = {
     "buildBirdGeometry",
     "prepareBirdGeometry",
+    "buildPrescribedFlappingWing",
+    "preparePrescribedFlappingWing",
     "initializePopulations",
     "initializeShearWave",
     "initializePlanarChannel",
@@ -31,6 +34,7 @@ REQUIRED_KERNELS = {
     "updatePlanarWallVelocity",
     "stepFluidTRT",
     "reduceForceTorque",
+    "storeForceTorqueSample",
     "integrateBirdBody",
 }
 
@@ -193,6 +197,12 @@ def main() -> int:
             "leftAngularVelocity", "rightRoot", "rightChord", "rightSpan",
             "rightNormal", "rightAngularVelocity",
         ],
+        "GPUFlappingWingParameters": [
+            "rootAndChord", "geometry", "kinematics0", "kinematics1",
+        ],
+        "GPUPreparedFlappingWing": [
+            "root", "chord", "span", "normal", "angularVelocity", "state",
+        ],
         "GPUForceTorque": ["force", "torque"],
     }
     for struct_name, expected_fields in shared_structs.items():
@@ -222,6 +232,12 @@ def main() -> int:
         "private func encodeShearFluidStep(": 10,
         "private func encodePlanarFluidStep(": 10,
         "private func encodeCanonicalFluidStep(": 10,
+        "private func encodePrescribedPreparation(": 3,
+        "private func encodePrescribedGeometry(": 6,
+        "private func encodePrescribedFluid(": 10,
+        "private func encodePrescribedReduction(": 3,
+        "private func encodePrescribedLoadStore(": 3,
+        "private func initialize()": 6,
         "private func encodeReduction(": 3,
         "private func encodePlanarReduction(": 3,
         "private func encodeCanonicalReduction(": 3,
@@ -255,6 +271,8 @@ def main() -> int:
     expected_buffers = {
         "buildBirdGeometry": 6,
         "prepareBirdGeometry": 4,
+        "buildPrescribedFlappingWing": 6,
+        "preparePrescribedFlappingWing": 3,
         "initializePopulations": 6,
         "initializeShearWave": 4,
         "initializePlanarChannel": 7,
@@ -263,6 +281,7 @@ def main() -> int:
         "updatePlanarWallVelocity": 2,
         "stepFluidTRT": 10,
         "reduceForceTorque": 3,
+        "storeForceTorqueSample": 3,
         "integrateBirdBody": 4,
     }
     for kernel, count in expected_buffers.items():
@@ -287,6 +306,21 @@ def main() -> int:
             "private func encodeGeometry(",
             ["targetMask", "wallVelocity", "currentSolidMask", "birdParametersBuffer", "preparedGeometryBuffer", "uniforms"],
             ["solid", "wallVelocity", "solidPrevious", "bird", "prepared", "uniforms"],
+        ),
+        "preparePrescribedFlappingWing": (
+            "private func encodePrescribedPreparation(",
+            ["prepared", "parameters", "uniforms"],
+            ["prepared", "wing", "uniforms"],
+        ),
+        "buildPrescribedFlappingWing": (
+            "private func encodePrescribedGeometry(",
+            ["target", "wallVelocity", "currentSolid", "parameters", "prepared", "uniforms"],
+            ["solid", "wallVelocity", "solidPrevious", "wing", "prepared", "uniforms"],
+        ),
+        "storeForceTorqueSample": (
+            "private func encodePrescribedLoadStore(",
+            ["load", "loadHistory", "index32"],
+            ["totalLoad", "history", "sampleIndex"],
         ),
         "initializePopulations": (
             "private func encodeInitialization()",
@@ -460,6 +494,37 @@ def main() -> int:
         fail(
             "alternate static-canonical stepFluidTRT bindings differ: "
             f"Swift={canonical_step_names}"
+        )
+
+    prescribed_step_body = extract_braced_body(
+        swift,
+        "private func encodePrescribedFluid(",
+    )
+    prescribed_step_pairs = re.findall(
+        r"encoder\.setBuffer\(\s*(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        prescribed_step_body,
+        re.S,
+    ) + re.findall(
+        r"encoder\.setBytes\(\s*&?(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        prescribed_step_body,
+        re.S,
+    )
+    prescribed_step_names = [
+        name
+        for name, _ in sorted(
+            prescribed_step_pairs,
+            key=lambda pair: int(pair[1]),
+        )
+    ]
+    expected_prescribed_step = [
+        "currentPopulations", "nextPopulations", "currentSolid",
+        "nextSolid", "wallVelocity", "density", "velocity",
+        "reductionA", "bodyState", "uniforms",
+    ]
+    if prescribed_step_names != expected_prescribed_step:
+        fail(
+            "alternate prescribed-wing stepFluidTRT bindings differ: "
+            f"Swift={prescribed_step_names}"
         )
 
     print(

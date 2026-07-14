@@ -424,4 +424,53 @@ func productionMetalFixedWingDiagnosticMatchesLockedBaseline() throws {
             < MetalWingValidator.maximumSpanSymmetryError
     )
 }
+
+@Test
+func productionMetalPrescribedWingSmokeCapturesPhaseDiagnostics() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let result = try MetalFlappingWingValidator.runSingleCase(
+        chordCells: 8,
+        cycles: 1
+    )
+
+    #expect(result.chordCells == 8)
+    #expect(result.cycleSteps == 2_142)
+    #expect(result.phaseSamples.count == 100)
+    #expect(result.vortexMetrics.count == 5)
+    #expect(result.vortexTimingCoverageComplete)
+    #expect(abs(result.actualReynoldsNumber - 100) < 0.1)
+    #expect(result.meanLiftCoefficient.isFinite)
+    #expect(result.meanDragCoefficient.isFinite)
+}
+
+@Test
+func productionMetalPrescribedWingInputFixtureLocalizesVoxelBias() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let audit = try MetalFlappingWingValidator.auditInputs(chordCells: 8)
+
+    #expect(audit.analyticInputsPassed)
+    #expect(!audit.metalGeometryPassed)
+    #expect(!audit.passed)
+    #expect(abs(audit.normalizedPlanformArea - 1) < 1.0e-12)
+    #expect(abs(audit.normalizedRadialCentroid - 0.5) < 1.0e-12)
+    #expect(
+        abs(
+            audit.normalizedRadiusOfGyration
+                - MetalFlappingWingValidator.radiusOfGyration
+        ) < 1.0e-12
+    )
+    #expect(audit.geometry.count == 4)
+    #expect(
+        audit.geometry.allSatisfy {
+            $0.mismatchedCellFraction <= 0.01
+                && $0.maximumSolidWallVelocityError <= 1.0e-5
+        }
+    )
+    let midstroke = try #require(
+        audit.geometry.first { abs($0.phase - 0.25) < 1.0e-12 }
+    )
+    #expect(midstroke.mismatchedCellCount == 0)
+    #expect(midstroke.normalizedVoxelVolume > 1.4)
+    #expect(midstroke.normalizedPublishedThicknessVoxelVolume > 3.5)
+}
 #endif

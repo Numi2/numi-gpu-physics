@@ -106,6 +106,7 @@ private struct Arguments {
       birdflow validate moving-wall [--resolution N] [--json]
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
+      birdflow validate flapping-wing [--chord-cells N] [--json]
     """
 }
 
@@ -411,6 +412,92 @@ private struct WingArguments {
     """
 }
 
+private struct FlappingWingArguments {
+    var finestChordCells = 16
+    var singleChordCells: Int?
+    var cycles = 5
+    var auditInputs = false
+    var json = false
+    var archivePath: String?
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--chord-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 16,
+                      value.isMultiple(of: 8) else {
+                    throw CLIError.invalidArgument(
+                        "--chord-cells requires a multiple of 8 of at least 16"
+                    )
+                }
+                finestChordCells = value
+            case "--single-chord-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 8 else {
+                    throw CLIError.invalidArgument(
+                        "--single-chord-cells requires an integer of at least 8"
+                    )
+                }
+                singleChordCells = value
+            case "--cycles":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 1 else {
+                    throw CLIError.invalidArgument(
+                        "--cycles requires a positive integer"
+                    )
+                }
+                cycles = value
+            case "--audit-inputs":
+                auditInputs = true
+            case "--json":
+                json = true
+            case "--archive":
+                index += 1
+                guard index < values.count, !values[index].isEmpty else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output directory"
+                    )
+                }
+                archivePath = values[index]
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown flapping-wing option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow validate flapping-wing [options]
+
+      --chord-cells N          Finest chord grid (default: 16; multiple of 8)
+      --single-chord-cells N   Run one diagnostic grid without a verdict
+      --cycles N               Diagnostic cycles (default: 5)
+      --audit-inputs           Compare analytic inputs with Metal voxelization
+      --json                   Emit machine-readable JSON
+      --archive DIRECTORY      Save loads and phase Q/vorticity fields
+      --help                   Show this help
+
+    The release command reproduces the published Li--Nabawy Re=100, AR=3
+    prescribed hovering-wing baseline on 8/12/16 cells per chord. It checks
+    fifth-cycle mean and phase-resolved loads, half-stroke symmetry,
+    cycle periodicity, refinement, batch invariance, and vortex-phase archive
+    coverage against the production moving-boundary and fluid kernels.
+    """
+}
+
 private enum CLIError: Error, CustomStringConvertible {
     case invalidArgument(String)
 
@@ -707,11 +794,130 @@ private func runWingValidation(_ values: [String]) throws {
     }
 }
 
+private func printFlappingWingInputAudit(
+    _ audit: MetalFlappingWingInputAudit
+) {
+    print("chord_cells: \(audit.chordCells)")
+    print("analytic_inputs_passed: \(audit.analyticInputsPassed)")
+    for result in audit.geometry {
+        print(
+            "phase=\(result.phase) "
+                + "cpu_cells=\(result.analyticSolidCellCount) "
+                + "metal_cells=\(result.metalSolidCellCount) "
+                + "regularized_volume_ratio="
+                + String(result.normalizedVoxelVolume) + " "
+                + "published_volume_ratio="
+                + String(result.normalizedPublishedThicknessVoxelVolume)
+                + " mismatch=\(result.mismatchedCellFraction)"
+        )
+    }
+    print("metal_geometry_passed: \(audit.metalGeometryPassed)")
+    print("passed: \(audit.passed)")
+}
+
+private func runFlappingWingValidation(_ values: [String]) throws {
+    let arguments = try FlappingWingArguments(values)
+    let archive = arguments.archivePath.map {
+        URL(fileURLWithPath: $0, isDirectory: true)
+    }
+    if arguments.auditInputs {
+        if let chord = arguments.singleChordCells {
+            let audit = try MetalFlappingWingValidator.auditInputs(
+                chordCells: chord
+            )
+            if arguments.json {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                print(String(decoding: try encoder.encode(audit), as: UTF8.self))
+            } else {
+                print("device: \(audit.deviceName)")
+                printFlappingWingInputAudit(audit)
+            }
+            guard audit.passed else {
+                throw MetalFlappingWingValidationError.failed(
+                    "analytic-to-Metal input preflight exceeded its locked gates"
+                )
+            }
+        } else {
+            let report = try MetalFlappingWingValidator.auditInputLadder(
+                finestChordCells: arguments.finestChordCells
+            )
+            if arguments.json {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                print(String(decoding: try encoder.encode(report), as: UTF8.self))
+            } else {
+                print("device: \(report.deviceName)")
+                for audit in report.cases {
+                    printFlappingWingInputAudit(audit)
+                }
+                print("ladder_passed: \(report.passed)")
+            }
+            guard report.passed else {
+                throw MetalFlappingWingValidationError.failed(
+                    "analytic-to-Metal input ladder exceeded its locked gates"
+                )
+            }
+        }
+        return
+    }
+    if let chord = arguments.singleChordCells {
+        let result = try MetalFlappingWingValidator.runSingleCase(
+            chordCells: chord,
+            cycles: arguments.cycles,
+            archiveDirectory: archive
+        )
+        if arguments.json {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            print(String(decoding: try encoder.encode(result), as: UTF8.self))
+        } else {
+            print("diagnostic_only: true")
+            print("source_doi: \(MetalFlappingWingValidator.sourceDOI)")
+            print(
+                "chord=\(result.chordCells) cycles=\(result.cycles) "
+                    + "steps=\(result.steps) "
+                    + "mean_CL=\(result.meanLiftCoefficient) "
+                    + "mean_CD=\(result.meanDragCoefficient) "
+                    + "cycle_difference=\(result.previousCycleDifference)"
+            )
+        }
+        return
+    }
+    let report = try MetalFlappingWingValidator.run(
+        finestChordCells: arguments.finestChordCells,
+        archiveDirectory: archive
+    )
+    if arguments.json {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        print(String(decoding: try encoder.encode(report), as: UTF8.self))
+    } else {
+        print("production_kernel: \(report.productionKernel)")
+        print("geometry_kernel: \(report.geometryKernel)")
+        print("device: \(report.deviceName)")
+        for result in report.cases {
+            print(
+                "chord=\(result.chordCells) steps=\(result.steps) "
+                    + "mean_CL=\(result.meanLiftCoefficient) "
+                    + "mean_CD=\(result.meanDragCoefficient) "
+                    + "symmetry=\(result.halfStrokeSymmetryError)"
+            )
+        }
+        print("passed: \(report.passed)")
+    }
+    guard report.passed else {
+        throw MetalFlappingWingValidationError.failed(
+            "one or more published flapping-wing gates were exceeded"
+        )
+    }
+}
+
 private func run(_ values: [String]) throws {
     if values.count > 1, values[1] == "validate" {
         guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing|flapping-wing> [options]"
             )
         }
         switch values[2] {
@@ -723,9 +929,11 @@ private func run(_ values: [String]) throws {
             try runSphereValidation(values)
         case "wing":
             try runWingValidation(values)
+        case "flapping-wing":
+            try runFlappingWingValidation(values)
         default:
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing|flapping-wing> [options]"
             )
         }
     } else {

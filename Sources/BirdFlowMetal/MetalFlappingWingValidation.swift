@@ -1,0 +1,1816 @@
+import BirdFlowCore
+import Foundation
+
+public enum MetalFlappingWingValidationError: Error, CustomStringConvertible {
+    case invalidRequest(String)
+    case failed(String)
+
+    public var description: String {
+        switch self {
+        case .invalidRequest(let message):
+            return "Invalid prescribed flapping-wing request: \(message)"
+        case .failed(let message):
+            return "Prescribed flapping-wing validation failed: \(message)"
+        }
+    }
+}
+
+public struct PrescribedWingKinematicState: Codable, Sendable {
+    public let phase: Double
+    public let strokeAngleRadians: Double
+    public let strokeRateRadiansPerCycle: Double
+    public let pitchAngleRadians: Double
+    public let pitchRateRadiansPerCycle: Double
+}
+
+public struct MetalFlappingWingPhaseSample: Codable, Sendable {
+    public let phase: Double
+    public let liftCoefficient: Double
+    public let dragCoefficient: Double
+    public let forceX: Double
+    public let forceY: Double
+    public let forceZ: Double
+}
+
+public struct MetalFlappingWingVortexMetric: Codable, Sendable {
+    public let phase: Double
+    public let maximumPositiveQ: Double
+    public let positiveQCellCount: Int
+    public let maximumVorticityMagnitude: Double
+}
+
+public struct MetalFlappingWingCaseResult: Codable, Sendable {
+    public let chordCells: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let cycleSteps: Int
+    public let cycles: Int
+    public let steps: Int
+    public let runtimeSeconds: Double
+    public let effectiveThicknessToChord: Double
+    public let actualRadiusOfGyrationSpeed: Double
+    public let actualReynoldsNumber: Double
+    public let meanLiftCoefficient: Double
+    public let meanDragCoefficient: Double
+    public let relativeMeanLiftError: Double
+    public let relativeMeanDragError: Double
+    public let firstHalfPeakLiftPhase: Double
+    public let secondHalfPeakLiftPhase: Double
+    public let meanMidstrokeLiftCoefficient: Double
+    public let meanReversalLiftCoefficient: Double
+    public let halfStrokeSymmetryError: Double
+    public let previousCycleDifference: Double
+    public let vortexTimingCoverageComplete: Bool
+    public let phaseSamples: [MetalFlappingWingPhaseSample]
+    public let vortexMetrics: [MetalFlappingWingVortexMetric]
+}
+
+public struct MetalFlappingWingValidationReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let geometryKernel: String
+    public let passed: Bool
+    public let runtimeSeconds: Double
+    public let sourceDOI: String
+    public let sourceDescription: String
+    public let reynoldsNumber: Double
+    public let aspectRatio: Double
+    public let radialCentroid: Double
+    public let radiusOfGyration: Double
+    public let strokeAmplitudeDegrees: Double
+    public let pitchAmplitudeDegrees: Double
+    public let referenceMeanLiftCoefficient: Double
+    public let referenceMeanDragCoefficient: Double
+    public let maximumAllowedMeanCoefficientError: Double
+    public let maximumAllowedFinestTwoChange: Double
+    public let maximumAllowedHalfStrokeSymmetryError: Double
+    public let maximumAllowedPreviousCycleDifference: Double
+    public let minimumAllowedMidstrokeLiftCoefficient: Double
+    public let maximumBatchDensityDifference: Double
+    public let maximumBatchVelocityDifference: Double
+    public let maximumBatchForceDifference: Double
+    public let maximumAllowedBatchDifference: Double
+    public let relativeFinestTwoLiftChange: Double
+    public let relativeFinestTwoDragChange: Double
+    public let cases: [MetalFlappingWingCaseResult]
+}
+
+public struct MetalFlappingWingGeometryAudit: Codable, Sendable {
+    public let phase: Double
+    public let analyticSolidCellCount: Int
+    public let metalSolidCellCount: Int
+    public let mismatchedCellCount: Int
+    public let mismatchedCellFraction: Double
+    public let normalizedVoxelVolume: Double
+    public let normalizedPublishedThicknessVoxelVolume: Double
+    public let normalizedRadialCentroid: Double
+    public let normalizedRadiusOfGyration: Double
+    public let maximumSolidWallVelocityError: Double
+}
+
+public struct MetalFlappingWingInputAudit: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let sourceDOI: String
+    public let chordCells: Int
+    public let analyticInputsPassed: Bool
+    public let metalGeometryPassed: Bool
+    public let passed: Bool
+    public let betaNormalizationFromGamma: Double
+    public let normalizedPlanformArea: Double
+    public let normalizedRadialCentroid: Double
+    public let normalizedRadiusOfGyration: Double
+    public let integratedStrokeTravelRadians: Double
+    public let expectedStrokeTravelRadians: Double
+    public let integratedPitchTravelRadians: Double
+    public let expectedPitchTravelRadians: Double
+    public let maximumStrokeDerivativeError: Double
+    public let maximumPitchDerivativeError: Double
+    public let cycleSteps: Int
+    public let radiusOfGyrationSpeed: Double
+    public let referenceArea: Double
+    public let coefficientDenominator: Double
+    public let geometry: [MetalFlappingWingGeometryAudit]
+}
+
+public struct MetalFlappingWingInputAuditReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let sourceDOI: String
+    public let finestChordCells: Int
+    public let passed: Bool
+    public let cases: [MetalFlappingWingInputAudit]
+}
+
+/// Published rigid, prescribed hovering-wing benchmark from Li and Nabawy,
+/// Insects 13 (2022) 459, baseline AR=3, r1/R=0.5, root offset zero.
+public enum MetalFlappingWingValidator {
+    public static let sourceDOI = "10.3390/insects13050459"
+    public static let sourceDescription =
+        "Li and Nabawy (2022), Re=100 beta-planform baseline: AR=3, r1/R=0.5, zero root offset; Table 2 gives fifth-cycle mean CL=1.460 and CD=2.046"
+    public static let reynoldsNumber = 100.0
+    public static let aspectRatio = 3.0
+    public static let radialCentroid = 0.5
+    public static let radiusOfGyration = 0.559_321_813_581_992_6
+    public static let betaShape = 1.489_150_658_355_784_5
+    public static let betaNormalization = 2.497_931_737_168_364
+    public static let strokeAmplitudeDegrees = 160.0
+    public static let strokeHalfAmplitudeRadians = 80.0 * Double.pi / 180
+    public static let pitchAmplitudeDegrees = 90.0
+    public static let accelerationDuration = 0.25
+    public static let pitchDuration = 0.25
+    public static let latticeRadiusOfGyrationSpeed = 0.035
+    public static let referenceMeanLiftCoefficient = 1.460
+    public static let referenceMeanDragCoefficient = 2.046
+    public static let maximumMeanCoefficientError = 0.30
+    public static let maximumFinestTwoChange = 0.05
+    public static let maximumHalfStrokeSymmetryError = 0.15
+    public static let maximumPreviousCycleDifference = 0.15
+    public static let minimumMidstrokeLiftCoefficient = 1.0
+    public static let maximumBatchDifference = 1.0e-7
+    public static let domainHorizontalChords = 10
+    public static let domainVerticalChords = 8
+    public static let requiredVortexPhases = [0.55, 0.65, 0.75, 0.85, 0.95]
+
+    public static var maximumStrokeRateRadiansPerCycle: Double {
+        2 * strokeHalfAmplitudeRadians
+            / (accelerationDuration + 2 * accelerationDuration / Double.pi)
+    }
+
+    public static var cycleTravelPerChord: Double {
+        4 * strokeHalfAmplitudeRadians * radiusOfGyration * aspectRatio
+    }
+
+    public static func kinematicState(
+        phase rawPhase: Double
+    ) -> PrescribedWingKinematicState {
+        let phase = rawPhase - floor(rawPhase)
+        let duration = accelerationDuration
+        let halfDuration = 0.5 * duration
+        let maximumRate = maximumStrokeRateRadiansPerCycle
+        let stroke: Double
+        let strokeRate: Double
+        if phase < halfDuration {
+            let argument = Double.pi * (phase + halfDuration) / duration
+            stroke = strokeHalfAmplitudeRadians
+                + maximumRate * duration / Double.pi
+                * (sin(argument) - 1)
+            strokeRate = maximumRate * cos(argument)
+        } else if phase < 0.5 - halfDuration {
+            let transitionEnd = strokeHalfAmplitudeRadians
+                - maximumRate * duration / Double.pi
+            stroke = transitionEnd
+                - maximumRate * (phase - halfDuration)
+            strokeRate = -maximumRate
+        } else if phase < 0.5 + halfDuration {
+            let start = 0.5 - halfDuration
+            let transitionStart = -strokeHalfAmplitudeRadians
+                + maximumRate * duration / Double.pi
+            let argument = Double.pi * (phase - start) / duration
+            stroke = transitionStart
+                - maximumRate * duration / Double.pi * sin(argument)
+            strokeRate = -maximumRate * cos(argument)
+        } else if phase < 1 - halfDuration {
+            let transitionEnd = -strokeHalfAmplitudeRadians
+                + maximumRate * duration / Double.pi
+            stroke = transitionEnd
+                + maximumRate * (phase - (0.5 + halfDuration))
+            strokeRate = maximumRate
+        } else {
+            let start = 1 - halfDuration
+            let transitionStart = strokeHalfAmplitudeRadians
+                - maximumRate * duration / Double.pi
+            let argument = Double.pi * (phase - start) / duration
+            stroke = transitionStart
+                + maximumRate * duration / Double.pi * sin(argument)
+            strokeRate = maximumRate * cos(argument)
+        }
+
+        let low = 45.0 * Double.pi / 180
+        let high = 135.0 * Double.pi / 180
+        let pitchHalfDuration = 0.5 * pitchDuration
+        let pitch: Double
+        let pitchRate: Double
+        if phase < pitchHalfDuration || phase >= 1 - pitchHalfDuration {
+            let wrapped = phase < pitchHalfDuration ? phase + 1 : phase
+            let x = (wrapped - (1 - pitchHalfDuration)) / pitchDuration
+            let change = low - high
+            pitch = high + change
+                * (x - sin(2 * Double.pi * x) / (2 * Double.pi))
+            pitchRate = change / pitchDuration
+                * (1 - cos(2 * Double.pi * x))
+        } else if phase >= 0.5 - pitchHalfDuration
+                    && phase < 0.5 + pitchHalfDuration {
+            let x = (phase - (0.5 - pitchHalfDuration)) / pitchDuration
+            let change = high - low
+            pitch = low + change
+                * (x - sin(2 * Double.pi * x) / (2 * Double.pi))
+            pitchRate = change / pitchDuration
+                * (1 - cos(2 * Double.pi * x))
+        } else {
+            pitch = phase < 0.5 ? low : high
+            pitchRate = 0
+        }
+        return PrescribedWingKinematicState(
+            phase: phase,
+            strokeAngleRadians: stroke,
+            strokeRateRadiansPerCycle: strokeRate,
+            pitchAngleRadians: pitch,
+            pitchRateRadiansPerCycle: pitchRate
+        )
+    }
+
+    /// Independently reconstructs the paper's analytic planform, kinematic
+    /// integrals, coefficient scales, and CPU voxel mask before comparing the
+    /// latter with the production Metal geometry kernel at four phases.
+    public static func auditInputs(
+        chordCells: Int = 16
+    ) throws -> MetalFlappingWingInputAudit {
+        guard chordCells >= 8 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "input-audit chord resolution must be at least 8"
+            )
+        }
+#if canImport(Metal)
+        return try runInputAudit(chordCells: chordCells)
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func auditInputLadder(
+        finestChordCells: Int = 16
+    ) throws -> MetalFlappingWingInputAuditReport {
+        guard finestChordCells >= 16,
+              finestChordCells.isMultiple(of: 8) else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "input-audit finest chord resolution must be a multiple of 8 and at least 16"
+            )
+        }
+        let chords = [
+            finestChordCells / 2,
+            finestChordCells * 3 / 4,
+            finestChordCells,
+        ]
+        let cases = try chords.map { try auditInputs(chordCells: $0) }
+        return MetalFlappingWingInputAuditReport(
+            schemaVersion: 1,
+            deviceName: cases.first?.deviceName ?? "Unavailable",
+            sourceDOI: sourceDOI,
+            finestChordCells: finestChordCells,
+            passed: cases.allSatisfy(\.passed),
+            cases: cases
+        )
+    }
+
+    /// One diagnostic grid. Five cycles reproduce the paper's sampling window;
+    /// fewer cycles are intentionally labelled diagnostic by the CLI.
+    public static func runSingleCase(
+        chordCells: Int = 8,
+        cycles: Int = 5,
+        archiveDirectory: URL? = nil
+    ) throws -> MetalFlappingWingCaseResult {
+        guard chordCells >= 8, cycles >= 1 else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "chord resolution must be at least 8 and cycles must be positive"
+            )
+        }
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        return try runCase(
+            backend: backend,
+            chordCells: chordCells,
+            cycles: cycles,
+            archiveDirectory: archiveDirectory
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func run(
+        finestChordCells: Int = 16,
+        archiveDirectory: URL? = nil
+    ) throws -> MetalFlappingWingValidationReport {
+        guard finestChordCells >= 16,
+              finestChordCells.isMultiple(of: 8) else {
+            throw MetalFlappingWingValidationError.invalidRequest(
+                "finest chord resolution must be a multiple of 8 and at least 16"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let chords = [
+            finestChordCells / 2,
+            finestChordCells * 3 / 4,
+            finestChordCells,
+        ]
+        if let archiveDirectory {
+            try FileManager.default.createDirectory(
+                at: archiveDirectory,
+                withIntermediateDirectories: true
+            )
+        }
+        var results: [MetalFlappingWingCaseResult] = []
+        for chord in chords {
+            results.append(try runCase(
+                backend: backend,
+                chordCells: chord,
+                cycles: 5,
+                archiveDirectory: archiveDirectory?.appendingPathComponent(
+                    "chord-\(chord)",
+                    isDirectory: true
+                )
+            ))
+        }
+        let next = results[results.count - 2]
+        let finest = results[results.count - 1]
+        let liftChange = relativeChange(
+            finest.meanLiftCoefficient,
+            next.meanLiftCoefficient
+        )
+        let dragChange = relativeChange(
+            finest.meanDragCoefficient,
+            next.meanDragCoefficient
+        )
+        let batch = try batchDifference(backend: backend)
+        let finite = results.allSatisfy {
+            $0.meanLiftCoefficient.isFinite
+                && $0.meanDragCoefficient.isFinite
+                && $0.phaseSamples.allSatisfy {
+                    $0.liftCoefficient.isFinite && $0.dragCoefficient.isFinite
+                }
+        }
+        let phaseTimingPassed = (0.25...0.45).contains(
+            finest.firstHalfPeakLiftPhase
+        ) && (0.75...0.95).contains(finest.secondHalfPeakLiftPhase)
+        let passed = finite
+            && finest.relativeMeanLiftError <= maximumMeanCoefficientError
+            && finest.relativeMeanDragError <= maximumMeanCoefficientError
+            && liftChange <= maximumFinestTwoChange
+            && dragChange <= maximumFinestTwoChange
+            && finest.halfStrokeSymmetryError
+                <= maximumHalfStrokeSymmetryError
+            && finest.previousCycleDifference
+                <= maximumPreviousCycleDifference
+            && finest.meanMidstrokeLiftCoefficient
+                >= minimumMidstrokeLiftCoefficient
+            && phaseTimingPassed
+            && results.allSatisfy(\.vortexTimingCoverageComplete)
+            && batch.density <= maximumBatchDifference
+            && batch.velocity <= maximumBatchDifference
+            && batch.force <= maximumBatchDifference
+        let report = MetalFlappingWingValidationReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            geometryKernel: "buildPrescribedFlappingWing",
+            passed: passed,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            sourceDOI: sourceDOI,
+            sourceDescription: sourceDescription,
+            reynoldsNumber: reynoldsNumber,
+            aspectRatio: aspectRatio,
+            radialCentroid: radialCentroid,
+            radiusOfGyration: radiusOfGyration,
+            strokeAmplitudeDegrees: strokeAmplitudeDegrees,
+            pitchAmplitudeDegrees: pitchAmplitudeDegrees,
+            referenceMeanLiftCoefficient: referenceMeanLiftCoefficient,
+            referenceMeanDragCoefficient: referenceMeanDragCoefficient,
+            maximumAllowedMeanCoefficientError: maximumMeanCoefficientError,
+            maximumAllowedFinestTwoChange: maximumFinestTwoChange,
+            maximumAllowedHalfStrokeSymmetryError:
+                maximumHalfStrokeSymmetryError,
+            maximumAllowedPreviousCycleDifference:
+                maximumPreviousCycleDifference,
+            minimumAllowedMidstrokeLiftCoefficient:
+                minimumMidstrokeLiftCoefficient,
+            maximumBatchDensityDifference: batch.density,
+            maximumBatchVelocityDifference: batch.velocity,
+            maximumBatchForceDifference: batch.force,
+            maximumAllowedBatchDifference: maximumBatchDifference,
+            relativeFinestTwoLiftChange: liftChange,
+            relativeFinestTwoDragChange: dragChange,
+            cases: results
+        )
+        if let archiveDirectory {
+            try archiveReport(report, directory: archiveDirectory)
+        }
+        return report
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+}
+
+#if canImport(Metal)
+import Metal
+
+private extension MetalFlappingWingValidator {
+    struct BatchDifference {
+        let density: Double
+        let velocity: Double
+        let force: Double
+    }
+
+    struct GeometrySnapshot {
+        let solid: [UInt8]
+        let wallVelocity: [SIMD3<Float>]
+    }
+
+    struct FieldDiagnostics {
+        let metric: MetalFlappingWingVortexMetric
+        let qCriterion: [Float]?
+        let vorticity: [SIMD3<Float>]?
+    }
+
+    struct AnalyticWingFrame {
+        let span: SIMD3<Double>
+        let chord: SIMD3<Double>
+        let normal: SIMD3<Double>
+        let angularVelocity: SIMD3<Double>
+    }
+
+    static func runInputAudit(
+        chordCells: Int
+    ) throws -> MetalFlappingWingInputAudit {
+        let p = betaShape
+        let q = betaShape
+        let betaFunction = tgamma(p) * tgamma(q) / tgamma(p + q)
+        let independentNormalization = 1 / betaFunction
+        let normalizedArea = betaNormalization * betaFunction
+        let analyticCentroid = p / (p + q)
+        let analyticRadiusOfGyration = sqrt(
+            p * (p + 1) / ((p + q) * (p + q + 1))
+        )
+
+        let integrationSamples = 65_536
+        var strokeTravel = 0.0
+        var pitchTravel = 0.0
+        for index in 0..<integrationSamples {
+            let phase = (Double(index) + 0.5)
+                / Double(integrationSamples)
+            let state = kinematicState(phase: phase)
+            strokeTravel += abs(state.strokeRateRadiansPerCycle)
+            pitchTravel += abs(state.pitchRateRadiansPerCycle)
+        }
+        strokeTravel /= Double(integrationSamples)
+        pitchTravel /= Double(integrationSamples)
+
+        var maximumStrokeDerivativeError = 0.0
+        var maximumPitchDerivativeError = 0.0
+        let derivativeStep = 1.0e-6
+        for index in 0..<1_024 {
+            let phase = (Double(index) + 0.371)
+                / 1_024.0
+            let state = kinematicState(phase: phase)
+            let before = kinematicState(phase: phase - derivativeStep)
+            let after = kinematicState(phase: phase + derivativeStep)
+            let strokeDerivative = (after.strokeAngleRadians
+                - before.strokeAngleRadians) / (2 * derivativeStep)
+            let pitchDerivative = (after.pitchAngleRadians
+                - before.pitchAngleRadians) / (2 * derivativeStep)
+            maximumStrokeDerivativeError = max(
+                maximumStrokeDerivativeError,
+                abs(strokeDerivative - state.strokeRateRadiansPerCycle)
+            )
+            maximumPitchDerivativeError = max(
+                maximumPitchDerivativeError,
+                abs(pitchDerivative - state.pitchRateRadiansPerCycle)
+            )
+        }
+
+        let grid = try GridSize(
+            x: domainHorizontalChords * chordCells,
+            y: domainHorizontalChords * chordCells,
+            z: domainVerticalChords * chordCells
+        )
+        let cycleSteps = Int((
+            cycleTravelPerChord * Double(chordCells)
+                / latticeRadiusOfGyrationSpeed
+        ).rounded())
+        let root = SIMD3<Float>(
+            0.5 * Float(grid.x),
+            0.5 * Float(grid.y),
+            0.65 * Float(grid.z)
+        )
+        let backend = try MetalBackend(fastMath: false)
+        let simulation = try MetalPrescribedWingSimulation(
+            backend: backend,
+            grid: grid,
+            chordCells: chordCells,
+            cycleSteps: cycleSteps,
+            root: root
+        )
+        let phases = [0.0, 0.125, 0.25, 0.375]
+        let geometry = try phases.map { phase in
+            let snapshot = try simulation.copyGeometry(phase: phase)
+            return geometryAudit(
+                phase: phase,
+                snapshot: snapshot,
+                grid: grid,
+                root: SIMD3<Double>(
+                    Double(root.x), Double(root.y), Double(root.z)
+                ),
+                chordCells: chordCells,
+                cycleSteps: cycleSteps
+            )
+        }
+
+        let actualSpeed = cycleTravelPerChord * Double(chordCells)
+            / Double(cycleSteps)
+        let referenceArea = aspectRatio
+            * Double(chordCells * chordCells)
+        let coefficientDenominator = 0.5 * actualSpeed * actualSpeed
+            * referenceArea
+        let geometryPassed = geometry.allSatisfy {
+            $0.mismatchedCellFraction <= 0.01
+                && abs($0.normalizedVoxelVolume - 1) <= 0.25
+                && abs($0.normalizedPublishedThicknessVoxelVolume - 1)
+                    <= 0.25
+                && abs($0.normalizedRadialCentroid - radialCentroid) <= 0.04
+                && abs($0.normalizedRadiusOfGyration
+                    - radiusOfGyration) <= 0.04
+                && $0.maximumSolidWallVelocityError <= 1.0e-5
+        }
+        let analyticInputsPassed = abs(
+            independentNormalization - betaNormalization
+        )
+                <= 1.0e-12
+            && abs(normalizedArea - 1) <= 1.0e-12
+            && abs(analyticCentroid - radialCentroid) <= 1.0e-12
+            && abs(analyticRadiusOfGyration - radiusOfGyration)
+                <= 1.0e-12
+            && abs(strokeTravel - 4 * strokeHalfAmplitudeRadians)
+                <= 1.0e-8
+            && abs(pitchTravel - Double.pi) <= 1.0e-8
+            && maximumStrokeDerivativeError <= 1.0e-5
+            && maximumPitchDerivativeError <= 1.0e-5
+        let passed = analyticInputsPassed && geometryPassed
+        return MetalFlappingWingInputAudit(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            sourceDOI: sourceDOI,
+            chordCells: chordCells,
+            analyticInputsPassed: analyticInputsPassed,
+            metalGeometryPassed: geometryPassed,
+            passed: passed,
+            betaNormalizationFromGamma: independentNormalization,
+            normalizedPlanformArea: normalizedArea,
+            normalizedRadialCentroid: analyticCentroid,
+            normalizedRadiusOfGyration: analyticRadiusOfGyration,
+            integratedStrokeTravelRadians: strokeTravel,
+            expectedStrokeTravelRadians: 4 * strokeHalfAmplitudeRadians,
+            integratedPitchTravelRadians: pitchTravel,
+            expectedPitchTravelRadians: Double.pi,
+            maximumStrokeDerivativeError: maximumStrokeDerivativeError,
+            maximumPitchDerivativeError: maximumPitchDerivativeError,
+            cycleSteps: cycleSteps,
+            radiusOfGyrationSpeed: actualSpeed,
+            referenceArea: referenceArea,
+            coefficientDenominator: coefficientDenominator,
+            geometry: geometry
+        )
+    }
+
+    static func geometryAudit(
+        phase: Double,
+        snapshot: GeometrySnapshot,
+        grid: GridSize,
+        root: SIMD3<Double>,
+        chordCells: Int,
+        cycleSteps: Int
+    ) -> MetalFlappingWingGeometryAudit {
+        let frame = analyticWingFrame(
+            phase: phase,
+            cycleSteps: cycleSteps
+        )
+        let chord = Double(chordCells)
+        let radius = aspectRatio * chord
+        let thickness = max(0.05 * chord, 1)
+        let expectedVolume = aspectRatio * chord * chord * thickness
+        let publishedVolume = aspectRatio * chord * chord
+            * (0.05 * chord)
+        var analyticCount = 0
+        var metalCount = 0
+        var mismatchCount = 0
+        var radialSum = 0.0
+        var radialSquareSum = 0.0
+        var maximumWallError = 0.0
+        for z in 0..<grid.z {
+            for y in 0..<grid.y {
+                for x in 0..<grid.x {
+                    let index = x + grid.x * (y + grid.y * z)
+                    let world = SIMD3<Double>(
+                        Double(x) + 0.5,
+                        Double(y) + 0.5,
+                        Double(z) + 0.5
+                    )
+                    let relative = world - root
+                    let chordCoordinate = dot(relative, frame.chord)
+                    let radialCoordinate = dot(relative, frame.span)
+                    let normalCoordinate = dot(relative, frame.normal)
+                    var analyticSolid = false
+                    if radialCoordinate >= 0,
+                       radialCoordinate <= radius,
+                       abs(normalCoordinate) <= 0.5 * thickness {
+                        let radialFraction = min(
+                            max(radialCoordinate / radius, 0),
+                            1
+                        )
+                        let betaBase = max(
+                            radialFraction * (1 - radialFraction),
+                            0
+                        )
+                        let localChord = chord * betaNormalization
+                            * pow(betaBase, betaShape - 1)
+                        analyticSolid = chordCoordinate >= -0.25 * chord
+                            && chordCoordinate <= -0.25 * chord + localChord
+                    }
+                    let metalSolid = snapshot.solid[index] != 0
+                    analyticCount += analyticSolid ? 1 : 0
+                    metalCount += metalSolid ? 1 : 0
+                    mismatchCount += analyticSolid == metalSolid ? 0 : 1
+                    if metalSolid {
+                        radialSum += radialCoordinate
+                        radialSquareSum += radialCoordinate * radialCoordinate
+                        let expectedWall = cross(
+                            frame.angularVelocity,
+                            relative
+                        )
+                        let actual = snapshot.wallVelocity[index]
+                        let difference = SIMD3<Double>(
+                            Double(actual.x) - expectedWall.x,
+                            Double(actual.y) - expectedWall.y,
+                            Double(actual.z) - expectedWall.z
+                        )
+                        maximumWallError = max(
+                            maximumWallError,
+                            sqrt(dot(difference, difference))
+                        )
+                    }
+                }
+            }
+        }
+        let count = Double(max(metalCount, 1))
+        return MetalFlappingWingGeometryAudit(
+            phase: phase,
+            analyticSolidCellCount: analyticCount,
+            metalSolidCellCount: metalCount,
+            mismatchedCellCount: mismatchCount,
+            mismatchedCellFraction: Double(mismatchCount)
+                / Double(max(max(analyticCount, metalCount), 1)),
+            normalizedVoxelVolume: Double(metalCount) / expectedVolume,
+            normalizedPublishedThicknessVoxelVolume: Double(metalCount)
+                / publishedVolume,
+            normalizedRadialCentroid: radialSum / count / radius,
+            normalizedRadiusOfGyration: sqrt(radialSquareSum / count)
+                / radius,
+            maximumSolidWallVelocityError: maximumWallError
+        )
+    }
+
+    static func analyticWingFrame(
+        phase: Double,
+        cycleSteps: Int
+    ) -> AnalyticWingFrame {
+        let state = kinematicState(phase: phase)
+        let span = SIMD3<Double>(
+            cos(state.strokeAngleRadians),
+            sin(state.strokeAngleRadians),
+            0
+        )
+        let tangent = cross(SIMD3<Double>(0, 0, 1), span)
+        let chord = rotate(
+            tangent,
+            around: span,
+            angle: -state.pitchAngleRadians
+        )
+        let normal = cross(span, chord)
+        let inverseCycleSteps = 1 / Double(cycleSteps)
+        let angularVelocity = SIMD3<Double>(0, 0, 1)
+                * (state.strokeRateRadiansPerCycle * inverseCycleSteps)
+            - span
+                * (state.pitchRateRadiansPerCycle * inverseCycleSteps)
+        return AnalyticWingFrame(
+            span: span,
+            chord: chord,
+            normal: normal,
+            angularVelocity: angularVelocity
+        )
+    }
+
+    static func runCase(
+        backend: MetalBackend,
+        chordCells: Int,
+        cycles: Int,
+        archiveDirectory: URL?
+    ) throws -> MetalFlappingWingCaseResult {
+        let startTime = Date()
+        let grid = try GridSize(
+            x: domainHorizontalChords * chordCells,
+            y: domainHorizontalChords * chordCells,
+            z: domainVerticalChords * chordCells
+        )
+        let cycleSteps = Int((
+            cycleTravelPerChord * Double(chordCells)
+                / latticeRadiusOfGyrationSpeed
+        ).rounded())
+        let root = SIMD3<Float>(
+            0.5 * Float(grid.x),
+            0.5 * Float(grid.y),
+            0.65 * Float(grid.z)
+        )
+        let simulation = try MetalPrescribedWingSimulation(
+            backend: backend,
+            grid: grid,
+            chordCells: chordCells,
+            cycleSteps: cycleSteps,
+            root: root
+        )
+        if let archiveDirectory {
+            try FileManager.default.createDirectory(
+                at: archiveDirectory,
+                withIntermediateDirectories: true
+            )
+        }
+
+        let firstRecordedCycle = max(0, cycles - 2)
+        var previous: [MetalFlappingWingPhaseSample] = []
+        var current: [MetalFlappingWingPhaseSample] = []
+        var vortexMetrics: [MetalFlappingWingVortexMetric] = []
+        let vortexIndices = Set(requiredVortexPhases.map {
+            Int(($0 * 100).rounded())
+        })
+        if firstRecordedCycle > 0 {
+            _ = try simulation.advance(
+                to: firstRecordedCycle * cycleSteps,
+                batchSize: 64,
+                captureFields: false
+            )
+        }
+        for cycle in firstRecordedCycle..<cycles {
+            if cycle == cycles - 1 {
+                for sampleIndex in vortexIndices.sorted() {
+                    let phase = Double(sampleIndex) / 100
+                    let target = cycle * cycleSteps
+                        + Int((phase * Double(cycleSteps)).rounded())
+                    _ = try simulation.advance(
+                        to: target,
+                        batchSize: 64,
+                        captureFields: true,
+                        recordEveryStepLoad: true
+                    )
+                    let fields = simulation.copyFields()
+                    let diagnostics = fieldDiagnostics(
+                        phase: phase,
+                        density: fields.density,
+                        velocity: fields.velocity,
+                        grid: grid,
+                        retainFields: archiveDirectory != nil
+                    )
+                    vortexMetrics.append(diagnostics.metric)
+                    if let archiveDirectory {
+                        try archivePhase(
+                            directory: archiveDirectory,
+                            phaseIndex: sampleIndex,
+                            density: fields.density,
+                            velocity: fields.velocity,
+                            diagnostics: diagnostics
+                        )
+                    }
+                }
+            }
+            _ = try simulation.advance(
+                to: (cycle + 1) * cycleSteps,
+                batchSize: 64,
+                captureFields: false,
+                recordEveryStepLoad: true
+            )
+            let samples = phaseBinnedSamples(
+                loads: simulation.copyRecordedLoads(),
+                chordCells: chordCells,
+                cycleSteps: cycleSteps
+            )
+            if cycle == cycles - 1 {
+                current = samples
+            } else {
+                previous = samples
+            }
+        }
+        if cycles == 1 {
+            previous = current
+        } else if previous.count > 100 {
+            previous = Array(previous.suffix(100))
+        }
+        let meanLift = current.map(\.liftCoefficient).mean
+        let meanDrag = current.map(\.dragCoefficient).mean
+        let firstPeak = current[0..<50].max {
+            $0.liftCoefficient < $1.liftCoefficient
+        }!.phase
+        let secondPeak = current[50..<100].max {
+            $0.liftCoefficient < $1.liftCoefficient
+        }!.phase
+        let midstroke = [current[25].liftCoefficient, current[75].liftCoefficient].mean
+        let reversal = [current[0].liftCoefficient, current[50].liftCoefficient].mean
+        let halfSymmetry = normalizedCurveDifference(
+            Array(current[0..<50]),
+            Array(current[50..<100])
+        )
+        let periodicDifference = normalizedCurveDifference(previous, current)
+        let actualSpeed = cycleTravelPerChord * Double(chordCells)
+            / Double(cycleSteps)
+        let result = MetalFlappingWingCaseResult(
+            chordCells: chordCells,
+            gridX: grid.x,
+            gridY: grid.y,
+            gridZ: grid.z,
+            cycleSteps: cycleSteps,
+            cycles: cycles,
+            steps: cycles * cycleSteps,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            effectiveThicknessToChord: max(0.05, 1 / Double(chordCells)),
+            actualRadiusOfGyrationSpeed: actualSpeed,
+            actualReynoldsNumber: reynoldsNumber
+                * actualSpeed / latticeRadiusOfGyrationSpeed,
+            meanLiftCoefficient: meanLift,
+            meanDragCoefficient: meanDrag,
+            relativeMeanLiftError: relativeError(
+                meanLift,
+                referenceMeanLiftCoefficient
+            ),
+            relativeMeanDragError: relativeError(
+                meanDrag,
+                referenceMeanDragCoefficient
+            ),
+            firstHalfPeakLiftPhase: firstPeak,
+            secondHalfPeakLiftPhase: secondPeak,
+            meanMidstrokeLiftCoefficient: midstroke,
+            meanReversalLiftCoefficient: reversal,
+            halfStrokeSymmetryError: halfSymmetry,
+            previousCycleDifference: periodicDifference,
+            vortexTimingCoverageComplete: vortexMetrics.count
+                == requiredVortexPhases.count
+                && vortexMetrics.allSatisfy {
+                    $0.maximumPositiveQ.isFinite
+                        && $0.maximumPositiveQ > 0
+                        && $0.positiveQCellCount > 0
+                        && $0.maximumVorticityMagnitude.isFinite
+                        && $0.maximumVorticityMagnitude > 0
+                },
+            phaseSamples: current,
+            vortexMetrics: vortexMetrics
+        )
+        if let archiveDirectory {
+            try archiveCase(result, directory: archiveDirectory)
+        }
+        return result
+    }
+
+    static func phaseSample(
+        phase: Double,
+        load: ForceTorque,
+        chordCells: Int,
+        cycleSteps: Int
+    ) -> MetalFlappingWingPhaseSample {
+        let state = kinematicState(phase: phase)
+        let tangent = SIMD3<Double>(
+            -sin(state.strokeAngleRadians),
+            cos(state.strokeAngleRadians),
+            0
+        )
+        let force = SIMD3<Double>(
+            Double(load.forceNewtons.x),
+            Double(load.forceNewtons.y),
+            Double(load.forceNewtons.z)
+        )
+        let actualSpeed = cycleTravelPerChord * Double(chordCells)
+            / Double(cycleSteps)
+        let denominator = 0.5 * actualSpeed * actualSpeed
+            * aspectRatio * Double(chordCells * chordCells)
+        let strokeDirection = phase < 0.5 ? -1.0 : 1.0
+        return MetalFlappingWingPhaseSample(
+            phase: phase,
+            liftCoefficient: force.z / denominator,
+            dragCoefficient: -strokeDirection * dot(force, tangent)
+                / denominator,
+            forceX: force.x,
+            forceY: force.y,
+            forceZ: force.z
+        )
+    }
+
+    static func phaseBinnedSamples(
+        loads: [ForceTorque],
+        chordCells: Int,
+        cycleSteps: Int
+    ) -> [MetalFlappingWingPhaseSample] {
+        var lift = [Double](repeating: 0, count: 100)
+        var drag = [Double](repeating: 0, count: 100)
+        var forceX = [Double](repeating: 0, count: 100)
+        var forceY = [Double](repeating: 0, count: 100)
+        var forceZ = [Double](repeating: 0, count: 100)
+        var counts = [Int](repeating: 0, count: 100)
+        for index in loads.indices {
+            // The last stored step is phase 1 from the preceding half-stroke,
+            // so keep it in bin 99 instead of wrapping its drag direction.
+            let phase = min(
+                (Double(index) + 1) / Double(cycleSteps),
+                1 - Double.ulpOfOne
+            )
+            let bin = min(99, Int(floor(phase * 100)))
+            let sample = phaseSample(
+                phase: phase,
+                load: loads[index],
+                chordCells: chordCells,
+                cycleSteps: cycleSteps
+            )
+            lift[bin] += sample.liftCoefficient
+            drag[bin] += sample.dragCoefficient
+            forceX[bin] += sample.forceX
+            forceY[bin] += sample.forceY
+            forceZ[bin] += sample.forceZ
+            counts[bin] += 1
+        }
+        return (0..<100).map { bin in
+            let divisor = Double(max(counts[bin], 1))
+            return MetalFlappingWingPhaseSample(
+                phase: (Double(bin) + 0.5) / 100,
+                liftCoefficient: lift[bin] / divisor,
+                dragCoefficient: drag[bin] / divisor,
+                forceX: forceX[bin] / divisor,
+                forceY: forceY[bin] / divisor,
+                forceZ: forceZ[bin] / divisor
+            )
+        }
+    }
+
+    static func fieldDiagnostics(
+        phase: Double,
+        density: [Float],
+        velocity: [SIMD3<Float>],
+        grid: GridSize,
+        retainFields: Bool
+    ) -> FieldDiagnostics {
+        func index(_ x: Int, _ y: Int, _ z: Int) -> Int {
+            x + grid.x * (y + grid.y * z)
+        }
+        var maximumQ = 0.0
+        var maximumVorticity = 0.0
+        var positiveCount = 0
+        var qField = retainFields ? [Float](repeating: 0, count: velocity.count) : nil
+        var vorticityField = retainFields
+            ? [SIMD3<Float>](repeating: .zero, count: velocity.count)
+            : nil
+        for z in 1..<(grid.z - 1) {
+            for y in 1..<(grid.y - 1) {
+                for x in 1..<(grid.x - 1) {
+                    let i = index(x, y, z)
+                    let dx = 0.5 * (velocity[index(x + 1, y, z)]
+                        - velocity[index(x - 1, y, z)])
+                    let dy = 0.5 * (velocity[index(x, y + 1, z)]
+                        - velocity[index(x, y - 1, z)])
+                    let dz = 0.5 * (velocity[index(x, y, z + 1)]
+                        - velocity[index(x, y, z - 1)])
+                    let gradient = [
+                        SIMD3<Double>(Double(dx.x), Double(dy.x), Double(dz.x)),
+                        SIMD3<Double>(Double(dx.y), Double(dy.y), Double(dz.y)),
+                        SIMD3<Double>(Double(dx.z), Double(dy.z), Double(dz.z)),
+                    ]
+                    var traceSquare = 0.0
+                    for row in 0..<3 {
+                        for column in 0..<3 {
+                            traceSquare += gradient[row][column]
+                                * gradient[column][row]
+                        }
+                    }
+                    let q = -0.5 * traceSquare
+                    let curl = SIMD3<Double>(
+                        gradient[2].y - gradient[1].z,
+                        gradient[0].z - gradient[2].x,
+                        gradient[1].x - gradient[0].y
+                    )
+                    let magnitude = sqrt(dot(curl, curl))
+                    if q > 0 {
+                        positiveCount += 1
+                        maximumQ = max(maximumQ, q)
+                    }
+                    maximumVorticity = max(maximumVorticity, magnitude)
+                    qField?[i] = Float(q)
+                    vorticityField?[i] = SIMD3<Float>(
+                        Float(curl.x), Float(curl.y), Float(curl.z)
+                    )
+                }
+            }
+        }
+        return FieldDiagnostics(
+            metric: MetalFlappingWingVortexMetric(
+                phase: phase,
+                maximumPositiveQ: maximumQ,
+                positiveQCellCount: positiveCount,
+                maximumVorticityMagnitude: maximumVorticity
+            ),
+            qCriterion: qField,
+            vorticity: vorticityField
+        )
+    }
+
+    static func normalizedCurveDifference(
+        _ first: [MetalFlappingWingPhaseSample],
+        _ second: [MetalFlappingWingPhaseSample]
+    ) -> Double {
+        guard first.count == second.count, !first.isEmpty else { return 1 }
+        var squared = 0.0
+        var reference = 0.0
+        for index in first.indices {
+            let dl = first[index].liftCoefficient
+                - second[index].liftCoefficient
+            let dd = first[index].dragCoefficient
+                - second[index].dragCoefficient
+            squared += dl * dl + dd * dd
+            reference += second[index].liftCoefficient
+                    * second[index].liftCoefficient
+                + second[index].dragCoefficient
+                    * second[index].dragCoefficient
+        }
+        return sqrt(squared / max(reference, 1.0e-30))
+    }
+
+    static func relativeError(_ value: Double, _ reference: Double) -> Double {
+        abs(value - reference) / abs(reference)
+    }
+
+    static func relativeChange(_ first: Double, _ second: Double) -> Double {
+        abs(first - second) / max(abs(first), 1.0e-30)
+    }
+
+    static func batchDifference(backend: MetalBackend) throws -> BatchDifference {
+        let chord = 8
+        let grid = try GridSize(
+            x: domainHorizontalChords * chord,
+            y: domainHorizontalChords * chord,
+            z: domainVerticalChords * chord
+        )
+        let cycleSteps = Int((cycleTravelPerChord * Double(chord)
+            / latticeRadiusOfGyrationSpeed).rounded())
+        let root = SIMD3<Float>(
+            0.5 * Float(grid.x),
+            0.5 * Float(grid.y),
+            0.65 * Float(grid.z)
+        )
+        func makeSimulation() throws -> MetalPrescribedWingSimulation {
+            try MetalPrescribedWingSimulation(
+                backend: backend,
+                grid: grid,
+                chordCells: chord,
+                cycleSteps: cycleSteps,
+                root: root
+            )
+        }
+        let single = try makeSimulation()
+        let batched = try makeSimulation()
+        let singleLoad = try single.advance(
+            to: 96,
+            batchSize: 1,
+            captureFields: true
+        )
+        let batchedLoad = try batched.advance(
+            to: 96,
+            batchSize: 64,
+            captureFields: true
+        )
+        let a = single.copyFields()
+        let b = batched.copyFields()
+        var densityDifference = 0.0
+        var velocityDifference = 0.0
+        for index in a.density.indices {
+            densityDifference = max(
+                densityDifference,
+                abs(Double(a.density[index] - b.density[index]))
+            )
+            let difference = a.velocity[index] - b.velocity[index]
+            velocityDifference = max(
+                velocityDifference,
+                Double(max(abs(difference.x), max(abs(difference.y), abs(difference.z))))
+            )
+        }
+        let forceDifference = vectorLength(
+            singleLoad.forceNewtons - batchedLoad.forceNewtons
+        )
+        return BatchDifference(
+            density: densityDifference,
+            velocity: velocityDifference,
+            force: Double(forceDifference)
+        )
+    }
+
+    static func archiveCase(
+        _ result: MetalFlappingWingCaseResult,
+        directory: URL
+    ) throws {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(result).write(
+            to: directory.appendingPathComponent("case.json"),
+            options: .atomic
+        )
+        let header = "phase,CL,CD,Fx,Fy,Fz\n"
+        let rows = result.phaseSamples.map {
+            "\($0.phase),\($0.liftCoefficient),\($0.dragCoefficient),\($0.forceX),\($0.forceY),\($0.forceZ)"
+        }.joined(separator: "\n")
+        try (header + rows + "\n").write(
+            to: directory.appendingPathComponent("phase-history.csv"),
+            atomically: true,
+            encoding: .utf8
+        )
+        let format = """
+        BirdFlowMetal prescribed flapping-wing archive schema 1
+        case.json and phase-history.csv contain fifth-cycle loads.
+        phase-XX-density.bin: little-endian Float32 density.
+        phase-XX-velocity.bin: little-endian Float32 triples.
+        phase-XX-qcriterion.bin: little-endian Float32 Q values.
+        phase-XX-vorticity.bin: little-endian Float32 triples.
+        Cell order is x + Nx * (y + Ny * z), x fastest.
+        Q and vorticity use unit lattice spacing and central differences.
+        """
+        try format.write(
+            to: directory.appendingPathComponent("FORMAT.txt"),
+            atomically: true,
+            encoding: .utf8
+        )
+    }
+
+    static func archivePhase(
+        directory: URL,
+        phaseIndex: Int,
+        density: [Float],
+        velocity: [SIMD3<Float>],
+        diagnostics: FieldDiagnostics
+    ) throws {
+        let prefix = String(format: "phase-%02d", phaseIndex)
+        try littleEndianFloatData(density).write(
+            to: directory.appendingPathComponent("\(prefix)-density.bin"),
+            options: .atomic
+        )
+        try littleEndianVectorData(velocity).write(
+            to: directory.appendingPathComponent("\(prefix)-velocity.bin"),
+            options: .atomic
+        )
+        if let q = diagnostics.qCriterion {
+            try littleEndianFloatData(q).write(
+                to: directory.appendingPathComponent("\(prefix)-qcriterion.bin"),
+                options: .atomic
+            )
+        }
+        if let vorticity = diagnostics.vorticity {
+            try littleEndianVectorData(vorticity).write(
+                to: directory.appendingPathComponent("\(prefix)-vorticity.bin"),
+                options: .atomic
+            )
+        }
+    }
+
+    static func archiveReport(
+        _ report: MetalFlappingWingValidationReport,
+        directory: URL
+    ) throws {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(report).write(
+            to: directory.appendingPathComponent("report.json"),
+            options: .atomic
+        )
+    }
+
+    static func littleEndianFloatData(_ values: [Float]) -> Data {
+        var data = Data(capacity: values.count * 4)
+        for value in values {
+            var bits = value.bitPattern.littleEndian
+            withUnsafeBytes(of: &bits) { data.append(contentsOf: $0) }
+        }
+        return data
+    }
+
+    static func littleEndianVectorData(_ values: [SIMD3<Float>]) -> Data {
+        var flattened: [Float] = []
+        flattened.reserveCapacity(values.count * 3)
+        for value in values {
+            flattened.append(value.x)
+            flattened.append(value.y)
+            flattened.append(value.z)
+        }
+        return littleEndianFloatData(flattened)
+    }
+}
+
+private final class MetalPrescribedWingSimulation {
+    private let backend: MetalBackend
+    private let configuration: SimulationConfiguration
+    private let parameters: MTLBuffer
+    private let prepared: MTLBuffer
+    private let populationsA: MTLBuffer
+    private let populationsB: MTLBuffer
+    private let solidA: MTLBuffer
+    private let solidB: MTLBuffer
+    private let wallVelocity: MTLBuffer
+    private let density: MTLBuffer
+    private let velocity: MTLBuffer
+    private let reductionA: MTLBuffer
+    private let reductionB: MTLBuffer
+    private let loadHistory: MTLBuffer
+    private let bodyState: MTLBuffer
+    private let preparePipeline: MTLComputePipelineState
+    private let geometryPipeline: MTLComputePipelineState
+    private let initializePipeline: MTLComputePipelineState
+    private let fluidPipeline: MTLComputePipelineState
+    private let reductionPipeline: MTLComputePipelineState
+    private let storeLoadPipeline: MTLComputePipelineState
+    private let partialLoadCount: Int
+    private let cycleSteps: Int
+    private var currentPopulations: MTLBuffer
+    private var nextPopulations: MTLBuffer
+    private var currentSolid: MTLBuffer
+    private var nextSolid: MTLBuffer
+    private var lastLoad: MTLBuffer
+    private var stepIndex = 0
+
+    init(
+        backend: MetalBackend,
+        grid: GridSize,
+        chordCells: Int,
+        cycleSteps: Int,
+        root: SIMD3<Float>
+    ) throws {
+        self.backend = backend
+        self.cycleSteps = cycleSteps
+        let referenceSpeed = Float(
+            MetalFlappingWingValidator.latticeRadiusOfGyrationSpeed
+        )
+        let scaling = try LatticeScaling(
+            characteristicLengthMeters: Float(chordCells),
+            characteristicLengthCells: chordCells,
+            referenceSpeedMetersPerSecond: referenceSpeed,
+            targetReynoldsNumber: Float(
+                MetalFlappingWingValidator.reynoldsNumber
+            ),
+            physicalAirDensity: 1,
+            latticeReferenceSpeed: referenceSpeed
+        )
+        configuration = try SimulationConfiguration(
+            grid: grid,
+            domainOriginMeters: .zero,
+            scaling: scaling,
+            physicalAirDensity: 1,
+            farFieldVelocityMetersPerSecond: .zero,
+            spongeWidthCells: max(4, chordCells / 2),
+            spongeStrength: 0.04,
+            freeFlight: false,
+            gravityMetersPerSecondSquared: .zero,
+            fastMath: false
+        )
+        let gpuParameters = GPUFlappingWingParameters(
+            rootAndChord: SIMD4<Float>(root, Float(chordCells)),
+            geometry: SIMD4<Float>(
+                Float(MetalFlappingWingValidator.aspectRatio)
+                    * Float(chordCells),
+                0.05 * Float(chordCells),
+                Float(MetalFlappingWingValidator.betaShape - 1),
+                Float(MetalFlappingWingValidator.betaNormalization)
+            ),
+            kinematics0: SIMD4<Float>(
+                Float(cycleSteps),
+                Float(MetalFlappingWingValidator.strokeHalfAmplitudeRadians),
+                Float(MetalFlappingWingValidator.accelerationDuration),
+                Float(MetalFlappingWingValidator.pitchDuration)
+            ),
+            kinematics1: SIMD4<Float>(
+                45 * .pi / 180,
+                135 * .pi / 180,
+                Float(MetalFlappingWingValidator.maximumStrokeRateRadiansPerCycle),
+                referenceSpeed
+            )
+        )
+        parameters = try backend.makeSharedBuffer(value: gpuParameters)
+        prepared = try backend.makePrivateBuffer(
+            length: MemoryLayout<GPUPreparedFlappingWing>.stride
+        )
+        preparePipeline = try backend.pipeline(
+            named: "preparePrescribedFlappingWing"
+        )
+        geometryPipeline = try backend.pipeline(
+            named: "buildPrescribedFlappingWing"
+        )
+        initializePipeline = try backend.pipeline(named: "initializePopulations")
+        fluidPipeline = try backend.pipeline(named: "stepFluidTRT")
+        reductionPipeline = try backend.pipeline(named: "reduceForceTorque")
+        storeLoadPipeline = try backend.pipeline(named: "storeForceTorqueSample")
+
+        let cells = grid.cellCount
+        let populationBytes = D3Q19.count * cells * MemoryLayout<Float>.stride
+        let maskBytes = cells * MemoryLayout<UInt8>.stride
+        let wallBytes = cells * MemoryLayout<SIMD4<Float>>.stride
+        let densityBytes = cells * MemoryLayout<Float>.stride
+        let velocityBytes = cells * MemoryLayout<SIMD4<Float>>.stride
+        partialLoadCount = max(1, (cells + 255) / 256)
+        let reductionBytes = partialLoadCount
+            * MemoryLayout<GPUForceTorque>.stride
+        let historyBytes = cycleSteps * MemoryLayout<GPUForceTorque>.stride
+        try backend.validateAllocationPlan(bufferLengths: [
+            MemoryLayout<GPUFlappingWingParameters>.stride,
+            MemoryLayout<GPUPreparedFlappingWing>.stride,
+            populationBytes, populationBytes,
+            maskBytes, maskBytes, wallBytes,
+            densityBytes, velocityBytes,
+            reductionBytes, reductionBytes, historyBytes,
+            MemoryLayout<GPUBirdBodyState>.stride,
+        ])
+        populationsA = try backend.makePrivateBuffer(length: populationBytes)
+        populationsB = try backend.makePrivateBuffer(length: populationBytes)
+        solidA = try backend.makePrivateBuffer(length: maskBytes)
+        solidB = try backend.makePrivateBuffer(length: maskBytes)
+        wallVelocity = try backend.makePrivateBuffer(length: wallBytes)
+        density = try backend.makeSharedBuffer(length: densityBytes)
+        velocity = try backend.makeSharedBuffer(length: velocityBytes)
+        reductionA = try backend.makeSharedBuffer(length: reductionBytes)
+        reductionB = try backend.makeSharedBuffer(length: reductionBytes)
+        loadHistory = try backend.makeSharedBuffer(length: historyBytes)
+        bodyState = try backend.makeSharedBuffer(
+            value: GPUBirdBodyState(BirdBodyState(positionMeters: root))
+        )
+        currentPopulations = populationsA
+        nextPopulations = populationsB
+        currentSolid = solidA
+        nextSolid = solidB
+        lastLoad = reductionA
+        try initialize()
+    }
+
+    func advance(
+        to targetStep: Int,
+        batchSize: Int,
+        captureFields: Bool,
+        recordEveryStepLoad: Bool = false
+    ) throws -> ForceTorque {
+        guard targetStep >= stepIndex, batchSize > 0 else {
+            throw BirdFlowError.invalidAdvanceRequest(
+                steps: targetStep - stepIndex,
+                batchSize: batchSize
+            )
+        }
+        while stepIndex < targetStep {
+            let count = min(batchSize, targetStep - stepIndex)
+            guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to create prescribed-wing command buffer."
+                )
+            }
+            for localStep in 0..<count {
+                let absoluteStep = stepIndex + localStep + 1
+                let final = absoluteStep == targetStep
+                var uniforms = makeUniforms(
+                    time: Float(absoluteStep),
+                    captureFields: final && captureFields,
+                    accumulateLoads: final || recordEveryStepLoad,
+                    hasPreviousGeometry: true
+                )
+                try encodePrescribedPreparation(
+                    commandBuffer: commandBuffer,
+                    uniforms: &uniforms
+                )
+                try encodePrescribedGeometry(
+                    commandBuffer: commandBuffer,
+                    uniforms: &uniforms,
+                    target: nextSolid
+                )
+                try encodePrescribedFluid(
+                    commandBuffer: commandBuffer,
+                    uniforms: &uniforms
+                )
+                if final || recordEveryStepLoad {
+                    let reduced = try encodePrescribedReduction(
+                        commandBuffer: commandBuffer
+                    )
+                    if final {
+                        lastLoad = reduced
+                    }
+                    if recordEveryStepLoad {
+                        try encodePrescribedLoadStore(
+                            commandBuffer: commandBuffer,
+                            load: reduced,
+                            sampleIndex: (absoluteStep - 1) % cycleSteps
+                        )
+                    }
+                }
+                swap(&currentPopulations, &nextPopulations)
+                swap(&currentSolid, &nextSolid)
+            }
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+            try check(commandBuffer)
+            stepIndex += count
+        }
+        return lastLoad.contents()
+            .assumingMemoryBound(to: GPUForceTorque.self)
+            .pointee
+            .coreValue
+    }
+
+    func copyFields() -> (density: [Float], velocity: [SIMD3<Float>]) {
+        let count = configuration.grid.cellCount
+        let densityPointer = density.contents().assumingMemoryBound(to: Float.self)
+        let velocityPointer = velocity.contents()
+            .assumingMemoryBound(to: SIMD4<Float>.self)
+        return (
+            Array(UnsafeBufferPointer(start: densityPointer, count: count)),
+            (0..<count).map {
+                let value = velocityPointer[$0]
+                return SIMD3<Float>(value.x, value.y, value.z)
+            }
+        )
+    }
+
+    func copyGeometry(
+        phase: Double
+    ) throws -> MetalFlappingWingValidator.GeometrySnapshot {
+        let maskStaging = try backend.makeSharedBuffer(
+            length: currentSolid.length
+        )
+        let wallStaging = try backend.makeSharedBuffer(
+            length: wallVelocity.length
+        )
+        guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing geometry-audit buffer."
+            )
+        }
+        var uniforms = makeUniforms(
+            time: Float(phase * Double(cycleSteps)),
+            captureFields: false,
+            accumulateLoads: false,
+            hasPreviousGeometry: false
+        )
+        try encodePrescribedPreparation(
+            commandBuffer: commandBuffer,
+            uniforms: &uniforms
+        )
+        try encodePrescribedGeometry(
+            commandBuffer: commandBuffer,
+            uniforms: &uniforms,
+            target: nextSolid
+        )
+        guard let blit = commandBuffer.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing geometry-audit blit."
+            )
+        }
+        blit.copy(
+            from: nextSolid,
+            sourceOffset: 0,
+            to: maskStaging,
+            destinationOffset: 0,
+            size: nextSolid.length
+        )
+        blit.copy(
+            from: wallVelocity,
+            sourceOffset: 0,
+            to: wallStaging,
+            destinationOffset: 0,
+            size: wallVelocity.length
+        )
+        blit.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+
+        let cellCount = configuration.grid.cellCount
+        let maskPointer = maskStaging.contents()
+            .assumingMemoryBound(to: UInt8.self)
+        let wallPointer = wallStaging.contents()
+            .assumingMemoryBound(to: SIMD4<Float>.self)
+        return MetalFlappingWingValidator.GeometrySnapshot(
+            solid: Array(UnsafeBufferPointer(
+                start: maskPointer,
+                count: cellCount
+            )),
+            wallVelocity: (0..<cellCount).map {
+                let value = wallPointer[$0]
+                return SIMD3<Float>(value.x, value.y, value.z)
+            }
+        )
+    }
+
+    func copyRecordedLoads() -> [ForceTorque] {
+        let pointer = loadHistory.contents()
+            .assumingMemoryBound(to: GPUForceTorque.self)
+        return (0..<cycleSteps).map { pointer[$0].coreValue }
+    }
+
+    private func makeUniforms(
+        time: Float,
+        captureFields: Bool,
+        accumulateLoads: Bool,
+        hasPreviousGeometry: Bool
+    ) -> GPUUniforms {
+        GPUUniforms(
+            configuration: configuration,
+            time: time,
+            captureMacroscopicFields: captureFields,
+            accumulateLoads: accumulateLoads,
+            hasPreviousGeometry: hasPreviousGeometry,
+            periodicBoundaries: false,
+            caseParameters: SIMD4<Float>(0, 0, 1, 0)
+        )
+    }
+
+    private func initialize() throws {
+        guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing initialization buffer."
+            )
+        }
+        var uniforms = makeUniforms(
+            time: 0,
+            captureFields: true,
+            accumulateLoads: false,
+            hasPreviousGeometry: false
+        )
+        try encodePrescribedPreparation(
+            commandBuffer: commandBuffer,
+            uniforms: &uniforms
+        )
+        try encodePrescribedGeometry(
+            commandBuffer: commandBuffer,
+            uniforms: &uniforms,
+            target: currentSolid
+        )
+        guard let blit = commandBuffer.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing mask-copy encoder."
+            )
+        }
+        blit.copy(
+            from: currentSolid,
+            sourceOffset: 0,
+            to: nextSolid,
+            destinationOffset: 0,
+            size: currentSolid.length
+        )
+        blit.endEncoding()
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing population encoder."
+            )
+        }
+        encoder.label = "Initialize prescribed hovering wing"
+        encoder.setBuffer(populationsA, offset: 0, index: 0)
+        encoder.setBuffer(currentSolid, offset: 0, index: 1)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 2)
+        encoder.setBuffer(density, offset: 0, index: 3)
+        encoder.setBuffer(velocity, offset: 0, index: 4)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 5
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: initializePipeline,
+            count: configuration.grid.cellCount
+        )
+        encoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+    }
+
+    private func encodePrescribedPreparation(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing preparation encoder."
+            )
+        }
+        encoder.setBuffer(prepared, offset: 0, index: 0)
+        encoder.setBuffer(parameters, offset: 0, index: 1)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 2
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: preparePipeline,
+            count: 1
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodePrescribedGeometry(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        target: MTLBuffer
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing geometry encoder."
+            )
+        }
+        encoder.setBuffer(target, offset: 0, index: 0)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 1)
+        encoder.setBuffer(currentSolid, offset: 0, index: 2)
+        encoder.setBuffer(parameters, offset: 0, index: 3)
+        encoder.setBuffer(prepared, offset: 0, index: 4)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 5
+        )
+        backend.dispatch3D(
+            encoder: encoder,
+            pipeline: geometryPipeline,
+            width: configuration.grid.x,
+            height: configuration.grid.y,
+            depth: configuration.grid.z
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodePrescribedFluid(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing fluid encoder."
+            )
+        }
+        encoder.setBuffer(currentPopulations, offset: 0, index: 0)
+        encoder.setBuffer(nextPopulations, offset: 0, index: 1)
+        encoder.setBuffer(currentSolid, offset: 0, index: 2)
+        encoder.setBuffer(nextSolid, offset: 0, index: 3)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 4)
+        encoder.setBuffer(density, offset: 0, index: 5)
+        encoder.setBuffer(velocity, offset: 0, index: 6)
+        encoder.setBuffer(reductionA, offset: 0, index: 7)
+        encoder.setBuffer(bodyState, offset: 0, index: 8)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 9
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: fluidPipeline,
+            count: configuration.grid.cellCount,
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodePrescribedReduction(
+        commandBuffer: MTLCommandBuffer
+    ) throws -> MTLBuffer {
+        var input = reductionA
+        var output = reductionB
+        var count = partialLoadCount
+        while count > 1 {
+            let outputCount = (count + 255) / 256
+            var count32 = UInt32(count)
+            guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to create prescribed-wing reduction encoder."
+                )
+            }
+            encoder.setBuffer(input, offset: 0, index: 0)
+            encoder.setBuffer(output, offset: 0, index: 1)
+            encoder.setBytes(
+                &count32,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: reductionPipeline,
+                count: outputCount
+            )
+            encoder.endEncoding()
+            count = outputCount
+            input = output
+            output = output === reductionA ? reductionB : reductionA
+        }
+        return input
+    }
+
+    private func encodePrescribedLoadStore(
+        commandBuffer: MTLCommandBuffer,
+        load: MTLBuffer,
+        sampleIndex: Int
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create prescribed-wing history encoder."
+            )
+        }
+        var index32 = UInt32(sampleIndex)
+        encoder.setBuffer(load, offset: 0, index: 0)
+        encoder.setBuffer(loadHistory, offset: 0, index: 1)
+        encoder.setBytes(
+            &index32,
+            length: MemoryLayout<UInt32>.stride,
+            index: 2
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: storeLoadPipeline,
+            count: 1
+        )
+        encoder.endEncoding()
+    }
+
+    private func check(_ commandBuffer: MTLCommandBuffer) throws {
+        if commandBuffer.status == .error {
+            throw BirdFlowError.commandBufferFailed(
+                commandBuffer.error?.localizedDescription ?? "Unknown Metal error"
+            )
+        }
+    }
+}
+
+private extension Array where Element == Double {
+    var mean: Double {
+        isEmpty ? 0 : reduce(0, +) / Double(count)
+    }
+}
+
+private func dot(_ a: SIMD3<Double>, _ b: SIMD3<Double>) -> Double {
+    a.x * b.x + a.y * b.y + a.z * b.z
+}
+
+private func cross(
+    _ a: SIMD3<Double>,
+    _ b: SIMD3<Double>
+) -> SIMD3<Double> {
+    SIMD3<Double>(
+        a.y * b.z - a.z * b.y,
+        a.z * b.x - a.x * b.z,
+        a.x * b.y - a.y * b.x
+    )
+}
+
+private func rotate(
+    _ value: SIMD3<Double>,
+    around axis: SIMD3<Double>,
+    angle: Double
+) -> SIMD3<Double> {
+    let sine = sin(angle)
+    let cosine = cos(angle)
+    return value * cosine
+        + cross(axis, value) * sine
+        + axis * dot(axis, value) * (1 - cosine)
+}
+#endif

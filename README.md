@@ -4,7 +4,7 @@ BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Appl
 
 The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
 
-This repository is a complete vertical slice, not a validated bird-flight research result. The validation command compiles and executes the Swift/Metal path on a supported Mac, runs the independent reference checks, and executes periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, and fixed finite-wing refinement on the production fluid and momentum-exchange kernels. It does not yet implement the full ladder in `Docs/VALIDATION.md`; forced channel flow, prescribed flapping-wing comparison, bird-load grid convergence, and measured geometry/kinematics remain mandatory before bird-flight results are treated as quantitative.
+This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The flapping benchmark is implemented as a deliberately hard release gate and its current compact voxel-grid ladder does not reproduce the published mean coefficients. Forced channel flow, an accepted flapping-wing refinement, bird-load grid convergence, and measured geometry/kinematics therefore remain mandatory before bird-flight results are treated as quantitative.
 
 ## Implemented solver
 
@@ -32,6 +32,7 @@ The production GPU path also:
 - folds the first deterministic load-reduction level into the fluid threadgroups instead of writing one load record per cell;
 - stores density and velocity only for the final externally visible step of an `advance` call;
 - skips threadgroup load accumulation on intermediate steps of static steady canonical cases while retaining it on every coupled bird step;
+- evaluates prescribed-wing trigonometry once per timestep, rejects most geometry cells before the beta-planform power evaluation, and records phase loads into a compact GPU cycle buffer without per-step CPU waits;
 - queues command-buffer batches without an intermediate CPU wait; and
 - omits the rigid-body dispatch entirely for fixed-bird cases.
 
@@ -53,9 +54,9 @@ swift test
 ./Scripts/validate.sh
 ```
 
-`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the strict-math production-Metal shear-wave, moving-wall, fixed-sphere, and fixed-wing harnesses. The fixed-wing release tier uses roughly 9.2 GB peak unified memory and took about 26 minutes on the documented Apple M4 host.
+`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the accepted strict-math production-Metal shear-wave, moving-wall, fixed-sphere, and fixed-wing harnesses. The published flapping-wing command below remains separate because it currently exits nonzero at its locked scientific gates. The fixed-wing release tier uses roughly 9.2 GB peak unified memory and took about 26 minutes on the documented Apple M4 host.
 
-The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against a host CPU reference, and command-buffer batch invariance. The moving-wall harness checks transient Couette and finite-gap oscillating Stokes profiles, isolated upper-wall force and phase, no-penetration, refinement, and dynamic-wall batch invariance. The fixed-sphere harness checks steady drag, symmetry, torque leakage, refinement, and batching. A fast 80-cell fixed-wing regression locks the production initializer and final loads; `validate.sh` owns the expensive 240/320/400 quantitative wing sweep.
+The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against a host CPU reference, and command-buffer batch invariance. The moving-wall harness checks transient Couette and finite-gap oscillating Stokes profiles, isolated upper-wall force and phase, no-penetration, refinement, and dynamic-wall batch invariance. The fixed-sphere harness checks steady drag, symmetry, torque leakage, refinement, and batching. Fast fixed-wing and one-cycle prescribed-wing regressions lock initialization, GPU layouts, phase capture, Q/vorticity diagnostics, and finite loads. A seconds-scale prescribed-wing input fixture independently checks analytic normalization and kinematics, CPU-versus-Metal occupancy, geometric moments, and wall velocity before release commands own the expensive refinement ladders.
 
 ## Run
 
@@ -100,6 +101,20 @@ swift run -c release birdflow validate wing \
 ```
 
 The wing ladder uses `240 x 240 x 144`, `320 x 320 x 192`, and `400 x 400 x 240` domains with 24, 32, and 40 cells per chord. It runs the `Re=100`, aspect-ratio-2 flat plate at 30 degrees through `U*t/c=13` and compares with the approximate `CL=0.75`, `CD=0.75` values in Taira and Colonius (JFM 2009). This validates the isolated fixed-wing operator; it does not validate the procedural flapping bird.
+
+Published prescribed flapping-wing validation:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --audit-inputs --chord-cells 16 --json
+
+swift run -c release birdflow validate flapping-wing \
+  --chord-cells 16 \
+  --archive ValidationArtifacts/flapping-wing \
+  --json
+```
+
+The preflight runs the same 8/12/16 ladder and reconstructs the paper's beta moments, kinematics, coefficient scales, CPU voxel mask, and wall velocity before touching the fluid. Analytic inputs and CPU/Metal agreement pass, but phase-`0.25` occupied volume changes non-monotonically from `1.406` to `1.398` to `0.714` times the continuous regularized volume; relative to the published 5%-chord thickness it is `3.516`, `2.330`, and `0.892`. The full command runs the Li--Nabawy (2022) `Re=100`, `AR=3` hovering case for five cycles, compares fifth-cycle mean and phase timing with `CL=1.460`, `CD=2.046`, checks repeatability, and archives phase-matched density, velocity, Q criterion, and vorticity. It currently fails its locked coefficient and phase gates. The small two-finest-grid load change is not accepted as convergence because the binary moving boundary fails the independent geometry gate.
 
 A fixed-bird wind-tunnel case:
 
@@ -150,6 +165,7 @@ Sources/BirdFlowMetal/
   MetalMovingWallValidation.swift planar-wall profile/load validation
   MetalSphereValidation.swift    curved-body external-flow validation
   MetalWingValidation.swift      finite-wing load/refinement validation
+  MetalFlappingWingValidation.swift prescribed moving-wing validation
   GPUData.swift                 Swift/MSL-compatible data layouts
   Metal/BirdFlow.metal          geometry, fluid, reduction, body kernels
 
@@ -166,7 +182,7 @@ Docs/
 
 ## Scope
 
-BirdFlowMetal targets low-Mach flapping flight and wakes. It currently uses an isothermal weakly-compressible formulation, rigid wing surfaces, a uniform Cartesian grid, and a voxelized moving boundary. Measured geometry, curved boundary links, turbulence closure, flexible-wing coupling, and multiblock refinement are planned extension directions rather than exposed plug-in interfaces.
+BirdFlowMetal targets low-Mach flapping flight and wakes. It currently uses an isothermal weakly-compressible formulation, rigid wing surfaces, a uniform Cartesian grid, and a voxelized moving boundary. The published flapping benchmark demonstrates that axis-aligned fixed-wing agreement does not transfer automatically to a rotating diagonal voxel surface. Measured geometry, sub-grid curved/moving boundary links, turbulence closure, flexible-wing coupling, and multiblock refinement are planned extension directions rather than exposed plug-in interfaces.
 
 Mach and domain-fit guards validate the initial configuration. Free-flight production studies must additionally monitor the evolving surface Mach number and sponge/domain margin and abort when either leaves the validated regime.
 

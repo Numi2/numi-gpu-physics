@@ -88,6 +88,22 @@ struct GPUPreparedBirdGeometry {
     float4 rightAngularVelocity;
 };
 
+struct GPUFlappingWingParameters {
+    float4 rootAndChord;
+    float4 geometry;
+    float4 kinematics0;
+    float4 kinematics1;
+};
+
+struct GPUPreparedFlappingWing {
+    float4 root;
+    float4 chord;
+    float4 span;
+    float4 normal;
+    float4 angularVelocity;
+    float4 state;
+};
+
 struct GPUForceTorque {
     float4 force;
     float4 torque;
@@ -436,6 +452,215 @@ kernel void buildBirdGeometry(
         bestVelocity * uniforms.timeStepAndScales.z,
         0
     );
+}
+
+inline float unitCyclePhase(float time, float cycleSteps) {
+    float phase = fmod(time / cycleSteps, 1.0f);
+    return phase < 0.0f ? phase + 1.0f : phase;
+}
+
+inline float2 prescribedStrokeKinematics(
+    float phase,
+    constant GPUFlappingWingParameters& wing
+) {
+    const float pi = 3.14159265358979323846f;
+    float amplitude = wing.kinematics0.y;
+    float duration = wing.kinematics0.z;
+    float halfDuration = 0.5f * duration;
+    float maximumRate = wing.kinematics1.z;
+    float angle;
+    float rate;
+
+    if (phase < halfDuration) {
+        float argument = pi * (phase + halfDuration) / duration;
+        angle = amplitude + maximumRate * duration / pi
+            * (sin(argument) - 1.0f);
+        rate = maximumRate * cos(argument);
+    }
+    else if (phase < 0.5f - halfDuration) {
+        float atTransitionEnd = amplitude
+            - maximumRate * duration / pi;
+        angle = atTransitionEnd
+            - maximumRate * (phase - halfDuration);
+        rate = -maximumRate;
+    }
+    else if (phase < 0.5f + halfDuration) {
+        float start = 0.5f - halfDuration;
+        float atTransitionStart = -amplitude
+            + maximumRate * duration / pi;
+        float argument = pi * (phase - start) / duration;
+        angle = atTransitionStart
+            - maximumRate * duration / pi * sin(argument);
+        rate = -maximumRate * cos(argument);
+    }
+    else if (phase < 1.0f - halfDuration) {
+        float atTransitionEnd = -amplitude
+            + maximumRate * duration / pi;
+        angle = atTransitionEnd
+            + maximumRate * (phase - (0.5f + halfDuration));
+        rate = maximumRate;
+    }
+    else {
+        float start = 1.0f - halfDuration;
+        float atTransitionStart = amplitude
+            - maximumRate * duration / pi;
+        float argument = pi * (phase - start) / duration;
+        angle = atTransitionStart
+            + maximumRate * duration / pi * sin(argument);
+        rate = maximumRate * cos(argument);
+    }
+    return float2(angle, rate);
+}
+
+inline float2 prescribedPitchKinematics(
+    float phase,
+    constant GPUFlappingWingParameters& wing
+) {
+    const float pi = 3.14159265358979323846f;
+    float duration = wing.kinematics0.w;
+    float halfDuration = 0.5f * duration;
+    float low = wing.kinematics1.x;
+    float high = wing.kinematics1.y;
+    float delta = high - low;
+    float x;
+    float start;
+    float change;
+
+    if (phase < halfDuration || phase >= 1.0f - halfDuration) {
+        float wrapped = phase < halfDuration ? phase + 1.0f : phase;
+        x = (wrapped - (1.0f - halfDuration)) / duration;
+        start = high;
+        change = -delta;
+    }
+    else if (phase >= 0.5f - halfDuration
+        && phase < 0.5f + halfDuration) {
+        x = (phase - (0.5f - halfDuration)) / duration;
+        start = low;
+        change = delta;
+    }
+    else {
+        return phase < 0.5f
+            ? float2(low, 0.0f)
+            : float2(high, 0.0f);
+    }
+
+    float blend = x - sin(2.0f * pi * x) / (2.0f * pi);
+    float rate = change / duration
+        * (1.0f - cos(2.0f * pi * x));
+    return float2(start + change * blend, rate);
+}
+
+/// Builds the rigid frame once per time step. Keeping all trigonometry here
+/// prevents millions of redundant sin/cos evaluations in the voxel pass.
+kernel void preparePrescribedFlappingWing(
+    device GPUPreparedFlappingWing* prepared [[buffer(0)]],
+    constant GPUFlappingWingParameters& wing [[buffer(1)]],
+    constant GPUUniforms& uniforms [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid != 0u) {
+        return;
+    }
+
+    float cycleSteps = wing.kinematics0.x;
+    float phase = unitCyclePhase(
+        uniforms.timeStepAndScales.x,
+        cycleSteps
+    );
+    float2 stroke = prescribedStrokeKinematics(phase, wing);
+    float2 pitch = prescribedPitchKinematics(phase, wing);
+    float3 rotationAxis = float3(0, 0, 1);
+    float3 span = float3(cos(stroke.x), sin(stroke.x), 0);
+    float3 tangent = cross(rotationAxis, span);
+    // The paper's pitch angle is measured opposite Metal's right-hand
+    // rotation about the outward span axis.
+    float3 chord = rotateAroundAxis(tangent, span, -pitch.x);
+    float3 normal = normalize(cross(span, chord));
+    float inverseCycleSteps = 1.0f / cycleSteps;
+    float3 angularVelocity = rotationAxis
+            * (stroke.y * inverseCycleSteps)
+        - span * (pitch.y * inverseCycleSteps);
+
+    prepared[0].root = wing.rootAndChord;
+    prepared[0].chord = float4(normalize(chord), 0);
+    prepared[0].span = float4(normalize(span), 0);
+    prepared[0].normal = float4(normal, 0);
+    prepared[0].angularVelocity = float4(angularVelocity, 0);
+    prepared[0].state = float4(
+        stroke.x,
+        pitch.x,
+        stroke.y * inverseCycleSteps,
+        pitch.y * inverseCycleSteps
+    );
+}
+
+/// Voxelizes the analytic beta-planform wing. The bounding-sphere and slab
+/// checks reject almost every cell before the only pow() in this kernel.
+kernel void buildPrescribedFlappingWing(
+    device uchar* solid [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device const uchar* solidPrevious [[buffer(2)]],
+    constant GPUFlappingWingParameters& wing [[buffer(3)]],
+    device const GPUPreparedFlappingWing& prepared [[buffer(4)]],
+    constant GPUUniforms& uniforms [[buffer(5)]],
+    uint3 cell [[thread_position_in_grid]]
+) {
+    uint3 size = uniforms.grid.xyz;
+    if (any(cell >= size)) {
+        return;
+    }
+
+    uint gid = flatten(cell, size);
+    float3 world = cellPosition(cell, uniforms);
+    float3 relative = world - prepared.root.xyz;
+    bool wasSolid = uniforms.flags.z != 0u && solidPrevious[gid] != 0;
+    float chordMean = wing.rootAndChord.w;
+    float radius = wing.geometry.x
+        + 1.5f * chordMean
+        + 2.0f * uniforms.originAndCellSize.w;
+    if (!wasSolid && dot(relative, relative) > radius * radius) {
+        solid[gid] = uchar(0);
+        wallVelocity[gid] = float4(0);
+        return;
+    }
+
+    float chordCoordinate = dot(relative, prepared.chord.xyz);
+    float radialCoordinate = dot(relative, prepared.span.xyz);
+    float normalCoordinate = dot(relative, prepared.normal.xyz);
+    float halfThickness = 0.5f * max(
+        wing.geometry.y,
+        uniforms.originAndCellSize.w
+    );
+    bool inRadialSlab = radialCoordinate >= 0.0f
+        && radialCoordinate <= wing.geometry.x;
+    bool inNormalSlab = abs(normalCoordinate) <= halfThickness;
+    bool isWing = false;
+    if (inRadialSlab && inNormalSlab) {
+        float radialFraction = clamp(
+            radialCoordinate / wing.geometry.x,
+            0.0f,
+            1.0f
+        );
+        float betaBase = max(
+            radialFraction * (1.0f - radialFraction),
+            0.0f
+        );
+        float localChord = chordMean
+            * wing.geometry.w
+            * pow(betaBase, wing.geometry.z);
+        float leadingEdge = -0.25f * chordMean;
+        float trailingEdge = leadingEdge + localChord;
+        isWing = chordCoordinate >= leadingEdge
+            && chordCoordinate <= trailingEdge;
+    }
+
+    solid[gid] = isWing ? uchar(1) : uchar(0);
+    // This value is also retained for just-uncovered nodes, whose refill state
+    // must follow the instantaneous prescribed rigid motion.
+    wallVelocity[gid] = float4(cross(
+        prepared.angularVelocity.xyz,
+        relative
+    ), 0);
 }
 
 kernel void initializePopulations(
@@ -844,8 +1069,17 @@ kernel void stepFluidTRT(
                             if (accumulateLoads
                                 && (selectedPart == 0u
                                 || selectedPart == uint(sourcePart))) {
-                                float3 linkForceLattice = -(value + reflected)
-                                    * float3(C[q]);
+                                // Evaluate momentum relative to the local wall
+                                // frame. This Galilean-invariant form reduces
+                                // moving-interface force bias while collapsing
+                                // exactly to conventional momentum exchange for
+                                // a stationary boundary.
+                                float3 direction = float3(C[q]);
+                                float3 wall = wallVelocity[source].xyz;
+                                float3 linkForceLattice = -(
+                                    value * (direction - wall)
+                                    - reflected * (-direction - wall)
+                                );
                                 forceOnBodyLattice += linkForceLattice;
                                 float3 linkForcePhysical = linkForceLattice
                                     * uniforms.timeStepAndScales.w;
@@ -978,6 +1212,20 @@ kernel void reduceForceTorque(
 
     output[gid].force = float4(force, 0);
     output[gid].torque = float4(torque, 0);
+}
+
+/// Records a reduced moving-boundary load without synchronizing the CPU. A
+/// complete cycle is only a few thousand records, so this removes phase
+/// aliasing at negligible bandwidth cost.
+kernel void storeForceTorqueSample(
+    device const GPUForceTorque* totalLoad [[buffer(0)]],
+    device GPUForceTorque* history [[buffer(1)]],
+    constant uint& sampleIndex [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid == 0u) {
+        history[sampleIndex] = totalLoad[0];
+    }
 }
 
 kernel void integrateBirdBody(

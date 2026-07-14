@@ -4,7 +4,7 @@ Aerodynamic output is not accepted as quantitative until this sequence passes. E
 
 ## Current automated coverage
 
-`Scripts/validate.sh` currently provides eight gates:
+The repository currently provides nine automated harnesses:
 
 - Swift algebra, scaling, rigid-body, and layout tests;
 - live strict-math Metal moving-wing fixed-body and free-flight batch-partition regressions, plus CPU/GPU rigid-body one-step parity;
@@ -12,10 +12,11 @@ Aerodynamic output is not accepted as quantitative until this sequence passes. E
 - a production-Metal periodic shear-wave refinement, cell-by-cell CPU comparison, population-mass, and command-buffer batch-invariance check;
 - production-Metal transient Couette and oscillating Stokes-layer profile, no-penetration, wall-force, phase, refinement, and batching checks;
 - production-Metal fixed-sphere steady drag, curved-boundary symmetry, torque leakage, refinement, and batching checks;
-- production-Metal fixed finite-wing lift/drag, symmetry, leakage, refinement, and batching checks; and
+- production-Metal fixed finite-wing lift/drag, symmetry, leakage, refinement, and batching checks;
+- a production-Metal prescribed flapping-wing phase-load, periodicity, vortex-diagnostic, refinement, and batching gate; and
 - offline compilation and linking of every Metal entry point.
 
-This is a compilation and canonical regression gate, not completion of the bird-flight benchmark ladder below. Sections 2, 4, and 5 now run on the production fluid and momentum-exchange operators. Channel forcing and the prescribed flapping-wing comparison are still absent, so sections 3 and 6 require dedicated GPU case modes and comparison tooling. The fixed-wing gate isolates load accuracy; it does not validate the procedural bird's geometry or kinematics.
+`Scripts/validate.sh` runs the eight currently accepted build/canonical gates. The prescribed flapping command is intentionally separate because its locked literature gates currently fail. Sections 2, 4, 5, and 6 all execute the production fluid and momentum-exchange operators; section 3 still requires a forced-channel GPU mode. The fixed-wing gate isolates axis-aligned load accuracy and does not validate the procedural bird's geometry or kinematics. The failing flapping gate is the current evidence boundary for rotating voxel surfaces.
 
 ## 1. Algebra and layout
 
@@ -178,12 +179,56 @@ For the included bird case, `birdflow --resolution-scale N` preserves physical d
 
 ## 6. Prescribed flapping wing
 
-Use published rigid-wing geometry and kinematics.
+The implemented release case follows the open baseline in [Li and Nabawy, Insects 13, 459 (2022)](https://pmc.ncbi.nlm.nih.gov/articles/PMC9145969/):
+
+```bash
+swift run birdflow validate flapping-wing \
+  --audit-inputs \
+  --chord-cells 16 \
+  --json
+```
+
+Run this seconds-scale preflight before the full fluid ladder. It independently reconstructs the normalized beta area, radial centroid and radius of gyration from gamma-function moments, integrates the stroke and pitch rates, and reconstructs the coefficient denominator. It also builds the analytic voxel predicate on CPU and compares occupancy and rigid wall velocity cell-by-cell with the production Metal geometry kernel at phases `0`, `0.125`, `0.25`, and `0.375`.
+
+```bash
+swift run -c release birdflow validate flapping-wing \
+  --chord-cells 16 \
+  --archive ValidationArtifacts/flapping-wing-m4 \
+  --json
+```
+
+The case uses `Re=100`, `AR=3`, radial centroid `r1/R=0.5`, zero root offset, and the paper's beta planform. Ellington's relation gives `r2/R=0.5593218136` and `p=q=1.4891506584`. Thickness is `0.05c`, the pitch axis is `0.25c` behind the leading edge, stroke amplitude is 160 degrees (`phi=+/-80 degrees`), pitch amplitude is 90 degrees, and acceleration and pitch durations are each `0.25T`. The radius-of-gyration speed defines Reynolds number and force coefficients. The paper's three-million-cell, `dt/T=0.001` baseline reports fifth-cycle means `CL=1.460` and `CD=2.046`.
+
+The compact uniform-grid ladder uses 8, 12, and 16 cells per chord in `10c x 10c x 8c` domains. It executes five cycles, records every reduced load of cycles four and five into a small GPU history buffer, and reports 100 phase bins without per-step CPU synchronization. At phases `4.55`, `4.65`, `4.75`, `4.85`, and `4.95`, it archives density, velocity, central-difference Q criterion, and vorticity fields. These correspond to the paper's LEV/TEV/tip-vortex ring formation, attached conical LEV, tube-like LEV/tip-vortex development, and late-half-stroke growth sequence. The Q archive makes that comparison possible, but the paper supplies qualitative vortex images rather than numeric Q thresholds, so automated acceptance checks capture completeness and finite positive-Q structure rather than claiming image-level topology agreement.
+
+Acceptance was locked before calibration:
+
+- analytic normalized area is one and the reconstructed `r1/R`, `r2/R`, stroke travel, pitch travel, and kinematic derivatives agree within their encoded `1e-8...1e-12` tolerances;
+- CPU/Metal voxel mismatch is at most `1%`, solid-cell wall-velocity error is at most `1e-5`, occupied volume is within `25%` of both the published 5%-chord volume and the separately reported one-cell-regularized volume, and voxel radial moments are within `0.04` of the analytic values;
+- fifth-cycle mean lift and drag are each within `30%` of the tabulated source values;
+- mean lift and drag each change by at most `5%` between the two finest grids;
+- normalized half-stroke symmetry and fourth-to-fifth-cycle curve differences are each at most `15%`;
+- midstroke mean lift is at least `1.0`, and half-stroke lift peaks fall in source-consistent phase windows `0.25...0.45` and `0.75...0.95`;
+- all five Q/vorticity phase diagnostics are present and finite; and
+- density, velocity, and load differences are below `1e-7` between stepwise and batched moving-boundary execution.
+
+A one-grid diagnostic is available without assigning a verdict:
+
+```bash
+swift run birdflow validate flapping-wing \
+  --single-chord-cells 8 \
+  --cycles 5 \
+  --json
+```
+
+The independent input fixture passes every analytic identity. CPU and Metal masks match exactly at every audited phase, and maximum wall-velocity disagreement is below `8.3e-9`. The binary boundary itself fails its continuous-geometry gate: at phase `0.25`, occupied volume relative to the one-cell-regularized wing is `1.40625`, `1.39815`, and `0.71354` at 8, 12, and 16 cells per chord. Relative to the paper's actual 5%-chord thickness, the same values are `3.51563`, `2.33025`, and `0.89193`. This exposes both coarse-grid thickness regularization and non-monotonic parity/orientation alias; the surface is not geometrically converged on the compact ladder.
+
+The completed Apple M4 strict-math fluid calibration produced `(CL, CD)` means of `(7.44525, 9.71093)`, `(8.58575, 9.58558)`, and `(8.60144, 9.67489)`. The finest result is `489.14%` high in lift and `372.87%` high in drag. Its lift peaks occur at phases `0.245` and `0.745`, each `0.005T` before the corresponding locked acceptance window. The 12-to-16-cell load changes are only `0.1823%` and `0.9231%`, finest half-stroke symmetry error is `0.2553%`, fourth-to-fifth-cycle difference is `0.1963%`, every vortex archive is finite, and batch differences are exactly zero. Those properties establish repeatability, but the new geometry fixture shows that the small force changes are an apparent plateau of the binary boundary rather than evidence of continuum grid convergence. The gates are not weakened to fit it. Until a sub-grid curved/moving boundary treatment passes the geometry and fluid ladders, this benchmark is an implemented failing risk detector, not quantitative flapping-wing validation.
 
 Acceptance:
 
-- phase-resolved lift and thrust reproduce timing and mean coefficients
-- vortex topology is consistent at matching nondimensional times
+- phase-resolved lift and drag reproduce timing and mean coefficients
+- vortex topology is reviewed at matching nondimensional times from the archived Q/vorticity fields
 - mean loads change below `5%` between the two finest grids
 
 ## 7. Complete measured bird

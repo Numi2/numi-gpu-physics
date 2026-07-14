@@ -73,6 +73,10 @@ The fixed-sphere harness represents the curved surface with the same byte-mask o
 
 The fixed-wing harness uses the same static-canonical orchestration and production operators. Its initializer writes an axis-aligned, one-cell-thick rectangular part-1 surface in one volume pass. The incoming velocity is inclined by the angle of attack, and reported lift/drag are projections normal and parallel to that stream. This avoids diagonal voxel-mask aliasing while preserving the relative wing/flow orientation of the unbounded canonical problem.
 
+The prescribed flapping-wing harness evaluates the Li--Nabawy `Re=100`, `AR=3` beta planform. A one-thread preparation kernel evaluates the piecewise stroke and pitch waveforms once per timestep. The volume kernel then consumes the prepared orthonormal frame, rejects cells outside a conservative wing sphere and radial/normal slabs, and evaluates the beta-function `pow` only for the small remaining candidate set. The analytic thickness is `0.05c`, regularized to at least one lattice cell. This path intentionally rotates the voxel surface through the lattice; unlike the fixed-wing harness, it does not avoid diagonal mask aliasing.
+
+The prescribed-wing input audit independently integrates the analytic beta planform and kinematics on CPU, then compares a Double-precision CPU voxel predicate with the production Float32 Metal mask and wall velocity. At 8, 12, and 16 cells per chord the two implementations match cell-for-cell, but the phase-`0.25` occupied-volume ratios relative to the continuous regularized wing are `1.40625`, `1.39815`, and `0.71354`; relative to the published 5%-chord wing they are `3.51563`, `2.33025`, and `0.89193`. This separates coarse thickness regularization and orientation/parity limitations of binary occupancy from any host/GPU formula discrepancy. Consequently, small force changes on that ladder do not establish geometric convergence; a link-distance or other sub-grid moving-boundary representation is required before quantitative flapping acceptance.
+
 ## Moving bird boundary
 
 One GPU thread first prepares the normalized body pose and both articulated wing frames for the timestep. The geometry kernel dispatches over the Cartesian grid, rejects cells outside a conservative body-centered bound unless they were solid at the previous step, and evaluates the detailed signed-distance functions only inside that region. It writes wall velocity and a byte mask whose value is zero for fluid or `1...4` for body, left wing, right wing, or tail.
@@ -89,7 +93,7 @@ When pull streaming encounters a solid source cell, moving-wall halfway bounce-b
 
 ## Force and torque
 
-Each fluid–solid link produces momentum exchange. The opposite of fluid momentum change is force on the bird. Lattice force is converted to newtons with:
+Each fluid–solid link produces momentum exchange. For moving walls, incoming and reflected population momenta are evaluated relative to the local wall velocity; the expression reduces exactly to conventional momentum exchange for a stationary wall. This wall-frame form removes a known Galilean-frame bias without changing the moving-wall population reconstruction. The opposite of fluid momentum change is force on the bird. Lattice force is converted to newtons with:
 
 ```text
 forceScale = rho0 dx^4 / dt^2
@@ -106,6 +110,8 @@ When a moving boundary newly covers a cell, its fluid-to-solid conversion impuls
 Each fluid threadgroup performs the first deterministic reduction level in threadgroup memory and writes one partial force/torque pair. Subsequent deterministic reduction passes produce one pair without floating-point atomics. The first level retains ascending cell-index summation order.
 
 Coupled bird steps accumulate loads on every step because the rigid-body update consumes them. Static steady canonical cases only require the final load: a uniform flag disables boundary-load arithmetic, the threadgroup barrier, and the 256-lane first-level sum on intermediate steps. The final canonical step takes the unchanged deterministic path. Locked 8- and 16-cells-per-chord wing cases reproduced the pre-optimization coefficients exactly.
+
+Phase-resolved flapping validation is a third mode: every step of the last two cycles executes the deterministic reduction and a one-thread kernel stores the reduced pair in a small cycle-history buffer. The CPU reads the buffer once per cycle and averages it into 100 phase bins. This avoids synchronizing for every load and prevents cell-cover/uncover impulses from being aliased by sparse point sampling. Density and velocity are still captured only at the five requested vortex phases.
 
 Density and velocity are recovered before collision on every step because collision requires them. Their diagnostic buffers are written only on the final externally visible step of an `advance` call; initialization also populates them. On a captured step the kernel accumulates moments from the final post-collision, post-sponge populations, so readback is co-temporal with the stored fluid state, including inside the sponge band.
 

@@ -183,6 +183,27 @@ struct GPUPreparedBirdGeometry {
     var rightAngularVelocity: SIMD4<Float>
 }
 
+/// Fixed Li--Nabawy benchmark inputs. Float4-only packing keeps the structure
+/// identical in Swift and Metal and lets the per-cell geometry kernel consume
+/// a single, cache-friendly constant record.
+struct GPUFlappingWingParameters {
+    var rootAndChord: SIMD4<Float>
+    var geometry: SIMD4<Float>
+    var kinematics0: SIMD4<Float>
+    var kinematics1: SIMD4<Float>
+}
+
+/// Pose and rigid velocity data prepared once per time step for the prescribed
+/// wing. Expensive trigonometry is therefore independent of the grid size.
+struct GPUPreparedFlappingWing {
+    var root: SIMD4<Float>
+    var chord: SIMD4<Float>
+    var span: SIMD4<Float>
+    var normal: SIMD4<Float>
+    var angularVelocity: SIMD4<Float>
+    var state: SIMD4<Float>
+}
+
 struct GPUForceTorque {
     var force: SIMD4<Float>
     var torque: SIMD4<Float>
