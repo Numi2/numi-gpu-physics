@@ -333,8 +333,53 @@ production default. A short 8-cell, one-cycle run through the normal flapping
 CLI path produces `(CL, CD)=(1.18057, 2.04910)`, confirming that the promoted
 path—not only a diagnostic selector—uses the momentum-closed load. The raw
 budget's first-cycle drag is within `0.16%` of the published fifth-cycle mean
-and lift is `19.12%` low, but the required fifth-cycle 8/12/16 refinement has not
-been rerun and must not be reported as benchmark acceptance.
+and lift is `19.12%` low.
+
+The promoted five-cycle Apple M4 release ladder completed on 2026-07-14 in
+`317.89 s` with a `1.051 GB` peak memory footprint and a `774 MB` field archive.
+The 8/12/16-cell means are `(CL, CD)=(1.10193, 2.15741)`,
+`(1.37756, 2.22153)`, and `(1.42346, 2.11525)`. Finest errors relative to the
+published `(1.460, 2.046)` values are `2.503%` lift and `3.384%` drag. Finest
+peak phases are `0.335T/0.835T`, midstroke mean lift is `1.76157`, half-stroke
+symmetry error is `1.216%`, fourth-to-fifth-cycle difference is `0.999%`, all
+five vortex diagnostics are finite, and batch density, velocity, and force
+differences are exactly zero.
+
+The unchanged scientific gate still reports failure. Lift changes `3.225%`
+between 12 and 16 cells per chord and passes; drag changes `5.024%`, exceeding
+the `5%` limit by `0.024` percentage points. No threshold was relaxed. The full
+archive is `/tmp/birdflow-flapping-promoted-m4-20260714` on the validation host,
+and the durable compact record is
+`ValidationArtifacts/flapping-wing-promoted-ladder-summary.json`.
+
+To resolve that marginal miss without rerunning the coarse grids, a five-cycle
+20-cell diagnostic was run with:
+
+```bash
+.build/release/birdflow validate flapping-wing \
+  --single-chord-cells 20 \
+  --cycles 5 \
+  --archive /tmp/birdflow-flapping-chord-20-m4-20260714 \
+  --json
+```
+
+It completed in `582.12 s` with a `1.717 GB` peak memory footprint and `977 MiB`
+archive. Mean `(CL, CD)=(1.48928, 2.16937)` is within `2.006%/6.030%` of the
+published values. Relative to 16 cells, lift changes `4.420%` and drag `2.495%`,
+both below the unchanged `5%` gate. Peak phases are `0.375T/0.855T`, midstroke
+mean lift is `1.91521`, symmetry error is `1.552%`, fourth-to-fifth-cycle
+difference is `1.155%`, and all vortex milestones are finite. The normalized
+16-to-20 phase-curve difference is `5.216%`; its largest drag-bin change is
+`0.34770` at phase `0.755T`.
+
+The separate 20-cell input audit passes with exact CPU/Metal mask agreement,
+maximum wall-velocity error `8.04e-9`, and maximum interpolated wall-position
+error below `0.00071` cell. The single-grid CLI intentionally assigns no formal
+verdict. Because 20 cells is the first resolution at the paper's nominal
+`0.05c` thickness instead of the one-cell minimum, quantitative promotion still
+requires a 24-cell case to establish convergence without another nominal
+thickness change. The compact diagnostic record is
+`ValidationArtifacts/flapping-wing-chord-20-summary.json`.
 
 Acceptance:
 

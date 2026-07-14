@@ -4,7 +4,7 @@ BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Appl
 
 The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
 
-This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The flapping benchmark is implemented as a deliberately hard release gate and its current compact voxel-grid ladder does not reproduce the published mean coefficients. Forced channel flow, an accepted flapping-wing refinement, bird-load grid convergence, and measured geometry/kinematics therefore remain mandatory before bird-flight results are treated as quantitative.
+This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The promoted flapping benchmark now reproduces the published mean coefficients within `3.4%`, but its 12-to-16-cell drag change is `5.024%`, narrowly above the unchanged `5%` convergence gate. Forced channel flow, an accepted flapping-wing refinement, bird-load grid convergence, and measured geometry/kinematics therefore remain mandatory before bird-flight results are treated as quantitative.
 
 ## Implemented solver
 
@@ -147,12 +147,28 @@ swift run -c release birdflow validate flapping-wing \
 
 The preflight runs the same 8/12/16 ladder and reconstructs the paper's beta moments, kinematics, coefficient scales, CPU mask, wall velocity, and analytic link intersections before touching the fluid. GPU link locations agree with independent CPU intersections within `0.00071` cell on the measured ladder, compared with about `0.707` cell worst-case error for fixed halfway placement. Raw phase-`0.25` occupied volume still changes from `1.406` to `1.398` to `0.714` times the continuous regularized volume; those center-count ratios remain diagnostics, while the fluid wall now sits at the sub-cell analytic crossing.
 
-The archived full link-distance ladder predates the conservative moving-domain
-promotion. It produced `(CL, CD)=(7.45076, 9.58556)`, `(8.58688, 9.50008)`, and
-`(8.60733, 9.61182)` and localized the old force-accounting defect, but it is no
-longer a result for the production estimator. A short promoted-default 8-cell
-cycle now gives `(CL, CD)=(1.18057, 2.04910)`. The mandatory five-cycle
-8/12/16 refinement ladder still has to be rerun before quantitative acceptance.
+The archived legacy link-distance ladder produced `(CL, CD)=(7.45076, 9.58556)`,
+`(8.58688, 9.50008)`, and `(8.60733, 9.61182)` and localized the old
+force-accounting defect, but it is no longer a result for the production
+estimator. The promoted five-cycle 8/12/16 ladder now gives
+`(1.10193, 2.15741)`, `(1.37756, 2.22153)`, and `(1.42346, 2.11525)`. Finest
+mean errors are `2.503%` lift and `3.384%` drag; phase timing, periodicity,
+symmetry, vortex coverage, batch invariance, and lift convergence pass. The
+locked verdict remains failure because drag changes `5.024%` between 12 and 16
+cells per chord, exceeding the unchanged `5%` limit by `0.024` percentage
+points. The compact result is archived in
+`ValidationArtifacts/flapping-wing-promoted-ladder-summary.json`.
+
+A targeted five-cycle 20-cell diagnostic then produced
+`(CL, CD)=(1.48928, 2.16937)`. Relative to 16 cells, lift changes `4.420%` and
+drag `2.495%`, so both clear the unchanged `5%` criterion; all individual mean,
+timing, periodicity, symmetry, midstroke, and vortex gates also pass. Its
+independent input audit has exact CPU/Metal occupancy agreement and less than
+`0.00071`-cell wall-position error. This is strong extended-grid convergence
+evidence, not a formal CLI verdict: 20 cells is the first grid at the paper's
+nominal `0.05c` thickness, so a 24-cell comparison is still required before
+promoting the benchmark. See
+`ValidationArtifacts/flapping-wing-chord-20-summary.json`.
 
 The phase-resolved decomposition is available with `birdflow validate flapping-wing --decompose-loads --single-chord-cells 8 --cycles 1 --json`. On Apple M4 it completes in `9.84 s`; cover/uncover impulse contributes only `0.47%` of mean lift and `2.90%` of mean drag, while link exchange supplies the remainder. RMS topology fractions are `1.29%` lift and `3.01%` drag, and independently selected components close to total within `9.7e-6` coefficient. Geometry and topology double counting are therefore ruled out as dominant causes; link-force evaluation/normalization is the next fault domain.
 
@@ -198,8 +214,9 @@ The conservative moving-domain estimator closes the raw population balance at
 to legacy conventional total is `(-6.32843, -7.51260)`. The translating-body
 topology gate, the existing three-grid Couette/Stokes gate, and a short
 promoted-default flapping run all pass, so this estimator is now production.
-This fixes force accounting; it is not yet flapping-wing acceptance because the
-five-cycle refinement ladder has not been rerun under the promoted estimator.
+This fixes force accounting. The promoted five-cycle ladder clears the
+published mean-load gates but misses the two-finest-grid drag-convergence gate
+by `0.024` percentage points, so flapping-wing acceptance remains pending.
 
 A fixed-bird wind-tunnel case:
 
