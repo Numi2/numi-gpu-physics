@@ -17,7 +17,8 @@ struct GPUUniforms {
         captureMacroscopicFields: Bool = true,
         hasPreviousGeometry: Bool = false,
         periodicBoundaries: Bool = false,
-        shearWaveAmplitude: Float = 0
+        shearWaveAmplitude: Float = 0,
+        caseParameters: SIMD4<Float>? = nil
     ) {
         grid = SIMD4<UInt32>(
             UInt32(configuration.grid.x),
@@ -58,7 +59,8 @@ struct GPUUniforms {
             configuration.gravityMetersPerSecondSquared.z,
             0
         )
-        caseParameters = SIMD4<Float>(shearWaveAmplitude, 0, 0, 0)
+        self.caseParameters = caseParameters
+            ?? SIMD4<Float>(shearWaveAmplitude, 0, 0, 0)
         flags = SIMD4<UInt32>(
             configuration.freeFlight ? 1 : 0,
             captureMacroscopicFields ? 1 : 0,

@@ -500,6 +500,75 @@ kernel void initializeShearWave(
     velocity[gid] = float4(initialVelocity, 0);
 }
 
+inline float planarTopWallSpeed(constant GPUUniforms& uniforms) {
+    bool oscillating = uniforms.caseParameters.w > 0.5f;
+    return oscillating
+        ? uniforms.caseParameters.x
+            * cos(
+                uniforms.caseParameters.y
+                    * uniforms.timeStepAndScales.x
+            )
+        : uniforms.caseParameters.x;
+}
+
+/// Initializes a periodic-xz channel with halfway walls represented by the
+/// first and last y planes. Part 1 is the stationary lower wall and part 2 is
+/// the translating or oscillating upper wall.
+kernel void initializePlanarChannel(
+    device float* populations [[buffer(0)]],
+    device uchar* solidA [[buffer(1)]],
+    device uchar* solidB [[buffer(2)]],
+    device float4* wallVelocity [[buffer(3)]],
+    device float* density [[buffer(4)]],
+    device float4* velocity [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    bool lowerWall = cell.y == 0u;
+    bool upperWall = cell.y + 1u == uniforms.grid.y;
+    uchar part = lowerWall ? uchar(1) : (upperWall ? uchar(2) : uchar(0));
+    float3 wall = upperWall
+        ? float3(planarTopWallSpeed(uniforms), 0, 0)
+        : float3(0);
+    solidA[gid] = part;
+    solidB[gid] = part;
+    wallVelocity[gid] = float4(wall, 0);
+
+    float3 initialVelocity = part != 0 ? wall : float3(0);
+    for (uint q = 0; q < Q; ++q) {
+        populations[q * uniforms.grid.w + gid] = equilibrium(
+            q,
+            1.0f,
+            initialVelocity
+        );
+    }
+    density[gid] = 1.0f;
+    velocity[gid] = float4(initialVelocity, 0);
+}
+
+/// Updates only the N_x by N_z upper-wall plane, avoiding a full-volume
+/// geometry pass for the planar canonical case.
+kernel void updatePlanarWallVelocity(
+    device float4* wallVelocity [[buffer(0)]],
+    constant GPUUniforms& uniforms [[buffer(1)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint planeCount = uniforms.grid.x * uniforms.grid.z;
+    if (gid >= planeCount) {
+        return;
+    }
+    uint x = gid % uniforms.grid.x;
+    uint z = gid / uniforms.grid.x;
+    uint3 cell = uint3(x, uniforms.grid.y - 1u, z);
+    uint index = flatten(cell, uniforms.grid.xyz);
+    wallVelocity[index] = float4(planarTopWallSpeed(uniforms), 0, 0, 0);
+}
+
 inline bool inside(int3 p, uint3 size) {
     return p.x >= 0
         && p.y >= 0
@@ -624,6 +693,7 @@ kernel void stepFluidTRT(
                 for (uint q = 0; q < Q; ++q) {
                     int3 sourceCell = int3(cell) - C[q];
                     float value;
+                    bool useFarField = false;
 
                     if (!interiorDomain && !inside(sourceCell, size)) {
                         if (uniforms.flags.w != 0u) {
@@ -642,22 +712,23 @@ kernel void stepFluidTRT(
                                 : (sourceCell.z >= int(size.z)
                                     ? 0
                                     : sourceCell.z);
-                            uint source = flatten(uint3(sourceCell), size);
-                            value = populationsIn[
-                                q * uniforms.grid.w + source
-                            ];
                         }
                         else {
-                            value = equilibrium(
-                                q,
-                                uniforms.farFieldLattice.w,
-                                uniforms.farFieldLattice.xyz
-                            );
+                            useFarField = true;
                         }
+                    }
+
+                    if (useFarField) {
+                        value = equilibrium(
+                            q,
+                            uniforms.farFieldLattice.w,
+                            uniforms.farFieldLattice.xyz
+                        );
                     }
                     else {
                         uint source = flatten(uint3(sourceCell), size);
-                        if (solidCurrent[source] != 0) {
+                        uchar sourcePart = solidCurrent[source];
+                        if (sourcePart != 0) {
                             float reflected = populationsIn[
                                 OPP[q] * uniforms.grid.w + gid
                             ];
@@ -672,19 +743,25 @@ kernel void stepFluidTRT(
                             value = reflected + wallCorrection;
 
                             // C[q] points from the solid source to this cell.
-                            float3 linkForceLattice = -(value + reflected)
-                                * float3(C[q]);
-                            forceOnBodyLattice += linkForceLattice;
-                            float3 linkForcePhysical = linkForceLattice
-                                * uniforms.timeStepAndScales.w;
-                            float3 boundaryPoint = world
-                                - 0.5f
-                                * float3(C[q])
-                                * uniforms.originAndCellSize.w;
-                            cellTorquePhysical += cross(
-                                boundaryPoint - body.position.xyz,
-                                linkForcePhysical
+                            uint selectedPart = uint(
+                                uniforms.caseParameters.z + 0.5f
                             );
+                            if (selectedPart == 0u
+                                || selectedPart == uint(sourcePart)) {
+                                float3 linkForceLattice = -(value + reflected)
+                                    * float3(C[q]);
+                                forceOnBodyLattice += linkForceLattice;
+                                float3 linkForcePhysical = linkForceLattice
+                                    * uniforms.timeStepAndScales.w;
+                                float3 boundaryPoint = world
+                                    - 0.5f
+                                    * float3(C[q])
+                                    * uniforms.originAndCellSize.w;
+                                cellTorquePhysical += cross(
+                                    boundaryPoint - body.position.xyz,
+                                    linkForcePhysical
+                                );
+                            }
                         }
                         else {
                             value = populationsIn[

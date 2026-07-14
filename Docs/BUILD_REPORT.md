@@ -13,6 +13,7 @@ Date: 2026-07-14
 - Physical/lattice scaling, initial Mach/domain-fit guards, and field readback
 - macOS Metal compilation plus live Metal execution regression
 - production-Metal periodic shear-wave validation and raw-field archive mode
+- production-Metal translating/oscillating planar-wall validation and archive mode
 - physical-domain-preserving `--resolution-scale` control and allocation preflight
 
 ## GPU optimization pass
@@ -58,7 +59,7 @@ swift build -c release
 
 Results:
 
-- 19 Swift tests passed in debug and release configurations.
+- 20 Swift tests passed in debug and release configurations.
 - Live Metal tests matched moving-wing fixed-body and free-flight multi-command-buffer advances against synchronized one-step advances, including loads, captured fields, and rigid-body state.
 - A direct strict-math CPU/Metal rigid-body step matched position, linear/angular velocity, and orientation within `1e-6` under nonzero force and torque.
 - Cross-language audit passed for kernel/pipeline names, shared layouts, Swift/Metal D3Q19 direction/weight/opposite tables, and named buffer contracts.
@@ -71,10 +72,15 @@ Results:
 - Production-Metal maximum actual population-mass drift: `2.9401853382824776e-6` (below the `5e-6` single-precision gate).
 - Production-Metal maximum steps 1–8 cell-population difference from the CPU implementation: `1.7881393432617188e-7`.
 - Production-Metal batched-versus-stepwise density and velocity differences: exactly zero in the default validation case.
+- Production-Metal finest-grid transient Couette profile error: `5.0501359775896124e-5`; isolated top-wall force error: `3.703458540506022e-5`.
+- Production-Metal finest-grid oscillating-wall profile error: `0.001796520595387387`; force-phasor error: `0.0011740580418155779`; force phase error: `-0.0011740452422879244 rad`.
+- Oscillating moving-wall profile and force convergence orders: `1.986436490328703` and `2.0208052383958144`.
+- Maximum moving-wall cross-flow speed across all cases: `1.296122945859679e-6`; dynamic-wall batched-versus-stepwise density, velocity, and selected-wall force differences were exactly zero.
+- The moving-wall case exposed and fixed a periodic-edge/solid-corner bug: wrapped links now execute solid bounce-back instead of reading solid populations directly.
 - The default fixed-bird and free-flight release executables completed live Metal runs on the M4.
 
 ## Verification boundary
 
-The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. They do not yet execute channel flow, a planar moving wall, a sphere, or an isolated wing on the production Metal solver.
+The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, translating and oscillating planar-wall profiles and forces, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. They do not yet execute forced channel flow, a sphere, or an isolated wing on the production Metal solver.
 
 Quantitative aerodynamic use still requires the complete ladder in `Docs/VALIDATION.md`, including Metal-versus-reference field comparisons, canonical boundary cases, two-finest-grid load convergence, measured bird geometry and kinematics, and free-flight momentum/body-step refinement. Free-flight studies must also add runtime Mach/domain monitoring and either model wing inertial/hinge/actuator reactions or justify the current massless-wing approximation. The optimization timings above are engineering evidence only and are not aerodynamic validation.

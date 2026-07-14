@@ -4,7 +4,7 @@ BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Appl
 
 The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
 
-This repository is a complete vertical slice, not a validated research result. The validation command compiles and executes the Swift/Metal path on a supported Mac, runs the independent reference checks, and now executes periodic shear-wave decay/refinement on the production fluid kernel. It does not yet implement the full canonical moving-boundary ladder in `Docs/VALIDATION.md`; those cases, aerodynamic-load grid convergence, and measured geometry/kinematics remain mandatory before bird-flight results are treated as quantitative.
+This repository is a complete vertical slice, not a validated research result. The validation command compiles and executes the Swift/Metal path on a supported Mac, runs the independent reference checks, and executes periodic shear-wave plus translating/oscillating planar-wall refinement on the production fluid and momentum-exchange kernels. It does not yet implement the full canonical-body ladder in `Docs/VALIDATION.md`; channel flow, sphere/wing cases, aerodynamic-load grid convergence, and measured geometry/kinematics remain mandatory before bird-flight results are treated as quantitative.
 
 ## Implemented solver
 
@@ -52,9 +52,9 @@ swift test
 ./Scripts/validate.sh
 ```
 
-`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the strict-math production-Metal shear-wave harness.
+`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the strict-math production-Metal shear-wave and moving-wall harnesses.
 
-The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against an independent CPU implementation, and command-buffer batch invariance.
+The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against a host CPU reference, and command-buffer batch invariance. The moving-wall harness checks transient Couette and finite-gap oscillating Stokes profiles, isolated upper-wall force and phase, no-penetration, refinement, and dynamic-wall batch invariance.
 
 ## Run
 
@@ -68,6 +68,15 @@ swift run -c release birdflow validate shear-wave \
 ```
 
 The optional archive contains `report.json`, a format manifest, and final density/velocity fields for each refinement grid.
+
+Canonical production-Metal moving-wall validation:
+
+```bash
+swift run -c release birdflow validate moving-wall \
+  --resolution 32 \
+  --archive ValidationArtifacts/moving-wall \
+  --json
+```
 
 A fixed-bird wind-tunnel case:
 
@@ -115,6 +124,7 @@ Sources/BirdFlowMetal/
   MetalBackend.swift            device, runtime compilation, pipelines
   BirdFlowSimulation.swift      state ownership and step command graph
   MetalShearWaveValidation.swift production-kernel canonical validation
+  MetalMovingWallValidation.swift planar-wall profile/load validation
   GPUData.swift                 Swift/MSL-compatible data layouts
   Metal/BirdFlow.metal          geometry, fluid, reduction, body kernels
 

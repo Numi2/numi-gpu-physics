@@ -65,7 +65,9 @@ omegaMinus = 1 / tauMinus
 
 ## Streaming and far field
 
-The main kernel uses pull streaming. Each fluid cell reads the population arriving from `cell - c_q`. In bird cases, sources outside the domain are supplied with far-field equilibrium and a quadratic sponge in the outer band relaxes post-collision populations toward that state. The canonical shear-wave harness selects periodic wrapping in all three axes and disables geometry and sponge relaxation while retaining the same `stepFluidTRT` streaming and TRT collision implementation.
+The main kernel uses pull streaming. Each fluid cell reads the population arriving from `cell - c_q`. In bird cases, sources outside the domain are supplied with far-field equilibrium and a quadratic sponge in the outer band relaxes post-collision populations toward that state. Canonical harnesses can select periodic wrapping while disabling sponge relaxation and retaining the same `stepFluidTRT` streaming and TRT collision implementation. A periodically wrapped source is still tested against the solid mask after wrapping; this is essential when an x/z edge link also lands on a planar y wall.
+
+The moving-wall harness represents the first and last y planes as stationary lower and driven upper solid parts. A plane-sized update kernel changes only upper-wall velocity each step. The production fluid kernel performs halfway moving-wall bounce-back, while its existing deterministic load reduction can select the upper-wall part for comparison with analytic transient-Couette and finite-gap Stokes shear force. Bird runs leave the selection value zero and continue to reduce loads from every body part.
 
 ## Moving bird boundary
 

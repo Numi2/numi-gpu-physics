@@ -4,15 +4,16 @@ Aerodynamic output is not accepted as quantitative until this sequence passes. E
 
 ## Current automated coverage
 
-`Scripts/validate.sh` currently provides five gates:
+`Scripts/validate.sh` currently provides six gates:
 
 - Swift algebra, scaling, rigid-body, and layout tests;
 - live strict-math Metal moving-wing fixed-body and free-flight batch-partition regressions, plus CPU/GPU rigid-body one-step parity;
 - an independent NumPy periodic shear-wave decay/convergence reference;
-- a production-Metal periodic shear-wave refinement, cell-by-cell CPU comparison, population-mass, and command-buffer batch-invariance check; and
+- a production-Metal periodic shear-wave refinement, cell-by-cell CPU comparison, population-mass, and command-buffer batch-invariance check;
+- production-Metal transient Couette and oscillating Stokes-layer profile, no-penetration, wall-force, phase, refinement, and batching checks; and
 - offline compilation and linking of every Metal entry point.
 
-This is a compilation and regression gate, not completion of the benchmark ladder below. Section 2 now runs on the production fluid kernel. Channel forcing, planar moving walls, and selectable canonical sphere/isolated-wing cases are still absent, so sections 3–6 require dedicated GPU case modes and comparison tooling. The procedural bird already contains finite wings, but that is not a canonical case harness.
+This is a compilation and regression gate, not completion of the benchmark ladder below. Sections 2 and 4 now run on the production fluid and moving-wall momentum-exchange operators. Channel forcing and selectable canonical sphere/isolated-wing cases are still absent, so sections 3, 5, and 6 require dedicated GPU case modes and comparison tooling. The procedural bird already contains finite wings, but that is not a canonical case harness.
 
 ## 1. Algebra and layout
 
@@ -83,13 +84,32 @@ Acceptance:
 
 ## 4. Moving-wall verification
 
-Use translating and oscillating planar walls.
+```bash
+swift run -c release birdflow validate moving-wall --resolution 32 --json
+```
+
+To archive the report and final fields for both cases on all three grids:
+
+```bash
+swift run -c release birdflow validate moving-wall \
+  --resolution 32 \
+  --archive ValidationArtifacts/moving-wall-m4 \
+  --json
+```
+
+The translating case starts from rest and is compared with the transient Couette series at `nu t / H^2 = 0.2`. The oscillating case uses the finite-gap complex Stokes solution with dimensionless angular frequency `omega H^2 / nu = 30`, six warmup cycles, and sixteen phase samples. Periodic x/z links that wrap onto a wall are required to execute the same moving-wall bounce-back as interior wall links.
 
 Acceptance:
 
-- no-penetration is satisfied
-- tangential response agrees with the Stokes-layer solution
-- integrated wall force has the correct phase and converges
+- normalized profile L2 error below `1%` on every grid
+- oscillating-profile convergence order at least `1.5`
+- isolated upper-wall momentum-exchange force error below `1%` on every grid
+- translating and oscillating wall-force convergence order at least `1.0`
+- oscillating force phase error below `0.01 rad`
+- maximum cross-flow speed below `2e-6` lattice units
+- density, velocity, and selected-wall force differences below `1e-7` between stepwise and batched execution
+
+The transient Couette profile is already within `8e-5` on the coarsest grid and reaches a single-precision error floor, so its fitted profile order is reported but not used as a gate. Force convergence and the oscillating profile retain explicit order gates.
 
 ## 5. Canonical body
 

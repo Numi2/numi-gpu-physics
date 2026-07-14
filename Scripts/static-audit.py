@@ -13,6 +13,7 @@ SHADER = ROOT / "Sources/BirdFlowMetal/Metal/BirdFlow.metal"
 SWIFT_FILES = (
     ROOT / "Sources/BirdFlowMetal/BirdFlowSimulation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalShearWaveValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalMovingWallValidation.swift",
 )
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
 GPU_DATA = ROOT / "Sources/BirdFlowMetal/GPUData.swift"
@@ -22,6 +23,8 @@ REQUIRED_KERNELS = {
     "prepareBirdGeometry",
     "initializePopulations",
     "initializeShearWave",
+    "initializePlanarChannel",
+    "updatePlanarWallVelocity",
     "stepFluidTRT",
     "reduceForceTorque",
     "integrateBirdBody",
@@ -80,7 +83,11 @@ def main() -> int:
             f"expected={sorted(REQUIRED_KERNELS)}, actual={sorted(kernels)}"
         )
 
-    pipelines = set(re.findall(r'pipeline\(named:\s*"([^"]+)"\)', swift))
+    pipelines = set(re.findall(
+        r'pipeline\(\s*named:\s*"([^"]+)"\s*\)',
+        swift,
+        re.S,
+    ))
     if pipelines != REQUIRED_KERNELS:
         fail(
             "Swift pipeline names differ from Metal entry points: "
@@ -202,11 +209,15 @@ def main() -> int:
     expected_swift_bindings = {
         "private func encodeInitialization()": 6,
         "private func encodeShearInitialization()": 4,
+        "private func encodePlanarInitialization()": 7,
+        "private func encodePlanarWallUpdate(": 2,
         "private func encodeGeometryPreparation(": 4,
         "private func encodeGeometry(": 6,
         "private func encodeFluidStep(": 10,
         "private func encodeShearFluidStep(": 10,
+        "private func encodePlanarFluidStep(": 10,
         "private func encodeReduction(": 3,
+        "private func encodePlanarReduction(": 3,
         "private func encodeBodyIntegration(": 4,
     }
     for declaration, count in expected_swift_bindings.items():
@@ -239,6 +250,8 @@ def main() -> int:
         "prepareBirdGeometry": 4,
         "initializePopulations": 6,
         "initializeShearWave": 4,
+        "initializePlanarChannel": 7,
+        "updatePlanarWallVelocity": 2,
         "stepFluidTRT": 10,
         "reduceForceTorque": 3,
         "integrateBirdBody": 4,
@@ -275,6 +288,16 @@ def main() -> int:
             "private func encodeShearInitialization()",
             ["populationsA", "density", "velocity", "uniforms"],
             ["populations", "density", "velocity", "uniforms"],
+        ),
+        "initializePlanarChannel": (
+            "private func encodePlanarInitialization()",
+            ["populationsA", "solidMaskA", "solidMaskB", "wallVelocity", "density", "velocity", "uniforms"],
+            ["populations", "solidA", "solidB", "wallVelocity", "density", "velocity", "uniforms"],
+        ),
+        "updatePlanarWallVelocity": (
+            "private func encodePlanarWallUpdate(",
+            ["wallVelocity", "uniforms"],
+            ["wallVelocity", "uniforms"],
         ),
         "stepFluidTRT": (
             "private func encodeFluidStep(",
@@ -356,6 +379,37 @@ def main() -> int:
         fail(
             "alternate shear-wave stepFluidTRT bindings differ: "
             f"Swift={shear_step_names}"
+        )
+
+    planar_step_body = extract_braced_body(
+        swift,
+        "private func encodePlanarFluidStep(",
+    )
+    planar_step_pairs = re.findall(
+        r"encoder\.setBuffer\(\s*(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        planar_step_body,
+        re.S,
+    ) + re.findall(
+        r"encoder\.setBytes\(\s*&?(\w+)\s*,.*?index:\s*(\d+)\s*\)",
+        planar_step_body,
+        re.S,
+    )
+    planar_step_names = [
+        name
+        for name, _ in sorted(
+            planar_step_pairs,
+            key=lambda pair: int(pair[1]),
+        )
+    ]
+    expected_planar_step = [
+        "currentPopulations", "nextPopulations", "solidMaskA",
+        "solidMaskB", "wallVelocity", "density", "velocity",
+        "reductionA", "bodyState", "uniforms",
+    ]
+    if planar_step_names != expected_planar_step:
+        fail(
+            "alternate planar-wall stepFluidTRT bindings differ: "
+            f"Swift={planar_step_names}"
         )
 
     print(

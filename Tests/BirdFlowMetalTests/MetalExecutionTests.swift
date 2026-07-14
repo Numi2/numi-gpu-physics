@@ -304,4 +304,59 @@ func productionMetalShearWavePassesCanonicalGates() throws {
     )
     #expect(report.passed)
 }
+
+@Test
+func productionMetalMovingWallPassesCanonicalGates() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalMovingWallValidator.run()
+
+    #expect(report.productionKernel == "stepFluidTRT")
+    #expect(report.couetteCases.map(\.resolution) == [16, 24, 32])
+    #expect(report.oscillatingCases.map(\.resolution) == [16, 24, 32])
+    #expect(
+        report.couetteCases.allSatisfy {
+            $0.normalizedProfileL2Error < report.maximumAllowedProfileError
+                && $0.relativeTopWallForceError
+                    < report.maximumAllowedCouetteForceError
+                && $0.maximumCrossFlowSpeed
+                    < report.maximumAllowedCrossFlowSpeed
+        }
+    )
+    #expect(
+        report.oscillatingCases.allSatisfy {
+            $0.normalizedProfileL2Error < report.maximumAllowedProfileError
+                && $0.relativeForcePhasorError
+                    < report.maximumAllowedOscillatingForceError
+                && abs($0.forcePhaseErrorRadians)
+                    < report.maximumAllowedForcePhaseErrorRadians
+                && $0.maximumCrossFlowSpeed
+                    < report.maximumAllowedCrossFlowSpeed
+        }
+    )
+    #expect(
+        report.oscillatingProfileConvergenceOrder
+            >= report.minimumRequiredProfileConvergenceOrder
+    )
+    #expect(
+        report.couetteForceConvergenceOrder
+            >= report.minimumRequiredForceConvergenceOrder
+    )
+    #expect(
+        report.oscillatingForceConvergenceOrder
+            >= report.minimumRequiredForceConvergenceOrder
+    )
+    #expect(
+        report.maximumBatchDensityDifference
+            < report.maximumAllowedBatchDifference
+    )
+    #expect(
+        report.maximumBatchVelocityDifference
+            < report.maximumAllowedBatchDifference
+    )
+    #expect(
+        report.maximumBatchForceDifference
+            < report.maximumAllowedBatchDifference
+    )
+    #expect(report.passed)
+}
 #endif

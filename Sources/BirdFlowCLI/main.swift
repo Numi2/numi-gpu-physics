@@ -103,6 +103,7 @@ private struct Arguments {
 
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
+      birdflow validate moving-wall [--resolution N] [--json]
     """
 }
 
@@ -194,6 +195,86 @@ private struct ShearWaveArguments {
     The command runs a three-grid refinement ladder, an eight-step
     cell-by-cell CPU comparison, and a command-buffer batch-invariance check
     against the production stepFluidTRT Metal kernel.
+    """
+}
+
+private struct MovingWallArguments {
+    var finestResolution = 32
+    var viscosity: Float = 0.1
+    var amplitude: Float = 0.01
+    var json = false
+    var archivePath: String?
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--resolution":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 32 else {
+                    throw CLIError.invalidArgument(
+                        "--resolution requires an integer of at least 32"
+                    )
+                }
+                finestResolution = value
+            case "--viscosity":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--viscosity requires a positive number"
+                    )
+                }
+                viscosity = value
+            case "--amplitude":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--amplitude requires a positive number"
+                    )
+                }
+                amplitude = value
+            case "--json":
+                json = true
+            case "--archive":
+                index += 1
+                guard index < values.count, !values[index].isEmpty else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output directory"
+                    )
+                }
+                archivePath = values[index]
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown moving-wall option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow validate moving-wall [options]
+
+      --resolution N       Finest cubic grid (default: 32, minimum: 32)
+      --viscosity VALUE    Lattice kinematic viscosity (default: 0.1)
+      --amplitude VALUE    Wall lattice velocity amplitude (default: 0.01)
+      --json               Emit the machine-readable validation report
+      --archive DIRECTORY  Save report.json and final Float32 fields
+      --help               Show this help
+
+    The command runs transient translating-wall Couette flow and a finite-gap
+    oscillating Stokes layer on three grids. It checks profiles, no-penetration,
+    isolated top-wall momentum-exchange force, force phase, convergence, and
+    dynamic-wall command-buffer batch invariance.
     """
 }
 
@@ -349,14 +430,65 @@ private func runShearWaveValidation(_ values: [String]) throws {
     }
 }
 
+private func runMovingWallValidation(_ values: [String]) throws {
+    let arguments = try MovingWallArguments(values)
+    let report = try MetalMovingWallValidator.run(
+        finestResolution: arguments.finestResolution,
+        viscosity: arguments.viscosity,
+        wallVelocityAmplitude: arguments.amplitude,
+        archiveDirectory: arguments.archivePath.map {
+            URL(fileURLWithPath: $0, isDirectory: true)
+        }
+    )
+    if arguments.json {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        print(String(decoding: try encoder.encode(report), as: UTF8.self))
+    } else {
+        print("production_kernel: \(report.productionKernel)")
+        print("device: \(report.deviceName)")
+        print(
+            "couette_profile_order: "
+                + String(report.couetteProfileConvergenceOrder)
+        )
+        print(
+            "couette_force_order: "
+                + String(report.couetteForceConvergenceOrder)
+        )
+        print(
+            "oscillating_profile_order: "
+                + String(report.oscillatingProfileConvergenceOrder)
+        )
+        print(
+            "oscillating_force_order: "
+                + String(report.oscillatingForceConvergenceOrder)
+        )
+        print("passed: \(report.passed)")
+    }
+    guard report.passed else {
+        throw MetalMovingWallValidationError.failed(
+            "one or more moving-wall acceptance gates were exceeded"
+        )
+    }
+}
+
 private func run(_ values: [String]) throws {
     if values.count > 1, values[1] == "validate" {
-        guard values.count > 2, values[2] == "shear-wave" else {
+        guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow validate shear-wave [options]"
+                "Use: birdflow validate <shear-wave|moving-wall> [options]"
             )
         }
-        try runShearWaveValidation(values)
+        switch values[2] {
+        case "shear-wave":
+            try runShearWaveValidation(values)
+        case "moving-wall":
+            try runMovingWallValidation(values)
+        default:
+            throw CLIError.invalidArgument(
+                "Use: birdflow validate <shear-wave|moving-wall> [options]"
+            )
+        }
     } else {
         try runBirdSimulation(values)
     }
