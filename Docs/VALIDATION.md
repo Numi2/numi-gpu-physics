@@ -374,12 +374,48 @@ difference is `1.155%`, and all vortex milestones are finite. The normalized
 
 The separate 20-cell input audit passes with exact CPU/Metal mask agreement,
 maximum wall-velocity error `8.04e-9`, and maximum interpolated wall-position
-error below `0.00071` cell. The single-grid CLI intentionally assigns no formal
-verdict. Because 20 cells is the first resolution at the paper's nominal
-`0.05c` thickness instead of the one-cell minimum, quantitative promotion still
-requires a 24-cell case to establish convergence without another nominal
-thickness change. The compact diagnostic record is
+error below `0.00071` cell. The compact diagnostic record is
 `ValidationArtifacts/flapping-wing-chord-20-summary.json`.
+
+The fixed-thickness completion case was run with:
+
+```bash
+.build/release/birdflow validate flapping-wing \
+  --single-chord-cells 24 \
+  --cycles 5 \
+  --archive /tmp/birdflow-flapping-chord-24-m4-20260714 \
+  --json
+```
+
+It completed in `1393.77 s` with a `2.947 GB` peak memory footprint and
+`1.648 GiB` archive. Mean `(CL, CD)=(1.51819, 2.10509)` is within
+`3.986%/2.888%` of the published values. Relative to the 20-cell case at the
+same nominal `0.05c` thickness, lift changes `1.904%` and drag `3.054%`, both
+below the unchanged `5%` gate. Finest peak phases are `0.405T/0.905T`,
+midstroke mean lift is `2.05625`, symmetry error is `1.516%`,
+fourth-to-fifth-cycle difference is `1.238%`, and all vortex milestones are
+finite. The 24-cell input audit also passes with exact mask agreement and less
+than `0.00071`-cell wall-position error.
+
+The complete archive verdict is reconstructed without another solve:
+
+```bash
+python3 Scripts/audit-flapping-refinement.py \
+  /tmp/birdflow-flapping-chord-20-m4-20260714/case.json \
+  /tmp/birdflow-flapping-chord-24-m4-20260714/case.json \
+  /tmp/birdflow-flapping-promoted-m4-20260714/report.json \
+  --coarse-audit /tmp/birdflow-flapping-chord-20-input-audit.json \
+  --fine-audit /tmp/birdflow-flapping-chord-24-input-audit.json \
+  --output ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json
+```
+
+This applies the same coefficient, refinement, symmetry, periodicity,
+midstroke, timing, vortex, and batch limits as the production Swift validator,
+plus explicit five-cycle, aligned-phase, fixed-thickness, and input-audit
+requirements. Every gate passes. The prescribed flapping-wing canonical is
+therefore accepted on the archived fixed-thickness 20/24 refinement pair. This
+does not promote the procedural complete-bird case, which still requires the
+separate measured-geometry and free-flight gates below.
 
 Acceptance:
 

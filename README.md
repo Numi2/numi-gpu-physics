@@ -4,7 +4,7 @@ BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Appl
 
 The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
 
-This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The promoted flapping benchmark now reproduces the published mean coefficients within `3.4%`, but its 12-to-16-cell drag change is `5.024%`, narrowly above the unchanged `5%` convergence gate. Forced channel flow, an accepted flapping-wing refinement, bird-load grid convergence, and measured geometry/kinematics therefore remain mandatory before bird-flight results are treated as quantitative.
+This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The promoted fixed-thickness flapping benchmark now passes: finest mean coefficients are within `4%` of the published values and the 20-to-24-cell changes are `1.904%` lift and `3.054%` drag under the unchanged `5%` gate. Forced channel flow, bird-load grid convergence, measured geometry/kinematics, and free-flight refinement remain mandatory before complete-bird results are treated as quantitative.
 
 ## Implemented solver
 
@@ -55,7 +55,7 @@ swift test
 ./Scripts/validate.sh
 ```
 
-`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the accepted strict-math production-Metal shear-wave, moving-wall, fixed-sphere, and fixed-wing harnesses. The published flapping-wing command below remains separate because it currently exits nonzero at its locked scientific gates. The fixed-wing release tier uses roughly 9.2 GB peak unified memory and took about 26 minutes on the documented Apple M4 host.
+`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the accepted strict-math production-Metal shear-wave, moving-wall, fixed-sphere, and fixed-wing harnesses. The expensive flapping-wing solves remain separate; the original 8/12/16 command exits nonzero by `0.024` percentage points, while the archived fixed-thickness 20/24 composite gate passes. The fixed-wing release tier uses roughly 9.2 GB peak unified memory and took about 26 minutes on the documented Apple M4 host.
 
 These checks are intentionally local-only. The repository contains no GitHub Actions workflows, so pushes and pull requests do not spend hosted macOS CI minutes. Run only the local command appropriate to the change being evaluated.
 
@@ -159,16 +159,14 @@ cells per chord, exceeding the unchanged `5%` limit by `0.024` percentage
 points. The compact result is archived in
 `ValidationArtifacts/flapping-wing-promoted-ladder-summary.json`.
 
-A targeted five-cycle 20-cell diagnostic then produced
-`(CL, CD)=(1.48928, 2.16937)`. Relative to 16 cells, lift changes `4.420%` and
-drag `2.495%`, so both clear the unchanged `5%` criterion; all individual mean,
-timing, periodicity, symmetry, midstroke, and vortex gates also pass. Its
-independent input audit has exact CPU/Metal occupancy agreement and less than
-`0.00071`-cell wall-position error. This is strong extended-grid convergence
-evidence, not a formal CLI verdict: 20 cells is the first grid at the paper's
-nominal `0.05c` thickness, so a 24-cell comparison is still required before
-promoting the benchmark. See
-`ValidationArtifacts/flapping-wing-chord-20-summary.json`.
+Targeted five-cycle 20- and 24-cell cases then held the paper's nominal `0.05c`
+thickness fixed. They produced `(CL, CD)=(1.48928, 2.16937)` and
+`(1.51819, 2.10509)`. The finest errors are `3.986%` lift and `2.888%` drag;
+20-to-24 changes are `1.904%` and `3.054%`. Timing, periodicity, symmetry,
+midstroke, vortex, batch-invariance, and independent input-audit gates also
+pass without relaxing a threshold. The reproducible archive-composite verdict
+is `ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json`; the
+audit command is `Scripts/audit-flapping-refinement.py`.
 
 The phase-resolved decomposition is available with `birdflow validate flapping-wing --decompose-loads --single-chord-cells 8 --cycles 1 --json`. On Apple M4 it completes in `9.84 s`; cover/uncover impulse contributes only `0.47%` of mean lift and `2.90%` of mean drag, while link exchange supplies the remainder. RMS topology fractions are `1.29%` lift and `3.01%` drag, and independently selected components close to total within `9.7e-6` coefficient. Geometry and topology double counting are therefore ruled out as dominant causes; link-force evaluation/normalization is the next fault domain.
 
@@ -215,8 +213,9 @@ to legacy conventional total is `(-6.32843, -7.51260)`. The translating-body
 topology gate, the existing three-grid Couette/Stokes gate, and a short
 promoted-default flapping run all pass, so this estimator is now production.
 This fixes force accounting. The promoted five-cycle ladder clears the
-published mean-load gates but misses the two-finest-grid drag-convergence gate
-by `0.024` percentage points, so flapping-wing acceptance remains pending.
+published mean-load gates, and the fixed-thickness 20/24 archive composite now
+clears both two-finest-grid convergence gates. The prescribed flapping-wing
+canonical is accepted; this does not validate the procedural complete bird.
 
 A fixed-bird wind-tunnel case:
 

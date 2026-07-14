@@ -69,5 +69,6 @@
     "vortexCoverage": true
   },
   "formalReleaseVerdictAssigned": false,
-  "formalReleaseBoundary": "The single-grid CLI intentionally assigns no verdict. The 20-cell case is the first at the paper's nominal 0.05c thickness; a 24-cell case would test convergence without another nominal-thickness change."
+  "formalReleaseBoundary": "The single-grid CLI intentionally assigns no verdict. The subsequent 24-cell case cleared the fixed-thickness convergence boundary in ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json.",
+  "subsequentFixedThicknessAcceptanceArtifact": "ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json"
 }
