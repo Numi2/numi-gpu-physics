@@ -104,6 +104,11 @@ struct GPUPreparedFlappingWing {
     float4 state;
 };
 
+struct GPUTranslatingSphereParameters {
+    float4 initialCenterAndRadius;
+    float4 velocity;
+};
+
 struct GPUForceTorque {
     float4 force;
     float4 torque;
@@ -1018,6 +1023,96 @@ kernel void initializeSphereCase(
     velocity[gid] = float4(initialVelocity, 0);
 }
 
+/// Initializes a compact translating-body topology canonical. Solid nodes are
+/// initialized in the wall frame so the first measured step contains only the
+/// production moving-boundary response, not an artificial start-up mismatch.
+kernel void initializeTranslatingSphereTopology(
+    device float* populations [[buffer(0)]],
+    device uchar* solidA [[buffer(1)]],
+    device uchar* solidB [[buffer(2)]],
+    device float4* wallVelocity [[buffer(3)]],
+    device float* density [[buffer(4)]],
+    device float4* velocity [[buffer(5)]],
+    constant GPUTranslatingSphereParameters& parameters [[buffer(6)]],
+    constant GPUUniforms& uniforms [[buffer(7)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    float3 relative = float3(cell) + 0.5f
+        - parameters.initialCenterAndRadius.xyz;
+    float radius = parameters.initialCenterAndRadius.w;
+    bool isSphere = dot(relative, relative) <= radius * radius;
+    uchar part = isSphere ? uchar(1) : uchar(0);
+    float3 wall = parameters.velocity.xyz;
+    float3 initialVelocity = isSphere ? wall : float3(0);
+
+    solidA[gid] = part;
+    solidB[gid] = part;
+    wallVelocity[gid] = float4(wall, 0);
+    for (uint q = 0; q < Q; ++q) {
+        populations[q * uniforms.grid.w + gid] = equilibrium(
+            q,
+            1.0f,
+            initialVelocity
+        );
+    }
+    density[gid] = 1.0f;
+    velocity[gid] = float4(initialVelocity, 0);
+}
+
+/// Moves the canonical sphere across lattice cells while preserving the exact
+/// pre-geometry fluid state of newly covered nodes. Halfway link fractions are
+/// intentional: this test isolates cover/uncover accounting from curved-wall
+/// interpolation and vortex/kinematics complexity.
+kernel void buildTranslatingSphereTopology(
+    device uchar* solidCurrent [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device const uchar* solidPrevious [[buffer(2)]],
+    constant GPUTranslatingSphereParameters& parameters [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    device float* boundaryLinks [[buffer(5)]],
+    device float4* coveredFluidMomentum [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    float3 center = parameters.initialCenterAndRadius.xyz
+        + parameters.velocity.xyz * uniforms.timeStepAndScales.x;
+    float3 relative = float3(cell) + 0.5f - center;
+    float radius = parameters.initialCenterAndRadius.w;
+    bool isSphere = dot(relative, relative) <= radius * radius;
+    bool wasSolid = uniforms.flags.z != 0u && solidPrevious[gid] != 0;
+
+    if (isSphere && !wasSolid) {
+        float densityBefore = 0.0f;
+        float3 momentumBefore = float3(0);
+        for (uint q = 0; q < Q; ++q) {
+            float value = boundaryLinks[q * uniforms.grid.w + gid];
+            densityBefore += value;
+            momentumBefore += value * float3(C[q]);
+        }
+        coveredFluidMomentum[gid] = float4(
+            momentumBefore,
+            densityBefore
+        );
+    }
+
+    solidCurrent[gid] = isSphere ? uchar(1) : uchar(0);
+    wallVelocity[gid] = float4(parameters.velocity.xyz, 0);
+    if (isSphere) {
+        for (uint q = 1; q < Q; ++q) {
+            boundaryLinks[q * uniforms.grid.w + gid] = 0.5f;
+        }
+    }
+}
+
 /// Initializes uniform external flow around the fixed rectangular validation
 /// wing. The nominally thin plate is regularized as a one-cell voxel surface,
 /// matching the production occupancy/bounce-back representation rather than
@@ -1153,7 +1248,7 @@ kernel void stepFluidTRT(
             : 0u;
         uint prescribedLinkForceMode = prescribedComponentSelection
             ? uint(max(uniforms.caseParameters.y, 0.0f) + 0.5f)
-            : 0u;
+            : 6u;
         bool includeLinkExchange = !prescribedComponentSelection
             || prescribedLoadComponent != 2u;
         bool includeTopologyImpulse = !prescribedComponentSelection
@@ -1395,8 +1490,8 @@ kernel void stepFluidTRT(
                                 float3 linkForceLattice;
                                 if (prescribedLinkForceMode == 0u) {
                                     // Wen et al. Eq. (5): evaluate momentum in
-                                    // the local wall frame. Production takes
-                                    // this first uniform branch.
+                                    // the local wall frame. Retained as an
+                                    // explicit diagnostic estimator.
                                     linkForceLattice = -(
                                         value * (direction - wall)
                                         - reflected
@@ -1407,7 +1502,10 @@ kernel void stepFluidTRT(
                                     || prescribedLinkForceMode == 6u) {
                                     // Wen et al. Eq. (4), evaluated with the
                                     // incoming population already reconstructed
-                                    // at the interpolated wall.
+                                    // at the interpolated wall. Mode 6 is the
+                                    // production conservative moving-domain
+                                    // estimator and adds exact topology terms
+                                    // in the cover/uncover branches above.
                                     linkForceLattice = -(
                                         value + reflected
                                     ) * direction;
@@ -1665,6 +1763,8 @@ kernel void measureControlVolumeMomentumAfterStep(
     threadgroup float4 groupTopologyCorrection[256];
     float3 newMomentum = float3(0);
     float3 topologyCorrection = float3(0);
+    float newlyUncoveredCount = 0.0f;
+    float newlyCoveredCount = 0.0f;
 
     if (gid < uniforms.grid.w) {
         uint3 cell = unflatten(gid, uniforms.grid.xyz);
@@ -1681,16 +1781,24 @@ kernel void measureControlVolumeMomentumAfterStep(
             }
             if (wasSolid && !isSolid) {
                 topologyCorrection += newMomentum;
+                newlyUncoveredCount = 1.0f;
             }
             else if (!wasSolid && isSolid) {
                 topologyCorrection -= coveredFluidMomentum[gid].w
                     * wallVelocity[gid].xyz;
+                newlyCoveredCount = 1.0f;
             }
         }
     }
 
-    groupNewMomentum[threadIndex] = float4(newMomentum, 0);
-    groupTopologyCorrection[threadIndex] = float4(topologyCorrection, 0);
+    groupNewMomentum[threadIndex] = float4(
+        newMomentum,
+        newlyUncoveredCount
+    );
+    groupTopologyCorrection[threadIndex] = float4(
+        topologyCorrection,
+        newlyCoveredCount
+    );
     threadgroup_barrier(mem_flags::mem_threadgroup);
     if (threadIndex == 0u) {
         float4 newTotal = float4(0);

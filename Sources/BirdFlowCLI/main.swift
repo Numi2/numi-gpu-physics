@@ -104,6 +104,7 @@ private struct Arguments {
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
       birdflow validate moving-wall [--resolution N] [--json]
+      birdflow validate translating-body [--json]
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
       birdflow validate flapping-wing [--chord-cells N] [--json]
@@ -111,6 +112,40 @@ private struct Arguments {
       birdflow validate flapping-wing --compare-link-forces [--json]
       birdflow validate flapping-wing --decompose-link-numerator [--json]
       birdflow validate flapping-wing --momentum-budget [--json]
+    """
+}
+
+private struct TranslatingBodyArguments {
+    var json = false
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--json":
+                json = true
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown translating-body option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow validate translating-body [options]
+
+      --json  Emit the machine-readable validation report and phase history
+      --help  Show this help
+
+    The command translates a compact voxel sphere through two lattice cells
+    in a periodic quiescent domain. It requires cover and uncover events, then
+    closes the production boundary load against an independent fluid-momentum
+    budget while comparing the legacy and conservative estimators.
     """
 }
 
@@ -713,6 +748,42 @@ private func runMovingWallValidation(_ values: [String]) throws {
     }
 }
 
+private func runTranslatingBodyValidation(_ values: [String]) throws {
+    let arguments = try TranslatingBodyArguments(values)
+    let report = try MetalTranslatingBodyTopologyValidator.run()
+    if arguments.json {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        print(String(decoding: try encoder.encode(report), as: UTF8.self))
+    } else {
+        print("production_kernel: \(report.productionKernel)")
+        print("topology_kernel: \(report.topologyKernel)")
+        print("device: \(report.deviceName)")
+        print(
+            "cell_events: covered=\(report.newlyCoveredCellEvents) "
+                + "uncovered=\(report.newlyUncoveredCellEvents) "
+                + "transition_steps=\(report.topologyTransitionSteps)"
+        )
+        print(
+            "legacy_rms_residual: \(report.legacyRMSForceResidual)"
+        )
+        print(
+            "conservative_rms_residual: "
+                + String(report.conservativeRMSForceResidual)
+        )
+        print(
+            "conservative_improvement_factor: "
+                + String(report.conservativeImprovementFactor)
+        )
+        print("passed: \(report.passed)")
+    }
+    guard report.passed else {
+        throw MetalTranslatingBodyTopologyValidationError.failed(
+            "force did not close against fluid momentum across topology changes"
+        )
+    }
+}
+
 private func runSphereValidation(_ values: [String]) throws {
     let arguments = try SphereArguments(values)
     let report = try MetalSphereValidator.run(
@@ -1166,7 +1237,7 @@ private func run(_ values: [String]) throws {
     if values.count > 1, values[1] == "validate" {
         guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing|flapping-wing> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing> [options]"
             )
         }
         switch values[2] {
@@ -1174,6 +1245,8 @@ private func run(_ values: [String]) throws {
             try runShearWaveValidation(values)
         case "moving-wall":
             try runMovingWallValidation(values)
+        case "translating-body":
+            try runTranslatingBodyValidation(values)
         case "sphere":
             try runSphereValidation(values)
         case "wing":
@@ -1182,7 +1255,7 @@ private func run(_ values: [String]) throws {
             try runFlappingWingValidation(values)
         default:
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|sphere|wing|flapping-wing> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing> [options]"
             )
         }
     } else {

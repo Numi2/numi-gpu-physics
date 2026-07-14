@@ -4,19 +4,20 @@ Aerodynamic output is not accepted as quantitative until this sequence passes. E
 
 ## Current automated coverage
 
-The repository currently provides nine automated harnesses:
+The repository currently provides ten automated harnesses:
 
 - Swift algebra, scaling, rigid-body, and layout tests;
 - live strict-math Metal moving-wing fixed-body and free-flight batch-partition regressions, plus CPU/GPU rigid-body one-step parity;
 - an independent NumPy periodic shear-wave decay/convergence reference;
 - a production-Metal periodic shear-wave refinement, cell-by-cell CPU comparison, population-mass, and command-buffer batch-invariance check;
 - production-Metal transient Couette and oscillating Stokes-layer profile, no-penetration, wall-force, phase, refinement, and batching checks;
+- a production-Metal translating-sphere topology gate that closes cover/uncover force against an independent fluid-momentum budget;
 - production-Metal fixed-sphere steady drag, curved-boundary symmetry, torque leakage, refinement, and batching checks;
 - production-Metal fixed finite-wing lift/drag, symmetry, leakage, refinement, and batching checks;
 - a production-Metal prescribed flapping-wing phase-load, periodicity, vortex-diagnostic, refinement, and batching gate; and
 - offline compilation and linking of every Metal entry point.
 
-`Scripts/validate.sh` runs the eight currently accepted build/canonical gates. The prescribed flapping command is intentionally separate because its locked literature load gates have not passed. Sections 2, 4, 5, and 6 all execute the production fluid and momentum-exchange operators; section 3 still requires a forced-channel GPU mode. The fixed-wing gate isolates axis-aligned load accuracy and does not validate the procedural bird's geometry or kinematics. The flapping gate is the current evidence boundary for rotating sub-cell moving surfaces.
+`Scripts/validate.sh` runs the nine currently accepted build/canonical gates. The prescribed flapping command is intentionally separate because its locked literature load gates have not passed. Sections 2, 4, 5, and 6 all execute the production fluid and momentum-exchange operators; section 3 still requires a forced-channel GPU mode. The fixed-wing gate isolates axis-aligned load accuracy and does not validate the procedural bird's geometry or kinematics. The flapping gate is the current evidence boundary for rotating sub-cell moving surfaces.
 
 ## 1. Algebra and layout
 
@@ -113,6 +114,28 @@ Acceptance:
 - density, velocity, and selected-wall force differences below `1e-7` between stepwise and batched execution
 
 The transient Couette profile is already within `8e-5` on the coarsest grid and reaches a single-precision error floor, so its fitted profile order is reported but not used as a gate. Force convergence and the oscillating profile retain explicit order gates.
+
+Topology-changing translation is a separate release gate because fixed masks
+cannot exercise cover/uncover accounting:
+
+```bash
+swift run -c release birdflow validate translating-body --json
+```
+
+The case uses a `24^3` periodic quiescent domain, a radius-`3.25` voxel sphere,
+wall speed `0.05`, and a 40-step trajectory spanning exactly two lattice cells.
+A fixed control surface stays clear of the body. The report requires nonzero
+cover and uncover counts, no solid/control-surface links, a maximum conservative
+force residual at most `5e-4`, relative RMS residual at most `0.5%`, at least a
+`5x` improvement over the legacy estimator, and identical raw budgets between
+the two deterministic runs.
+
+The Apple M4 acceptance run completed in `0.65 s`: 64 newly covered and 64
+newly uncovered cell events occurred over 16 transition steps. Conservative RMS
+residual was `3.6449e-5`, maximum residual was `8.3824e-5`, relative RMS was
+`3.1759e-5`, and the improvement over legacy was `22020.8x`. The existing
+three-grid Couette/Stokes test also passed after promotion. This canonical is a
+fast force-accounting release gate, not an accuracy study of sphere drag.
 
 ## 5. Canonical body
 
@@ -295,7 +318,23 @@ The fixed control volume spans `[6,74) x [6,74) x [29,54)` on the `80 x 80 x 64`
 
 On Apple M4 the original two-history check completed in `11.61 s`. Mean coefficient components were `(0.06746, 1.13119)` from negative storage, `(1.11346, 0.91814)` from negative outward flux, and `(-0.02317, 0.02298)` from the optional equilibrium-reservoir convention. Raw fluid storage plus flux gives `(CL, CD)=(1.18092, 2.04933)`; adding the reservoir convention gives `(1.15774, 2.07231)`. The same flow's conventional boundary load was `(7.50904, 9.56192)` and its Galilean-invariant load was `(7.52805, 9.48616)`. An alternate surface one cell farther out changed the adjusted budget means by only `6.04e-5` lift and `1.07e-5` drag coefficient.
 
-The follow-up validation-only conservative moving-domain estimator uses conventional exchange for persistent links, complete preserved momentum for newly covered cells, and the refill plus suppressed/injected neighbor stencil for newly uncovered cells. It produces mean `(CL, CD)=(1.18061, 2.04933)` against the raw fluid budget `(1.18092, 2.04933)`. Maximum phase residuals are `0.0025111` lift coefficient, `0.0002467` drag coefficient, and `0.0002954` force units, all below the tightened `0.005` coefficient tolerance. Its correction relative to the legacy conventional total is `(-6.32843, -7.51260)` in mean coefficient. This changes the diagnosis: the fixed-mask interpolated link equation is conservative, while the legacy cover-only conversion omits the dominant moving-domain impulse when cells uncover. Selector six is diagnostic only; production loads remain unchanged until canonical moving-wall and flapping regressions approve a switch. The raw budget's first-cycle drag is within `0.16%` of the published fifth-cycle mean and lift is `19.12%` low, but this is not the required fifth-cycle refinement and must not be reported as benchmark acceptance.
+The conservative moving-domain estimator uses conventional exchange for
+persistent links, complete preserved momentum for newly covered cells, and the
+refill plus suppressed/injected neighbor stencil for newly uncovered cells. It
+produces mean `(CL, CD)=(1.18061, 2.04933)` against the raw fluid budget
+`(1.18092, 2.04933)`. Maximum phase residuals are `0.0025111` lift coefficient,
+`0.0002467` drag coefficient, and `0.0002954` force units, all below the
+tightened `0.005` coefficient tolerance. Its correction relative to the legacy
+conventional total is `(-6.32843, -7.51260)` in mean coefficient.
+
+The independent translating-body topology canonical and existing three-grid
+Couette/Stokes moving-wall canonical both pass after selecting mode six as the
+production default. A short 8-cell, one-cycle run through the normal flapping
+CLI path produces `(CL, CD)=(1.18057, 2.04910)`, confirming that the promoted
+path—not only a diagnostic selector—uses the momentum-closed load. The raw
+budget's first-cycle drag is within `0.16%` of the published fifth-cycle mean
+and lift is `19.12%` low, but the required fifth-cycle 8/12/16 refinement has not
+been rerun and must not be reported as benchmark acceptance.
 
 Acceptance:
 

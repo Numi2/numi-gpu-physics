@@ -612,8 +612,8 @@ public enum MetalFlappingWingValidator {
     /// identical prescribed flow histories. The conventional estimator uses
     /// the populations already reconstructed by the interpolated boundary;
     /// cover/uncover impulse is then added separately for its moving-body
-    /// total. A fourth run preserves an independent closure check for the
-    /// production Galilean-invariant total.
+    /// total. A fourth run preserves an independent algebraic closure check
+    /// for the legacy Galilean-invariant total.
     public static func compareLinkForceEstimators(
         chordCells: Int = 8,
         cycles: Int = 1
@@ -2033,7 +2033,7 @@ private extension MetalFlappingWingValidator {
         archiveDirectory: URL?,
         loadComponent: PrescribedWingLoadComponent = .total,
         linkForceEstimator: PrescribedWingLinkForceEstimator =
-            .galileanInvariant,
+            .conservativeMovingDomain,
         captureVortexDiagnostics: Bool = true
     ) throws -> MetalFlappingWingCaseResult {
         let startTime = Date()
@@ -2552,7 +2552,7 @@ private final class MetalPrescribedWingSimulation {
         root: SIMD3<Float>,
         loadComponent: PrescribedWingLoadComponent = .total,
         linkForceEstimator: PrescribedWingLinkForceEstimator =
-            .galileanInvariant
+            .conservativeMovingDomain
     ) throws {
         self.backend = backend
         self.cycleSteps = cycleSteps

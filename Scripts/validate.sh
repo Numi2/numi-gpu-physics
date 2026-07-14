@@ -13,6 +13,7 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   Scripts/check-metal.sh
   swift run birdflow validate shear-wave --json
   swift run birdflow validate moving-wall --json
+  swift run birdflow validate translating-body --json
   swift run birdflow validate sphere --json
   swift run -c release birdflow validate wing --json
 else

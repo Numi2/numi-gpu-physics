@@ -361,6 +361,37 @@ func productionMetalMovingWallPassesCanonicalGates() throws {
 }
 
 @Test
+func productionMetalTranslatingBodyTopologyClosesMomentumBudget() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator.run()
+
+    #expect(report.productionKernel == "stepFluidTRT")
+    #expect(report.topologyKernel == "buildTranslatingSphereTopology")
+    #expect(report.displacementCells >= 2)
+    #expect(report.newlyCoveredCellEvents > 0)
+    #expect(report.newlyUncoveredCellEvents > 0)
+    #expect(report.topologyTransitionSteps > 0)
+    #expect(report.maximumSolidControlSurfaceCrossingLinkCount == 0)
+    #expect(
+        report.maximumConservativeForceResidual
+            <= report.maximumAllowedConservativeForceResidual
+    )
+    #expect(
+        report.conservativeRelativeRMSResidual
+            <= report.maximumAllowedConservativeRelativeRMSResidual
+    )
+    #expect(
+        report.conservativeImprovementFactor
+            >= report.minimumRequiredImprovementFactor
+    )
+    #expect(
+        report.maximumRawBudgetDifferenceBetweenRuns
+            <= report.maximumAllowedRawBudgetDifferenceBetweenRuns
+    )
+    #expect(report.passed)
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

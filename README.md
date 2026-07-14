@@ -95,6 +95,22 @@ swift run -c release birdflow validate moving-wall \
   --json
 ```
 
+Topology-changing translating-body release gate:
+
+```bash
+swift run -c release birdflow validate translating-body --json
+```
+
+This `24^3` periodic canonical translates a radius-`3.25` voxel sphere by two
+lattice cells and requires both cover and uncover events. On Apple M4 it
+completed in `0.65 s`, observed `64/64` cover/uncover events over 16 transition
+steps, and kept the control surface clear. The conservative estimator closed
+the independent raw fluid-momentum budget with `3.64e-5` RMS and `8.38e-5`
+maximum force residual, versus `0.803` RMS for the legacy estimator. The
+conservative moving-domain estimator is therefore the production default;
+legacy Galilean-invariant and conventional modes remain available to explicit
+diagnostics.
+
 Canonical production-Metal fixed-sphere validation:
 
 ```bash
@@ -131,7 +147,12 @@ swift run -c release birdflow validate flapping-wing \
 
 The preflight runs the same 8/12/16 ladder and reconstructs the paper's beta moments, kinematics, coefficient scales, CPU mask, wall velocity, and analytic link intersections before touching the fluid. GPU link locations agree with independent CPU intersections within `0.00071` cell on the measured ladder, compared with about `0.707` cell worst-case error for fixed halfway placement. Raw phase-`0.25` occupied volume still changes from `1.406` to `1.398` to `0.714` times the continuous regularized volume; those center-count ratios remain diagnostics, while the fluid wall now sits at the sub-cell analytic crossing.
 
-The full link-distance ladder produces `(CL, CD)=(7.45076, 9.58556)`, `(8.58688, 9.50008)`, and `(8.60733, 9.61182)` versus published `(1.460, 2.046)`. Two-finest changes, repeatability, symmetry, batching, and vortex coverage pass, but finest absolute errors remain `489.54%/369.79%` and peaks remain `0.245T/0.745T`. Because link interpolation changes lift by less than `0.08%` and drag by at most `1.30%` relative to halfway, boundary placement is not the dominant load-bias source.
+The archived full link-distance ladder predates the conservative moving-domain
+promotion. It produced `(CL, CD)=(7.45076, 9.58556)`, `(8.58688, 9.50008)`, and
+`(8.60733, 9.61182)` and localized the old force-accounting defect, but it is no
+longer a result for the production estimator. A short promoted-default 8-cell
+cycle now gives `(CL, CD)=(1.18057, 2.04910)`. The mandatory five-cycle
+8/12/16 refinement ladder still has to be rerun before quantitative acceptance.
 
 The phase-resolved decomposition is available with `birdflow validate flapping-wing --decompose-loads --single-chord-cells 8 --cycles 1 --json`. On Apple M4 it completes in `9.84 s`; cover/uncover impulse contributes only `0.47%` of mean lift and `2.90%` of mean drag, while link exchange supplies the remainder. RMS topology fractions are `1.29%` lift and `3.01%` drag, and independently selected components close to total within `9.7e-6` coefficient. Geometry and topology double counting are therefore ruled out as dominant causes; link-force evaluation/normalization is the next fault domain.
 
@@ -171,7 +192,14 @@ swift run birdflow validate flapping-wing \
 
 The fixed `68 x 68 x 25` near-wing volume remains clear of the swept solid and outside the sponge. Its raw storage-plus-flux balance gives mean `(CL, CD)=(1.18092, 2.04933)`; the separately reported virtual equilibrium-reservoir convention changes that to `(1.15774, 2.07231)`. Conventional boundary accounting on the identical deterministic flow gives `(7.50904, 9.56192)`, and moving the control surface one cell outward changes adjusted budget means by only `6.04e-5/1.07e-5`.
 
-A validation-only conservative moving-domain estimator now closes the raw population balance at `(CL, CD)=(1.18061, 2.04933)`. Maximum phase residuals are `0.002511/0.000247`, below the `0.005` tolerance. Its mean correction relative to legacy conventional total is `(-6.32843, -7.51260)`. The fixed-mask interpolated link rule is therefore not the dominant fault: the cover-only topology impulse omitted the population stencil suppressed and injected when cells uncover. Production remains unchanged until this estimator passes the canonical moving-wall cases and a short flapping refinement; this is not yet flapping-wing acceptance.
+The conservative moving-domain estimator closes the raw population balance at
+`(CL, CD)=(1.18061, 2.04933)`. Maximum phase residuals are
+`0.002511/0.000247`, below the `0.005` tolerance. Its mean correction relative
+to legacy conventional total is `(-6.32843, -7.51260)`. The translating-body
+topology gate, the existing three-grid Couette/Stokes gate, and a short
+promoted-default flapping run all pass, so this estimator is now production.
+This fixes force accounting; it is not yet flapping-wing acceptance because the
+five-cycle refinement ladder has not been rerun under the promoted estimator.
 
 A fixed-bird wind-tunnel case:
 
