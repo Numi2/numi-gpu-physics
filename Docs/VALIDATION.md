@@ -884,9 +884,40 @@ is `5.37373e-5` (`0.00537%`) under the `0.5%` gate. Boundary load retains
 passes; the limiter is promoted to the locked c8/c12/c16 stationary-sphere
 refinement ladder, not yet to coupled bird replay.
 
-That ladder is now the highest-ROI gate. It tests whether the accepted c16
-correction is resolution-robust before the limiter can alter any expensive
-measured-bird simulation.
+The promoted geometric ladder is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --geometric-limiter-ladder \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-geometric-limiter-refinement.json
+```
+
+It holds the physical geometry and duration fixed while refining from 8 to 12
+to 16 cells per diameter. The domains are `10D x 6D x 6D`, the sphere center is
+`3D` from the inlet, the sponge is `0.5D`, and every case runs for `5 tU/D` at
+`Re=9367.4`, lattice speed `0.08`, and Mach `0.1386`. All three cases remain
+finite and positive, close the global source ledger, pass the local force
+budget, and keep both sponge cells and solid links off the control surface.
+
+The predeclared non-intrusiveness and convergence gates fail. Inside the
+sponge-excluded control volume, limiter activation grows from `3.53%` to
+`6.65%` to `8.07%`; limiter-to-collision correction is
+`3.40%/5.87%/6.17%` in L1 and `11.71%/14.74%/14.54%` in L2. Mean drag is
+`1.8056`, `2.4725`, and `2.1535`; the finest-two change is `14.81%` against a
+`5%` gate and is non-monotonic, so no observed order, Richardson extrapolate,
+or GCI is reported. This proves the failure is not a sponge artifact. It also
+blocks promotion to flapping or measured-bird replay without relaxing any
+threshold. The full phase histories and paper-ready figure are archived in
+`ValidationArtifacts/measured-wing-stationary-wall-geometric-limiter-refinement.json`
+and `ValidationArtifacts/Figures/stationary-wall-geometric-limiter-refinement.svg`.
+
+The next admissible physics step is a controlled collision-operator A/B on
+this same ladder, preceded by radial localization of limiter corrections. It
+must reduce interior intervention and restore convergence before another
+bird-scale run is justified.
 
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.

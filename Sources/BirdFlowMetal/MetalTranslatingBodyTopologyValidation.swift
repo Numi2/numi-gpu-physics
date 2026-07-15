@@ -528,6 +528,114 @@ public struct MetalStationaryWallSymmetricLimiterABReport:
     public let diagnosticCompleted: Bool
 }
 
+public struct MetalStationaryWallGeometricLimiterSample:
+    Codable, Sendable
+{
+    public let step: Int
+    public let convectiveTime: Double
+    public let minimumPopulation: Double
+    public let dragCoefficient: Double
+    public let limiterActivationCount: Int
+    public let limiterActivationFraction: Double
+    public let controlVolumeLimiterActivationFraction: Double
+    public let minimumLimiterScale: Double?
+    public let relativeLimiterL1Correction: Double
+    public let relativeLimiterL2Correction: Double
+    public let relativeControlVolumeLimiterL1Correction: Double
+    public let relativeControlVolumeLimiterL2Correction: Double
+    public let forceBudgetResidualCoefficient: Double
+    public let globalMassClosureResidual: Double
+    public let controlVolumeSpongeCellCount: Int
+    public let solidControlSurfaceCrossingLinkCount: Int
+}
+
+public struct MetalStationaryWallGeometricLimiterCaseReport:
+    Codable, Sendable
+{
+    public let diameterCells: Int
+    public let domainCells: SIMD3<Int>
+    public let sphereCenterCells: SIMD3<Double>
+    public let sphereRadiusCells: Double
+    public let spongeWidthCells: Int
+    public let controlMinimumCells: SIMD3<Int>
+    public let controlMaximumExclusiveCells: SIMD3<Int>
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let requestedSteps: Int
+    public let completedConvectiveTimes: Double
+    public let minimumObservedPopulation: Double?
+    public let limiterActivationCellSteps: Int
+    public let limiterActivationSteps: Int
+    public let limiterActivationFraction: Double
+    public let controlVolumeLimiterActivationCellSteps: Int
+    public let controlVolumeLimiterActivationFraction: Double
+    public let spongeLimiterActivationCellSteps: Int
+    public let activatedBoundaryLinkSteps: Int
+    public let minimumLimiterScale: Double?
+    public let cumulativeLimiterL1Correction: Double
+    public let cumulativeLimiterL2Correction: Double
+    public let cumulativeCollisionL1Increment: Double
+    public let cumulativeCollisionL2Increment: Double
+    public let relativeLimiterL1Correction: Double
+    public let relativeLimiterL2Correction: Double
+    public let cumulativeControlVolumeLimiterL1Correction: Double
+    public let cumulativeControlVolumeLimiterL2Correction: Double
+    public let cumulativeControlVolumeCollisionL1Increment: Double
+    public let cumulativeControlVolumeCollisionL2Increment: Double
+    public let relativeControlVolumeLimiterL1Correction: Double
+    public let relativeControlVolumeLimiterL2Correction: Double
+    public let relativeCumulativeLimiterMassContribution: Double
+    public let meanDragCoefficientLastConvectiveTime: Double
+    public let meanSideForceToDragRatioLastConvectiveTime: Double
+    public let maximumForceBudgetResidualCoefficient: Double
+    public let maximumForceBudgetResidualRatio: Double
+    public let conservativeRelativeRMSResidual: Double
+    public let maximumSolidControlSurfaceCrossingLinkCount: Int
+    public let controlVolumeOutsideSponge: Bool
+    public let globalLedgerClosed: Bool
+    public let relativeRMSBoundaryLoadClosureResidual: Double
+    public let sourceAwareStabilityPassed: Bool
+    public let forceBudgetPassed: Bool
+    public let limiterNonIntrusivePassed: Bool
+    public let passed: Bool
+    public let samples: [MetalStationaryWallGeometricLimiterSample]
+}
+
+public struct MetalStationaryWallGeometricLimiterLadderReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let ledgerCaptureKernel: String
+    public let limiterMode: String
+    public let classification: String
+    public let reynoldsNumber: Double
+    public let latticeFarFieldSpeed: Double
+    public let latticeMachNumber: Double
+    public let domainLengthDiameters: Double
+    public let domainCrossflowDiameters: Double
+    public let sphereCenterFromInletDiameters: Double
+    public let spongeWidthDiameters: Double
+    public let requestedConvectiveTimes: Double
+    public let maximumAllowedRelativeRMSForceResidual: Double
+    public let maximumAllowedPeakForceResidualRatio: Double
+    public let maximumAllowedLimiterActivationFraction: Double
+    public let maximumAllowedRelativeLimiterCorrection: Double
+    public let maximumAllowedFinestTwoDragChange: Double
+    public let relativeFinestTwoDragChange: Double
+    public let limiterActivationNonIncreasing: Bool
+    public let limiterCorrectionNonIncreasing: Bool
+    public let observedDragConvergenceOrder: Double?
+    public let richardsonExtrapolatedDragCoefficient: Double?
+    public let fineGridConvergenceIndex: Double?
+    public let convergenceMethod: String
+    public let cases: [MetalStationaryWallGeometricLimiterCaseReport]
+    public let scientificVerdict: String
+    public let runtimeSeconds: Double
+    public let passed: Bool
+}
+
 public struct MetalStationaryWallBoundaryInterpolationComponent:
     Codable, Sendable
 {
@@ -1261,6 +1369,424 @@ public enum MetalTranslatingBodyTopologyValidator {
             scientificVerdict: verdict,
             runtimeSeconds: Date().timeIntervalSince(startTime),
             diagnosticCompleted: diagnosticCompleted
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func runStationaryWallGeometricLimiterLadder()
+        throws -> MetalStationaryWallGeometricLimiterLadderReport
+    {
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let diameters = [8, 12, 16]
+        let reynoldsNumber = 9_367.4
+        let referenceSpeed = 0.08
+        let requestedConvectiveTimes = 5.0
+        let domainLengthDiameters = 10
+        let domainCrossflowDiameters = 6
+        let sphereCenterFromInletDiameters = 3
+        let spongeWidthDiameters = 0.5
+        let spongeStrength = 0.04
+        let maximumRelativeRMSForceResidual = 5.0e-3
+        let maximumPeakForceResidualRatio = 1.0e-3
+        let maximumLimiterActivationFraction = 5.0e-2
+        let maximumRelativeLimiterCorrection = 1.0e-2
+        let maximumFinestTwoDragChange = 5.0e-2
+        var cases: [MetalStationaryWallGeometricLimiterCaseReport] = []
+
+        for diameter in diameters {
+            let domain = try GridSize(
+                x: domainLengthDiameters * diameter,
+                y: domainCrossflowDiameters * diameter,
+                z: domainCrossflowDiameters * diameter
+            )
+            let radius = Float(diameter) * 0.5
+            let center = SIMD3<Float>(
+                Float(sphereCenterFromInletDiameters * diameter),
+                Float(domain.y) * 0.5,
+                Float(domain.z) * 0.5
+            )
+            let spongeWidth = Int(
+                (Double(diameter) * spongeWidthDiameters).rounded()
+            )
+            let controlMinimum = SIMD3<UInt32>(
+                repeating: UInt32(spongeWidth)
+            )
+            let controlMaximum = SIMD3<UInt32>(
+                UInt32(domain.x - spongeWidth),
+                UInt32(domain.y - spongeWidth),
+                UInt32(domain.z - spongeWidth)
+            )
+            let viscosity = Float(
+                referenceSpeed * Double(diameter) / reynoldsNumber
+            )
+            let steps = Int(
+                (requestedConvectiveTimes
+                    * Double(diameter) / referenceSpeed).rounded()
+            )
+            let configuration = MetalTranslatingBodyCaseConfiguration(
+                grid: domain,
+                sphereRadiusCells: radius,
+                referenceSpeedLattice: Float(referenceSpeed),
+                geometryTranslationSpeedLattice: 0,
+                wallVelocityLattice: 0,
+                wallVelocityMode: HighReSphereWallMode.uniform.rawValue,
+                initialFluidVelocityLattice: Float(referenceSpeed),
+                periodicBoundaries: false,
+                spongeStrength: Float(spongeStrength),
+                latticeKinematicViscosity: viscosity,
+                initialCenter: center,
+                controlMinimum: controlMinimum,
+                controlMaximumExclusive: controlMaximum,
+                characteristicLengthCells: diameter,
+                spongeWidthCells: spongeWidth
+            )
+            let simulation = try MetalTranslatingBodyTopologySimulation(
+                backend: backend,
+                linkForceMode: 6,
+                caseConfiguration: configuration,
+                symmetricPositivityLimiterEnabled: true,
+                conservationLedgerEnabled: true
+            )
+            let initial = try simulation.copyPopulations()
+            let history = try simulation.run(
+                steps: steps,
+                capturePopulationMinimum: true,
+                stopOneStepAfterFirstNonFinitePopulation: true,
+                captureConservationLedger: true
+            )
+            let final = try simulation.copyPopulations()
+            let base = symmetricLimiterCaseReport(
+                limiterEnabled: true,
+                requestedSteps: steps,
+                initialPopulations: initial,
+                finalPopulations: final,
+                history: history,
+                cellCount: domain.cellCount,
+                maximumMassDrift: 1.0e-3,
+                maximumAbsolutePopulation: 10,
+                maximumForceResidual: 5.0e-4,
+                maximumRelativeResidual: maximumRelativeRMSForceResidual
+            )
+            let ledger = conservationLedgerReport(
+                history: history,
+                initialPopulationMass: base.initialPopulationMass,
+                finalPopulationMass: base.finalPopulationMass,
+                forceToPhysical: Double(simulation.forceToPhysical)
+            )
+            let forceDenominator = 0.5 * referenceSpeed * referenceSpeed
+                * Double.pi * pow(Double(radius), 2)
+            let convectiveWindowSteps = max(
+                1,
+                Int((Double(diameter) / referenceSpeed).rounded())
+            )
+            let forceWindow = history.suffix(convectiveWindowSteps)
+            let meanForce = forceWindow.reduce(SIMD3<Double>.zero) {
+                $0 + doubleVector($1.measuredForce)
+            } / Double(max(forceWindow.count, 1))
+            let meanDragCoefficient = meanForce.x / forceDenominator
+            let meanSideForceRatio = hypot(meanForce.y, meanForce.z)
+                / max(abs(meanForce.x), 1.0e-30)
+            let maximumCrossingLinks = history.map {
+                $0.solidControlSurfaceCrossingLinkCount
+            }.max() ?? 0
+            let outsideSponge = ledger.samples.allSatisfy {
+                $0.controlVolumeSpongeCellCount == 0
+            }
+            let totalCellSteps = Double(domain.cellCount * steps)
+            let activationFraction = Double(
+                base.limiterActivationCellSteps
+            ) / max(totalCellSteps, 1)
+            let controlExtent = controlMaximum &- controlMinimum
+            let controlCellCount = Int(controlExtent.x)
+                * Int(controlExtent.y) * Int(controlExtent.z)
+            var controlActivationCellSteps = 0
+            var spongeActivationCellSteps = 0
+            var activatedBoundaryLinkSteps = 0
+            var limiterL1 = 0.0
+            var limiterL2Squared = 0.0
+            var collisionL1 = 0.0
+            var collisionL2Squared = 0.0
+            var controlLimiterL1 = 0.0
+            var controlLimiterL2Squared = 0.0
+            var controlCollisionL1 = 0.0
+            var controlCollisionL2Squared = 0.0
+            var compactSamples: [MetalStationaryWallGeometricLimiterSample] = []
+            compactSamples.reserveCapacity(history.count)
+            for (index, step) in history.enumerated() {
+                guard let raw = step.conservationLedger,
+                      let populationMinimum = step.populationMinimum else {
+                    continue
+                }
+                limiterL1 += raw.limiterNorms.x
+                limiterL2Squared += raw.limiterNorms.y
+                collisionL1 += raw.limiterNorms.z
+                collisionL2Squared += raw.limiterNorms.w
+                controlLimiterL1 += raw.limiterControlNorms.x
+                controlLimiterL2Squared += raw.limiterControlNorms.y
+                controlCollisionL1 += raw.limiterControlNorms.z
+                controlCollisionL2Squared += raw.limiterControlNorms.w
+                controlActivationCellSteps +=
+                    raw.controlVolumeActivatedCellCount
+                spongeActivationCellSteps += raw.activatedSpongeCellCount
+                activatedBoundaryLinkSteps += raw.activatedBoundaryLinkCount
+                let stepLimiterL1Ratio = raw.limiterNorms.x
+                    / max(raw.limiterNorms.z, 1.0e-30)
+                let stepLimiterL2Ratio = sqrt(
+                    max(raw.limiterNorms.y, 0)
+                        / max(raw.limiterNorms.w, 1.0e-30)
+                )
+                let stepControlLimiterL1Ratio =
+                    raw.limiterControlNorms.x
+                    / max(raw.limiterControlNorms.z, 1.0e-30)
+                let stepControlLimiterL2Ratio = sqrt(
+                    max(raw.limiterControlNorms.y, 0)
+                        / max(raw.limiterControlNorms.w, 1.0e-30)
+                )
+                let boundaryAndFarField = raw.boundaryGlobal
+                    + raw.farFieldGlobal
+                let collisionAndLimiter = raw.collisionGlobal
+                    + raw.limiterGlobal
+                let accounted = boundaryAndFarField
+                    + collisionAndLimiter
+                    + raw.spongeGlobal
+                let closure = raw.observedGlobal - accounted
+                let residual = doubleVector(
+                    step.measuredForce - step.rawBudgetForce
+                )
+                compactSamples.append(
+                    MetalStationaryWallGeometricLimiterSample(
+                        step: index + 1,
+                        convectiveTime: Double(index + 1)
+                            * referenceSpeed / Double(diameter),
+                        minimumPopulation:
+                            Double(populationMinimum.rawValue),
+                        dragCoefficient:
+                            Double(step.measuredForce.x) / forceDenominator,
+                        limiterActivationCount:
+                            step.symmetricLimiterActivationCount,
+                        limiterActivationFraction:
+                            Double(step.symmetricLimiterActivationCount)
+                                / Double(domain.cellCount),
+                        controlVolumeLimiterActivationFraction:
+                            Double(raw.controlVolumeActivatedCellCount)
+                                / Double(controlCellCount),
+                        minimumLimiterScale:
+                            step.symmetricLimiterMinimumScale.map(Double.init),
+                        relativeLimiterL1Correction: stepLimiterL1Ratio,
+                        relativeLimiterL2Correction: stepLimiterL2Ratio,
+                        relativeControlVolumeLimiterL1Correction:
+                            stepControlLimiterL1Ratio,
+                        relativeControlVolumeLimiterL2Correction:
+                            stepControlLimiterL2Ratio,
+                        forceBudgetResidualCoefficient:
+                            magnitude(residual) / forceDenominator,
+                        globalMassClosureResidual: abs(closure.x),
+                        controlVolumeSpongeCellCount:
+                            raw.controlVolumeSpongeCellCount,
+                        solidControlSurfaceCrossingLinkCount:
+                            step.solidControlSurfaceCrossingLinkCount
+                    )
+                )
+            }
+            let limiterL2 = sqrt(max(limiterL2Squared, 0))
+            let collisionL2 = sqrt(max(collisionL2Squared, 0))
+            let relativeLimiterL1 = limiterL1 / max(collisionL1, 1.0e-30)
+            let relativeLimiterL2 = limiterL2 / max(collisionL2, 1.0e-30)
+            let controlLimiterL2 = sqrt(max(controlLimiterL2Squared, 0))
+            let controlCollisionL2 = sqrt(max(controlCollisionL2Squared, 0))
+            let relativeControlLimiterL1 = controlLimiterL1
+                / max(controlCollisionL1, 1.0e-30)
+            let relativeControlLimiterL2 = controlLimiterL2
+                / max(controlCollisionL2, 1.0e-30)
+            let controlActivationFraction = Double(
+                controlActivationCellSteps
+            ) / max(Double(controlCellCount * steps), 1)
+            let maximumResidualRatio =
+                (base.maximumConservativeForceResidual ?? .infinity)
+                / max(base.maximumMeasuredForceMagnitude ?? 0, 1.0e-30)
+            let sourceAwareStabilityPassed = history.count == steps
+                && base.firstNegativePopulationStep == nil
+                && base.firstNonFinitePopulationStep == nil
+                && base.firstNonFiniteLoadStep == nil
+                && base.populationsFinite
+                && base.fieldsFinite
+                && base.loadsFinite
+                && base.newlyCoveredCellEvents == 0
+                && base.newlyUncoveredCellEvents == 0
+                && base.topologyTransitionSteps == 0
+                && ledger.globalLedgerClosed
+                && ledger.relativeCumulativeLimiterMassContribution
+                    <= 1.0e-6
+            let forceBudgetPassed = maximumCrossingLinks == 0
+                && outsideSponge
+                && (base.conservativeRelativeRMSResidual ?? .infinity)
+                    <= maximumRelativeRMSForceResidual
+                && maximumResidualRatio <= maximumPeakForceResidualRatio
+                && ledger.relativeRMSBoundaryLoadClosureResidual <= 5.0e-5
+            let limiterNonIntrusivePassed = controlActivationFraction
+                    <= maximumLimiterActivationFraction
+                && relativeControlLimiterL1
+                    <= maximumRelativeLimiterCorrection
+                && relativeControlLimiterL2
+                    <= maximumRelativeLimiterCorrection
+            let casePassed = sourceAwareStabilityPassed
+                && forceBudgetPassed
+                && limiterNonIntrusivePassed
+            cases.append(MetalStationaryWallGeometricLimiterCaseReport(
+                diameterCells: diameter,
+                domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
+                sphereCenterCells: SIMD3<Double>(
+                    Double(center.x),
+                    Double(center.y),
+                    Double(center.z)
+                ),
+                sphereRadiusCells: Double(radius),
+                spongeWidthCells: spongeWidth,
+                controlMinimumCells: SIMD3<Int>(
+                    Int(controlMinimum.x),
+                    Int(controlMinimum.y),
+                    Int(controlMinimum.z)
+                ),
+                controlMaximumExclusiveCells: SIMD3<Int>(
+                    Int(controlMaximum.x),
+                    Int(controlMaximum.y),
+                    Int(controlMaximum.z)
+                ),
+                latticeKinematicViscosity: Double(viscosity),
+                tauPlus: Double(simulation.tauPlus),
+                requestedSteps: steps,
+                completedConvectiveTimes:
+                    Double(history.count) * referenceSpeed / Double(diameter),
+                minimumObservedPopulation: base.minimumObservedPopulation,
+                limiterActivationCellSteps: base.limiterActivationCellSteps,
+                limiterActivationSteps: base.limiterActivationSteps,
+                limiterActivationFraction: activationFraction,
+                controlVolumeLimiterActivationCellSteps:
+                    controlActivationCellSteps,
+                controlVolumeLimiterActivationFraction:
+                    controlActivationFraction,
+                spongeLimiterActivationCellSteps: spongeActivationCellSteps,
+                activatedBoundaryLinkSteps: activatedBoundaryLinkSteps,
+                minimumLimiterScale: base.minimumLimiterScale,
+                cumulativeLimiterL1Correction: limiterL1,
+                cumulativeLimiterL2Correction: limiterL2,
+                cumulativeCollisionL1Increment: collisionL1,
+                cumulativeCollisionL2Increment: collisionL2,
+                relativeLimiterL1Correction: relativeLimiterL1,
+                relativeLimiterL2Correction: relativeLimiterL2,
+                cumulativeControlVolumeLimiterL1Correction:
+                    controlLimiterL1,
+                cumulativeControlVolumeLimiterL2Correction:
+                    controlLimiterL2,
+                cumulativeControlVolumeCollisionL1Increment:
+                    controlCollisionL1,
+                cumulativeControlVolumeCollisionL2Increment:
+                    controlCollisionL2,
+                relativeControlVolumeLimiterL1Correction:
+                    relativeControlLimiterL1,
+                relativeControlVolumeLimiterL2Correction:
+                    relativeControlLimiterL2,
+                relativeCumulativeLimiterMassContribution:
+                    ledger.relativeCumulativeLimiterMassContribution,
+                meanDragCoefficientLastConvectiveTime: meanDragCoefficient,
+                meanSideForceToDragRatioLastConvectiveTime:
+                    meanSideForceRatio,
+                maximumForceBudgetResidualCoefficient:
+                    (base.maximumConservativeForceResidual ?? .infinity)
+                        / forceDenominator,
+                maximumForceBudgetResidualRatio: maximumResidualRatio,
+                conservativeRelativeRMSResidual:
+                    base.conservativeRelativeRMSResidual ?? .infinity,
+                maximumSolidControlSurfaceCrossingLinkCount:
+                    maximumCrossingLinks,
+                controlVolumeOutsideSponge: outsideSponge,
+                globalLedgerClosed: ledger.globalLedgerClosed,
+                relativeRMSBoundaryLoadClosureResidual:
+                    ledger.relativeRMSBoundaryLoadClosureResidual,
+                sourceAwareStabilityPassed: sourceAwareStabilityPassed,
+                forceBudgetPassed: forceBudgetPassed,
+                limiterNonIntrusivePassed: limiterNonIntrusivePassed,
+                passed: casePassed,
+                samples: compactSamples
+            ))
+        }
+
+        let finest = cases[cases.count - 1]
+        let nextFinest = cases[cases.count - 2]
+        let finestTwoDragChange = abs(
+            finest.meanDragCoefficientLastConvectiveTime
+                - nextFinest.meanDragCoefficientLastConvectiveTime
+        ) / max(abs(finest.meanDragCoefficientLastConvectiveTime), 1.0e-30)
+        let activationNonIncreasing = zip(cases, cases.dropFirst())
+            .allSatisfy { coarse, fine in
+                fine.controlVolumeLimiterActivationFraction
+                    <= coarse.controlVolumeLimiterActivationFraction * 1.05
+            }
+        let correctionNonIncreasing = zip(cases, cases.dropFirst())
+            .allSatisfy { coarse, fine in
+                fine.relativeControlVolumeLimiterL1Correction
+                    <= coarse.relativeControlVolumeLimiterL1Correction * 1.05
+                    && fine.relativeControlVolumeLimiterL2Correction
+                        <= coarse.relativeControlVolumeLimiterL2Correction * 1.05
+            }
+        let fit = generalizedRichardsonFit(
+            diameters: cases.map(\.diameterCells),
+            values: cases.map(\.meanDragCoefficientLastConvectiveTime)
+        )
+        let passed = cases.allSatisfy(\.passed)
+            && finestTwoDragChange <= maximumFinestTwoDragChange
+            && activationNonIncreasing
+            && correctionNonIncreasing
+            && fit != nil
+        let classification = passed
+            ? "stationary-wall-geometric-limiter-ladder-accepted"
+            : "stationary-wall-geometric-limiter-ladder-not-accepted"
+        let verdict = passed
+            ? "The source-aware symmetric limiter remains positive, conservative, non-intrusive, and grid-convergent across geometrically similar D=8/12/16 stationary spheres. It may proceed to the published five-cycle flapping-wing ladder."
+            : "At least one predeclared source-aware stability, force-budget, limiter-intervention, or grid-convergence gate failed. Keep the limiter out of coupled bird replay and use the archived resolution trend to isolate the remaining defect."
+        return MetalStationaryWallGeometricLimiterLadderReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            ledgerCaptureKernel: "captureSymmetricLimiterLedger",
+            limiterMode:
+                "cell-local common scale on complete symmetric TRT increment",
+            classification: classification,
+            reynoldsNumber: reynoldsNumber,
+            latticeFarFieldSpeed: referenceSpeed,
+            latticeMachNumber: referenceSpeed / sqrt(1.0 / 3.0),
+            domainLengthDiameters: Double(domainLengthDiameters),
+            domainCrossflowDiameters: Double(domainCrossflowDiameters),
+            sphereCenterFromInletDiameters:
+                Double(sphereCenterFromInletDiameters),
+            spongeWidthDiameters: spongeWidthDiameters,
+            requestedConvectiveTimes: requestedConvectiveTimes,
+            maximumAllowedRelativeRMSForceResidual:
+                maximumRelativeRMSForceResidual,
+            maximumAllowedPeakForceResidualRatio:
+                maximumPeakForceResidualRatio,
+            maximumAllowedLimiterActivationFraction:
+                maximumLimiterActivationFraction,
+            maximumAllowedRelativeLimiterCorrection:
+                maximumRelativeLimiterCorrection,
+            maximumAllowedFinestTwoDragChange:
+                maximumFinestTwoDragChange,
+            relativeFinestTwoDragChange: finestTwoDragChange,
+            limiterActivationNonIncreasing: activationNonIncreasing,
+            limiterCorrectionNonIncreasing: correctionNonIncreasing,
+            observedDragConvergenceOrder: fit?.order,
+            richardsonExtrapolatedDragCoefficient: fit?.extrapolated,
+            fineGridConvergenceIndex: fit?.fineGridConvergenceIndex,
+            convergenceMethod:
+                "three-grid nonlinear least-squares fit Cd(h)=Cd0+C*h^p over p in [0.05,8], with 1.25 fine-grid GCI safety factor",
+            cases: cases,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            passed: passed
         )
 #else
         throw BirdFlowError.metalUnavailable
@@ -2566,6 +3092,60 @@ public enum MetalTranslatingBodyTopologyValidator {
             fullAcceptancePassed: stabilityPassed && forceBudgetPassed
         )
     }
+
+    private static func generalizedRichardsonFit(
+        diameters: [Int],
+        values: [Double]
+    ) -> (order: Double, extrapolated: Double,
+        fineGridConvergenceIndex: Double)?
+    {
+        guard diameters.count == 3,
+              values.count == 3,
+              values.allSatisfy(\.isFinite),
+              (values[0] - values[1]) * (values[1] - values[2]) > 0
+        else { return nil }
+
+        let h = diameters.map { 1.0 / Double($0) }
+        var bestOrder = 0.0
+        var bestIntercept = 0.0
+        var bestError = Double.infinity
+        for index in 0...7_950 {
+            let order = 0.05 + Double(index) * 0.001
+            let x = h.map { pow($0, order) }
+            let meanX = x.reduce(0, +) / 3
+            let meanY = values.reduce(0, +) / 3
+            let denominator = x.reduce(0) {
+                $0 + ($1 - meanX) * ($1 - meanX)
+            }
+            guard denominator > 1.0e-30 else { continue }
+            let slope = zip(x, values).reduce(0.0) {
+                $0 + ($1.0 - meanX) * ($1.1 - meanY)
+            } / denominator
+            let intercept = meanY - slope * meanX
+            let error = zip(x, values).reduce(0.0) {
+                let residual = $1.1 - (intercept + slope * $1.0)
+                return $0 + residual * residual
+            }
+            if error < bestError {
+                bestError = error
+                bestOrder = order
+                bestIntercept = intercept
+            }
+        }
+        guard bestOrder > 0.051, bestOrder < 7.999 else { return nil }
+        let fineRatio = Double(diameters[2]) / Double(diameters[1])
+        let denominator = pow(fineRatio, bestOrder) - 1
+        guard denominator > 1.0e-12 else { return nil }
+        let fineGridConvergenceIndex = 1.25
+            * abs(values[2] - values[1])
+            / max(abs(values[2]), 1.0e-30)
+            / denominator
+        return (
+            order: bestOrder,
+            extrapolated: bestIntercept,
+            fineGridConvergenceIndex: fineGridConvergenceIndex
+        )
+    }
 #endif
 
     private static func populationMinimumSample(
@@ -2824,6 +3404,43 @@ private struct MetalTranslatingBodyCaseConfiguration {
     let initialCenter: SIMD3<Float>
     let controlMinimum: SIMD3<UInt32>
     let controlMaximumExclusive: SIMD3<UInt32>
+    let characteristicLengthCells: Int
+    let spongeWidthCells: Int
+
+    init(
+        grid: GridSize,
+        sphereRadiusCells: Float,
+        referenceSpeedLattice: Float,
+        geometryTranslationSpeedLattice: Float,
+        wallVelocityLattice: Float,
+        wallVelocityMode: Float,
+        initialFluidVelocityLattice: Float,
+        periodicBoundaries: Bool,
+        spongeStrength: Float,
+        latticeKinematicViscosity: Float,
+        initialCenter: SIMD3<Float>,
+        controlMinimum: SIMD3<UInt32>,
+        controlMaximumExclusive: SIMD3<UInt32>,
+        characteristicLengthCells: Int = 8,
+        spongeWidthCells: Int = 4
+    ) {
+        self.grid = grid
+        self.sphereRadiusCells = sphereRadiusCells
+        self.referenceSpeedLattice = referenceSpeedLattice
+        self.geometryTranslationSpeedLattice =
+            geometryTranslationSpeedLattice
+        self.wallVelocityLattice = wallVelocityLattice
+        self.wallVelocityMode = wallVelocityMode
+        self.initialFluidVelocityLattice = initialFluidVelocityLattice
+        self.periodicBoundaries = periodicBoundaries
+        self.spongeStrength = spongeStrength
+        self.latticeKinematicViscosity = latticeKinematicViscosity
+        self.initialCenter = initialCenter
+        self.controlMinimum = controlMinimum
+        self.controlMaximumExclusive = controlMaximumExclusive
+        self.characteristicLengthCells = characteristicLengthCells
+        self.spongeWidthCells = spongeWidthCells
+    }
 
     static func standard() throws -> Self {
         Self(
@@ -2912,6 +3529,8 @@ private struct GPUSymmetricLimiterLedger {
     var spongeControl: SIMD4<Float>
     var boundaryActivated: SIMD4<Float>
     var spongeActivated: SIMD4<Float>
+    var limiterNorms: SIMD4<Float>
+    var limiterControlNorms: SIMD4<Float>
     var counts: SIMD4<UInt32>
     var activatedCounts: SIMD4<UInt32>
 }
@@ -2928,6 +3547,8 @@ private struct MetalSymmetricLimiterLedgerRaw {
     var spongeControl = SIMD4<Double>.zero
     var boundaryActivated = SIMD4<Double>.zero
     var spongeActivated = SIMD4<Double>.zero
+    var limiterNorms = SIMD4<Double>.zero
+    var limiterControlNorms = SIMD4<Double>.zero
     var activatedCellCount = 0
     var boundaryLinkCount = 0
     var farFieldLinkCount = 0
@@ -2949,6 +3570,8 @@ private struct MetalSymmetricLimiterLedgerRaw {
         spongeControl += doubleVector(value.spongeControl)
         boundaryActivated += doubleVector(value.boundaryActivated)
         spongeActivated += doubleVector(value.spongeActivated)
+        limiterNorms += doubleVector(value.limiterNorms)
+        limiterControlNorms += doubleVector(value.limiterControlNorms)
         activatedCellCount += Int(value.counts.x)
         boundaryLinkCount += Int(value.counts.y)
         farFieldLinkCount += Int(value.counts.z)
@@ -3051,12 +3674,13 @@ private final class MetalTranslatingBodyTopologySimulation {
         periodicBoundaries = caseConfiguration.periodicBoundaries
         let grid = caseConfiguration.grid
         let referenceSpeed = caseConfiguration.referenceSpeedLattice
-        let characteristicLengthCells = 8
+        let characteristicLengthCells =
+            caseConfiguration.characteristicLengthCells
         let targetReynoldsNumber = referenceSpeed
             * Float(characteristicLengthCells)
             / caseConfiguration.latticeKinematicViscosity
         let scaling = try LatticeScaling(
-            characteristicLengthMeters: 8,
+            characteristicLengthMeters: Float(characteristicLengthCells),
             characteristicLengthCells: characteristicLengthCells,
             referenceSpeedMetersPerSecond: referenceSpeed,
             targetReynoldsNumber: targetReynoldsNumber,
@@ -3073,7 +3697,7 @@ private final class MetalTranslatingBodyTopologySimulation {
                 0,
                 0
             ),
-            spongeWidthCells: 4,
+            spongeWidthCells: caseConfiguration.spongeWidthCells,
             spongeStrength: caseConfiguration.spongeStrength,
             freeFlight: false,
             gravityMetersPerSecondSquared: .zero,

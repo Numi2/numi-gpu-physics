@@ -1002,6 +1002,91 @@ func productionMetalStationaryWallC16LimiterPassesSourceAwareAcceptance()
 }
 
 @Test
+func productionMetalGeometricLimiterLadderBlocksNonConvergedPromotion()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallGeometricLimiterLadder()
+
+    #expect(
+        report.classification
+            == "stationary-wall-geometric-limiter-ladder-not-accepted"
+    )
+    #expect(report.cases.map(\.diameterCells) == [8, 12, 16])
+    #expect(
+        report.cases.map(\.domainCells) == [
+            SIMD3<Int>(80, 48, 48),
+            SIMD3<Int>(120, 72, 72),
+            SIMD3<Int>(160, 96, 96),
+        ]
+    )
+    #expect(report.cases.map(\.requestedSteps) == [500, 750, 1_000])
+    #expect(report.cases.allSatisfy {
+        $0.minimumObservedPopulation! > 0
+            && $0.sourceAwareStabilityPassed
+            && $0.forceBudgetPassed
+            && !$0.limiterNonIntrusivePassed
+            && !$0.passed
+            && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && $0.controlVolumeOutsideSponge
+            && $0.globalLedgerClosed
+    })
+    #expect(
+        report.cases.map(\.limiterActivationFraction) == [
+            0.032_554_785_156_25,
+            0.061_734_134_945_130_32,
+            0.073_959_859_212_239_59,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeLimiterL1Correction) == [
+            0.039_466_866_773_455_86,
+            0.060_925_142_060_480_24,
+            0.060_801_055_789_557_98,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeLimiterL2Correction) == [
+            0.120_882_998_429_520_5,
+            0.143_460_069_513_615_34,
+            0.138_081_972_217_033_08,
+        ]
+    )
+    #expect(
+        report.cases.map(\.controlVolumeLimiterActivationFraction) == [
+            0.035_294_635_416_666_664,
+            0.066_522_040_466_392_32,
+            0.080_699_371_744_791_66,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL1Correction) == [
+            0.033_979_475_908_227_016,
+            0.058_723_323_395_726_42,
+            0.061_685_687_048_698_354,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL2Correction) == [
+            0.117_068_803_764_230_1,
+            0.147_424_460_209_431_98,
+            0.145_388_060_159_023_25,
+        ]
+    )
+    #expect(
+        abs(report.relativeFinestTwoDragChange
+            - 0.148_124_168_221_390_2) < 1.0e-12
+    )
+    #expect(!report.limiterActivationNonIncreasing)
+    #expect(!report.limiterCorrectionNonIncreasing)
+    #expect(report.observedDragConvergenceOrder == nil)
+    #expect(report.richardsonExtrapolatedDragCoefficient == nil)
+    #expect(report.fineGridConvergenceIndex == nil)
+    #expect(!report.passed)
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

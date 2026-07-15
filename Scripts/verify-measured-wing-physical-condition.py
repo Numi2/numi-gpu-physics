@@ -278,6 +278,17 @@ def main() -> None:
     ):
         if not decision[key]:
             raise SystemExit(f"c16 source-aware acceptance lost {key}")
+    for key in (
+        "stationaryWallGeometricLimiterLadderCompleted",
+        "stationaryWallGeometricLimiterLadderRepeatMatched",
+        "stationaryWallGeometricLimiterControlVolumeFailureConfirmed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"geometric limiter ladder lost {key}")
+    if decision["stationaryWallGeometricLimiterLadderPassed"]:
+        raise SystemExit("geometric limiter ladder must retain its failed verdict")
+    if decision["stationaryWallGeometricLimiterPromoted"]:
+        raise SystemExit("geometric limiter must remain excluded from bird replay")
     if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
         raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
@@ -1200,6 +1211,118 @@ def main() -> None:
         "c16 source-aware boundary load closure",
     )
 
+    geometric_path = Path(
+        decision["stationaryWallGeometricLimiterLadderArtifact"]
+    )
+    geometric_bytes = geometric_path.read_bytes()
+    geometric_hash = hashlib.sha256(geometric_bytes).hexdigest()
+    if geometric_hash != decision[
+        "stationaryWallGeometricLimiterLadderArtifactSHA256"
+    ]:
+        raise SystemExit(f"{geometric_path} has changed artifact hash")
+    geometric = json.loads(geometric_bytes)
+    if geometric["schemaVersion"] != 1:
+        raise SystemExit(f"{geometric_path} has changed schema")
+    if geometric["classification"] != (
+        "stationary-wall-geometric-limiter-ladder-not-accepted"
+    ):
+        raise SystemExit(f"{geometric_path} has changed classification")
+    if geometric["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{geometric_path} no longer uses production Metal")
+    if geometric["passed"]:
+        raise SystemExit(f"{geometric_path} must retain its blocked promotion")
+    if geometric["limiterActivationNonIncreasing"]:
+        raise SystemExit(f"{geometric_path} activation trend unexpectedly passes")
+    if geometric["limiterCorrectionNonIncreasing"]:
+        raise SystemExit(f"{geometric_path} correction trend unexpectedly passes")
+    for key in (
+        "observedDragConvergenceOrder",
+        "richardsonExtrapolatedDragCoefficient",
+        "fineGridConvergenceIndex",
+    ):
+        if geometric.get(key) is not None:
+            raise SystemExit(f"{geometric_path} must not report {key} for non-monotonic drag")
+    for key, expected in (
+        ("domainLengthDiameters", 10.0),
+        ("domainCrossflowDiameters", 6.0),
+        ("sphereCenterFromInletDiameters", 3.0),
+        ("spongeWidthDiameters", 0.5),
+        ("requestedConvectiveTimes", 5.0),
+        ("reynoldsNumber", 9367.4),
+        ("latticeFarFieldSpeed", 0.08),
+        ("maximumAllowedLimiterActivationFraction", 0.05),
+        ("maximumAllowedRelativeLimiterCorrection", 0.01),
+        ("maximumAllowedRelativeRMSForceResidual", 0.005),
+        ("maximumAllowedPeakForceResidualRatio", 0.001),
+        ("maximumAllowedFinestTwoDragChange", 0.05),
+    ):
+        close(geometric[key], expected, 1.0e-14, f"geometric {key}")
+    geometric_cases = geometric["cases"]
+    expected_case_values = {
+        "diameterCells": decision["stationaryWallGeometricLimiterDiameterCells"],
+        "domainCells": decision["stationaryWallGeometricLimiterDomainCells"],
+        "requestedSteps": decision["stationaryWallGeometricLimiterRequestedSteps"],
+        "sourceAwareStabilityPassed": decision[
+            "stationaryWallGeometricLimiterSourceAwareStabilityPassed"
+        ],
+        "forceBudgetPassed": decision[
+            "stationaryWallGeometricLimiterForceBudgetPassed"
+        ],
+        "limiterNonIntrusivePassed": decision[
+            "stationaryWallGeometricLimiterNonIntrusivePassed"
+        ],
+    }
+    for key, expected in expected_case_values.items():
+        if [case[key] for case in geometric_cases] != expected:
+            raise SystemExit(f"{geometric_path} has changed {key}")
+    for case in geometric_cases:
+        if case["minimumObservedPopulation"] <= 0:
+            raise SystemExit(f"{geometric_path} lost population positivity")
+        if case["passed"]:
+            raise SystemExit(f"{geometric_path} case unexpectedly passes")
+        if not case["globalLedgerClosed"]:
+            raise SystemExit(f"{geometric_path} global ledger no longer closes")
+        if not case["controlVolumeOutsideSponge"]:
+            raise SystemExit(f"{geometric_path} control volume entered sponge")
+        if case["maximumSolidControlSurfaceCrossingLinkCount"] != 0:
+            raise SystemExit(f"{geometric_path} control surface crosses solid links")
+        if any(
+            sample["controlVolumeSpongeCellCount"] != 0
+            or sample["solidControlSurfaceCrossingLinkCount"] != 0
+            for sample in case["samples"]
+        ):
+            raise SystemExit(f"{geometric_path} phase history lost control isolation")
+        if [sample["step"] for sample in case["samples"]] != list(
+            range(1, case["requestedSteps"] + 1)
+        ):
+            raise SystemExit(f"{geometric_path} phase history is not contiguous")
+    for key, decision_key in (
+        ("limiterActivationFraction", "stationaryWallGeometricLimiterActivationFractions"),
+        ("controlVolumeLimiterActivationFraction", "stationaryWallGeometricLimiterControlActivationFractions"),
+        ("relativeControlVolumeLimiterL1Correction", "stationaryWallGeometricLimiterControlRelativeL1Corrections"),
+        ("relativeControlVolumeLimiterL2Correction", "stationaryWallGeometricLimiterControlRelativeL2Corrections"),
+        ("meanDragCoefficientLastConvectiveTime", "stationaryWallGeometricLimiterMeanDragCoefficients"),
+    ):
+        for actual, expected in zip(
+            [case[key] for case in geometric_cases], decision[decision_key]
+        ):
+            close(actual, expected, 1.0e-14, f"geometric {key}")
+    close(
+        geometric["relativeFinestTwoDragChange"],
+        decision["stationaryWallGeometricLimiterRelativeFinestTwoDragChange"],
+        1.0e-14,
+        "geometric finest-two drag change",
+    )
+    if decision["stationaryWallGeometricLimiterObservedDragConvergenceOrder"] is not None:
+        raise SystemExit("geometric audit must retain null observed order")
+    for path_key, hash_key in (
+        ("stationaryWallGeometricLimiterLadderFigurePNG", "stationaryWallGeometricLimiterLadderFigurePNGSHA256"),
+        ("stationaryWallGeometricLimiterLadderFigureSVG", "stationaryWallGeometricLimiterLadderFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -1298,6 +1421,18 @@ def main() -> None:
         f"force_source_closed={ledger['forceResidualLedgerClosed']},"
         f"mass_source={ledger['dominantGlobalMassContribution']},"
         f"momentum_source={ledger['dominantControlVolumeMomentumContribution']}"
+    )
+    print(f"geometric_limiter_classification: {geometric['classification']}")
+    print(
+        "geometric_limiter_control_activation_percent: "
+        + ",".join(
+            f"{100.0 * case['controlVolumeLimiterActivationFraction']:.6f}"
+            for case in geometric_cases
+        )
+    )
+    print(
+        "geometric_limiter_finest_drag_change_percent: "
+        f"{100.0 * geometric['relativeFinestTwoDragChange']:.6f}"
     )
     print("passed: true")
 

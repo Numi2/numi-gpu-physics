@@ -355,6 +355,7 @@ private struct TranslatingBodyArguments {
     var populationPositivity = false
     var trtCollisionDecomposition = false
     var symmetricLimiterAB = false
+    var geometricLimiterLadder = false
     var json = false
     var archivePath: String?
 
@@ -380,6 +381,8 @@ private struct TranslatingBodyArguments {
                 trtCollisionDecomposition = true
             case "--symmetric-limiter-ab":
                 symmetricLimiterAB = true
+            case "--geometric-limiter-ladder":
+                geometricLimiterLadder = true
             case "--archive":
                 index += 1
                 guard index < values.count else {
@@ -446,12 +449,18 @@ private struct TranslatingBodyArguments {
                 "--symmetric-limiter-ab requires --stationary-wall"
             )
         }
+        if geometricLimiterLadder && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--geometric-limiter-ladder requires --stationary-wall"
+            )
+        }
         let stationaryDiagnostics = [
             relaxationSweep,
             longHorizonSurvival,
             populationPositivity,
             trtCollisionDecomposition,
-            symmetricLimiterAB
+            symmetricLimiterAB,
+            geometricLimiterLadder
         ].filter { $0 }.count
         if stationaryDiagnostics > 1 {
             throw CLIError.invalidArgument(
@@ -461,9 +470,10 @@ private struct TranslatingBodyArguments {
         if archivePath != nil
             && !populationPositivity
             && !trtCollisionDecomposition
-            && !symmetricLimiterAB {
+            && !symmetricLimiterAB
+            && !geometricLimiterLadder {
             throw CLIError.invalidArgument(
-                "--archive requires a population or TRT decomposition diagnostic"
+                "--archive requires an archive-capable stationary-wall diagnostic"
             )
         }
     }
@@ -485,6 +495,8 @@ private struct TranslatingBodyArguments {
                            Decompose the locked step-27 c16 collision
       --symmetric-limiter-ab
                            Compare the locked c16 control and symmetric limiter
+      --geometric-limiter-ladder
+                           Run true D=8/12/16 source-aware sphere refinement
       --archive FILE       Write the selected diagnostic to an exact JSON file
       --json               Emit the machine-readable validation report
       --help               Show this help
@@ -1325,6 +1337,49 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
         if arguments.stationaryWall {
+            if arguments.geometricLimiterLadder {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallGeometricLimiterLadder()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    for item in report.cases {
+                        print(
+                            "D=\(item.diameterCells): "
+                                + "steps=\(item.requestedSteps) "
+                                + "Cd=\(item.meanDragCoefficientLastConvectiveTime) "
+                                + "global_activation=\(item.limiterActivationFraction) "
+                                + "control_activation=\(item.controlVolumeLimiterActivationFraction) "
+                                + "control_limiter_L1=\(item.relativeControlVolumeLimiterL1Correction) "
+                                + "control_limiter_L2=\(item.relativeControlVolumeLimiterL2Correction) "
+                                + "force_RMS=\(item.conservativeRelativeRMSResidual) "
+                                + "passed=\(item.passed)"
+                        )
+                    }
+                    print(
+                        "finest_two_drag_change: "
+                            + String(report.relativeFinestTwoDragChange)
+                    )
+                    print(
+                        "observed_order: "
+                            + String(describing:
+                                report.observedDragConvergenceOrder)
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "geometric symmetric-limiter ladder did not pass"
+                    )
+                }
+                return
+            }
             if arguments.symmetricLimiterAB {
                 let report = try MetalTranslatingBodyTopologyValidator
                     .runStationaryWallC16SymmetricLimiterAB()

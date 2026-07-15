@@ -362,5 +362,10 @@ samples contain zero sponge cells and zero solid links cross the control
 surface. The global source ledger closes, maximum raw force residual is
 `0.000464316 N` under the `0.0005 N` gate, and relative RMS residual is
 `0.00537%` under the `0.5%` gate. The source-aware c16 acceptance passes. The
-limiter is promoted to the c8/c12/c16 stationary-sphere refinement ladder but
-remains excluded from coupled bird replay until that resolution gate passes.
+subsequent geometrically similar c8/c12/c16 ladder does not: control-volume
+activation grows `3.53% -> 6.65% -> 8.07%`, the corresponding L2 correction
+remains `11.71% -> 14.74% -> 14.54%`, and finest-two mean drag changes `14.81%`
+against a `5%` gate. All cases are positive, source-closed, and force-budget
+closed, which isolates the remaining failure to intrusive, resolution-dependent
+collision limiting in the physical flow region. The limiter therefore remains
+excluded from coupled bird replay.

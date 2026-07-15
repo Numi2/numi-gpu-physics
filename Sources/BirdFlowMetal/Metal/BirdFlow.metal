@@ -194,6 +194,10 @@ struct GPUSymmetricLimiterLedger {
     float4 spongeControl;
     float4 boundaryActivated;
     float4 spongeActivated;
+    // x/y: limiter L1 and squared L2 correction; z/w: unlimited TRT
+    // collision L1 and squared L2 increment. Diagnostic-only.
+    float4 limiterNorms;
+    float4 limiterControlNorms;
     uint4 counts;
     uint4 activatedCounts;
 };
@@ -2630,6 +2634,8 @@ kernel void captureSymmetricLimiterLedger(
     ledger.spongeControl = float4(0);
     ledger.boundaryActivated = float4(0);
     ledger.spongeActivated = float4(0);
+    ledger.limiterNorms = float4(0);
+    ledger.limiterControlNorms = float4(0);
     ledger.counts = uint4(0);
     ledger.activatedCounts = uint4(0);
 
@@ -2859,10 +2865,18 @@ kernel void captureSymmetricLimiterLedger(
         ledger.collisionGlobal += collisionTerm;
         ledger.limiterGlobal += limiterTerm;
         ledger.spongeGlobal += spongeTerm;
+        float4 limiterNorm = float4(
+            abs(limiterDelta),
+            limiterDelta * limiterDelta,
+            abs(collisionDelta),
+            collisionDelta * collisionDelta
+        );
+        ledger.limiterNorms += limiterNorm;
         if (inControl) {
             ledger.collisionControl += collisionTerm;
             ledger.limiterControl += limiterTerm;
             ledger.spongeControl += spongeTerm;
+            ledger.limiterControlNorms += limiterNorm;
         }
     }
 
@@ -2907,6 +2921,8 @@ kernel void reduceSymmetricLimiterLedger(
     total.spongeControl = float4(0);
     total.boundaryActivated = float4(0);
     total.spongeActivated = float4(0);
+    total.limiterNorms = float4(0);
+    total.limiterControlNorms = float4(0);
     total.counts = uint4(0);
     total.activatedCounts = uint4(0);
     uint end = min(start + 256u, inputCount);
@@ -2922,6 +2938,8 @@ kernel void reduceSymmetricLimiterLedger(
         total.spongeControl += input[index].spongeControl;
         total.boundaryActivated += input[index].boundaryActivated;
         total.spongeActivated += input[index].spongeActivated;
+        total.limiterNorms += input[index].limiterNorms;
+        total.limiterControlNorms += input[index].limiterControlNorms;
         total.counts += input[index].counts;
         total.activatedCounts += input[index].activatedCounts;
     }
