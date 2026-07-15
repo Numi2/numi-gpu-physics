@@ -142,6 +142,80 @@ public struct MetalHighReFixedOccupancyWallDecompositionReport:
     public let diagnosticCompleted: Bool
 }
 
+public struct MetalStationaryWallRelaxationSweepPoint:
+    Codable, Sendable
+{
+    public let requestedTauPlusMarginAboveHalf: Double
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let tauPlusMarginAboveHalf: Double
+    public let requestedSteps: Int
+    public let finiteLoadSteps: Int
+    public let firstNonFiniteLoadStep: Int?
+    public let relativePopulationMassDrift: Double?
+    public let maximumAbsolutePopulation: Double?
+    public let maximumMeasuredForceMagnitude: Double?
+    public let populationsFinite: Bool
+    public let fieldsFinite: Bool
+    public let loadsFinite: Bool
+    public let newlyCoveredCellEvents: Int
+    public let newlyUncoveredCellEvents: Int
+    public let topologyTransitionSteps: Int
+    public let stabilityPassed: Bool
+    public let fullAcceptancePassed: Bool
+}
+
+public struct MetalStationaryWallRelaxationSweepReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let topologyKernel: String
+    public let domainCells: SIMD3<Int>
+    public let sphereRadiusCells: Double
+    public let farFieldVelocityLattice: Double
+    public let wallVelocityLattice: Double
+    public let periodicBoundaries: Bool
+    public let spongeStrength: Double
+    public let requestedStepsPerPoint: Int
+    public let runtimeSeconds: Double
+    public let firstTransitionLowerUnstableTauPlusMarginAboveHalf: Double?
+    public let firstTransitionUpperStableTauPlusMarginAboveHalf: Double?
+    public let firstTransitionBracketWidth: Double?
+    public let firstTransitionBracketed: Bool
+    public let stabilityMonotonicWithMargin: Bool
+    public let unstableTauPlusMarginsAfterFirstStable: [Double]
+    public let thresholdBracketed: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let points: [MetalStationaryWallRelaxationSweepPoint]
+    public let diagnosticCompleted: Bool
+}
+
+public struct MetalStationaryWallLongHorizonSurvivalReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let topologyKernel: String
+    public let domainCells: SIMD3<Int>
+    public let sphereRadiusCells: Double
+    public let farFieldVelocityLattice: Double
+    public let wallVelocityLattice: Double
+    public let periodicBoundaries: Bool
+    public let spongeStrength: Double
+    public let requestedStepsPerPoint: Int
+    public let runtimeSeconds: Double
+    public let survivingPointCount: Int
+    public let allApparentStablePointsSurvived: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let points: [MetalStationaryWallRelaxationSweepPoint]
+    public let diagnosticCompleted: Bool
+}
+
 public enum MetalTranslatingBodyTopologyValidator {
     public static let gridResolution = 24
     public static let sphereRadiusCells = 3.25
@@ -195,6 +269,254 @@ public enum MetalTranslatingBodyTopologyValidator {
             wallMode: .uniform,
             wallSpeed: 0,
             farFieldSpeed: 0.08
+        )
+    }
+
+    public static func runStationaryWallRelaxationSweep(
+        steps: Int = 500
+    ) throws -> MetalStationaryWallRelaxationSweepReport {
+        let requestedMargins: [Float] = [
+            0.00025,
+            0.0005,
+            0.001,
+            0.002,
+            0.005,
+            0.01,
+            0.0125,
+            0.015,
+            0.015625,
+            0.01625,
+            0.016875,
+            0.0175,
+            0.02,
+            0.05,
+        ]
+        let raw = try runHighReStability(
+            steps: steps,
+            topologyChanges: false,
+            wallMode: .uniform,
+            wallSpeed: 0,
+            farFieldSpeed: 0.08,
+            caseDefinitions: requestedMargins.map { margin in
+                // The chord field belongs to the published-condition ladder;
+                // sweep reports map this internal placeholder to tau directly.
+                (0, margin / 3)
+            }
+        )
+        let points = zip(requestedMargins, raw.cases).map {
+            requestedMargin, result in
+            let stabilityPassed = result.populationsFinite
+                && result.fieldsFinite
+                && result.loadsFinite
+                && result.finiteLoadSteps == steps
+                && result.firstNonFiniteLoadStep == nil
+                && result.newlyCoveredCellEvents == 0
+                && result.newlyUncoveredCellEvents == 0
+                && result.topologyTransitionSteps == 0
+                && (result.relativePopulationMassDrift ?? .infinity)
+                    <= raw.maximumAllowedRelativePopulationMassDrift
+                && (result.maximumAbsolutePopulation ?? .infinity)
+                    <= raw.maximumAllowedAbsolutePopulation
+            return MetalStationaryWallRelaxationSweepPoint(
+                requestedTauPlusMarginAboveHalf: Double(requestedMargin),
+                latticeKinematicViscosity:
+                    result.latticeKinematicViscosity,
+                tauPlus: result.tauPlus,
+                tauPlusMarginAboveHalf:
+                    result.tauPlusMarginAboveHalf,
+                requestedSteps: result.requestedSteps,
+                finiteLoadSteps: result.finiteLoadSteps,
+                firstNonFiniteLoadStep: result.firstNonFiniteLoadStep,
+                relativePopulationMassDrift:
+                    result.relativePopulationMassDrift,
+                maximumAbsolutePopulation:
+                    result.maximumAbsolutePopulation,
+                maximumMeasuredForceMagnitude:
+                    result.maximumMeasuredForceMagnitude,
+                populationsFinite: result.populationsFinite,
+                fieldsFinite: result.fieldsFinite,
+                loadsFinite: result.loadsFinite,
+                newlyCoveredCellEvents: result.newlyCoveredCellEvents,
+                newlyUncoveredCellEvents: result.newlyUncoveredCellEvents,
+                topologyTransitionSteps: result.topologyTransitionSteps,
+                stabilityPassed: stabilityPassed,
+                fullAcceptancePassed: result.passed
+            )
+        }
+        let firstStableIndex = points.firstIndex(where: \.stabilityPassed)
+        let firstUpperStable = firstStableIndex.map {
+            points[$0].tauPlusMarginAboveHalf
+        }
+        let firstLowerUnstable = firstStableIndex.flatMap { index in
+            index > 0 ? points[index - 1].tauPlusMarginAboveHalf : nil
+        }
+        let firstBracketWidth: Double?
+        if let firstLowerUnstable, let firstUpperStable {
+            firstBracketWidth = firstUpperStable - firstLowerUnstable
+        } else {
+            firstBracketWidth = nil
+        }
+        let firstTransitionBracketed = firstLowerUnstable != nil
+            && firstUpperStable != nil
+        let unstableAfterFirstStable = firstStableIndex.map { index in
+            points.suffix(from: index + 1).filter {
+                !$0.stabilityPassed
+            }.map(\.tauPlusMarginAboveHalf)
+        } ?? []
+        let monotonic = unstableAfterFirstStable.isEmpty
+        let thresholdBracketed = firstTransitionBracketed && monotonic
+        let diagnosticCompleted = points.count == requestedMargins.count
+            && points.allSatisfy { point in
+                point.newlyCoveredCellEvents == 0
+                    && point.newlyUncoveredCellEvents == 0
+                    && point.topologyTransitionSteps == 0
+                    && (point.stabilityPassed
+                        ? point.finiteLoadSteps == steps
+                        : point.firstNonFiniteLoadStep != nil)
+            }
+        let classification: String
+        let verdict: String
+        if !monotonic {
+            classification = "stationary-wall-relaxation-stability-nonmonotonic"
+            verdict = "The active stationary-sphere 500-step outcome is non-monotonic with relaxation margin. A stable point is followed by a reproducible unstable point, so viscosity-only tuning does not define a robust critical threshold."
+        } else if thresholdBracketed {
+            classification = "stationary-wall-relaxation-threshold-bracketed"
+            verdict = "The active stationary-sphere 500-step stability threshold is bracketed between the first adjacent unstable and stable tauPlus margins."
+        } else {
+            classification = "stationary-wall-relaxation-threshold-not-bracketed"
+            verdict = "The requested stationary-sphere relaxation sweep did not bracket a 500-step stability transition."
+        }
+        return MetalStationaryWallRelaxationSweepReport(
+            schemaVersion: 1,
+            deviceName: raw.deviceName,
+            productionKernel: raw.productionKernel,
+            topologyKernel: raw.topologyKernel,
+            domainCells: raw.domainCells,
+            sphereRadiusCells: raw.sphereRadiusCells,
+            farFieldVelocityLattice: raw.farFieldVelocityLattice,
+            wallVelocityLattice: raw.wallVelocityLattice,
+            periodicBoundaries: raw.periodicBoundaries,
+            spongeStrength: raw.spongeStrength,
+            requestedStepsPerPoint: steps,
+            runtimeSeconds: raw.runtimeSeconds,
+            firstTransitionLowerUnstableTauPlusMarginAboveHalf:
+                firstLowerUnstable,
+            firstTransitionUpperStableTauPlusMarginAboveHalf:
+                firstUpperStable,
+            firstTransitionBracketWidth: firstBracketWidth,
+            firstTransitionBracketed: firstTransitionBracketed,
+            stabilityMonotonicWithMargin: monotonic,
+            unstableTauPlusMarginsAfterFirstStable:
+                unstableAfterFirstStable,
+            thresholdBracketed: thresholdBracketed,
+            classification: classification,
+            scientificVerdict: verdict,
+            points: points,
+            diagnosticCompleted: diagnosticCompleted
+        )
+    }
+
+    public static func runStationaryWallLongHorizonSurvival(
+        steps: Int = 1_000
+    ) throws -> MetalStationaryWallLongHorizonSurvivalReport {
+        guard steps == 1_000 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall long-horizon survival uses a locked 1000-step contract"
+            )
+        }
+        let requestedMargins: [Float] = [0.015625, 0.016875, 0.02]
+        let raw = try runHighReStability(
+            steps: steps,
+            topologyChanges: false,
+            wallMode: .uniform,
+            wallSpeed: 0,
+            farFieldSpeed: 0.08,
+            caseDefinitions: requestedMargins.map { margin in
+                (0, margin / 3)
+            }
+        )
+        let points = zip(requestedMargins, raw.cases).map {
+            requestedMargin, result in
+            let stabilityPassed = result.populationsFinite
+                && result.fieldsFinite
+                && result.loadsFinite
+                && result.finiteLoadSteps == steps
+                && result.firstNonFiniteLoadStep == nil
+                && result.newlyCoveredCellEvents == 0
+                && result.newlyUncoveredCellEvents == 0
+                && result.topologyTransitionSteps == 0
+                && (result.relativePopulationMassDrift ?? .infinity)
+                    <= raw.maximumAllowedRelativePopulationMassDrift
+                && (result.maximumAbsolutePopulation ?? .infinity)
+                    <= raw.maximumAllowedAbsolutePopulation
+            return MetalStationaryWallRelaxationSweepPoint(
+                requestedTauPlusMarginAboveHalf: Double(requestedMargin),
+                latticeKinematicViscosity:
+                    result.latticeKinematicViscosity,
+                tauPlus: result.tauPlus,
+                tauPlusMarginAboveHalf:
+                    result.tauPlusMarginAboveHalf,
+                requestedSteps: result.requestedSteps,
+                finiteLoadSteps: result.finiteLoadSteps,
+                firstNonFiniteLoadStep: result.firstNonFiniteLoadStep,
+                relativePopulationMassDrift:
+                    result.relativePopulationMassDrift,
+                maximumAbsolutePopulation:
+                    result.maximumAbsolutePopulation,
+                maximumMeasuredForceMagnitude:
+                    result.maximumMeasuredForceMagnitude,
+                populationsFinite: result.populationsFinite,
+                fieldsFinite: result.fieldsFinite,
+                loadsFinite: result.loadsFinite,
+                newlyCoveredCellEvents: result.newlyCoveredCellEvents,
+                newlyUncoveredCellEvents: result.newlyUncoveredCellEvents,
+                topologyTransitionSteps: result.topologyTransitionSteps,
+                stabilityPassed: stabilityPassed,
+                fullAcceptancePassed: result.passed
+            )
+        }
+        let survivingCount = points.filter(\.stabilityPassed).count
+        let allSurvived = survivingCount == points.count
+        let diagnosticCompleted = points.count == requestedMargins.count
+            && points.allSatisfy { point in
+                point.newlyCoveredCellEvents == 0
+                    && point.newlyUncoveredCellEvents == 0
+                    && point.topologyTransitionSteps == 0
+                    && (point.stabilityPassed
+                        ? point.finiteLoadSteps == steps
+                        : point.firstNonFiniteLoadStep != nil)
+            }
+        let classification: String
+        let verdict: String
+        if allSurvived {
+            classification = "stationary-wall-apparent-stability-survives-1000"
+            verdict = "All apparent 500-step stability points remain finite for 1000 steps. The non-monotonic band persists over the extended horizon."
+        } else if survivingCount == 0 {
+            classification = "stationary-wall-500-step-stability-horizon-censored"
+            verdict = "Every apparent 500-step stability point becomes non-finite before 1000 steps. The earlier islands were delayed divergence censored by the shorter horizon."
+        } else {
+            classification = "stationary-wall-long-horizon-stability-mixed"
+            verdict = "Only part of the apparent 500-step stability band survives to 1000 steps. Retain only the surviving margins as candidates for longer validation."
+        }
+        return MetalStationaryWallLongHorizonSurvivalReport(
+            schemaVersion: 1,
+            deviceName: raw.deviceName,
+            productionKernel: raw.productionKernel,
+            topologyKernel: raw.topologyKernel,
+            domainCells: raw.domainCells,
+            sphereRadiusCells: raw.sphereRadiusCells,
+            farFieldVelocityLattice: raw.farFieldVelocityLattice,
+            wallVelocityLattice: raw.wallVelocityLattice,
+            periodicBoundaries: raw.periodicBoundaries,
+            spongeStrength: raw.spongeStrength,
+            requestedStepsPerPoint: steps,
+            runtimeSeconds: raw.runtimeSeconds,
+            survivingPointCount: survivingCount,
+            allApparentStablePointsSurvived: allSurvived,
+            classification: classification,
+            scientificVerdict: verdict,
+            points: points,
+            diagnosticCompleted: diagnosticCompleted
         )
     }
 
@@ -261,11 +583,17 @@ public enum MetalTranslatingBodyTopologyValidator {
         topologyChanges: Bool,
         wallMode: HighReSphereWallMode,
         wallSpeed: Float = 0.08,
-        farFieldSpeed: Float = 0
+        farFieldSpeed: Float = 0,
+        caseDefinitions: [(Int, Float)]? = nil
     ) throws -> MetalHighReTranslatingBodyStabilityReport {
-        guard steps == 500 else {
+        let isLockedLongHorizon = steps == 1_000
+            && !topologyChanges
+            && wallSpeed == 0
+            && farFieldSpeed == 0.08
+            && caseDefinitions != nil
+        guard steps == 500 || isLockedLongHorizon else {
             throw MetalTranslatingBodyTopologyValidationError.failed(
-                "high-Re translating-body stability uses a locked 500-step contract"
+                "high-Re stability uses a locked 500-step contract except for the stationary-wall 1000-step survival audit"
             )
         }
 #if canImport(Metal)
@@ -278,7 +606,7 @@ public enum MetalTranslatingBodyTopologyValidator {
         let maximumAbsolutePopulation = 10.0
         let maximumForceResidual = 5.0e-4
         let maximumRelativeResidual = 5.0e-3
-        let matchedViscosities: [(Int, Float)] = [
+        let matchedViscosities = caseDefinitions ?? [
             (8, 4.382_427_9e-5),
             (12, 6.582_454_1e-5),
             (16, 8.782_491_2e-5),

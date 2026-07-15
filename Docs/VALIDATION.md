@@ -735,11 +735,59 @@ Curved halfway bounce-back at the matched low relaxation margins is therefore
 unstable without topology or a moving-wall population correction. Moving-wall
 forcing accelerates the failure, but it is not required.
 
-The highest-ROI next gate is a short relaxation-margin sweep on this active
-stationary sphere. It changes only viscosity and should locate the critical
-stable `tauPlus - 0.5` in a few seconds. That tells us whether a modest
-resolution/Reynolds adjustment is enough or whether the curved boundary needs
-a positivity-preserving collision stabilization before another bird replay.
+The relaxation-margin sweep is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --relaxation-sweep \
+  --json
+```
+
+Fourteen 500-step cases retain the same active external-flow setup and vary
+only `tauPlus - 0.5`. Failure is delayed from step `267` at margin `0.00025`
+to step `488` at `0.0150`. The first surviving point is `0.015625`, but the
+next point, `0.01625`, reproducibly becomes non-finite at step `496`; margins
+`0.016875`, `0.0175`, `0.02`, and `0.05` survive. The `8.38 s` Apple M4 result
+is archived in
+`ValidationArtifacts/measured-wing-stationary-wall-relaxation-sweep.json`.
+The 500-step stability outcome is therefore non-monotonic, so viscosity-only
+tuning does not provide a robust critical threshold. These are stability-only
+results: every point still fails the full force-budget acceptance contract.
+
+The highest-ROI next gate is a 1,000-step survival audit of the apparent
+`0.015625` and `0.016875` stability islands plus the `0.02` control. The relapse
+at step `496` makes finite-horizon censoring the dominant uncertainty. Three
+longer cases should determine in seconds whether the islands are genuine or
+merely delayed divergence before designing a positivity-preserving treatment.
+
+The long-horizon command is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --long-horizon-survival \
+  --json
+```
+
+All three apparent survivors become non-finite well before 1,000 steps:
+margin `0.015625` at step `519`, `0.016875` at `566`, and `0.02` at `588`.
+The result reproduces exactly on a second release run; the first Apple M4 run
+takes `2.92 s`. It is archived in
+`ValidationArtifacts/measured-wing-stationary-wall-long-horizon-survival.json`.
+The non-monotonic 500-step band was therefore horizon-censored delayed
+divergence, not usable stability.
+
+The highest-ROI next gate is a spatial positivity diagnostic on the published
+c16 stationary-sphere case. Record the first minimum population, lattice
+direction, cell, and distance from the sphere each step through failure. One
+short case can distinguish boundary-adjacent positivity loss from far-field or
+sponge instability, directly selecting where a limiter or operator change
+belongs before modifying production bird physics.
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

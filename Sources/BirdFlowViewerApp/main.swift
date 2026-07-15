@@ -2,11 +2,26 @@ import AppKit
 import BirdFlowCore
 import BirdFlowMetal
 import BirdFlowVisualization
+import Foundation
 import SwiftUI
 
 @main
 struct BirdFlowViewerApp: App {
   init() {
+    if CommandLine.arguments.contains("--capture-readme-frames") {
+      do {
+        let arguments = try ReadmeShowcaseCapture.Arguments(
+          commandLine: CommandLine.arguments
+        )
+        try ReadmeShowcaseCapture.run(arguments)
+        Foundation.exit(EXIT_SUCCESS)
+      } catch {
+        FileHandle.standardError.write(
+          Data("birdflow-viewer capture failed: \(error)\n".utf8)
+        )
+        Foundation.exit(EXIT_FAILURE)
+      }
+    }
     NSApplication.shared.setActivationPolicy(.regular)
     DispatchQueue.main.async {
       NSApplication.shared.activate(ignoringOtherApps: true)

@@ -6,6 +6,23 @@ Launch the same-process macOS viewer on Apple silicon with:
 swift run -c release birdflow-viewer
 ```
 
+## README showcase capture
+
+Regenerate the repository's top-of-README GIF locally with:
+
+```bash
+./Scripts/capture-readme-gif.sh
+```
+
+The script invokes the native viewer's deterministic offscreen Metal path,
+captures 40 frames over one articulated wing cycle, and uses local `ffmpeg`
+palette optimization to create
+`Docs/Media/birdflow-metal-native-viewer.gif`. The locked presentation case is
+an explicitly labeled finite `Re=100` development visualization. Capture exits
+nonzero if pressure or Q diagnostics become non-finite or if the Q surface
+exceeds its triangle capacity. No solver volume is read back to produce the
+scene; only the completed render texture is encoded as an image.
+
 The New Run sheet uses the CLI defaults: fixed flight, `Re=2000`, an `8 m/s`
 reference speed, `0.04` lattice speed, resolution scale 1, and a 32-step solver
 batch. It also exposes free flight, resolution scaling, and batch size. The

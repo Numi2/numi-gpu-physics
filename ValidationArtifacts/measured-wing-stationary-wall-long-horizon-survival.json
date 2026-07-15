@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "reportIdentifier": "maeda-dong-stationary-wall-long-horizon-survival-v1",
+  "classification": "stationary-wall-500-step-stability-horizon-censored",
+  "generatedBy": ".build/release/birdflow validate translating-body --high-re-stability --fixed-occupancy --stationary-wall --long-horizon-survival --json",
+  "deviceName": "Apple M4",
+  "runtimeSeconds": 2.9162319898605347,
+  "repeatRunRuntimeSeconds": 1.993830919265747,
+  "sourceLocks": {
+    "physicalConditionAudit": {
+      "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
+      "sha256": "379ba40f1700decc6db6692db1dcb42d6c603c4daaad4aca5fbc9de2d596bbf0"
+    },
+    "relaxationSweepArtifact": {
+      "path": "ValidationArtifacts/measured-wing-stationary-wall-relaxation-sweep.json",
+      "sha256": "58c29b6de0e6ba92e694ee103dd2d550898e0fd6ff1d5dd2eca78d1d4ba7f128"
+    },
+    "publishedConditionDOI": "10.1155/2022/5433184"
+  },
+  "productionKernel": "stepFluidTRT",
+  "topologyKernel": "buildTranslatingSphereTopology",
+  "domainCells": [56, 24, 24],
+  "sphereRadiusCells": 3.25,
+  "farFieldVelocityLattice": 0.07999999821186066,
+  "wallVelocityLattice": 0.0,
+  "periodicBoundaries": false,
+  "spongeStrength": 0.04,
+  "requestedStepsPerPoint": 1000,
+  "newlyCoveredCellEventsAcrossAudit": 0,
+  "newlyUncoveredCellEventsAcrossAudit": 0,
+  "maximumTopologyTransitionSteps": 0,
+  "points": [
+    {
+      "requestedTauPlusMarginAboveHalf": 0.015625,
+      "tauPlusMarginAboveHalf": 0.015625,
+      "latticeKinematicViscosity": 0.0052083334885537624,
+      "finiteLoadSteps": 518,
+      "firstNonFiniteLoadStep": 519,
+      "stabilityPassed": false,
+      "fullAcceptancePassed": false,
+      "populationsFinite": false,
+      "fieldsFinite": false,
+      "loadsFinite": false
+    },
+    {
+      "requestedTauPlusMarginAboveHalf": 0.016875,
+      "tauPlusMarginAboveHalf": 0.016875028610229492,
+      "latticeKinematicViscosity": 0.005625000223517418,
+      "finiteLoadSteps": 565,
+      "firstNonFiniteLoadStep": 566,
+      "stabilityPassed": false,
+      "fullAcceptancePassed": false,
+      "populationsFinite": false,
+      "fieldsFinite": false,
+      "loadsFinite": false
+    },
+    {
+      "requestedTauPlusMarginAboveHalf": 0.02,
+      "tauPlusMarginAboveHalf": 0.019999980926513672,
+      "latticeKinematicViscosity": 0.006666666362434626,
+      "finiteLoadSteps": 587,
+      "firstNonFiniteLoadStep": 588,
+      "stabilityPassed": false,
+      "fullAcceptancePassed": false,
+      "populationsFinite": false,
+      "fieldsFinite": false,
+      "loadsFinite": false
+    }
+  ],
+  "survivingPointCount": 0,
+  "allApparentStablePointsSurvived": false,
+  "repeatRunMatchedFailureSteps": true,
+  "diagnosticCompleted": true,
+  "scientificVerdict": "Every apparent 500-step survivor becomes non-finite before step 600 when the observation window is doubled: margins 0.015625, 0.016875, and 0.02 fail at steps 519, 566, and 588. A repeat release run reproduces the same steps. The earlier stability islands were horizon-censored delayed divergence, not usable stability."
+}
