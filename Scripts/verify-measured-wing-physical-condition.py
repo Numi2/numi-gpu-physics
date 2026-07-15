@@ -179,6 +179,28 @@ def main() -> None:
         raise SystemExit(
             "general curved halfway-bounce-back instability must remain confirmed"
         )
+    if not decision["stationaryWallRelaxationSweepCompleted"]:
+        raise SystemExit("stationary-wall relaxation sweep must remain complete")
+    if decision["stationaryWallRelaxationStabilityMonotonic"]:
+        raise SystemExit("stationary-wall relaxation stability must remain non-monotonic")
+    if decision["stationaryWallRelaxationThresholdBracketed"]:
+        raise SystemExit("non-monotonic sweep must not claim a robust threshold")
+    if decision["viscosityOnlyStabilizationIsRobust"]:
+        raise SystemExit("viscosity-only stabilization must remain non-robust")
+    if not decision["stationaryWallLongHorizonSurvivalCompleted"]:
+        raise SystemExit("stationary-wall long-horizon audit must remain complete")
+    if decision["stationaryWallLongHorizonAllPointsSurvived"]:
+        raise SystemExit("long-horizon apparent stability must remain failed")
+    if decision["stationaryWallLongHorizonFirstNonFiniteLoadSteps"] != [
+        519,
+        566,
+        588,
+    ]:
+        raise SystemExit("long-horizon failure steps have changed")
+    if not decision["stationaryWallFiveHundredStepStabilityWasHorizonCensored"]:
+        raise SystemExit("500-step stability must remain horizon-censored")
+    if decision["apparentNonMonotonicStabilityBandIsGenuine"]:
+        raise SystemExit("apparent non-monotonic stability band must remain rejected")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
     feasibilities = []
     for key in (
@@ -484,6 +506,192 @@ def main() -> None:
         if case["topologyTransitionSteps"] != 0:
             raise SystemExit(f"{stationary_path} contains topology transitions")
 
+    sweep_path = Path(decision["stationaryWallRelaxationSweepArtifact"])
+    sweep = json.loads(sweep_path.read_text(encoding="utf-8"))
+    sweep_audit_hash = sweep["sourceLocks"][
+        "physicalConditionAudit"
+    ]["sha256"]
+    if sweep_audit_hash != actual_audit_hash:
+        raise SystemExit(
+            f"{sweep_path} has a stale physical-condition audit hash"
+        )
+    stationary_hash = hashlib.sha256(stationary_path.read_bytes()).hexdigest()
+    locked_stationary_hash = sweep["sourceLocks"][
+        "stationaryWallSphereArtifact"
+    ]["sha256"]
+    if locked_stationary_hash != stationary_hash:
+        raise SystemExit(
+            f"{sweep_path} has a stale stationary-wall artifact hash"
+        )
+    if not sweep["diagnosticCompleted"]:
+        raise SystemExit(f"{sweep_path} must remain complete")
+    if (
+        sweep["classification"]
+        != "stationary-wall-relaxation-stability-nonmonotonic"
+    ):
+        raise SystemExit(f"{sweep_path} has changed classification")
+    if sweep["stabilityMonotonicWithMargin"]:
+        raise SystemExit(f"{sweep_path} must retain non-monotonic stability")
+    if sweep["thresholdBracketed"]:
+        raise SystemExit(f"{sweep_path} must not claim a robust threshold")
+    if not sweep["firstTransitionBracketed"]:
+        raise SystemExit(f"{sweep_path} must retain its first transition")
+    close(
+        sweep["firstTransitionLowerUnstableTauPlusMarginAboveHalf"],
+        decision["stationaryWallFirstTransitionLowerUnstableMargin"],
+        1.0e-14,
+        "first relaxation transition lower margin",
+    )
+    close(
+        sweep["firstTransitionUpperStableTauPlusMarginAboveHalf"],
+        decision["stationaryWallFirstTransitionUpperStableMargin"],
+        1.0e-14,
+        "first relaxation transition upper margin",
+    )
+    if sweep["unstableTauPlusMarginsAfterFirstStable"] != [
+        decision["stationaryWallUnstableMarginAfterFirstStable"]
+    ]:
+        raise SystemExit(f"{sweep_path} has changed its post-stable relapse")
+    if sweep["newlyCoveredCellEventsAcrossSweep"] != 0:
+        raise SystemExit(f"{sweep_path} contains cover events")
+    if sweep["newlyUncoveredCellEventsAcrossSweep"] != 0:
+        raise SystemExit(f"{sweep_path} contains uncover events")
+    if sweep["maximumTopologyTransitionSteps"] != 0:
+        raise SystemExit(f"{sweep_path} contains topology transitions")
+    sweep_points = sweep["points"]
+    expected_requested_margins = [
+        0.00025,
+        0.0005,
+        0.001,
+        0.002,
+        0.005,
+        0.01,
+        0.0125,
+        0.015,
+        0.015625,
+        0.01625,
+        0.016875,
+        0.0175,
+        0.02,
+        0.05,
+    ]
+    if [
+        point["requestedTauPlusMarginAboveHalf"]
+        for point in sweep_points
+    ] != expected_requested_margins:
+        raise SystemExit(f"{sweep_path} has changed requested margins")
+    expected_stability = [
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+        True,
+        True,
+        True,
+    ]
+    expected_failure_steps = [
+        267,
+        268,
+        273,
+        280,
+        324,
+        451,
+        472,
+        488,
+        None,
+        496,
+        None,
+        None,
+        None,
+        None,
+    ]
+    if [point["stabilityPassed"] for point in sweep_points] != expected_stability:
+        raise SystemExit(f"{sweep_path} has changed stability outcomes")
+    if [
+        point["firstNonFiniteLoadStep"] for point in sweep_points
+    ] != expected_failure_steps:
+        raise SystemExit(f"{sweep_path} has changed failure steps")
+    if any(point["fullAcceptancePassed"] for point in sweep_points):
+        raise SystemExit(f"{sweep_path} must retain failed full acceptance")
+    for point in sweep_points:
+        if point["stabilityPassed"]:
+            if point["relativePopulationMassDrift"] > 1.0e-3:
+                raise SystemExit(f"{sweep_path} exceeds stable mass drift")
+            if point["maximumAbsolutePopulation"] > 10.0:
+                raise SystemExit(f"{sweep_path} exceeds stable population bound")
+
+    long_horizon_path = Path(
+        decision["stationaryWallLongHorizonSurvivalArtifact"]
+    )
+    long_horizon = json.loads(
+        long_horizon_path.read_text(encoding="utf-8")
+    )
+    long_horizon_audit_hash = long_horizon["sourceLocks"][
+        "physicalConditionAudit"
+    ]["sha256"]
+    if long_horizon_audit_hash != actual_audit_hash:
+        raise SystemExit(
+            f"{long_horizon_path} has a stale physical-condition audit hash"
+        )
+    sweep_hash = hashlib.sha256(sweep_path.read_bytes()).hexdigest()
+    locked_sweep_hash = long_horizon["sourceLocks"][
+        "relaxationSweepArtifact"
+    ]["sha256"]
+    if locked_sweep_hash != sweep_hash:
+        raise SystemExit(
+            f"{long_horizon_path} has a stale relaxation-sweep artifact hash"
+        )
+    if not long_horizon["diagnosticCompleted"]:
+        raise SystemExit(f"{long_horizon_path} must remain complete")
+    if (
+        long_horizon["classification"]
+        != "stationary-wall-500-step-stability-horizon-censored"
+    ):
+        raise SystemExit(f"{long_horizon_path} has changed classification")
+    if long_horizon["survivingPointCount"] != 0:
+        raise SystemExit(f"{long_horizon_path} must retain zero survivors")
+    if long_horizon["allApparentStablePointsSurvived"]:
+        raise SystemExit(f"{long_horizon_path} must retain failed survival")
+    if not long_horizon["repeatRunMatchedFailureSteps"]:
+        raise SystemExit(f"{long_horizon_path} must retain repeatability")
+    if long_horizon["requestedStepsPerPoint"] != 1_000:
+        raise SystemExit(f"{long_horizon_path} has changed its horizon")
+    if long_horizon["newlyCoveredCellEventsAcrossAudit"] != 0:
+        raise SystemExit(f"{long_horizon_path} contains cover events")
+    if long_horizon["newlyUncoveredCellEventsAcrossAudit"] != 0:
+        raise SystemExit(f"{long_horizon_path} contains uncover events")
+    if long_horizon["maximumTopologyTransitionSteps"] != 0:
+        raise SystemExit(f"{long_horizon_path} contains topology transitions")
+    long_horizon_points = long_horizon["points"]
+    if [
+        point["requestedTauPlusMarginAboveHalf"]
+        for point in long_horizon_points
+    ] != [0.015625, 0.016875, 0.02]:
+        raise SystemExit(f"{long_horizon_path} has changed requested margins")
+    long_horizon_failure_steps = [
+        point["firstNonFiniteLoadStep"]
+        for point in long_horizon_points
+    ]
+    if long_horizon_failure_steps != [519, 566, 588]:
+        raise SystemExit(f"{long_horizon_path} has changed failure steps")
+    for point in long_horizon_points:
+        if point["finiteLoadSteps"] != point["firstNonFiniteLoadStep"] - 1:
+            raise SystemExit(f"{long_horizon_path} has inconsistent finite steps")
+        if point["stabilityPassed"] or point["fullAcceptancePassed"]:
+            raise SystemExit(f"{long_horizon_path} contains a passing point")
+        if any(
+            point[key]
+            for key in ("populationsFinite", "fieldsFinite", "loadsFinite")
+        ):
+            raise SystemExit(f"{long_horizon_path} must retain non-finite state")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -538,6 +746,16 @@ def main() -> None:
             str(case["firstNonFiniteLoadStep"])
             for case in stationary_cases
         )
+    )
+    print(f"relaxation_sweep_classification: {sweep['classification']}")
+    print(
+        "relaxation_sweep_stability_pattern: "
+        + ",".join("stable" if value else "unstable" for value in expected_stability)
+    )
+    print(f"long_horizon_classification: {long_horizon['classification']}")
+    print(
+        "long_horizon_first_non_finite_steps: "
+        + ",".join(str(step) for step in long_horizon_failure_steps)
     )
     print("passed: true")
 

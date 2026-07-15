@@ -104,7 +104,7 @@ private struct Arguments {
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
       birdflow validate moving-wall [--resolution N] [--json]
-      birdflow validate translating-body [--high-re-stability] [--fixed-occupancy] [--decompose-wall-velocity | --stationary-wall] [--json]
+      birdflow validate translating-body [--high-re-stability] [--fixed-occupancy] [--decompose-wall-velocity | --stationary-wall [--relaxation-sweep | --long-horizon-survival]] [--json]
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
       birdflow validate flapping-wing [--chord-cells N] [--json]
@@ -350,6 +350,8 @@ private struct TranslatingBodyArguments {
     var fixedOccupancy = false
     var decomposeWallVelocity = false
     var stationaryWall = false
+    var relaxationSweep = false
+    var longHorizonSurvival = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -364,6 +366,10 @@ private struct TranslatingBodyArguments {
                 decomposeWallVelocity = true
             case "--stationary-wall":
                 stationaryWall = true
+            case "--relaxation-sweep":
+                relaxationSweep = true
+            case "--long-horizon-survival":
+                longHorizonSurvival = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -397,6 +403,21 @@ private struct TranslatingBodyArguments {
                 "--stationary-wall cannot be combined with --decompose-wall-velocity"
             )
         }
+        if relaxationSweep && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--relaxation-sweep requires --stationary-wall"
+            )
+        }
+        if longHorizonSurvival && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--long-horizon-survival requires --stationary-wall"
+            )
+        }
+        if relaxationSweep && longHorizonSurvival {
+            throw CLIError.invalidArgument(
+                "--relaxation-sweep cannot be combined with --long-horizon-survival"
+            )
+        }
     }
 
     static let help = """
@@ -407,6 +428,9 @@ private struct TranslatingBodyArguments {
       --decompose-wall-velocity
                            Compare tangential-only and normal-only wall forcing
       --stationary-wall    Hold the sphere and wall fixed in uniform 0.08 flow
+      --relaxation-sweep   Sweep wider tauPlus margins on the stationary sphere
+      --long-horizon-survival
+                           Extend apparent stable margins to 1000 steps
       --json               Emit the machine-readable validation report
       --help               Show this help
 
@@ -1235,6 +1259,44 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
         if arguments.stationaryWall {
+            if arguments.longHorizonSurvival {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallLongHorizonSurvival()
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print("surviving_points: \(report.survivingPointCount)")
+                    print("diagnostic_completed: \(report.diagnosticCompleted)")
+                }
+                guard report.diagnosticCompleted else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "stationary-wall long-horizon survival did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.relaxationSweep {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRelaxationSweep()
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print("threshold_bracketed: \(report.thresholdBracketed)")
+                    print("diagnostic_completed: \(report.diagnosticCompleted)")
+                }
+                guard report.diagnosticCompleted else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "stationary-wall relaxation sweep did not complete"
+                    )
+                }
+                return
+            }
             let report = try MetalTranslatingBodyTopologyValidator
                 .runHighReStationaryWallSphereStability()
             if arguments.json {

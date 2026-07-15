@@ -652,6 +652,87 @@ func productionMetalHighReStationaryWallSphereConfirmsGeneralCurvedLinkInstabili
 }
 
 @Test
+func productionMetalStationaryWallRelaxationSweepFindsNonMonotonicStability()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRelaxationSweep()
+
+    #expect(report.diagnosticCompleted)
+    #expect(
+        report.classification
+            == "stationary-wall-relaxation-stability-nonmonotonic"
+    )
+    #expect(report.firstTransitionBracketed)
+    #expect(!report.stabilityMonotonicWithMargin)
+    #expect(!report.thresholdBracketed)
+    #expect(report.points.count == 14)
+    #expect(
+        report.points.map(\.stabilityPassed)
+            == [
+                false, false, false, false, false, false, false,
+                false, true, false, true, true, true, true,
+            ]
+    )
+    #expect(
+        report.points.map(\.firstNonFiniteLoadStep)
+            == [
+                267, 268, 273, 280, 324, 451, 472,
+                488, nil, 496, nil, nil, nil, nil,
+            ]
+    )
+    #expect(
+        report.unstableTauPlusMarginsAfterFirstStable.count == 1
+    )
+    #expect(
+        abs(
+            report.unstableTauPlusMarginsAfterFirstStable[0]
+                - 0.016250014305114746
+        ) < 1.0e-12
+    )
+    #expect(report.points.allSatisfy {
+        $0.newlyCoveredCellEvents == 0
+            && $0.newlyUncoveredCellEvents == 0
+            && $0.topologyTransitionSteps == 0
+            && ($0.maximumMeasuredForceMagnitude ?? 0) > 0
+            && !$0.fullAcceptancePassed
+    })
+}
+
+@Test
+func productionMetalStationaryWallLongHorizonConfirmsDelayedDivergence()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallLongHorizonSurvival()
+
+    #expect(report.diagnosticCompleted)
+    #expect(
+        report.classification
+            == "stationary-wall-500-step-stability-horizon-censored"
+    )
+    #expect(report.survivingPointCount == 0)
+    #expect(!report.allApparentStablePointsSurvived)
+    #expect(
+        report.points.map(\.firstNonFiniteLoadStep)
+            == [519, 566, 588]
+    )
+    #expect(report.points.allSatisfy {
+        !$0.stabilityPassed
+            && !$0.fullAcceptancePassed
+            && !$0.populationsFinite
+            && !$0.fieldsFinite
+            && !$0.loadsFinite
+            && $0.newlyCoveredCellEvents == 0
+            && $0.newlyUncoveredCellEvents == 0
+            && $0.topologyTransitionSteps == 0
+            && ($0.maximumMeasuredForceMagnitude ?? 0) > 0
+    })
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

@@ -81,4 +81,26 @@ func offscreenViewerProducesPixels() throws {
     if Array(pixels[index..<(index + 4)]) != first { changed += 1 }
   }
   #expect(changed > 200)
+
+  _ = try live.simulation.advance(
+    steps: 40,
+    batchSize: 20,
+    fieldCapture: .required
+  )
+  let laterTexture = try renderer.renderOffscreen(width: 256, height: 192)
+  var laterPixels = [UInt8](repeating: 0, count: pixels.count)
+  laterTexture.getBytes(
+    &laterPixels,
+    bytesPerRow: 256 * 4,
+    from: MTLRegionMake2D(0, 0, 256, 192),
+    mipmapLevel: 0
+  )
+  let changedBetweenFrames = zip(pixels, laterPixels).filter {
+    $0.0 != $0.1
+  }.count
+  let diagnostics = renderer.offscreenDiagnostics()
+  #expect(changedBetweenFrames > 200)
+  #expect(diagnostics.maximumAbsolutePressure.isFinite)
+  #expect(diagnostics.maximumQCriterion.isFinite)
+  #expect(!diagnostics.qSurfaceOverflow)
 }

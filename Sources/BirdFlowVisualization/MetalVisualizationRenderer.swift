@@ -38,6 +38,22 @@ public struct SliceProbe: Sendable, Equatable {
   }
 }
 
+public struct OffscreenVisualizationDiagnostics: Sendable, Equatable {
+  public var maximumAbsolutePressure: Float
+  public var maximumQCriterion: Float
+  public var qSurfaceOverflow: Bool
+
+  public init(
+    maximumAbsolutePressure: Float,
+    maximumQCriterion: Float,
+    qSurfaceOverflow: Bool
+  ) {
+    self.maximumAbsolutePressure = maximumAbsolutePressure
+    self.maximumQCriterion = maximumQCriterion
+    self.qSurfaceOverflow = qSurfaceOverflow
+  }
+}
+
 private struct DiagnosticResources {
   let vorticity: MTLBuffer
   let q: MTLBuffer
@@ -269,8 +285,9 @@ public final class MetalVisualizationRenderer: NSObject, MTKViewDelegate, @unche
   }
 
   /// Renders a finite diagnostic frame without attaching a view or reading
-  /// solver volumes back to the CPU. Intended for smoke tests and image
-  /// verification tooling.
+  /// solver volumes back to the CPU. Consecutive calls retain GPU tracer
+  /// history, making this path suitable for deterministic presentation
+  /// capture as well as smoke tests and image verification tooling.
   public func renderOffscreen(width: Int = 640, height: Int = 480) throws -> MTLTexture {
     guard width > 0, height > 0 else {
       throw VisualizationError.allocation(0)
@@ -317,14 +334,18 @@ public final class MetalVisualizationRenderer: NSObject, MTKViewDelegate, @unche
         metadata: metadata,
         settings: settings
       )
+      let tracerDeltaTime = lastFieldTime.map {
+        max(0, metadata.snapshot.timeSeconds - $0)
+      } ?? 0
+      let resetTracers = lastFieldTime == nil || tracerDeltaTime <= 0
       var uniforms = VisualizationUniforms(
         metadata: metadata,
         settings: settings,
         sliceCenter: sliceCenter,
         sliceU: sliceU,
         sliceV: sliceV,
-        tracerDeltaTime: 0,
-        resetTracers: true,
+        tracerDeltaTime: tracerDeltaTime,
+        resetTracers: resetTracers,
         probeUV: probeUV
       )
       try encodeFieldUpdates(
@@ -361,11 +382,32 @@ public final class MetalVisualizationRenderer: NSObject, MTKViewDelegate, @unche
             ?? "offscreen render did not complete"
         )
       }
+      lastDisplayedStep = metadata.snapshot.step
+      lastFieldTime = metadata.snapshot.timeSeconds
+      lastPublicationUptimeSeconds = metadata.publicationUptimeSeconds
+      latestUniforms = uniforms
+      lastMetadata = metadata
       return color
     } catch {
       lease.releaseImmediately()
       throw error
     }
+  }
+
+  /// Compact readback from the most recently completed offscreen frame. This
+  /// never reads a solver volume and is intended for capture verification.
+  public func offscreenDiagnostics() -> OffscreenVisualizationDiagnostics {
+    let pressureBits = pressureStats.contents()
+      .assumingMemoryBound(to: UInt32.self).pointee
+    let qBits = qStatistics.contents()
+      .assumingMemoryBound(to: UInt32.self).pointee
+    let overflow = iso?.overflow.contents()
+      .assumingMemoryBound(to: UInt32.self).pointee == 1
+    return OffscreenVisualizationDiagnostics(
+      maximumAbsolutePressure: Float(bitPattern: pressureBits),
+      maximumQCriterion: Float(bitPattern: qBits),
+      qSurfaceOverflow: overflow
+    )
   }
 
   public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {

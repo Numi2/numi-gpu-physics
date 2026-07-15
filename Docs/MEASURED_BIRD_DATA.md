@@ -329,6 +329,22 @@ loads prove the flow is active. The `1.44 s` Apple M4 result is archived in
 `ValidationArtifacts/measured-wing-high-re-stationary-wall-sphere-stability.json`.
 Thus the moving-wall correction accelerates but does not cause the instability;
 curved halfway bounce-back at the matched low relaxation margins is sufficient.
-The next highest-ROI experiment is a short relaxation-margin sweep on this
-active stationary sphere to locate the stable threshold before choosing a
-collision or boundary stabilization.
+The relaxation sweep command adds `--relaxation-sweep` to the stationary-wall
+invocation. Across fourteen 500-step points, the first surviving margin is
+`0.015625`, followed by a reproducible failure at `0.01625` on step `496`, then
+survival at `0.016875` and above. The `8.38 s` Apple M4 record is archived in
+`ValidationArtifacts/measured-wing-stationary-wall-relaxation-sweep.json`.
+The outcome is non-monotonic and every point still fails the separate full
+force-budget acceptance contract, so viscosity-only tuning is not a robust
+fix. The next highest-ROI experiment is a 1,000-step survival audit of margins
+`0.015625`, `0.016875`, and `0.02` to distinguish genuine stability islands
+from divergence delayed just beyond the 500-step observation window.
+
+The `--long-horizon-survival` audit resolves that ambiguity: all three cases
+become non-finite at steps `519`, `566`, and `588`, respectively. The `2.92 s`
+Apple M4 result repeats exactly and is archived in
+`ValidationArtifacts/measured-wing-stationary-wall-long-horizon-survival.json`.
+The apparent 500-step islands were delayed divergence. The next highest-ROI
+experiment is a spatial positivity diagnostic on the published c16 stationary
+sphere, locating the first failing population by direction, cell, and distance
+to the curved boundary before choosing a limiter or boundary-operator change.
