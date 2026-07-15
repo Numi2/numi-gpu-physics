@@ -74,4 +74,12 @@ linear and angular momentum between surface phases, applies the opposite rate
 to the body equation, and records left/right inertial hinge reactions. The
 registered model rejects distributed wing twist rather than treating a
 deforming wing as a hidden rigid mass. This is an internal-momentum treatment,
-not yet an independent actuator-power measurement.
+not a muscle-metabolic model.
+
+The opt-in coupled diagnostic reconstructs the production conservative
+momentum exchange separately for mask IDs `1=body`, `2=left wing`, `3=right
+wing`, and `4=tail`. It shifts each wing's aerodynamic moment from body COM to
+the hinge, shifts the prescribed-wing inertial reaction to the same hinge, and
+reports the actuator torque required on the wing as the negative of their sum.
+Signed mechanical power is that torque dotted with relative wing angular
+velocity. These are solver-side rigid-wing demands, not measured muscle power.

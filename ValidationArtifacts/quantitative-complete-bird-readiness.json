@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
   "scientificStatus": "solver contract implemented; same-specimen biological input absent",
   "solverCapabilities": {
@@ -20,7 +20,24 @@
       "torque-free asymmetric body, 256 steps",
       "constant-torque asymmetric body, 256 steps"
     ],
-    "perPartAerodynamicActuatorEffort": false,
+    "perPartAerodynamicActuatorEffort": {
+      "implemented": true,
+      "bodyPartMaskIdentifiers": {
+        "body": 1,
+        "leftWing": 2,
+        "rightWing": 3,
+        "tail": 4
+      },
+      "maximumRelativeRMSClosureResidual": 0.005,
+      "maximumRelativeRMSBilateralResidual": 0.02,
+      "compactCanonicalForceClosureRelativeRMS": 0.0000010876061947372899,
+      "compactCanonicalTorqueClosureRelativeRMS": 0.000003147315392274231,
+      "compactCanonicalBilateralForceRelativeRMS": 0.0000007631804631047741,
+      "compactCanonicalBilateralHingeTorqueRelativeRMS": 0.000004405082779701905,
+      "compactCanonicalBilateralActuatorPowerRelativeRMS": 0.000015049285112322743,
+      "bilateralGateRequiresExplicitSymmetricInput": true,
+      "productionHotPathOverheadWhenDisabled": false
+    },
     "independentBodySubsteps": [1, 2, 4],
     "bodyRefinementGate": {
       "positionChordFractionMaximum": 0.01,
@@ -80,12 +97,14 @@
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {
-    "date": "2026-07-15",
+    "date": "2026-07-16",
     "device": "Apple M4",
     "swiftTestsPassed": 85,
-    "swiftTestRuntimeSeconds": 474.789,
+    "swiftTestRuntimeSeconds": 528.362,
+    "swiftTestCommandWallSeconds": 533.82,
     "focusedCoupledMomentumReleaseTestsPassed": 1,
-    "focusedCoupledMomentumReleaseRuntimeSeconds": 0.073,
+    "focusedCoupledMomentumReleaseRuntimeSeconds": 0.062,
+    "focusedSchema2PartLoadArchiveTestsPassed": 1,
     "focusedPostOptimizationMetalTestsPassed": 3,
     "releaseBuildPassed": true,
     "releaseFreeFlightSmokePassed": true,

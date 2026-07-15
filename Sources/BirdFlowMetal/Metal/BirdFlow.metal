@@ -505,8 +505,20 @@ inline WingFrame makeWingFrame(
         normalAfterStroke,
         deviation
     );
-    float3 chord = rotateAroundAxis(chordBeforePitch, span, pitch);
-    float3 normal = rotateAroundAxis(normalAfterStroke, span, pitch);
+    // Pitch and twist are anatomical angles about each outward span. Their
+    // algebraic rotation must reverse on the right so equal bilateral inputs
+    // produce a physical mirror across the body x-z plane.
+    float signedPitch = side * pitch;
+    float3 chord = rotateAroundAxis(
+        chordBeforePitch,
+        span,
+        signedPitch
+    );
+    float3 normal = rotateAroundAxis(
+        normalAfterStroke,
+        span,
+        signedPitch
+    );
 
     WingFrame frame;
     frame.root = root;
@@ -515,9 +527,9 @@ inline WingFrame makeWingFrame(
     frame.normal = normalize(normal);
     frame.relativeAngularVelocity = bodyX * (side * strokeRate)
         + normalAfterStroke * deviationRate
-        + frame.span * pitchRate;
-    frame.tipTwist = tipTwist;
-    frame.tipTwistRate = tipTwistRate;
+        + frame.span * (side * pitchRate);
+    frame.tipTwist = side * tipTwist;
+    frame.tipTwistRate = side * tipTwistRate;
     return frame;
 }
 
@@ -3803,6 +3815,173 @@ kernel void reduceExternalFluidSources(
         total.counts += input[index].counts;
     }
     output[gid] = total;
+}
+
+/// Reconstructs the production conservative moving-domain load for one bird
+/// part without mutating fluid state. Four compact dispatches provide body,
+/// left-wing, right-wing, and tail loads while the normal solver hot path
+/// retains its single total-load reduction.
+kernel void captureBirdPartLoad(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidPrevious [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device GPUForceTorque* partialLoads [[buffer(4)]],
+    device const GPUPreparedBirdGeometry& prepared [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    constant uint& selectedPart [[buffer(7)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupForces[256];
+    threadgroup float4 groupTorques[256];
+    float3 cellForcePhysical = float3(0);
+    float3 cellTorquePhysical = float3(0);
+
+    if (gid < uniforms.grid.w) {
+        uint3 size = uniforms.grid.xyz;
+        uint3 cell = unflatten(gid, size);
+        float3 world = cellPosition(cell, uniforms);
+        uchar previousPart = solidPrevious[gid];
+        uchar currentPart = solidCurrent[gid];
+        bool wasSolid = previousPart != 0;
+        bool isSolid = currentPart != 0;
+
+        if (isSolid) {
+            if (!wasSolid && uint(currentPart) == selectedPart) {
+                float3 previousMomentum = float3(0);
+                for (uint q = 0u; q < Q; ++q) {
+                    float previous = populationsIn[
+                        q * uniforms.grid.w + gid
+                    ];
+                    previousMomentum += previous * float3(C[q]);
+                }
+                cellForcePhysical = previousMomentum
+                    * uniforms.timeStepAndScales.w;
+                cellTorquePhysical = cross(
+                    world - prepared.bodyPosition.xyz,
+                    cellForcePhysical
+                );
+            }
+        }
+        else if (wasSolid) {
+            if (uint(previousPart) == selectedPart) {
+                float3 momentum = float3(0);
+                float3 refillVelocity = wallVelocity[gid].xyz;
+                for (uint q = 0u; q < Q; ++q) {
+                    float value = equilibrium(q, 1.0f, refillVelocity);
+                    momentum += value * float3(C[q]);
+                }
+                float3 topologyForceOnBody = -momentum;
+                for (uint q = 1u; q < Q; ++q) {
+                    int3 neighborCell = int3(cell) + C[q];
+                    if (!inside(neighborCell, size)) {
+                        continue;
+                    }
+                    uint neighbor = flatten(uint3(neighborCell), size);
+                    bool persistentFluidNeighbor =
+                        solidPrevious[neighbor] == 0
+                        && solidCurrent[neighbor] == 0;
+                    if (!persistentFluidNeighbor) {
+                        continue;
+                    }
+                    float oldSolidOutgoing = populationsIn[
+                        q * uniforms.grid.w + gid
+                    ];
+                    float suppressedNeighborIncoming = populationsIn[
+                        OPP[q] * uniforms.grid.w + neighbor
+                    ];
+                    topologyForceOnBody -= (
+                        oldSolidOutgoing + suppressedNeighborIncoming
+                    ) * float3(C[q]);
+                }
+                cellForcePhysical = topologyForceOnBody
+                    * uniforms.timeStepAndScales.w;
+                cellTorquePhysical = cross(
+                    world - prepared.bodyPosition.xyz,
+                    cellForcePhysical
+                );
+            }
+        }
+        else {
+            bool interiorDomain = cell.x > 0u
+                && cell.y > 0u
+                && cell.z > 0u
+                && cell.x + 1u < size.x
+                && cell.y + 1u < size.y
+                && cell.z + 1u < size.z;
+            float3 forceOnBodyLattice = float3(0);
+            for (uint q = 1u; q < Q; ++q) {
+                int3 sourceCell = int3(cell) - C[q];
+                if (!interiorDomain && !inside(sourceCell, size)) {
+                    if (uniforms.flags.w == 0u) {
+                        continue;
+                    }
+                    sourceCell.x = sourceCell.x < 0
+                        ? int(size.x) - 1
+                        : (sourceCell.x >= int(size.x)
+                            ? 0
+                            : sourceCell.x);
+                    sourceCell.y = sourceCell.y < 0
+                        ? int(size.y) - 1
+                        : (sourceCell.y >= int(size.y)
+                            ? 0
+                            : sourceCell.y);
+                    sourceCell.z = sourceCell.z < 0
+                        ? int(size.z) - 1
+                        : (sourceCell.z >= int(size.z)
+                            ? 0
+                            : sourceCell.z);
+                }
+                uint source = flatten(uint3(sourceCell), size);
+                if (uint(solidCurrent[source]) != selectedPart) {
+                    continue;
+                }
+                float reflected = populationsIn[
+                    OPP[q] * uniforms.grid.w + gid
+                ];
+                float3 direction = float3(C[q]);
+                float wallCorrection = 2.0f
+                    * W[q]
+                    * uniforms.farFieldLattice.w
+                    * dot(direction, wallVelocity[source].xyz)
+                    / CS2;
+                // BirdFlowSimulation uses the production halfway path;
+                // interpolated-link modes remain prescribed-case diagnostics.
+                float incoming = reflected + wallCorrection;
+                float3 linkForceLattice = -(
+                    incoming + reflected
+                ) * direction;
+                forceOnBodyLattice += linkForceLattice;
+                float3 linkForcePhysical = linkForceLattice
+                    * uniforms.timeStepAndScales.w;
+                float3 boundaryPoint = world
+                    - 0.5f * direction * uniforms.originAndCellSize.w;
+                cellTorquePhysical += cross(
+                    boundaryPoint - prepared.bodyPosition.xyz,
+                    linkForcePhysical
+                );
+            }
+            cellForcePhysical = forceOnBodyLattice
+                * uniforms.timeStepAndScales.w;
+        }
+    }
+
+    groupForces[threadIndex] = float4(cellForcePhysical, 0);
+    groupTorques[threadIndex] = float4(cellTorquePhysical, 0);
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        float4 force = float4(0);
+        float4 torque = float4(0);
+        for (uint index = 0u; index < threadsPerThreadgroup; ++index) {
+            force += groupForces[index];
+            torque += groupTorques[index];
+        }
+        partialLoads[threadgroupPosition].force = force;
+        partialLoads[threadgroupPosition].torque = torque;
+    }
 }
 
 kernel void reduceForceTorque(

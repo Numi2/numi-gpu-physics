@@ -153,8 +153,12 @@ kinematic boundaries. Schema 2 instead requires whole-bird reference mass and
 inertia plus bilateral wing mass properties. The GPU computes the change in
 each rigid prescribed wing's internal linear/angular momentum, adds the
 opposite inertial hinge reaction to the body equation, and archives both sides.
-Aerodynamic actuator effort remains unresolved until per-part aerodynamic
-loads are exposed.
+The opt-in part-load reduction reproduces the exact production link and
+cover/uncover accounting for each solid owner, closes their sum against the
+production total, and combines each wing's hinge-shifted aerodynamic moment
+with its prescribed inertial reaction. This exposes rigid-wing aerodynamic
+actuator effort without adding per-cell diagnostic buffers or dispatches to
+ordinary batched stepping.
 
 `bodySubsteps` performs `1...64` semi-implicit/quaternion updates under one
 fluid-step load, so body integration can be refined without changing fluid
@@ -185,6 +189,14 @@ I_aerodynamic + I_fluid-boundary = 0.
 
 The diagnostic buffers are lazily allocated and ordinary batched stepping has
 zero additional memory traffic or dispatches.
+
+The same one-step diagnostic reduces body, left-wing, right-wing, and tail
+loads independently. Its unconditional `0.5%` part-sum closure gate catches
+identity or attribution drift. A separate opt-in `2%` bilateral gate mirrors
+polar force as `(Fx,-Fy,Fz)`, axial hinge torque as `(-Tx,Ty,-Tz)`, and compares
+left/right signed actuator power. Anatomical pitch and tip-twist angles reverse
+their algebraic rotation on the right outward span, so identical bilateral
+inputs generate physical mirror geometry and wall velocity.
 
 ## Derived pressure
 

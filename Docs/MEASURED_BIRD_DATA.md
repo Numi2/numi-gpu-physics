@@ -101,9 +101,12 @@ The articulated rotation convention is fixed:
 1. anatomical stroke rotates about body `+x`; the solver mirrors this rotation
    for the right wing;
 2. deviation rotates about the stroke-rotated wing normal;
-3. pitch rotates about the resulting span axis; and
+3. anatomical pitch rotates about the resulting outward span axis, with its
+   algebraic world rotation reversed on the right wing so equal bilateral
+   values produce mirror geometry; and
 4. tip twist is applied linearly from zero at the root to the measured value at
-   the tip, with the corresponding spanwise wall velocity.
+   the tip, with the corresponding spanwise wall velocity and the same
+   right-wing anatomical sign convention as pitch.
 
 Angle unwrapping, filtering, phase alignment, coordinate registration, and any
 left/right geometry averaging are data-processing operations. They must be

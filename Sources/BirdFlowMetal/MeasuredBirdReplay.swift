@@ -261,6 +261,7 @@ public struct MeasuredBirdReplayReport: Codable, Sendable {
     public var meanWingHingeReactionTorqueNewtonMeters: SIMD3<Float>
     public var runtimeSafety: RuntimeSafetyReport?
     public var coupledMomentumLedger: CoupledMomentumLedgerReport?
+    public var aerodynamicPartLoads: AerodynamicPartLoadReport?
     public var samples: [MeasuredBirdReplayPhaseSample]
     public var passed: Bool
     public var scientificVerdict: String
@@ -547,6 +548,7 @@ public enum MeasuredBirdReplay {
         freeFlight: Bool = false,
         bodySubsteps: Int = 1,
         captureCoupledMomentumLedger: Bool = false,
+        expectBilateralSymmetry: Bool = false,
         archiveDirectory: URL? = nil
     ) throws -> MeasuredBirdReplayReport {
         #if canImport(Metal)
@@ -597,12 +599,15 @@ public enum MeasuredBirdReplay {
         let start = ProcessInfo.processInfo.systemUptime
         let result: AdvanceResult
         let momentumLedger: CoupledMomentumLedgerReport?
+        let partLoads: AerodynamicPartLoadReport?
         if captureCoupledMomentumLedger {
             let coupled = try simulation.advanceWithCoupledMomentumLedger(
-                steps: steps
+                steps: steps,
+                expectBilateralSymmetry: expectBilateralSymmetry
             )
             result = coupled.advanceResult
             momentumLedger = coupled.ledger
+            partLoads = coupled.aerodynamicPartLoads
         } else {
             result = try simulation.advance(
                 steps: steps,
@@ -611,6 +616,7 @@ public enum MeasuredBirdReplay {
                 recordRunSamples: true
             )
             momentumLedger = nil
+            partLoads = nil
         }
         let runtime = ProcessInfo.processInfo.systemUptime - start
         let frequency = loaded.dataset.kinematics.frequencyHz
@@ -663,12 +669,15 @@ public enum MeasuredBirdReplay {
             meanWingHingeReactionTorqueNewtonMeters: meanHingeTorque,
             runtimeSafety: result.runtimeSafety,
             coupledMomentumLedger: momentumLedger,
+            aerodynamicPartLoads: partLoads,
             samples: samples,
-            passed: momentumLedger?.passed ?? true,
+            passed: (momentumLedger?.passed ?? true)
+                && (partLoads?.passed ?? true),
             scientificVerdict: captureCoupledMomentumLedger
                 ? (momentumLedger?.passed == true
-                    ? "free-flight replay and coupled external linear-momentum ledger passed; body-step, grid, and trim acceptance remain separate gates"
-                    : "free-flight momentum closure failed; quantitative loads are rejected")
+                        && partLoads?.passed == true
+                    ? "free-flight replay, coupled external linear-momentum ledger, and conservative per-part load closure passed; body-step, grid, trim, and real-specimen acceptance remain separate gates"
+                    : "free-flight momentum or per-part load closure failed; quantitative loads are rejected")
                 : freeFlight
                 ? "free-flight replay completed inside runtime bounds; body-step, grid, trim, and momentum-ledger acceptance were not evaluated"
                 : "prescribed replay completed; grid convergence and force-balance acceptance were not evaluated"
@@ -881,6 +890,74 @@ public enum MeasuredBirdReplay {
                     options: .atomic
                 )
             }
+            if let partLoads = report.aerodynamicPartLoads {
+                try encoder.encode(partLoads).write(
+                    to: temporary.appendingPathComponent(
+                        "aerodynamic-part-loads.json"
+                    ),
+                    options: .atomic
+                )
+                var partCSV = "step,time_s,part,fx_N,fy_N,fz_N,torque_body_x_Nm,torque_body_y_Nm,torque_body_z_Nm,reference_x_m,reference_y_m,reference_z_m,torque_reference_x_Nm,torque_reference_y_Nm,torque_reference_z_Nm,relative_omega_x_radps,relative_omega_y_radps,relative_omega_z_radps,required_actuator_torque_x_Nm,required_actuator_torque_y_Nm,required_actuator_torque_z_Nm,signed_mechanical_power_W,force_closure_x_N,force_closure_y_N,force_closure_z_N,torque_closure_x_Nm,torque_closure_y_Nm,torque_closure_z_Nm\n"
+                for sample in partLoads.samples {
+                    for part in sample.parts {
+                        let actuator: WingActuatorEffort?
+                        switch part.part {
+                        case .leftWing:
+                            actuator = sample.leftWingActuator
+                        case .rightWing:
+                            actuator = sample.rightWingActuator
+                        case .body, .tail:
+                            actuator = nil
+                        }
+                        let force = part.loadAboutBodyCOM.forceNewtons
+                        let torque = part.loadAboutBodyCOM.torqueNewtonMeters
+                        let reference = part.referencePointMeters
+                        let referenceTorque =
+                            part.torqueAboutReferenceNewtonMeters
+                        let omega = actuator?
+                            .relativeAngularVelocityRadiansPerSecond
+                        let required = actuator?
+                            .requiredActuatorTorqueOnWingNewtonMeters
+                        let omegaX = omega.map { String($0.x) } ?? ""
+                        let omegaY = omega.map { String($0.y) } ?? ""
+                        let omegaZ = omega.map { String($0.z) } ?? ""
+                        let requiredX = required.map { String($0.x) } ?? ""
+                        let requiredY = required.map { String($0.y) } ?? ""
+                        let requiredZ = required.map { String($0.z) } ?? ""
+                        let power = actuator.map {
+                            String($0.signedMechanicalPowerWatts)
+                        } ?? ""
+                        let row: [String] = [
+                            String(sample.step),
+                            String(sample.timeSeconds),
+                            part.part.rawValue,
+                            String(force.x), String(force.y), String(force.z),
+                            String(torque.x), String(torque.y), String(torque.z),
+                            String(reference.x), String(reference.y),
+                            String(reference.z),
+                            String(referenceTorque.x),
+                            String(referenceTorque.y),
+                            String(referenceTorque.z),
+                            omegaX, omegaY, omegaZ,
+                            requiredX, requiredY, requiredZ,
+                            power,
+                            String(sample.forceClosureResidualNewtons.x),
+                            String(sample.forceClosureResidualNewtons.y),
+                            String(sample.forceClosureResidualNewtons.z),
+                            String(sample.torqueClosureResidualNewtonMeters.x),
+                            String(sample.torqueClosureResidualNewtonMeters.y),
+                            String(sample.torqueClosureResidualNewtonMeters.z),
+                        ]
+                        partCSV += row.joined(separator: ",") + "\n"
+                    }
+                }
+                try Data(partCSV.utf8).write(
+                    to: temporary.appendingPathComponent(
+                        "aerodynamic-part-loads.csv"
+                    ),
+                    options: .atomic
+                )
+            }
             try loaded.sourceData.write(
                 to: temporary.appendingPathComponent("input.json"),
                 options: .atomic
@@ -921,6 +998,7 @@ public enum MeasuredBirdReplay {
             input.json is the exact byte-for-byte input; verify SHA-256 against report.json.
             phase-loads.csv records trajectory, total aerodynamic load, and prescribed-wing inertial hinge reaction.
             When requested, coupled-momentum-ledger.json/csv record the direct fluid/body/wing external-system balance.
+            When requested, aerodynamic-part-loads.json/csv record conservative body/left-wing/right-wing/tail loads and prescribed-wing actuator effort.
             Geometry representation: \(report.audit.geometryRepresentation).
             This archive does not by itself establish grid convergence or quantitative bird-flight validity.
             """

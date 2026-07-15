@@ -18,6 +18,7 @@ SWIFT_FILES = (
     ROOT / "Sources/BirdFlowMetal/MetalSphereValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalWingValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalFlappingWingValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/BirdPartLoadDiagnostics.swift",
 )
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
 GPU_DATA = ROOT / "Sources/BirdFlowMetal/GPUData.swift"
@@ -68,6 +69,7 @@ REQUIRED_KERNELS = {
     "integrateBirdBody",
     "monitorBirdRuntimeSafety",
     "updateWingInertialReaction",
+    "captureBirdPartLoad",
 }
 
 REQUIRED_VISUALIZATION_KERNELS = {
@@ -463,6 +465,7 @@ def main() -> int:
         "integrateBirdBody": 5,
         "monitorBirdRuntimeSafety": 5,
         "updateWingInertialReaction": 6,
+        "captureBirdPartLoad": 8,
     }
     for kernel, count in expected_buffers.items():
         match = re.search(

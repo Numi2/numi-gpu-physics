@@ -256,6 +256,8 @@ private struct MeasuredBirdReplayArguments {
     var bodyRefinement = false
     var loadRefinement = false
     var momentumLedger = false
+    var partLoads = false
+    var expectBilateralSymmetry = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -340,6 +342,15 @@ private struct MeasuredBirdReplayArguments {
             case "--momentum-ledger":
                 momentumLedger = true
                 freeFlight = true
+            case "--part-loads":
+                partLoads = true
+                momentumLedger = true
+                freeFlight = true
+            case "--expect-bilateral-symmetry":
+                expectBilateralSymmetry = true
+                partLoads = true
+                momentumLedger = true
+                freeFlight = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -402,6 +413,9 @@ private struct MeasuredBirdReplayArguments {
       --body-refinement  Run locked 1/2/4 body-substep ladder; requires --steps
       --load-refinement  Run five-cycle prescribed 8/12/16 load ladder
       --momentum-ledger  Record direct fluid/body/wing external impulse closure; implies --free-flight
+      --part-loads       Record conservative body/wing/tail loads and wing actuator effort; implies --momentum-ledger
+      --expect-bilateral-symmetry
+                         Gate mirrored wing force, hinge torque, and actuator power; use only for symmetric inputs
       --archive DIR      Save exact input, SHA-linked report, and phase loads
       --json             Emit machine-readable audit or replay report
       --help             Show this help
@@ -1266,6 +1280,7 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
         freeFlight: arguments.freeFlight,
         bodySubsteps: arguments.bodySubsteps,
         captureCoupledMomentumLedger: arguments.momentumLedger,
+        expectBilateralSymmetry: arguments.expectBilateralSymmetry,
         archiveDirectory: arguments.archivePath.map {
             URL(fileURLWithPath: $0, isDirectory: true)
         }
@@ -1308,6 +1323,21 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
                     )
             )
             print("momentum_ledger_passed: \(ledger.passed)")
+        }
+        if arguments.partLoads,
+           let partLoads = report.aerodynamicPartLoads {
+            print(
+                "relative_part_force_closure_residual: "
+                    + String(partLoads.relativeRMSForceClosureResidual)
+            )
+            print(
+                "relative_part_torque_closure_residual: "
+                    + String(partLoads.relativeRMSTorqueClosureResidual)
+            )
+            if let symmetry = partLoads.bilateralSymmetryPassed {
+                print("bilateral_part_symmetry_passed: \(symmetry)")
+            }
+            print("aerodynamic_part_loads_passed: \(partLoads.passed)")
         }
         print("runtime_s: \(report.runtimeSeconds)")
         print("passed: \(report.passed)")

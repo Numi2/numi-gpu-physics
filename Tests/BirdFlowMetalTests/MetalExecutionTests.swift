@@ -69,6 +69,19 @@ func measuredBirdFixtureAuditsAndReplaysThroughProductionMetal() throws {
                     .left.tipTwistRateRadiansPerSecond
         ) < 1e-5
     )
+    #expect(
+        abs(
+            frame.metadata.geometry.rightChord.w
+                + dataset.kinematics.keyframes[0].right.tipTwistRadians
+        ) < 1e-6
+    )
+    #expect(
+        abs(
+            frame.metadata.geometry.rightAngularVelocity.w
+                + dataset.kinematics.keyframes[0]
+                    .right.tipTwistRateRadiansPerSecond
+        ) < 1e-5
+    )
     frame.releaseImmediately()
 
     let report = try MeasuredBirdReplay.run(
@@ -148,6 +161,38 @@ func measuredBirdSchema2RequiresAndAcceptsRigidWingMassContract() throws {
     #expect(
         audit.wingInertialTreatment == "prescribedRigidWingMomentumV1"
     )
+
+    #if canImport(Metal)
+    let archive = FileManager.default.temporaryDirectory
+        .appendingPathComponent(
+            "birdflow-schema2-part-loads-\(UUID())",
+            isDirectory: true
+        )
+    defer { try? FileManager.default.removeItem(at: archive) }
+    let report = try MeasuredBirdReplay.run(
+        loaded,
+        chordCells: 12,
+        steps: 1,
+        freeFlight: true,
+        captureCoupledMomentumLedger: true,
+        archiveDirectory: archive
+    )
+    #expect(report.aerodynamicPartLoads?.closurePassed == true)
+    #expect(
+        FileManager.default.fileExists(
+            atPath: archive.appendingPathComponent(
+                "aerodynamic-part-loads.json"
+            ).path
+        )
+    )
+    #expect(
+        FileManager.default.fileExists(
+            atPath: archive.appendingPathComponent(
+                "aerodynamic-part-loads.csv"
+            ).path
+        )
+    )
+    #endif
 }
 
 #if canImport(Metal)
@@ -716,7 +761,7 @@ func productionFreeFlightClosesCoupledExternalMomentumLedger() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     var testCase = try compactMetalTestCase(freeFlight: true)
     testCase.configuration.gravityMetersPerSecondSquared =
-        SIMD3<Float>(0, -0.5, 0)
+        SIMD3<Float>(0, 0, -0.5)
     let wing = WingInertialProperties(
         massKilograms: 0.001,
         centerOfMassFromHingeMeters: SIMD3<Float>(0, 0.012, 0),
@@ -734,13 +779,25 @@ func productionFreeFlightClosesCoupledExternalMomentumLedger() throws {
         bird: bird,
         initialBodyState: testCase.state
     )
-    let result = try simulation.advanceWithCoupledMomentumLedger(steps: 4)
+    let result = try simulation.advanceWithCoupledMomentumLedger(
+        steps: 4,
+        expectBilateralSymmetry: true
+    )
 
     #expect(result.advanceResult.runSamples.count == 4)
     #expect(result.ledger.samples.count == 4)
     #expect(try JSONEncoder().encode(result.ledger).count > 0)
+    #expect(try JSONEncoder().encode(result.aerodynamicPartLoads).count > 0)
     #expect(result.ledger.finite)
     #expect(result.ledger.passed)
+    #expect(result.aerodynamicPartLoads.samples.count == 4)
+    #expect(result.aerodynamicPartLoads.samples.allSatisfy {
+        $0.parts.map(\.part) == AerodynamicBodyPart.allCases
+    })
+    #expect(result.aerodynamicPartLoads.finite)
+    #expect(result.aerodynamicPartLoads.closurePassed)
+    #expect(result.aerodynamicPartLoads.bilateralSymmetryPassed == true)
+    #expect(result.aerodynamicPartLoads.passed)
     #expect(
         result.ledger.relativeRMSBoundaryClosureResidual
             <= result.ledger
@@ -764,7 +821,7 @@ func productionFreeFlightClosesCoupledExternalMomentumLedger() throws {
     )
     #expect(
         result.ledger.samples.allSatisfy {
-            $0.gravityImpulse.y < 0
+            $0.gravityImpulse.z < 0
         }
     )
     #expect(

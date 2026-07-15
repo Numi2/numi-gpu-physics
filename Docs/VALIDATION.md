@@ -1142,10 +1142,13 @@ Acceptance:
 - mean loads change below `5%` between the two finest registered grids
 
 Status: complete-bird ingestion and total-load prescribed replay are complete,
-and measured right-wing surface replay is implemented separately. No actual
-complete measured specimen has been supplied, and per-part left/right load
-reporting is not yet exposed. Therefore the complete measured-bird acceptance
-gate remains open without weakening it.
+measured right-wing surface replay is implemented separately, and opt-in
+body/left-wing/right-wing/tail load plus rigid-wing actuator reporting is now
+archived. The compact symmetric canonical closes part sums at `1.0877e-6`
+force and `3.1474e-6` torque relative RMS; mirrored force, hinge torque, and
+actuator power residuals are all below `1.505e-5` against the unchanged `2%`
+gate. No actual complete measured specimen has been supplied, so complete-bird
+acceptance remains open without weakening it.
 The synthetic release conformance result is recorded in
 `ValidationArtifacts/measured-bird-replay-summary.json`.
 
@@ -1178,10 +1181,15 @@ Required harness work before these criteria are measurable:
   topology/gravity canonical closed at `2.4483e-6` boundary and `5.0808e-5`
   total-system relative RMS, with maximum absolute residual below
   `6.1e-10 kg m/s`.
+- the same opt-in path independently reconstructs conservative loads for mask
+  IDs body/left wing/right wing/tail, closes their sum to the production load,
+  and archives hinge-shifted aerodynamic torque, prescribed-wing inertial
+  reaction, required actuator torque, and signed mechanical power. Symmetry is
+  an explicit gate rather than an assumption about measured animals.
 
 Status: solver-side runtime bounds, body-step refinement, rigid prescribed
 wing inertia/hinge treatment, and the external linear-momentum ledger are
 implemented. Quantitative free-flight remains blocked by the absent
-same-specimen schema-2 dataset, trim, per-part aerodynamic actuator effort,
-and actual bird load/body refinement results. See
+same-specimen schema-2 dataset, trim, and actual bird load/body refinement
+results. See
 `ValidationArtifacts/quantitative-complete-bird-readiness.json`.

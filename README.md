@@ -298,14 +298,21 @@ hinge reactions and aborts on the first GPU-recorded Mach, clearance, or
 non-finite-state event. Add `--momentum-ledger` to a free-flight replay to
 archive direct population/body/wing momentum, far-field and sponge sources,
 gravity, persistent-link exchange, inferred topology conversion, and both
-locked `0.5%` closure gates:
+locked `0.5%` closure gates. `--part-loads` additionally makes that intent
+explicit and archives conservative body/left-wing/right-wing/tail loads,
+aerodynamic hinge torque, prescribed-wing inertial reaction, required actuator
+torque, and signed mechanical power:
 
 ```bash
 .build/release/birdflow replay measured-bird \
   --input /path/to/schema-2-specimen.json \
   --chord-cells 12 --steps 100 --body-substeps 4 \
-  --momentum-ledger --archive /path/to/free-flight-ledger --json
+  --part-loads --archive /path/to/free-flight-ledger --json
 ```
+
+For deliberately symmetric input, add `--expect-bilateral-symmetry` to apply
+the locked `2%` mirrored force, hinge-torque, and actuator-power gate. It is
+opt-in because measured left/right asymmetry can be physical.
 
 The diagnostic is opt-in and lazily allocates only compact reduction buffers;
 normal batched solver/viewer throughput is unchanged. The current missing-data decision is retained in
@@ -320,7 +327,9 @@ Quantitative complete-bird claims still require:
 - an actual measured specimen with body, both wings, tail, mass properties, geometry provenance, and synchronized kinematics;
 - a surface representation appropriate to the measured feather/wing geometry;
 - passing the five-cycle `8/12/16` measured-bird load ladder;
-- per-part left/right symmetry and force reporting;
+- a passing archived per-part load/actuator report on that specimen, with the
+  bilateral symmetry gate enabled only when its input is intentionally
+  symmetric;
 - an archived free-flight run that stays inside the implemented per-step Mach
   and sponge/domain abort bounds;
 - a passing archived `--momentum-ledger` run and the implemented `1/2/4`

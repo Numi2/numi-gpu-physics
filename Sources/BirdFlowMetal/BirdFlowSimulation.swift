@@ -384,6 +384,7 @@ public final class BirdFlowSimulation: @unchecked Sendable {
     private var runSampleCapacity = 0
     private var coupledMomentumDiagnostics:
         CoupledMomentumDiagnosticResources?
+    private var birdPartLoadDiagnostics: BirdPartLoadDiagnosticResources?
 
     private let observationCondition = NSCondition()
     private var latestPublishedSlot: Int?
@@ -737,7 +738,8 @@ public final class BirdFlowSimulation: @unchecked Sendable {
     @discardableResult
     public func advanceWithCoupledMomentumLedger(
         steps: Int,
-        maximumRelativeResidual: Double = 0.005
+        maximumRelativeResidual: Double = 0.005,
+        expectBilateralSymmetry: Bool = false
     ) throws -> CoupledMomentumAdvanceResult {
         guard configuration.freeFlight else {
             throw BirdFlowError.momentumLedgerUnavailable(
@@ -771,6 +773,17 @@ public final class BirdFlowSimulation: @unchecked Sendable {
                 "diagnostic resources could not be allocated"
             )
         }
+        if birdPartLoadDiagnostics == nil {
+            birdPartLoadDiagnostics = try BirdPartLoadDiagnosticResources(
+                backend: backend,
+                cellCount: configuration.grid.cellCount
+            )
+        }
+        guard let partDiagnostics = birdPartLoadDiagnostics else {
+            throw BirdFlowError.momentumLedgerUnavailable(
+                "per-part diagnostic resources could not be allocated"
+            )
+        }
 
         let dt = Double(configuration.scaling.timeStepSeconds)
         let momentumScale = Double(configuration.scaling.forceToPhysical)
@@ -781,6 +794,8 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         )
         var samples: [CoupledMomentumLedgerSample] = []
         samples.reserveCapacity(steps)
+        var partLoadSamples: [AerodynamicPartLoadSample] = []
+        partLoadSamples.reserveCapacity(steps)
         var runSamples: [RunSample] = []
         runSamples.reserveCapacity(steps)
         var finalAdvance = AdvanceResult()
@@ -827,12 +842,32 @@ public final class BirdFlowSimulation: @unchecked Sendable {
                 wallVelocity: wallVelocity,
                 uniforms: &uniforms
             )
+            let partCapture = try partDiagnostics.capture(
+                populationsIn: nextPopulations,
+                solidPrevious: nextSolidMask,
+                solidCurrent: currentSolidMask,
+                wallVelocity: wallVelocity,
+                preparedGeometry: preparedGeometryBuffer,
+                uniforms: &uniforms
+            )
 
             let bodyAfter = currentBodyState()
             let wingAfter = currentWingLinearMomentum()
             let aerodynamicLoad = lastLoadBuffer.contents()
                 .assumingMemoryBound(to: GPUForceTorque.self)
                 .pointee.coreValue
+            let wingReaction = wingInertialReactionBuffer.contents()
+                .assumingMemoryBound(to: GPUWingInertialReaction.self)
+                .pointee
+            partLoadSamples.append(
+                makeAerodynamicPartLoadSample(
+                    step: stepIndex,
+                    timeSeconds: timeSeconds,
+                    capture: partCapture,
+                    reaction: wingReaction,
+                    productionTotal: aerodynamicLoad
+                )
+            )
             let fluidBefore = latticeMomentum(fluidBeforeRaw)
                 * momentumScale
             let fluidAfter = latticeMomentum(fluidAfterRaw)
@@ -964,6 +999,11 @@ public final class BirdFlowSimulation: @unchecked Sendable {
                 ? "coupled external linear-momentum and fluid/boundary impulse gates passed"
                 : "coupled momentum closure failed; do not accept quantitative free-flight loads"
         )
+        let partLoadReport = makeAerodynamicPartLoadReport(
+            deviceName: metalDevice.name,
+            samples: partLoadSamples,
+            bilateralSymmetryExpected: expectBilateralSymmetry
+        )
         return CoupledMomentumAdvanceResult(
             advanceResult: AdvanceResult(
                 runSamples: runSamples,
@@ -972,7 +1012,8 @@ public final class BirdFlowSimulation: @unchecked Sendable {
                     finalAdvance.droppedFieldFrameCount,
                 runtimeSafety: finalAdvance.runtimeSafety
             ),
-            ledger: report
+            ledger: report,
+            aerodynamicPartLoads: partLoadReport
         )
     }
 
@@ -2051,7 +2092,8 @@ public final class BirdFlowSimulation {
     @discardableResult
     public func advanceWithCoupledMomentumLedger(
         steps: Int,
-        maximumRelativeResidual: Double = 0.005
+        maximumRelativeResidual: Double = 0.005,
+        expectBilateralSymmetry: Bool = false
     ) throws -> CoupledMomentumAdvanceResult {
         throw BirdFlowError.metalUnavailable
     }

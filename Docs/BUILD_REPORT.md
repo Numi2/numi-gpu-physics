@@ -165,16 +165,27 @@ Results:
   boundary and `5.0808e-5` total-system relative RMS closure against a locked
   `0.005` limit. Lazy compact reductions leave normal batched production and
   viewer execution unchanged.
-- The complete local Apple-M4 suite passed all `85` tests in `474.789 s`. The
+- The complete local Apple-M4 suite passed all `85` tests in `528.362 s`
+  (`533.82 s` command wall time). The
   new exact-first-event Mach monitor, schema-2 strict loader, CPU/Metal wing
   reaction reference, four-substep parity, and 256-step torque-free and
-  constant-torque rotational canonicals all passed. The release products and
-  both standalone Metal libraries compiled; a four-substep free-flight release
+  constant-torque rotational canonicals all passed, along with the new
+  per-part archive and bilateral actuator gate. The release products and both
+  standalone Metal libraries compiled; a four-substep free-flight release
   smoke completed.
-- The coupled momentum canonical also passed a focused release-mode run in
-  `0.073 s`; both standalone Metal libraries compiled after the new kernels
+- The coupled momentum and per-part canonical also passed a focused
+  release-mode run in `0.062 s`; both standalone Metal libraries compiled after the new kernels
   were added, and the static Swift/Metal binding audit passed. No hosted CI
   was used.
+- Opt-in GPU part-load reconstruction now attributes the exact production
+  conservative exchange to body, left wing, right wing, and tail, then reports
+  hinge-shifted aerodynamic torque, prescribed-wing inertial reaction,
+  required actuator torque, and signed power. The compact four-step canonical
+  closed force/torque sums at `1.0876062e-6`/`3.1473154e-6` relative RMS.
+- That diagnostic exposed and fixed the right-wing anatomical pitch/tip-twist
+  sign convention. With the physical mirror restored, relative bilateral
+  residuals are `7.6318046e-7` force, `4.4050828e-6` hinge torque, and
+  `1.5049285e-5` actuator power against the unchanged `0.02` limit.
 
 ## Verification boundary
 

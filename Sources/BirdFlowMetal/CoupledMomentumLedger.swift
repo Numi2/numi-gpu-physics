@@ -65,12 +65,15 @@ public struct CoupledMomentumLedgerReport: Codable, Sendable {
 public struct CoupledMomentumAdvanceResult: Sendable {
     public var advanceResult: AdvanceResult
     public var ledger: CoupledMomentumLedgerReport
+    public var aerodynamicPartLoads: AerodynamicPartLoadReport
 
     public init(
         advanceResult: AdvanceResult,
-        ledger: CoupledMomentumLedgerReport
+        ledger: CoupledMomentumLedgerReport,
+        aerodynamicPartLoads: AerodynamicPartLoadReport
     ) {
         self.advanceResult = advanceResult
         self.ledger = ledger
+        self.aerodynamicPartLoads = aerodynamicPartLoads
     }
 }
