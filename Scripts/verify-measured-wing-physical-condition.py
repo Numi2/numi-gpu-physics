@@ -278,6 +278,64 @@ def main() -> None:
     ):
         if not decision[key]:
             raise SystemExit(f"c16 source-aware acceptance lost {key}")
+    for key in (
+        "stationaryWallGeometricLimiterLadderCompleted",
+        "stationaryWallGeometricLimiterLadderRepeatMatched",
+        "stationaryWallGeometricLimiterControlVolumeFailureConfirmed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"geometric limiter ladder lost {key}")
+    if decision["stationaryWallGeometricLimiterLadderPassed"]:
+        raise SystemExit("geometric limiter ladder must retain its failed verdict")
+    if decision["stationaryWallGeometricLimiterPromoted"]:
+        raise SystemExit("geometric limiter must remain excluded from bird replay")
+    for key in (
+        "stationaryWallC16RadialLimiterLocalizationCompleted",
+        "stationaryWallC16RadialLimiterLocalizationRepeatMatched",
+        "stationaryWallC16RadialLimiterLocalizationPassed",
+        "stationaryWallC16RadialLimiterBulkCollisionPathConfirmed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"radial limiter localization lost {key}")
+    if decision["stationaryWallC16RadialLimiterBoundaryLocalized"]:
+        raise SystemExit("radial limiter must remain classified as non-local")
+    for key in (
+        "stationaryWallC16BulkCollisionABCompleted",
+        "stationaryWallC16BulkCollisionABPassed",
+        "stationaryWallC16BulkCollisionABCandidatePositivityPassed",
+        "stationaryWallC16BulkCollisionABCandidateGlobalLedgerClosed",
+        "stationaryWallC16BulkCollisionABCandidateForceBudgetPassed",
+        "stationaryWallC16BulkCollisionABCandidateRejectedBeforeLadder",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"bulk collision A/B lost {key}")
+    if decision["stationaryWallC16BulkCollisionABCandidateNonIntrusivePassed"]:
+        raise SystemExit("regularized candidate must retain failed intrusion gate")
+    if decision["stationaryWallC16BulkCollisionABCandidateEligibleForRefinement"]:
+        raise SystemExit("regularized candidate must remain excluded from refinement")
+    for key in (
+        "stationaryWallC16RecursiveRegularizationABCompleted",
+        "stationaryWallC16RecursiveRegularizationABPassed",
+        "stationaryWallC16RecursiveRegularizationCandidatePositivityPassed",
+        "stationaryWallC16RecursiveRegularizationCandidateGlobalLedgerClosed",
+        "stationaryWallC16RecursiveRegularizationCandidateForceBudgetPassed",
+        "stationaryWallC16RecursiveRegularizationCandidateNonIntrusivePassed",
+        "stationaryWallC16RecursiveRegularizationCandidateEligibleForRefinement",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"recursive regularization A/B lost {key}")
+    for key in (
+        "stationaryWallRecursiveRegularizationLadderCompleted",
+        "stationaryWallRecursiveRegularizationLadderActivationNonIncreasing",
+        "stationaryWallRecursiveRegularizationLadderCorrectionNonIncreasing",
+        "stationaryWallRecursiveRegularizationLadderForceConvergenceFailureConfirmed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"recursive regularization ladder lost {key}")
+    if decision["stationaryWallRecursiveRegularizationLadderPassed"]:
+        raise SystemExit("recursive regularization ladder must retain its failed verdict")
+    if decision["stationaryWallRecursiveRegularizationLadderPromoted"]:
+        raise SystemExit("recursive regularization must remain excluded from bird replay")
     if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
         raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
@@ -1200,6 +1258,722 @@ def main() -> None:
         "c16 source-aware boundary load closure",
     )
 
+    geometric_path = Path(
+        decision["stationaryWallGeometricLimiterLadderArtifact"]
+    )
+    geometric_bytes = geometric_path.read_bytes()
+    geometric_hash = hashlib.sha256(geometric_bytes).hexdigest()
+    if geometric_hash != decision[
+        "stationaryWallGeometricLimiterLadderArtifactSHA256"
+    ]:
+        raise SystemExit(f"{geometric_path} has changed artifact hash")
+    geometric = json.loads(geometric_bytes)
+    if geometric["schemaVersion"] != 1:
+        raise SystemExit(f"{geometric_path} has changed schema")
+    if geometric["classification"] != (
+        "stationary-wall-geometric-limiter-ladder-not-accepted"
+    ):
+        raise SystemExit(f"{geometric_path} has changed classification")
+    if geometric["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{geometric_path} no longer uses production Metal")
+    if geometric["passed"]:
+        raise SystemExit(f"{geometric_path} must retain its blocked promotion")
+    if geometric["limiterActivationNonIncreasing"]:
+        raise SystemExit(f"{geometric_path} activation trend unexpectedly passes")
+    if geometric["limiterCorrectionNonIncreasing"]:
+        raise SystemExit(f"{geometric_path} correction trend unexpectedly passes")
+    for key in (
+        "observedDragConvergenceOrder",
+        "richardsonExtrapolatedDragCoefficient",
+        "fineGridConvergenceIndex",
+    ):
+        if geometric.get(key) is not None:
+            raise SystemExit(f"{geometric_path} must not report {key} for non-monotonic drag")
+    for key, expected in (
+        ("domainLengthDiameters", 10.0),
+        ("domainCrossflowDiameters", 6.0),
+        ("sphereCenterFromInletDiameters", 3.0),
+        ("spongeWidthDiameters", 0.5),
+        ("requestedConvectiveTimes", 5.0),
+        ("reynoldsNumber", 9367.4),
+        ("latticeFarFieldSpeed", 0.08),
+        ("maximumAllowedLimiterActivationFraction", 0.05),
+        ("maximumAllowedRelativeLimiterCorrection", 0.01),
+        ("maximumAllowedRelativeRMSForceResidual", 0.005),
+        ("maximumAllowedPeakForceResidualRatio", 0.001),
+        ("maximumAllowedFinestTwoDragChange", 0.05),
+    ):
+        close(geometric[key], expected, 1.0e-14, f"geometric {key}")
+    geometric_cases = geometric["cases"]
+    expected_case_values = {
+        "diameterCells": decision["stationaryWallGeometricLimiterDiameterCells"],
+        "domainCells": decision["stationaryWallGeometricLimiterDomainCells"],
+        "requestedSteps": decision["stationaryWallGeometricLimiterRequestedSteps"],
+        "sourceAwareStabilityPassed": decision[
+            "stationaryWallGeometricLimiterSourceAwareStabilityPassed"
+        ],
+        "forceBudgetPassed": decision[
+            "stationaryWallGeometricLimiterForceBudgetPassed"
+        ],
+        "limiterNonIntrusivePassed": decision[
+            "stationaryWallGeometricLimiterNonIntrusivePassed"
+        ],
+    }
+    for key, expected in expected_case_values.items():
+        if [case[key] for case in geometric_cases] != expected:
+            raise SystemExit(f"{geometric_path} has changed {key}")
+    for case in geometric_cases:
+        if case["minimumObservedPopulation"] <= 0:
+            raise SystemExit(f"{geometric_path} lost population positivity")
+        if case["passed"]:
+            raise SystemExit(f"{geometric_path} case unexpectedly passes")
+        if not case["globalLedgerClosed"]:
+            raise SystemExit(f"{geometric_path} global ledger no longer closes")
+        if not case["controlVolumeOutsideSponge"]:
+            raise SystemExit(f"{geometric_path} control volume entered sponge")
+        if case["maximumSolidControlSurfaceCrossingLinkCount"] != 0:
+            raise SystemExit(f"{geometric_path} control surface crosses solid links")
+        if any(
+            sample["controlVolumeSpongeCellCount"] != 0
+            or sample["solidControlSurfaceCrossingLinkCount"] != 0
+            for sample in case["samples"]
+        ):
+            raise SystemExit(f"{geometric_path} phase history lost control isolation")
+        if [sample["step"] for sample in case["samples"]] != list(
+            range(1, case["requestedSteps"] + 1)
+        ):
+            raise SystemExit(f"{geometric_path} phase history is not contiguous")
+    for key, decision_key in (
+        ("limiterActivationFraction", "stationaryWallGeometricLimiterActivationFractions"),
+        ("controlVolumeLimiterActivationFraction", "stationaryWallGeometricLimiterControlActivationFractions"),
+        ("relativeControlVolumeLimiterL1Correction", "stationaryWallGeometricLimiterControlRelativeL1Corrections"),
+        ("relativeControlVolumeLimiterL2Correction", "stationaryWallGeometricLimiterControlRelativeL2Corrections"),
+        ("meanDragCoefficientLastConvectiveTime", "stationaryWallGeometricLimiterMeanDragCoefficients"),
+    ):
+        for actual, expected in zip(
+            [case[key] for case in geometric_cases], decision[decision_key]
+        ):
+            close(actual, expected, 1.0e-14, f"geometric {key}")
+    close(
+        geometric["relativeFinestTwoDragChange"],
+        decision["stationaryWallGeometricLimiterRelativeFinestTwoDragChange"],
+        1.0e-14,
+        "geometric finest-two drag change",
+    )
+    if decision["stationaryWallGeometricLimiterObservedDragConvergenceOrder"] is not None:
+        raise SystemExit("geometric audit must retain null observed order")
+    for path_key, hash_key in (
+        ("stationaryWallGeometricLimiterLadderFigurePNG", "stationaryWallGeometricLimiterLadderFigurePNGSHA256"),
+        ("stationaryWallGeometricLimiterLadderFigureSVG", "stationaryWallGeometricLimiterLadderFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
+    radial_path = Path(
+        decision["stationaryWallC16RadialLimiterLocalizationArtifact"]
+    )
+    radial_bytes = radial_path.read_bytes()
+    if hashlib.sha256(radial_bytes).hexdigest() != decision[
+        "stationaryWallC16RadialLimiterLocalizationArtifactSHA256"
+    ]:
+        raise SystemExit(f"{radial_path} has changed artifact hash")
+    radial = json.loads(radial_bytes)
+    if radial["schemaVersion"] != 1:
+        raise SystemExit(f"{radial_path} has changed schema")
+    if radial["classification"] != decision[
+        "stationaryWallC16RadialLimiterLocalizationClassification"
+    ]:
+        raise SystemExit(f"{radial_path} has changed classification")
+    if radial["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{radial_path} no longer uses production Metal")
+    if radial["radialReductionKernel"] != "reduceSymmetricLimiterRadialBins":
+        raise SystemExit(f"{radial_path} has changed radial reduction")
+    if radial["diameterCells"] != 16 or radial["domainCells"] != [160, 96, 96]:
+        raise SystemExit(f"{radial_path} has changed geometry")
+    if radial["requestedSteps"] != 1000:
+        raise SystemExit(f"{radial_path} has changed horizon")
+    if radial["firstLimiterActivationStep"] != decision[
+        "stationaryWallC16RadialLimiterFirstActivationStep"
+    ]:
+        raise SystemExit(f"{radial_path} has changed first activation")
+    if radial["captureSteps"] != decision[
+        "stationaryWallC16RadialLimiterCaptureSteps"
+    ]:
+        raise SystemExit(f"{radial_path} has changed capture steps")
+    if not all(
+        radial[key]
+        for key in (
+            "populationPositivityPassed",
+            "controlVolumeIsolationPassed",
+            "radialClosurePassed",
+            "passed",
+        )
+    ):
+        raise SystemExit(f"{radial_path} lost a diagnostic acceptance gate")
+    if radial["boundaryLocalized"]:
+        raise SystemExit(f"{radial_path} must retain bulk-flow spread")
+    close(
+        radial["maximumObservedRadialClosureResidual"],
+        decision["stationaryWallC16RadialLimiterMaximumClosureResidual"],
+        1.0e-14,
+        "radial maximum closure residual",
+    )
+    if radial["maximumObservedRadialClosureResidual"] > radial[
+        "maximumAllowedRadialClosureResidual"
+    ]:
+        raise SystemExit(f"{radial_path} no longer closes")
+    for key, decision_key in (
+        ("finalNearSurfaceLimiterL1Fraction", "stationaryWallC16RadialLimiterFinalNearSurfaceL1Fraction"),
+        ("finalFarFieldLimiterL1Fraction", "stationaryWallC16RadialLimiterFinalFarFieldL1Fraction"),
+        ("finalNearSurfaceActivationFraction", "stationaryWallC16RadialLimiterFinalNearSurfaceActivationFraction"),
+        ("finalFarFieldActivationFraction", "stationaryWallC16RadialLimiterFinalFarFieldActivationFraction"),
+    ):
+        close(radial[key], decision[decision_key], 1.0e-14, f"radial {key}")
+    radial_snapshots = radial["snapshots"]
+    if [snapshot["step"] for snapshot in radial_snapshots] != radial["captureSteps"]:
+        raise SystemExit(f"{radial_path} has non-contiguous captures")
+    for snapshot in radial_snapshots:
+        bins = snapshot["bins"]
+        if [bin_["binIndex"] for bin_ in bins] != list(range(8)):
+            raise SystemExit(f"{radial_path} has changed radial bins")
+        if snapshot["controlVolumeActivatedCellCount"] != snapshot[
+            "radialActivatedCellCount"
+        ]:
+            raise SystemExit(f"{radial_path} activation bins do not close")
+        close(
+            sum(bin_["fractionOfSnapshotLimiterL1Correction"] for bin_ in bins),
+            1.0,
+            1.0e-12,
+            "radial limiter L1 allocation",
+        )
+        close(
+            sum(bin_["fractionOfSnapshotActivatedCells"] for bin_ in bins),
+            1.0,
+            1.0e-12,
+            "radial activation allocation",
+        )
+    if [bin_["boundaryLinkCount"] for bin_ in radial_snapshots[-1]["bins"]] != [
+        4416, 288, 0, 0, 0, 0, 0, 0,
+    ]:
+        raise SystemExit(f"{radial_path} changed boundary-shell placement")
+    for path_key, hash_key in (
+        ("stationaryWallC16RadialLimiterLocalizationFigurePNG", "stationaryWallC16RadialLimiterLocalizationFigurePNGSHA256"),
+        ("stationaryWallC16RadialLimiterLocalizationFigureSVG", "stationaryWallC16RadialLimiterLocalizationFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
+    collision_ab_path = Path(
+        decision["stationaryWallC16BulkCollisionABArtifact"]
+    )
+    collision_ab_bytes = collision_ab_path.read_bytes()
+    if hashlib.sha256(collision_ab_bytes).hexdigest() != decision[
+        "stationaryWallC16BulkCollisionABArtifactSHA256"
+    ]:
+        raise SystemExit(f"{collision_ab_path} has changed artifact hash")
+    collision_ab = json.loads(collision_ab_bytes)
+    if collision_ab["schemaVersion"] != 1:
+        raise SystemExit(f"{collision_ab_path} has changed schema")
+    if collision_ab["classification"] != decision[
+        "stationaryWallC16BulkCollisionABClassification"
+    ]:
+        raise SystemExit(f"{collision_ab_path} has changed classification")
+    if not collision_ab["diagnosticCompleted"] or not collision_ab["passed"]:
+        raise SystemExit(f"{collision_ab_path} did not complete")
+    if collision_ab["candidateEligibleForRefinement"]:
+        raise SystemExit(f"{collision_ab_path} candidate cannot be promoted")
+    if not collision_ab["gridConvergenceStillRequired"]:
+        raise SystemExit(f"{collision_ab_path} hides the required grid ladder")
+    if collision_ab["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{collision_ab_path} no longer uses production Metal")
+    if collision_ab["ledgerCaptureKernel"] != "captureSymmetricLimiterLedger":
+        raise SystemExit(f"{collision_ab_path} changed ledger capture")
+    if collision_ab["radialReductionKernel"] != "reduceSymmetricLimiterRadialBins":
+        raise SystemExit(f"{collision_ab_path} changed radial reduction")
+    if collision_ab["diameterCells"] != 16 or collision_ab["domainCells"] != [160, 96, 96]:
+        raise SystemExit(f"{collision_ab_path} changed geometry")
+    if collision_ab["requestedSteps"] != 1000:
+        raise SystemExit(f"{collision_ab_path} changed horizon")
+    for key, expected in (
+        ("maximumAllowedRelativeRMSForceResidual", 5.0e-3),
+        ("maximumAllowedPeakForceResidualRatio", 1.0e-3),
+        ("maximumAllowedCorrectionActivationFraction", 5.0e-2),
+        ("maximumAllowedRelativeCorrection", 1.0e-2),
+        ("maximumAllowedRadialClosureResidual", 1.0e-4),
+    ):
+        close(collision_ab[key], expected, 1.0e-15, f"collision A/B {key}")
+    control = collision_ab["control"]
+    candidate = collision_ab["candidate"]
+    if control["operatorName"] != decision[
+        "stationaryWallC16BulkCollisionABControlOperator"
+    ]:
+        raise SystemExit(f"{collision_ab_path} changed control operator")
+    if candidate["operatorName"] != decision[
+        "stationaryWallC16BulkCollisionABCandidateOperator"
+    ]:
+        raise SystemExit(f"{collision_ab_path} changed candidate operator")
+    for case in (control, candidate):
+        if case["completedSteps"] != 1000:
+            raise SystemExit(f"{collision_ab_path} case did not complete")
+        if not all(
+            case[key]
+            for key in (
+                "populationPositivityPassed",
+                "controlVolumeIsolationPassed",
+                "globalLedgerClosed",
+                "forceBudgetPassed",
+                "radialCaptureCompleted",
+            )
+        ):
+            raise SystemExit(f"{collision_ab_path} lost a mandatory closure gate")
+        if case["maximumObservedRadialClosureResidual"] > collision_ab[
+            "maximumAllowedRadialClosureResidual"
+        ]:
+            raise SystemExit(f"{collision_ab_path} radial ledger no longer closes")
+    for case_key, field, decision_key in (
+        ("control", "controlVolumeCorrectionActivationFraction", "stationaryWallC16BulkCollisionABControlActivationFraction"),
+        ("candidate", "controlVolumeCorrectionActivationFraction", "stationaryWallC16BulkCollisionABCandidateActivationFraction"),
+        ("control", "relativeControlVolumeCorrectionL1", "stationaryWallC16BulkCollisionABControlRelativeL1Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL1", "stationaryWallC16BulkCollisionABCandidateRelativeL1Correction"),
+        ("control", "relativeControlVolumeCorrectionL2", "stationaryWallC16BulkCollisionABControlRelativeL2Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL2", "stationaryWallC16BulkCollisionABCandidateRelativeL2Correction"),
+    ):
+        close(
+            collision_ab[case_key][field],
+            decision[decision_key],
+            1.0e-14,
+            f"collision A/B {case_key} {field}",
+        )
+    if candidate["controlVolumeCorrectionActivationFraction"] > collision_ab[
+        "maximumAllowedCorrectionActivationFraction"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate activation regressed")
+    if candidate["relativeControlVolumeCorrectionL1"] > collision_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate L1 correction regressed")
+    if candidate["relativeControlVolumeCorrectionL2"] <= collision_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate must retain the L2 miss")
+    if candidate["correctionNonIntrusivePassed"] or candidate[
+        "eligibleForRefinement"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate was incorrectly promoted")
+    for path_key, hash_key in (
+        ("stationaryWallC16BulkCollisionABFigurePNG", "stationaryWallC16BulkCollisionABFigurePNGSHA256"),
+        ("stationaryWallC16BulkCollisionABFigureSVG", "stationaryWallC16BulkCollisionABFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
+    recursive_ab_path = Path(
+        decision["stationaryWallC16RecursiveRegularizationABArtifact"]
+    )
+    recursive_ab_bytes = recursive_ab_path.read_bytes()
+    if hashlib.sha256(recursive_ab_bytes).hexdigest() != decision[
+        "stationaryWallC16RecursiveRegularizationABArtifactSHA256"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} has changed artifact hash")
+    recursive_ab = json.loads(recursive_ab_bytes)
+    if recursive_ab["schemaVersion"] != 1:
+        raise SystemExit(f"{recursive_ab_path} has changed schema")
+    if recursive_ab["classification"] != decision[
+        "stationaryWallC16RecursiveRegularizationABClassification"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} has changed classification")
+    if not recursive_ab["diagnosticCompleted"] or not recursive_ab["passed"]:
+        raise SystemExit(f"{recursive_ab_path} did not complete")
+    if not recursive_ab["candidateEligibleForRefinement"]:
+        raise SystemExit(f"{recursive_ab_path} candidate lost promotion eligibility")
+    if not recursive_ab["gridConvergenceStillRequired"]:
+        raise SystemExit(f"{recursive_ab_path} hides the required grid ladder")
+    if recursive_ab["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{recursive_ab_path} no longer uses production Metal")
+    if recursive_ab["ledgerCaptureKernel"] != "captureSymmetricLimiterLedger":
+        raise SystemExit(f"{recursive_ab_path} changed ledger capture")
+    if recursive_ab["radialReductionKernel"] != "reduceSymmetricLimiterRadialBins":
+        raise SystemExit(f"{recursive_ab_path} changed radial reduction")
+    if recursive_ab["diameterCells"] != 16 or recursive_ab["domainCells"] != [
+        160,
+        96,
+        96,
+    ]:
+        raise SystemExit(f"{recursive_ab_path} changed geometry")
+    if recursive_ab["requestedSteps"] != 1000:
+        raise SystemExit(f"{recursive_ab_path} changed horizon")
+    for key, expected in (
+        ("maximumAllowedRelativeRMSForceResidual", 5.0e-3),
+        ("maximumAllowedPeakForceResidualRatio", 1.0e-3),
+        ("maximumAllowedCorrectionActivationFraction", 5.0e-2),
+        ("maximumAllowedRelativeCorrection", 1.0e-2),
+        ("maximumAllowedRadialClosureResidual", 1.0e-4),
+    ):
+        close(recursive_ab[key], expected, 1.0e-15, f"recursive A/B {key}")
+    recursive_control = recursive_ab["control"]
+    recursive_candidate = recursive_ab["candidate"]
+    if recursive_control["operatorName"] != decision[
+        "stationaryWallC16RecursiveRegularizationControlOperator"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} changed control operator")
+    if recursive_candidate["operatorName"] != decision[
+        "stationaryWallC16RecursiveRegularizationCandidateOperator"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} changed candidate operator")
+    for case in (recursive_control, recursive_candidate):
+        if case["completedSteps"] != 1000:
+            raise SystemExit(f"{recursive_ab_path} case did not complete")
+        if not all(
+            case[key]
+            for key in (
+                "populationPositivityPassed",
+                "controlVolumeIsolationPassed",
+                "globalLedgerClosed",
+                "forceBudgetPassed",
+                "radialCaptureCompleted",
+            )
+        ):
+            raise SystemExit(f"{recursive_ab_path} lost a mandatory closure gate")
+    for case_key, field, decision_key in (
+        ("control", "controlVolumeCorrectionActivationFraction", "stationaryWallC16RecursiveRegularizationControlActivationFraction"),
+        ("candidate", "controlVolumeCorrectionActivationFraction", "stationaryWallC16RecursiveRegularizationCandidateActivationFraction"),
+        ("control", "relativeControlVolumeCorrectionL1", "stationaryWallC16RecursiveRegularizationControlRelativeL1Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL1", "stationaryWallC16RecursiveRegularizationCandidateRelativeL1Correction"),
+        ("control", "relativeControlVolumeCorrectionL2", "stationaryWallC16RecursiveRegularizationControlRelativeL2Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL2", "stationaryWallC16RecursiveRegularizationCandidateRelativeL2Correction"),
+    ):
+        close(
+            recursive_ab[case_key][field],
+            decision[decision_key],
+            1.0e-14,
+            f"recursive A/B {case_key} {field}",
+        )
+    if recursive_candidate["controlVolumeCorrectionActivationFraction"] > recursive_ab[
+        "maximumAllowedCorrectionActivationFraction"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate activation regressed")
+    if recursive_candidate["relativeControlVolumeCorrectionL1"] > recursive_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate L1 correction regressed")
+    if recursive_candidate["relativeControlVolumeCorrectionL2"] > recursive_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate L2 correction regressed")
+    if not recursive_candidate["correctionNonIntrusivePassed"] or not recursive_candidate[
+        "eligibleForRefinement"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate lost eligibility")
+    for path_key, hash_key in (
+        ("stationaryWallC16RecursiveRegularizationFigurePNG", "stationaryWallC16RecursiveRegularizationFigurePNGSHA256"),
+        ("stationaryWallC16RecursiveRegularizationFigureSVG", "stationaryWallC16RecursiveRegularizationFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
+    recursive_ladder_path = Path(
+        decision["stationaryWallRecursiveRegularizationLadderArtifact"]
+    )
+    recursive_ladder_bytes = recursive_ladder_path.read_bytes()
+    if hashlib.sha256(recursive_ladder_bytes).hexdigest() != decision[
+        "stationaryWallRecursiveRegularizationLadderArtifactSHA256"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} has changed artifact hash")
+    recursive_ladder = json.loads(recursive_ladder_bytes)
+    if recursive_ladder["schemaVersion"] != 1:
+        raise SystemExit(f"{recursive_ladder_path} has changed schema")
+    if recursive_ladder["classification"] != decision[
+        "stationaryWallRecursiveRegularizationLadderClassification"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} has changed classification")
+    if recursive_ladder["limiterMode"] != decision[
+        "stationaryWallRecursiveRegularizationLadderMode"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} has changed collision mode")
+    if recursive_ladder["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{recursive_ladder_path} no longer uses production Metal")
+    if recursive_ladder["passed"]:
+        raise SystemExit(f"{recursive_ladder_path} must retain blocked promotion")
+    if not recursive_ladder["limiterActivationNonIncreasing"]:
+        raise SystemExit(f"{recursive_ladder_path} lost activation improvement")
+    if not recursive_ladder["limiterCorrectionNonIncreasing"]:
+        raise SystemExit(f"{recursive_ladder_path} lost correction improvement")
+    for key in (
+        "observedDragConvergenceOrder",
+        "richardsonExtrapolatedDragCoefficient",
+        "fineGridConvergenceIndex",
+    ):
+        if recursive_ladder.get(key) is not None:
+            raise SystemExit(
+                f"{recursive_ladder_path} must not report {key} for non-monotonic drag"
+            )
+    for key, expected in (
+        ("domainLengthDiameters", 10.0),
+        ("domainCrossflowDiameters", 6.0),
+        ("sphereCenterFromInletDiameters", 3.0),
+        ("spongeWidthDiameters", 0.5),
+        ("requestedConvectiveTimes", 5.0),
+        ("reynoldsNumber", 9367.4),
+        ("latticeFarFieldSpeed", 0.08),
+        ("maximumAllowedLimiterActivationFraction", 0.05),
+        ("maximumAllowedRelativeLimiterCorrection", 0.01),
+        ("maximumAllowedRelativeRMSForceResidual", 0.005),
+        ("maximumAllowedPeakForceResidualRatio", 0.001),
+        ("maximumAllowedFinestTwoDragChange", 0.05),
+    ):
+        close(recursive_ladder[key], expected, 1.0e-14, f"recursive ladder {key}")
+    recursive_ladder_cases = recursive_ladder["cases"]
+    recursive_expected_case_values = {
+        "diameterCells": decision[
+            "stationaryWallRecursiveRegularizationLadderDiameterCells"
+        ],
+        "domainCells": decision[
+            "stationaryWallRecursiveRegularizationLadderDomainCells"
+        ],
+        "requestedSteps": decision[
+            "stationaryWallRecursiveRegularizationLadderRequestedSteps"
+        ],
+        "sourceAwareStabilityPassed": decision[
+            "stationaryWallRecursiveRegularizationLadderSourceAwareStabilityPassed"
+        ],
+        "forceBudgetPassed": decision[
+            "stationaryWallRecursiveRegularizationLadderForceBudgetPassed"
+        ],
+        "limiterNonIntrusivePassed": decision[
+            "stationaryWallRecursiveRegularizationLadderNonIntrusivePassed"
+        ],
+    }
+    for key, expected in recursive_expected_case_values.items():
+        if [case[key] for case in recursive_ladder_cases] != expected:
+            raise SystemExit(f"{recursive_ladder_path} has changed {key}")
+    for case in recursive_ladder_cases:
+        if case["minimumObservedPopulation"] <= 0:
+            raise SystemExit(f"{recursive_ladder_path} lost population positivity")
+        if not case["passed"]:
+            raise SystemExit(f"{recursive_ladder_path} case lost individual gates")
+        if not case["globalLedgerClosed"]:
+            raise SystemExit(f"{recursive_ladder_path} global ledger no longer closes")
+        if not case["controlVolumeOutsideSponge"]:
+            raise SystemExit(f"{recursive_ladder_path} control volume entered sponge")
+        if case["maximumSolidControlSurfaceCrossingLinkCount"] != 0:
+            raise SystemExit(
+                f"{recursive_ladder_path} control surface crosses solid links"
+            )
+        if any(
+            sample["controlVolumeSpongeCellCount"] != 0
+            or sample["solidControlSurfaceCrossingLinkCount"] != 0
+            for sample in case["samples"]
+        ):
+            raise SystemExit(
+                f"{recursive_ladder_path} phase history lost control isolation"
+            )
+        if [sample["step"] for sample in case["samples"]] != list(
+            range(1, case["requestedSteps"] + 1)
+        ):
+            raise SystemExit(
+                f"{recursive_ladder_path} phase history is not contiguous"
+            )
+    for key, decision_key in (
+        ("controlVolumeLimiterActivationFraction", "stationaryWallRecursiveRegularizationLadderControlActivationFractions"),
+        ("relativeControlVolumeLimiterL1Correction", "stationaryWallRecursiveRegularizationLadderControlRelativeL1Corrections"),
+        ("relativeControlVolumeLimiterL2Correction", "stationaryWallRecursiveRegularizationLadderControlRelativeL2Corrections"),
+        ("meanDragCoefficientLastConvectiveTime", "stationaryWallRecursiveRegularizationLadderMeanDragCoefficients"),
+    ):
+        for actual, expected in zip(
+            [case[key] for case in recursive_ladder_cases],
+            decision[decision_key],
+        ):
+            close(actual, expected, 1.0e-14, f"recursive ladder {key}")
+    close(
+        recursive_ladder["relativeFinestTwoDragChange"],
+        decision[
+            "stationaryWallRecursiveRegularizationLadderRelativeFinestTwoDragChange"
+        ],
+        1.0e-14,
+        "recursive ladder finest-two drag change",
+    )
+    if recursive_ladder["relativeFinestTwoDragChange"] <= recursive_ladder[
+        "maximumAllowedFinestTwoDragChange"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} must retain force failure")
+    for case_index, case in enumerate(recursive_ladder_cases):
+        window_means = []
+        for window_index in range(5):
+            values = [
+                sample["dragCoefficient"]
+                for sample in case["samples"]
+                if window_index < sample["convectiveTime"] <= window_index + 1
+            ]
+            if not values:
+                raise SystemExit(
+                    f"{recursive_ladder_path} lost convective window {window_index + 1}"
+                )
+            window_means.append(sum(values) / len(values))
+        for actual, expected in zip(
+            window_means,
+            decision[
+                "stationaryWallRecursiveRegularizationLadderConvectiveWindowMeanDragCoefficients"
+            ][case_index],
+        ):
+            close(actual, expected, 1.0e-14, "recursive ladder window mean")
+        fourth_to_fifth = abs(window_means[4] - window_means[3]) / max(
+            abs(window_means[4]), 1.0e-30
+        )
+        close(
+            fourth_to_fifth,
+            decision[
+                "stationaryWallRecursiveRegularizationLadderFourthToFifthRelativeDragChanges"
+            ][case_index],
+            1.0e-14,
+            "recursive ladder duration sensitivity",
+        )
+    for path_key, hash_key in (
+        ("stationaryWallRecursiveRegularizationLadderFigurePNG", "stationaryWallRecursiveRegularizationLadderFigurePNGSHA256"),
+        ("stationaryWallRecursiveRegularizationLadderFigureSVG", "stationaryWallRecursiveRegularizationLadderFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
+    duration_path = Path(
+        decision["stationaryWallRecursiveRegularizationDurationArtifact"]
+    )
+    duration_bytes = duration_path.read_bytes()
+    if hashlib.sha256(duration_bytes).hexdigest() != decision[
+        "stationaryWallRecursiveRegularizationDurationArtifactSHA256"
+    ]:
+        raise SystemExit(f"{duration_path} has changed artifact hash")
+    duration = json.loads(duration_bytes)
+    if duration["schemaVersion"] != 1:
+        raise SystemExit(f"{duration_path} has changed schema")
+    if duration["classification"] != decision[
+        "stationaryWallRecursiveRegularizationDurationClassification"
+    ]:
+        raise SystemExit(f"{duration_path} has changed classification")
+    if duration["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{duration_path} no longer uses production Metal")
+    if duration["collisionMode"] != recursive_ladder["limiterMode"]:
+        raise SystemExit(f"{duration_path} has changed collision mode")
+    for key, expected in (
+        ("baselineConvectiveTimes", 5.0),
+        ("requestedConvectiveTimes", 10.0),
+        ("maximumAllowedLateWindowChange", 0.05),
+    ):
+        close(duration[key], expected, 1.0e-14, f"duration {key}")
+    if not duration["diagnosticCompleted"] or not duration["passed"]:
+        raise SystemExit(f"{duration_path} did not complete")
+    if not duration["allIndividualGatesPassed"]:
+        raise SystemExit(f"{duration_path} lost an individual numerical gate")
+    if duration["durationStabilityPassed"]:
+        raise SystemExit(f"{duration_path} must retain unresolved D=8 duration")
+    if duration["baselineWindowBiasConfirmed"]:
+        raise SystemExit(
+            f"{duration_path} must not claim bias before both cases are stable"
+        )
+    duration_cases = duration["cases"]
+    numerical_cases = [item["numericalCase"] for item in duration_cases]
+    if [case["diameterCells"] for case in numerical_cases] != decision[
+        "stationaryWallRecursiveRegularizationDurationDiameterCells"
+    ]:
+        raise SystemExit(f"{duration_path} has changed diameters")
+    if [case["requestedSteps"] for case in numerical_cases] != decision[
+        "stationaryWallRecursiveRegularizationDurationRequestedSteps"
+    ]:
+        raise SystemExit(f"{duration_path} has changed durations")
+    if [item["durationStabilityPassed"] for item in duration_cases] != decision[
+        "stationaryWallRecursiveRegularizationDurationCaseStabilityPassed"
+    ]:
+        raise SystemExit(f"{duration_path} has changed per-case stability")
+    for case_index, item in enumerate(duration_cases):
+        case = item["numericalCase"]
+        if case["minimumObservedPopulation"] <= 0:
+            raise SystemExit(f"{duration_path} lost population positivity")
+        if not all(
+            case[key]
+            for key in (
+                "sourceAwareStabilityPassed",
+                "forceBudgetPassed",
+                "limiterNonIntrusivePassed",
+                "globalLedgerClosed",
+                "controlVolumeOutsideSponge",
+                "passed",
+            )
+        ):
+            raise SystemExit(f"{duration_path} lost a numerical gate")
+        if case["maximumSolidControlSurfaceCrossingLinkCount"] != 0:
+            raise SystemExit(f"{duration_path} control surface crosses solid links")
+        if [sample["step"] for sample in case["samples"]] != list(
+            range(1, case["requestedSteps"] + 1)
+        ):
+            raise SystemExit(f"{duration_path} phase history is not contiguous")
+        window_means = []
+        for window_index in range(10):
+            values = [
+                sample["dragCoefficient"]
+                for sample in case["samples"]
+                if window_index < sample["convectiveTime"] <= window_index + 1
+            ]
+            if not values:
+                raise SystemExit(
+                    f"{duration_path} lost convective window {window_index + 1}"
+                )
+            window_means.append(sum(values) / len(values))
+        expected_windows = decision[
+            "stationaryWallRecursiveRegularizationDurationConvectiveWindowMeanDragCoefficients"
+        ][case_index]
+        for actual, embedded, expected in zip(
+            window_means,
+            item["convectiveWindowMeanDragCoefficients"],
+            expected_windows,
+        ):
+            close(actual, embedded, 1.0e-14, "duration embedded window mean")
+            close(actual, expected, 1.0e-14, "duration locked window mean")
+        derived_changes = (
+            abs(window_means[4] - window_means[3])
+            / max(abs(window_means[4]), 1.0e-30),
+            abs(window_means[9] - window_means[8])
+            / max(abs(window_means[9]), 1.0e-30),
+            abs(window_means[9] - window_means[4])
+            / max(abs(window_means[9]), 1.0e-30),
+        )
+        change_fields = (
+            "fourthToFifthRelativeDragChange",
+            "ninthToTenthRelativeDragChange",
+            "fifthToTenthRelativeDragChange",
+        )
+        decision_fields = (
+            "stationaryWallRecursiveRegularizationDurationFourthToFifthRelativeDragChanges",
+            "stationaryWallRecursiveRegularizationDurationNinthToTenthRelativeDragChanges",
+            "stationaryWallRecursiveRegularizationDurationFifthToTenthRelativeDragChanges",
+        )
+        for actual, item_field, decision_field in zip(
+            derived_changes, change_fields, decision_fields
+        ):
+            close(actual, item[item_field], 1.0e-14, f"duration {item_field}")
+            close(
+                actual,
+                decision[decision_field][case_index],
+                1.0e-14,
+                f"duration locked {item_field}",
+            )
+    for path_key, hash_key in (
+        (
+            "stationaryWallRecursiveRegularizationDurationFigurePNG",
+            "stationaryWallRecursiveRegularizationDurationFigurePNGSHA256",
+        ),
+        (
+            "stationaryWallRecursiveRegularizationDurationFigureSVG",
+            "stationaryWallRecursiveRegularizationDurationFigureSVGSHA256",
+        ),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -1298,6 +2072,91 @@ def main() -> None:
         f"force_source_closed={ledger['forceResidualLedgerClosed']},"
         f"mass_source={ledger['dominantGlobalMassContribution']},"
         f"momentum_source={ledger['dominantControlVolumeMomentumContribution']}"
+    )
+    print(f"geometric_limiter_classification: {geometric['classification']}")
+    print(
+        "geometric_limiter_control_activation_percent: "
+        + ",".join(
+            f"{100.0 * case['controlVolumeLimiterActivationFraction']:.6f}"
+            for case in geometric_cases
+        )
+    )
+    print(
+        "geometric_limiter_finest_drag_change_percent: "
+        f"{100.0 * geometric['relativeFinestTwoDragChange']:.6f}"
+    )
+    print(f"radial_limiter_classification: {radial['classification']}")
+    print(
+        "radial_limiter_final_near_far_percent: "
+        f"{100.0 * radial['finalNearSurfaceLimiterL1Fraction']:.6f},"
+        f"{100.0 * radial['finalFarFieldLimiterL1Fraction']:.6f}"
+    )
+    print(f"bulk_collision_ab_classification: {collision_ab['classification']}")
+    print(
+        "bulk_collision_ab_control_candidate_activation_percent: "
+        f"{100.0 * control['controlVolumeCorrectionActivationFraction']:.6f},"
+        f"{100.0 * candidate['controlVolumeCorrectionActivationFraction']:.6f}"
+    )
+    print(
+        "bulk_collision_ab_candidate_l1_l2_percent: "
+        f"{100.0 * candidate['relativeControlVolumeCorrectionL1']:.6f},"
+        f"{100.0 * candidate['relativeControlVolumeCorrectionL2']:.6f}"
+    )
+    print(
+        "recursive_regularization_ab_classification: "
+        f"{recursive_ab['classification']}"
+    )
+    print(
+        "recursive_regularization_control_candidate_activation_percent: "
+        f"{100.0 * recursive_control['controlVolumeCorrectionActivationFraction']:.6f},"
+        f"{100.0 * recursive_candidate['controlVolumeCorrectionActivationFraction']:.6f}"
+    )
+    print(
+        "recursive_regularization_candidate_l1_l2_percent: "
+        f"{100.0 * recursive_candidate['relativeControlVolumeCorrectionL1']:.6f},"
+        f"{100.0 * recursive_candidate['relativeControlVolumeCorrectionL2']:.6f}"
+    )
+    print(
+        "recursive_regularization_ladder_classification: "
+        f"{recursive_ladder['classification']}"
+    )
+    print(
+        "recursive_regularization_ladder_drag_coefficients: "
+        + ",".join(
+            f"{case['meanDragCoefficientLastConvectiveTime']:.9f}"
+            for case in recursive_ladder_cases
+        )
+    )
+    print(
+        "recursive_regularization_ladder_finest_drag_change_percent: "
+        f"{100.0 * recursive_ladder['relativeFinestTwoDragChange']:.6f}"
+    )
+    print(
+        "recursive_regularization_ladder_fourth_to_fifth_change_percent: "
+        + ",".join(
+            f"{100.0 * value:.6f}"
+            for value in decision[
+                "stationaryWallRecursiveRegularizationLadderFourthToFifthRelativeDragChanges"
+            ]
+        )
+    )
+    print(
+        "recursive_regularization_duration_classification: "
+        f"{duration['classification']}"
+    )
+    print(
+        "recursive_regularization_duration_ninth_to_tenth_change_percent: "
+        + ",".join(
+            f"{100.0 * item['ninthToTenthRelativeDragChange']:.6f}"
+            for item in duration_cases
+        )
+    )
+    print(
+        "recursive_regularization_duration_fifth_to_tenth_change_percent: "
+        + ",".join(
+            f"{100.0 * item['fifthToTenthRelativeDragChange']:.6f}"
+            for item in duration_cases
+        )
     )
     print("passed: true")
 

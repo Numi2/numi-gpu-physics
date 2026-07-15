@@ -59,6 +59,7 @@ REQUIRED_KERNELS = {
     "captureTRTCollisionDecomposition",
     "captureSymmetricLimiterLedger",
     "reduceSymmetricLimiterLedger",
+    "reduceSymmetricLimiterRadialBins",
     "integrateBirdBody",
 }
 
@@ -431,6 +432,7 @@ def main() -> int:
         "captureTRTCollisionDecomposition": 8,
         "captureSymmetricLimiterLedger": 7,
         "reduceSymmetricLimiterLedger": 3,
+        "reduceSymmetricLimiterRadialBins": 7,
         "integrateBirdBody": 4,
     }
     for kernel, count in expected_buffers.items():
@@ -545,6 +547,11 @@ def main() -> int:
             "private func encodeConservationLedgerReduction(",
             ["conservationLedgerCells", "conservationLedgerPartials", "cellCount"],
             ["input", "output", "inputCount"],
+        ),
+        "reduceSymmetricLimiterRadialBins": (
+            "private func encodeRadialLimiterReduction(",
+            ["conservationLedgerCells", "nextSolid", "radialLimiterBins", "uniforms", "ledgerBounds", "parameters", "diameterCells"],
+            ["cells", "solidCurrent", "bins", "uniforms", "bounds", "parameters", "diameterCells"],
         ),
         "reduceForceTorque": (
             "private func encodeReduction(",

@@ -194,8 +194,20 @@ struct GPUSymmetricLimiterLedger {
     float4 spongeControl;
     float4 boundaryActivated;
     float4 spongeActivated;
+    // x/y: positivity-correction L1 and squared L2; z/w: unbounded
+    // selected-collision L1 and squared L2 increment. Diagnostic-only.
+    float4 limiterNorms;
+    float4 limiterControlNorms;
     uint4 counts;
     uint4 activatedCounts;
+};
+
+/// Diagnostic-only spatial reduction. Norms use the same layout as
+/// GPUSymmetricLimiterLedger.limiterNorms. Counts are fluid cells, activated
+/// cells, boundary links, and activated boundary links respectively.
+struct GPUSymmetricLimiterRadialBin {
+    float4 norms;
+    uint4 counts;
 };
 
 struct GPUControlVolumeBounds {
@@ -2136,13 +2148,159 @@ kernel void stepFluidTRT(
             );
             float capturedDensity = 0.0f;
             float3 capturedMomentum = float3(0);
+            bool positivityPreservingRecursiveRegularizedCollision =
+                uniforms.caseParameters.w < -3.5f;
+            bool positivityPreservingRegularizedCollision =
+                uniforms.caseParameters.w < -2.5f;
             bool symmetricPositivityLimiter =
-                uniforms.caseParameters.w < -1.5f;
+                uniforms.caseParameters.w < -1.5f
+                && !positivityPreservingRegularizedCollision;
 
             // Preserve the production/control arithmetic literally. Even an
             // algebraically equivalent regrouping perturbs the low-margin c16
             // trajectory before the diagnostic limiter first activates.
-            if (!symmetricPositivityLimiter) {
+            if (positivityPreservingRegularizedCollision) {
+                // Projection-based regularization retains only the second-order
+                // non-equilibrium Hermite tensor. The unbounded BGK relaxation
+                // therefore filters unsupported ghost modes while preserving
+                // the density, momentum, and viscosity selected by omegaPlus.
+                float3 diagonalStress = float3(0);
+                float3 offDiagonalStress = float3(0);
+                for (uint q = 0; q < Q; ++q) {
+                    float3 direction = float3(C[q]);
+                    float nonequilibrium = f[q] - feq[q];
+                    diagonalStress += nonequilibrium * float3(
+                        direction.x * direction.x - CS2,
+                        direction.y * direction.y - CS2,
+                        direction.z * direction.z - CS2
+                    );
+                    offDiagonalStress += nonequilibrium * float3(
+                        direction.x * direction.y,
+                        direction.x * direction.z,
+                        direction.y * direction.z
+                    );
+                }
+
+                // Recursive regularization closes the supported third-order
+                // Hermite moments from velocity and the projected stress.
+                // D3Q19 has only these six mixed modes: pure cubic Hermites
+                // vanish and xyz is unsupported because there are no body
+                // diagonals in the stencil.
+                float aXxy = 2.0f * macroscopicVelocity.x
+                    * offDiagonalStress.x
+                    + macroscopicVelocity.y * diagonalStress.x;
+                float aXxz = 2.0f * macroscopicVelocity.x
+                    * offDiagonalStress.y
+                    + macroscopicVelocity.z * diagonalStress.x;
+                float aXyy = macroscopicVelocity.x * diagonalStress.y
+                    + 2.0f * macroscopicVelocity.y
+                        * offDiagonalStress.x;
+                float aXzz = macroscopicVelocity.x * diagonalStress.z
+                    + 2.0f * macroscopicVelocity.z
+                        * offDiagonalStress.y;
+                float aYyz = 2.0f * macroscopicVelocity.y
+                    * offDiagonalStress.z
+                    + macroscopicVelocity.z * diagonalStress.y;
+                float aYzz = macroscopicVelocity.y * diagonalStress.z
+                    + 2.0f * macroscopicVelocity.z
+                        * offDiagonalStress.z;
+
+                float unboundedPost[19];
+                float positivityScale = 1.0f;
+                constexpr float inverseTwoCS4 = 4.5f;
+                constexpr float inverseTwoCS6 = 13.5f;
+                for (uint q = 0; q < Q; ++q) {
+                    float3 direction = float3(C[q]);
+                    float contraction = dot(
+                        float3(
+                            direction.x * direction.x - CS2,
+                            direction.y * direction.y - CS2,
+                            direction.z * direction.z - CS2
+                        ),
+                        diagonalStress
+                    ) + 2.0f * dot(
+                        float3(
+                            direction.x * direction.y,
+                            direction.x * direction.z,
+                            direction.y * direction.z
+                        ),
+                        offDiagonalStress
+                    );
+                    float recursiveThirdOrder = 0.0f;
+                    if (positivityPreservingRecursiveRegularizedCollision) {
+                        recursiveThirdOrder =
+                            direction.y
+                                * (direction.x * direction.x - CS2)
+                                * aXxy
+                            + direction.z
+                                * (direction.x * direction.x - CS2)
+                                * aXxz
+                            + direction.x
+                                * (direction.y * direction.y - CS2)
+                                * aXyy
+                            + direction.x
+                                * (direction.z * direction.z - CS2)
+                                * aXzz
+                            + direction.z
+                                * (direction.y * direction.y - CS2)
+                                * aYyz
+                            + direction.y
+                                * (direction.z * direction.z - CS2)
+                                * aYzz;
+                    }
+                    float regularizedNonequilibrium = W[q]
+                        * inverseTwoCS4 * contraction;
+                    if (positivityPreservingRecursiveRegularizedCollision) {
+                        regularizedNonequilibrium += W[q]
+                            * inverseTwoCS6 * recursiveThirdOrder;
+                    }
+                    float candidate = feq[q]
+                        + (1.0f - omegaPlus)
+                            * regularizedNonequilibrium;
+                    unboundedPost[q] = candidate;
+                    float populationFloor = max(
+                        1.0e-12f,
+                        1.0e-6f * max(feq[q], 0.0f)
+                    );
+                    if (candidate < populationFloor) {
+                        float admissible = clamp(
+                            (feq[q] - populationFloor)
+                                / max(feq[q] - candidate, 1.0e-30f),
+                            0.0f,
+                            1.0f
+                        );
+                        positivityScale = min(
+                            positivityScale,
+                            admissible
+                        );
+                    }
+                }
+
+                if (positivityScale < 1.0f) {
+                    limiterActivation = 1.0f;
+                    limiterMaximumRestriction = 1.0f - positivityScale;
+                }
+                for (uint q = 0; q < Q; ++q) {
+                    // A single convex scale retains the conserved moments of
+                    // both equilibrium and the regularized collision state.
+                    float post = feq[q] + positivityScale
+                        * (unboundedPost[q] - feq[q]);
+                    if (sponge > 0.0f) {
+                        float far = equilibrium(
+                            q,
+                            uniforms.farFieldLattice.w,
+                            uniforms.farFieldLattice.xyz
+                        );
+                        post = mix(post, far, sponge);
+                    }
+                    populationsOut[q * uniforms.grid.w + gid] = post;
+                    if (captureFields) {
+                        capturedDensity += post;
+                        capturedMomentum += post * float3(C[q]);
+                    }
+                }
+            }
+            else if (!symmetricPositivityLimiter) {
                 for (uint q = 0; q < Q; ++q) {
                     uint qo = OPP[q];
                     float fPlus = 0.5f * (f[q] + f[qo]);
@@ -2630,6 +2788,8 @@ kernel void captureSymmetricLimiterLedger(
     ledger.spongeControl = float4(0);
     ledger.boundaryActivated = float4(0);
     ledger.spongeActivated = float4(0);
+    ledger.limiterNorms = float4(0);
+    ledger.limiterControlNorms = float4(0);
     ledger.counts = uint4(0);
     ledger.activatedCounts = uint4(0);
 
@@ -2792,53 +2952,158 @@ kernel void captureSymmetricLimiterLedger(
         uniforms.latticeAndSponge.w,
         uniforms.latticeAndSponge.z
     );
-    float symmetricIncrements[19];
-    float antisymmetricIncrements[19];
-    float symmetricScale = 1.0f;
-    for (uint q = 0u; q < Q; ++q) {
-        uint qo = OPP[q];
-        float fPlus = 0.5f * (f[q] + f[qo]);
-        float fMinus = 0.5f * (f[q] - f[qo]);
-        float eqPlus = 0.5f * (feq[q] + feq[qo]);
-        float eqMinus = 0.5f * (feq[q] - feq[qo]);
-        float symmetricIncrement = -omegaPlus * (fPlus - eqPlus);
-        float antisymmetricIncrement = -omegaMinus * (fMinus - eqMinus);
-        symmetricIncrements[q] = symmetricIncrement;
-        antisymmetricIncrements[q] = antisymmetricIncrement;
-        if (symmetricIncrement < 0.0f) {
-            float base = f[q] + antisymmetricIncrement;
+    bool positivityPreservingRecursiveRegularizedCollision =
+        uniforms.caseParameters.w < -3.5f;
+    bool positivityPreservingRegularizedCollision =
+        uniforms.caseParameters.w < -2.5f;
+    float unboundedPost[19];
+    float treatedPost[19];
+    float correctionScale = 1.0f;
+    if (positivityPreservingRegularizedCollision) {
+        float3 diagonalStress = float3(0);
+        float3 offDiagonalStress = float3(0);
+        for (uint q = 0u; q < Q; ++q) {
+            float3 direction = float3(C[q]);
+            float nonequilibrium = f[q] - feq[q];
+            diagonalStress += nonequilibrium * float3(
+                direction.x * direction.x - CS2,
+                direction.y * direction.y - CS2,
+                direction.z * direction.z - CS2
+            );
+            offDiagonalStress += nonequilibrium * float3(
+                direction.x * direction.y,
+                direction.x * direction.z,
+                direction.y * direction.z
+            );
+        }
+        float aXxy = 2.0f * velocity.x * offDiagonalStress.x
+            + velocity.y * diagonalStress.x;
+        float aXxz = 2.0f * velocity.x * offDiagonalStress.y
+            + velocity.z * diagonalStress.x;
+        float aXyy = velocity.x * diagonalStress.y
+            + 2.0f * velocity.y * offDiagonalStress.x;
+        float aXzz = velocity.x * diagonalStress.z
+            + 2.0f * velocity.z * offDiagonalStress.y;
+        float aYyz = 2.0f * velocity.y * offDiagonalStress.z
+            + velocity.z * diagonalStress.y;
+        float aYzz = velocity.y * diagonalStress.z
+            + 2.0f * velocity.z * offDiagonalStress.z;
+        constexpr float inverseTwoCS4 = 4.5f;
+        constexpr float inverseTwoCS6 = 13.5f;
+        for (uint q = 0u; q < Q; ++q) {
+            float3 direction = float3(C[q]);
+            float contraction = dot(
+                float3(
+                    direction.x * direction.x - CS2,
+                    direction.y * direction.y - CS2,
+                    direction.z * direction.z - CS2
+                ),
+                diagonalStress
+            ) + 2.0f * dot(
+                float3(
+                    direction.x * direction.y,
+                    direction.x * direction.z,
+                    direction.y * direction.z
+                ),
+                offDiagonalStress
+            );
+            float recursiveThirdOrder = 0.0f;
+            if (positivityPreservingRecursiveRegularizedCollision) {
+                recursiveThirdOrder =
+                    direction.y * (direction.x * direction.x - CS2)
+                        * aXxy
+                    + direction.z * (direction.x * direction.x - CS2)
+                        * aXxz
+                    + direction.x * (direction.y * direction.y - CS2)
+                        * aXyy
+                    + direction.x * (direction.z * direction.z - CS2)
+                        * aXzz
+                    + direction.z * (direction.y * direction.y - CS2)
+                        * aYyz
+                    + direction.y * (direction.z * direction.z - CS2)
+                        * aYzz;
+            }
+            float regularizedNonequilibrium = W[q]
+                * inverseTwoCS4 * contraction;
+            if (positivityPreservingRecursiveRegularizedCollision) {
+                regularizedNonequilibrium += W[q]
+                    * inverseTwoCS6 * recursiveThirdOrder;
+            }
+            float candidate = feq[q]
+                + (1.0f - omegaPlus) * regularizedNonequilibrium;
+            unboundedPost[q] = candidate;
             float populationFloor = max(
                 1.0e-12f,
                 1.0e-6f * max(feq[q], 0.0f)
             );
-            if (base + symmetricIncrement < populationFloor) {
-                float candidate = clamp(
-                    (base - populationFloor)
-                        / max(-symmetricIncrement, 1.0e-30f),
+            if (candidate < populationFloor) {
+                float admissible = clamp(
+                    (feq[q] - populationFloor)
+                        / max(feq[q] - candidate, 1.0e-30f),
                     0.0f,
                     1.0f
                 );
-                symmetricScale = min(symmetricScale, candidate);
+                correctionScale = min(correctionScale, admissible);
             }
+        }
+        for (uint q = 0u; q < Q; ++q) {
+            treatedPost[q] = feq[q] + correctionScale
+                * (unboundedPost[q] - feq[q]);
+        }
+    }
+    else {
+        float symmetricIncrements[19];
+        float antisymmetricIncrements[19];
+        for (uint q = 0u; q < Q; ++q) {
+            uint qo = OPP[q];
+            float fPlus = 0.5f * (f[q] + f[qo]);
+            float fMinus = 0.5f * (f[q] - f[qo]);
+            float eqPlus = 0.5f * (feq[q] + feq[qo]);
+            float eqMinus = 0.5f * (feq[q] - feq[qo]);
+            float symmetricIncrement = -omegaPlus * (fPlus - eqPlus);
+            float antisymmetricIncrement = -omegaMinus
+                * (fMinus - eqMinus);
+            symmetricIncrements[q] = symmetricIncrement;
+            antisymmetricIncrements[q] = antisymmetricIncrement;
+            if (symmetricIncrement < 0.0f) {
+                float base = f[q] + antisymmetricIncrement;
+                float populationFloor = max(
+                    1.0e-12f,
+                    1.0e-6f * max(feq[q], 0.0f)
+                );
+                if (base + symmetricIncrement < populationFloor) {
+                    float candidate = clamp(
+                        (base - populationFloor)
+                            / max(-symmetricIncrement, 1.0e-30f),
+                        0.0f,
+                        1.0f
+                    );
+                    correctionScale = min(correctionScale, candidate);
+                }
+            }
+        }
+        for (uint q = 0u; q < Q; ++q) {
+            uint qo = OPP[q];
+            float fPlus = 0.5f * (f[q] + f[qo]);
+            float fMinus = 0.5f * (f[q] - f[qo]);
+            float eqPlus = 0.5f * (feq[q] + feq[qo]);
+            float eqMinus = 0.5f * (feq[q] - feq[qo]);
+            unboundedPost[q] = f[q]
+                - omegaPlus * (fPlus - eqPlus)
+                - omegaMinus * (fMinus - eqMinus);
+            treatedPost[q] = correctionScale < 1.0f
+                ? f[q]
+                    + correctionScale * symmetricIncrements[q]
+                    + antisymmetricIncrements[q]
+                : unboundedPost[q];
         }
     }
 
-    bool activated = symmetricScale < 1.0f;
+    bool activated = correctionScale < 1.0f;
     bool inControl = insideControlVolume(int3(cell), bounds);
     for (uint q = 0u; q < Q; ++q) {
-        uint qo = OPP[q];
-        float fPlus = 0.5f * (f[q] + f[qo]);
-        float fMinus = 0.5f * (f[q] - f[qo]);
-        float eqPlus = 0.5f * (feq[q] + feq[qo]);
-        float eqMinus = 0.5f * (feq[q] - feq[qo]);
-        float unlimited = f[q]
-            - omegaPlus * (fPlus - eqPlus)
-            - omegaMinus * (fMinus - eqMinus);
-        float limited = activated
-            ? f[q]
-                + symmetricScale * symmetricIncrements[q]
-                + antisymmetricIncrements[q]
-            : unlimited;
+        float unlimited = unboundedPost[q];
+        float limited = treatedPost[q];
         float actual = populationsOut[q * uniforms.grid.w + gid];
         float collisionDelta = unlimited - f[q];
         float limiterDelta = limited - unlimited;
@@ -2859,10 +3124,18 @@ kernel void captureSymmetricLimiterLedger(
         ledger.collisionGlobal += collisionTerm;
         ledger.limiterGlobal += limiterTerm;
         ledger.spongeGlobal += spongeTerm;
+        float4 limiterNorm = float4(
+            abs(limiterDelta),
+            limiterDelta * limiterDelta,
+            abs(collisionDelta),
+            collisionDelta * collisionDelta
+        );
+        ledger.limiterNorms += limiterNorm;
         if (inControl) {
             ledger.collisionControl += collisionTerm;
             ledger.limiterControl += limiterTerm;
             ledger.spongeControl += spongeTerm;
+            ledger.limiterControlNorms += limiterNorm;
         }
     }
 
@@ -2907,6 +3180,8 @@ kernel void reduceSymmetricLimiterLedger(
     total.spongeControl = float4(0);
     total.boundaryActivated = float4(0);
     total.spongeActivated = float4(0);
+    total.limiterNorms = float4(0);
+    total.limiterControlNorms = float4(0);
     total.counts = uint4(0);
     total.activatedCounts = uint4(0);
     uint end = min(start + 256u, inputCount);
@@ -2922,10 +3197,83 @@ kernel void reduceSymmetricLimiterLedger(
         total.spongeControl += input[index].spongeControl;
         total.boundaryActivated += input[index].boundaryActivated;
         total.spongeActivated += input[index].spongeActivated;
+        total.limiterNorms += input[index].limiterNorms;
+        total.limiterControlNorms += input[index].limiterControlNorms;
         total.counts += input[index].counts;
         total.activatedCounts += input[index].activatedCounts;
     }
     output[gid] = total;
+}
+
+/// Deterministically localizes an already captured limiter ledger into eight
+/// shells outside the stationary sphere. Each output covers the same 256-cell
+/// block as the global ledger reduction so the host can close shell sums
+/// without a different long floating-point accumulation. Seven edges are
+/// measured in sphere diameters: 1/16, 1/8, 1/4, 1/2, 1, 2, and 3. Only the
+/// sponge-excluded control volume contributes.
+kernel void reduceSymmetricLimiterRadialBins(
+    device const GPUSymmetricLimiterLedger* cells [[buffer(0)]],
+    device const uchar* solidCurrent [[buffer(1)]],
+    device GPUSymmetricLimiterRadialBin* bins [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    constant GPUControlVolumeBounds& bounds [[buffer(4)]],
+    constant GPUTranslatingSphereParameters& parameters [[buffer(5)]],
+    constant float& diameterCells [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    constexpr uint binCount = 8u;
+    uint bin = gid % binCount;
+    uint block = gid / binCount;
+    uint start = block * 256u;
+    if (start >= uniforms.grid.w) {
+        return;
+    }
+    constexpr float edges[7] = {
+        0.0625f,
+        0.125f,
+        0.25f,
+        0.5f,
+        1.0f,
+        2.0f,
+        3.0f
+    };
+    float4 norms = float4(0);
+    uint4 counts = uint4(0);
+    float3 center = parameters.initialCenterAndRadius.xyz;
+    float radius = parameters.initialCenterAndRadius.w;
+    uint end = min(start + 256u, uniforms.grid.w);
+    for (uint cellIndex = start; cellIndex < end; ++cellIndex) {
+        if (solidCurrent[cellIndex] != 0) {
+            continue;
+        }
+        uint3 cell = unflatten(cellIndex, uniforms.grid.xyz);
+        if (!insideControlVolume(int3(cell), bounds)) {
+            continue;
+        }
+        float surfaceDistanceDiameters = max(
+            0.0f,
+            (length(float3(cell) + 0.5f - center) - radius)
+                / diameterCells
+        );
+        uint selectedBin = 0u;
+        while (selectedBin + 1u < binCount
+            && surfaceDistanceDiameters >= edges[selectedBin]) {
+            selectedBin += 1u;
+        }
+        if (selectedBin != bin) {
+            continue;
+        }
+        GPUSymmetricLimiterLedger ledger = cells[cellIndex];
+        norms += ledger.limiterNorms;
+        counts += uint4(
+            1u,
+            ledger.counts.x,
+            ledger.counts.y,
+            ledger.activatedCounts.x
+        );
+    }
+    bins[gid].norms = norms;
+    bins[gid].counts = counts;
 }
 
 /// Captures P(n) and the exact streaming flux before geometry reuses dormant

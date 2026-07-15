@@ -1002,6 +1002,438 @@ func productionMetalStationaryWallC16LimiterPassesSourceAwareAcceptance()
 }
 
 @Test
+func productionMetalGeometricLimiterLadderBlocksNonConvergedPromotion()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallGeometricLimiterLadder()
+
+    #expect(
+        report.classification
+            == "stationary-wall-geometric-limiter-ladder-not-accepted"
+    )
+    #expect(report.cases.map(\.diameterCells) == [8, 12, 16])
+    #expect(
+        report.cases.map(\.domainCells) == [
+            SIMD3<Int>(80, 48, 48),
+            SIMD3<Int>(120, 72, 72),
+            SIMD3<Int>(160, 96, 96),
+        ]
+    )
+    #expect(report.cases.map(\.requestedSteps) == [500, 750, 1_000])
+    #expect(report.cases.allSatisfy {
+        $0.minimumObservedPopulation! > 0
+            && $0.sourceAwareStabilityPassed
+            && $0.forceBudgetPassed
+            && !$0.limiterNonIntrusivePassed
+            && !$0.passed
+            && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && $0.controlVolumeOutsideSponge
+            && $0.globalLedgerClosed
+    })
+    #expect(
+        report.cases.map(\.limiterActivationFraction) == [
+            0.032_554_785_156_25,
+            0.061_734_134_945_130_32,
+            0.073_959_859_212_239_59,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeLimiterL1Correction) == [
+            0.039_466_866_773_455_86,
+            0.060_925_142_060_480_24,
+            0.060_801_055_789_557_98,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeLimiterL2Correction) == [
+            0.120_882_998_429_520_5,
+            0.143_460_069_513_615_34,
+            0.138_081_972_217_033_08,
+        ]
+    )
+    #expect(
+        report.cases.map(\.controlVolumeLimiterActivationFraction) == [
+            0.035_294_635_416_666_664,
+            0.066_522_040_466_392_32,
+            0.080_699_371_744_791_66,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL1Correction) == [
+            0.033_979_475_908_227_016,
+            0.058_723_323_395_726_42,
+            0.061_685_687_048_698_354,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL2Correction) == [
+            0.117_068_803_764_230_1,
+            0.147_424_460_209_431_98,
+            0.145_388_060_159_023_25,
+        ]
+    )
+    #expect(
+        abs(report.relativeFinestTwoDragChange
+            - 0.148_124_168_221_390_2) < 1.0e-12
+    )
+    #expect(!report.limiterActivationNonIncreasing)
+    #expect(!report.limiterCorrectionNonIncreasing)
+    #expect(report.observedDragConvergenceOrder == nil)
+    #expect(report.richardsonExtrapolatedDragCoefficient == nil)
+    #expect(report.fineGridConvergenceIndex == nil)
+    #expect(!report.passed)
+}
+
+@Test
+func productionMetalRecursiveRegularizationLadderBlocksForcePromotion()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRecursiveRegularizationLadder()
+
+    #expect(
+        report.classification
+            == "stationary-wall-recursive-regularization-ladder-not-accepted"
+    )
+    #expect(report.cases.map(\.diameterCells) == [8, 12, 16])
+    #expect(
+        report.cases.map(\.domainCells) == [
+            SIMD3<Int>(80, 48, 48),
+            SIMD3<Int>(120, 72, 72),
+            SIMD3<Int>(160, 96, 96),
+        ]
+    )
+    #expect(report.cases.map(\.requestedSteps) == [500, 750, 1_000])
+    #expect(report.cases.allSatisfy {
+        $0.minimumObservedPopulation! > 0
+            && $0.sourceAwareStabilityPassed
+            && $0.forceBudgetPassed
+            && $0.limiterNonIntrusivePassed
+            && $0.passed
+            && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && $0.controlVolumeOutsideSponge
+            && $0.globalLedgerClosed
+    })
+    #expect(
+        report.cases.map(\.meanDragCoefficientLastConvectiveTime) == [
+            1.320_419_274_473_607_9,
+            0.937_999_642_875_562_3,
+            1.047_765_781_965_056,
+        ]
+    )
+    #expect(
+        report.cases.map(\.controlVolumeLimiterActivationFraction) == [
+            0.000_135_208_333_333_333_34,
+            0.000_108_731_138_545_953_36,
+            0.000_064_514_973_958_333_33,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL1Correction) == [
+            0.000_243_629_770_367_964_17,
+            0.000_234_932_111_125_003_3,
+            0.000_193_226_315_210_837_67,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL2Correction) == [
+            0.004_133_143_671_728_516,
+            0.003_779_166_883_736_146,
+            0.003_527_852_471_536_101_6,
+        ]
+    )
+    #expect(
+        report.relativeFinestTwoDragChange
+            == 0.104_762_095_669_540_23
+    )
+    #expect(report.limiterActivationNonIncreasing)
+    #expect(report.limiterCorrectionNonIncreasing)
+    #expect(report.observedDragConvergenceOrder == nil)
+    #expect(report.richardsonExtrapolatedDragCoefficient == nil)
+    #expect(report.fineGridConvergenceIndex == nil)
+    #expect(!report.passed)
+}
+
+@Test
+func productionMetalRecursiveRegularizationDurationIsolatedToCoarseGrid()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRecursiveRegularizationDurationSensitivity()
+
+    #expect(report.diagnosticCompleted)
+    #expect(report.passed)
+    #expect(report.allIndividualGatesPassed)
+    #expect(!report.durationStabilityPassed)
+    #expect(!report.baselineWindowBiasConfirmed)
+    #expect(
+        report.classification
+            == "stationary-wall-recursive-regularization-duration-sensitivity-unresolved"
+    )
+    #expect(report.cases.map(\.numericalCase.diameterCells) == [8, 12])
+    #expect(report.cases.map(\.numericalCase.requestedSteps) == [1_000, 1_500])
+    #expect(report.cases.map(\.durationStabilityPassed) == [false, true])
+    #expect(report.cases.allSatisfy {
+        $0.convectiveWindowMeanDragCoefficients.count == 10
+            && $0.numericalCase.minimumObservedPopulation! > 0
+            && $0.numericalCase.sourceAwareStabilityPassed
+            && $0.numericalCase.forceBudgetPassed
+            && $0.numericalCase.limiterNonIntrusivePassed
+            && $0.numericalCase.passed
+    })
+    #expect(
+        report.cases.map(\.convectiveWindowMeanDragCoefficients) == [
+            [
+                2.369_455_981_679_001_5,
+                1.408_184_798_511_469_5,
+                1.731_478_738_960_702_7,
+                1.472_755_450_406_484_4,
+                1.320_419_274_473_607_4,
+                1.096_411_397_415_869,
+                0.915_080_342_850_593_9,
+                0.888_956_676_225_704_2,
+                1.500_565_699_113_433_5,
+                1.021_846_406_462_214_4,
+            ],
+            [
+                1.984_614_267_531_931_4,
+                1.206_195_965_715_711_7,
+                1.232_629_458_775_543,
+                1.062_570_391_176_398,
+                0.937_999_642_875_561_6,
+                1.043_141_320_901_888_3,
+                0.854_767_216_137_004_2,
+                0.957_864_771_781_523_6,
+                0.959_717_456_202_050_5,
+                0.918_010_967_125_758_7,
+            ],
+        ]
+    )
+    #expect(
+        abs(report.cases[0].ninthToTenthRelativeDragChange
+            - 0.468_484_587_922_188_06) < 1.0e-12
+    )
+    #expect(
+        abs(report.cases[1].ninthToTenthRelativeDragChange
+            - 0.045_431_362_554_275_93) < 1.0e-12
+    )
+    #expect(
+        abs(report.cases[0].fifthToTenthRelativeDragChange
+            - 0.292_189_575_774_990_6) < 1.0e-12
+    )
+    #expect(
+        abs(report.cases[1].fifthToTenthRelativeDragChange
+            - 0.021_773_896_462_682_064) < 1.0e-12
+    )
+}
+
+@Test
+func productionMetalRadialLimiterLocalizationConfirmsBulkSpread()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRadialLimiterLocalization()
+
+    #expect(
+        report.classification
+            == "stationary-wall-c16-limiter-spreads-beyond-one-diameter"
+    )
+    #expect(report.diameterCells == 16)
+    #expect(report.domainCells == SIMD3<Int>(160, 96, 96))
+    #expect(report.requestedSteps == 1_000)
+    #expect(report.firstLimiterActivationStep == 15)
+    #expect(report.captureSteps == [15, 100, 250, 500, 750, 1_000])
+    #expect(report.snapshots.count == 6)
+    #expect(report.snapshots.allSatisfy {
+        $0.bins.count == 8
+            && $0.controlVolumeActivatedCellCount
+                == $0.radialActivatedCellCount
+    })
+    #expect(report.populationPositivityPassed)
+    #expect(report.controlVolumeIsolationPassed)
+    #expect(report.radialClosurePassed)
+    #expect(
+        report.maximumObservedRadialClosureResidual
+            == 8.020_495_835_516_945e-7
+    )
+    #expect(
+        report.snapshots.map(\.nearSurfaceLimiterL1Fraction) == [
+            1.0,
+            0.978_399_312_519_672_6,
+            0.615_454_825_060_189_7,
+            0.088_729_193_613_708_62,
+            0.014_959_690_373_206_012,
+            0.011_087_400_338_434_607,
+        ]
+    )
+    #expect(
+        report.snapshots.map(\.farFieldLimiterL1Fraction) == [
+            0.0,
+            0.0,
+            0.0,
+            0.615_804_579_684_624_1,
+            0.846_335_207_430_926_7,
+            0.885_807_187_892_694_4,
+        ]
+    )
+    #expect(
+        report.snapshots.last!.bins.map(\.activatedCellCount) == [
+            525, 639, 1_615, 5_144, 20_518, 105_636, 102_338, 6_289,
+        ]
+    )
+    #expect(
+        report.snapshots.last!.bins.map(\.boundaryLinkCount) == [
+            4_416, 288, 0, 0, 0, 0, 0, 0,
+        ]
+    )
+    #expect(!report.boundaryLocalized)
+    #expect(report.passed)
+}
+
+@Test
+func productionMetalBulkCollisionABRejectsNarrowL2GateMiss()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallBulkCollisionOperatorAB()
+
+    #expect(
+        report.classification
+            == "stationary-wall-c16-regularized-candidate-rejected"
+    )
+    #expect(report.diameterCells == 16)
+    #expect(report.domainCells == SIMD3<Int>(160, 96, 96))
+    #expect(report.requestedSteps == 1_000)
+    #expect(report.requestedConvectiveTimes == 5)
+    #expect(report.maximumAllowedRelativeRMSForceResidual == 5.0e-3)
+    #expect(report.maximumAllowedPeakForceResidualRatio == 1.0e-3)
+    #expect(
+        report.maximumAllowedCorrectionActivationFraction == 5.0e-2
+    )
+    #expect(report.maximumAllowedRelativeCorrection == 1.0e-2)
+    #expect(report.control.operatorName == "symmetric-limited-trt")
+    #expect(
+        report.candidate.operatorName
+            == "positivity-preserving-regularized-bgk"
+    )
+    #expect(report.control.populationPositivityPassed)
+    #expect(report.control.forceBudgetPassed)
+    #expect(report.control.globalLedgerClosed)
+    #expect(report.candidate.populationPositivityPassed)
+    #expect(report.candidate.forceBudgetPassed)
+    #expect(report.candidate.globalLedgerClosed)
+    #expect(report.candidate.radialCaptureCompleted)
+    #expect(
+        report.control.controlVolumeCorrectionActivationFraction
+            == 0.080_699_371_744_791_66
+    )
+    #expect(
+        report.candidate.controlVolumeCorrectionActivationFraction
+            == 0.000_280_282_118_055_555_54
+    )
+    #expect(
+        report.candidate.relativeControlVolumeCorrectionL1
+            == 0.000_530_436_675_618_787_3
+    )
+    #expect(
+        report.candidate.relativeControlVolumeCorrectionL2
+            == 0.010_968_289_256_290_249
+    )
+    #expect(
+        report.candidate.maximumObservedRadialClosureResidual
+            == 6.833_866_619_265_361e-9
+    )
+    #expect(
+        report.candidate.conservativeRelativeRMSForceResidual
+            == 0.001_206_533_568_215_771_8
+    )
+    #expect(
+        report.candidate.maximumForceBudgetResidualRatio
+            == 0.000_700_797_686_941_622_9
+    )
+    #expect(report.candidateToControlActivationRatio < 0.0035)
+    #expect(report.candidateToControlCorrectionL1Ratio < 0.0087)
+    #expect(!report.candidate.correctionNonIntrusivePassed)
+    #expect(!report.candidateEligibleForRefinement)
+    #expect(report.gridConvergenceStillRequired)
+    #expect(report.diagnosticCompleted)
+    #expect(report.passed)
+}
+
+@Test
+func productionMetalRecursiveRegularizationABClearsLockedGates()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRecursiveRegularizationAB()
+
+    #expect(
+        report.classification
+            == "stationary-wall-c16-recursive-regularized-candidate-eligible-for-refinement"
+    )
+    #expect(report.diameterCells == 16)
+    #expect(report.domainCells == SIMD3<Int>(160, 96, 96))
+    #expect(report.requestedSteps == 1_000)
+    #expect(report.requestedConvectiveTimes == 5)
+    #expect(report.maximumAllowedRelativeRMSForceResidual == 5.0e-3)
+    #expect(report.maximumAllowedPeakForceResidualRatio == 1.0e-3)
+    #expect(
+        report.maximumAllowedCorrectionActivationFraction == 5.0e-2
+    )
+    #expect(report.maximumAllowedRelativeCorrection == 1.0e-2)
+    #expect(
+        report.control.operatorName
+            == "positivity-preserving-regularized-bgk"
+    )
+    #expect(
+        report.candidate.operatorName
+            == "positivity-preserving-recursive-regularized-bgk"
+    )
+    #expect(report.candidate.populationPositivityPassed)
+    #expect(report.candidate.forceBudgetPassed)
+    #expect(report.candidate.globalLedgerClosed)
+    #expect(report.candidate.radialCaptureCompleted)
+    #expect(
+        report.candidate.controlVolumeCorrectionActivationFraction
+            == 0.000_064_514_973_958_333_33
+    )
+    #expect(
+        report.candidate.relativeControlVolumeCorrectionL1
+            == 0.000_193_226_315_210_837_67
+    )
+    #expect(
+        report.candidate.relativeControlVolumeCorrectionL2
+            == 0.003_527_852_471_536_101_6
+    )
+    #expect(
+        report.candidate.maximumObservedRadialClosureResidual
+            == 4.786_849_790_866_838_3e-8
+    )
+    #expect(
+        report.candidate.conservativeRelativeRMSForceResidual
+            == 0.001_606_350_268_579_750_8
+    )
+    #expect(
+        report.candidate.maximumForceBudgetResidualRatio
+            == 0.000_799_085_929_176_518_1
+    )
+    #expect(report.candidateToControlActivationRatio < 0.231)
+    #expect(report.candidateToControlCorrectionL1Ratio < 0.365)
+    #expect(report.candidate.correctionNonIntrusivePassed)
+    #expect(report.candidateEligibleForRefinement)
+    #expect(report.gridConvergenceStillRequired)
+    #expect(report.diagnosticCompleted)
+    #expect(report.passed)
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

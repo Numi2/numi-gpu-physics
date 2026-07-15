@@ -884,9 +884,213 @@ is `5.37373e-5` (`0.00537%`) under the `0.5%` gate. Boundary load retains
 passes; the limiter is promoted to the locked c8/c12/c16 stationary-sphere
 refinement ladder, not yet to coupled bird replay.
 
-That ladder is now the highest-ROI gate. It tests whether the accepted c16
-correction is resolution-robust before the limiter can alter any expensive
-measured-bird simulation.
+The promoted geometric ladder is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --geometric-limiter-ladder \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-geometric-limiter-refinement.json
+```
+
+It holds the physical geometry and duration fixed while refining from 8 to 12
+to 16 cells per diameter. The domains are `10D x 6D x 6D`, the sphere center is
+`3D` from the inlet, the sponge is `0.5D`, and every case runs for `5 tU/D` at
+`Re=9367.4`, lattice speed `0.08`, and Mach `0.1386`. All three cases remain
+finite and positive, close the global source ledger, pass the local force
+budget, and keep both sponge cells and solid links off the control surface.
+
+The predeclared non-intrusiveness and convergence gates fail. Inside the
+sponge-excluded control volume, limiter activation grows from `3.53%` to
+`6.65%` to `8.07%`; limiter-to-collision correction is
+`3.40%/5.87%/6.17%` in L1 and `11.71%/14.74%/14.54%` in L2. Mean drag is
+`1.8056`, `2.4725`, and `2.1535`; the finest-two change is `14.81%` against a
+`5%` gate and is non-monotonic, so no observed order, Richardson extrapolate,
+or GCI is reported. This proves the failure is not a sponge artifact. It also
+blocks promotion to flapping or measured-bird replay without relaxing any
+threshold. The full phase histories and paper-ready figure are archived in
+`ValidationArtifacts/measured-wing-stationary-wall-geometric-limiter-refinement.json`
+and `ValidationArtifacts/Figures/stationary-wall-geometric-limiter-refinement.svg`.
+
+The next admissible physics step is a controlled collision-operator A/B on
+this same ladder, preceded by radial localization of limiter corrections. It
+must reduce interior intervention and restore convergence before another
+bird-scale run is justified.
+
+The D=16 radial localization is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --radial-limiter-localization \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-radial-limiter-localization.json
+```
+
+It reuses the accepted source-aware control volume and captures the known first
+activation at step 15 plus steps 100, 250, 500, 750, and 1,000. A deterministic
+GPU reduction partitions the physical flow into eight shells with outer edges
+at `1/16`, `1/8`, `1/4`, `1/2`, `1`, `2`, and `3` sphere diameters from the
+surface. Every shell sum closes back to the independent control-volume ledger;
+the maximum relative closure residual is `8.02e-7` under the predeclared
+`1e-4` gate.
+
+The limiter starts at the curved wall: at `tU/D=0.075`, all correction and all
+40 activated control-volume cells are within one lattice cell of the surface.
+It then propagates outward. At `tU/D=2.5`, `61.58%` of limiter L1 is already
+beyond `1D`; by `tU/D=5`, the fraction is `88.58%`, while only `1.11%` remains
+within `0.25D`. Activated-cell shares give the same result (`88.28%` beyond
+`1D`, `1.15%` within `0.25D`). The predeclared boundary-localization contract
+required at least `80%` near-surface correction and no more than `5%` beyond
+`1D`, so it fails by a wide margin. This rules out a boundary-only limiter
+repair and directs the next A/B toward a genuinely positivity-preserving or
+regularized bulk collision model at the same Reynolds number and geometry.
+
+The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-c16-radial-limiter-localization.json`
+and `ValidationArtifacts/Figures/stationary-wall-radial-limiter-localization.svg`.
+
+The locked D=16 bulk collision-operator A/B is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --bulk-collision-operator-ab \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-bulk-collision-operator-ab.json
+```
+
+Both 1,000-step cases retain the radial-localization geometry, `Re=9367.4`,
+`U=0.08`, sponge, control volume, stationary curved-wall reconstruction, load
+estimator, population floor, and capture/reduction kernels. The control is the
+source-aware symmetric-limited TRT treatment. The candidate projects the
+pre-collision nonequilibrium distribution onto its second-order Hermite stress
+tensor, applies the viscosity-setting `omegaPlus` BGK relaxation, then uses one
+cell-local convex scale from equilibrium to the unbounded regularized state.
+The common scale preserves density and momentum while enforcing the same
+positive-population floor. This is the projection-based regularization of
+[Latt and Chopard](https://arxiv.org/abs/physics/0506157), used here only as a
+diagnostic candidate rather than a production-model promotion.
+
+The promotion gates are copied without relaxation from the geometric ladder:
+relative RMS force residual at most `0.5%`, peak force residual ratio at most
+`0.1%`, control-volume correction activation at most `5%`, and both relative L1
+and L2 correction at most `1%`. Population positivity, global source-ledger
+closure, boundary/load closure, sponge exclusion, control-surface isolation,
+and final radial closure are also mandatory.
+
+The regularized candidate remains positive for all 1,000 steps, closes the
+global source ledger, closes its radial reduction to `6.83e-9`, and passes the
+force gates (`0.1207%` relative RMS and `0.0701%` peak ratio). It reduces
+control-volume correction activation from `8.070%` to `0.028%` and relative L1
+correction from `6.169%` to `0.053%`. It is nevertheless rejected: relative L2
+correction is `1.0968%`, above the locked `1.0000%` gate. No D=8/12/16 ladder
+is justified for this candidate. The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-c16-bulk-collision-operator-ab.json`
+and `ValidationArtifacts/Figures/stationary-wall-bulk-collision-operator-ab.svg`.
+
+The follow-up recursive-regularization A/B is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --recursive-regularization-ab \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-recursive-regularization-ab.json
+```
+
+This test changes only moment retention. The rejected second-order regularized
+BGK candidate is the control. The candidate recursively reconstructs
+third-order nonequilibrium from velocity and the second-order stress following
+the recursive regularization framework of
+[Coreixas et al.](https://arxiv.org/abs/1704.04413). It retains the six mixed
+third-order modes supported by D3Q19 (`xxy`, `xxz`, `xyy`, `xzz`, `yyz`, and
+`yzz`); pure cubic Hermites vanish on this stencil and `xyz` is unsupported.
+The same equilibrium-to-post-collision convex line search is applied after the
+unbounded recursive reconstruction. Geometry, `Re=9367.4`, `U=0.08`, sponge,
+control volume, 1,000-step horizon, population floor, wall treatment, load
+estimator, ledgers, and promotion gates remain unchanged.
+
+The recursive candidate remains positive, closes the global source and radial
+ledgers, and passes the force budget (`0.16064%` relative RMS and `0.07991%`
+peak ratio). Relative to the second-order control, activation falls from
+`0.02803%` to `0.00645%`, relative L1 correction falls from `0.05304%` to
+`0.01932%`, and relative L2 correction falls from the rejected `1.09683%` to
+`0.35279%`. The candidate therefore clears every unchanged D=16 gate and is
+eligible for the locked D=8/12/16 geometric refinement ladder. This is not a
+grid-convergence result and does not authorize flapping or measured-bird replay.
+The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-c16-recursive-regularization-ab.json`
+and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-ab.svg`.
+
+The promoted-to-test RR3 refinement ladder is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --recursive-regularization-ladder \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-refinement.json
+```
+
+This command changes only the collision selector from the rejected symmetric
+TRT limiter to RR3. It retains the old geometric ladder's D=8/12/16 domains,
+500/750/1,000 steps, five convective times, source and force ledgers, final-one-
+convective-time drag average, and all predeclared gates. Every case remains
+positive, source closed, force-budget closed, and individually non-intrusive.
+Control-volume correction activation decreases from `0.01352%` through
+`0.01087%` to `0.00645%`; relative L1 correction decreases from `0.02436%` to
+`0.02349%` to `0.01932%`, and relative L2 correction decreases from `0.41331%`
+to `0.37792%` to `0.35279%`.
+
+Promotion is nevertheless rejected without threshold relaxation. D=8/12/16
+mean drag coefficients are `1.32042`, `0.93800`, and `1.04777`. The D12-to-D16
+change is `10.476%` against the unchanged `5%` gate, the sequence is
+non-monotonic, and no admissible three-grid Richardson fit exists. The archived
+phase history also exposes a duration sensitivity worth resolving before a
+larger grid: fourth-to-fifth convective-window means change `11.54%`, `13.28%`,
+and `0.052%` on D=8, D=12, and D=16. A short extension of only the two cheaper
+coarse cases can therefore distinguish transient-window bias from spatial
+non-convergence before paying for D=20. The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-refinement.json`
+and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-refinement.svg`.
+
+The controlled coarse-grid duration diagnostic is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --recursive-regularization-duration \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json
+```
+
+It changes only the requested duration and runs only D=8/12, the two cases
+whose fourth-to-fifth window changes exceeded 11%. Both histories reach ten
+convective times and retain population positivity, source-ledger closure,
+force-budget closure, control-volume isolation, and the unchanged non-intrusive
+correction gates. D=12 clears the predeclared late-window check: ninth-to-tenth
+mean drag changes `4.543%` against `5%`, and its fifth-to-tenth change is only
+`2.177%`. D=8 does not settle: its ninth-to-tenth change is `46.848%`, its
+fifth-to-tenth change is `29.219%`, and the ninth one-convective-time mean has a
+large excursion. The five-convective-time spatial ladder therefore cannot yet
+be reclassified as duration-biased, and D=20 is deferred.
+
+This is an admissible negative result, not a numerical failure: every
+individual physics and accounting gate passes, while the separate scientific
+duration flag remains false. The next gate should extend only D=8 and estimate
+the dominant shedding period plus uncertainty from period-complete block means.
+That avoids treating adjacent one-convective-time samples of an unsteady wake as
+independent steady estimates. The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json`
+and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-duration.svg`.
 
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.

@@ -355,6 +355,12 @@ private struct TranslatingBodyArguments {
     var populationPositivity = false
     var trtCollisionDecomposition = false
     var symmetricLimiterAB = false
+    var geometricLimiterLadder = false
+    var recursiveRegularizationLadder = false
+    var recursiveRegularizationDuration = false
+    var radialLimiterLocalization = false
+    var bulkCollisionOperatorAB = false
+    var recursiveRegularizationAB = false
     var json = false
     var archivePath: String?
 
@@ -380,6 +386,18 @@ private struct TranslatingBodyArguments {
                 trtCollisionDecomposition = true
             case "--symmetric-limiter-ab":
                 symmetricLimiterAB = true
+            case "--geometric-limiter-ladder":
+                geometricLimiterLadder = true
+            case "--recursive-regularization-ladder":
+                recursiveRegularizationLadder = true
+            case "--recursive-regularization-duration":
+                recursiveRegularizationDuration = true
+            case "--radial-limiter-localization":
+                radialLimiterLocalization = true
+            case "--bulk-collision-operator-ab":
+                bulkCollisionOperatorAB = true
+            case "--recursive-regularization-ab":
+                recursiveRegularizationAB = true
             case "--archive":
                 index += 1
                 guard index < values.count else {
@@ -446,12 +464,48 @@ private struct TranslatingBodyArguments {
                 "--symmetric-limiter-ab requires --stationary-wall"
             )
         }
+        if geometricLimiterLadder && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--geometric-limiter-ladder requires --stationary-wall"
+            )
+        }
+        if recursiveRegularizationLadder && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-ladder requires --stationary-wall"
+            )
+        }
+        if recursiveRegularizationDuration && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-duration requires --stationary-wall"
+            )
+        }
+        if radialLimiterLocalization && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--radial-limiter-localization requires --stationary-wall"
+            )
+        }
+        if bulkCollisionOperatorAB && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--bulk-collision-operator-ab requires --stationary-wall"
+            )
+        }
+        if recursiveRegularizationAB && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-ab requires --stationary-wall"
+            )
+        }
         let stationaryDiagnostics = [
             relaxationSweep,
             longHorizonSurvival,
             populationPositivity,
             trtCollisionDecomposition,
-            symmetricLimiterAB
+            symmetricLimiterAB,
+            geometricLimiterLadder,
+            recursiveRegularizationLadder,
+            recursiveRegularizationDuration,
+            radialLimiterLocalization,
+            bulkCollisionOperatorAB,
+            recursiveRegularizationAB,
         ].filter { $0 }.count
         if stationaryDiagnostics > 1 {
             throw CLIError.invalidArgument(
@@ -461,9 +515,15 @@ private struct TranslatingBodyArguments {
         if archivePath != nil
             && !populationPositivity
             && !trtCollisionDecomposition
-            && !symmetricLimiterAB {
+            && !symmetricLimiterAB
+            && !geometricLimiterLadder
+            && !recursiveRegularizationLadder
+            && !recursiveRegularizationDuration
+            && !radialLimiterLocalization
+            && !bulkCollisionOperatorAB
+            && !recursiveRegularizationAB {
             throw CLIError.invalidArgument(
-                "--archive requires a population or TRT decomposition diagnostic"
+                "--archive requires an archive-capable stationary-wall diagnostic"
             )
         }
     }
@@ -485,6 +545,18 @@ private struct TranslatingBodyArguments {
                            Decompose the locked step-27 c16 collision
       --symmetric-limiter-ab
                            Compare the locked c16 control and symmetric limiter
+      --geometric-limiter-ladder
+                           Run true D=8/12/16 source-aware sphere refinement
+      --recursive-regularization-ladder
+                           Run RR3 through the unchanged D=8/12/16 sphere refinement
+      --recursive-regularization-duration
+                           Extend only RR3 D=8/12 to ten convective times
+      --radial-limiter-localization
+                           Localize D=16 limiter intervention by sphere distance
+      --bulk-collision-operator-ab
+                           Compare limited TRT with regularized positive BGK at D=16
+      --recursive-regularization-ab
+                           Compare second- and recursive-third-order regularized BGK at D=16
       --archive FILE       Write the selected diagnostic to an exact JSON file
       --json               Emit the machine-readable validation report
       --help               Show this help
@@ -1325,6 +1397,181 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
         if arguments.stationaryWall {
+            if arguments.bulkCollisionOperatorAB
+                || arguments.recursiveRegularizationAB
+            {
+                let report = try arguments.recursiveRegularizationAB
+                    ? MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallRecursiveRegularizationAB()
+                    : MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallBulkCollisionOperatorAB()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    for item in [report.control, report.candidate] {
+                        print(
+                            "operator=\(item.operatorName): "
+                                + "steps=\(item.completedSteps) "
+                                + "Cd=\(item.meanDragCoefficientLastConvectiveTime) "
+                                + "control_activation=\(item.controlVolumeCorrectionActivationFraction) "
+                                + "control_correction_L1=\(item.relativeControlVolumeCorrectionL1) "
+                                + "force_RMS=\(item.conservativeRelativeRMSForceResidual) "
+                                + "eligible=\(item.eligibleForRefinement)"
+                        )
+                    }
+                    print(
+                        "candidate_to_control_activation: "
+                            + String(
+                                report.candidateToControlActivationRatio
+                            )
+                    )
+                    print(
+                        "candidate_to_control_correction_L1: "
+                            + String(
+                                report.candidateToControlCorrectionL1Ratio
+                            )
+                    )
+                    print(
+                        "candidate_eligible_for_refinement: "
+                            + String(
+                                report.candidateEligibleForRefinement
+                            )
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "bulk collision-operator diagnostic did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.radialLimiterLocalization {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRadialLimiterLocalization()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print(
+                        "first_activation_step: "
+                            + String(describing:
+                                report.firstLimiterActivationStep)
+                    )
+                    for snapshot in report.snapshots {
+                        print(
+                            "tU/D=\(snapshot.convectiveTime): "
+                                + "near_L1=\(snapshot.nearSurfaceLimiterL1Fraction) "
+                                + "far_L1=\(snapshot.farFieldLimiterL1Fraction) "
+                                + "near_active=\(snapshot.nearSurfaceActivationFraction) "
+                                + "far_active=\(snapshot.farFieldActivationFraction)"
+                        )
+                    }
+                    print("boundary_localized: \(report.boundaryLocalized)")
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "radial limiter localization did not close"
+                    )
+                }
+                return
+            }
+            if arguments.recursiveRegularizationDuration {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRecursiveRegularizationDurationSensitivity()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    for item in report.cases {
+                        print(
+                            "D=\(item.numericalCase.diameterCells): "
+                                + "steps=\(item.numericalCase.requestedSteps) "
+                                + "window_Cd=\(item.convectiveWindowMeanDragCoefficients) "
+                                + "fourth_to_fifth=\(item.fourthToFifthRelativeDragChange) "
+                                + "ninth_to_tenth=\(item.ninthToTenthRelativeDragChange) "
+                                + "fifth_to_tenth=\(item.fifthToTenthRelativeDragChange) "
+                                + "stable=\(item.durationStabilityPassed)"
+                        )
+                    }
+                    print(
+                        "baseline_window_bias_confirmed: "
+                            + String(report.baselineWindowBiasConfirmed)
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "recursive-regularization duration diagnostic did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.geometricLimiterLadder
+                || arguments.recursiveRegularizationLadder
+            {
+                let report = try arguments.recursiveRegularizationLadder
+                    ? MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallRecursiveRegularizationLadder()
+                    : MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallGeometricLimiterLadder()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    for item in report.cases {
+                        print(
+                            "D=\(item.diameterCells): "
+                                + "steps=\(item.requestedSteps) "
+                                + "Cd=\(item.meanDragCoefficientLastConvectiveTime) "
+                                + "global_activation=\(item.limiterActivationFraction) "
+                                + "control_activation=\(item.controlVolumeLimiterActivationFraction) "
+                                + "control_limiter_L1=\(item.relativeControlVolumeLimiterL1Correction) "
+                                + "control_limiter_L2=\(item.relativeControlVolumeLimiterL2Correction) "
+                                + "force_RMS=\(item.conservativeRelativeRMSResidual) "
+                                + "passed=\(item.passed)"
+                        )
+                    }
+                    print(
+                        "finest_two_drag_change: "
+                            + String(report.relativeFinestTwoDragChange)
+                    )
+                    print(
+                        "observed_order: "
+                            + String(describing:
+                                report.observedDragConvergenceOrder)
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "geometric collision-operator ladder did not pass"
+                    )
+                }
+                return
+            }
             if arguments.symmetricLimiterAB {
                 let report = try MetalTranslatingBodyTopologyValidator
                     .runStationaryWallC16SymmetricLimiterAB()

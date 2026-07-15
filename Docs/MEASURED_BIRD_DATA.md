@@ -362,5 +362,53 @@ samples contain zero sponge cells and zero solid links cross the control
 surface. The global source ledger closes, maximum raw force residual is
 `0.000464316 N` under the `0.0005 N` gate, and relative RMS residual is
 `0.00537%` under the `0.5%` gate. The source-aware c16 acceptance passes. The
-limiter is promoted to the c8/c12/c16 stationary-sphere refinement ladder but
-remains excluded from coupled bird replay until that resolution gate passes.
+subsequent geometrically similar c8/c12/c16 ladder does not: control-volume
+activation grows `3.53% -> 6.65% -> 8.07%`, the corresponding L2 correction
+remains `11.71% -> 14.74% -> 14.54%`, and finest-two mean drag changes `14.81%`
+against a `5%` gate. All cases are positive, source-closed, and force-budget
+closed, which isolates the remaining failure to intrusive, resolution-dependent
+collision limiting in the physical flow region. The limiter therefore remains
+excluded from coupled bird replay.
+
+The D=16 radial follow-up closes its eight shell sums to `8.02e-7`. Limiting
+begins within one lattice cell of the sphere, but by `tU/D=5` only `1.11%` of
+limiter L1 remains within `0.25D` and `88.58%` lies beyond `1D`. The remaining
+defect is therefore not boundary-localized; measured-bird promotion now
+requires a bulk collision-operator A/B followed by the unchanged geometric
+ladder.
+
+The locked D=16 A/B keeps every physical and numerical boundary fixed while
+replacing only the bulk collision. A second-order Hermite-regularized,
+convex-positive BGK candidate cuts control-volume activation from `8.070%` to
+`0.028%` and relative L1 correction from `6.169%` to `0.053%`; positivity,
+source closure, and force closure pass. It remains excluded from measured-bird
+replay because relative L2 correction is `1.0968%` against the unchanged `1%`
+gate. The candidate is rejected before a refinement ladder, preserving the
+measured-data validation boundary.
+
+The next controlled D=16 A/B keeps that rejected second-order candidate as the
+control and adds only the six recursively reconstructed third-order moments
+supported by D3Q19. The recursive candidate remains positive and source/force
+closed while reducing activation to `0.00645%`, relative L1 correction to
+`0.01932%`, and relative L2 correction to `0.35279%`. It clears every unchanged
+D=16 gate and is eligible for the locked D=8/12/16 geometric ladder. It remains
+excluded from measured-bird replay until that ladder establishes non-intrusive
+correction and force convergence on every grid.
+
+The RR3 ladder now gives a deliberate negative promotion result. All three
+grids remain positive, source/force closed, and non-intrusive, with activation
+and both correction norms decreasing under refinement. Drag does not converge:
+D=8/12/16 coefficients are `1.32042`, `0.93800`, and `1.04777`; the finest-two
+change is `10.476%` against the unchanged `5%` gate and no Richardson fit
+exists. RR3 therefore remains excluded from measured-bird replay. Because the
+D=8 and D=12 fourth-to-fifth convective-window means still change `11.54%` and
+`13.28%`, a cheap duration-sensitivity extension precedes any D=20 study.
+
+That controlled extension is now complete through ten convective times. D=12
+clears duration sensitivity: ninth-to-tenth drag changes `4.543%` and
+fifth-to-tenth changes `2.177%`. D=8 remains unresolved at `46.848%` and
+`29.219%`, respectively, despite retaining positivity, conservation,
+force-budget, and non-intrusive correction gates. RR3 therefore remains
+excluded from measured-bird replay. The next gate extends only D=8 and uses its
+measured shedding period to form period-complete block means and uncertainty;
+D=20 remains deferred until the coarse unsteady statistic is defensible.
