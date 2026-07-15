@@ -10,6 +10,7 @@ struct GPUUniforms {
     var gravity: SIMD4<Float>
     var caseParameters: SIMD4<Float>
     var flags: SIMD4<UInt32>
+    var integration: SIMD4<UInt32>
 
     init(
         configuration: SimulationConfiguration,
@@ -68,6 +69,12 @@ struct GPUUniforms {
             hasPreviousGeometry ? 1 : 0,
             periodicBoundaries ? 1 : 0
         )
+        integration = SIMD4<UInt32>(
+            UInt32(configuration.bodySubsteps),
+            0,
+            0,
+            0
+        )
     }
 }
 
@@ -79,6 +86,12 @@ struct GPUBirdParameters {
     var tailGeometry: SIMD4<Float>
     var wingKinematics0: SIMD4<Float>
     var wingKinematics1: SIMD4<Float>
+    var safetyGeometry: SIMD4<Float>
+    var safetyLimits: SIMD4<Float>
+    var leftWingMassAndCOM: SIMD4<Float>
+    var leftWingInertia: SIMD4<Float>
+    var rightWingMassAndCOM: SIMD4<Float>
+    var rightWingInertia: SIMD4<Float>
 
     init(_ parameters: BirdParameters) {
         bodyRadiiAndMass = SIMD4<Float>(
@@ -123,7 +136,94 @@ struct GPUBirdParameters {
             Float(parameters.measuredWingKinematics?.keyframes.count ?? 0),
             parameters.measuredWingKinematics == nil ? 0 : 1
         )
+        safetyGeometry = SIMD4<Float>(
+            parameters.conservativeLocalHalfExtentMeters,
+            parameters.conservativeBoundingRadiusMeters
+        )
+        safetyLimits = SIMD4<Float>(
+            parameters.maximumPrescribedWingSpeedMetersPerSecond,
+            0.15,
+            0,
+            0
+        )
+        if let dynamics = parameters.prescribedWingDynamics {
+            leftWingMassAndCOM = SIMD4<Float>(
+                dynamics.left.massKilograms,
+                dynamics.left.centerOfMassFromHingeMeters.x,
+                dynamics.left.centerOfMassFromHingeMeters.y,
+                dynamics.left.centerOfMassFromHingeMeters.z
+            )
+            leftWingInertia = SIMD4<Float>(
+                dynamics.left.principalInertiaKilogramMetersSquared,
+                1
+            )
+            rightWingMassAndCOM = SIMD4<Float>(
+                dynamics.right.massKilograms,
+                dynamics.right.centerOfMassFromHingeMeters.x,
+                dynamics.right.centerOfMassFromHingeMeters.y,
+                dynamics.right.centerOfMassFromHingeMeters.z
+            )
+            rightWingInertia = SIMD4<Float>(
+                dynamics.right.principalInertiaKilogramMetersSquared,
+                1
+            )
+        } else {
+            leftWingMassAndCOM = .zero
+            leftWingInertia = .zero
+            rightWingMassAndCOM = .zero
+            rightWingInertia = .zero
+        }
     }
+}
+
+struct GPUWingMomentumState {
+    var leftLinear: SIMD4<Float>
+    var leftAngular: SIMD4<Float>
+    var rightLinear: SIMD4<Float>
+    var rightAngular: SIMD4<Float>
+
+    static let zero = GPUWingMomentumState(
+        leftLinear: .zero,
+        leftAngular: .zero,
+        rightLinear: .zero,
+        rightAngular: .zero
+    )
+}
+
+struct GPUWingInertialReaction {
+    var leftForce: SIMD4<Float>
+    var leftTorque: SIMD4<Float>
+    var rightForce: SIMD4<Float>
+    var rightTorque: SIMD4<Float>
+
+    static let zero = GPUWingInertialReaction(
+        leftForce: .zero,
+        leftTorque: .zero,
+        rightForce: .zero,
+        rightTorque: .zero
+    )
+
+    var total: ForceTorque {
+        ForceTorque(
+            forceNewtons: (leftForce + rightForce).xyz,
+            torqueNewtonMeters: (leftTorque + rightTorque).xyz
+        )
+    }
+}
+
+/// GPU-owned extrema and first-event ledger for free-flight validity bounds.
+/// A single monitoring thread updates it after every body integration.
+struct GPURuntimeSafetyRecord {
+    /// x=max Mach, y=min clearance, z=Mach at first event,
+    /// w=clearance at first event.
+    var metrics: SIMD4<Float>
+    /// x/y=first event step low/high words; z=violation flags.
+    var event: SIMD4<UInt32>
+
+    static let clear = GPURuntimeSafetyRecord(
+        metrics: SIMD4<Float>(0, .greatestFiniteMagnitude, 0, 0),
+        event: .zero
+    )
 }
 
 /// One measured periodic keyframe. Float4-only packing is shared verbatim
@@ -315,6 +415,10 @@ struct GPURunSample {
     var angularVelocityBody: SIMD4<Float>
     var force: SIMD4<Float>
     var torque: SIMD4<Float>
+    var leftHingeForce: SIMD4<Float>
+    var leftHingeTorque: SIMD4<Float>
+    var rightHingeForce: SIMD4<Float>
+    var rightHingeTorque: SIMD4<Float>
     var step: SIMD4<UInt32>
 
     var publicValue: RunSample {
@@ -335,6 +439,16 @@ struct GPURunSample {
             aerodynamicLoad: ForceTorque(
                 forceNewtons: force.xyz,
                 torqueNewtonMeters: torque.xyz
+            ),
+            wingHingeReactionLoads: WingHingeReactionLoads(
+                left: ForceTorque(
+                    forceNewtons: leftHingeForce.xyz,
+                    torqueNewtonMeters: leftHingeTorque.xyz
+                ),
+                right: ForceTorque(
+                    forceNewtons: rightHingeForce.xyz,
+                    torqueNewtonMeters: rightHingeTorque.xyz
+                )
             )
         )
     }

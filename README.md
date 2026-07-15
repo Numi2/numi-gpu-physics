@@ -45,7 +45,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
-| Quantitative complete bird / free flight | **Blocked by design** | requires real specimen geometry, kinematics, bird-load refinement, runtime bounds, and inertial/hinge treatment |
+| Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | schema-2 wing inertia/hinge reactions, runtime aborts, and independent load/body ladders are ready; real complete specimen input is absent |
 
 The most important accepted flapping result is committed as [`flapping-wing-fixed-thickness-acceptance.json`](ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json). The current high-Re open question is committed as [`measured-wing-stationary-wall-recursive-regularization-duration.json`](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json).
 
@@ -119,7 +119,7 @@ optionally integrate the rigid torso and orientation
 publish a read-only field lease when visualization requests one
 ```
 
-Newly uncovered nodes are refilled from a local moving-boundary equilibrium. Newly covered nodes contribute their population momentum conversion to the body load. Prescribed wings are currently massless kinematic boundaries: wing inertia, hinge reaction, and actuator power are not silently folded into torso dynamics.
+Newly uncovered nodes are refilled from a local moving-boundary equilibrium. Newly covered nodes contribute their population momentum conversion to the body load. Demonstration and schema-1 prescribed wings remain explicitly massless. Schema 2 instead requires bilateral measured wing mass properties; the GPU applies their phase-resolved internal-momentum reaction to the body and archives left/right hinge reactions.
 
 ## Metal engineering
 
@@ -192,7 +192,7 @@ python3 Scripts/static-audit.py
 > [!NOTE]
 > Validation is local-only. There are intentionally no GitHub Actions workflows, so pushes and pull requests do not consume hosted macOS CI minutes.
 
-Latest recorded local release run on Apple M4 (2026-07-15): **77 tests passed in 418.78 seconds**, followed by the independent physical-condition verifier, static Swift/MSL layout audit, Python lint, and offline compilation of both Metal libraries.
+Latest recorded local run on Apple M4 (2026-07-15): **84 tests passed in 494.99 seconds**, followed by a successful release build/smoke, the independent physical-condition verifier, static Swift/MSL layout audit, Python lint, and offline compilation of both Metal libraries.
 
 ## Run the solver
 
@@ -287,9 +287,16 @@ Replay prescribed motion and retain exact-input provenance plus phase loads:
   --json
 ```
 
-Schema 1 requires SI units, source provenance, a COM-centered principal-axis frame, domain conditions, morphometrics, and independent left/right periodic pose and rate histories. Cubic-Hermite interpolation keeps pose and wall velocity consistent. Preflight rejects invalid phase coverage, domain/sponge collisions, under-resolved thickness, and excessive estimated lattice Mach before Metal allocation.
+Schema 1 requires SI units, source provenance, a COM-centered principal-axis frame, domain conditions, morphometrics, and independent left/right periodic pose and rate histories. Schema 2 adds measured bilateral wing mass, hinge-relative COM, inertia, and explicit whole-bird mass definitions for free flight. Cubic-Hermite interpolation keeps pose and wall velocity consistent. Preflight rejects invalid phase coverage, domain/sponge collisions, under-resolved thickness, and excessive estimated lattice Mach before Metal allocation.
 
 The bundled complete-bird JSON is a **synthetic conformance fixture**, not a measured specimen. The measured right-wing surface tier is also intentionally wing-only. Read [`Docs/MEASURED_BIRD_DATA.md`](Docs/MEASURED_BIRD_DATA.md) before interpreting any replay.
+
+For a same-specimen schema-2 input, `--load-refinement` runs the locked
+five-cycle `8/12/16` load ladder and `--body-refinement --steps N` runs the
+same-fluid `1/2/4` body-substep ladder. Free flight records bilateral inertial
+hinge reactions and aborts on the first GPU-recorded Mach, clearance, or
+non-finite-state event. The current missing-data decision is retained in
+[`ValidationArtifacts/quantitative-complete-bird-readiness.json`](ValidationArtifacts/quantitative-complete-bird-readiness.json).
 
 ## Scientific boundary
 
@@ -299,11 +306,14 @@ Quantitative complete-bird claims still require:
 
 - an actual measured specimen with body, both wings, tail, mass properties, geometry provenance, and synchronized kinematics;
 - a surface representation appropriate to the measured feather/wing geometry;
-- bird-load grid and timestep convergence;
+- passing the five-cycle `8/12/16` measured-bird load ladder;
 - per-part left/right symmetry and force reporting;
-- runtime Mach and sponge/domain-margin monitoring in free flight;
-- free-flight momentum and rigid-body step refinement;
-- wing inertial, hinge, and actuator reactions—or a defensible massless-wing approximation;
+- an archived free-flight run that stays inside the implemented per-step Mach
+  and sponge/domain abort bounds;
+- free-flight momentum closure and a passing implemented `1/2/4` rigid-body
+  substep ladder;
+- same-specimen schema-2 wing inertia and a passing archived hinge-reaction
+  treatment (or a separately justified massless-wing scientific model);
 - forced channel-flow coverage and any turbulence/flexibility model required by the target regime.
 
 The high-Re stationary-sphere RR3 branch is a collision-operator research gate. It is **not enabled** in flapping or measured-bird replay while its force statistic is unresolved. The accepted prescribed flapping benchmark validates the production moving-boundary/load path; it does not magically validate arbitrary complete-bird morphology or free-flight physics.

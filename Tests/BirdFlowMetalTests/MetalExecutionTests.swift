@@ -103,6 +103,53 @@ func measuredBirdLoaderRejectsUnknownKeys() throws {
     }
 }
 
+@Test
+func measuredBirdSchema2RequiresAndAcceptsRigidWingMassContract() throws {
+    let data = try Data(contentsOf: measuredFixtureURL)
+    var root = try #require(
+        JSONSerialization.jsonObject(with: data) as? [String: Any]
+    )
+    root["schemaVersion"] = 2
+    let properties: [String: Any] = [
+        "massKilograms": 0.01,
+        "centerOfMassFromHingeMeters": [0.0, 0.15, 0.0],
+        "principalInertiaKilogramMetersSquared": [1e-5, 2e-6, 1e-5],
+    ]
+    root["prescribedWingDynamics"] = [
+        "model": "prescribedRigidWingMomentumV1",
+        "sourceCitation": "synthetic schema conformance properties",
+        "massDefinition": "wholeBirdIncludingWings",
+        "inertiaDefinition": "wholeBirdAtRegisteredReferencePose",
+        "left": properties,
+        "right": properties,
+    ]
+    var kinematics = try #require(root["kinematics"] as? [String: Any])
+    var frames = try #require(kinematics["keyframes"] as? [[String: Any]])
+    for index in frames.indices {
+        for side in ["left", "right"] {
+            var state = try #require(frames[index][side] as? [String: Any])
+            state["tipTwistRadians"] = 0.0
+            state["tipTwistRateRadiansPerSecond"] = 0.0
+            frames[index][side] = state
+        }
+    }
+    kinematics["keyframes"] = frames
+    root["kinematics"] = kinematics
+    let encoded = try JSONSerialization.data(withJSONObject: root)
+    let url = FileManager.default.temporaryDirectory
+        .appendingPathComponent("birdflow-schema2-\(UUID()).json")
+    try encoded.write(to: url)
+    defer { try? FileManager.default.removeItem(at: url) }
+
+    let loaded = try MeasuredBirdDatasetLoader.load(from: url)
+    let audit = try MeasuredBirdReplay.audit(loaded, chordCells: 12)
+    #expect(audit.schemaVersion == 2)
+    #expect(audit.quantitativeFreeFlightContractPassed)
+    #expect(
+        audit.wingInertialTreatment == "prescribedRigidWingMomentumV1"
+    )
+}
+
 #if canImport(Metal)
 import Metal
 
@@ -317,8 +364,13 @@ func metalRigidBodyIntegratorMatchesCPUReferenceOneStep() throws {
             torque: SIMD4<Float>(torque.x, torque.y, torque.z, 0)
         )
     )
+    let wingReactionBuffer = try backend.makeSharedBuffer(
+        value: GPUWingInertialReaction.zero
+    )
+    var refinedConfiguration = testCase.configuration
+    refinedConfiguration.bodySubsteps = 4
     var uniforms = GPUUniforms(
-        configuration: testCase.configuration,
+        configuration: refinedConfiguration,
         time: testCase.configuration.scaling.timeStepSeconds
     )
 
@@ -332,6 +384,7 @@ func metalRigidBodyIntegratorMatchesCPUReferenceOneStep() throws {
         length: MemoryLayout<GPUUniforms>.stride,
         index: 3
     )
+    encoder.setBuffer(wingReactionBuffer, offset: 0, index: 4)
     backend.dispatch1D(encoder: encoder, pipeline: pipeline, count: 1)
     encoder.endEncoding()
     commandBuffer.commit()
@@ -344,7 +397,8 @@ func metalRigidBodyIntegratorMatchesCPUReferenceOneStep() throws {
         forceWorldNewtons: force,
         torqueWorldNewtonMeters: torque,
         gravityWorldMetersPerSecondSquared: .zero,
-        timeStepSeconds: testCase.configuration.scaling.timeStepSeconds
+        timeStepSeconds: testCase.configuration.scaling.timeStepSeconds,
+        substeps: 4
     )
     let gpu = bodyBuffer.contents()
         .assumingMemoryBound(to: GPUBirdBodyState.self)
@@ -375,6 +429,286 @@ func metalRigidBodyIntegratorMatchesCPUReferenceOneStep() throws {
                 - initial.orientationBodyToWorld.scalar
         ) < 1e-6
     )
+}
+
+@Test
+func metalRuntimeSafetyLedgerRecordsExactFirstMachViolation() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let testCase = try compactMetalTestCase(freeFlight: true)
+    let backend = try MetalBackend(fastMath: false)
+    let pipeline = try backend.pipeline(named: "monitorBirdRuntimeSafety")
+    var state = testCase.state
+    state.linearVelocityMetersPerSecond = SIMD3<Float>(100, 0, 0)
+    let body = try backend.makeSharedBuffer(value: GPUBirdBodyState(state))
+    let bird = try backend.makeSharedBuffer(
+        value: GPUBirdParameters(testCase.bird)
+    )
+    let ledger = try backend.makeSharedBuffer(
+        value: GPURuntimeSafetyRecord.clear
+    )
+    var uniforms = GPUUniforms(
+        configuration: testCase.configuration,
+        time: testCase.configuration.scaling.timeStepSeconds
+    )
+    var step = SIMD4<UInt32>(42, 0, 0, 0)
+    let commandBuffer = try #require(backend.queue.makeCommandBuffer())
+    let encoder = try #require(commandBuffer.makeComputeCommandEncoder())
+    encoder.setBuffer(body, offset: 0, index: 0)
+    encoder.setBuffer(bird, offset: 0, index: 1)
+    encoder.setBuffer(ledger, offset: 0, index: 2)
+    encoder.setBytes(
+        &uniforms,
+        length: MemoryLayout<GPUUniforms>.stride,
+        index: 3
+    )
+    encoder.setBytes(
+        &step,
+        length: MemoryLayout<SIMD4<UInt32>>.stride,
+        index: 4
+    )
+    backend.dispatch1D(encoder: encoder, pipeline: pipeline, count: 1)
+    encoder.endEncoding()
+    commandBuffer.commit()
+    commandBuffer.waitUntilCompleted()
+    #expect(commandBuffer.status == .completed)
+    let value = ledger.contents()
+        .assumingMemoryBound(to: GPURuntimeSafetyRecord.self)
+        .pointee
+    #expect(value.event.x == 42)
+    #expect(value.event.z & 1 != 0)
+    #expect(value.metrics.x > 0.15)
+}
+
+@Test
+func metalRigidBodyMatchesCPUAcrossMultiStepRotationalCanonicals() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let testCase = try compactMetalTestCase(freeFlight: true)
+    let backend = try MetalBackend(fastMath: false)
+    let pipeline = try backend.pipeline(named: "integrateBirdBody")
+    var configuration = testCase.configuration
+    configuration.bodySubsteps = 2
+    let cases: [(name: String, torque: SIMD3<Float>)] = [
+        ("torque-free", .zero),
+        ("constant-torque", SIMD3<Float>(8e-7, -4e-7, 6e-7)),
+    ]
+    for item in cases {
+        var cpu = BirdBodyState(
+            positionMeters: testCase.state.positionMeters,
+            orientationBodyToWorld: Quaternion.axisAngle(
+                axis: SIMD3<Float>(0.3, -0.4, 0.2),
+                angle: 0.27
+            ),
+            angularVelocityBodyRadiansPerSecond:
+                SIMD3<Float>(0.7, -0.45, 0.3)
+        )
+        let body = try backend.makeSharedBuffer(value: GPUBirdBodyState(cpu))
+        let bird = try backend.makeSharedBuffer(
+            value: GPUBirdParameters(testCase.bird)
+        )
+        let load = try backend.makeSharedBuffer(
+            value: GPUForceTorque(
+                force: .zero,
+                torque: SIMD4<Float>(item.torque, 0)
+            )
+        )
+        let wingReaction = try backend.makeSharedBuffer(
+            value: GPUWingInertialReaction.zero
+        )
+        var uniforms = GPUUniforms(
+            configuration: configuration,
+            time: configuration.scaling.timeStepSeconds
+        )
+        let commandBuffer = try #require(backend.queue.makeCommandBuffer())
+        let encoder = try #require(commandBuffer.makeComputeCommandEncoder())
+        encoder.label = "\(item.name) multi-step rigid-body canonical"
+        encoder.setBuffer(body, offset: 0, index: 0)
+        encoder.setBuffer(bird, offset: 0, index: 1)
+        encoder.setBuffer(load, offset: 0, index: 2)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        encoder.setBuffer(wingReaction, offset: 0, index: 4)
+        for _ in 0..<256 {
+            backend.dispatch1D(encoder: encoder, pipeline: pipeline, count: 1)
+            RigidBodyIntegrator.integrate(
+                state: &cpu,
+                parameters: testCase.bird,
+                forceWorldNewtons: .zero,
+                torqueWorldNewtonMeters: item.torque,
+                gravityWorldMetersPerSecondSquared: .zero,
+                timeStepSeconds: configuration.scaling.timeStepSeconds,
+                substeps: configuration.bodySubsteps
+            )
+        }
+        encoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        #expect(commandBuffer.status == .completed)
+        let gpu = body.contents()
+            .assumingMemoryBound(to: GPUBirdBodyState.self)
+            .pointee
+            .coreValue
+        #expect(
+            vectorLength(
+                gpu.angularVelocityBodyRadiansPerSecond
+                    - cpu.angularVelocityBodyRadiansPerSecond
+            ) < 2e-5,
+            "\(item.name) angular velocity"
+        )
+        #expect(
+            vectorLength(
+                gpu.orientationBodyToWorld.vector
+                    - cpu.orientationBodyToWorld.vector
+            ) < 2e-5,
+            "\(item.name) orientation vector"
+        )
+        #expect(
+            abs(
+                gpu.orientationBodyToWorld.scalar
+                    - cpu.orientationBodyToWorld.scalar
+            ) < 2e-5,
+            "\(item.name) orientation scalar"
+        )
+    }
+}
+
+@Test
+func metalWingInertialReactionMatchesIndependentCPUReference() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let testCase = try compactMetalTestCase(freeFlight: true)
+    let properties = WingInertialProperties(
+        massKilograms: 0.001,
+        centerOfMassFromHingeMeters: SIMD3<Float>(0, 0.01, 0),
+        principalInertiaKilogramMetersSquared:
+            SIMD3<Float>(2e-8, 3e-8, 1e-7)
+    )
+    var birdParameters = testCase.bird
+    birdParameters.prescribedWingDynamics = PrescribedWingDynamics(
+        sourceCitation: "same-specimen test mass properties",
+        left: properties,
+        right: properties
+    )
+    let backend = try MetalBackend(fastMath: false)
+    let pipeline = try backend.pipeline(named: "updateWingInertialReaction")
+    let initialPrepared = GPUPreparedBirdGeometry(
+        bodyPosition: .zero,
+        orientation: SIMD4<Float>(0, 0, 0, 1),
+        linearVelocity: .zero,
+        omegaBodyWorld: .zero,
+        leftRoot: .zero,
+        leftChord: SIMD4<Float>(1, 0, 0, 0),
+        leftSpan: SIMD4<Float>(0, 1, 0, 0),
+        leftNormal: SIMD4<Float>(0, 0, 1, 0),
+        leftAngularVelocity: .zero,
+        rightRoot: .zero,
+        rightChord: SIMD4<Float>(1, 0, 0, 0),
+        rightSpan: SIMD4<Float>(0, 1, 0, 0),
+        rightNormal: SIMD4<Float>(0, 0, 1, 0),
+        rightAngularVelocity: .zero
+    )
+    let prepared = try backend.makeSharedBuffer(value: initialPrepared)
+    let bird = try backend.makeSharedBuffer(
+        value: GPUBirdParameters(birdParameters)
+    )
+    let momentum = try backend.makeSharedBuffer(
+        value: GPUWingMomentumState.zero
+    )
+    let reaction = try backend.makeSharedBuffer(
+        value: GPUWingInertialReaction.zero
+    )
+    var uniforms = GPUUniforms(
+        configuration: testCase.configuration,
+        time: 0
+    )
+
+    func dispatch(initialize: UInt32) throws {
+        var flag = initialize
+        let commandBuffer = try #require(backend.queue.makeCommandBuffer())
+        let encoder = try #require(commandBuffer.makeComputeCommandEncoder())
+        encoder.setBuffer(momentum, offset: 0, index: 0)
+        encoder.setBuffer(reaction, offset: 0, index: 1)
+        encoder.setBuffer(prepared, offset: 0, index: 2)
+        encoder.setBuffer(bird, offset: 0, index: 3)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 4
+        )
+        encoder.setBytes(
+            &flag,
+            length: MemoryLayout<UInt32>.stride,
+            index: 5
+        )
+        backend.dispatch1D(encoder: encoder, pipeline: pipeline, count: 1)
+        encoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        #expect(commandBuffer.status == .completed)
+    }
+
+    try dispatch(initialize: 1)
+    prepared.contents()
+        .assumingMemoryBound(to: GPUPreparedBirdGeometry.self)
+        .pointee.leftAngularVelocity = SIMD4<Float>(0, 0, 1, 0)
+    try dispatch(initialize: 0)
+
+    let previous = PrescribedWingMomentumModel.momentum(
+        properties: properties,
+        hingeWorldMeters: .zero,
+        chordWorld: SIMD3<Float>(1, 0, 0),
+        spanWorld: SIMD3<Float>(0, 1, 0),
+        normalWorld: SIMD3<Float>(0, 0, 1),
+        relativeAngularVelocityWorldRadiansPerSecond: .zero,
+        bodyOriginWorldMeters: .zero
+    )
+    let current = PrescribedWingMomentumModel.momentum(
+        properties: properties,
+        hingeWorldMeters: .zero,
+        chordWorld: SIMD3<Float>(1, 0, 0),
+        spanWorld: SIMD3<Float>(0, 1, 0),
+        normalWorld: SIMD3<Float>(0, 0, 1),
+        relativeAngularVelocityWorldRadiansPerSecond:
+            SIMD3<Float>(0, 0, 1),
+        bodyOriginWorldMeters: .zero
+    )
+    let expected = PrescribedWingMomentumModel.inertialReaction(
+        previous: previous,
+        current: current,
+        timeStepSeconds: testCase.configuration.scaling.timeStepSeconds
+    )
+    let gpu = reaction.contents()
+        .assumingMemoryBound(to: GPUWingInertialReaction.self)
+        .pointee
+    let gpuLeftForce = SIMD3<Float>(
+        gpu.leftForce.x,
+        gpu.leftForce.y,
+        gpu.leftForce.z
+    )
+    let gpuLeftTorque = SIMD3<Float>(
+        gpu.leftTorque.x,
+        gpu.leftTorque.y,
+        gpu.leftTorque.z
+    )
+    let gpuRightForce = SIMD3<Float>(
+        gpu.rightForce.x,
+        gpu.rightForce.y,
+        gpu.rightForce.z
+    )
+    let gpuRightTorque = SIMD3<Float>(
+        gpu.rightTorque.x,
+        gpu.rightTorque.y,
+        gpu.rightTorque.z
+    )
+    #expect(
+        vectorLength(gpuLeftForce - expected.forceNewtons) < 1e-6
+    )
+    #expect(
+        vectorLength(gpuLeftTorque - expected.torqueNewtonMeters) < 1e-6
+    )
+    #expect(vectorLength(gpuRightForce) < 1e-8)
+    #expect(vectorLength(gpuRightTorque) < 1e-8)
 }
 
 @Test

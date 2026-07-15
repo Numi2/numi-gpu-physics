@@ -7,7 +7,7 @@ public enum MeasuredBirdDatasetError: Error, CustomStringConvertible, Equatable 
     public var description: String {
         switch self {
         case .unsupportedSchema(let version):
-            return "Measured-bird schema \(version) is unsupported; expected schema 1."
+            return "Measured-bird schema \(version) is unsupported; expected schema 1 or 2."
         case .invalidField(let message):
             return "Invalid measured-bird dataset: \(message)"
         }
@@ -457,7 +457,8 @@ public struct RegisteredAnalyticBirdGeometry: Sendable, Equatable, Codable {
     }
 
     public func birdParameters(
-        measuredKinematics: MeasuredWingKinematics
+        measuredKinematics: MeasuredWingKinematics,
+        prescribedWingDynamics: PrescribedWingDynamics? = nil
     ) -> BirdParameters {
         BirdParameters(
             bodyRadiiMeters: bodyRadiiMeters,
@@ -480,7 +481,8 @@ public struct RegisteredAnalyticBirdGeometry: Sendable, Equatable, Codable {
                 pitchAmplitudeRadians: 0,
                 pitchPhaseRadians: 0
             ),
-            measuredWingKinematics: measuredKinematics
+            measuredWingKinematics: measuredKinematics,
+            prescribedWingDynamics: prescribedWingDynamics
         )
     }
 }
@@ -528,7 +530,7 @@ public struct MeasuredBirdReplayConditions: Sendable, Equatable, Codable {
 
 @frozen
 public struct MeasuredBirdDataset: Sendable, Equatable, Codable {
-    public static let currentSchemaVersion = 1
+    public static let currentSchemaVersion = 2
     public static let analyticProxyRepresentation =
         "registeredAnalyticProxyV1"
 
@@ -540,6 +542,9 @@ public struct MeasuredBirdDataset: Sendable, Equatable, Codable {
     public var geometryRepresentation: String
     public var geometry: RegisteredAnalyticBirdGeometry
     public var kinematics: MeasuredWingKinematics
+    /// Required by schema 2. Schema 1 remains readable for prescribed replay,
+    /// but is not quantitative-free-flight qualified.
+    public var prescribedWingDynamics: PrescribedWingDynamics?
     public var replay: MeasuredBirdReplayConditions
 
     public init(
@@ -551,6 +556,7 @@ public struct MeasuredBirdDataset: Sendable, Equatable, Codable {
         geometryRepresentation: String = analyticProxyRepresentation,
         geometry: RegisteredAnalyticBirdGeometry,
         kinematics: MeasuredWingKinematics,
+        prescribedWingDynamics: PrescribedWingDynamics? = nil,
         replay: MeasuredBirdReplayConditions
     ) {
         self.schemaVersion = schemaVersion
@@ -561,12 +567,18 @@ public struct MeasuredBirdDataset: Sendable, Equatable, Codable {
         self.geometryRepresentation = geometryRepresentation
         self.geometry = geometry
         self.kinematics = kinematics
+        self.prescribedWingDynamics = prescribedWingDynamics
         self.replay = replay
     }
 
     public func validate() throws {
-        guard schemaVersion == Self.currentSchemaVersion else {
+        guard (1...Self.currentSchemaVersion).contains(schemaVersion) else {
             throw MeasuredBirdDatasetError.unsupportedSchema(schemaVersion)
+        }
+        guard schemaVersion < 2 || prescribedWingDynamics != nil else {
+            throw MeasuredBirdDatasetError.invalidField(
+                "schema 2 requires prescribedWingDynamics with measured bilateral mass properties"
+            )
         }
         guard !datasetIdentifier.trimmingCharacters(in: .whitespacesAndNewlines)
             .isEmpty else {
@@ -601,6 +613,21 @@ public struct MeasuredBirdDataset: Sendable, Equatable, Codable {
             )
         }
         try kinematics.validate()
+        if let prescribedWingDynamics {
+            let bird = geometry.birdParameters(
+                measuredKinematics: kinematics,
+                prescribedWingDynamics: prescribedWingDynamics
+            )
+            do {
+                try bird.validatePrescribedWingDynamics(
+                    prescribedWingDynamics
+                )
+            } catch {
+                throw MeasuredBirdDatasetError.invalidField(
+                    String(describing: error)
+                )
+            }
+        }
         let numeric = [
             geometry.bodyRadiiMeters.x,
             geometry.bodyRadiiMeters.y,

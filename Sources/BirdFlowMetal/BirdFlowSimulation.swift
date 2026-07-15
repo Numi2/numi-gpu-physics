@@ -33,6 +33,9 @@ public final class BirdFlowSimulation: @unchecked Sendable {
     private let birdParametersBuffer: MTLBuffer
     private let measuredKinematicsBuffer: MTLBuffer
     private let bodyStateBuffer: MTLBuffer
+    private let runtimeSafetyBuffer: MTLBuffer
+    private let wingMomentumBuffer: MTLBuffer
+    private let wingInertialReactionBuffer: MTLBuffer
     private let preparedGeometryBuffer: MTLBuffer
     private let populationsA: MTLBuffer
     private let populationsB: MTLBuffer
@@ -50,6 +53,8 @@ public final class BirdFlowSimulation: @unchecked Sendable {
     private let fluidStepPipeline: MTLComputePipelineState
     private let reductionPipeline: MTLComputePipelineState
     private let integratePipeline: MTLComputePipelineState
+    private let runtimeSafetyPipeline: MTLComputePipelineState
+    private let wingInertialReactionPipeline: MTLComputePipelineState
     private let extractFieldsPipeline: MTLComputePipelineState
     private let storeRunSamplePipeline: MTLComputePipelineState
 
@@ -113,6 +118,12 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         fluidStepPipeline = try backend.pipeline(named: "stepFluidTRT")
         reductionPipeline = try backend.pipeline(named: "reduceForceTorque")
         integratePipeline = try backend.pipeline(named: "integrateBirdBody")
+        runtimeSafetyPipeline = try backend.pipeline(
+            named: "monitorBirdRuntimeSafety"
+        )
+        wingInertialReactionPipeline = try backend.pipeline(
+            named: "updateWingInertialReaction"
+        )
         extractFieldsPipeline = try backend.pipeline(
             named: "extractMacroscopicFields"
         )
@@ -136,6 +147,9 @@ public final class BirdFlowSimulation: @unchecked Sendable {
             MemoryLayout<GPUBirdParameters>.stride,
             measuredKinematicsBytes,
             MemoryLayout<GPUBirdBodyState>.stride,
+            MemoryLayout<GPURuntimeSafetyRecord>.stride,
+            MemoryLayout<GPUWingMomentumState>.stride,
+            MemoryLayout<GPUWingInertialReaction>.stride,
             MemoryLayout<GPUPreparedBirdGeometry>.stride,
             populationBytes,
             populationBytes,
@@ -168,6 +182,15 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         }
         bodyStateBuffer = try backend.makeSharedBuffer(
             value: GPUBirdBodyState(initialBodyState)
+        )
+        runtimeSafetyBuffer = try backend.makeSharedBuffer(
+            value: GPURuntimeSafetyRecord.clear
+        )
+        wingMomentumBuffer = try backend.makeSharedBuffer(
+            value: GPUWingMomentumState.zero
+        )
+        wingInertialReactionBuffer = try backend.makeSharedBuffer(
+            value: GPUWingInertialReaction.zero
         )
         preparedGeometryBuffer = try backend.makePrivateBuffer(
             length: MemoryLayout<GPUPreparedBirdGeometry>.stride
@@ -293,7 +316,10 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         try waitForGPU()
         guard steps > 0 else {
             return AdvanceResult(
-                droppedFieldFrameCount: droppedFieldFrameCount
+                droppedFieldFrameCount: droppedFieldFrameCount,
+                runtimeSafety: configuration.freeFlight
+                    ? readRuntimeSafetyReport()
+                    : nil
             )
         }
 
@@ -321,6 +347,14 @@ public final class BirdFlowSimulation: @unchecked Sendable {
                 submitted.append(commandBuffer)
                 encodedSteps += count
                 remaining -= count
+                if configuration.freeFlight {
+                    commandBuffer.waitUntilCompleted()
+                    try check(commandBuffer)
+                    let safety = readRuntimeSafetyReport()
+                    if !safety.passed {
+                        throw BirdFlowError.runtimeSafetyViolation(safety)
+                    }
+                }
             }
         }
         catch {
@@ -372,7 +406,10 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         return AdvanceResult(
             runSamples: recordRunSamples ? readRunSamples(count: steps) : [],
             fieldFramePublished: captureSlotIndex != nil,
-            droppedFieldFrameCount: droppedFieldFrameCount
+            droppedFieldFrameCount: droppedFieldFrameCount,
+            runtimeSafety: configuration.freeFlight
+                ? readRuntimeSafetyReport()
+                : nil
         )
     }
 
@@ -601,6 +638,13 @@ public final class BirdFlowSimulation: @unchecked Sendable {
             commandBuffer: commandBuffer,
             uniforms: &uniforms
         )
+        if bird.prescribedWingDynamics != nil {
+            try encodeWingInertialReaction(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms,
+                initializeOnly: true
+            )
+        }
         try encodeGeometry(
             commandBuffer: commandBuffer,
             uniforms: &uniforms,
@@ -677,6 +721,13 @@ public final class BirdFlowSimulation: @unchecked Sendable {
                 commandBuffer: commandBuffer,
                 uniforms: &uniforms
             )
+            if bird.prescribedWingDynamics != nil {
+                try encodeWingInertialReaction(
+                    commandBuffer: commandBuffer,
+                    uniforms: &uniforms,
+                    initializeOnly: false
+                )
+            }
             try encodeGeometry(
                 commandBuffer: commandBuffer,
                 uniforms: &uniforms,
@@ -693,6 +744,11 @@ public final class BirdFlowSimulation: @unchecked Sendable {
                     commandBuffer: commandBuffer,
                     uniforms: &uniforms,
                     loadBuffer: lastLoadBuffer
+                )
+                try encodeRuntimeSafetyMonitor(
+                    commandBuffer: commandBuffer,
+                    uniforms: &uniforms,
+                    step: absoluteStep
                 )
             }
             if recordRunSamples {
@@ -873,9 +929,84 @@ public final class BirdFlowSimulation: @unchecked Sendable {
             length: MemoryLayout<GPUUniforms>.stride,
             index: 3
         )
+        encoder.setBuffer(wingInertialReactionBuffer, offset: 0, index: 4)
         backend.dispatch1D(
             encoder: encoder,
             pipeline: integratePipeline,
+            count: 1
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeWingInertialReaction(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        initializeOnly: Bool
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create wing-inertial-reaction encoder."
+            )
+        }
+        var initialize = UInt32(initializeOnly ? 1 : 0)
+        encoder.label = initializeOnly
+            ? "Initialize prescribed-wing momentum"
+            : "Prescribed-wing hinge momentum reaction"
+        encoder.setBuffer(wingMomentumBuffer, offset: 0, index: 0)
+        encoder.setBuffer(wingInertialReactionBuffer, offset: 0, index: 1)
+        encoder.setBuffer(preparedGeometryBuffer, offset: 0, index: 2)
+        encoder.setBuffer(birdParametersBuffer, offset: 0, index: 3)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 4
+        )
+        encoder.setBytes(
+            &initialize,
+            length: MemoryLayout<UInt32>.stride,
+            index: 5
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: wingInertialReactionPipeline,
+            count: 1
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeRuntimeSafetyMonitor(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        step: UInt64
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create runtime-safety encoder."
+            )
+        }
+        var stepWords = SIMD4<UInt32>(
+            UInt32(truncatingIfNeeded: step),
+            UInt32(truncatingIfNeeded: step >> 32),
+            0,
+            0
+        )
+        encoder.label = "Free-flight Mach and domain safety ledger"
+        encoder.setBuffer(bodyStateBuffer, offset: 0, index: 0)
+        encoder.setBuffer(birdParametersBuffer, offset: 0, index: 1)
+        encoder.setBuffer(runtimeSafetyBuffer, offset: 0, index: 2)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        encoder.setBytes(
+            &stepWords,
+            length: MemoryLayout<SIMD4<UInt32>>.stride,
+            index: 4
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: runtimeSafetyPipeline,
             count: 1
         )
         encoder.endEncoding()
@@ -915,6 +1046,7 @@ public final class BirdFlowSimulation: @unchecked Sendable {
             length: MemoryLayout<Float>.stride,
             index: 4
         )
+        encoder.setBuffer(wingInertialReactionBuffer, offset: 0, index: 5)
         backend.dispatch1D(
             encoder: encoder,
             pipeline: storeRunSamplePipeline,
@@ -958,6 +1090,29 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         let pointer = runSampleBuffer.contents()
             .assumingMemoryBound(to: GPURunSample.self)
         return (0..<count).map { pointer[$0].publicValue }
+    }
+
+    public func runtimeSafetyReport() throws -> RuntimeSafetyReport? {
+        try waitForGPU()
+        return configuration.freeFlight ? readRuntimeSafetyReport() : nil
+    }
+
+    private func readRuntimeSafetyReport() -> RuntimeSafetyReport {
+        let value = runtimeSafetyBuffer.contents()
+            .assumingMemoryBound(to: GPURuntimeSafetyRecord.self)
+            .pointee
+        let flags = value.event.z
+        let firstStep: UInt64? = flags == 0
+            ? nil
+            : UInt64(value.event.x) | (UInt64(value.event.y) << 32)
+        return RuntimeSafetyReport(
+            maximumLatticeMach: value.metrics.x,
+            minimumSpongeClearanceMeters: value.metrics.y,
+            firstViolationStep: firstStep,
+            machLimitExceeded: flags & 1 != 0,
+            spongeClearanceViolated: flags & 2 != 0,
+            nonFiniteStateDetected: flags & 4 != 0
+        )
     }
 
     private func selectCaptureSlot(for mode: FieldCaptureMode) -> Int? {
@@ -1134,6 +1289,22 @@ public final class BirdFlowSimulation: @unchecked Sendable {
             size: mask.count
         )
         blit.endEncoding()
+        var restoredUniforms = GPUUniforms(
+            configuration: configuration,
+            time: manifest.timeSeconds,
+            hasPreviousGeometry: true
+        )
+        try encodeGeometryPreparation(
+            commandBuffer: commandBuffer,
+            uniforms: &restoredUniforms
+        )
+        if bird.prescribedWingDynamics != nil {
+            try encodeWingInertialReaction(
+                commandBuffer: commandBuffer,
+                uniforms: &restoredUniforms,
+                initializeOnly: true
+            )
+        }
         try encodeExtractedMacroscopicFields(
             commandBuffer: commandBuffer,
             fieldSlot: observationSlots[0]
@@ -1145,6 +1316,9 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         stepIndex = manifest.step
         timeSeconds = manifest.timeSeconds
         terminalFailure = nil
+        runtimeSafetyBuffer.contents()
+            .assumingMemoryBound(to: GPURuntimeSafetyRecord.self)
+            .pointee = .clear
         observationCondition.lock()
         latestPublishedSlot = nil
         for slot in observationSlots {
@@ -1212,6 +1386,11 @@ public final class BirdFlowSimulation: @unchecked Sendable {
     }
 
     private func invalidate(after error: Error) -> BirdFlowError {
+        if let birdFlowError = error as? BirdFlowError,
+           case .runtimeSafetyViolation = birdFlowError {
+            terminalFailure = birdFlowError
+            return birdFlowError
+        }
         let failure = BirdFlowError.simulationStateInvalidated(
             String(describing: error)
         )

@@ -52,6 +52,7 @@ struct GPUUniforms {
     float4 gravity;
     float4 caseParameters;
     uint4 flags;
+    uint4 integration;
 };
 
 struct GPUBirdParameters {
@@ -62,6 +63,31 @@ struct GPUBirdParameters {
     float4 tailGeometry;
     float4 wingKinematics0;
     float4 wingKinematics1;
+    float4 safetyGeometry;
+    float4 safetyLimits;
+    float4 leftWingMassAndCOM;
+    float4 leftWingInertia;
+    float4 rightWingMassAndCOM;
+    float4 rightWingInertia;
+};
+
+struct GPURuntimeSafetyRecord {
+    float4 metrics;
+    uint4 event;
+};
+
+struct GPUWingMomentumState {
+    float4 leftLinear;
+    float4 leftAngular;
+    float4 rightLinear;
+    float4 rightAngular;
+};
+
+struct GPUWingInertialReaction {
+    float4 leftForce;
+    float4 leftTorque;
+    float4 rightForce;
+    float4 rightTorque;
 };
 
 struct GPUMeasuredWingKeyframe {
@@ -230,6 +256,10 @@ struct GPURunSample {
     float4 angularVelocityBody;
     float4 force;
     float4 torque;
+    float4 leftHingeForce;
+    float4 leftHingeTorque;
+    float4 rightHingeForce;
+    float4 rightHingeTorque;
     uint4 step;
 };
 
@@ -3546,6 +3576,7 @@ kernel void storeRunSample(
     device const GPUForceTorque& load [[buffer(2)]],
     constant uint4& indices [[buffer(3)]],
     constant float& time [[buffer(4)]],
+    device const GPUWingInertialReaction& wingReaction [[buffer(5)]],
     uint gid [[thread_position_in_grid]]
 ) {
     if (gid != 0u) {
@@ -3558,6 +3589,10 @@ kernel void storeRunSample(
     samples[sampleIndex].angularVelocityBody = body.angularVelocityBody;
     samples[sampleIndex].force = load.force;
     samples[sampleIndex].torque = load.torque;
+    samples[sampleIndex].leftHingeForce = wingReaction.leftForce;
+    samples[sampleIndex].leftHingeTorque = wingReaction.leftTorque;
+    samples[sampleIndex].rightHingeForce = wingReaction.rightForce;
+    samples[sampleIndex].rightHingeTorque = wingReaction.rightTorque;
     samples[sampleIndex].step = uint4(indices.y, indices.z, 0, 0);
 }
 
@@ -3635,49 +3670,250 @@ kernel void reducePopulationMinimum(
     }
 }
 
+inline void prescribedWingMomentum(
+    float3 root,
+    float3 chord,
+    float3 span,
+    float3 normal,
+    float3 relativeAngularVelocity,
+    float4 massAndCOM,
+    float3 principalInertia,
+    float3 bodyPosition,
+    thread float3& linearMomentum,
+    thread float3& angularMomentum
+) {
+    float3 centerOffset = chord * massAndCOM.y
+        + span * massAndCOM.z
+        + normal * massAndCOM.w;
+    float3 centerVelocity = cross(relativeAngularVelocity, centerOffset);
+    linearMomentum = massAndCOM.x * centerVelocity;
+    float3 spinMomentum = chord
+            * (principalInertia.x
+                * dot(relativeAngularVelocity, chord))
+        + span
+            * (principalInertia.y
+                * dot(relativeAngularVelocity, span))
+        + normal
+            * (principalInertia.z
+                * dot(relativeAngularVelocity, normal));
+    angularMomentum = cross(
+        root + centerOffset - bodyPosition,
+        linearMomentum
+    ) + spinMomentum;
+}
+
+kernel void updateWingInertialReaction(
+    device GPUWingMomentumState* previous [[buffer(0)]],
+    device GPUWingInertialReaction* reaction [[buffer(1)]],
+    device const GPUPreparedBirdGeometry& prepared [[buffer(2)]],
+    constant GPUBirdParameters& bird [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    constant uint& initializeOnly [[buffer(5)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid != 0u) {
+        return;
+    }
+    if (bird.leftWingInertia.w < 0.5f
+        || bird.rightWingInertia.w < 0.5f) {
+        reaction[0] = {
+            float4(0), float4(0), float4(0), float4(0)
+        };
+        previous[0] = {
+            float4(0), float4(0), float4(0), float4(0)
+        };
+        return;
+    }
+
+    float3 leftLinear;
+    float3 leftAngular;
+    float3 rightLinear;
+    float3 rightAngular;
+    prescribedWingMomentum(
+        prepared.leftRoot.xyz,
+        prepared.leftChord.xyz,
+        prepared.leftSpan.xyz,
+        prepared.leftNormal.xyz,
+        prepared.leftAngularVelocity.xyz,
+        bird.leftWingMassAndCOM,
+        bird.leftWingInertia.xyz,
+        prepared.bodyPosition.xyz,
+        leftLinear,
+        leftAngular
+    );
+    prescribedWingMomentum(
+        prepared.rightRoot.xyz,
+        prepared.rightChord.xyz,
+        prepared.rightSpan.xyz,
+        prepared.rightNormal.xyz,
+        prepared.rightAngularVelocity.xyz,
+        bird.rightWingMassAndCOM,
+        bird.rightWingInertia.xyz,
+        prepared.bodyPosition.xyz,
+        rightLinear,
+        rightAngular
+    );
+
+    float inverseDt = 1.0f / uniforms.timeStepAndScales.y;
+    if (initializeOnly != 0u) {
+        reaction[0] = {
+            float4(0), float4(0), float4(0), float4(0)
+        };
+    } else {
+        reaction[0].leftForce = float4(
+            -(leftLinear - previous[0].leftLinear.xyz) * inverseDt,
+            0
+        );
+        reaction[0].leftTorque = float4(
+            -(leftAngular - previous[0].leftAngular.xyz) * inverseDt,
+            0
+        );
+        reaction[0].rightForce = float4(
+            -(rightLinear - previous[0].rightLinear.xyz) * inverseDt,
+            0
+        );
+        reaction[0].rightTorque = float4(
+            -(rightAngular - previous[0].rightAngular.xyz) * inverseDt,
+            0
+        );
+    }
+    previous[0].leftLinear = float4(leftLinear, 0);
+    previous[0].leftAngular = float4(leftAngular, 0);
+    previous[0].rightLinear = float4(rightLinear, 0);
+    previous[0].rightAngular = float4(rightAngular, 0);
+}
+
 kernel void integrateBirdBody(
     device GPUBirdBodyState* body [[buffer(0)]],
     constant GPUBirdParameters& bird [[buffer(1)]],
     device const GPUForceTorque* totalLoad [[buffer(2)]],
     constant GPUUniforms& uniforms [[buffer(3)]],
+    device const GPUWingInertialReaction* wingReaction [[buffer(4)]],
     uint gid [[thread_position_in_grid]]
 ) {
     if (gid != 0 || uniforms.flags.x == 0u) {
         return;
     }
 
-    float dt = uniforms.timeStepAndScales.y;
+    uint substeps = max(uniforms.integration.x, 1u);
+    float dt = uniforms.timeStepAndScales.y / float(substeps);
     float mass = bird.bodyRadiiAndMass.w;
-    float3 force = totalLoad[0].force.xyz;
-    float3 torqueWorld = totalLoad[0].torque.xyz;
+    float3 force = totalLoad[0].force.xyz
+        + wingReaction[0].leftForce.xyz
+        + wingReaction[0].rightForce.xyz;
+    float3 torqueWorld = totalLoad[0].torque.xyz
+        + wingReaction[0].leftTorque.xyz
+        + wingReaction[0].rightTorque.xyz;
 
     float3 linearVelocity = body[0].linearVelocity.xyz;
-    linearVelocity += (force / mass + uniforms.gravity.xyz) * dt;
-    body[0].position = float4(
-        body[0].position.xyz + linearVelocity * dt,
-        0
-    );
-    body[0].linearVelocity = float4(linearVelocity, 0);
-
+    float3 position = body[0].position.xyz;
     float4 orientation = quaternionNormalize(body[0].orientation);
-    float3 torqueBody = quaternionUnrotate(orientation, torqueWorld);
     float3 omegaBody = body[0].angularVelocityBody.xyz;
     float3 inertia = bird.inertia.xyz;
-    float3 angularMomentum = inertia * omegaBody;
-    float3 angularAcceleration = (
-        torqueBody - cross(omegaBody, angularMomentum)
-    ) / inertia;
-    omegaBody += angularAcceleration * dt;
 
-    float4 omegaQuaternion = float4(omegaBody, 0);
-    float4 derivative = quaternionMultiply(
-        orientation,
-        omegaQuaternion
-    );
-    orientation = quaternionNormalize(
-        orientation + 0.5f * dt * derivative
-    );
+    for (uint substep = 0u; substep < substeps; ++substep) {
+        linearVelocity += (force / mass + uniforms.gravity.xyz) * dt;
+        position += linearVelocity * dt;
 
+        float3 torqueBody = quaternionUnrotate(orientation, torqueWorld);
+        float3 angularMomentum = inertia * omegaBody;
+        float3 angularAcceleration = (
+            torqueBody - cross(omegaBody, angularMomentum)
+        ) / inertia;
+        omegaBody += angularAcceleration * dt;
+
+        float4 omegaQuaternion = float4(omegaBody, 0);
+        float4 derivative = quaternionMultiply(
+            orientation,
+            omegaQuaternion
+        );
+        orientation = quaternionNormalize(
+            orientation + 0.5f * dt * derivative
+        );
+    }
+
+    body[0].position = float4(position, 0);
+    body[0].linearVelocity = float4(linearVelocity, 0);
     body[0].orientation = orientation;
     body[0].angularVelocityBody = float4(omegaBody, 0);
+}
+
+kernel void monitorBirdRuntimeSafety(
+    constant GPUBirdBodyState& body [[buffer(0)]],
+    constant GPUBirdParameters& bird [[buffer(1)]],
+    device GPURuntimeSafetyRecord* record [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    constant uint4& stepWords [[buffer(4)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid != 0u || uniforms.flags.x == 0u) {
+        return;
+    }
+
+    float4 orientation = quaternionNormalize(body.orientation);
+    float3 localExtent = bird.safetyGeometry.xyz;
+    float3 worldExtent = abs(quaternionRotate(
+        orientation,
+        float3(localExtent.x, 0, 0)
+    )) + abs(quaternionRotate(
+        orientation,
+        float3(0, localExtent.y, 0)
+    )) + abs(quaternionRotate(
+        orientation,
+        float3(0, 0, localExtent.z)
+    ));
+    float dx = uniforms.originAndCellSize.w;
+    float margin = (uniforms.latticeAndSponge.w + 3.0f) * dx;
+    float3 domainMinimum = uniforms.originAndCellSize.xyz
+        + float3(margin);
+    float3 domainMaximum = uniforms.originAndCellSize.xyz
+        + float3(uniforms.grid.xyz) * dx
+        - float3(margin);
+    float3 lowerClearance = body.position.xyz - worldExtent - domainMinimum;
+    float3 upperClearance = domainMaximum - body.position.xyz - worldExtent;
+    float clearance = min(
+        min(lowerClearance.x, min(lowerClearance.y, lowerClearance.z)),
+        min(upperClearance.x, min(upperClearance.y, upperClearance.z))
+    );
+
+    float velocityToLattice = uniforms.timeStepAndScales.z;
+    float3 farFieldPhysical = uniforms.farFieldLattice.xyz
+        / velocityToLattice;
+    float relativeTranslation = length(
+        body.linearVelocity.xyz - farFieldPhysical
+    );
+    float rigidRotation = length(body.angularVelocityBody.xyz)
+        * bird.safetyGeometry.w;
+    float surfaceSpeed = relativeTranslation
+        + rigidRotation
+        + bird.safetyLimits.x;
+    float mach = surfaceSpeed * velocityToLattice / sqrt(CS2);
+    bool finiteState = all(isfinite(body.position))
+        && all(isfinite(body.orientation))
+        && all(isfinite(body.linearVelocity))
+        && all(isfinite(body.angularVelocityBody))
+        && isfinite(mach)
+        && isfinite(clearance);
+
+    if (isfinite(mach)) {
+        record[0].metrics.x = max(record[0].metrics.x, mach);
+    }
+    if (isfinite(clearance)) {
+        record[0].metrics.y = min(record[0].metrics.y, clearance);
+    }
+    uint flags = 0u;
+    if (!finiteState) {
+        flags |= 4u;
+    }
+    if (isfinite(mach) && mach > bird.safetyLimits.y) {
+        flags |= 1u;
+    }
+    if (isfinite(clearance) && clearance < 0.0f) {
+        flags |= 2u;
+    }
+    if (flags != 0u && record[0].event.z == 0u) {
+        record[0].event = uint4(stepWords.x, stepWords.y, flags, 0u);
+        record[0].metrics.z = mach;
+        record[0].metrics.w = clearance;
+    }
 }

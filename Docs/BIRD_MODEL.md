@@ -10,7 +10,10 @@ The included development geometry contains:
 - six-degree-of-freedom rigid torso
 - sinusoidal wing stroke and pitch
 
-The prescribed wings are massless kinematic boundaries in the current dynamics model. Their aerodynamic loads enter the rigid-torso total, but wing mass/inertia, hinge reactions, and actuator loads are not modeled.
+The demonstration and schema-1 prescribed wings are explicit massless
+kinematic boundaries. Schema 2 enables the measured rigid-wing internal
+momentum model described below. Aerodynamic load is still reduced as a total;
+independent aerodynamic actuator effort requires future per-part load output.
 
 It is not assigned to a species. `BirdParameters.demonstration` is selected to fit the default domain and exercise moving-boundary coupling.
 
@@ -33,6 +36,7 @@ The tail extends in `-x`. The wing roots are offset in `+y` and `-y`. Stroke rot
 - mass and center of mass
 - principal inertia tensor and body-frame orientation
 - wing hinge locations
+- bilateral wing mass, hinge-relative center of mass, and inertia
 - stroke, deviation, pitch, and twist versus phase
 - flight speed and atmospheric density/viscosity
 
@@ -63,3 +67,11 @@ onto the existing ellipsoid/tapered-wing/tapered-tail signed-distance functions.
 It is intentionally not called a measured surface mesh. The mesh-to-SDF/cut-link
 path above remains required when surface detail materially affects loads. See
 `Docs/MEASURED_BIRD_DATA.md` for the exact contract.
+
+Schema 2 adds measured bilateral wing mass properties and fixed definitions
+for whole-bird mass/inertia. The GPU differences each prescribed rigid wing's
+linear and angular momentum between surface phases, applies the opposite rate
+to the body equation, and records left/right inertial hinge reactions. The
+registered model rejects distributed wing twist rather than treating a
+deforming wing as a hidden rigid mass. This is an internal-momentum treatment,
+not yet an independent actuator-power measurement.

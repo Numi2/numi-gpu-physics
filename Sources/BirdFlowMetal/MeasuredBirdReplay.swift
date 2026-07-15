@@ -18,6 +18,19 @@ public enum MeasuredBirdReplayError: Error, CustomStringConvertible {
     }
 }
 
+private func quaternionDifferenceRadians(
+    _ first: Quaternion,
+    _ second: Quaternion
+) -> Float {
+    let a = first.normalized.simd4
+    let b = second.normalized.simd4
+    let magnitude = min(
+        1,
+        abs(a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w)
+    )
+    return 2 * acos(magnitude)
+}
+
 @frozen
 public struct LoadedMeasuredBirdDataset: Sendable {
     public var dataset: MeasuredBirdDataset
@@ -67,7 +80,7 @@ private enum StrictMeasuredBirdJSON {
             allowed: [
                 "schemaVersion", "datasetIdentifier", "provenance", "units",
                 "coordinateFrame", "geometryRepresentation", "geometry",
-                "kinematics", "replay",
+                "kinematics", "prescribedWingDynamics", "replay",
             ]
         )
         try check(
@@ -124,6 +137,30 @@ private enum StrictMeasuredBirdJSON {
             )
             try check(
                 keyframe["right"], path: "\(path).right", allowed: wingKeys
+            )
+        }
+        if let dynamics = top["prescribedWingDynamics"] {
+            let dynamicsObject = try object(
+                dynamics,
+                path: "$.prescribedWingDynamics",
+                allowed: [
+                    "model", "sourceCitation", "massDefinition",
+                    "inertiaDefinition", "left", "right",
+                ]
+            )
+            let properties: Set<String> = [
+                "massKilograms", "centerOfMassFromHingeMeters",
+                "principalInertiaKilogramMetersSquared",
+            ]
+            try check(
+                dynamicsObject["left"],
+                path: "$.prescribedWingDynamics.left",
+                allowed: properties
+            )
+            try check(
+                dynamicsObject["right"],
+                path: "$.prescribedWingDynamics.right",
+                allowed: properties
             )
         }
         let replay = try object(
@@ -192,6 +229,8 @@ public struct MeasuredBirdReplayAudit: Codable, Sendable {
     public var timeStepSeconds: Float
     public var stepsPerCycle: Int
     public var estimatedMaximumLatticeMach: Float
+    public var wingInertialTreatment: String
+    public var quantitativeFreeFlightContractPassed: Bool
     public var passed: Bool
     public var scientificVerdict: String
 }
@@ -202,6 +241,8 @@ public struct MeasuredBirdReplayPhaseSample: Codable, Sendable {
     public var timeSeconds: Float
     public var cyclePhase: Float
     public var aerodynamicLoad: ForceTorque
+    public var body: BirdBodyState
+    public var wingHingeReactionLoads: WingHingeReactionLoads?
 }
 
 @frozen
@@ -211,15 +252,241 @@ public struct MeasuredBirdReplayReport: Codable, Sendable {
     public var steps: Int
     public var cycles: Float
     public var batchSize: Int
+    public var freeFlight: Bool
+    public var bodySubsteps: Int
     public var runtimeSeconds: Double
     public var meanForceNewtons: SIMD3<Float>
     public var meanTorqueNewtonMeters: SIMD3<Float>
+    public var meanWingHingeReactionForceNewtons: SIMD3<Float>
+    public var meanWingHingeReactionTorqueNewtonMeters: SIMD3<Float>
+    public var runtimeSafety: RuntimeSafetyReport?
     public var samples: [MeasuredBirdReplayPhaseSample]
     public var passed: Bool
     public var scientificVerdict: String
 }
 
+@frozen
+public struct FreeFlightBodyRefinementCase: Codable, Sendable {
+    public var bodySubsteps: Int
+    public var finalBody: BirdBodyState
+    public var runtimeSeconds: Double
+    public var runtimeSafety: RuntimeSafetyReport
+}
+
+@frozen
+public struct FreeFlightBodyRefinementReport: Codable, Sendable {
+    public var datasetIdentifier: String
+    public var chordCells: Int
+    public var steps: Int
+    public var cases: [FreeFlightBodyRefinementCase]
+    public var finePairPositionDifferenceChordFraction: Float
+    public var finePairVelocityDifferenceReferenceFraction: Float
+    public var finePairOrientationDifferenceDegrees: Float
+    public var finePairAngularVelocityDifferenceCycleFraction: Float
+    public var passed: Bool
+    public var scientificVerdict: String
+}
+
+@frozen
+public struct MeasuredBirdLoadRefinementCase: Codable, Sendable {
+    public var chordCells: Int
+    public var grid: GridSize
+    public var steps: Int
+    public var runtimeSeconds: Double
+    public var penultimateCycleMeanForceNewtons: SIMD3<Float>
+    public var finalCycleMeanForceNewtons: SIMD3<Float>
+    public var penultimateCycleMeanTorqueNewtonMeters: SIMD3<Float>
+    public var finalCycleMeanTorqueNewtonMeters: SIMD3<Float>
+    public var stationarityForceFraction: Float
+    public var stationarityTorqueFraction: Float
+}
+
+@frozen
+public struct MeasuredBirdLoadRefinementReport: Codable, Sendable {
+    public var datasetIdentifier: String
+    public var cycles: Float
+    public var cases: [MeasuredBirdLoadRefinementCase]
+    public var finePairForceDifferenceFraction: Float
+    public var finePairTorqueDifferenceFraction: Float
+    public var passed: Bool
+    public var scientificVerdict: String
+}
+
 public enum MeasuredBirdReplay {
+    public static func runFreeFlightBodyRefinement(
+        _ loaded: LoadedMeasuredBirdDataset,
+        chordCells: Int,
+        steps: Int,
+        batchSize: Int = 32
+    ) throws -> FreeFlightBodyRefinementReport {
+        guard steps > 0 else {
+            throw MeasuredBirdReplayError.invalidInput(
+                "body refinement requires a positive explicit step count"
+            )
+        }
+        var cases: [FreeFlightBodyRefinementCase] = []
+        for substeps in [1, 2, 4] {
+            let report = try run(
+                loaded,
+                chordCells: chordCells,
+                steps: steps,
+                batchSize: batchSize,
+                freeFlight: true,
+                bodySubsteps: substeps
+            )
+            guard let final = report.samples.last,
+                  let safety = report.runtimeSafety else {
+                throw MeasuredBirdReplayError.nonFiniteResult
+            }
+            cases.append(
+                FreeFlightBodyRefinementCase(
+                    bodySubsteps: substeps,
+                    finalBody: final.body,
+                    runtimeSeconds: report.runtimeSeconds,
+                    runtimeSafety: safety
+                )
+            )
+        }
+        let coarse = cases[cases.count - 2].finalBody
+        let fine = cases[cases.count - 1].finalBody
+        let geometry = loaded.dataset.geometry
+        let replay = loaded.dataset.replay
+        let position = vectorLength(
+            coarse.positionMeters - fine.positionMeters
+        ) / geometry.wingRootChordMeters
+        let velocity = vectorLength(
+            coarse.linearVelocityMetersPerSecond
+                - fine.linearVelocityMetersPerSecond
+        ) / replay.referenceSpeedMetersPerSecond
+        let orientation = quaternionDifferenceRadians(
+            coarse.orientationBodyToWorld,
+            fine.orientationBodyToWorld
+        ) * 180 / .pi
+        let angularScale = 2 * Float.pi
+            * loaded.dataset.kinematics.frequencyHz
+        let angularVelocity = vectorLength(
+            coarse.angularVelocityBodyRadiansPerSecond
+                - fine.angularVelocityBodyRadiansPerSecond
+        ) / angularScale
+        let passed = position <= 0.01
+            && velocity <= 0.01
+            && orientation <= 0.5
+            && angularVelocity <= 0.01
+            && cases.allSatisfy(\.runtimeSafety.passed)
+        return FreeFlightBodyRefinementReport(
+            datasetIdentifier: loaded.dataset.datasetIdentifier,
+            chordCells: chordCells,
+            steps: steps,
+            cases: cases,
+            finePairPositionDifferenceChordFraction: position,
+            finePairVelocityDifferenceReferenceFraction: velocity,
+            finePairOrientationDifferenceDegrees: orientation,
+            finePairAngularVelocityDifferenceCycleFraction: angularVelocity,
+            passed: passed,
+            scientificVerdict: passed
+                ? "independent 2-to-4 body-substep refinement passed the locked 1% translational, 0.5-degree attitude, and runtime-safety gates"
+                : "body-step refinement remains open; inspect the reported fine-pair trajectory metrics or runtime bounds"
+        )
+    }
+
+    public static func runLoadRefinement(
+        _ loaded: LoadedMeasuredBirdDataset,
+        cycles: Float = 5,
+        batchSize: Int = 32
+    ) throws -> MeasuredBirdLoadRefinementReport {
+        guard cycles >= 5 else {
+            throw MeasuredBirdReplayError.invalidInput(
+                "quantitative load refinement requires at least five cycles"
+            )
+        }
+        let geometry = loaded.dataset.geometry
+        let replay = loaded.dataset.replay
+        let wingArea = 2 * geometry.wingSpanMeters
+            * 0.5 * (geometry.wingRootChordMeters
+                + geometry.wingTipChordMeters)
+        let dynamicForce = 0.5 * replay.physicalAirDensity
+            * replay.referenceSpeedMetersPerSecond
+            * replay.referenceSpeedMetersPerSecond
+            * wingArea
+        let weight = geometry.massKilograms
+            * vectorLength(replay.gravityMetersPerSecondSquared)
+        let forceScale = max(dynamicForce, max(weight, 1e-9))
+        let torqueScale = max(
+            forceScale * geometry.wingRootChordMeters,
+            1e-9
+        )
+        var cases: [MeasuredBirdLoadRefinementCase] = []
+        for chordCells in [8, 12, 16] {
+            let report = try run(
+                loaded,
+                chordCells: chordCells,
+                cycles: cycles,
+                batchSize: batchSize
+            )
+            let frequency = loaded.dataset.kinematics.frequencyHz
+            let finalCycleIndex = max(0, Int(floor(report.cycles)) - 1)
+            let previousCycleIndex = max(0, finalCycleIndex - 1)
+            let previous = cycleMean(
+                report.samples,
+                cycleIndex: previousCycleIndex,
+                frequency: frequency
+            )
+            let final = cycleMean(
+                report.samples,
+                cycleIndex: finalCycleIndex,
+                frequency: frequency
+            )
+            cases.append(
+                MeasuredBirdLoadRefinementCase(
+                    chordCells: chordCells,
+                    grid: report.audit.grid,
+                    steps: report.steps,
+                    runtimeSeconds: report.runtimeSeconds,
+                    penultimateCycleMeanForceNewtons: previous.forceNewtons,
+                    finalCycleMeanForceNewtons: final.forceNewtons,
+                    penultimateCycleMeanTorqueNewtonMeters:
+                        previous.torqueNewtonMeters,
+                    finalCycleMeanTorqueNewtonMeters:
+                        final.torqueNewtonMeters,
+                    stationarityForceFraction: vectorLength(
+                        final.forceNewtons - previous.forceNewtons
+                    ) / forceScale,
+                    stationarityTorqueFraction: vectorLength(
+                        final.torqueNewtonMeters
+                            - previous.torqueNewtonMeters
+                    ) / torqueScale
+                )
+            )
+        }
+        let medium = cases[1]
+        let fine = cases[2]
+        let forceDifference = vectorLength(
+            fine.finalCycleMeanForceNewtons
+                - medium.finalCycleMeanForceNewtons
+        ) / forceScale
+        let torqueDifference = vectorLength(
+            fine.finalCycleMeanTorqueNewtonMeters
+                - medium.finalCycleMeanTorqueNewtonMeters
+        ) / torqueScale
+        let passed = forceDifference <= 0.05
+            && torqueDifference <= 0.05
+            && cases.allSatisfy {
+                $0.stationarityForceFraction <= 0.05
+                    && $0.stationarityTorqueFraction <= 0.05
+            }
+        return MeasuredBirdLoadRefinementReport(
+            datasetIdentifier: loaded.dataset.datasetIdentifier,
+            cycles: cycles,
+            cases: cases,
+            finePairForceDifferenceFraction: forceDifference,
+            finePairTorqueDifferenceFraction: torqueDifference,
+            passed: passed,
+            scientificVerdict: passed
+                ? "five-cycle 8/12/16 measured-bird load ladder passed the locked 5% stationarity and fine-pair gates"
+                : "measured-bird load refinement remains open; inspect stationarity and 12-to-16 load differences"
+        )
+    }
+
     public static func audit(
         _ loaded: LoadedMeasuredBirdDataset,
         chordCells: Int
@@ -259,6 +526,11 @@ public enum MeasuredBirdReplay {
             timeStepSeconds: plan.configuration.scaling.timeStepSeconds,
             stepsPerCycle: plan.stepsPerCycle,
             estimatedMaximumLatticeMach: mach,
+            wingInertialTreatment: loaded.dataset.prescribedWingDynamics?.model
+                ?? "masslessPrescribedDevelopmentMode",
+            quantitativeFreeFlightContractPassed:
+                loaded.dataset.schemaVersion >= 2
+                    && loaded.dataset.prescribedWingDynamics != nil,
             passed: true,
             scientificVerdict:
                 "input contract accepted; no quantitative bird-flight verdict"
@@ -271,6 +543,8 @@ public enum MeasuredBirdReplay {
         cycles: Float = 1,
         steps explicitSteps: Int? = nil,
         batchSize: Int = 32,
+        freeFlight: Bool = false,
+        bodySubsteps: Int = 1,
         archiveDirectory: URL? = nil
     ) throws -> MeasuredBirdReplayReport {
         #if canImport(Metal)
@@ -278,12 +552,25 @@ public enum MeasuredBirdReplay {
               cycles.isFinite,
               cycles > 0,
               explicitSteps.map({ $0 > 0 }) ?? true,
-              batchSize > 0 else {
+              batchSize > 0,
+              (1...64).contains(bodySubsteps) else {
             throw MeasuredBirdReplayError.invalidInput(
                 "chord cells must be >= 8, cycles and steps positive, and batch size positive"
             )
         }
-        let plan = try makePlan(loaded.dataset, chordCells: chordCells)
+        if freeFlight,
+           (loaded.dataset.schemaVersion < 2
+                || loaded.dataset.prescribedWingDynamics == nil) {
+            throw MeasuredBirdReplayError.invalidInput(
+                "quantitative free flight requires schema 2 measured bilateral wing mass properties; schema 1 remains prescribed-replay only"
+            )
+        }
+        let plan = try makePlan(
+            loaded.dataset,
+            chordCells: chordCells,
+            freeFlight: freeFlight,
+            bodySubsteps: bodySubsteps
+        )
         let audit = try audit(loaded, chordCells: chordCells)
         let requestedSteps = explicitSteps.map(Double.init)
             ?? ceil(Double(cycles) * Double(plan.stepsPerCycle))
@@ -317,7 +604,9 @@ public enum MeasuredBirdReplay {
                 step: sample.step,
                 timeSeconds: sample.timeSeconds,
                 cyclePhase: phase,
-                aerodynamicLoad: sample.aerodynamicLoad
+                aerodynamicLoad: sample.aerodynamicLoad,
+                body: sample.body,
+                wingHingeReactionLoads: sample.wingHingeReactionLoads
             )
         }
         guard samples.count == steps,
@@ -331,6 +620,12 @@ public enum MeasuredBirdReplay {
         let meanTorque = samples.reduce(SIMD3<Float>.zero) {
             $0 + $1.aerodynamicLoad.torqueNewtonMeters
         } / denominator
+        let meanHingeForce = samples.reduce(SIMD3<Float>.zero) {
+            $0 + ($1.wingHingeReactionLoads?.total.forceNewtons ?? .zero)
+        } / denominator
+        let meanHingeTorque = samples.reduce(SIMD3<Float>.zero) {
+            $0 + ($1.wingHingeReactionLoads?.total.torqueNewtonMeters ?? .zero)
+        } / denominator
         let report = MeasuredBirdReplayReport(
             audit: audit,
             deviceName: simulation.metalDevice.name,
@@ -339,13 +634,19 @@ public enum MeasuredBirdReplay {
                 * plan.configuration.scaling.timeStepSeconds
                 * frequency,
             batchSize: min(batchSize, steps),
+            freeFlight: freeFlight,
+            bodySubsteps: bodySubsteps,
             runtimeSeconds: runtime,
             meanForceNewtons: meanForce,
             meanTorqueNewtonMeters: meanTorque,
+            meanWingHingeReactionForceNewtons: meanHingeForce,
+            meanWingHingeReactionTorqueNewtonMeters: meanHingeTorque,
+            runtimeSafety: result.runtimeSafety,
             samples: samples,
             passed: true,
-            scientificVerdict:
-                "prescribed replay completed; grid convergence and force-balance acceptance were not evaluated"
+            scientificVerdict: freeFlight
+                ? "free-flight replay completed inside runtime bounds; body-step, grid, trim, and momentum-ledger acceptance were not evaluated"
+                : "prescribed replay completed; grid convergence and force-balance acceptance were not evaluated"
         )
         if let archiveDirectory {
             try archive(
@@ -369,7 +670,9 @@ public enum MeasuredBirdReplay {
 
     private static func makePlan(
         _ dataset: MeasuredBirdDataset,
-        chordCells: Int
+        chordCells: Int,
+        freeFlight: Bool = false,
+        bodySubsteps: Int = 1
     ) throws -> Plan {
         guard chordCells >= 8 else {
             throw MeasuredBirdReplayError.invalidInput(
@@ -418,13 +721,15 @@ public enum MeasuredBirdReplay {
                 dataset.replay.farFieldVelocityMetersPerSecond,
             spongeWidthCells: spongeWidth,
             spongeStrength: dataset.replay.spongeStrength,
-            freeFlight: false,
+            freeFlight: freeFlight,
+            bodySubsteps: bodySubsteps,
             gravityMetersPerSecondSquared:
                 dataset.replay.gravityMetersPerSecondSquared,
             fastMath: false
         )
         let bird = dataset.geometry.birdParameters(
-            measuredKinematics: dataset.kinematics
+            measuredKinematics: dataset.kinematics,
+            prescribedWingDynamics: dataset.prescribedWingDynamics
         )
         let initialBodyState = BirdBodyState(
             positionMeters: dataset.replay.bodyPositionMeters,
@@ -462,10 +767,37 @@ public enum MeasuredBirdReplay {
             && sample.cyclePhase.isFinite
             && finite(sample.aerodynamicLoad.forceNewtons)
             && finite(sample.aerodynamicLoad.torqueNewtonMeters)
+            && finite(sample.body.positionMeters)
+            && finite(sample.body.linearVelocityMetersPerSecond)
+            && finite(sample.body.angularVelocityBodyRadiansPerSecond)
+            && sample.body.orientationBodyToWorld.simd4.x.isFinite
+            && sample.body.orientationBodyToWorld.simd4.y.isFinite
+            && sample.body.orientationBodyToWorld.simd4.z.isFinite
+            && sample.body.orientationBodyToWorld.simd4.w.isFinite
     }
 
     private static func finite(_ value: SIMD3<Float>) -> Bool {
         value.x.isFinite && value.y.isFinite && value.z.isFinite
+    }
+
+    private static func cycleMean(
+        _ samples: [MeasuredBirdReplayPhaseSample],
+        cycleIndex: Int,
+        frequency: Float
+    ) -> ForceTorque {
+        let selected = samples.filter {
+            let index = Int(floor($0.timeSeconds * frequency + 1e-6))
+            return index == cycleIndex
+        }
+        let divisor = Float(max(1, selected.count))
+        return ForceTorque(
+            forceNewtons: selected.reduce(.zero) {
+                $0 + $1.aerodynamicLoad.forceNewtons
+            } / divisor,
+            torqueNewtonMeters: selected.reduce(.zero) {
+                $0 + $1.aerodynamicLoad.torqueNewtonMeters
+            } / divisor
+        )
     }
 
     private static func archive(
@@ -497,16 +829,31 @@ public enum MeasuredBirdReplay {
                 to: temporary.appendingPathComponent("input.json"),
                 options: .atomic
             )
-            var csv = "step,time_s,phase,fx_N,fy_N,fz_N,tx_Nm,ty_Nm,tz_Nm\n"
+            var csv = "step,time_s,phase,px_m,py_m,pz_m,vx_mps,vy_mps,vz_mps,fx_N,fy_N,fz_N,tx_Nm,ty_Nm,tz_Nm,hinge_fx_N,hinge_fy_N,hinge_fz_N,hinge_tx_Nm,hinge_ty_Nm,hinge_tz_Nm\n"
             for sample in report.samples {
                 let force = sample.aerodynamicLoad.forceNewtons
                 let torque = sample.aerodynamicLoad.torqueNewtonMeters
+                let body = sample.body
+                let hinge = sample.wingHingeReactionLoads?.total
+                    ?? ForceTorque()
                 csv += [
                     String(sample.step),
                     String(sample.timeSeconds),
                     String(sample.cyclePhase),
+                    String(body.positionMeters.x),
+                    String(body.positionMeters.y),
+                    String(body.positionMeters.z),
+                    String(body.linearVelocityMetersPerSecond.x),
+                    String(body.linearVelocityMetersPerSecond.y),
+                    String(body.linearVelocityMetersPerSecond.z),
                     String(force.x), String(force.y), String(force.z),
                     String(torque.x), String(torque.y), String(torque.z),
+                    String(hinge.forceNewtons.x),
+                    String(hinge.forceNewtons.y),
+                    String(hinge.forceNewtons.z),
+                    String(hinge.torqueNewtonMeters.x),
+                    String(hinge.torqueNewtonMeters.y),
+                    String(hinge.torqueNewtonMeters.z),
                 ].joined(separator: ",") + "\n"
             }
             try Data(csv.utf8).write(
@@ -514,9 +861,9 @@ public enum MeasuredBirdReplay {
                 options: .atomic
             )
             let format = """
-            BirdFlowMetal measured-bird prescribed replay archive schema 1
+            BirdFlowMetal measured-bird replay archive schema (report.audit.schemaVersion)
             input.json is the exact byte-for-byte input; verify SHA-256 against report.json.
-            phase-loads.csv records physical total aerodynamic force and torque.
+            phase-loads.csv records trajectory, total aerodynamic load, and prescribed-wing inertial hinge reaction.
             Geometry representation: \(report.audit.geometryRepresentation).
             This archive does not by itself establish grid convergence or quantitative bird-flight validity.
             """

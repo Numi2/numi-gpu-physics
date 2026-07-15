@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-15",
+  "scientificStatus": "solver contract implemented; same-specimen biological input absent",
+  "solverCapabilities": {
+    "measuredCompleteBirdSchema": "measured-bird-v2",
+    "prescribedBilateralKinematics": true,
+    "prescribedWingMomentumReaction": true,
+    "bilateralHingeReactionArchive": true,
+    "independentCPUToMetalWingReactionReference": true,
+    "multiStepRotationalCanonicals": [
+      "torque-free asymmetric body, 256 steps",
+      "constant-torque asymmetric body, 256 steps"
+    ],
+    "perPartAerodynamicActuatorEffort": false,
+    "independentBodySubsteps": [1, 2, 4],
+    "bodyRefinementGate": {
+      "positionChordFractionMaximum": 0.01,
+      "velocityReferenceFractionMaximum": 0.01,
+      "orientationDifferenceDegreesMaximum": 0.5,
+      "angularVelocityCycleFractionMaximum": 0.01
+    },
+    "runtimeMachAbort": 0.15,
+    "runtimeSpongeAndStencilClearanceAbort": true,
+    "measuredBirdLoadRefinement": {
+      "chordCells": [8, 12, 16],
+      "minimumCycles": 5,
+      "stationarityMaximumFraction": 0.05,
+      "finePairMaximumFraction": 0.05
+    }
+  },
+  "availableSameStudyInput": {
+    "source": "Maeda et al. 2017",
+    "articleDOI": "10.1098/rsos.170307",
+    "datasetDOI": "10.6084/m9.figshare.5406124.v1",
+    "specimen": "single Amazilia amazilia zoo individual",
+    "available": [
+      "measured right-wing surface over 17 phases",
+      "right-wing surface motion",
+      "28.8 Hz wingbeat frequency"
+    ],
+    "missing": [
+      "complete body surface or registered body radii",
+      "whole-bird mass and principal inertia for this specimen",
+      "bilateral wing mass, center of mass, and inertia",
+      "body-COM to both wing-hinge registration",
+      "measured left-wing surface and motion",
+      "tail surface and motion",
+      "physical wing thickness"
+    ]
+  },
+  "rejectedHybridCandidates": [
+    {
+      "source": "Read et al. hummingbird turning dataset",
+      "url": "https://datadryad.org/dataset/doi:10.5061/dryad.j77h6",
+      "reason": "marker kinematics belong to different birds and cannot complete the Maeda specimen"
+    },
+    {
+      "source": "Macaulay et al. hummingbird body mass-distribution model",
+      "url": "https://datacat.liverpool.ac.uk/2164/",
+      "reason": "a different specimen/model cannot supply same-specimen body inertia for Maeda kinematics"
+    },
+    {
+      "source": "Song et al. Dryad Data.tar",
+      "datasetDOI": "10.5061/dryad.8ch1b",
+      "reason": "verified archive contains reference-curve MATLAB inputs, not raw reconstructed complete-bird geometry"
+    }
+  ],
+  "releaseDecision": {
+    "quantitativeCompleteBirdFreeFlightPassed": false,
+    "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
+    "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
+  },
+  "localVerification": {
+    "date": "2026-07-15",
+    "device": "Apple M4",
+    "swiftTestsPassed": 84,
+    "swiftTestRuntimeSeconds": 494.992,
+    "focusedPostOptimizationMetalTestsPassed": 3,
+    "releaseBuildPassed": true,
+    "releaseFreeFlightSmokePassed": true,
+    "staticSwiftMetalBindingAuditPassed": true,
+    "solverAndVisualizationMetalCompilationPassed": true,
+    "githubActionsUsed": false
+  }
+}

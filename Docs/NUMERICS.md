@@ -148,7 +148,21 @@ The body-to-world quaternion is advanced from body angular velocity and normaliz
 
 Fluid/body coupling is first-order staggered. For step `n -> n+1`, geometry uses body pose `n` with prescribed wing phase `n+1`, the fluid and load update runs, and the body is then integrated to pose `n+1`. A final snapshot therefore reports the updated body pose while the completed geometry/fluid boundary used the pre-integration torso pose. Body-step refinement and any stronger coupling scheme must account for this one-step lag.
 
-Only the rigid torso mass and principal inertia are integrated. Prescribed wings are massless kinematic boundaries; hinge reactions, actuator work, and wing mass/inertia do not feed back into the body. A quantitative free-flight model must justify that approximation or add articulated-body reaction dynamics. It must also monitor evolving surface Mach number and domain/sponge clearance because the current validation guards apply only to the initial state.
+Demonstration and schema-1 prescribed wings remain explicit massless
+kinematic boundaries. Schema 2 instead requires whole-bird reference mass and
+inertia plus bilateral wing mass properties. The GPU computes the change in
+each rigid prescribed wing's internal linear/angular momentum, adds the
+opposite inertial hinge reaction to the body equation, and archives both sides.
+Aerodynamic actuator effort remains unresolved until per-part aerodynamic
+loads are exposed.
+
+`bodySubsteps` performs `1...64` semi-implicit/quaternion updates under one
+fluid-step load, so body integration can be refined without changing fluid
+`dx` or `dt`. After every free-flight step a GPU ledger evaluates conservative
+surface Mach and the rotated articulated bounding-box clearance outside the
+sponge plus three stencil cells. It freezes the exact first violation and the
+host stops before submitting another batch if Mach exceeds `0.15`, clearance
+is negative, or state is non-finite.
 
 ## Derived pressure
 

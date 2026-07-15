@@ -10,6 +10,7 @@ private struct Arguments {
     var referenceSpeed: Float = 8
     var latticeSpeed: Float = 0.04
     var resolutionScale = 1
+    var bodySubsteps = 1
 
     init(_ values: [String]) throws {
         var index = 1
@@ -77,6 +78,16 @@ private struct Arguments {
                     )
                 }
                 resolutionScale = value
+            case "--body-substeps":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      (1...64).contains(value) else {
+                    throw CLIError.invalidArgument(
+                        "--body-substeps requires an integer in 1...64"
+                    )
+                }
+                bodySubsteps = value
             case "--help", "-h":
                 print(Self.help)
                 Foundation.exit(EXIT_SUCCESS)
@@ -99,6 +110,7 @@ private struct Arguments {
       --reference-speed MPS  Physical reference speed (default: 8)
       --lattice-speed VALUE  Lattice reference velocity (default: 0.04)
       --resolution-scale N   Scale grid, chord cells, and sponge together
+      --body-substeps N      Refine only the six-DOF integrator (1...64)
       --help                 Show this help
 
     Canonical GPU validation:
@@ -239,6 +251,10 @@ private struct MeasuredBirdReplayArguments {
     var batchSize = 32
     var archivePath: String?
     var auditOnly = false
+    var freeFlight = false
+    var bodySubsteps = 1
+    var bodyRefinement = false
+    var loadRefinement = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -303,6 +319,23 @@ private struct MeasuredBirdReplayArguments {
                 archivePath = values[index]
             case "--audit-only":
                 auditOnly = true
+            case "--free-flight":
+                freeFlight = true
+            case "--body-substeps":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      (1...64).contains(value) else {
+                    throw CLIError.invalidArgument(
+                        "--body-substeps requires an integer in 1...64"
+                    )
+                }
+                bodySubsteps = value
+            case "--body-refinement":
+                bodyRefinement = true
+                freeFlight = true
+            case "--load-refinement":
+                loadRefinement = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -325,6 +358,26 @@ private struct MeasuredBirdReplayArguments {
                 "--audit-only cannot be combined with --archive"
             )
         }
+        if bodyRefinement && steps == nil {
+            throw CLIError.invalidArgument(
+                "--body-refinement requires --steps N so all substep cases have identical duration"
+            )
+        }
+        if bodyRefinement && loadRefinement {
+            throw CLIError.invalidArgument(
+                "--body-refinement and --load-refinement are separate controlled experiments"
+            )
+        }
+        if (bodyRefinement || loadRefinement), archivePath != nil {
+            throw CLIError.invalidArgument(
+                "refinement reports cannot use the single-run --archive path"
+            )
+        }
+        if auditOnly && (freeFlight || bodyRefinement || loadRefinement) {
+            throw CLIError.invalidArgument(
+                "--audit-only cannot be combined with execution modes"
+            )
+        }
     }
 
     static let help = """
@@ -335,11 +388,16 @@ private struct MeasuredBirdReplayArguments {
       --cycles VALUE     Prescribed cycles when --steps is absent (default: 1)
       --steps N          Explicit fluid-step count
       --batch-size N     Command-buffer batch size (default: 32)
+      --free-flight      Enable six-DOF motion; requires schema 2 wing inertia
+      --body-substeps N  Rigid-body-only substeps per fluid step (1...64)
+      --body-refinement  Run locked 1/2/4 body-substep ladder; requires --steps
+      --load-refinement  Run five-cycle prescribed 8/12/16 load ladder
       --archive DIR      Save exact input, SHA-linked report, and phase loads
       --json             Emit machine-readable audit or replay report
       --help             Show this help
 
-    The input must use schema 1, SI units, the COM-centered BirdFlow principal
+    Schema 1 supports prescribed replay. Quantitative free flight requires
+    schema 2 measured bilateral wing mass properties. Both use SI units, the COM-centered BirdFlow principal
     axes, registeredAnalyticProxyV1 geometry, and periodic left/right stroke,
     deviation, pitch, and tip-twist angles plus physical angular rates.
     """
@@ -1040,6 +1098,7 @@ private func makeConfiguration(
         spongeWidthCells: spongeCells,
         spongeStrength: 0.06,
         freeFlight: arguments.freeFlight,
+        bodySubsteps: arguments.bodySubsteps,
         fastMath: false
     )
 }
@@ -1126,8 +1185,65 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
                 "grid: \(audit.grid.x)x\(audit.grid.y)x\(audit.grid.z)"
             )
             print("estimated_maximum_mach: \(audit.estimatedMaximumLatticeMach)")
+            print("wing_inertial_treatment: \(audit.wingInertialTreatment)")
+            print(
+                "quantitative_free_flight_contract_passed: "
+                    + String(audit.quantitativeFreeFlightContractPassed)
+            )
             print("passed: \(audit.passed)")
             print("scientific_verdict: \(audit.scientificVerdict)")
+        }
+        return
+    }
+    if arguments.bodyRefinement {
+        let report = try MeasuredBirdReplay.runFreeFlightBodyRefinement(
+            loaded,
+            chordCells: arguments.chordCells,
+            steps: arguments.steps!,
+            batchSize: arguments.batchSize
+        )
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("steps: \(report.steps)")
+            print(
+                "fine_position_chord_fraction: "
+                    + String(report.finePairPositionDifferenceChordFraction)
+            )
+            print(
+                "fine_velocity_reference_fraction: "
+                    + String(report.finePairVelocityDifferenceReferenceFraction)
+            )
+            print(
+                "fine_orientation_difference_degrees: "
+                    + String(report.finePairOrientationDifferenceDegrees)
+            )
+            print("passed: \(report.passed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        return
+    }
+    if arguments.loadRefinement {
+        let report = try MeasuredBirdReplay.runLoadRefinement(
+            loaded,
+            cycles: max(5, arguments.cycles),
+            batchSize: arguments.batchSize
+        )
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print(
+                "fine_force_difference_fraction: "
+                    + String(report.finePairForceDifferenceFraction)
+            )
+            print(
+                "fine_torque_difference_fraction: "
+                    + String(report.finePairTorqueDifferenceFraction)
+            )
+            print("passed: \(report.passed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
         }
         return
     }
@@ -1137,6 +1253,8 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
         cycles: arguments.cycles,
         steps: arguments.steps,
         batchSize: arguments.batchSize,
+        freeFlight: arguments.freeFlight,
+        bodySubsteps: arguments.bodySubsteps,
         archiveDirectory: arguments.archivePath.map {
             URL(fileURLWithPath: $0, isDirectory: true)
         }
@@ -1150,6 +1268,23 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
         print("cycles: \(report.cycles)")
         print("mean_force_N: \(report.meanForceNewtons)")
         print("mean_torque_Nm: \(report.meanTorqueNewtonMeters)")
+        print(
+            "mean_wing_hinge_reaction_force_N: "
+                + String(describing: report.meanWingHingeReactionForceNewtons)
+        )
+        print(
+            "mean_wing_hinge_reaction_torque_Nm: "
+                + String(
+                    describing: report.meanWingHingeReactionTorqueNewtonMeters
+                )
+        )
+        if let safety = report.runtimeSafety {
+            print("maximum_runtime_mach: \(safety.maximumLatticeMach)")
+            print(
+                "minimum_sponge_clearance_m: "
+                    + String(safety.minimumSpongeClearanceMeters)
+            )
+        }
         print("runtime_s: \(report.runtimeSeconds)")
         print("passed: \(report.passed)")
         print("scientific_verdict: \(report.scientificVerdict)")

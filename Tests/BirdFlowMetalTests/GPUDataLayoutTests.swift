@@ -3,8 +3,8 @@ import Testing
 
 @Test
 func gpuDataLayoutsMatchMetalFloat4Packing() {
-    #expect(MemoryLayout<GPUUniforms>.stride == 8 * 16)
-    #expect(MemoryLayout<GPUBirdParameters>.stride == 7 * 16)
+    #expect(MemoryLayout<GPUUniforms>.stride == 9 * 16)
+    #expect(MemoryLayout<GPUBirdParameters>.stride == 13 * 16)
     #expect(MemoryLayout<GPUBirdBodyState>.stride == 4 * 16)
     #expect(MemoryLayout<GPUMeasuredWingKeyframe>.stride == 5 * 16)
     #expect(MemoryLayout<GPUPreparedBirdGeometry>.stride == 14 * 16)
@@ -13,6 +13,10 @@ func gpuDataLayoutsMatchMetalFloat4Packing() {
     #expect(MemoryLayout<GPUMeasuredWingSurfaceParameters>.stride == 4 * 16)
     #expect(MemoryLayout<GPUPreparedMeasuredWingPoint>.stride == 2 * 16)
     #expect(MemoryLayout<GPUForceTorque>.stride == 2 * 16)
+    #expect(MemoryLayout<GPURuntimeSafetyRecord>.stride == 2 * 16)
+    #expect(MemoryLayout<GPUWingMomentumState>.stride == 4 * 16)
+    #expect(MemoryLayout<GPUWingInertialReaction>.stride == 4 * 16)
+    #expect(MemoryLayout<GPURunSample>.stride == 11 * 16)
 
     #expect(MemoryLayout<GPUUniforms>.alignment == 16)
     #expect(MemoryLayout<GPUBirdParameters>.alignment == 16)
@@ -24,6 +28,10 @@ func gpuDataLayoutsMatchMetalFloat4Packing() {
     #expect(MemoryLayout<GPUMeasuredWingSurfaceParameters>.alignment == 16)
     #expect(MemoryLayout<GPUPreparedMeasuredWingPoint>.alignment == 16)
     #expect(MemoryLayout<GPUForceTorque>.alignment == 16)
+    #expect(MemoryLayout<GPURuntimeSafetyRecord>.alignment == 16)
+    #expect(MemoryLayout<GPUWingMomentumState>.alignment == 16)
+    #expect(MemoryLayout<GPUWingInertialReaction>.alignment == 16)
+    #expect(MemoryLayout<GPURunSample>.alignment == 16)
 }
 
 @Test

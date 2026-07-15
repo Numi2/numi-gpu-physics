@@ -61,6 +61,8 @@ REQUIRED_KERNELS = {
     "reduceSymmetricLimiterLedger",
     "reduceSymmetricLimiterRadialBins",
     "integrateBirdBody",
+    "monitorBirdRuntimeSafety",
+    "updateWingInertialReaction",
 }
 
 REQUIRED_VISUALIZATION_KERNELS = {
@@ -295,11 +297,15 @@ def main() -> int:
             "grid", "originAndCellSize", "timeStepAndScales",
             "latticeAndSponge", "farFieldLattice", "gravity",
             "caseParameters", "flags",
+            "integration",
         ],
         "GPUBirdParameters": [
             "bodyRadiiAndMass", "inertia", "wingGeometry0",
             "wingGeometry1", "tailGeometry", "wingKinematics0",
             "wingKinematics1",
+            "safetyGeometry", "safetyLimits",
+            "leftWingMassAndCOM", "leftWingInertia",
+            "rightWingMassAndCOM", "rightWingInertia",
         ],
         "GPUBirdBodyState": [
             "position", "orientation", "linearVelocity",
@@ -325,9 +331,18 @@ def main() -> int:
         ],
         "GPUPreparedMeasuredWingPoint": ["position", "velocity"],
         "GPUForceTorque": ["force", "torque"],
+        "GPURuntimeSafetyRecord": ["metrics", "event"],
+        "GPUWingMomentumState": [
+            "leftLinear", "leftAngular", "rightLinear", "rightAngular",
+        ],
+        "GPUWingInertialReaction": [
+            "leftForce", "leftTorque", "rightForce", "rightTorque",
+        ],
         "GPURunSample": [
             "timeAndPosition", "orientation", "linearVelocity",
-            "angularVelocityBody", "force", "torque", "step",
+            "angularVelocityBody", "force", "torque",
+            "leftHingeForce", "leftHingeTorque",
+            "rightHingeForce", "rightHingeTorque", "step",
         ],
     }
     for struct_name, expected_fields in shared_structs.items():
@@ -375,8 +390,10 @@ def main() -> int:
         "private func encodeReduction(": 3,
         "private func encodePlanarReduction(": 3,
         "private func encodeCanonicalReduction(": 3,
-        "private func encodeBodyIntegration(": 4,
-        "private func encodeRunSample(": 5,
+        "private func encodeBodyIntegration(": 5,
+        "private func encodeWingInertialReaction(": 6,
+        "private func encodeRuntimeSafetyMonitor(": 5,
+        "private func encodeRunSample(": 6,
         "private func encodeExtractedMacroscopicFields(": 4,
     }
     for declaration, count in expected_swift_bindings.items():
@@ -426,14 +443,16 @@ def main() -> int:
         "stepFluidTRT": 10,
         "reduceForceTorque": 3,
         "storeForceTorqueSample": 3,
-        "storeRunSample": 5,
+        "storeRunSample": 6,
         "gatherFloatValues": 4,
         "reducePopulationMinimum": 3,
         "captureTRTCollisionDecomposition": 8,
         "captureSymmetricLimiterLedger": 7,
         "reduceSymmetricLimiterLedger": 3,
         "reduceSymmetricLimiterRadialBins": 7,
-        "integrateBirdBody": 4,
+        "integrateBirdBody": 5,
+        "monitorBirdRuntimeSafety": 5,
+        "updateWingInertialReaction": 6,
     }
     for kernel, count in expected_buffers.items():
         match = re.search(
@@ -560,13 +579,23 @@ def main() -> int:
         ),
         "integrateBirdBody": (
             "private func encodeBodyIntegration(",
-            ["bodyStateBuffer", "birdParametersBuffer", "loadBuffer", "uniforms"],
-            ["body", "bird", "totalLoad", "uniforms"],
+            ["bodyStateBuffer", "birdParametersBuffer", "loadBuffer", "uniforms", "wingInertialReactionBuffer"],
+            ["body", "bird", "totalLoad", "uniforms", "wingReaction"],
+        ),
+        "updateWingInertialReaction": (
+            "private func encodeWingInertialReaction(",
+            ["wingMomentumBuffer", "wingInertialReactionBuffer", "preparedGeometryBuffer", "birdParametersBuffer", "uniforms", "initialize"],
+            ["previous", "reaction", "prepared", "bird", "uniforms", "initializeOnly"],
+        ),
+        "monitorBirdRuntimeSafety": (
+            "private func encodeRuntimeSafetyMonitor(",
+            ["bodyStateBuffer", "birdParametersBuffer", "runtimeSafetyBuffer", "uniforms", "stepWords"],
+            ["body", "bird", "record", "uniforms", "stepWords"],
         ),
         "storeRunSample": (
             "private func encodeRunSample(",
-            ["runSampleBuffer", "bodyStateBuffer", "loadBuffer", "indices", "sampleTime"],
-            ["samples", "body", "load", "indices", "time"],
+            ["runSampleBuffer", "bodyStateBuffer", "loadBuffer", "indices", "sampleTime", "wingInertialReactionBuffer"],
+            ["samples", "body", "load", "indices", "time", "wingReaction"],
         ),
     }
     for kernel, (declaration, expected_swift, expected_metal) in binding_contracts.items():

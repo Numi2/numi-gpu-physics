@@ -13,22 +13,77 @@ public enum FieldCaptureMode: Sendable, Equatable {
 }
 
 @frozen
+public struct RuntimeSafetyReport: Sendable, Equatable, Codable {
+  public var maximumLatticeMach: Float
+  public var minimumSpongeClearanceMeters: Float
+  public var firstViolationStep: UInt64?
+  public var machLimitExceeded: Bool
+  public var spongeClearanceViolated: Bool
+  public var nonFiniteStateDetected: Bool
+
+  public init(
+    maximumLatticeMach: Float,
+    minimumSpongeClearanceMeters: Float,
+    firstViolationStep: UInt64?,
+    machLimitExceeded: Bool,
+    spongeClearanceViolated: Bool,
+    nonFiniteStateDetected: Bool
+  ) {
+    self.maximumLatticeMach = maximumLatticeMach
+    self.minimumSpongeClearanceMeters = minimumSpongeClearanceMeters
+    self.firstViolationStep = firstViolationStep
+    self.machLimitExceeded = machLimitExceeded
+    self.spongeClearanceViolated = spongeClearanceViolated
+    self.nonFiniteStateDetected = nonFiniteStateDetected
+  }
+
+  public var passed: Bool {
+    firstViolationStep == nil
+      && !machLimitExceeded
+      && !spongeClearanceViolated
+      && !nonFiniteStateDetected
+  }
+}
+
+@frozen
+public struct WingHingeReactionLoads: Sendable, Equatable, Codable {
+  public var left: ForceTorque
+  public var right: ForceTorque
+
+  public init(left: ForceTorque, right: ForceTorque) {
+    self.left = left
+    self.right = right
+  }
+
+  public var total: ForceTorque {
+    ForceTorque(
+      forceNewtons: left.forceNewtons + right.forceNewtons,
+      torqueNewtonMeters:
+        left.torqueNewtonMeters + right.torqueNewtonMeters
+    )
+  }
+}
+
+@frozen
 public struct RunSample: Sendable, Equatable, Codable {
   public var step: UInt64
   public var timeSeconds: Float
   public var body: BirdBodyState
   public var aerodynamicLoad: ForceTorque
+  public var wingHingeReactionLoads: WingHingeReactionLoads?
 
   public init(
     step: UInt64,
     timeSeconds: Float,
     body: BirdBodyState,
-    aerodynamicLoad: ForceTorque
+    aerodynamicLoad: ForceTorque,
+    wingHingeReactionLoads: WingHingeReactionLoads? = nil
   ) {
     self.step = step
     self.timeSeconds = timeSeconds
     self.body = body
     self.aerodynamicLoad = aerodynamicLoad
+    self.wingHingeReactionLoads = wingHingeReactionLoads
   }
 }
 
@@ -37,15 +92,18 @@ public struct AdvanceResult: Sendable {
   public var runSamples: [RunSample]
   public var fieldFramePublished: Bool
   public var droppedFieldFrameCount: UInt64
+  public var runtimeSafety: RuntimeSafetyReport?
 
   public init(
     runSamples: [RunSample] = [],
     fieldFramePublished: Bool = false,
-    droppedFieldFrameCount: UInt64 = 0
+    droppedFieldFrameCount: UInt64 = 0,
+    runtimeSafety: RuntimeSafetyReport? = nil
   ) {
     self.runSamples = runSamples
     self.fieldFramePublished = fieldFramePublished
     self.droppedFieldFrameCount = droppedFieldFrameCount
+    self.runtimeSafety = runtimeSafety
   }
 }
 

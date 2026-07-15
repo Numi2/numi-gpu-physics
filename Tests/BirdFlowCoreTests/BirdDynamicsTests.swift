@@ -38,6 +38,89 @@ func rigidBodyTranslationUsesSemiImplicitEuler() {
 }
 
 @Test
+func rigidBodySubstepsRefineOnlyIntegratorTimeStep() {
+    let bird = BirdParameters.demonstration
+    var one = BirdBodyState(positionMeters: .zero)
+    var four = BirdBodyState(positionMeters: .zero)
+    for substeps in [1, 4] {
+        var state = BirdBodyState(positionMeters: .zero)
+        RigidBodyIntegrator.integrate(
+            state: &state,
+            parameters: bird,
+            forceWorldNewtons: SIMD3<Float>(bird.massKilograms, 0, 0),
+            torqueWorldNewtonMeters: .zero,
+            gravityWorldMetersPerSecondSquared: .zero,
+            timeStepSeconds: 0.1,
+            substeps: substeps
+        )
+        if substeps == 1 { one = state } else { four = state }
+    }
+    #expect(abs(one.linearVelocityMetersPerSecond.x - 0.1) < 1e-6)
+    #expect(abs(four.linearVelocityMetersPerSecond.x - 0.1) < 1e-6)
+    #expect(abs(one.positionMeters.x - 0.01) < 1e-6)
+    #expect(abs(four.positionMeters.x - 0.00625) < 1e-6)
+}
+
+@Test
+func prescribedRigidWingDynamicsRejectDistributedTwist() throws {
+    let configuration = try demonstrationConfiguration()
+    var bird = BirdParameters.demonstration
+    bird.measuredWingKinematics = measuredTestKinematics()
+    let properties = WingInertialProperties(
+        massKilograms: 0.01,
+        centerOfMassFromHingeMeters: SIMD3<Float>(0, 0.15, 0),
+        principalInertiaKilogramMetersSquared:
+            SIMD3<Float>(1e-5, 2e-6, 1e-5)
+    )
+    bird.prescribedWingDynamics = PrescribedWingDynamics(
+        sourceCitation: "measured same-specimen wing mass properties",
+        left: properties,
+        right: properties
+    )
+    #expect(throws: BirdFlowConfigurationError.self) {
+        try bird.validate(for: configuration)
+    }
+}
+
+@Test
+func prescribedWingMomentumReactionHasIndependentClosedForm() {
+    let properties = WingInertialProperties(
+        massKilograms: 0.01,
+        centerOfMassFromHingeMeters: SIMD3<Float>(0, 0.1, 0),
+        principalInertiaKilogramMetersSquared:
+            SIMD3<Float>(2e-6, 3e-6, 1e-5)
+    )
+    let previous = PrescribedWingMomentumModel.momentum(
+        properties: properties,
+        hingeWorldMeters: .zero,
+        chordWorld: SIMD3<Float>(1, 0, 0),
+        spanWorld: SIMD3<Float>(0, 1, 0),
+        normalWorld: SIMD3<Float>(0, 0, 1),
+        relativeAngularVelocityWorldRadiansPerSecond: .zero,
+        bodyOriginWorldMeters: .zero
+    )
+    let current = PrescribedWingMomentumModel.momentum(
+        properties: properties,
+        hingeWorldMeters: .zero,
+        chordWorld: SIMD3<Float>(1, 0, 0),
+        spanWorld: SIMD3<Float>(0, 1, 0),
+        normalWorld: SIMD3<Float>(0, 0, 1),
+        relativeAngularVelocityWorldRadiansPerSecond:
+            SIMD3<Float>(0, 0, 1),
+        bodyOriginWorldMeters: .zero
+    )
+    let reaction = PrescribedWingMomentumModel.inertialReaction(
+        previous: previous,
+        current: current,
+        timeStepSeconds: 0.1
+    )
+    #expect(abs(reaction.forceNewtons.x - 0.01) < 1e-7)
+    #expect(abs(reaction.forceNewtons.y) < 1e-7)
+    #expect(abs(reaction.forceNewtons.z) < 1e-7)
+    #expect(abs(reaction.torqueNewtonMeters.z + 0.0011) < 1e-7)
+}
+
+@Test
 func quaternionRotationRoundTrips() {
     let q = Quaternion.axisAngle(
         axis: SIMD3<Float>(0.2, 0.8, -0.1),

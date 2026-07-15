@@ -150,9 +150,30 @@ Results:
 - The locked RR3 D=8/12/16 refinement ladder completed in `35.23 s` on Apple M4. Every case passed positivity, source-ledger, force-budget, and non-intrusive correction gates; activation and L1/L2 correction all decreased with refinement. Promotion is blocked because drag coefficients `1.32042/0.93800/1.04777` are non-monotonic, D12-to-D16 changes `10.476%` against the unchanged `5%` gate, and no Richardson fit exists. Fourth-to-fifth convective-window means still change `11.54%/13.28%/0.052%`, motivating a cheap coarse-grid duration extension before D=20.
 - The controlled RR3 D=8/12 ten-convective-time extension completed in `19.78 s` on Apple M4. Both cases retained every positivity, source-ledger, force-budget, control-isolation, and non-intrusive correction gate. D=12 became duration-stable: ninth-to-tenth drag changed `4.543%` and fifth-to-tenth changed `2.177%`. D=8 remained unresolved at `46.848%` and `29.219%`, respectively, with a large ninth-window excursion. The next allocation is therefore a D=8-only shedding-period and block-uncertainty diagnostic, not D=20.
 - The macOS GitHub Actions workflow was deleted. Swift, reference, static-audit, and Metal validation remain explicit local commands and no push or pull request consumes hosted macOS CI minutes.
+- Schema 2 now rejects free flight without bilateral measured wing mass,
+  hinge-relative COM, and inertia. Its GPU prescribed-rigid-wing momentum
+  model feeds left/right inertial hinge reactions into six-DOF dynamics and
+  archives them. Independent `1/2/4` body-substep and five-cycle `8/12/16`
+  measured-bird load ladders are exposed. A per-step GPU ledger freezes the
+  first Mach, sponge/three-cell-clearance, or non-finite failure. The source
+  audit still finds no complete same-specimen dataset, so no quantitative bird
+  result is claimed.
+- The complete local Apple-M4 suite passed all `84` tests in `494.99 s`. The
+  new exact-first-event Mach monitor, schema-2 strict loader, CPU/Metal wing
+  reaction reference, four-substep parity, and 256-step torque-free and
+  constant-torque rotational canonicals all passed. The release products and
+  both standalone Metal libraries compiled; a four-substep free-flight release
+  smoke completed. No hosted CI was used.
 
 ## Verification boundary
 
 The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, translating and oscillating planar-wall profiles and forces, topology-changing momentum closure, fixed-sphere curved-boundary drag/refinement/symmetry, isolated fixed-wing lift/drag/refinement/symmetry, prescribed-wing analytic normalization/kinematics, CPU/Metal geometry agreement, sub-cell link placement, phase capture/vortex diagnostics, fixed-thickness 20/24 prescribed-wing convergence, measured-data contract/interpolation/GPU replay plumbing, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. Forced channel flow remains absent. The prior interpolated full flapping ladder used the retired legacy force default; its refinement and repeatability evidence remains diagnostic, but its absolute-load verdict is not a result for the promoted estimator. The prescribed flapping-wing canonical is accepted; quantitative complete-bird use remains blocked by an actual measured specimen, higher-fidelity measured surface geometry where required, per-part symmetry reporting, bird-load grid convergence, and free-flight momentum/body-step refinement.
 
-Quantitative complete-bird use still requires the remaining ladder in `Docs/VALIDATION.md`, including forced channel flow, Metal-versus-reference field comparisons, a real measured dataset and appropriate surface representation, bird-load grid convergence, and free-flight momentum/body-step refinement. Free-flight studies must also add runtime Mach/domain monitoring and either model wing inertial/hinge/actuator reactions or justify the current massless-wing approximation. The optimization timings above are engineering evidence only and are not aerodynamic validation.
+Quantitative complete-bird use still requires the remaining ladder in
+`Docs/VALIDATION.md`, including forced channel flow, Metal-versus-reference
+field comparisons, one real same-specimen dataset and appropriate surface
+representation, executed bird-load/body-step refinement, trim, per-part
+aerodynamic actuator effort, and the complete external momentum ledger.
+Runtime Mach/domain monitoring and rigid prescribed-wing inertial hinge
+reaction are now implemented. The optimization timings above are engineering
+evidence only and are not aerodynamic validation.

@@ -154,6 +154,10 @@ public struct SimulationConfiguration: Sendable, Equatable, Codable {
     public var spongeWidthCells: Int
     public var spongeStrength: Float
     public var freeFlight: Bool
+    /// Number of rigid-body updates performed under each fluid-step load.
+    /// Increasing this refines only the six-DOF integrator; fluid `dx`, fluid
+    /// `dt`, geometry timing, and force evaluation remain unchanged.
+    public var bodySubsteps: Int
     public var gravityMetersPerSecondSquared: SIMD3<Float>
     public var fastMath: Bool
 
@@ -166,6 +170,7 @@ public struct SimulationConfiguration: Sendable, Equatable, Codable {
         spongeWidthCells: Int = 12,
         spongeStrength: Float = 0.08,
         freeFlight: Bool = false,
+        bodySubsteps: Int = 1,
         gravityMetersPerSecondSquared: SIMD3<Float> = SIMD3<Float>(0, 0, -9.80665),
         fastMath: Bool = false
     ) throws {
@@ -175,9 +180,10 @@ public struct SimulationConfiguration: Sendable, Equatable, Codable {
               spongeWidthCells >= 4,
               spongeWidthCells * 2 < min(grid.x, min(grid.y, grid.z)),
               spongeStrength >= 0,
-              spongeStrength <= 1 else {
+              spongeStrength <= 1,
+              (1...64).contains(bodySubsteps) else {
             throw BirdFlowConfigurationError.invalidPhysicalScale(
-                "Air density must match the lattice scaling density, and sponge settings must remain inside their valid ranges."
+                "Air density must match the lattice scaling density, sponge settings must remain inside their valid ranges, and bodySubsteps must be in 1...64."
             )
         }
 
@@ -196,6 +202,7 @@ public struct SimulationConfiguration: Sendable, Equatable, Codable {
         self.spongeWidthCells = spongeWidthCells
         self.spongeStrength = spongeStrength
         self.freeFlight = freeFlight
+        self.bodySubsteps = bodySubsteps
         self.gravityMetersPerSecondSquared = gravityMetersPerSecondSquared
         self.fastMath = fastMath
     }
@@ -203,5 +210,54 @@ public struct SimulationConfiguration: Sendable, Equatable, Codable {
     public var domainSizeMeters: SIMD3<Float> {
         SIMD3<Float>(Float(grid.x), Float(grid.y), Float(grid.z))
             * scaling.cellSizeMeters
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case grid
+        case domainOriginMeters
+        case scaling
+        case physicalAirDensity
+        case farFieldVelocityMetersPerSecond
+        case spongeWidthCells
+        case spongeStrength
+        case freeFlight
+        case bodySubsteps
+        case gravityMetersPerSecondSquared
+        case fastMath
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(
+            grid: container.decode(GridSize.self, forKey: .grid),
+            domainOriginMeters: container.decode(
+                SIMD3<Float>.self,
+                forKey: .domainOriginMeters
+            ),
+            scaling: container.decode(LatticeScaling.self, forKey: .scaling),
+            physicalAirDensity: container.decode(
+                Float.self,
+                forKey: .physicalAirDensity
+            ),
+            farFieldVelocityMetersPerSecond: container.decode(
+                SIMD3<Float>.self,
+                forKey: .farFieldVelocityMetersPerSecond
+            ),
+            spongeWidthCells: container.decode(
+                Int.self,
+                forKey: .spongeWidthCells
+            ),
+            spongeStrength: container.decode(Float.self, forKey: .spongeStrength),
+            freeFlight: container.decode(Bool.self, forKey: .freeFlight),
+            bodySubsteps: container.decodeIfPresent(
+                Int.self,
+                forKey: .bodySubsteps
+            ) ?? 1,
+            gravityMetersPerSecondSquared: container.decode(
+                SIMD3<Float>.self,
+                forKey: .gravityMetersPerSecondSquared
+            ),
+            fastMath: container.decode(Bool.self, forKey: .fastMath)
+        )
     }
 }

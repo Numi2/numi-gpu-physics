@@ -6,8 +6,10 @@ independent left/right measurements and replaces demonstration dimensions with
 registered specimen morphometrics. The exact input bytes and SHA-256 are
 carried into every replay archive.
 
-No measured specimen is bundled. `Examples/measured-bird-schema-v1.json` is
+No measured complete specimen is bundled. `Examples/measured-bird-schema-v1.json` is
 explicitly a synthetic conformance fixture and must not be cited as bird data.
+The current source-by-source decision is machine-readable in
+`ValidationArtifacts/quantitative-complete-bird-readiness.json`.
 
 ## Published-source qualification
 
@@ -107,6 +109,61 @@ Angle unwrapping, filtering, phase alignment, coordinate registration, and any
 left/right geometry averaging are data-processing operations. They must be
 described in `provenance.processingDescription`; the loader does not guess.
 
+## Schema 2 quantitative free-flight contract
+
+`Schemas/measured-bird-v2.schema.json` extends the prescribed schema with
+`prescribedWingDynamics`. It requires left and right measured wing mass,
+hinge-relative center of mass, and principal inertia in the instantaneous
+untwisted chord/span/normal frame. Whole-bird mass must include both wings and
+the registered principal inertia must describe the whole bird at the declared
+reference pose. A source citation is mandatory.
+
+The first implemented model is `prescribedRigidWingMomentumV1`. At every fluid
+step the GPU reconstructs each wing's linear and angular momentum about the
+body origin, differences it against the previous phase, and applies the
+opposite rate to the six-DOF body equation. Archives record the resulting left
+and right inertial hinge reactions separately. This closes the previously
+silent massless-wing coupling for rigid prescribed wings. Because this model
+uses one rigid mass frame per wing, schema 2 rejects distributed tip twist;
+twisting measured wings require a future distributed-mass model rather than a
+hidden approximation.
+
+Free flight is deliberately unavailable to schema 1 measured inputs:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/same-specimen-v2.json \
+  --free-flight \
+  --body-substeps 4 \
+  --steps 1000 \
+  --json
+```
+
+The GPU evaluates the evolving conservative surface Mach and rotated
+bird-to-sponge/stencil clearance after every body update. It records the exact
+first violating step and aborts before submitting another command-buffer
+batch if Mach exceeds `0.15`, clearance becomes negative, or body state becomes
+non-finite.
+
+Two independent refinement commands keep their changed variable explicit:
+
+```bash
+# Same fluid grid and fluid dt; only rigid-body dt changes (1/2/4 substeps).
+.build/release/birdflow replay measured-bird \
+  --input /path/to/same-specimen-v2.json \
+  --body-refinement --steps 1000 --chord-cells 12 --json
+
+# Fixed prescribed motion; five-cycle 8/12/16 load and stationarity ladder.
+.build/release/birdflow replay measured-bird \
+  --input /path/to/same-specimen-v2.json \
+  --load-refinement --cycles 5 --json
+```
+
+The body ladder locks the fine `2 -> 4` differences to `1%` of root chord,
+`1%` of reference speed, `0.5 deg`, and `1%` of wingbeat angular frequency.
+The load ladder locks cycles four/five and the `12 -> 16` force/torque change
+to `5%` of declared physical force and torque scales.
+
 ## Prescribed replay and archive
 
 ```bash
@@ -120,13 +177,15 @@ described in `provenance.processingDescription`; the loader does not guess.
 
 `--steps N` can replace the cycle-derived duration, and `--batch-size N`
 controls command-buffer partitioning. The body pose remains prescribed/fixed;
-only the measured articulated wings move. The archive is created atomically and
+only the measured articulated wings move unless `--free-flight` is explicit.
+The archive is created atomically and
 contains:
 
 - `input.json`: byte-for-byte source data;
 - `report.json`: audit, SHA-256, device, resolution, runtime, means, and raw
   phase samples;
-- `phase-loads.csv`: physical total force and torque for each step; and
+- `phase-loads.csv`: body trajectory, physical total aerodynamic load, and
+  bilateral prescribed-wing inertial hinge reaction for each step; and
 - `FORMAT.txt`: the representation and scientific boundary.
 
 ## Scientific boundary

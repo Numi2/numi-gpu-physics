@@ -1163,6 +1163,17 @@ Acceptance:
 
 Required harness work before these criteria are measurable:
 
-- expose an independently adjustable body timestep or body substeps; `--resolution-scale` changes fluid `dx`, fluid `dt`, and the body step together and is not an isolated body-integrator refinement;
-- archive a control-volume momentum budget including fluid momentum, far-field boundary flux, sponge impulse, bird load, gravity, and topology-conversion impulse; current CLI output does not expose the boundary/sponge terms; and
-- compare constant-torque and torque-free asymmetric-body cases across the CPU and Metal integrators over multiple steps, in addition to the existing one-step parity regression.
+- independently adjustable `1/2/4` body substeps, GPU/CPU substep parity, an
+  exact first-event runtime Mach/clearance ledger, and schema-2 bilateral
+  prescribed-wing inertial hinge reactions are implemented. The measured-bird
+  CLI archives the reactions and provides locked body/load refinement ladders;
+- 256-step torque-free and constant-torque asymmetric-body CPU/Metal
+  canonicals are implemented in addition to one-step/substep parity; and
+- archive a control-volume momentum budget including fluid momentum, far-field boundary flux, sponge impulse, bird load, gravity, and topology-conversion impulse; current CLI output does not expose the boundary/sponge terms.
+
+Status: solver-side runtime bounds, body-step refinement, and rigid prescribed
+wing inertia/hinge treatment are implemented. Quantitative free-flight remains
+blocked by the absent same-specimen schema-2 dataset, the complete external
+momentum ledger, trim, per-part aerodynamic actuator effort, and actual
+bird load/body refinement results. See
+`ValidationArtifacts/quantitative-complete-bird-readiness.json`.

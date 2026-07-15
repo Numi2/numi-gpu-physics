@@ -13,6 +13,7 @@ public enum BirdFlowError: Error, CustomStringConvertible {
     case invalidAdvanceRequest(steps: Int, batchSize: Int)
     case invalidObservationBufferCount(Int)
     case commandBufferFailed(String)
+    case runtimeSafetyViolation(RuntimeSafetyReport)
     case simulationStateInvalidated(String)
 
     public var description: String {
@@ -41,6 +42,9 @@ public enum BirdFlowError: Error, CustomStringConvertible {
             return "Observation buffer count must be between 1 and 4; received \(count)."
         case .commandBufferFailed(let message):
             return "A Metal command buffer failed: \(message)"
+        case .runtimeSafetyViolation(let report):
+            let step = report.firstViolationStep.map(String.init) ?? "unknown"
+            return "Free-flight runtime validity bound failed at step \(step): maximum Mach=\(report.maximumLatticeMach), minimum sponge/domain clearance=\(report.minimumSpongeClearanceMeters) m, machExceeded=\(report.machLimitExceeded), clearanceViolated=\(report.spongeClearanceViolated), nonFinite=\(report.nonFiniteStateDetected)."
         case .simulationStateInvalidated(let message):
             return "The simulation can no longer be advanced or read because a partially encoded/submitted GPU update failed: \(message)"
         }
