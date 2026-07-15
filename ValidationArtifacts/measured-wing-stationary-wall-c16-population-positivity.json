@@ -1,0 +1,3554 @@
+{
+  "classification" : "stationary-wall-c16-first-positivity-loss-curved-boundary-adjacent-fluid-pull",
+  "completedSteps" : 106,
+  "deviceName" : "Apple M4",
+  "diagnosticCompleted" : true,
+  "diagnosticKernel" : "reducePopulationMinimum",
+  "domainCells" : [
+    56,
+    24,
+    24
+  ],
+  "farFieldVelocityLattice" : 0.08,
+  "firstNegative" : {
+    "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+    "cell" : [
+      5,
+      9,
+      12
+    ],
+    "cellAdjacentToSphere" : true,
+    "cellIsSolid" : false,
+    "directionIndex" : 10,
+    "distanceToNearestDomainBoundaryCells" : 5,
+    "insideSponge" : false,
+    "latticeDirection" : [
+      -1,
+      1,
+      0
+    ],
+    "minimumPopulation" : -6.151708657853305e-05,
+    "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+    "pullSourceCell" : [
+      6,
+      8,
+      12
+    ],
+    "pullSourceInsideDomain" : true,
+    "pullSourceIsSolid" : false,
+    "pullSourceSignedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+    "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+    "spongeFactor" : 0,
+    "step" : 27,
+    "valueClassification" : "finite"
+  },
+  "firstNonFinite" : {
+    "absoluteDistanceToSphereSurfaceCells" : 2.9749497989943663,
+    "cell" : [
+      2,
+      10,
+      9
+    ],
+    "cellAdjacentToSphere" : false,
+    "cellIsSolid" : false,
+    "directionIndex" : 0,
+    "distanceToNearestDomainBoundaryCells" : 2,
+    "insideSponge" : true,
+    "latticeDirection" : [
+      0,
+      0,
+      0
+    ],
+    "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+    "pullSourceCell" : [
+      2,
+      10,
+      9
+    ],
+    "pullSourceInsideDomain" : true,
+    "pullSourceIsSolid" : false,
+    "pullSourceSignedDistanceToSphereSurfaceCells" : 2.9749497989943663,
+    "signedDistanceToSphereSurfaceCells" : 2.9749497989943663,
+    "spongeFactor" : 0.009999999776482582,
+    "step" : 105,
+    "valueClassification" : "nan"
+  },
+  "firstNonFiniteLoadStep" : 105,
+  "initialMinimum" : {
+    "absoluteDistanceToSphereSurfaceCells" : 14.659494688572316,
+    "cell" : [
+      0,
+      0,
+      0
+    ],
+    "cellAdjacentToSphere" : false,
+    "cellIsSolid" : false,
+    "directionIndex" : 8,
+    "distanceToNearestDomainBoundaryCells" : 0,
+    "insideSponge" : true,
+    "latticeDirection" : [
+      -1,
+      -1,
+      0
+    ],
+    "minimumPopulation" : 0.02164444513618946,
+    "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+    "pullSourceCell" : [
+      1,
+      1,
+      0
+    ],
+    "pullSourceInsideDomain" : true,
+    "pullSourceIsSolid" : false,
+    "pullSourceSignedDistanceToSphereSurfaceCells" : 13.624537030686206,
+    "signedDistanceToSphereSurfaceCells" : 14.659494688572316,
+    "spongeFactor" : 0.03999999910593033,
+    "step" : 0,
+    "valueClassification" : "finite"
+  },
+  "latticeKinematicViscosity" : 8.782491204328835e-05,
+  "matchedBirdChordCells" : 16,
+  "minimumHistory" : [
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 14.659494688572316,
+      "cell" : [
+        0,
+        0,
+        0
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 0,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : 0.02164444513618946,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        1,
+        1,
+        0
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 13.624537030686206,
+      "signedDistanceToSphereSurfaceCells" : 14.659494688572316,
+      "spongeFactor" : 0.03999999910593033,
+      "step" : 0,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        10,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : 0.017950095236301422,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        11,
+        9
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 1,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        10,
+        9,
+        11
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : 0.0183126088231802,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        10,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 2,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        10,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 12,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : 0.014054038561880589,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        10,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 3,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        10,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 12,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : 0.01734815537929535,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        10,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 4,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        13,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.012783784419298172,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 5,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.017155705019831657,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 6,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        14,
+        13
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.01162421889603138,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        14,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 7,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.519696007084728,
+      "cell" : [
+        8,
+        7,
+        10
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 7,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.016547391191124916,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        9,
+        6,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.6449130612757976,
+      "signedDistanceToSphereSurfaceCells" : 1.519696007084728,
+      "spongeFactor" : 0,
+      "step" : 8,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        13,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.00980005506426096,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 9,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        10,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 12,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : 0.015718387439846992,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        10,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 10,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        9,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : 0.008578864857554436,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        10,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 11,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.014813164249062538,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 12,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        10,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.007770406547933817,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        10,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 13,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        11,
+        12,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.014241333119571209,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        12,
+        12,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 1.519696007084728,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 14,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        13,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.0063397507183253765,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 15,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.012813323177397251,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 16,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        10,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.0056490059942007065,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        10,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 17,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        9,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : 0.011871986091136932,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        10,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 18,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        10,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.004725754726678133,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        10,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 19,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        10,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 12,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : 0.01080054510384798,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        10,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 20,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        9,
+        10,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : 0.0036779113579541445,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        10,
+        10,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 21,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.00928319152444601,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 22,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        5,
+        14,
+        12
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : 0.0031105363741517067,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        15,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 23,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        9,
+        13
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : 0.008276531472802162,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        10,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 24,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        5,
+        12,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 12,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : 0.0013251559576019645,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        12,
+        15
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 25,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.006935734301805496,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 26,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        5,
+        9,
+        12
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : -6.151708657853305e-05,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        8,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 27,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        13,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 12,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : 0.005685495212674141,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 28,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        5,
+        14,
+        12
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : -0.0012392783537507057,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        15,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 29,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.004601006396114826,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 30,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        5,
+        12,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 12,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : -0.0025417341385036707,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        12,
+        15
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 31,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.003517605597153306,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 32,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        7,
+        9,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 7,
+      "distanceToNearestDomainBoundaryCells" : 7,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        1,
+        1,
+        0
+      ],
+      "minimumPopulation" : -0.004391589667648077,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        8,
+        9
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 33,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.00267209904268384,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 34,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        7,
+        9,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 13,
+      "distanceToNearestDomainBoundaryCells" : 7,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        1,
+        0,
+        -1
+      ],
+      "minimumPopulation" : -0.0062276702374219894,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        9,
+        15
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 35,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.0017057973891496658,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 36,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        7,
+        9,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 7,
+      "distanceToNearestDomainBoundaryCells" : 7,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        1,
+        1,
+        0
+      ],
+      "minimumPopulation" : -0.00824317242950201,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        6,
+        8,
+        9
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 37,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "cell" : [
+        10,
+        14,
+        13
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 10,
+      "distanceToNearestDomainBoundaryCells" : 9,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "minimumPopulation" : 0.0007789406809024513,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        11,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 0.5905728739343039,
+      "spongeFactor" : 0,
+      "step" : 38,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        9,
+        13
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.011062340810894966,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        9,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 39,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.00019743043230846524,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 40,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        13,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.014079080894589424,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        13,
+        9
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 41,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.0023086238652467728,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 42,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        9,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.016729312017560005,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        9,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 43,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.004022709559649229,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 44,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.019295820966362953,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 45,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        14
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 16,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        -1
+      ],
+      "minimumPopulation" : -0.006049057934433222,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        15
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 46,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        13,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.022130463272333145,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        13,
+        9
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 47,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.008211800828576088,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 48,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        10,
+        9
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.024689296260476112,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        10,
+        9
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 49,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.010445701889693737,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 50,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.027685433626174927,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 51,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.012506040744483471,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 52,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        9,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.030640259385108948,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        9,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 53,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.014821581542491913,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 54,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.033365994691848755,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 55,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.017126046121120453,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 56,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.03648518770933151,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 57,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.0193330068141222,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 58,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        9,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.03960013762116432,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        9,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 59,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.021787531673908234,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 60,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.04293975979089737,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 61,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.024081341922283173,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 62,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.04630379006266594,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 63,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.02637416683137417,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 64,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        13,
+        14
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.049566514790058136,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        13,
+        14
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 65,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.028749704360961914,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 66,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.053295936435461044,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 67,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.03112628683447838,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 68,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "cell" : [
+        6,
+        14,
+        10
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 6,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.05700087547302246,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        7,
+        14,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.29196010845019194,
+      "signedDistanceToSphereSurfaceCells" : 0.02871926215100018,
+      "spongeFactor" : 0,
+      "step" : 69,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.03344995528459549,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 70,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.06115250289440155,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 71,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.035758815705776215,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 72,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.07220343500375748,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 73,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.03830304369330406,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 74,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.0856487825512886,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 75,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.04074002802371979,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 76,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        11
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.1012306660413742,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 77,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.04320817440748215,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 78,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        11
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.11667279899120331,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 79,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.04604203253984451,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 80,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        11
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.12994132936000824,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 81,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        14
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 16,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        -1
+      ],
+      "minimumPopulation" : -0.04888339713215828,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        15
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 82,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        11
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.1385369598865509,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 83,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "cell" : [
+        5,
+        14,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 5,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.05172185227274895,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        5,
+        15,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 1.0801270189221936,
+      "spongeFactor" : 0,
+      "step" : 84,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        11
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.1412307471036911,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 85,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "cell" : [
+        2,
+        11,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 15,
+      "distanceToNearestDomainBoundaryCells" : 2,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        1,
+        1
+      ],
+      "minimumPopulation" : -0.05485900491476059,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        2,
+        10,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.4727615711297988,
+      "signedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "spongeFactor" : 0.009999999776482582,
+      "step" : 86,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        11
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.13948014378547668,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 87,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "cell" : [
+        2,
+        11,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 18,
+      "distanceToNearestDomainBoundaryCells" : 2,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "minimumPopulation" : -0.05936335399746895,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        2,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "spongeFactor" : 0.009999999776482582,
+      "step" : 88,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 3.2883484153110105,
+      "cell" : [
+        1,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 14,
+      "distanceToNearestDomainBoundaryCells" : 1,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "minimumPopulation" : -0.14215116202831268,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        2,
+        12,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 3.2883484153110105,
+      "spongeFactor" : 0.02249999949708581,
+      "step" : 89,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "cell" : [
+        0,
+        12,
+        13
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 0,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.08265316486358643,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        0,
+        12,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "signedDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "spongeFactor" : 0.03999999910593033,
+      "step" : 90,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 3.2883484153110105,
+      "cell" : [
+        1,
+        11,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 8,
+      "distanceToNearestDomainBoundaryCells" : 1,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "minimumPopulation" : -0.15442869067192078,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        2,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.295268253204709,
+      "signedDistanceToSphereSurfaceCells" : 3.2883484153110105,
+      "spongeFactor" : 0.02249999949708581,
+      "step" : 91,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "cell" : [
+        0,
+        12,
+        13
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 0,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.12086121737957001,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        0,
+        12,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "signedDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "spongeFactor" : 0.03999999910593033,
+      "step" : 92,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "cell" : [
+        3,
+        13,
+        13
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.1602383553981781,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 93,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "cell" : [
+        0,
+        12,
+        13
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 0,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.14355342090129852,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        0,
+        12,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "signedDistanceToSphereSurfaceCells" : 4.414854858377946,
+      "spongeFactor" : 0.03999999910593033,
+      "step" : 94,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "cell" : [
+        3,
+        13,
+        13
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.2138480693101883,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 95,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        4,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 4,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.18695443868637085,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        5,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.651923788646684,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 96,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "cell" : [
+        3,
+        13,
+        13
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.27877023816108704,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 97,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        4,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 4,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.27978262305259705,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        5,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.651923788646684,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 98,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "cell" : [
+        3,
+        13,
+        13
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.353423148393631,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        13,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.8426763859362252,
+      "signedDistanceToSphereSurfaceCells" : 1.7249371855330997,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 99,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        4,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 4,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.4243619740009308,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        5,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.651923788646684,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 100,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        4,
+        11,
+        11
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 4,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.7690669894218445,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        4,
+        11,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 101,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "cell" : [
+        4,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : true,
+      "cellIsSolid" : false,
+      "directionIndex" : 2,
+      "distanceToNearestDomainBoundaryCells" : 4,
+      "insideSponge" : false,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "minimumPopulation" : -0.6560098528862,
+      "populationUpdatePath" : "curved-boundary-reconstruction-trt-collision",
+      "pullSourceCell" : [
+        5,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : -0.651923788646684,
+      "signedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+      "spongeFactor" : 0,
+      "step" : 102,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.519696007084728,
+      "cell" : [
+        3,
+        12,
+        10
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "minimumPopulation" : -21075590,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        3,
+        12,
+        10
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 1.519696007084728,
+      "signedDistanceToSphereSurfaceCells" : 1.519696007084728,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 103,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "cell" : [
+        3,
+        12,
+        12
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 3,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "minimumPopulation" : -2.3878470845036463e+21,
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        3,
+        12,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "signedDistanceToSphereSurfaceCells" : 1.3052167895721496,
+      "spongeFactor" : 0.0024999999441206455,
+      "step" : 104,
+      "valueClassification" : "finite"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 2.9749497989943663,
+      "cell" : [
+        2,
+        10,
+        9
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 2,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        2,
+        10,
+        9
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 2.9749497989943663,
+      "signedDistanceToSphereSurfaceCells" : 2.9749497989943663,
+      "spongeFactor" : 0.009999999776482582,
+      "step" : 105,
+      "valueClassification" : "nan"
+    },
+    {
+      "absoluteDistanceToSphereSurfaceCells" : 3.7321200218844703,
+      "cell" : [
+        2,
+        9,
+        8
+      ],
+      "cellAdjacentToSphere" : false,
+      "cellIsSolid" : false,
+      "directionIndex" : 0,
+      "distanceToNearestDomainBoundaryCells" : 2,
+      "insideSponge" : true,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "populationUpdatePath" : "ordinary-fluid-pull-trt-collision",
+      "pullSourceCell" : [
+        2,
+        9,
+        8
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pullSourceSignedDistanceToSphereSurfaceCells" : 3.7321200218844703,
+      "signedDistanceToSphereSurfaceCells" : 3.7321200218844703,
+      "spongeFactor" : 0.009999999776482582,
+      "step" : 106,
+      "valueClassification" : "nan"
+    }
+  ],
+  "newlyCoveredCellEvents" : 0,
+  "newlyUncoveredCellEvents" : 0,
+  "productionKernel" : "stepFluidTRT",
+  "requestedSteps" : 500,
+  "runtimeSeconds" : 0.19924497604370117,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "The first negative c16 stationary-sphere population occurs at step 27, q=10, cell=SIMD3<Int>(5, 9, 12), signed sphere distance 0.3207142142714252 cells, classified as curved-boundary-adjacent-fluid-pull, through ordinary-fluid-pull-trt-collision. The first non-finite population occurs at step 105, q=0, cell=SIMD3<Int>(2, 10, 9), classified as sponge. This localizes the positivity defect before changing the bird solver.",
+  "sphereCenterCells" : [
+    8,
+    12,
+    12
+  ],
+  "sphereRadiusCells" : 3.25,
+  "spongeStrength" : 0.03999999910593033,
+  "spongeWidthCells" : 4,
+  "tauPlus" : 0.5002634525299072,
+  "tauPlusMarginAboveHalf" : 0.00026345252990722656,
+  "topologyTransitionSteps" : 0,
+  "wallVelocityLattice" : 0
+}

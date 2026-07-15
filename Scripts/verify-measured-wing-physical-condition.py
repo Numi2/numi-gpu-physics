@@ -181,26 +181,105 @@ def main() -> None:
         )
     if not decision["stationaryWallRelaxationSweepCompleted"]:
         raise SystemExit("stationary-wall relaxation sweep must remain complete")
-    if decision["stationaryWallRelaxationStabilityMonotonic"]:
-        raise SystemExit("stationary-wall relaxation stability must remain non-monotonic")
-    if decision["stationaryWallRelaxationThresholdBracketed"]:
-        raise SystemExit("non-monotonic sweep must not claim a robust threshold")
-    if decision["viscosityOnlyStabilizationIsRobust"]:
-        raise SystemExit("viscosity-only stabilization must remain non-robust")
+    if not decision["stationaryWallRelaxationStabilityMonotonic"]:
+        raise SystemExit("corrected stationary-wall relaxation stability must remain monotonic")
+    if not decision["stationaryWallRelaxationThresholdBracketed"]:
+        raise SystemExit("corrected stationary-wall sweep must retain its threshold bracket")
+    if not decision["viscosityOnlyStabilizationIsRobust"]:
+        raise SystemExit("corrected stationary-wall viscosity stabilization must remain robust")
     if not decision["stationaryWallLongHorizonSurvivalCompleted"]:
         raise SystemExit("stationary-wall long-horizon audit must remain complete")
-    if decision["stationaryWallLongHorizonAllPointsSurvived"]:
-        raise SystemExit("long-horizon apparent stability must remain failed")
+    if not decision["stationaryWallLongHorizonAllPointsSurvived"]:
+        raise SystemExit("corrected long-horizon points must remain finite")
     if decision["stationaryWallLongHorizonFirstNonFiniteLoadSteps"] != [
-        519,
-        566,
-        588,
+        None,
+        None,
+        None,
     ]:
-        raise SystemExit("long-horizon failure steps have changed")
-    if not decision["stationaryWallFiveHundredStepStabilityWasHorizonCensored"]:
-        raise SystemExit("500-step stability must remain horizon-censored")
+        raise SystemExit("corrected long-horizon finite history has changed")
+    if decision["stationaryWallFiveHundredStepStabilityWasHorizonCensored"]:
+        raise SystemExit("corrected 500-step threshold must not remain horizon-censored")
     if decision["apparentNonMonotonicStabilityBandIsGenuine"]:
         raise SystemExit("apparent non-monotonic stability band must remain rejected")
+    if not decision["stationaryWallC16PopulationPositivityDiagnosticCompleted"]:
+        raise SystemExit("c16 population positivity diagnostic must remain complete")
+    if not decision["stationaryWallC16PopulationPositivityRepeatMatched"]:
+        raise SystemExit("c16 population positivity events must remain repeatable")
+    if decision["stationaryWallC16FirstNegativeStep"] != 27:
+        raise SystemExit("c16 first-negative step has changed")
+    if decision["stationaryWallC16FirstNegativeDirection"] != 10:
+        raise SystemExit("c16 first-negative direction has changed")
+    if decision["stationaryWallC16FirstNegativeCell"] != [5, 9, 12]:
+        raise SystemExit("c16 first-negative cell has changed")
+    if decision["stationaryWallC16FirstNegativeUpdatePath"] != (
+        "ordinary-fluid-pull-trt-collision"
+    ):
+        raise SystemExit("c16 first-negative update path has changed")
+    if decision["stationaryWallC16FirstNonFinitePopulationStep"] != 105:
+        raise SystemExit("c16 first non-finite population step has changed")
+    if decision["stationaryWallC16FirstNonFiniteLoadStep"] != 105:
+        raise SystemExit("c16 first non-finite load step has changed")
+    if not decision["stationaryWallC16FirstPositivityLossAtCurvedBoundary"]:
+        raise SystemExit("c16 first positivity loss must remain boundary-adjacent")
+    if decision["stationaryWallC16FirstPositivityLossAtFarField"]:
+        raise SystemExit("c16 first positivity loss must remain away from the far field")
+    if decision["stationaryWallC16FirstPositivityLossInsideSponge"]:
+        raise SystemExit("c16 first positivity loss must remain outside the sponge")
+    if not decision["stationaryWallC16FirstPositivityLossBornInTRTCollision"]:
+        raise SystemExit("c16 first positivity loss must remain collision-born")
+    if not decision["stationaryWallC16TRTCollisionDecompositionCompleted"]:
+        raise SystemExit("c16 TRT collision decomposition must remain complete")
+    if not decision["stationaryWallC16TRTCollisionDecompositionRepeatMatched"]:
+        raise SystemExit("c16 TRT collision decomposition must remain repeatable")
+    if decision["stationaryWallC16TRTCollisionCaptureStep"] != 27:
+        raise SystemExit("c16 TRT collision capture step has changed")
+    if decision["stationaryWallC16TRTCollisionTargetCell"] != [5, 9, 12]:
+        raise SystemExit("c16 TRT collision target has changed")
+    if decision["stationaryWallC16TRTFailingDirection"] != 10:
+        raise SystemExit("c16 TRT failing direction has changed")
+    if not decision["stationaryWallC16TRTSymmetricRelaxationOvershootIsolated"]:
+        raise SystemExit("c16 symmetric TRT overshoot must remain isolated")
+    if not decision["stationaryWallC16SymmetricLimiterABCompleted"]:
+        raise SystemExit("c16 symmetric-limiter A/B must remain complete")
+    if not decision["stationaryWallC16SymmetricLimiterABRepeatMatched"]:
+        raise SystemExit("c16 symmetric-limiter A/B must remain repeatable")
+    if not decision["stationaryWallC16SymmetricLimiterPositivityCleared"]:
+        raise SystemExit("c16 symmetric-only limiter must retain cleared positivity")
+    if decision["stationaryWallC16SymmetricLimiterStabilityPassed"]:
+        raise SystemExit("c16 symmetric-only limiter must retain failed stability")
+    if decision["stationaryWallC16SymmetricLimiterForceBudgetPassed"]:
+        raise SystemExit("c16 symmetric-only limiter must retain failed budget")
+    if decision["stationaryWallC16SymmetricLimiterPromoted"]:
+        raise SystemExit("c16 symmetric-only limiter must not be promoted")
+    if not decision["stationaryWallC16ConservationLedgerCompleted"]:
+        raise SystemExit("c16 conservation ledger must remain complete")
+    if not decision["stationaryWallC16ConservationLedgerRepeatMatched"]:
+        raise SystemExit("c16 conservation ledger must remain repeatable")
+    if not decision["stationaryWallC16ConservationGlobalLedgerClosed"]:
+        raise SystemExit("c16 global conservation ledger must remain closed")
+    if not decision["stationaryWallC16ConservationForceResidualLedgerClosed"]:
+        raise SystemExit("c16 force-source ledger must remain closed")
+    for key in (
+        "stationaryWallC16LimiterArithmeticConservationCleared",
+        "stationaryWallC16OpenFarFieldMassSourceDominates",
+        "stationaryWallC16SpongeMomentumSourceDominates",
+        "stationaryWallC16BoundaryLoadAccountingCleared",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"c16 source attribution lost {key}")
+    for key in (
+        "stationaryWallC16SourceAwareAcceptanceCompleted",
+        "stationaryWallC16SourceAwareAcceptanceRepeatMatched",
+        "stationaryWallC16SourceAwareControlVolumeOutsideSponge",
+        "stationaryWallC16SourceAwareGlobalLedgerClosed",
+        "stationaryWallC16SourceAwareStabilityPassed",
+        "stationaryWallC16SourceAwareForceBudgetPassed",
+        "stationaryWallC16SourceAwareAcceptancePassed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"c16 source-aware acceptance lost {key}")
+    if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
+        raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
     feasibilities = []
     for key in (
@@ -486,9 +565,9 @@ def main() -> None:
     for case in stationary_cases:
         if case["passed"]:
             raise SystemExit(f"{stationary_path} contains a passing case")
-        if case["finiteLoadSteps"] != 266:
+        if case["finiteLoadSteps"] != 104:
             raise SystemExit(f"{stationary_path} has changed finite history length")
-        if case["firstNonFiniteLoadStep"] != 267:
+        if case["firstNonFiniteLoadStep"] != 105:
             raise SystemExit(f"{stationary_path} has changed failure step")
         if any(
             case[key]
@@ -527,13 +606,13 @@ def main() -> None:
         raise SystemExit(f"{sweep_path} must remain complete")
     if (
         sweep["classification"]
-        != "stationary-wall-relaxation-stability-nonmonotonic"
+        != "stationary-wall-relaxation-threshold-bracketed"
     ):
         raise SystemExit(f"{sweep_path} has changed classification")
-    if sweep["stabilityMonotonicWithMargin"]:
-        raise SystemExit(f"{sweep_path} must retain non-monotonic stability")
-    if sweep["thresholdBracketed"]:
-        raise SystemExit(f"{sweep_path} must not claim a robust threshold")
+    if not sweep["stabilityMonotonicWithMargin"]:
+        raise SystemExit(f"{sweep_path} must retain monotonic stability")
+    if not sweep["thresholdBracketed"]:
+        raise SystemExit(f"{sweep_path} must retain its robust threshold")
     if not sweep["firstTransitionBracketed"]:
         raise SystemExit(f"{sweep_path} must retain its first transition")
     close(
@@ -548,10 +627,8 @@ def main() -> None:
         1.0e-14,
         "first relaxation transition upper margin",
     )
-    if sweep["unstableTauPlusMarginsAfterFirstStable"] != [
-        decision["stationaryWallUnstableMarginAfterFirstStable"]
-    ]:
-        raise SystemExit(f"{sweep_path} has changed its post-stable relapse")
+    if sweep["unstableTauPlusMarginsAfterFirstStable"]:
+        raise SystemExit(f"{sweep_path} has regained a post-stable relapse")
     if sweep["newlyCoveredCellEventsAcrossSweep"] != 0:
         raise SystemExit(f"{sweep_path} contains cover events")
     if sweep["newlyUncoveredCellEventsAcrossSweep"] != 0:
@@ -575,11 +652,15 @@ def main() -> None:
         0.02,
         0.05,
     ]
-    if [
-        point["requestedTauPlusMarginAboveHalf"]
-        for point in sweep_points
-    ] != expected_requested_margins:
-        raise SystemExit(f"{sweep_path} has changed requested margins")
+    if len(sweep_points) != len(expected_requested_margins):
+        raise SystemExit(f"{sweep_path} has changed point count")
+    for point, expected_margin in zip(sweep_points, expected_requested_margins):
+        close(
+            point["requestedTauPlusMarginAboveHalf"],
+            expected_margin,
+            1.0e-6,
+            "relaxation sweep requested margin",
+        )
     expected_stability = [
         False,
         False,
@@ -587,26 +668,26 @@ def main() -> None:
         False,
         False,
         False,
-        False,
-        False,
         True,
-        False,
+        True,
+        True,
+        True,
         True,
         True,
         True,
         True,
     ]
     expected_failure_steps = [
-        267,
-        268,
-        273,
-        280,
-        324,
-        451,
-        472,
-        488,
+        105,
+        107,
+        112,
+        123,
+        208,
+        454,
         None,
-        496,
+        None,
+        None,
+        None,
         None,
         None,
         None,
@@ -615,7 +696,7 @@ def main() -> None:
     if [point["stabilityPassed"] for point in sweep_points] != expected_stability:
         raise SystemExit(f"{sweep_path} has changed stability outcomes")
     if [
-        point["firstNonFiniteLoadStep"] for point in sweep_points
+        point.get("firstNonFiniteLoadStep") for point in sweep_points
     ] != expected_failure_steps:
         raise SystemExit(f"{sweep_path} has changed failure steps")
     if any(point["fullAcceptancePassed"] for point in sweep_points):
@@ -652,13 +733,13 @@ def main() -> None:
         raise SystemExit(f"{long_horizon_path} must remain complete")
     if (
         long_horizon["classification"]
-        != "stationary-wall-500-step-stability-horizon-censored"
+        != "stationary-wall-apparent-stability-survives-1000"
     ):
         raise SystemExit(f"{long_horizon_path} has changed classification")
-    if long_horizon["survivingPointCount"] != 0:
-        raise SystemExit(f"{long_horizon_path} must retain zero survivors")
-    if long_horizon["allApparentStablePointsSurvived"]:
-        raise SystemExit(f"{long_horizon_path} must retain failed survival")
+    if long_horizon["survivingPointCount"] != 3:
+        raise SystemExit(f"{long_horizon_path} must retain three survivors")
+    if not long_horizon["allApparentStablePointsSurvived"]:
+        raise SystemExit(f"{long_horizon_path} must retain complete survival")
     if not long_horizon["repeatRunMatchedFailureSteps"]:
         raise SystemExit(f"{long_horizon_path} must retain repeatability")
     if long_horizon["requestedStepsPerPoint"] != 1_000:
@@ -670,27 +751,454 @@ def main() -> None:
     if long_horizon["maximumTopologyTransitionSteps"] != 0:
         raise SystemExit(f"{long_horizon_path} contains topology transitions")
     long_horizon_points = long_horizon["points"]
-    if [
-        point["requestedTauPlusMarginAboveHalf"]
-        for point in long_horizon_points
-    ] != [0.015625, 0.016875, 0.02]:
-        raise SystemExit(f"{long_horizon_path} has changed requested margins")
+    if len(long_horizon_points) != 3:
+        raise SystemExit(f"{long_horizon_path} has changed point count")
+    for point, expected_margin in zip(
+        long_horizon_points,
+        [0.015625, 0.016875, 0.02],
+    ):
+        close(
+            point["requestedTauPlusMarginAboveHalf"],
+            expected_margin,
+            1.0e-6,
+            "long-horizon requested margin",
+        )
     long_horizon_failure_steps = [
-        point["firstNonFiniteLoadStep"]
+        point.get("firstNonFiniteLoadStep")
         for point in long_horizon_points
     ]
-    if long_horizon_failure_steps != [519, 566, 588]:
+    if long_horizon_failure_steps != [None, None, None]:
         raise SystemExit(f"{long_horizon_path} has changed failure steps")
     for point in long_horizon_points:
-        if point["finiteLoadSteps"] != point["firstNonFiniteLoadStep"] - 1:
+        if point["finiteLoadSteps"] != 1_000:
             raise SystemExit(f"{long_horizon_path} has inconsistent finite steps")
-        if point["stabilityPassed"] or point["fullAcceptancePassed"]:
-            raise SystemExit(f"{long_horizon_path} contains a passing point")
-        if any(
+        if not point["stabilityPassed"] or point["fullAcceptancePassed"]:
+            raise SystemExit(f"{long_horizon_path} changed stability or acceptance")
+        if not all(
             point[key]
             for key in ("populationsFinite", "fieldsFinite", "loadsFinite")
         ):
-            raise SystemExit(f"{long_horizon_path} must retain non-finite state")
+            raise SystemExit(f"{long_horizon_path} must retain finite state")
+        if point["relativePopulationMassDrift"] > 1.1e-4:
+            raise SystemExit(f"{long_horizon_path} exceeds corrected mass drift")
+        if point["maximumAbsolutePopulation"] > 1.0:
+            raise SystemExit(f"{long_horizon_path} exceeds corrected population bound")
+
+    positivity_path = Path(
+        decision["stationaryWallC16PopulationPositivityArtifact"]
+    )
+    positivity_bytes = positivity_path.read_bytes()
+    positivity_hash = hashlib.sha256(positivity_bytes).hexdigest()
+    if positivity_hash != decision[
+        "stationaryWallC16PopulationPositivityArtifactSHA256"
+    ]:
+        raise SystemExit(f"{positivity_path} has changed artifact hash")
+    positivity = json.loads(positivity_bytes)
+    if not positivity["diagnosticCompleted"]:
+        raise SystemExit(f"{positivity_path} must remain complete")
+    if positivity["diagnosticKernel"] != "reducePopulationMinimum":
+        raise SystemExit(f"{positivity_path} has changed diagnostic kernel")
+    if positivity["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{positivity_path} has changed production kernel")
+    if positivity["classification"] != (
+        "stationary-wall-c16-first-positivity-loss-"
+        "curved-boundary-adjacent-fluid-pull"
+    ):
+        raise SystemExit(f"{positivity_path} has changed classification")
+    if positivity["domainCells"] != [56, 24, 24]:
+        raise SystemExit(f"{positivity_path} has changed domain")
+    if positivity["sphereCenterCells"] != [8, 12, 12]:
+        raise SystemExit(f"{positivity_path} has changed sphere center")
+    close(positivity["sphereRadiusCells"], 3.25, 1.0e-14, "positivity sphere radius")
+    close(positivity["farFieldVelocityLattice"], 0.08, 1.0e-14, "positivity far field")
+    if positivity["wallVelocityLattice"] != 0:
+        raise SystemExit(f"{positivity_path} must retain a stationary wall")
+    if positivity["spongeWidthCells"] != 4:
+        raise SystemExit(f"{positivity_path} has changed sponge width")
+    close(positivity["spongeStrength"], 0.04, 1.0e-7, "positivity sponge strength")
+    if positivity["matchedBirdChordCells"] != 16:
+        raise SystemExit(f"{positivity_path} must remain the c16 case")
+    if positivity["requestedSteps"] != 500 or positivity["completedSteps"] != 106:
+        raise SystemExit(f"{positivity_path} has changed its run horizon")
+    if positivity["firstNonFiniteLoadStep"] != 105:
+        raise SystemExit(f"{positivity_path} has changed load failure step")
+    if any(
+        positivity[key]
+        for key in (
+            "newlyCoveredCellEvents",
+            "newlyUncoveredCellEvents",
+            "topologyTransitionSteps",
+        )
+    ):
+        raise SystemExit(f"{positivity_path} contains topology changes")
+    initial = positivity["initialMinimum"]
+    if initial["valueClassification"] != "finite":
+        raise SystemExit(f"{positivity_path} has a non-finite initial state")
+    if initial["minimumPopulation"] <= 0:
+        raise SystemExit(f"{positivity_path} must start population-positive")
+    history = positivity["minimumHistory"]
+    if len(history) != positivity["completedSteps"] + 1:
+        raise SystemExit(f"{positivity_path} has incomplete minimum history")
+    if [sample["step"] for sample in history] != list(range(107)):
+        raise SystemExit(f"{positivity_path} has non-contiguous history")
+    negative = positivity["firstNegative"]
+    if negative != history[27]:
+        raise SystemExit(f"{positivity_path} first negative is not history step 27")
+    if negative["directionIndex"] != 10 or negative["cell"] != [5, 9, 12]:
+        raise SystemExit(f"{positivity_path} has changed first-negative location")
+    if negative["latticeDirection"] != [-1, 1, 0]:
+        raise SystemExit(f"{positivity_path} has changed first-negative direction")
+    if negative["pullSourceCell"] != [6, 8, 12]:
+        raise SystemExit(f"{positivity_path} has changed first-negative pull source")
+    if not negative["pullSourceInsideDomain"] or negative["pullSourceIsSolid"]:
+        raise SystemExit(f"{positivity_path} first-negative source is not ordinary fluid")
+    if negative["cellIsSolid"] or not negative["cellAdjacentToSphere"]:
+        raise SystemExit(f"{positivity_path} first-negative cell lost boundary adjacency")
+    if negative["insideSponge"] or negative["spongeFactor"] != 0:
+        raise SystemExit(f"{positivity_path} first-negative cell reached the sponge")
+    if negative["populationUpdatePath"] != "ordinary-fluid-pull-trt-collision":
+        raise SystemExit(f"{positivity_path} has changed first-negative update path")
+    close(
+        negative["signedDistanceToSphereSurfaceCells"],
+        decision["stationaryWallC16FirstNegativeSphereDistanceCells"],
+        1.0e-14,
+        "first-negative sphere distance",
+    )
+    non_finite = positivity["firstNonFinite"]
+    if non_finite != history[105]:
+        raise SystemExit(f"{positivity_path} first non-finite is not history step 105")
+    if non_finite["directionIndex"] != 0 or non_finite["cell"] != [2, 10, 9]:
+        raise SystemExit(f"{positivity_path} has changed first non-finite location")
+    if non_finite["valueClassification"] != "nan":
+        raise SystemExit(f"{positivity_path} must retain a NaN first failure")
+    if not non_finite["insideSponge"]:
+        raise SystemExit(f"{positivity_path} first non-finite left the sponge")
+
+    trt_path = Path(
+        decision["stationaryWallC16TRTCollisionDecompositionArtifact"]
+    )
+    trt_bytes = trt_path.read_bytes()
+    trt_hash = hashlib.sha256(trt_bytes).hexdigest()
+    if trt_hash != decision[
+        "stationaryWallC16TRTCollisionDecompositionArtifactSHA256"
+    ]:
+        raise SystemExit(f"{trt_path} has changed artifact hash")
+    trt = json.loads(trt_bytes)
+    if not trt["diagnosticCompleted"]:
+        raise SystemExit(f"{trt_path} must remain complete")
+    if trt["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{trt_path} has changed production kernel")
+    if trt["diagnosticKernel"] != "captureTRTCollisionDecomposition":
+        raise SystemExit(f"{trt_path} has changed diagnostic kernel")
+    if trt["classification"] != (
+        "stationary-wall-c16-trt-symmetric-relaxation-overshoot"
+    ):
+        raise SystemExit(f"{trt_path} has changed classification")
+    if trt["captureStep"] != 27 or trt["targetCell"] != [5, 9, 12]:
+        raise SystemExit(f"{trt_path} has changed capture location")
+    if not trt["targetAdjacentToSphere"] or trt["targetIsSolid"]:
+        raise SystemExit(f"{trt_path} target must remain boundary-adjacent fluid")
+    if trt["solidPullSourceCount"] != 5:
+        raise SystemExit(f"{trt_path} has changed solid pull-source count")
+    if trt["outsideDomainPullSourceCount"] != 0:
+        raise SystemExit(f"{trt_path} contains outside-domain pull sources")
+    if trt["spongeFactor"] != 0:
+        raise SystemExit(f"{trt_path} target must remain outside the sponge")
+    if not trt["allPulledPopulationsPositive"]:
+        raise SystemExit(f"{trt_path} must retain positive pulled populations")
+    if trt["minimumPulledPopulation"] <= 0:
+        raise SystemExit(f"{trt_path} has a non-positive pulled population")
+    if trt["minimumActualPostCollisionDirection"] != 10:
+        raise SystemExit(f"{trt_path} has changed minimum output direction")
+    if trt["dominantDestabilizingRelaxationMode"] != "symmetric":
+        raise SystemExit(f"{trt_path} has changed dominant relaxation mode")
+    close(
+        trt["omegaPlus"],
+        decision["stationaryWallC16TRTOmegaPlus"],
+        1.0e-14,
+        "c16 TRT omega plus",
+    )
+    close(
+        trt["omegaMinus"],
+        decision["stationaryWallC16TRTOmegaMinus"],
+        1.0e-14,
+        "c16 TRT omega minus",
+    )
+    close(
+        trt["maximumAbsolutePredictionResidual"],
+        decision["stationaryWallC16TRTMaximumPredictionResidual"],
+        1.0e-14,
+        "c16 TRT prediction residual",
+    )
+    if trt["maximumAbsolutePredictionResidual"] > 1.0e-7:
+        raise SystemExit(f"{trt_path} no longer closes against production")
+    close(
+        trt["maximumAbsoluteBoundaryWallCorrection"],
+        decision["stationaryWallC16TRTMaximumBoundaryWallCorrection"],
+        1.0e-14,
+        "c16 TRT boundary wall correction",
+    )
+    if trt.get("failingBoundaryInterpolation") is not None:
+        raise SystemExit(f"{trt_path} failing q=10 must remain a fluid pull")
+    terms = trt["directionTerms"]
+    if len(terms) != 19:
+        raise SystemExit(f"{trt_path} must retain all D3Q19 directions")
+    if [term["directionIndex"] for term in terms] != list(range(19)):
+        raise SystemExit(f"{trt_path} direction terms are incomplete")
+    failing_trt = trt["failingDirection"]
+    if failing_trt != terms[10]:
+        raise SystemExit(f"{trt_path} failing direction is not q=10")
+    if failing_trt["latticeDirection"] != [-1, 1, 0]:
+        raise SystemExit(f"{trt_path} has changed q=10 direction")
+    if failing_trt["pullSourceCell"] != [6, 8, 12]:
+        raise SystemExit(f"{trt_path} has changed q=10 pull source")
+    if not failing_trt["pullSourceInsideDomain"] or failing_trt["pullSourceIsSolid"]:
+        raise SystemExit(f"{trt_path} q=10 source is not ordinary fluid")
+    for key, decision_key in (
+        ("pulledPopulation", "stationaryWallC16TRTPulledPopulation"),
+        ("symmetricRelaxationIncrement", "stationaryWallC16TRTSymmetricIncrement"),
+        ("antisymmetricRelaxationIncrement", "stationaryWallC16TRTAntisymmetricIncrement"),
+        ("postWithoutSymmetricIncrement", "stationaryWallC16TRTPostWithoutSymmetricIncrement"),
+        ("postWithoutAntisymmetricIncrement", "stationaryWallC16TRTPostWithoutAntisymmetricIncrement"),
+        ("actualPostCollision", "stationaryWallC16TRTActualPostCollision"),
+    ):
+        close(failing_trt[key], decision[decision_key], 1.0e-14, f"c16 TRT {key}")
+    if failing_trt["postWithoutSymmetricIncrement"] <= 0:
+        raise SystemExit(f"{trt_path} no longer isolates the symmetric increment")
+    if failing_trt["postWithoutAntisymmetricIncrement"] >= 0:
+        raise SystemExit(f"{trt_path} no longer rejects antisymmetric causation")
+    if any(
+        trt[key]
+        for key in (
+            "newlyCoveredCellEvents",
+            "newlyUncoveredCellEvents",
+            "topologyTransitionSteps",
+        )
+    ):
+        raise SystemExit(f"{trt_path} contains topology changes")
+
+    limiter_path = Path(
+        decision["stationaryWallC16SymmetricLimiterABArtifact"]
+    )
+    limiter_bytes = limiter_path.read_bytes()
+    limiter_hash = hashlib.sha256(limiter_bytes).hexdigest()
+    if limiter_hash != decision[
+        "stationaryWallC16SymmetricLimiterABArtifactSHA256"
+    ]:
+        raise SystemExit(f"{limiter_path} has changed artifact hash")
+    limiter = json.loads(limiter_bytes)
+    if not limiter["diagnosticCompleted"]:
+        raise SystemExit(f"{limiter_path} must remain complete")
+    if limiter["classification"] != (
+        "stationary-wall-c16-symmetric-limiter-source-aware-accepted"
+    ):
+        raise SystemExit(f"{limiter_path} has changed classification")
+    if limiter["schemaVersion"] != 3:
+        raise SystemExit(f"{limiter_path} has changed schema")
+    if limiter["requestedStepsPerCase"] != 500:
+        raise SystemExit(f"{limiter_path} has changed its horizon")
+    if limiter["maximumPreActivationMeasuredForceDifference"] != 0:
+        raise SystemExit(f"{limiter_path} changes pre-activation loads")
+    if limiter["maximumPreActivationBudgetForceDifference"] != 0:
+        raise SystemExit(f"{limiter_path} changes pre-activation budget")
+    limiter_control = limiter["control"]
+    if limiter_control["firstNegativePopulationStep"] != 27:
+        raise SystemExit(f"{limiter_path} has changed control negativity")
+    if limiter_control["firstNonFinitePopulationStep"] != 105:
+        raise SystemExit(f"{limiter_path} has changed control population failure")
+    if limiter_control["firstNonFiniteLoadStep"] != 105:
+        raise SystemExit(f"{limiter_path} has changed control load failure")
+    if limiter_control["limiterActivationCellSteps"] != 0:
+        raise SystemExit(f"{limiter_path} control activated the limiter")
+    limiter_treatment = limiter["treatment"]
+    if limiter_treatment["completedSteps"] != 500:
+        raise SystemExit(f"{limiter_path} treatment did not finish")
+    if limiter_treatment["firstLimiterActivationStep"] != 27:
+        raise SystemExit(f"{limiter_path} has changed first activation")
+    if limiter_treatment.get("firstNegativePopulationStep") is not None:
+        raise SystemExit(f"{limiter_path} treatment must remain population-positive")
+    if limiter_treatment.get("firstNonFinitePopulationStep") is not None:
+        raise SystemExit(f"{limiter_path} treatment must remain finite")
+    if limiter_treatment.get("firstNonFiniteLoadStep") is not None:
+        raise SystemExit(f"{limiter_path} treated loads must remain finite")
+    if not all(
+        limiter_treatment[key]
+        for key in ("populationsFinite", "fieldsFinite", "loadsFinite")
+    ):
+        raise SystemExit(f"{limiter_path} treatment must remain finite")
+    for key, decision_key in (
+        ("limiterActivationCellSteps", "stationaryWallC16SymmetricLimiterActivationCellSteps"),
+        ("limiterActivationSteps", "stationaryWallC16SymmetricLimiterActivationSteps"),
+        ("firstZeroLimiterScaleStep", "stationaryWallC16SymmetricLimiterFirstZeroScaleStep"),
+        ("maximumLimiterActivationsInOneStep", "stationaryWallC16SymmetricLimiterMaximumActivationsInOneStep"),
+    ):
+        if limiter_treatment.get(key) != decision[decision_key]:
+            raise SystemExit(f"{limiter_path} has changed {key}")
+    for key, decision_key in (
+        ("minimumLimiterScale", "stationaryWallC16SymmetricLimiterMinimumScale"),
+        ("relativePopulationMassDrift", "stationaryWallC16SymmetricLimiterRelativeMassDrift"),
+        ("minimumObservedPopulation", "stationaryWallC16SymmetricLimiterMinimumObservedPopulation"),
+        ("maximumConservativeForceResidual", "stationaryWallC16SymmetricLimiterMaximumForceResidual"),
+        ("conservativeRelativeRMSResidual", "stationaryWallC16SymmetricLimiterRelativeRMSResidual"),
+    ):
+        close(limiter_treatment[key], decision[decision_key], 1.0e-14, key)
+    if limiter_treatment["stabilityPassed"]:
+        raise SystemExit(f"{limiter_path} must retain failed treated stability")
+    if limiter_treatment["forceBudgetPassed"]:
+        raise SystemExit(f"{limiter_path} must retain failed treated budget")
+    if limiter_treatment["fullAcceptancePassed"]:
+        raise SystemExit(f"{limiter_path} must not be accepted")
+    if limiter_treatment["relativePopulationMassDrift"] <= limiter[
+        "maximumAllowedRelativePopulationMassDrift"
+    ]:
+        raise SystemExit(f"{limiter_path} mass drift unexpectedly passes")
+    if limiter_treatment["maximumConservativeForceResidual"] <= limiter[
+        "maximumAllowedConservativeForceResidual"
+    ]:
+        raise SystemExit(f"{limiter_path} force residual unexpectedly passes")
+    if limiter_treatment["conservativeRelativeRMSResidual"] <= limiter[
+        "maximumAllowedConservativeRelativeRMSResidual"
+    ]:
+        raise SystemExit(f"{limiter_path} relative RMS residual unexpectedly passes")
+    if limiter_treatment["minimumObservedPopulation"] <= 0:
+        raise SystemExit(f"{limiter_path} treatment lost population positivity")
+    if limiter_treatment["finalMinimumPopulation"] <= 0:
+        raise SystemExit(f"{limiter_path} treatment ended population-negative")
+    if limiter_treatment["maximumAbsolutePopulation"] > limiter[
+        "maximumAllowedAbsolutePopulation"
+    ]:
+        raise SystemExit(f"{limiter_path} treatment exceeded its population bound")
+
+    ledger = limiter["treatmentConservationLedger"]
+    if not ledger["globalLedgerClosed"]:
+        raise SystemExit(f"{limiter_path} global ledger no longer closes")
+    if not ledger["forceResidualLedgerClosed"]:
+        raise SystemExit(f"{limiter_path} force-source ledger no longer closes")
+    if ledger["dominantGlobalMassContribution"] != "open-far-field":
+        raise SystemExit(f"{limiter_path} changed dominant mass source")
+    if ledger["dominantControlVolumeMomentumContribution"] != "sponge":
+        raise SystemExit(f"{limiter_path} changed dominant momentum source")
+    ledger_samples = ledger["samples"]
+    if len(ledger_samples) != decision[
+        "stationaryWallC16ConservationLedgerSamples"
+    ]:
+        raise SystemExit(f"{limiter_path} has changed ledger history length")
+    if [sample["step"] for sample in ledger_samples] != list(range(1, 501)):
+        raise SystemExit(f"{limiter_path} ledger history is not contiguous")
+    if sum(sample["activatedCellCount"] for sample in ledger_samples) != (
+        limiter_treatment["limiterActivationCellSteps"]
+    ):
+        raise SystemExit(f"{limiter_path} ledger activation sum changed")
+    if sum(sample["activatedCellCount"] > 0 for sample in ledger_samples) != (
+        limiter_treatment["limiterActivationSteps"]
+    ):
+        raise SystemExit(f"{limiter_path} ledger activation history changed")
+    if max(sample["activatedCellCount"] for sample in ledger_samples) != (
+        limiter_treatment["maximumLimiterActivationsInOneStep"]
+    ):
+        raise SystemExit(f"{limiter_path} ledger maximum activation changed")
+    for key, decision_key in (
+        ("cumulativeObservedGlobal", "stationaryWallC16ConservationObservedMassChange"),
+        ("cumulativeFarFieldGlobal", "stationaryWallC16ConservationFarFieldMassContribution"),
+        ("cumulativeSpongeGlobal", "stationaryWallC16ConservationSpongeMassContribution"),
+        ("cumulativeSymmetricLimiterGlobal", "stationaryWallC16ConservationLimiterMassContribution"),
+    ):
+        close(
+            ledger[key]["mass"],
+            decision[decision_key],
+            1.0e-14,
+            f"c16 ledger {key} mass",
+        )
+    for key, decision_key in (
+        ("relativeCumulativeLimiterMassContribution", "stationaryWallC16ConservationRelativeLimiterMassContribution"),
+        ("RMSControlVolumeSpongeForceNewtons", "stationaryWallC16ConservationSpongeRMSForceNewtons"),
+        ("RMSControlVolumeSymmetricLimiterForceNewtons", "stationaryWallC16ConservationLimiterRMSForceNewtons"),
+        ("relativeRMSUnexplainedForceResidual", "stationaryWallC16ConservationRelativeRMSUnexplainedForceResidual"),
+        ("maximumPeakUnexplainedForceResidualFraction", "stationaryWallC16ConservationPeakUnexplainedForceResidualFraction"),
+        ("relativeRMSBoundaryLoadClosureResidual", "stationaryWallC16BoundaryLoadRelativeRMSClosureResidual"),
+    ):
+        close(ledger[key], decision[decision_key], 1.0e-14, f"c16 ledger {key}")
+    if ledger["maximumPerStepGlobalMassClosureResidual"] > 1.0e-5:
+        raise SystemExit(f"{limiter_path} global mass ledger lost closure")
+    if abs(ledger["observedMassHistoryResidual"]) > 1.0e-5:
+        raise SystemExit(f"{limiter_path} observed mass history lost closure")
+    if ledger["relativeCumulativeLimiterMassContribution"] > 1.0e-6:
+        raise SystemExit(f"{limiter_path} limiter mass source is no longer negligible")
+    if ledger["relativeRMSUnexplainedForceResidual"] > 5.0e-3:
+        raise SystemExit(f"{limiter_path} force-source RMS no longer closes")
+    if ledger["maximumPeakUnexplainedForceResidualFraction"] > 1.0e-2:
+        raise SystemExit(f"{limiter_path} force-source peak no longer closes")
+    if ledger["relativeRMSBoundaryLoadClosureResidual"] > 1.0e-6:
+        raise SystemExit(f"{limiter_path} boundary load no longer closes")
+
+    if limiter["sourceAwareControlMinimumCells"] != decision[
+        "stationaryWallC16SourceAwareControlMinimumCells"
+    ]:
+        raise SystemExit(f"{limiter_path} changed source-aware control minimum")
+    if limiter["sourceAwareControlMaximumExclusiveCells"] != decision[
+        "stationaryWallC16SourceAwareControlMaximumExclusiveCells"
+    ]:
+        raise SystemExit(f"{limiter_path} changed source-aware control maximum")
+    if limiter["sourceAwareMaximumSolidControlSurfaceCrossingLinkCount"] != decision[
+        "stationaryWallC16SourceAwareMaximumSolidControlSurfaceCrossingLinkCount"
+    ]:
+        raise SystemExit(f"{limiter_path} changed source-aware crossing links")
+    for key in (
+        "sourceAwareControlVolumeOutsideSponge",
+        "sourceAwareStabilityPassed",
+        "sourceAwareForceBudgetPassed",
+        "sourceAwareAcceptancePassed",
+    ):
+        if not limiter[key]:
+            raise SystemExit(f"{limiter_path} lost {key}")
+    source_aware = limiter["sourceAwareTreatment"]
+    if source_aware["completedSteps"] != 500:
+        raise SystemExit(f"{limiter_path} source-aware treatment did not finish")
+    if any(
+        source_aware.get(key) is not None
+        for key in (
+            "firstNegativePopulationStep",
+            "firstNonFinitePopulationStep",
+            "firstNonFiniteLoadStep",
+        )
+    ):
+        raise SystemExit(f"{limiter_path} source-aware treatment is not finite-positive")
+    if not source_aware["forceBudgetPassed"]:
+        raise SystemExit(f"{limiter_path} source-aware raw force budget failed")
+    if source_aware["stabilityPassed"] or source_aware["fullAcceptancePassed"]:
+        raise SystemExit(f"{limiter_path} must preserve the superseded mass-drift flags")
+    close(
+        source_aware["maximumConservativeForceResidual"],
+        decision["stationaryWallC16SourceAwareMaximumForceResidual"],
+        1.0e-14,
+        "c16 source-aware maximum force residual",
+    )
+    close(
+        source_aware["conservativeRelativeRMSResidual"],
+        decision["stationaryWallC16SourceAwareRelativeRMSResidual"],
+        1.0e-14,
+        "c16 source-aware relative RMS residual",
+    )
+    source_aware_ledger = limiter["sourceAwareTreatmentConservationLedger"]
+    if not source_aware_ledger["globalLedgerClosed"]:
+        raise SystemExit(f"{limiter_path} source-aware global ledger failed")
+    if any(
+        sample["controlVolumeSpongeCellCount"] != 0
+        for sample in source_aware_ledger["samples"]
+    ):
+        raise SystemExit(f"{limiter_path} source-aware control contains sponge cells")
+    close(
+        source_aware_ledger["RMSControlVolumeSpongeForceNewtons"],
+        decision["stationaryWallC16SourceAwareSpongeRMSForceNewtons"],
+        1.0e-14,
+        "c16 source-aware sponge RMS force",
+    )
+    close(
+        source_aware_ledger["relativeRMSBoundaryLoadClosureResidual"],
+        decision["stationaryWallC16SourceAwareBoundaryLoadRelativeRMSClosureResidual"],
+        1.0e-14,
+        "c16 source-aware boundary load closure",
+    )
 
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
@@ -756,6 +1264,40 @@ def main() -> None:
     print(
         "long_horizon_first_non_finite_steps: "
         + ",".join(str(step) for step in long_horizon_failure_steps)
+    )
+    print(f"population_positivity_classification: {positivity['classification']}")
+    print(
+        "population_first_negative: "
+        f"step={negative['step']},q={negative['directionIndex']},"
+        f"cell={negative['cell']},path={negative['populationUpdatePath']}"
+    )
+    print(
+        "population_first_non_finite: "
+        f"step={non_finite['step']},q={non_finite['directionIndex']},"
+        f"cell={non_finite['cell']}"
+    )
+    print(f"trt_decomposition_classification: {trt['classification']}")
+    print(
+        "trt_failing_direction: "
+        f"q={failing_trt['directionIndex']},"
+        f"symmetric={failing_trt['symmetricRelaxationIncrement']},"
+        f"antisymmetric={failing_trt['antisymmetricRelaxationIncrement']},"
+        f"post={failing_trt['actualPostCollision']}"
+    )
+    print(f"symmetric_limiter_classification: {limiter['classification']}")
+    print(
+        "symmetric_limiter_treatment: "
+        f"first_negative={limiter_treatment.get('firstNegativePopulationStep')},"
+        f"activations={limiter_treatment['limiterActivationCellSteps']},"
+        f"minimum_scale={limiter_treatment['minimumLimiterScale']},"
+        f"budget_passed={limiter_treatment['forceBudgetPassed']}"
+    )
+    print(
+        "symmetric_limiter_conservation_ledger: "
+        f"global_closed={ledger['globalLedgerClosed']},"
+        f"force_source_closed={ledger['forceResidualLedgerClosed']},"
+        f"mass_source={ledger['dominantGlobalMassContribution']},"
+        f"momentum_source={ledger['dominantControlVolumeMomentumContribution']}"
     )
     print("passed: true")
 

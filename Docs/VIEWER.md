@@ -18,7 +18,9 @@ The script invokes the native viewer's deterministic offscreen Metal path,
 captures 40 frames over one articulated wing cycle, and uses local `ffmpeg`
 palette optimization to create
 `Docs/Media/birdflow-metal-native-viewer.gif`. The locked presentation case is
-an explicitly labeled finite `Re=100` development visualization. Capture exits
+an explicitly labeled finite `Re=100` development visualization. Its separate
+validation-progress panel records the accepted c16 source-aware canonical and
+does not relabel the displayed development flow as that case. Capture exits
 nonzero if pressure or Q diagnostics become non-finite or if the Q surface
 exceeds its triangle capacity. No solver volume is read back to produce the
 scene; only the completed render texture is encoded as an image.

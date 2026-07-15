@@ -2,7 +2,7 @@
 
 ![BirdFlowMetal native Metal viewer showing an articulated flapping bird with pressure, vorticity, GPU pathlines, and positive-Q structures](Docs/Media/birdflow-metal-native-viewer.gif)
 
-*Native Metal viewer capture of a finite `Re=100` development case. This is a visual demonstration, not a quantitative bird-flight result; the validation boundary is documented below.*
+*Native Metal viewer capture of a finite `Re=100` development case. The progress panel reports the separate c16 source-aware canonical; this animation is a visual demonstration, not a quantitative bird-flight result.*
 
 BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Apple silicon. It advances air on the GPU with a D3Q19 two-relaxation-time lattice Boltzmann method, represents an articulated bird as a moving solid boundary, obtains aerodynamic force and torque by momentum exchange, and can feed those loads into a six-degree-of-freedom rigid-body update.
 

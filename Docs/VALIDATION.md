@@ -724,16 +724,22 @@ The stationary-wall discriminator is:
   --json
 ```
 
-The active external-flow canonical uses maintained far-field boundaries and
-the established sphere benchmark's `0.04` sponge. The c8/c12/c16 cases all
-become non-finite at step `267`, with zero topology events and stationary wall
-velocity. Pre-failure loads are nonzero, so this is not the transparent
-periodic equilibrium that an earlier diagnostic attempt correctly rejected.
-The `1.44 s` Apple M4 run is archived in
+The boundary-component diagnostic exposed a parameter-wiring defect in this
+canonical: the GPU received `referenceSpeedLattice` as wall velocity even when
+the case report requested a stationary wall. The GPU parameter now comes from
+`caseConfiguration.wallVelocityLattice`, and the static audit locks that
+assignment. Every earlier stationary-sphere, relaxation, long-horizon,
+positivity, TRT, and limiter result was therefore invalid and has been
+replaced. The genuinely moving-wall cases are unaffected because their
+configured wall speed already equals the reference speed.
+
+With the corrected zero wall velocity, maintained far-field boundaries, and
+the established `0.04` sphere sponge, c8/c12/c16 all become non-finite at step
+`105` after `104` finite load samples. Topology remains fixed and pre-failure
+loads are nonzero. The `0.93 s` Apple M4 release result is archived in
 `ValidationArtifacts/measured-wing-high-re-stationary-wall-sphere-stability.json`.
-Curved halfway bounce-back at the matched low relaxation margins is therefore
-unstable without topology or a moving-wall population correction. Moving-wall
-forcing accelerates the failure, but it is not required.
+The low-margin stationary curved-boundary configuration therefore remains
+unstable, but only the corrected evidence is admissible.
 
 The relaxation-margin sweep is:
 
@@ -746,22 +752,15 @@ The relaxation-margin sweep is:
   --json
 ```
 
-Fourteen 500-step cases retain the same active external-flow setup and vary
-only `tauPlus - 0.5`. Failure is delayed from step `267` at margin `0.00025`
-to step `488` at `0.0150`. The first surviving point is `0.015625`, but the
-next point, `0.01625`, reproducibly becomes non-finite at step `496`; margins
-`0.016875`, `0.0175`, `0.02`, and `0.05` survive. The `8.38 s` Apple M4 result
-is archived in
+Fourteen corrected 500-step cases retain the same external-flow setup and vary
+only `tauPlus - 0.5`. Failure moves monotonically from step `105` at margin
+`0.00025` through step `454` at `0.01`. Margin `0.0125` is the first stable
+point, and every larger sampled margin through `0.05` also remains finite. The
+transition is bracketed by effective Float margins `0.0099999905` and
+`0.0124999881`. The `3.74 s` Apple M4 result is archived in
 `ValidationArtifacts/measured-wing-stationary-wall-relaxation-sweep.json`.
-The 500-step stability outcome is therefore non-monotonic, so viscosity-only
-tuning does not provide a robust critical threshold. These are stability-only
+This clears the former non-monotonic-band claim. These remain stability-only
 results: every point still fails the full force-budget acceptance contract.
-
-The highest-ROI next gate is a 1,000-step survival audit of the apparent
-`0.015625` and `0.016875` stability islands plus the `0.02` control. The relapse
-at step `496` makes finite-horizon censoring the dominant uncertainty. Three
-longer cases should determine in seconds whether the islands are genuine or
-merely delayed divergence before designing a positivity-preserving treatment.
 
 The long-horizon command is:
 
@@ -774,20 +773,121 @@ The long-horizon command is:
   --json
 ```
 
-All three apparent survivors become non-finite well before 1,000 steps:
-margin `0.015625` at step `519`, `0.016875` at `566`, and `0.02` at `588`.
-The result reproduces exactly on a second release run; the first Apple M4 run
-takes `2.92 s`. It is archived in
+All three corrected points (`0.015625`, `0.016875`, and `0.02`) remain finite
+for 1,000 steps. Relative mass drift stays between `9.45e-5` and `1.03e-4`,
+and no population exceeds `0.338`. The result reproduces exactly apart from
+runtime; the Apple M4 release run takes `2.15 s`. It is archived in
 `ValidationArtifacts/measured-wing-stationary-wall-long-horizon-survival.json`.
-The non-monotonic 500-step band was therefore horizon-censored delayed
-divergence, not usable stability.
+This removes the former horizon-censoring conclusion, but none of the points
+passes the separate force-budget acceptance gate.
 
-The highest-ROI next gate is a spatial positivity diagnostic on the published
-c16 stationary-sphere case. Record the first minimum population, lattice
-direction, cell, and distance from the sphere each step through failure. One
-short case can distinguish boundary-adjacent positivity loss from far-field or
-sponge instability, directly selecting where a limiter or operator change
-belongs before modifying production bird physics.
+The spatial population-positivity diagnostic is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --population-positivity \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-population-positivity.json
+```
+
+It reduces all `19 * 56 * 24 * 24` populations on the GPU and reads only
+`38,304` bytes of partial minima per step. In the corrected c16 case, `q=10`,
+direction `(-1,1,0)`, first becomes negative at step `27`, cell `(5,9,12)`,
+only `0.320714` cells outside the sphere. The cell is boundary-adjacent and has
+five solid pull directions, but the failing `q=10` pull source `(6,8,12)` is
+ordinary fluid. Its sponge factor is zero. The failing direction therefore
+uses an ordinary fluid pull followed by TRT collision, while the local state
+is still coupled to the curved boundary through other directions. The first
+NaN appears at step `105`, `q=0`, cell `(2,10,9)` inside the sponge, on the
+same step as the first non-finite load. There are no cover, uncover, or
+topology events. The Apple M4 release run takes `0.20 s`, and a second run
+reproduces both event locations exactly. The full phase history is archived in
+`ValidationArtifacts/measured-wing-stationary-wall-c16-population-positivity.json`.
+
+The one-cell TRT decomposition is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --trt-collision-decomposition \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-trt-collision-decomposition.json
+```
+
+The diagnostic captures every boundary-interpolation component in the target
+stencil and all 19 step-27 collision terms. It closes against the production
+population output within `7.45e-9`. The corrected stationary wall contributes
+exactly zero wall impulse in every captured boundary link. Every reconstructed
+incoming population is positive. For the failing fluid-pull `q=10`, the pulled
+population is `0.03086548`, the symmetric increment is `-0.03093607`, and the
+antisymmetric increment is only `+9.07e-6`. Removing the symmetric increment
+leaves `+0.03087455`; removing the antisymmetric increment still gives
+`-7.05868e-5`. The first negative is therefore a symmetric/even TRT relaxation
+overshoot at `omegaPlus=1.9989468`, while the antisymmetric mode is slightly
+stabilizing. The `0.085 s` Apple M4 release result repeats exactly and is
+archived in
+`ValidationArtifacts/measured-wing-stationary-wall-c16-trt-collision-decomposition.json`.
+
+The diagnostic-only symmetric-limiter A/B is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --symmetric-limiter-ab \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-symmetric-limiter-ab.json
+```
+
+The corrected control repeats first negativity at step `27` and first
+non-finite population/load at step `105`. The treatment stays finite and
+strictly positive through all 500 steps. It first activates at step `27`, on
+`1,417,658` cell-steps across 467 steps, never reaches scale zero, and touches
+6,819 cells in its busiest step. The minimum scale is `0.00142777`, and the
+minimum population is `8.72842e-9`. Positivity is therefore cleared.
+
+The uncorrected acceptance flags still fail: relative mass drift is
+`0.00182889`, maximum raw force-budget residual is `0.240913`, and relative
+RMS residual is `0.039366`. The new 500-sample GPU ledger reconstructs every
+step as curved-boundary replacement, open-far-field replacement, baseline TRT
+collision, symmetric limiting, and sponge relaxation. Global mass closes with
+maximum per-step residual `5.19e-6`, while the summed history differs from the
+final-minus-initial population mass by only `8.93e-6`.
+
+The attribution clears limiter arithmetic. The observed mass change is
+`-58.9928`; open far-field replacement contributes `-212.359`, sponge
+relaxation contributes `+152.514`, baseline collision contributes `+0.867`,
+and symmetric limiting contributes only `-0.0151`—`4.69e-7` of initial mass.
+Inside the existing control volume, sponge forcing is `0.125604 N` RMS versus
+`3.34e-7 N` RMS from the limiter. These sources explain the old force residual
+to `0.287%` RMS and `0.578%` peak. Independently, measured body load closes
+against curved-boundary fluid momentum to `3.03e-7` relative RMS. Open-domain
+mass flux and sponge forcing, not limiter arithmetic or boundary load
+accounting, caused the raw gate failures.
+
+Two Apple M4 release runs match exactly apart from runtime. The expanded
+three-case diagnostic is stored in
+`ValidationArtifacts/measured-wing-stationary-wall-c16-symmetric-limiter-ab.json`.
+
+The source-aware treatment repeats the identical fluid history with control
+bounds `[4,4,4]` through `[52,20,20]`, wholly outside the four-cell sponge.
+Every one of its 500 samples contains zero control-volume sponge cells, and no
+solid link crosses the control surface. The global source ledger replaces the
+invalid closed-domain zero-mass-drift rule and closes. With the sponge removed
+from the local momentum budget, the canonical raw budget also passes: maximum
+residual is `0.000464316 N` under the `0.0005 N` gate and relative RMS residual
+is `5.37373e-5` (`0.00537%`) under the `0.5%` gate. Boundary load retains
+`3.03e-7` relative RMS closure. The c16 source-aware acceptance therefore
+passes; the limiter is promoted to the locked c8/c12/c16 stationary-sphere
+refinement ladder, not yet to coupled bird replay.
+
+That ladder is now the highest-ROI gate. It tests whether the accepted c16
+correction is resolution-robust before the limiter can alter any expensive
+measured-bird simulation.
+
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

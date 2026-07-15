@@ -1,0 +1,580 @@
+{
+  "allPulledPopulationsPositive" : true,
+  "captureStep" : 27,
+  "classification" : "stationary-wall-c16-trt-symmetric-relaxation-overshoot",
+  "density" : 0.9983681440353394,
+  "deviceName" : "Apple M4",
+  "diagnosticCompleted" : true,
+  "diagnosticKernel" : "captureTRTCollisionDecomposition",
+  "directionTerms" : [
+    {
+      "actualPostCollision" : 0.40291672945022583,
+      "antisymmetricNonequilibrium" : 0,
+      "antisymmetricRelaxationIncrement" : -0,
+      "directionIndex" : 0,
+      "equilibriumPopulation" : 0.3311384320259094,
+      "latticeDirection" : [
+        0,
+        0,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.40291671454906464,
+      "postWithoutSymmetricIncrement" : 0.25928446650505066,
+      "predictedPostCollision" : 0.40291672945022583,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        5,
+        9,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.25928446650505066,
+      "symmetricNonequilibrium" : -0.07185396552085876,
+      "symmetricRelaxationIncrement" : 0.14363224804401398
+    },
+    {
+      "actualPostCollision" : 0.015500080771744251,
+      "antisymmetricNonequilibrium" : -0.004221336916089058,
+      "antisymmetricRelaxationIncrement" : 5.9271524150972255e-06,
+      "directionIndex" : 1,
+      "equilibriumPopulation" : 0.060858845710754395,
+      "latticeDirection" : [
+        1,
+        0,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.015494152903556824,
+      "postWithoutSymmetricIncrement" : 0.09783015794255334,
+      "predictedPostCollision" : 0.015500079840421677,
+      "predictionResidual" : 9.313225746154785e-10,
+      "pullSourceCell" : [
+        4,
+        9,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.09782423079013824,
+      "symmetricNonequilibrium" : 0.041186727583408356,
+      "symmetricRelaxationIncrement" : -0.08233007788658142
+    },
+    {
+      "actualPostCollision" : 0.013119530864059925,
+      "antisymmetricNonequilibrium" : 0.004221336916089058,
+      "antisymmetricRelaxationIncrement" : -5.9271524150972255e-06,
+      "directionIndex" : 2,
+      "equilibriumPopulation" : 0.05004747584462166,
+      "latticeDirection" : [
+        -1,
+        0,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.013125456869602203,
+      "postWithoutSymmetricIncrement" : 0.09544960760376853,
+      "predictedPostCollision" : 0.01311952993273735,
+      "predictionResidual" : 9.313225746154785e-10,
+      "pullSourceCell" : [
+        6,
+        9,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pulledPopulation" : 0.09545553475618362,
+      "symmetricNonequilibrium" : 0.041186727583408356,
+      "symmetricRelaxationIncrement" : -0.08233007788658142
+    },
+    {
+      "actualPostCollision" : 0.0730891153216362,
+      "antisymmetricNonequilibrium" : 0.0026110056787729263,
+      "antisymmetricRelaxationIncrement" : -3.6660965179180494e-06,
+      "directionIndex" : 3,
+      "equilibriumPopulation" : 0.04809810593724251,
+      "latticeDirection" : [
+        0,
+        1,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.07309277728199959,
+      "postWithoutSymmetricIncrement" : 0.028298183864762905,
+      "predictedPostCollision" : 0.0730891078710556,
+      "predictionResidual" : 7.450580596923828e-09,
+      "pullSourceCell" : [
+        5,
+        8,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.028301849961280823,
+      "symmetricNonequilibrium" : -0.02240726351737976,
+      "symmetricRelaxationIncrement" : 0.044790927320718765
+    },
+    {
+      "actualPostCollision" : 0.0831029936671257,
+      "antisymmetricNonequilibrium" : -0.0026110056787729263,
+      "antisymmetricRelaxationIncrement" : 3.6660965179180494e-06,
+      "directionIndex" : 4,
+      "equilibriumPopulation" : 0.06332666426897049,
+      "latticeDirection" : [
+        0,
+        -1,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.08309932425618172,
+      "postWithoutSymmetricIncrement" : 0.03831206303198087,
+      "predictedPostCollision" : 0.0831029862165451,
+      "predictionResidual" : 7.450580596923828e-09,
+      "pullSourceCell" : [
+        5,
+        10,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pulledPopulation" : 0.03830839693546295,
+      "symmetricNonequilibrium" : -0.02240726351737976,
+      "symmetricRelaxationIncrement" : 0.044790927320718765
+    },
+    {
+      "actualPostCollision" : 0.07090995460748672,
+      "antisymmetricNonequilibrium" : -0.0008305422961711884,
+      "antisymmetricRelaxationIncrement" : 1.166159222520946e-06,
+      "directionIndex" : 5,
+      "equilibriumPopulation" : 0.057319894433021545,
+      "latticeDirection" : [
+        0,
+        0,
+        1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.07090878486633301,
+      "postWithoutSymmetricIncrement" : 0.042055882656882204,
+      "predictedPostCollision" : 0.07090995460748672,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        5,
+        9,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.04205471649765968,
+      "symmetricNonequilibrium" : -0.014434635639190674,
+      "symmetricRelaxationIncrement" : 0.028854068368673325
+    },
+    {
+      "actualPostCollision" : 0.06838720291852951,
+      "antisymmetricNonequilibrium" : 0.0008305422961711884,
+      "antisymmetricRelaxationIncrement" : -1.166159222520946e-06,
+      "directionIndex" : 6,
+      "equilibriumPopulation" : 0.05313839390873909,
+      "latticeDirection" : [
+        0,
+        0,
+        -1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.06838836893439293,
+      "postWithoutSymmetricIncrement" : 0.039533134406497084,
+      "predictedPostCollision" : 0.06838720291852951,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        5,
+        9,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.039534300565719604,
+      "symmetricNonequilibrium" : -0.014434635639190674,
+      "symmetricRelaxationIncrement" : 0.028854068368673325
+    },
+    {
+      "actualPostCollision" : 0.017408031970262527,
+      "antisymmetricNonequilibrium" : 0.0005175750702619553,
+      "antisymmetricRelaxationIncrement" : -7.267238970598555e-07,
+      "directionIndex" : 7,
+      "equilibriumPopulation" : 0.02651255950331688,
+      "latticeDirection" : [
+        1,
+        1,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.017408758401870728,
+      "postWithoutSymmetricIncrement" : 0.03666092798687259,
+      "predictedPostCollision" : 0.017408031970262527,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        4,
+        8,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.03666165471076965,
+      "symmetricNonequilibrium" : 0.009631520137190819,
+      "symmetricRelaxationIncrement" : -0.019252896308898926
+    },
+    {
+      "actualPostCollision" : 0.01858292892575264,
+      "antisymmetricNonequilibrium" : -0.0005175750702619553,
+      "antisymmetricRelaxationIncrement" : 7.267238970598555e-07,
+      "directionIndex" : 8,
+      "equilibriumPopulation" : 0.028721153736114502,
+      "latticeDirection" : [
+        -1,
+        -1,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.01858220249414444,
+      "postWithoutSymmetricIncrement" : 0.037835825526940425,
+      "predictedPostCollision" : 0.01858292892575264,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        6,
+        10,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pulledPopulation" : 0.037835098803043365,
+      "symmetricNonequilibrium" : 0.009631520137190819,
+      "symmetricRelaxationIncrement" : -0.019252896308898926
+    },
+    {
+      "actualPostCollision" : 0.02585965022444725,
+      "antisymmetricNonequilibrium" : 0.006459672003984451,
+      "antisymmetricRelaxationIncrement" : -9.069985026144423e-06,
+      "directionIndex" : 9,
+      "equilibriumPopulation" : 0.034868933260440826,
+      "latticeDirection" : [
+        1,
+        -1,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.025868719443678856,
+      "postWithoutSymmetricIncrement" : 0.056795721107846475,
+      "predictedPostCollision" : 0.02585965022444725,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        4,
+        10,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.05680479109287262,
+      "symmetricNonequilibrium" : 0.015476185828447342,
+      "symmetricRelaxationIncrement" : -0.030936071649193764
+    },
+    {
+      "actualPostCollision" : -6.151708657853305e-05,
+      "antisymmetricNonequilibrium" : -0.006459672003984451,
+      "antisymmetricRelaxationIncrement" : 9.069985026144423e-06,
+      "directionIndex" : 10,
+      "equilibriumPopulation" : 0.021848971024155617,
+      "latticeDirection" : [
+        -1,
+        1,
+        0
+      ],
+      "postWithoutAntisymmetricIncrement" : -7.058680057525635e-05,
+      "postWithoutSymmetricIncrement" : 0.030874554833644652,
+      "predictedPostCollision" : -6.151681736810133e-05,
+      "predictionResidual" : -2.6921043172478676e-10,
+      "pullSourceCell" : [
+        6,
+        8,
+        12
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.030865484848618507,
+      "symmetricNonequilibrium" : 0.015476185828447342,
+      "symmetricRelaxationIncrement" : -0.030936071649193764
+    },
+    {
+      "actualPostCollision" : 0.021350426599383354,
+      "antisymmetricNonequilibrium" : 0.0006600571796298027,
+      "antisymmetricRelaxationIncrement" : -9.267821496905526e-07,
+      "directionIndex" : 11,
+      "equilibriumPopulation" : 0.03159638121724129,
+      "latticeDirection" : [
+        1,
+        0,
+        1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.02135135419666767,
+      "postWithoutSymmetricIncrement" : 0.04317209578607617,
+      "predictedPostCollision" : 0.021350426599383354,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        4,
+        9,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.04317302256822586,
+      "symmetricNonequilibrium" : 0.010916583240032196,
+      "symmetricRelaxationIncrement" : -0.02182166837155819
+    },
+    {
+      "actualPostCollision" : 0.012535732239484787,
+      "antisymmetricNonequilibrium" : -0.0006600571796298027,
+      "antisymmetricRelaxationIncrement" : 9.267821496905526e-07,
+      "directionIndex" : 12,
+      "equilibriumPopulation" : 0.02409994788467884,
+      "latticeDirection" : [
+        -1,
+        0,
+        -1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.01253480650484562,
+      "postWithoutSymmetricIncrement" : 0.0343574016585535,
+      "predictedPostCollision" : 0.012535733170807362,
+      "predictionResidual" : -9.313225746154785e-10,
+      "pullSourceCell" : [
+        6,
+        9,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.03435647487640381,
+      "symmetricNonequilibrium" : 0.010916583240032196,
+      "symmetricRelaxationIncrement" : -0.02182166837155819
+    },
+    {
+      "actualPostCollision" : 0.009471623227000237,
+      "antisymmetricNonequilibrium" : -0.003415960818529129,
+      "antisymmetricRelaxationIncrement" : 4.796328994416399e-06,
+      "directionIndex" : 13,
+      "equilibriumPopulation" : 0.02930186316370964,
+      "latticeDirection" : [
+        1,
+        0,
+        -1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.009466826915740967,
+      "postWithoutSymmetricIncrement" : 0.042327089252921724,
+      "predictedPostCollision" : 0.009471623227000237,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        4,
+        9,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.04232229292392731,
+      "symmetricNonequilibrium" : 0.016436388716101646,
+      "symmetricRelaxationIncrement" : -0.03285546600818634
+    },
+    {
+      "actualPostCollision" : 0.012979021295905113,
+      "antisymmetricNonequilibrium" : 0.003415960818529129,
+      "antisymmetricRelaxationIncrement" : -4.796328994416399e-06,
+      "directionIndex" : 14,
+      "equilibriumPopulation" : 0.0259869322180748,
+      "latticeDirection" : [
+        -1,
+        0,
+        1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.012983817607164383,
+      "postWithoutSymmetricIncrement" : 0.04583448728635631,
+      "predictedPostCollision" : 0.012979021295905113,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        6,
+        9,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pulledPopulation" : 0.04583928361535072,
+      "symmetricNonequilibrium" : 0.016436388716101646,
+      "symmetricRelaxationIncrement" : -0.03285546600818634
+    },
+    {
+      "actualPostCollision" : 0.03237377852201462,
+      "antisymmetricNonequilibrium" : 4.280637949705124e-05,
+      "antisymmetricRelaxationIncrement" : -6.010417052948469e-08,
+      "directionIndex" : 15,
+      "equilibriumPopulation" : 0.02497062273323536,
+      "latticeDirection" : [
+        0,
+        1,
+        1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.03237383719533682,
+      "postWithoutSymmetricIncrement" : 0.017645198352298053,
+      "predictedPostCollision" : 0.03237377852201462,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        5,
+        8,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.017645258456468582,
+      "symmetricNonequilibrium" : -0.007368169724941254,
+      "symmetricRelaxationIncrement" : 0.014728578738868237
+    },
+    {
+      "actualPostCollision" : 0.03781180828809738,
+      "antisymmetricNonequilibrium" : -4.280637949705124e-05,
+      "antisymmetricRelaxationIncrement" : 6.010417052948469e-08,
+      "directionIndex" : 16,
+      "equilibriumPopulation" : 0.030494146049022675,
+      "latticeDirection" : [
+        0,
+        -1,
+        -1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.03781174775213003,
+      "postWithoutSymmetricIncrement" : 0.023083229117432325,
+      "predictedPostCollision" : 0.03781180828809738,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        5,
+        10,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.023083169013261795,
+      "symmetricNonequilibrium" : -0.007368169724941254,
+      "symmetricRelaxationIncrement" : 0.014728578738868237
+    },
+    {
+      "actualPostCollision" : 0.03994659334421158,
+      "antisymmetricNonequilibrium" : 0.0032882792875170708,
+      "antisymmetricRelaxationIncrement" : -4.617052127287025e-06,
+      "directionIndex" : 17,
+      "equilibriumPopulation" : 0.023166891187429428,
+      "latticeDirection" : [
+        0,
+        1,
+        -1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.03995121084153652,
+      "postWithoutSymmetricIncrement" : 0.012940284309934214,
+      "predictedPostCollision" : 0.03994659706950188,
+      "predictionResidual" : -3.725290298461914e-09,
+      "pullSourceCell" : [
+        5,
+        8,
+        13
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : false,
+      "pulledPopulation" : 0.0129449013620615,
+      "symmetricNonequilibrium" : -0.013510269112884998,
+      "symmetricRelaxationIncrement" : 0.02700630947947502
+    },
+    {
+      "actualPostCollision" : 0.04308429732918739,
+      "antisymmetricNonequilibrium" : -0.0032882792875170708,
+      "antisymmetricRelaxationIncrement" : 4.617052127287025e-06,
+      "directionIndex" : 18,
+      "equilibriumPopulation" : 0.03287192061543465,
+      "latticeDirection" : [
+        0,
+        -1,
+        1
+      ],
+      "postWithoutAntisymmetricIncrement" : 0.0430796816945076,
+      "postWithoutSymmetricIncrement" : 0.016077989267159865,
+      "predictedPostCollision" : 0.04308429732918739,
+      "predictionResidual" : 0,
+      "pullSourceCell" : [
+        5,
+        10,
+        11
+      ],
+      "pullSourceInsideDomain" : true,
+      "pullSourceIsSolid" : true,
+      "pulledPopulation" : 0.016073372215032578,
+      "symmetricNonequilibrium" : -0.013510269112884998,
+      "symmetricRelaxationIncrement" : 0.02700630947947502
+    }
+  ],
+  "domainCells" : [
+    56,
+    24,
+    24
+  ],
+  "dominantDestabilizingRelaxationMode" : "symmetric",
+  "failingDirection" : {
+    "actualPostCollision" : -6.151708657853305e-05,
+    "antisymmetricNonequilibrium" : -0.006459672003984451,
+    "antisymmetricRelaxationIncrement" : 9.069985026144423e-06,
+    "directionIndex" : 10,
+    "equilibriumPopulation" : 0.021848971024155617,
+    "latticeDirection" : [
+      -1,
+      1,
+      0
+    ],
+    "postWithoutAntisymmetricIncrement" : -7.058680057525635e-05,
+    "postWithoutSymmetricIncrement" : 0.030874554833644652,
+    "predictedPostCollision" : -6.151681736810133e-05,
+    "predictionResidual" : -2.6921043172478676e-10,
+    "pullSourceCell" : [
+      6,
+      8,
+      12
+    ],
+    "pullSourceInsideDomain" : true,
+    "pullSourceIsSolid" : false,
+    "pulledPopulation" : 0.030865484848618507,
+    "symmetricNonequilibrium" : 0.015476185828447342,
+    "symmetricRelaxationIncrement" : -0.030936071649193764
+  },
+  "farFieldVelocityLattice" : 0.08,
+  "latticeKinematicViscosity" : 8.782491204328835e-05,
+  "matchedBirdChordCells" : 16,
+  "maximumAbsoluteBoundaryWallCorrection" : 0,
+  "maximumAbsolutePredictionResidual" : 7.450580596923828e-09,
+  "minimumActualPostCollisionDirection" : 10,
+  "minimumPulledPopulation" : 0.0129449013620615,
+  "newlyCoveredCellEvents" : 0,
+  "newlyUncoveredCellEvents" : 0,
+  "omegaMinus" : 0.0014040936948731542,
+  "omegaPlus" : 1.9989467859268188,
+  "outsideDomainPullSourceCount" : 0,
+  "productionKernel" : "stepFluidTRT",
+  "runtimeSeconds" : 0.08487999439239502,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "At step 27, every reconstructed population entering cell SIMD3<Int>(5, 9, 12) is positive. For q=10, the pulled population 0.030865484848618507, symmetric increment -0.030936071649193764, and antisymmetric increment 9.069985026144423e-06 produce -6.151708657853305e-05. Removing the symmetric increment gives 0.030874554833644652; removing the antisymmetric increment gives -7.058680057525635e-05. The dominant destabilizing mode is symmetric, classified as symmetric-relaxation-overshoot.",
+  "solidPullSourceCount" : 5,
+  "sphereCenterCells" : [
+    8,
+    12,
+    12
+  ],
+  "sphereRadiusCells" : 3.25,
+  "spongeFactor" : 0,
+  "spongeStrength" : 0.03999999910593033,
+  "spongeWidthCells" : 4,
+  "targetAdjacentToSphere" : true,
+  "targetCell" : [
+    5,
+    9,
+    12
+  ],
+  "targetIsSolid" : false,
+  "targetSignedDistanceToSphereSurfaceCells" : 0.3207142142714252,
+  "tauPlus" : 0.5002634525299072,
+  "tauPlusMarginAboveHalf" : 0.00026345252990722656,
+  "topologyTransitionSteps" : 0,
+  "velocityLattice" : [
+    0.03248713165521622,
+    -0.04576035216450691,
+    0.012565018609166145
+  ],
+  "wallVelocityLattice" : 0
+}

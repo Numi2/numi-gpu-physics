@@ -104,7 +104,7 @@ private struct Arguments {
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
       birdflow validate moving-wall [--resolution N] [--json]
-      birdflow validate translating-body [--high-re-stability] [--fixed-occupancy] [--decompose-wall-velocity | --stationary-wall [--relaxation-sweep | --long-horizon-survival]] [--json]
+      birdflow validate translating-body [--high-re-stability] [--fixed-occupancy] [--decompose-wall-velocity | --stationary-wall [--relaxation-sweep | --long-horizon-survival | --population-positivity | --trt-collision-decomposition | --symmetric-limiter-ab]] [--archive FILE] [--json]
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
       birdflow validate flapping-wing [--chord-cells N] [--json]
@@ -352,7 +352,11 @@ private struct TranslatingBodyArguments {
     var stationaryWall = false
     var relaxationSweep = false
     var longHorizonSurvival = false
+    var populationPositivity = false
+    var trtCollisionDecomposition = false
+    var symmetricLimiterAB = false
     var json = false
+    var archivePath: String?
 
     init(_ values: [String]) throws {
         var index = 3
@@ -370,6 +374,20 @@ private struct TranslatingBodyArguments {
                 relaxationSweep = true
             case "--long-horizon-survival":
                 longHorizonSurvival = true
+            case "--population-positivity":
+                populationPositivity = true
+            case "--trt-collision-decomposition":
+                trtCollisionDecomposition = true
+            case "--symmetric-limiter-ab":
+                symmetricLimiterAB = true
+            case "--archive":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output JSON file"
+                    )
+                }
+                archivePath = values[index]
             case "--json":
                 json = true
             case "--help", "-h":
@@ -413,9 +431,39 @@ private struct TranslatingBodyArguments {
                 "--long-horizon-survival requires --stationary-wall"
             )
         }
-        if relaxationSweep && longHorizonSurvival {
+        if populationPositivity && !stationaryWall {
             throw CLIError.invalidArgument(
-                "--relaxation-sweep cannot be combined with --long-horizon-survival"
+                "--population-positivity requires --stationary-wall"
+            )
+        }
+        if trtCollisionDecomposition && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--trt-collision-decomposition requires --stationary-wall"
+            )
+        }
+        if symmetricLimiterAB && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--symmetric-limiter-ab requires --stationary-wall"
+            )
+        }
+        let stationaryDiagnostics = [
+            relaxationSweep,
+            longHorizonSurvival,
+            populationPositivity,
+            trtCollisionDecomposition,
+            symmetricLimiterAB
+        ].filter { $0 }.count
+        if stationaryDiagnostics > 1 {
+            throw CLIError.invalidArgument(
+                "stationary-wall diagnostics cannot be combined"
+            )
+        }
+        if archivePath != nil
+            && !populationPositivity
+            && !trtCollisionDecomposition
+            && !symmetricLimiterAB {
+            throw CLIError.invalidArgument(
+                "--archive requires a population or TRT decomposition diagnostic"
             )
         }
     }
@@ -431,6 +479,13 @@ private struct TranslatingBodyArguments {
       --relaxation-sweep   Sweep wider tauPlus margins on the stationary sphere
       --long-horizon-survival
                            Extend apparent stable margins to 1000 steps
+      --population-positivity
+                           Locate the first negative/non-finite c16 population
+      --trt-collision-decomposition
+                           Decompose the locked step-27 c16 collision
+      --symmetric-limiter-ab
+                           Compare the locked c16 control and symmetric limiter
+      --archive FILE       Write the selected diagnostic to an exact JSON file
       --json               Emit the machine-readable validation report
       --help               Show this help
 
@@ -968,6 +1023,17 @@ private func printJSON<T: Encodable>(_ value: T) throws {
     print(String(decoding: try encoder.encode(value), as: UTF8.self))
 }
 
+private func writeJSON<T: Encodable>(_ value: T, to path: String) throws {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    let destination = URL(fileURLWithPath: path)
+    try FileManager.default.createDirectory(
+        at: destination.deletingLastPathComponent(),
+        withIntermediateDirectories: true
+    )
+    try encoder.encode(value).write(to: destination, options: .atomic)
+}
+
 private func runMeasuredBirdReplay(_ values: [String]) throws {
     let arguments = try MeasuredBirdReplayArguments(values)
     let input = URL(fileURLWithPath: arguments.inputPath!)
@@ -1259,6 +1325,124 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
         if arguments.stationaryWall {
+            if arguments.symmetricLimiterAB {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallC16SymmetricLimiterAB()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print(
+                        "control_failure: negative=\(String(describing: report.control.firstNegativePopulationStep)) "
+                            + "non_finite=\(String(describing: report.control.firstNonFinitePopulationStep))"
+                    )
+                    print(
+                        "treatment: completed=\(report.treatment.completedSteps) "
+                            + "activations=\(report.treatment.limiterActivationCellSteps) "
+                            + "minimum_scale=\(String(describing: report.treatment.minimumLimiterScale)) "
+                            + "stability_passed=\(report.treatment.stabilityPassed) "
+                            + "budget_passed=\(report.treatment.forceBudgetPassed)"
+                    )
+                    let ledger = report.treatmentConservationLedger
+                    print(
+                        "conservation_ledger: global_closed=\(ledger.globalLedgerClosed) "
+                            + "force_source_closed=\(ledger.forceResidualLedgerClosed) "
+                            + "mass_source=\(ledger.dominantGlobalMassContribution) "
+                            + "momentum_source=\(ledger.dominantControlVolumeMomentumContribution)"
+                    )
+                    print(
+                        "source_aware_acceptance: outside_sponge=\(report.sourceAwareControlVolumeOutsideSponge) "
+                            + "crossing_links=\(report.sourceAwareMaximumSolidControlSurfaceCrossingLinkCount) "
+                            + "stability=\(report.sourceAwareStabilityPassed) "
+                            + "force_budget=\(report.sourceAwareForceBudgetPassed) "
+                            + "accepted=\(report.sourceAwareAcceptancePassed)"
+                    )
+                    print("diagnostic_completed: \(report.diagnosticCompleted)")
+                }
+                guard report.diagnosticCompleted else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "stationary-wall c16 symmetric-limiter A/B did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.trtCollisionDecomposition {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallC16TRTCollisionDecomposition()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    let failing = report.failingDirection
+                    print("production_kernel: \(report.productionKernel)")
+                    print("diagnostic_kernel: \(report.diagnosticKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print(
+                        "failing_direction: q=\(failing.directionIndex) "
+                            + "pulled=\(failing.pulledPopulation) "
+                            + "symmetric_increment=\(failing.symmetricRelaxationIncrement) "
+                            + "antisymmetric_increment=\(failing.antisymmetricRelaxationIncrement) "
+                            + "post=\(failing.actualPostCollision)"
+                    )
+                    print(
+                        "dominant_mode: "
+                            + report.dominantDestabilizingRelaxationMode
+                    )
+                    print("diagnostic_completed: \(report.diagnosticCompleted)")
+                }
+                guard report.diagnosticCompleted else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "stationary-wall c16 TRT decomposition did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.populationPositivity {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallC16PopulationPositivity()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("diagnostic_kernel: \(report.diagnosticKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    if let first = report.firstNegative {
+                        print(
+                            "first_negative: step=\(first.step) "
+                                + "q=\(first.directionIndex) "
+                                + "cell=\(first.cell) "
+                                + "sphere_distance=\(first.signedDistanceToSphereSurfaceCells)"
+                        )
+                    }
+                    if let first = report.firstNonFinite {
+                        print(
+                            "first_non_finite: step=\(first.step) "
+                                + "q=\(first.directionIndex) "
+                                + "cell=\(first.cell) "
+                                + "sphere_distance=\(first.signedDistanceToSphereSurfaceCells)"
+                        )
+                    }
+                    print("diagnostic_completed: \(report.diagnosticCompleted)")
+                }
+                guard report.diagnosticCompleted else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "stationary-wall c16 population diagnostic did not complete"
+                    )
+                }
+                return
+            }
             if arguments.longHorizonSurvival {
                 let report = try MetalTranslatingBodyTopologyValidator
                     .runStationaryWallLongHorizonSurvival()
