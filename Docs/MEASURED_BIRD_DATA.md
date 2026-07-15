@@ -385,3 +385,12 @@ source closure, and force closure pass. It remains excluded from measured-bird
 replay because relative L2 correction is `1.0968%` against the unchanged `1%`
 gate. The candidate is rejected before a refinement ladder, preserving the
 measured-data validation boundary.
+
+The next controlled D=16 A/B keeps that rejected second-order candidate as the
+control and adds only the six recursively reconstructed third-order moments
+supported by D3Q19. The recursive candidate remains positive and source/force
+closed while reducing activation to `0.00645%`, relative L1 correction to
+`0.01932%`, and relative L2 correction to `0.35279%`. It clears every unchanged
+D=16 gate and is eligible for the locked D=8/12/16 geometric ladder. It remains
+excluded from measured-bird replay until that ladder establishes non-intrusive
+correction and force convergence on every grid.

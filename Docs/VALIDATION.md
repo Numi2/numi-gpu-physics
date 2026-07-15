@@ -993,6 +993,41 @@ is justified for this candidate. The exact report and figure are
 `ValidationArtifacts/measured-wing-stationary-wall-c16-bulk-collision-operator-ab.json`
 and `ValidationArtifacts/Figures/stationary-wall-bulk-collision-operator-ab.svg`.
 
+The follow-up recursive-regularization A/B is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --recursive-regularization-ab \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-recursive-regularization-ab.json
+```
+
+This test changes only moment retention. The rejected second-order regularized
+BGK candidate is the control. The candidate recursively reconstructs
+third-order nonequilibrium from velocity and the second-order stress following
+the recursive regularization framework of
+[Coreixas et al.](https://arxiv.org/abs/1704.04413). It retains the six mixed
+third-order modes supported by D3Q19 (`xxy`, `xxz`, `xyy`, `xzz`, `yyz`, and
+`yzz`); pure cubic Hermites vanish on this stencil and `xyz` is unsupported.
+The same equilibrium-to-post-collision convex line search is applied after the
+unbounded recursive reconstruction. Geometry, `Re=9367.4`, `U=0.08`, sponge,
+control volume, 1,000-step horizon, population floor, wall treatment, load
+estimator, ledgers, and promotion gates remain unchanged.
+
+The recursive candidate remains positive, closes the global source and radial
+ledgers, and passes the force budget (`0.16064%` relative RMS and `0.07991%`
+peak ratio). Relative to the second-order control, activation falls from
+`0.02803%` to `0.00645%`, relative L1 correction falls from `0.05304%` to
+`0.01932%`, and relative L2 correction falls from the rejected `1.09683%` to
+`0.35279%`. The candidate therefore clears every unchanged D=16 gate and is
+eligible for the locked D=8/12/16 geometric refinement ladder. This is not a
+grid-convergence result and does not authorize flapping or measured-bird replay.
+The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-c16-recursive-regularization-ab.json`
+and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-ab.svg`.
+
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

@@ -313,6 +313,17 @@ def main() -> None:
         raise SystemExit("regularized candidate must retain failed intrusion gate")
     if decision["stationaryWallC16BulkCollisionABCandidateEligibleForRefinement"]:
         raise SystemExit("regularized candidate must remain excluded from refinement")
+    for key in (
+        "stationaryWallC16RecursiveRegularizationABCompleted",
+        "stationaryWallC16RecursiveRegularizationABPassed",
+        "stationaryWallC16RecursiveRegularizationCandidatePositivityPassed",
+        "stationaryWallC16RecursiveRegularizationCandidateGlobalLedgerClosed",
+        "stationaryWallC16RecursiveRegularizationCandidateForceBudgetPassed",
+        "stationaryWallC16RecursiveRegularizationCandidateNonIntrusivePassed",
+        "stationaryWallC16RecursiveRegularizationCandidateEligibleForRefinement",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"recursive regularization A/B lost {key}")
     if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
         raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
@@ -1547,6 +1558,111 @@ def main() -> None:
         if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
             raise SystemExit(f"{figure_path} has changed figure hash")
 
+    recursive_ab_path = Path(
+        decision["stationaryWallC16RecursiveRegularizationABArtifact"]
+    )
+    recursive_ab_bytes = recursive_ab_path.read_bytes()
+    if hashlib.sha256(recursive_ab_bytes).hexdigest() != decision[
+        "stationaryWallC16RecursiveRegularizationABArtifactSHA256"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} has changed artifact hash")
+    recursive_ab = json.loads(recursive_ab_bytes)
+    if recursive_ab["schemaVersion"] != 1:
+        raise SystemExit(f"{recursive_ab_path} has changed schema")
+    if recursive_ab["classification"] != decision[
+        "stationaryWallC16RecursiveRegularizationABClassification"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} has changed classification")
+    if not recursive_ab["diagnosticCompleted"] or not recursive_ab["passed"]:
+        raise SystemExit(f"{recursive_ab_path} did not complete")
+    if not recursive_ab["candidateEligibleForRefinement"]:
+        raise SystemExit(f"{recursive_ab_path} candidate lost promotion eligibility")
+    if not recursive_ab["gridConvergenceStillRequired"]:
+        raise SystemExit(f"{recursive_ab_path} hides the required grid ladder")
+    if recursive_ab["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{recursive_ab_path} no longer uses production Metal")
+    if recursive_ab["ledgerCaptureKernel"] != "captureSymmetricLimiterLedger":
+        raise SystemExit(f"{recursive_ab_path} changed ledger capture")
+    if recursive_ab["radialReductionKernel"] != "reduceSymmetricLimiterRadialBins":
+        raise SystemExit(f"{recursive_ab_path} changed radial reduction")
+    if recursive_ab["diameterCells"] != 16 or recursive_ab["domainCells"] != [
+        160,
+        96,
+        96,
+    ]:
+        raise SystemExit(f"{recursive_ab_path} changed geometry")
+    if recursive_ab["requestedSteps"] != 1000:
+        raise SystemExit(f"{recursive_ab_path} changed horizon")
+    for key, expected in (
+        ("maximumAllowedRelativeRMSForceResidual", 5.0e-3),
+        ("maximumAllowedPeakForceResidualRatio", 1.0e-3),
+        ("maximumAllowedCorrectionActivationFraction", 5.0e-2),
+        ("maximumAllowedRelativeCorrection", 1.0e-2),
+        ("maximumAllowedRadialClosureResidual", 1.0e-4),
+    ):
+        close(recursive_ab[key], expected, 1.0e-15, f"recursive A/B {key}")
+    recursive_control = recursive_ab["control"]
+    recursive_candidate = recursive_ab["candidate"]
+    if recursive_control["operatorName"] != decision[
+        "stationaryWallC16RecursiveRegularizationControlOperator"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} changed control operator")
+    if recursive_candidate["operatorName"] != decision[
+        "stationaryWallC16RecursiveRegularizationCandidateOperator"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} changed candidate operator")
+    for case in (recursive_control, recursive_candidate):
+        if case["completedSteps"] != 1000:
+            raise SystemExit(f"{recursive_ab_path} case did not complete")
+        if not all(
+            case[key]
+            for key in (
+                "populationPositivityPassed",
+                "controlVolumeIsolationPassed",
+                "globalLedgerClosed",
+                "forceBudgetPassed",
+                "radialCaptureCompleted",
+            )
+        ):
+            raise SystemExit(f"{recursive_ab_path} lost a mandatory closure gate")
+    for case_key, field, decision_key in (
+        ("control", "controlVolumeCorrectionActivationFraction", "stationaryWallC16RecursiveRegularizationControlActivationFraction"),
+        ("candidate", "controlVolumeCorrectionActivationFraction", "stationaryWallC16RecursiveRegularizationCandidateActivationFraction"),
+        ("control", "relativeControlVolumeCorrectionL1", "stationaryWallC16RecursiveRegularizationControlRelativeL1Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL1", "stationaryWallC16RecursiveRegularizationCandidateRelativeL1Correction"),
+        ("control", "relativeControlVolumeCorrectionL2", "stationaryWallC16RecursiveRegularizationControlRelativeL2Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL2", "stationaryWallC16RecursiveRegularizationCandidateRelativeL2Correction"),
+    ):
+        close(
+            recursive_ab[case_key][field],
+            decision[decision_key],
+            1.0e-14,
+            f"recursive A/B {case_key} {field}",
+        )
+    if recursive_candidate["controlVolumeCorrectionActivationFraction"] > recursive_ab[
+        "maximumAllowedCorrectionActivationFraction"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate activation regressed")
+    if recursive_candidate["relativeControlVolumeCorrectionL1"] > recursive_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate L1 correction regressed")
+    if recursive_candidate["relativeControlVolumeCorrectionL2"] > recursive_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate L2 correction regressed")
+    if not recursive_candidate["correctionNonIntrusivePassed"] or not recursive_candidate[
+        "eligibleForRefinement"
+    ]:
+        raise SystemExit(f"{recursive_ab_path} candidate lost eligibility")
+    for path_key, hash_key in (
+        ("stationaryWallC16RecursiveRegularizationFigurePNG", "stationaryWallC16RecursiveRegularizationFigurePNGSHA256"),
+        ("stationaryWallC16RecursiveRegularizationFigureSVG", "stationaryWallC16RecursiveRegularizationFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -1674,6 +1790,20 @@ def main() -> None:
         "bulk_collision_ab_candidate_l1_l2_percent: "
         f"{100.0 * candidate['relativeControlVolumeCorrectionL1']:.6f},"
         f"{100.0 * candidate['relativeControlVolumeCorrectionL2']:.6f}"
+    )
+    print(
+        "recursive_regularization_ab_classification: "
+        f"{recursive_ab['classification']}"
+    )
+    print(
+        "recursive_regularization_control_candidate_activation_percent: "
+        f"{100.0 * recursive_control['controlVolumeCorrectionActivationFraction']:.6f},"
+        f"{100.0 * recursive_candidate['controlVolumeCorrectionActivationFraction']:.6f}"
+    )
+    print(
+        "recursive_regularization_candidate_l1_l2_percent: "
+        f"{100.0 * recursive_candidate['relativeControlVolumeCorrectionL1']:.6f},"
+        f"{100.0 * recursive_candidate['relativeControlVolumeCorrectionL2']:.6f}"
     )
     print("passed: true")
 

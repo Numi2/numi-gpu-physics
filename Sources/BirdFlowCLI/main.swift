@@ -358,6 +358,7 @@ private struct TranslatingBodyArguments {
     var geometricLimiterLadder = false
     var radialLimiterLocalization = false
     var bulkCollisionOperatorAB = false
+    var recursiveRegularizationAB = false
     var json = false
     var archivePath: String?
 
@@ -389,6 +390,8 @@ private struct TranslatingBodyArguments {
                 radialLimiterLocalization = true
             case "--bulk-collision-operator-ab":
                 bulkCollisionOperatorAB = true
+            case "--recursive-regularization-ab":
+                recursiveRegularizationAB = true
             case "--archive":
                 index += 1
                 guard index < values.count else {
@@ -470,6 +473,11 @@ private struct TranslatingBodyArguments {
                 "--bulk-collision-operator-ab requires --stationary-wall"
             )
         }
+        if recursiveRegularizationAB && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-ab requires --stationary-wall"
+            )
+        }
         let stationaryDiagnostics = [
             relaxationSweep,
             longHorizonSurvival,
@@ -478,7 +486,8 @@ private struct TranslatingBodyArguments {
             symmetricLimiterAB,
             geometricLimiterLadder,
             radialLimiterLocalization,
-            bulkCollisionOperatorAB
+            bulkCollisionOperatorAB,
+            recursiveRegularizationAB
         ].filter { $0 }.count
         if stationaryDiagnostics > 1 {
             throw CLIError.invalidArgument(
@@ -491,7 +500,8 @@ private struct TranslatingBodyArguments {
             && !symmetricLimiterAB
             && !geometricLimiterLadder
             && !radialLimiterLocalization
-            && !bulkCollisionOperatorAB {
+            && !bulkCollisionOperatorAB
+            && !recursiveRegularizationAB {
             throw CLIError.invalidArgument(
                 "--archive requires an archive-capable stationary-wall diagnostic"
             )
@@ -521,6 +531,8 @@ private struct TranslatingBodyArguments {
                            Localize D=16 limiter intervention by sphere distance
       --bulk-collision-operator-ab
                            Compare limited TRT with regularized positive BGK at D=16
+      --recursive-regularization-ab
+                           Compare second- and recursive-third-order regularized BGK at D=16
       --archive FILE       Write the selected diagnostic to an exact JSON file
       --json               Emit the machine-readable validation report
       --help               Show this help
@@ -1361,9 +1373,14 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
         if arguments.stationaryWall {
-            if arguments.bulkCollisionOperatorAB {
-                let report = try MetalTranslatingBodyTopologyValidator
-                    .runStationaryWallBulkCollisionOperatorAB()
+            if arguments.bulkCollisionOperatorAB
+                || arguments.recursiveRegularizationAB
+            {
+                let report = try arguments.recursiveRegularizationAB
+                    ? MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallRecursiveRegularizationAB()
+                    : MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallBulkCollisionOperatorAB()
                 if let archivePath = arguments.archivePath {
                     try writeJSON(report, to: archivePath)
                 }
@@ -1406,7 +1423,7 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
                 }
                 guard report.passed else {
                     throw MetalTranslatingBodyTopologyValidationError.failed(
-                        "bulk collision-operator A/B did not complete"
+                        "bulk collision-operator diagnostic did not complete"
                     )
                 }
                 return

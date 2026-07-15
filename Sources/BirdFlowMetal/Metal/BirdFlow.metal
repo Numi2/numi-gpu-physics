@@ -2148,6 +2148,8 @@ kernel void stepFluidTRT(
             );
             float capturedDensity = 0.0f;
             float3 capturedMomentum = float3(0);
+            bool positivityPreservingRecursiveRegularizedCollision =
+                uniforms.caseParameters.w < -3.5f;
             bool positivityPreservingRegularizedCollision =
                 uniforms.caseParameters.w < -2.5f;
             bool symmetricPositivityLimiter =
@@ -2179,9 +2181,34 @@ kernel void stepFluidTRT(
                     );
                 }
 
+                // Recursive regularization closes the supported third-order
+                // Hermite moments from velocity and the projected stress.
+                // D3Q19 has only these six mixed modes: pure cubic Hermites
+                // vanish and xyz is unsupported because there are no body
+                // diagonals in the stencil.
+                float aXxy = 2.0f * macroscopicVelocity.x
+                    * offDiagonalStress.x
+                    + macroscopicVelocity.y * diagonalStress.x;
+                float aXxz = 2.0f * macroscopicVelocity.x
+                    * offDiagonalStress.y
+                    + macroscopicVelocity.z * diagonalStress.x;
+                float aXyy = macroscopicVelocity.x * diagonalStress.y
+                    + 2.0f * macroscopicVelocity.y
+                        * offDiagonalStress.x;
+                float aXzz = macroscopicVelocity.x * diagonalStress.z
+                    + 2.0f * macroscopicVelocity.z
+                        * offDiagonalStress.y;
+                float aYyz = 2.0f * macroscopicVelocity.y
+                    * offDiagonalStress.z
+                    + macroscopicVelocity.z * diagonalStress.y;
+                float aYzz = macroscopicVelocity.y * diagonalStress.z
+                    + 2.0f * macroscopicVelocity.z
+                        * offDiagonalStress.z;
+
                 float unboundedPost[19];
                 float positivityScale = 1.0f;
                 constexpr float inverseTwoCS4 = 4.5f;
+                constexpr float inverseTwoCS6 = 13.5f;
                 for (uint q = 0; q < Q; ++q) {
                     float3 direction = float3(C[q]);
                     float contraction = dot(
@@ -2199,8 +2226,34 @@ kernel void stepFluidTRT(
                         ),
                         offDiagonalStress
                     );
+                    float recursiveThirdOrder = 0.0f;
+                    if (positivityPreservingRecursiveRegularizedCollision) {
+                        recursiveThirdOrder =
+                            direction.y
+                                * (direction.x * direction.x - CS2)
+                                * aXxy
+                            + direction.z
+                                * (direction.x * direction.x - CS2)
+                                * aXxz
+                            + direction.x
+                                * (direction.y * direction.y - CS2)
+                                * aXyy
+                            + direction.x
+                                * (direction.z * direction.z - CS2)
+                                * aXzz
+                            + direction.z
+                                * (direction.y * direction.y - CS2)
+                                * aYyz
+                            + direction.y
+                                * (direction.z * direction.z - CS2)
+                                * aYzz;
+                    }
                     float regularizedNonequilibrium = W[q]
                         * inverseTwoCS4 * contraction;
+                    if (positivityPreservingRecursiveRegularizedCollision) {
+                        regularizedNonequilibrium += W[q]
+                            * inverseTwoCS6 * recursiveThirdOrder;
+                    }
                     float candidate = feq[q]
                         + (1.0f - omegaPlus)
                             * regularizedNonequilibrium;
@@ -2899,6 +2952,8 @@ kernel void captureSymmetricLimiterLedger(
         uniforms.latticeAndSponge.w,
         uniforms.latticeAndSponge.z
     );
+    bool positivityPreservingRecursiveRegularizedCollision =
+        uniforms.caseParameters.w < -3.5f;
     bool positivityPreservingRegularizedCollision =
         uniforms.caseParameters.w < -2.5f;
     float unboundedPost[19];
@@ -2921,7 +2976,20 @@ kernel void captureSymmetricLimiterLedger(
                 direction.y * direction.z
             );
         }
+        float aXxy = 2.0f * velocity.x * offDiagonalStress.x
+            + velocity.y * diagonalStress.x;
+        float aXxz = 2.0f * velocity.x * offDiagonalStress.y
+            + velocity.z * diagonalStress.x;
+        float aXyy = velocity.x * diagonalStress.y
+            + 2.0f * velocity.y * offDiagonalStress.x;
+        float aXzz = velocity.x * diagonalStress.z
+            + 2.0f * velocity.z * offDiagonalStress.y;
+        float aYyz = 2.0f * velocity.y * offDiagonalStress.z
+            + velocity.z * diagonalStress.y;
+        float aYzz = velocity.y * diagonalStress.z
+            + 2.0f * velocity.z * offDiagonalStress.z;
         constexpr float inverseTwoCS4 = 4.5f;
+        constexpr float inverseTwoCS6 = 13.5f;
         for (uint q = 0u; q < Q; ++q) {
             float3 direction = float3(C[q]);
             float contraction = dot(
@@ -2939,8 +3007,28 @@ kernel void captureSymmetricLimiterLedger(
                 ),
                 offDiagonalStress
             );
+            float recursiveThirdOrder = 0.0f;
+            if (positivityPreservingRecursiveRegularizedCollision) {
+                recursiveThirdOrder =
+                    direction.y * (direction.x * direction.x - CS2)
+                        * aXxy
+                    + direction.z * (direction.x * direction.x - CS2)
+                        * aXxz
+                    + direction.x * (direction.y * direction.y - CS2)
+                        * aXyy
+                    + direction.x * (direction.z * direction.z - CS2)
+                        * aXzz
+                    + direction.z * (direction.y * direction.y - CS2)
+                        * aYyz
+                    + direction.y * (direction.z * direction.z - CS2)
+                        * aYzz;
+            }
             float regularizedNonequilibrium = W[q]
                 * inverseTwoCS4 * contraction;
+            if (positivityPreservingRecursiveRegularizedCollision) {
+                regularizedNonequilibrium += W[q]
+                    * inverseTwoCS6 * recursiveThirdOrder;
+            }
             float candidate = feq[q]
                 + (1.0f - omegaPlus) * regularizedNonequilibrium;
             unboundedPost[q] = candidate;

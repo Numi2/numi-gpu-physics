@@ -39,8 +39,18 @@ def main() -> None:
 
     control = report["control"]
     candidate = report["candidate"]
+    recursive_ab = (
+        candidate["operatorName"] == "positivity-preserving-recursive-regularized-bgk"
+    )
     cases = [control, candidate]
-    labels = ["Limited TRT\ncontrol", "Regularized positive\nBGK candidate"]
+    labels = (
+        [
+            "Second-order\nregularized control",
+            "Recursive third-order\nregularized candidate",
+        ]
+        if recursive_ab
+        else ["Limited TRT\ncontrol", "Regularized positive\nBGK candidate"]
+    )
     colors = ["#65758b", "#1f9d8a"]
 
     plt.rcParams.update(
@@ -56,7 +66,11 @@ def main() -> None:
     )
     figure, axes = plt.subplots(2, 2, figsize=(10.2, 7.1), constrained_layout=True)
     figure.suptitle(
-        "Regularization removes >99% of L1 correction but narrowly misses the locked L2 gate",
+        (
+            "Recursive regularization clears every locked D=16 promotion gate"
+            if recursive_ab
+            else "Regularization removes >99% of L1 correction but narrowly misses the locked L2 gate"
+        ),
         fontsize=13,
         fontweight="semibold",
     )
@@ -76,7 +90,11 @@ def main() -> None:
     axis.bar_label(bars, labels=[f"{value:.3f}%" for value in activation], padding=3)
     axis.set_title("a  Control-volume correction activation")
     axis.set_ylabel("Activated cell-steps (%)")
-    axis.set_ylim(0, max(activation) * 1.22)
+    if recursive_ab:
+        axis.set_yscale("log")
+        axis.set_ylim(min(activation) * 0.45, 10)
+    else:
+        axis.set_ylim(0, max(activation) * 1.22)
     axis.grid(axis="y", alpha=0.22)
     axis.legend(frameon=False)
 
@@ -97,7 +115,11 @@ def main() -> None:
     axis.set_yscale("log")
     axis.set_xticks(x, labels)
     axis.set_ylabel("Correction / collision increment (%)")
-    axis.set_title("b  Candidate misses only the L2 gate")
+    axis.set_title(
+        "b  Recursive retention clears the L2 gate"
+        if recursive_ab
+        else "b  Candidate misses only the L2 gate"
+    )
     axis.grid(axis="y", which="both", alpha=0.22)
     axis.legend(frameon=False, ncols=2, loc="upper right")
     axis.bar_label(bars_l1, labels=[f"{value:.3f}%" for value in l1], padding=2)
@@ -124,7 +146,11 @@ def main() -> None:
     axis.text(
         1,
         44,
-        "absolute L1 correction\nis 0.86% of control",
+        (
+            f"L1 correction is\n{100 * report['candidateToControlCorrectionL1Ratio']:.1f}% of PR2"
+            if recursive_ab
+            else "absolute L1 correction\nis 0.86% of control"
+        ),
         ha="center",
         va="center",
         fontsize=8,
@@ -166,10 +192,14 @@ def main() -> None:
     axis.text(
         1.5,
         1.32,
-        "candidate L2: 1.0968% > 1.0000%",
+        (
+            f"candidate L2: {100 * candidate['relativeControlVolumeCorrectionL2']:.4f}% < 1.0000%"
+            if recursive_ab
+            else "candidate L2: 1.0968% > 1.0000%"
+        ),
         ha="center",
         va="center",
-        color="#8f2525",
+        color="white" if recursive_ab else "#8f2525",
         fontsize=8,
         fontweight="semibold",
     )

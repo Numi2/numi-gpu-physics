@@ -844,6 +844,7 @@ public enum MetalTranslatingBodyTopologyValidator {
     private enum BulkCollisionOperator: CaseIterable {
         case symmetricLimitedTRT
         case positivityPreservingRegularizedBGK
+        case positivityPreservingRecursiveRegularizedBGK
 
         var name: String {
             switch self {
@@ -851,6 +852,8 @@ public enum MetalTranslatingBodyTopologyValidator {
                 return "symmetric-limited-trt"
             case .positivityPreservingRegularizedBGK:
                 return "positivity-preserving-regularized-bgk"
+            case .positivityPreservingRecursiveRegularizedBGK:
+                return "positivity-preserving-recursive-regularized-bgk"
             }
         }
 
@@ -860,6 +863,8 @@ public enum MetalTranslatingBodyTopologyValidator {
                 return "two-relaxation-time collision with a common scale on the symmetric increment"
             case .positivityPreservingRegularizedBGK:
                 return "second-order Hermite projection of pre-collision nonequilibrium followed by omega-plus BGK relaxation"
+            case .positivityPreservingRecursiveRegularizedBGK:
+                return "second-order Hermite projection plus the six D3Q19-supported recursively reconstructed third-order nonequilibrium moments followed by omega-plus BGK relaxation"
             }
         }
 
@@ -869,6 +874,8 @@ public enum MetalTranslatingBodyTopologyValidator {
                 return "cell-local common scale on the complete symmetric TRT increment"
             case .positivityPreservingRegularizedBGK:
                 return "cell-local convex line search from equilibrium to the unbounded regularized post-collision state"
+            case .positivityPreservingRecursiveRegularizedBGK:
+                return "cell-local convex line search from equilibrium to the unbounded recursive-regularized post-collision state"
             }
         }
     }
@@ -2290,6 +2297,51 @@ public enum MetalTranslatingBodyTopologyValidator {
     public static func runStationaryWallBulkCollisionOperatorAB()
         throws -> MetalStationaryWallBulkCollisionABReport
     {
+        try runStationaryWallBulkCollisionOperatorAB(
+            controlOperator: .symmetricLimitedTRT,
+            candidateOperator: .positivityPreservingRegularizedBGK,
+            invalidClassification:
+                "stationary-wall-c16-bulk-collision-ab-invalid",
+            eligibleClassification:
+                "stationary-wall-c16-regularized-candidate-eligible-for-refinement",
+            rejectedClassification:
+                "stationary-wall-c16-regularized-candidate-rejected",
+            eligibleVerdict:
+                "The positivity-preserving regularized BGK candidate clears the unchanged D=16 positivity, source-ledger, force-budget, and correction-intrusion gates. It is eligible for the locked D=8/12/16 refinement ladder; grid convergence is not established by this A/B.",
+            rejectedVerdict:
+                "The positivity-preserving regularized BGK candidate fails at least one unchanged D=16 positivity, source-ledger, force-budget, or correction-intrusion gate. Reject it before spending a D=8/12/16 refinement ladder."
+        )
+    }
+
+    public static func runStationaryWallRecursiveRegularizationAB()
+        throws -> MetalStationaryWallBulkCollisionABReport
+    {
+        try runStationaryWallBulkCollisionOperatorAB(
+            controlOperator: .positivityPreservingRegularizedBGK,
+            candidateOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            invalidClassification:
+                "stationary-wall-c16-recursive-regularization-ab-invalid",
+            eligibleClassification:
+                "stationary-wall-c16-recursive-regularized-candidate-eligible-for-refinement",
+            rejectedClassification:
+                "stationary-wall-c16-recursive-regularized-candidate-rejected",
+            eligibleVerdict:
+                "The positivity-preserving recursive-regularized BGK candidate clears the unchanged D=16 positivity, source-ledger, force-budget, and correction-intrusion gates against the second-order regularized control. It is eligible for the locked D=8/12/16 refinement ladder; grid convergence is not established by this A/B.",
+            rejectedVerdict:
+                "The positivity-preserving recursive-regularized BGK candidate fails at least one unchanged D=16 positivity, source-ledger, force-budget, or correction-intrusion gate against the second-order regularized control. Reject it before spending a D=8/12/16 refinement ladder."
+        )
+    }
+
+    private static func runStationaryWallBulkCollisionOperatorAB(
+        controlOperator: BulkCollisionOperator,
+        candidateOperator: BulkCollisionOperator,
+        invalidClassification: String,
+        eligibleClassification: String,
+        rejectedClassification: String,
+        eligibleVerdict: String,
+        rejectedVerdict: String
+    ) throws -> MetalStationaryWallBulkCollisionABReport {
 #if canImport(Metal)
         let startTime = Date()
         let backend = try MetalBackend(fastMath: false)
@@ -2331,7 +2383,7 @@ public enum MetalTranslatingBodyTopologyValidator {
             spongeWidthCells: spongeWidth
         )
         let control = try runStationaryWallBulkCollisionCase(
-            collisionOperator: .symmetricLimitedTRT,
+            collisionOperator: controlOperator,
             backend: backend,
             configuration: configuration,
             diameter: diameter,
@@ -2349,7 +2401,7 @@ public enum MetalTranslatingBodyTopologyValidator {
                 maximumRadialClosureResidual
         )
         let candidate = try runStationaryWallBulkCollisionCase(
-            collisionOperator: .positivityPreservingRegularizedBGK,
+            collisionOperator: candidateOperator,
             backend: backend,
             configuration: configuration,
             diameter: diameter,
@@ -2385,20 +2437,17 @@ public enum MetalTranslatingBodyTopologyValidator {
             && candidate.eligibleForRefinement
         let classification: String
         if !diagnosticCompleted {
-            classification =
-                "stationary-wall-c16-bulk-collision-ab-invalid"
+            classification = invalidClassification
         }
         else if candidateEligible {
-            classification =
-                "stationary-wall-c16-regularized-candidate-eligible-for-refinement"
+            classification = eligibleClassification
         }
         else {
-            classification =
-                "stationary-wall-c16-regularized-candidate-rejected"
+            classification = rejectedClassification
         }
         let verdict = candidateEligible
-            ? "The positivity-preserving regularized BGK candidate clears the unchanged D=16 positivity, source-ledger, force-budget, and correction-intrusion gates. It is eligible for the locked D=8/12/16 refinement ladder; grid convergence is not established by this A/B."
-            : "The positivity-preserving regularized BGK candidate fails at least one unchanged D=16 positivity, source-ledger, force-budget, or correction-intrusion gate. Reject it before spending a D=8/12/16 refinement ladder."
+            ? eligibleVerdict
+            : rejectedVerdict
         return MetalStationaryWallBulkCollisionABReport(
             schemaVersion: 1,
             deviceName: backend.device.name,
@@ -2479,6 +2528,9 @@ public enum MetalTranslatingBodyTopologyValidator {
             positivityPreservingRegularizedCollisionEnabled:
                 collisionOperator
                     == .positivityPreservingRegularizedBGK,
+            positivityPreservingRecursiveRegularizedCollisionEnabled:
+                collisionOperator
+                    == .positivityPreservingRecursiveRegularizedBGK,
             conservationLedgerEnabled: true
         )
         let initial = try simulation.copyPopulations()
@@ -4520,6 +4572,7 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let linkForceMode: UInt32
     private let symmetricPositivityLimiterEnabled: Bool
     private let positivityPreservingRegularizedCollisionEnabled: Bool
+    private let positivityPreservingRecursiveRegularizedCollisionEnabled: Bool
     private let conservationLedgerEnabled: Bool
     private let characteristicLengthCells: Int
     private let parameters: MTLBuffer
@@ -4570,6 +4623,7 @@ private final class MetalTranslatingBodyTopologySimulation {
         caseConfiguration: MetalTranslatingBodyCaseConfiguration,
         symmetricPositivityLimiterEnabled: Bool = false,
         positivityPreservingRegularizedCollisionEnabled: Bool = false,
+        positivityPreservingRecursiveRegularizedCollisionEnabled: Bool = false,
         conservationLedgerEnabled: Bool = false
     ) throws {
         self.backend = backend
@@ -4578,10 +4632,15 @@ private final class MetalTranslatingBodyTopologySimulation {
             symmetricPositivityLimiterEnabled
         self.positivityPreservingRegularizedCollisionEnabled =
             positivityPreservingRegularizedCollisionEnabled
+        self.positivityPreservingRecursiveRegularizedCollisionEnabled =
+            positivityPreservingRecursiveRegularizedCollisionEnabled
         self.conservationLedgerEnabled = conservationLedgerEnabled
-        if symmetricPositivityLimiterEnabled
-            && positivityPreservingRegularizedCollisionEnabled
-        {
+        let bulkCollisionTreatmentCount = [
+            symmetricPositivityLimiterEnabled,
+            positivityPreservingRegularizedCollisionEnabled,
+            positivityPreservingRecursiveRegularizedCollisionEnabled,
+        ].filter { $0 }.count
+        if bulkCollisionTreatmentCount > 1 {
             throw MetalTranslatingBodyTopologyValidationError.failed(
                 "bulk collision treatments are mutually exclusive"
             )
@@ -5272,9 +5331,11 @@ private final class MetalTranslatingBodyTopologySimulation {
                 0,
                 Float(linkForceMode),
                 1,
-                positivityPreservingRegularizedCollisionEnabled
-                    ? -3
-                    : (symmetricPositivityLimiterEnabled ? -2 : -1)
+                positivityPreservingRecursiveRegularizedCollisionEnabled
+                    ? -4
+                    : (positivityPreservingRegularizedCollisionEnabled
+                        ? -3
+                        : (symmetricPositivityLimiterEnabled ? -2 : -1))
             )
         )
     }
