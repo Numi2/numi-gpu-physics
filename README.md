@@ -1,253 +1,202 @@
 # BirdFlowMetal
 
+<p align="center">
+  <strong>A GPU-native, three-dimensional fluid–body laboratory for articulated bird flight on Apple silicon.</strong>
+</p>
+
+<p align="center">
+  <img alt="Swift 6" src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white">
+  <img alt="Apple Metal" src="https://img.shields.io/badge/Apple%20Metal-GPU-111111?logo=apple&logoColor=white">
+  <img alt="D3Q19 LBM" src="https://img.shields.io/badge/Fluid-D3Q19%20LBM-0066CC">
+  <img alt="Local validation" src="https://img.shields.io/badge/Validation-local%20only-2E8B57">
+  <img alt="BSD 3-Clause" src="https://img.shields.io/badge/License-BSD--3--Clause-blue">
+</p>
+
 ![BirdFlowMetal native Metal viewer showing an articulated flapping bird with pressure, vorticity, GPU pathlines, and positive-Q structures](Docs/Media/birdflow-metal-native-viewer.gif)
 
-*Native Metal viewer capture of a finite `Re=100` development case. The progress panel reports the separate c16 source-aware canonical; this animation is a visual demonstration, not a quantitative bird-flight result.*
+<p align="center"><em>Deterministic offscreen capture from the native Metal viewer. This is a finite Re=100 development visualization, not a quantitative bird-flight result.</em></p>
 
-BirdFlowMetal is a bird-specific, three-dimensional fluid–body solver for Apple silicon. It advances air on the GPU with a D3Q19 two-relaxation-time lattice Boltzmann method, represents an articulated bird as a moving solid boundary, obtains aerodynamic force and torque by momentum exchange, and can feed those loads into a six-degree-of-freedom rigid-body update.
+BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulated moving boundaries, exchanges momentum with those boundaries, reduces aerodynamic force and torque, and can integrate a six-degree-of-freedom rigid body—all in one Swift/Metal package. It also includes a native scientific viewer, exact-input measured-motion replay, independent reference algebra, archived validation reports, and deliberately strict scientific acceptance gates.
 
-The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: host-side physical types and reference algebra are separated from Metal resource orchestration, pipeline states are compiled once per simulation backend instance, and a fixed per-step GPU graph is encoded repeatedly. The production fluid and boundary operators themselves are Metal-specific MSL.
+> [!IMPORTANT]
+> **Scientific status:** the coupled vertical slice is complete and the fixed-thickness prescribed flapping-wing canonical is quantitatively accepted. Complete measured-bird and free-flight results are **not** yet publication-ready. The repository keeps those boundaries explicit instead of converting engineering success into an aerodynamic claim.
 
-This repository is a complete vertical slice, not a validated bird-flight research result. The validation commands compile and execute the Swift/Metal path on a supported Mac, run the independent reference checks, and execute periodic shear-wave, translating/oscillating planar-wall, fixed-sphere, fixed finite-wing, and prescribed flapping-wing refinement on the production fluid and momentum-exchange kernels. The promoted fixed-thickness flapping benchmark now passes: finest mean coefficients are within `4%` of the published values and the 20-to-24-cell changes are `1.904%` lift and `3.054%` drag under the unchanged `5%` gate. The separate published-condition high-Re stationary-sphere ladder remains blocked for its limited-TRT operator: all grids stay positive and source/force-budget closed, but limiter activation reaches `8.07%` and finest-two drag changes `14.81%` against a `5%` gate. Radial localization shows that correction spreading into the bulk. A second-order regularized candidate preserves positivity and cuts activation to `0.028%`, but is rejected because its `1.0968%` L2 correction exceeds the unchanged `1%` gate. A controlled D=16 recursive-regularized candidate retains only the six third-order modes supported by D3Q19 and clears every local gate. Its locked D=8/12/16 ladder also keeps every grid positive, source/force closed, and non-intrusive while correction decreases with refinement, but promotion is correctly blocked: drag coefficients are `1.32042`, `0.93800`, and `1.04777`, the finest-two change is `10.476%` against `5%`, and no Richardson fit exists. A ten-convective-time extension clears D=12 duration sensitivity but isolates unresolved wake averaging at D=8, so the next allocation is a D=8-only shedding-period and block-uncertainty diagnostic rather than D=20. A versioned measured-data preflight and prescribed replay path is implemented, but no measured specimen is bundled and the first geometry tier is an explicitly labeled analytic proxy. Forced channel flow, actual measured data, bird-load grid convergence, higher-fidelity measured surface geometry where required, and free-flight refinement remain mandatory before complete-bird results are treated as quantitative.
+[Quick start](#quick-start) · [Validation scoreboard](#validation-scoreboard) · [Native viewer](#native-metal-viewer) · [Architecture](#architecture) · [Measured data](#measured-geometry-and-kinematics) · [Scientific limits](#scientific-boundary) · [Full validation contract](Docs/VALIDATION.md)
 
-## Implemented solver
+## Why this project is interesting
 
-The fluid state consists of 19 distribution populations per lattice cell. Density, velocity, and isothermal pressure are moments of those populations. The collision operator is TRT; populations are stored direction-major so adjacent GPU threads access adjacent cells.
+- **One coupled stack:** fluid populations, articulated geometry, moving-wall treatment, topology changes, load extraction, and body dynamics live in one executable system.
+- **GPU-resident science:** production stepping, geometry preparation, diagnostics, load reduction, Q criterion, marching cubes, pathlines, and rendering all use Metal.
+- **Estimator-independent checks:** boundary loads are closed against fluid momentum storage and control-surface flux, not merely compared with a second force formula.
+- **Negative results are first-class artifacts:** rejected operators, failed gates, source locks, phase histories, and exact thresholds are committed beside accepted results.
+- **Measured-motion ready:** periodic left/right stroke, deviation, pitch, and twist are replayed with consistent pose and physical angular rates; exact input bytes and SHA-256 are retained.
+- **No hosted macOS bill:** Swift and Metal validation is intentionally local. This repository contains no GitHub Actions workflows.
 
-The bird consists of a rigid body, two evaluated flapping-wing boundaries, and a tail. The development model uses analytic stroke/pitch; measured replay uses independent left/right periodic stroke, deviation, pitch, and twist tables. Every fluid step performs:
+## Validation scoreboard
+
+| Layer | Current result | Evidence |
+|---|---|---|
+| D3Q19 reference and production kernels | **Accepted engineering gate** | CPU/GPU early-step agreement, shear-wave convergence, mass tracking, batch invariance |
+| Moving planar walls | **Accepted** | Couette and oscillating Stokes velocity/force/phase refinement |
+| Topology-changing body | **Accepted** | 64 covered + 64 uncovered events; conservative force-budget RMS residual `3.64e-5` |
+| Fixed sphere, Re=100 | **Accepted canonical** | drag, symmetry, torque leakage, refinement, batching |
+| Fixed finite wing, Re=100 | **Accepted canonical** | finest `CL=0.76135`, `CD=0.70711`; two-finest changes below `3%` |
+| Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
+| Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
+| Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
+| Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
+| Quantitative complete bird / free flight | **Blocked by design** | requires real specimen geometry, kinematics, bird-load refinement, runtime bounds, and inertial/hinge treatment |
+
+The most important accepted flapping result is committed as [`flapping-wing-fixed-thickness-acceptance.json`](ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json). The current high-Re open question is committed as [`measured-wing-stationary-wall-recursive-regularization-duration.json`](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json).
+
+## Latest high-Re result
+
+<p align="center">
+  <img width="49%" alt="Recursive regularization D8 D12 D16 refinement result" src="ValidationArtifacts/Figures/stationary-wall-recursive-regularization-refinement.png">
+  <img width="49%" alt="Recursive regularization D8 D12 duration sensitivity result" src="ValidationArtifacts/Figures/stationary-wall-recursive-regularization-duration.png">
+</p>
+
+Recursive-regularized BGK keeps the D=8/12/16 stationary-sphere cases positive, source/force closed, and non-intrusive while correction decreases with refinement. Promotion is still blocked: `Cd = 1.32042, 0.93800, 1.04777` is non-monotonic and the D12→D16 change is `10.476%` against the unchanged `5%` gate.
+
+The cheap ten-convective-time follow-up resolved half the ambiguity:
+
+- D=12 is late-window stable: ninth→tenth change `4.543%`; fifth→tenth change `2.177%`.
+- D=8 is not: ninth→tenth change `46.848%`; fifth→tenth change `29.219%`.
+- Every positivity, conservation, force-budget, control-isolation, and correction gate still passes.
+
+Therefore the next highest-ROI experiment is **D=8 only**: estimate its dominant shedding period, then report period-complete block means and uncertainty. That is more defensible—and far cheaper—than spending immediately on D=20 or treating adjacent one-convective-time windows as independent steady estimates.
+
+## The force-accounting investigation
+
+The prescribed-wing load error was once roughly fivefold. The repository now contains the full chain that found and corrected it:
+
+1. **Load decomposition** showed cover/uncover topology impulse contributed only `0.47%` of mean lift and `2.90%` of mean drag; link exchange dominated.
+2. **Conventional versus Galilean-invariant momentum exchange** changed mean loads by less than `1%`, ruling out the wall-frame correction as the main factor.
+3. **Independent coefficient reconstruction** recovered the paper denominator exactly from equations and raw forces, ruling out a shared normalization multiplier.
+4. **Link-numerator decomposition** localized the sensitivity to cancellation between reflected populations and moving-wall correction.
+5. **Near-wing fluid momentum balance** gave `(CL, CD)=(1.18092, 2.04933)` while legacy boundary accumulation gave approximately `(7.51, 9.56)`.
+6. **A conservative moving-domain estimator** closed that independent balance within `0.002511/0.000247` maximum phase residuals under a `0.005` gate.
+7. **A translating-sphere topology canonical** improved RMS momentum closure by `22,020×` over the retired estimator and made the corrected estimator the production default.
+8. **The promoted 20/24-cell flapping ladder** then passed mean-load, phase, symmetry, periodicity, vortex, batching, and grid-change gates without relaxing thresholds.
+
+This sequence is summarized in [`Docs/VALIDATION.md`](Docs/VALIDATION.md); machine-readable ledgers live in [`ValidationArtifacts/`](ValidationArtifacts/).
+
+## Architecture
+
+```mermaid
+flowchart LR
+    K["Analytic or measured kinematics"] --> G["Prepared articulated geometry"]
+    G --> M["Occupancy masks and sub-cell links"]
+    P["D3Q19 populations"] --> S["Pull streaming"]
+    M --> B["Moving-boundary operator"]
+    S --> B
+    B --> C["TRT or regularized collision"]
+    C --> P
+    B --> R["GPU force and torque reduction"]
+    R --> D["6-DoF rigid-body update"]
+    D --> G
+    P --> O["Read-only observation lease"]
+    G --> O
+    O --> V["Native Metal viewer"]
+    P -. "momentum ledger" .-> A["Independent control-volume audit"]
+    R -. "closure" .-> A
+```
+
+The package is an original implementation. Its software organization adopts PyFR’s controller/resource/command-graph separation: physical types and reference algebra are isolated from Metal resource orchestration, pipeline states are compiled once per backend, and a fixed GPU command graph is encoded repeatedly. The numerical operators themselves are Metal-specific MSL.
+
+### Per-step coupled path
 
 ```text
-update articulated bird boundary and wall velocity
-pull-stream D3Q19 populations
-apply moving-wall bounce-back at bird links
-recover density and velocity
-TRT collision and far-field sponge
-accumulate momentum-exchange force and torque
-reduce loads on the GPU
-optionally integrate the bird body
+prepare articulated pose and physical wall velocity
+update current and previous solid occupancy
+pull-stream 19 populations per fluid cell
+apply interpolated moving-boundary reconstruction
+recover density, velocity, and isothermal pressure
+apply TRT or selected regularized collision + far-field sponge
+accumulate link exchange and cover/uncover momentum
+reduce force and torque deterministically on the GPU
+optionally integrate the rigid torso and orientation
+publish a read-only field lease when visualization requests one
 ```
 
-The solver tracks previous and current occupancy masks. Newly uncovered nodes are refilled from the local moving-boundary equilibrium, while newly covered nodes contribute their momentum conversion to the body load.
+Newly uncovered nodes are refilled from a local moving-boundary equilibrium. Newly covered nodes contribute their population momentum conversion to the body load. Prescribed wings are currently massless kinematic boundaries: wing inertia, hinge reaction, and actuator power are not silently folded into torso dynamics.
 
-The production GPU path also:
+## Metal engineering
 
-- prepares articulated wing frames once per timestep and culls geometry work outside a conservative bound;
-- samples measured periodic keyframes with one GPU thread per timestep, preserving physical angular rates for wall velocity without per-cell table reads;
-- stores occupancy and part identity together in byte masks;
-- folds the first deterministic load-reduction level into the fluid threadgroups instead of writing one load record per cell;
-- stores density and velocity only for the final externally visible step of an `advance` call;
-- skips threadgroup load accumulation on intermediate steps of static steady canonical cases while retaining it on every coupled bird step;
-- evaluates prescribed-wing trigonometry once per timestep, rejects most geometry cells before the beta-planform power evaluation, and records phase loads into a compact GPU cycle buffer without per-step CPU waits;
-- locates prescribed beta-wing boundary crossings below the grid scale and stores their direction-wise fractions in otherwise dormant solid-node population slots, adding no full-grid buffer;
-- queues command-buffer batches without an intermediate CPU wait; and
-- omits the rigid-body dispatch entirely for fixed-bird cases.
+The production path is structured for Apple unified memory and predictable command submission:
 
-The default executable holds the bird fixed in an incoming stream. `--free-flight` starts the bird in stationary air and integrates the rigid torso under aerodynamic loads and gravity. Prescribed wings are massless kinematic boundaries: wing inertia, hinge reactions, and actuator loads are not included in the body dynamics.
+- direction-major population storage gives adjacent GPU threads adjacent cell access;
+- articulated wing frames are prepared once per timestep rather than once per cell;
+- conservative bounds cull expensive bird geometry work;
+- measured periodic keyframes are sampled once per timestep with physical rates preserved;
+- occupancy and part identity share compact byte masks;
+- the first deterministic load reduction is fused into fluid threadgroups;
+- prescribed-wing phase loads reduce into a compact cycle buffer without per-step CPU waits;
+- sub-cell boundary fractions reuse dormant solid-node population slots instead of allocating a full-grid link buffer;
+- command-buffer batches are queued without intermediate CPU waits;
+- density and velocity are captured only for the final externally visible step;
+- fixed cases skip unused body-integration and intermediate load work; and
+- allocation preflight rejects grids exceeding per-buffer or recommended working-set limits before partial allocation.
 
-## Requirements
+Optimization is accepted only when numerical state, loads, body state, and validation thresholds remain unchanged. [`Docs/BUILD_REPORT.md`](Docs/BUILD_REPORT.md) records the exact verification boundary and measured host timings.
 
-- Apple-silicon Mac
-- macOS 14 or later
-- Xcode command-line tools with Metal compiler support
-- Swift 6 or later
-- Python 3 with NumPy for the independent reference test
-
-## Build and verify
-
-```bash
-swift test
-./Scripts/check-metal.sh
-./Scripts/validate.sh
-```
-
-`check-metal.sh` compiles the `.metal` source directly with Apple’s offline compiler. `validate.sh` also runs independent periodic shear-wave references and the accepted strict-math production-Metal shear-wave, moving-wall, fixed-sphere, and fixed-wing harnesses. The expensive flapping-wing solves remain separate; the original 8/12/16 command exits nonzero by `0.024` percentage points, while the archived fixed-thickness 20/24 composite gate passes. The fixed-wing release tier uses roughly 9.2 GB peak unified memory and took about 26 minutes on the documented Apple M4 host.
-
-These checks are intentionally local-only. The repository contains no GitHub Actions workflows, so pushes and pull requests do not spend hosted macOS CI minutes. Run only the local command appropriate to the change being evaluated.
-
-The test suite includes live Metal regressions for moving-wing fixed-body and free-flight batch partitioning, including total loads, captured fields, and body state. A direct CPU-versus-GPU rigid-body step covers translation, torque, angular velocity, and orientation. The production-Metal shear wave checks three-grid convergence, actual population-mass drift, steps 1–8 cell-by-cell against a host CPU reference, and command-buffer batch invariance. The moving-wall harness checks transient Couette and finite-gap oscillating Stokes profiles, isolated upper-wall force and phase, no-penetration, refinement, and dynamic-wall batch invariance. The fixed-sphere harness checks steady drag, symmetry, torque leakage, refinement, and batching. Fast fixed-wing and one-cycle prescribed-wing regressions lock initialization, published interpolation algebra, GPU layouts, phase capture, Q/vorticity diagnostics, and finite loads. The prescribed-wing preflight independently checks analytic normalization and kinematics, CPU-versus-Metal occupancy, geometric moments, wall velocity, and sparsely read-back sub-cell link placement before release commands own the expensive refinement ladders.
-
-## Run
-
-Native same-process Metal viewer:
+## Native Metal viewer
 
 ```bash
 swift run -c release birdflow-viewer
 ```
 
-The viewer consumes completed density/velocity buffers without volume copies,
-drops visualization frames instead of waiting the solver, and records only
-compact samples/settings plus explicit derived keyframes or checkpoints. See
-[`Docs/VIEWER.md`](Docs/VIEWER.md) for controls, persistence, numerical
-separation, diagnostics, and verification.
+The same-process macOS viewer includes:
 
-Canonical production-Metal shear-wave validation:
+- pressure or `Cp` on the articulated body;
+- arbitrary oblique slices with velocity, normal velocity, or vorticity;
+- live world/velocity/vorticity probes and in-plane glyphs;
+- RK2 pathlines with CFL subdivision and discontinuity reset;
+- physical-unit vorticity and Q criterion;
+- GPU classic marching cubes with capacity-safe indirect drawing;
+- force, torque, body pose, solver time, render time, dropped-frame, and Q-capacity HUDs;
+- versioned run bundles, derived-field keyframes, and exact compressed solver checkpoints.
 
-```bash
-swift run -c release birdflow validate shear-wave \
-  --resolution 32 \
-  --archive ValidationArtifacts/shear-wave \
-  --json
-```
+Visualization receives only completed read-only field leases. Three best-effort slots prevent rendering from waiting the solver; if all slots are busy, the frame is dropped. The standalone compact M4 benchmark recorded `751.4 step/s` without observation and `643.2 step/s` with active offscreen rendering—`14.4%` ordinary GPU contention, zero visualization solver waits, and zero dropped frames.
 
-The optional archive contains `report.json`, a format manifest, and final density/velocity fields for each refinement grid.
-
-Canonical production-Metal moving-wall validation:
+Regenerate the hero GIF locally:
 
 ```bash
-swift run -c release birdflow validate moving-wall \
-  --resolution 32 \
-  --archive ValidationArtifacts/moving-wall \
-  --json
+./Scripts/capture-readme-gif.sh
 ```
 
-Topology-changing translating-body release gate:
+See [`Docs/VIEWER.md`](Docs/VIEWER.md) for controls, persistence formats, numerical separation, and verification.
+
+## Quick start
+
+### Requirements
+
+- Apple-silicon Mac
+- macOS 14 or later
+- Xcode command-line tools with Metal compiler support
+- Swift 6 or later
+- Python 3 with NumPy and Matplotlib for reference/audit plots
+
+### Build and run the local gates
 
 ```bash
-swift run -c release birdflow validate translating-body --json
+swift build -c release
+swift test -c release
+./Scripts/check-metal.sh
+python3 Scripts/static-audit.py
+./Scripts/validate.sh
 ```
 
-This `24^3` periodic canonical translates a radius-`3.25` voxel sphere by two
-lattice cells and requires both cover and uncover events. On Apple M4 it
-completed in `0.65 s`, observed `64/64` cover/uncover events over 16 transition
-steps, and kept the control surface clear. The conservative estimator closed
-the independent raw fluid-momentum budget with `3.64e-5` RMS and `8.38e-5`
-maximum force residual, versus `0.803` RMS for the legacy estimator. The
-conservative moving-domain estimator is therefore the production default;
-legacy Galilean-invariant and conventional modes remain available to explicit
-diagnostics.
+`check-metal.sh` invokes Apple’s offline compiler on both Metal libraries. `validate.sh` adds the independent reference cases and core production-Metal canonicals. Expensive flapping and high-Re refinement ladders remain explicit commands rather than surprise work inside every local check.
 
-Canonical production-Metal fixed-sphere validation:
+> [!NOTE]
+> Validation is local-only. There are intentionally no GitHub Actions workflows, so pushes and pull requests do not consume hosted macOS CI minutes.
 
-```bash
-swift run -c release birdflow validate sphere \
-  --resolution 160 \
-  --archive ValidationArtifacts/sphere \
-  --json
-```
+Latest recorded local release run on Apple M4 (2026-07-15): **77 tests passed in 418.78 seconds**, followed by the independent physical-condition verifier, static Swift/MSL layout audit, Python lint, and offline compilation of both Metal libraries.
 
-The sphere ladder uses `80 x 48 x 48`, `120 x 72 x 72`, and `160 x 96 x 96` domains with 8, 12, and 16 cells across the diameter. It is a compact engineering gate against a published `Re=100`, `Cd=1.09` reference, not a substitute for the wider-domain and finer-resolution study required for publication-quality drag.
+## Run the solver
 
-Canonical production-Metal fixed finite-wing validation:
-
-```bash
-swift run -c release birdflow validate wing \
-  --resolution 400 \
-  --archive ValidationArtifacts/wing \
-  --json
-```
-
-The wing ladder uses `240 x 240 x 144`, `320 x 320 x 192`, and `400 x 400 x 240` domains with 24, 32, and 40 cells per chord. It runs the `Re=100`, aspect-ratio-2 flat plate at 30 degrees through `U*t/c=13` and compares with the approximate `CL=0.75`, `CD=0.75` values in Taira and Colonius (JFM 2009). This validates the isolated fixed-wing operator; it does not validate the procedural flapping bird.
-
-Published prescribed flapping-wing validation:
-
-```bash
-swift run birdflow validate flapping-wing \
-  --audit-inputs --chord-cells 16 --json
-
-swift run -c release birdflow validate flapping-wing \
-  --chord-cells 16 \
-  --archive ValidationArtifacts/flapping-wing \
-  --json
-```
-
-The preflight runs the same 8/12/16 ladder and reconstructs the paper's beta moments, kinematics, coefficient scales, CPU mask, wall velocity, and analytic link intersections before touching the fluid. GPU link locations agree with independent CPU intersections within `0.00071` cell on the measured ladder, compared with about `0.707` cell worst-case error for fixed halfway placement. Raw phase-`0.25` occupied volume still changes from `1.406` to `1.398` to `0.714` times the continuous regularized volume; those center-count ratios remain diagnostics, while the fluid wall now sits at the sub-cell analytic crossing.
-
-The archived legacy link-distance ladder produced `(CL, CD)=(7.45076, 9.58556)`,
-`(8.58688, 9.50008)`, and `(8.60733, 9.61182)` and localized the old
-force-accounting defect, but it is no longer a result for the production
-estimator. The promoted five-cycle 8/12/16 ladder now gives
-`(1.10193, 2.15741)`, `(1.37756, 2.22153)`, and `(1.42346, 2.11525)`. Finest
-mean errors are `2.503%` lift and `3.384%` drag; phase timing, periodicity,
-symmetry, vortex coverage, batch invariance, and lift convergence pass. The
-locked verdict remains failure because drag changes `5.024%` between 12 and 16
-cells per chord, exceeding the unchanged `5%` limit by `0.024` percentage
-points. The compact result is archived in
-`ValidationArtifacts/flapping-wing-promoted-ladder-summary.json`.
-
-Targeted five-cycle 20- and 24-cell cases then held the paper's nominal `0.05c`
-thickness fixed. They produced `(CL, CD)=(1.48928, 2.16937)` and
-`(1.51819, 2.10509)`. The finest errors are `3.986%` lift and `2.888%` drag;
-20-to-24 changes are `1.904%` and `3.054%`. Timing, periodicity, symmetry,
-midstroke, vortex, batch-invariance, and independent input-audit gates also
-pass without relaxing a threshold. The reproducible archive-composite verdict
-is `ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json`; the
-audit command is `Scripts/audit-flapping-refinement.py`.
-
-The phase-resolved decomposition is available with `birdflow validate flapping-wing --decompose-loads --single-chord-cells 8 --cycles 1 --json`. On Apple M4 it completes in `9.84 s`; cover/uncover impulse contributes only `0.47%` of mean lift and `2.90%` of mean drag, while link exchange supplies the remainder. RMS topology fractions are `1.29%` lift and `3.01%` drag, and independently selected components close to total within `9.7e-6` coefficient. Geometry and topology double counting are therefore ruled out as dominant causes; link-force evaluation/normalization is the next fault domain.
-
-The follow-up force-law A/B check is available with `birdflow validate flapping-wing --compare-link-forces --single-chord-cells 8 --cycles 1 --json`. It evaluates Wen et al.'s Galilean-invariant momentum exchange and conventional momentum exchange on the same interpolated populations, then adds the separately measured cover/uncover impulse to each. On Apple M4 it completes in `12.23 s`. Conventional exchange changes mean lift from `7.52805` to `7.50904` (`-0.25%`) and mean drag from `9.48616` to `9.56192` (`+0.80%`); the Galilean-invariant closure remains below `9.7e-6` coefficient. Both estimators retain essentially the full published-load error, ruling out the wall-frame correction as the dominant cause. The next fault domain is coefficient/reference scaling or a link-momentum factor shared by both estimators.
-
-The CPU-only coefficient ledger removes the scaling branch without another solve:
-
-```bash
-python3 Scripts/audit-flapping-coefficients.py \
-  /tmp/birdflow-link-force-comparison.json \
-  --output ValidationArtifacts/flapping-wing-coefficient-ledger.json
-```
-
-It independently transcribes the paper's `CL=2L/(rho U2^2 S)` and `CD=2D/(rho U2^2 S)` definitions, derives `r2/R=0.5593218`, single-wing area `S=192` lattice cells squared, actual `U2=0.0350010`, and denominator `0.11760695065887139`. The same denominator inferred from every captured raw lift force agrees with zero relative difference; recomputed lift agrees within `5.33e-15`. Mean drag reprojected from 100 bin-averaged vectors differs by only `4.36e-4` because the original projection occurred before binning. An arbitrary denominator large enough to match published lift would still be `11.2%` larger than the one required to match drag, so a single missing scalar cannot reconcile both. Coefficient normalization is therefore cleared. The remaining load bias is in the link-population or momentum-transfer numerator shared by both force estimators.
-
-Decompose that common numerator with:
-
-```bash
-swift run birdflow validate flapping-wing \
-  --decompose-link-numerator \
-  --single-chord-cells 8 \
-  --cycles 1 \
-  --json
-```
-
-The Apple M4 diagnostic completed in `18.23 s`. Mean `(CL, CD)` contributions were base reflection `(-6.751, -62.265)`, moving-wall population correction `(14.719, 72.263)`, interpolation residual `(-0.494, -0.711)`, and Galilean wall-frame correction `(0.019, -0.076)`, closing to the Galilean link total `(7.493, 9.211)` within `1.4e-5` coefficient. The moving-wall population term is `196%` of net mean lift and `785%` of net mean drag and is opposed by the base reflected populations. Interpolation and wall-frame terms are small. This identifies the cancellation between moving-wall correction and reflected populations as the dominant sensitivity; it does not by itself prove either term is incorrect.
-
-Close that force accounting against a fluid-only control volume with:
-
-```bash
-swift run birdflow validate flapping-wing \
-  --momentum-budget \
-  --single-chord-cells 8 \
-  --cycles 1 \
-  --json
-```
-
-The fixed `68 x 68 x 25` near-wing volume remains clear of the swept solid and outside the sponge. Its raw storage-plus-flux balance gives mean `(CL, CD)=(1.18092, 2.04933)`; the separately reported virtual equilibrium-reservoir convention changes that to `(1.15774, 2.07231)`. Conventional boundary accounting on the identical deterministic flow gives `(7.50904, 9.56192)`, and moving the control surface one cell outward changes adjusted budget means by only `6.04e-5/1.07e-5`.
-
-The conservative moving-domain estimator closes the raw population balance at
-`(CL, CD)=(1.18061, 2.04933)`. Maximum phase residuals are
-`0.002511/0.000247`, below the `0.005` tolerance. Its mean correction relative
-to legacy conventional total is `(-6.32843, -7.51260)`. The translating-body
-topology gate, the existing three-grid Couette/Stokes gate, and a short
-promoted-default flapping run all pass, so this estimator is now production.
-This fixes force accounting. The promoted five-cycle ladder clears the
-published mean-load gates, and the fixed-thickness 20/24 archive composite now
-clears both two-finest-grid convergence gates. The prescribed flapping-wing
-canonical is accepted; this does not validate the procedural complete bird.
-
-Measured-data preflight without starting Metal:
-
-```bash
-.build/release/birdflow replay measured-bird \
-  --input /path/to/specimen.json \
-  --chord-cells 12 \
-  --audit-only \
-  --json
-```
-
-Prescribed replay with exact-input provenance and phase-load archive:
-
-```bash
-.build/release/birdflow replay measured-bird \
-  --input /path/to/specimen.json \
-  --chord-cells 12 \
-  --cycles 5 \
-  --archive /path/to/specimen-replay-c12 \
-  --json
-```
-
-The schema, coordinate/rotation conventions, interpolation, and scientific
-boundary are documented in [`Docs/MEASURED_BIRD_DATA.md`](Docs/MEASURED_BIRD_DATA.md).
-The bundled JSON is a synthetic ingestion fixture, not measured bird data.
-
-A fixed-bird wind-tunnel case:
+Fixed bird in an incoming stream:
 
 ```bash
 swift run -c release birdflow \
@@ -258,7 +207,7 @@ swift run -c release birdflow \
   --lattice-speed 0.04
 ```
 
-A free-flight case:
+Free flight in initially stationary air:
 
 ```bash
 swift run -c release birdflow \
@@ -267,7 +216,7 @@ swift run -c release birdflow \
   --report-every 128
 ```
 
-A physical-domain-preserving refinement run:
+Physical-domain-preserving refinement:
 
 ```bash
 swift run -c release birdflow \
@@ -276,47 +225,132 @@ swift run -c release birdflow \
   --report-every 256
 ```
 
-`--resolution-scale N` multiplies all grid dimensions, chord resolution, and sponge width by `N`. This keeps the physical domain and geometry fixed while reducing `dx` and `dt` by `N`; multiply the step count by `N` when comparing the same physical duration. The allocator rejects a requested grid before partial allocation if any buffer exceeds the device limit or the planned persistent buffer bytes exceed Metal’s recommended working-set limit.
+`--resolution-scale N` multiplies grid dimensions, chord resolution, and sponge width by `N`, reducing `dx` and `dt` by `N`. Multiply the step count by `N` to compare the same physical duration. The executable emits CSV with time, body pose, linear velocity, aerodynamic force, and aerodynamic torque.
 
-The executable emits CSV containing time, body position, linear velocity, aerodynamic force, and aerodynamic torque.
+## Canonical validation commands
 
-## Project layout
+```bash
+# Periodic shear-wave decay and convergence
+swift run -c release birdflow validate shear-wave --resolution 32 --json
+
+# Couette + oscillating Stokes moving walls
+swift run -c release birdflow validate moving-wall --resolution 32 --json
+
+# Topology-changing translating sphere and momentum closure
+swift run -c release birdflow validate translating-body --json
+
+# Re=100 fixed sphere
+swift run -c release birdflow validate sphere --resolution 160 --json
+
+# Re=100 aspect-ratio-2 fixed finite wing
+swift run -c release birdflow validate wing --resolution 400 --json
+
+# Published prescribed-wing input/geometry audit
+swift run birdflow validate flapping-wing --audit-inputs --chord-cells 16 --json
+
+# Published prescribed-wing production solve
+swift run -c release birdflow validate flapping-wing --chord-cells 16 --json
+
+# Current high-Re RR3 coarse-grid duration diagnostic
+.build/release/birdflow validate translating-body \
+  --high-re-stability --fixed-occupancy --stationary-wall \
+  --recursive-regularization-duration --json
+```
+
+The fixed sphere and fixed wing are compact engineering canonicals, not substitutes for publication-scale domain and resolution studies. The accepted prescribed-wing composite is independently audited by:
+
+```bash
+python3 Scripts/audit-flapping-refinement.py
+python3 Scripts/verify-measured-wing-physical-condition.py
+```
+
+## Measured geometry and kinematics
+
+Audit a specimen input without allocating Metal resources:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/specimen.json \
+  --chord-cells 12 \
+  --audit-only \
+  --json
+```
+
+Replay prescribed motion and retain exact-input provenance plus phase loads:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/specimen.json \
+  --chord-cells 12 \
+  --cycles 5 \
+  --archive /path/to/specimen-replay-c12 \
+  --json
+```
+
+Schema 1 requires SI units, source provenance, a COM-centered principal-axis frame, domain conditions, morphometrics, and independent left/right periodic pose and rate histories. Cubic-Hermite interpolation keeps pose and wall velocity consistent. Preflight rejects invalid phase coverage, domain/sponge collisions, under-resolved thickness, and excessive estimated lattice Mach before Metal allocation.
+
+The bundled complete-bird JSON is a **synthetic conformance fixture**, not a measured specimen. The measured right-wing surface tier is also intentionally wing-only. Read [`Docs/MEASURED_BIRD_DATA.md`](Docs/MEASURED_BIRD_DATA.md) before interpreting any replay.
+
+## Scientific boundary
+
+BirdFlowMetal targets low-Mach flapping flight and wakes using an isothermal weakly compressible formulation, a uniform Cartesian grid, rigid surfaces, moving occupancy masks, and sub-cell link placement in the prescribed beta-wing benchmark.
+
+Quantitative complete-bird claims still require:
+
+- an actual measured specimen with body, both wings, tail, mass properties, geometry provenance, and synchronized kinematics;
+- a surface representation appropriate to the measured feather/wing geometry;
+- bird-load grid and timestep convergence;
+- per-part left/right symmetry and force reporting;
+- runtime Mach and sponge/domain-margin monitoring in free flight;
+- free-flight momentum and rigid-body step refinement;
+- wing inertial, hinge, and actuator reactions—or a defensible massless-wing approximation;
+- forced channel-flow coverage and any turbulence/flexibility model required by the target regime.
+
+The high-Re stationary-sphere RR3 branch is a collision-operator research gate. It is **not enabled** in flapping or measured-bird replay while its force statistic is unresolved. The accepted prescribed flapping benchmark validates the production moving-boundary/load path; it does not magically validate arbitrary complete-bird morphology or free-flight physics.
+
+## Repository map
 
 ```text
 Sources/BirdFlowCore/
-  D3Q19.swift                    lattice, equilibrium, TRT reference
-  SimulationConfiguration.swift physical-to-lattice scaling and guards
-  BirdModel.swift               morphology and wing kinematics
-  RigidBody.swift               CPU reference body integrator
+  D3Q19.swift                       lattice and host reference algebra
+  SimulationConfiguration.swift    physical/lattice scaling and guards
+  BirdModel.swift                   morphology and articulated kinematics
+  RigidBody.swift                   six-degree-of-freedom CPU reference
 
 Sources/BirdFlowMetal/
-  MetalBackend.swift            device, runtime compilation, pipelines
-  BirdFlowSimulation.swift      state ownership and step command graph
-  MetalShearWaveValidation.swift production-kernel canonical validation
-  MetalMovingWallValidation.swift planar-wall profile/load validation
-  MetalSphereValidation.swift    curved-body external-flow validation
-  MetalWingValidation.swift      finite-wing load/refinement validation
-  MetalFlappingWingValidation.swift prescribed moving-wing validation
-  GPUData.swift                 Swift/MSL-compatible data layouts
-  Metal/BirdFlow.metal          geometry, fluid, reduction, body kernels
+  BirdFlowSimulation.swift          GPU state and command graph
+  MetalBackend.swift                device, pipelines, resource setup
+  Metal*Validation.swift            production-kernel canonical harnesses
+  GPUData.swift                     Swift/MSL-compatible layouts
+  Metal/BirdFlow.metal              fluid, boundary, reduction, body kernels
 
-Reference/
-  shear_wave_reference.py       independent periodic decay benchmark
+Sources/BirdFlowVisualization/
+  ...                               read-only field diagnostics and renderer
+  Metal/Visualization.metal         Q, slices, pathlines, marching cubes
 
-Docs/
-  PYFR_STUDY.md                 architecture extracted from PyFR
-  NUMERICS.md                   equations and discretization
-  VALIDATION.md                 acceptance tests before scientific use
-  BUILD_REPORT.md               completed checks and verification boundary
-  BIRD_MODEL.md                 bird geometry and asset path
+Sources/BirdFlowViewerApp/           native SwiftUI/MetalKit macOS viewer
+Reference/                           independent numerical references
+Scripts/                             local audits, plotting, capture, gates
+ValidationArtifacts/                exact machine-readable scientific record
+ValidationInputs/                   locked input fixtures and provenance
+Docs/                                numerics, validation, viewer, data contract
 ```
 
-## Scope
+Start with [`Docs/NUMERICS.md`](Docs/NUMERICS.md) for equations, [`Docs/VALIDATION.md`](Docs/VALIDATION.md) for acceptance logic, and [`Docs/BUILD_REPORT.md`](Docs/BUILD_REPORT.md) for what has actually been verified.
 
-BirdFlowMetal targets low-Mach flapping flight and wakes. It currently uses an isothermal weakly-compressible formulation, rigid wing surfaces, a uniform Cartesian grid, and moving masks with sub-cell link placement in the prescribed beta-wing benchmark. The published flapping benchmark demonstrates that axis-aligned fixed-wing agreement does not transfer automatically to a rotating diagonal surface. Extending link-distance treatment to the complete procedural bird, measured geometry, turbulence closure, flexible-wing coupling, and multiblock refinement remain planned directions rather than exposed plug-in interfaces.
+## Published anchors and data qualification
 
-Mach and domain-fit guards validate the initial configuration. Free-flight production studies must additionally monitor the evolving surface Mach number and sponge/domain margin and abort when either leaves the validated regime.
+- Fixed-wing comparison: [Taira and Colonius, *Journal of Fluid Mechanics* (2009)](https://authors.library.caltech.edu/records/frnmk-28536).
+- Measured hummingbird right-wing surface: [Maeda et al., *Royal Society Open Science* (2017), DOI 10.1098/rsos.170307](https://doi.org/10.1098/rsos.170307), deposited grid [DOI 10.6084/m9.figshare.5406124.v1](https://doi.org/10.6084/m9.figshare.5406124.v1), CC BY 4.0.
+- Prescribed numerical comparison: [Dong et al., *Insects* (2022), DOI 10.3390/insects13050459](https://doi.org/10.3390/insects13050459).
+- The checked Song et al. Dryad archive [DOI 10.5061/dryad.8ch1b](https://doi.org/10.5061/dryad.8ch1b) is retained only as reference-curve material; it does not contain a complete reconstructed bird mesh.
+
+[`measured-wing-source-audit.json`](ValidationArtifacts/measured-wing-source-audit.json) locks source filenames, licenses, MD5/SHA-256 digests, coordinate registration, scale reconstruction, surface-area closure, and the fields still missing for complete-bird replay.
+
+## Reproducibility and citation
+
+Validation artifacts are versioned JSON, figures are generated from those artifacts, and source-lock chains make stale provenance detectable. For academic discussion before a formal release DOI exists, cite the repository URL plus an immutable Git commit and name the exact artifact used. Do not cite a screenshot, GIF, branch name, or unarchived console result as quantitative evidence.
 
 ## License
 
-BSD-3-Clause. See `LICENSE`.
+BSD-3-Clause. See [`LICENSE`](LICENSE).
