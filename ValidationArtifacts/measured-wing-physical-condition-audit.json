@@ -302,6 +302,34 @@
     "stationaryWallC16RecursiveRegularizationCandidateForceBudgetPassed": true,
     "stationaryWallC16RecursiveRegularizationCandidateNonIntrusivePassed": true,
     "stationaryWallC16RecursiveRegularizationCandidateEligibleForRefinement": true,
+    "stationaryWallRecursiveRegularizationLadderCompleted": true,
+    "stationaryWallRecursiveRegularizationLadderArtifact": "ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-refinement.json",
+    "stationaryWallRecursiveRegularizationLadderArtifactSHA256": "394c7cbb8cdeddefcb71daa78f67a6694d49b57d24d81e16c9abf2fabc4495c4",
+    "stationaryWallRecursiveRegularizationLadderFigurePNG": "ValidationArtifacts/Figures/stationary-wall-recursive-regularization-refinement.png",
+    "stationaryWallRecursiveRegularizationLadderFigurePNGSHA256": "43b52980dc588b03b0bbb6dc8a609267380b7a52b30c34422e3c5ec5c249e7da",
+    "stationaryWallRecursiveRegularizationLadderFigureSVG": "ValidationArtifacts/Figures/stationary-wall-recursive-regularization-refinement.svg",
+    "stationaryWallRecursiveRegularizationLadderFigureSVGSHA256": "733a2fdbe4b88987b291a0613d5129c83a2ec3ed368a253f27f50dddf74ff1d7",
+    "stationaryWallRecursiveRegularizationLadderPassed": false,
+    "stationaryWallRecursiveRegularizationLadderPromoted": false,
+    "stationaryWallRecursiveRegularizationLadderClassification": "stationary-wall-recursive-regularization-ladder-not-accepted",
+    "stationaryWallRecursiveRegularizationLadderMode": "recursive second-plus-supported-third-order D3Q19 Hermite reconstruction with a convex equilibrium-to-post-collision positivity scale",
+    "stationaryWallRecursiveRegularizationLadderDiameterCells": [8, 12, 16],
+    "stationaryWallRecursiveRegularizationLadderDomainCells": [[80, 48, 48], [120, 72, 72], [160, 96, 96]],
+    "stationaryWallRecursiveRegularizationLadderRequestedSteps": [500, 750, 1000],
+    "stationaryWallRecursiveRegularizationLadderSourceAwareStabilityPassed": [true, true, true],
+    "stationaryWallRecursiveRegularizationLadderForceBudgetPassed": [true, true, true],
+    "stationaryWallRecursiveRegularizationLadderNonIntrusivePassed": [true, true, true],
+    "stationaryWallRecursiveRegularizationLadderControlActivationFractions": [0.00013520833333333334, 0.00010873113854595336, 0.00006451497395833333],
+    "stationaryWallRecursiveRegularizationLadderControlRelativeL1Corrections": [0.00024362977036796417, 0.0002349321111250033, 0.00019322631521083767],
+    "stationaryWallRecursiveRegularizationLadderControlRelativeL2Corrections": [0.004133143671728516, 0.003779166883736146, 0.0035278524715361016],
+    "stationaryWallRecursiveRegularizationLadderMeanDragCoefficients": [1.3204192744736079, 0.9379996428755623, 1.047765781965056],
+    "stationaryWallRecursiveRegularizationLadderConvectiveWindowMeanDragCoefficients": [[2.3694559816790015, 1.4081847985114695, 1.7314787389607027, 1.4727554504064844, 1.3204192744736074], [1.9846142675319314, 1.2061959657157117, 1.232629458775543, 1.062570391176398, 0.9379996428755616], [1.8496799495072702, 1.0533638893069026, 1.0499277051417575, 1.0483101395560481, 1.0477657819650552]],
+    "stationaryWallRecursiveRegularizationLadderFourthToFifthRelativeDragChanges": [0.11536954880759874, 0.13280468627786288, 0.0005195412947844024],
+    "stationaryWallRecursiveRegularizationLadderRelativeFinestTwoDragChange": 0.10476209566954023,
+    "stationaryWallRecursiveRegularizationLadderActivationNonIncreasing": true,
+    "stationaryWallRecursiveRegularizationLadderCorrectionNonIncreasing": true,
+    "stationaryWallRecursiveRegularizationLadderObservedDragConvergenceOrder": null,
+    "stationaryWallRecursiveRegularizationLadderForceConvergenceFailureConfirmed": true,
     "authoritativeHierarchy": [
       "Use the literal Re=9367.4 to reproduce the published numerical target.",
       "Use equation 8's Uref=7.1758 m/s and equation 9's denominator for force coefficients.",
@@ -309,7 +337,7 @@
       "Retain Re=9315.65 as an arithmetic-closure sensitivity point.",
       "Do not use Table 3's 7.58 m/s for normalization."
     ],
-    "nextGate": "Do not enable the symmetric-limited TRT control or the rejected second-order regularized BGK candidate in flapping or measured-bird replay. The recursive-regularized D=16 candidate clears every unchanged positivity, source-ledger, force-budget, radial-closure, activation, L1, and L2 gate, so it is eligible only for the locked D=8/12/16 geometric refinement ladder. Promote it to bird replay only if that ladder also establishes force convergence and non-intrusive correction on every grid."
+    "nextGate": "Do not enable any tested high-Re collision treatment in flapping or measured-bird replay. Recursive-regularized BGK clears positivity, source, force-budget, and non-intrusive correction gates on D=8/12/16, but D12-to-D16 mean drag changes 10.476% against the unchanged 5% gate and the non-monotonic sequence has no admissible Richardson fit. Before paying for D=20, extend the cheap D=8 and D=12 cases beyond five convective times: their fourth-to-fifth window means still change 11.54% and 13.28%, while D=16 changes only 0.052%. This duration-sensitivity diagnostic can distinguish transient-window bias from true spatial non-convergence."
   },
-  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state; the published CFD convention remains an explicit sensitivity input. The c8, c12, and c16 measured-wing feasibility runs remain non-finite and are not quantitative bird results. Corrected stationary-sphere diagnostics isolate the first positivity loss to symmetric TRT over-relaxation. A symmetric limiter keeps c16 positive and source/force-budget closed, but the geometrically similar D=8/12/16 ladder gives an admissible negative result: sponge-excluded activation grows 3.53%, 6.65%, 8.07%, interior L2 correction remains 11.71%, 14.74%, 14.54%, and finest-two drag changes 14.81% against a 5% gate with no monotonic convergence. The D=16 radial diagnostic closes to 8.02e-7 and shows why: limiting begins within one lattice cell of the sphere, then propagates through the physical flow. At tU/D=5 only 1.11% of limiter L1 remains within 0.25D while 88.58% lies beyond 1D. A controlled D=16 bulk collision A/B then shows that second-order regularized positive BGK preserves positivity and source/force closure while reducing activation by 99.65% and relative L1 correction by 99.14%, but it is rejected because relative L2 correction is 1.0968% against the unchanged 1% gate. Retaining the six D3Q19-supported recursively reconstructed third-order nonequilibrium moments clears that miss: activation is 0.00645%, relative L1 correction is 0.01932%, and relative L2 correction is 0.35279%, with positivity and every source, force, and radial closure gate intact. This candidate is eligible for the locked D=8/12/16 refinement ladder, not yet for flapping or measured-bird replay."
+  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state; the published CFD convention remains an explicit sensitivity input. The c8, c12, and c16 measured-wing feasibility runs remain non-finite and are not quantitative bird results. Corrected stationary-sphere diagnostics isolate the first positivity loss to symmetric TRT over-relaxation. A symmetric limiter keeps c16 positive and source/force-budget closed, but the geometrically similar D=8/12/16 ladder gives an admissible negative result: sponge-excluded activation grows 3.53%, 6.65%, 8.07%, interior L2 correction remains 11.71%, 14.74%, 14.54%, and finest-two drag changes 14.81% against a 5% gate with no monotonic convergence. The D=16 radial diagnostic shows that limiting spreads from the wall through the physical flow. Second-order regularized positive BGK cuts intervention sharply but is rejected because relative L2 correction is 1.0968% against the unchanged 1% gate. Retaining the six D3Q19-supported recursively reconstructed third-order nonequilibrium moments clears that local miss. Across the locked D=8/12/16 ladder, every recursive-regularized case remains positive, source/force closed, and non-intrusive; control-volume activation decreases 0.01352%, 0.01087%, 0.00645% and L2 correction decreases 0.41331%, 0.37792%, 0.35279%. Promotion is nevertheless rejected because drag coefficients 1.32042, 0.93800, 1.04777 are non-monotonic, D12-to-D16 changes 10.476% against the 5% gate, and no Richardson fit exists. Fourth-to-fifth convective-window means still change 11.54% and 13.28% on D=8 and D=12 versus 0.052% on D=16, so duration sensitivity is the next diagnostic before another spatial refinement."
 }

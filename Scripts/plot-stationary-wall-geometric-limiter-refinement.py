@@ -48,6 +48,10 @@ def main() -> None:
     cases = report["cases"]
     if [case["diameterCells"] for case in cases] != [8, 12, 16]:
         raise SystemExit("report is not the locked D=8/12/16 ladder")
+    recursive_regularization = report["classification"].startswith(
+        "stationary-wall-recursive-regularization-ladder-"
+    )
+    accepted = report["passed"]
 
     diameters = [case["diameterCells"] for case in cases]
     drag = [case["meanDragCoefficientLastConvectiveTime"] for case in cases]
@@ -75,7 +79,15 @@ def main() -> None:
     )
     figure, axes = plt.subplots(2, 2, figsize=(10.2, 6.8), constrained_layout=True)
     figure.suptitle(
-        "Source-aware geometric limiter ladder — promotion blocked",
+        (
+            "Recursive regularization refinement — promotion accepted"
+            if recursive_regularization and accepted
+            else (
+                "Recursive regularization refinement — promotion blocked"
+                if recursive_regularization
+                else "Source-aware geometric limiter ladder — promotion blocked"
+            )
+        ),
         fontsize=13,
         fontweight="semibold",
     )
@@ -97,7 +109,7 @@ def main() -> None:
     axis.grid(axis="y", alpha=0.22)
     axis.text(
         0.55,
-        0.05,
+        0.12 if recursive_regularization else 0.05,
         f"D12→D16 change = {100 * report['relativeFinestTwoDragChange']:.1f}%\n"
         f"gate = {100 * report['maximumAllowedFinestTwoDragChange']:.0f}%",
         transform=axis.transAxes,
@@ -124,10 +136,17 @@ def main() -> None:
         linestyle="--",
         linewidth=1,
     )
-    axis.set_title("b  Interior limiter intervention grows")
+    axis.set_title(
+        "b  Positivity correction remains non-intrusive"
+        if recursive_regularization
+        else "b  Interior limiter intervention grows"
+    )
     axis.set_xlabel("Sphere diameter D (cells)")
     axis.set_ylabel("Fraction (%)")
     axis.set_xticks(diameters)
+    if recursive_regularization:
+        axis.set_yscale("log")
+        axis.set_ylim(min(activation + limiter_l1) * 0.45, 10)
     axis.grid(axis="y", alpha=0.22)
     axis.legend(frameon=False, loc="lower right")
 
@@ -146,7 +165,11 @@ def main() -> None:
             linewidth=1.0,
             label=f"D={case['diameterCells']}",
         )
-    axis.set_title("c  Transient drag histories do not collapse")
+    axis.set_title(
+        "c  Transient drag histories"
+        if recursive_regularization
+        else "c  Transient drag histories do not collapse"
+    )
     axis.set_xlabel("Convective time tU/D")
     axis.set_ylabel("Drag coefficient (0.1 tU/D mean)")
     axis.grid(alpha=0.22)
@@ -172,9 +195,16 @@ def main() -> None:
         linewidth=1,
         label="5% gate",
     )
-    axis.set_title("d  Interior activation remains sustained")
+    axis.set_title(
+        "d  Positivity correction activation"
+        if recursive_regularization
+        else "d  Interior activation remains sustained"
+    )
     axis.set_xlabel("Convective time tU/D")
     axis.set_ylabel("Active control-volume cells per step (%)")
+    if recursive_regularization:
+        axis.set_yscale("symlog", linthresh=1.0e-3)
+        axis.set_ylim(-2.0e-4, 8)
     axis.grid(alpha=0.22)
     axis.legend(frameon=False, ncols=2, loc="upper left")
 

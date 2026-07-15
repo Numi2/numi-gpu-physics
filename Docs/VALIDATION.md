@@ -1028,6 +1028,39 @@ The exact report and figure are
 `ValidationArtifacts/measured-wing-stationary-wall-c16-recursive-regularization-ab.json`
 and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-ab.svg`.
 
+The promoted-to-test RR3 refinement ladder is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --recursive-regularization-ladder \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-refinement.json
+```
+
+This command changes only the collision selector from the rejected symmetric
+TRT limiter to RR3. It retains the old geometric ladder's D=8/12/16 domains,
+500/750/1,000 steps, five convective times, source and force ledgers, final-one-
+convective-time drag average, and all predeclared gates. Every case remains
+positive, source closed, force-budget closed, and individually non-intrusive.
+Control-volume correction activation decreases from `0.01352%` through
+`0.01087%` to `0.00645%`; relative L1 correction decreases from `0.02436%` to
+`0.02349%` to `0.01932%`, and relative L2 correction decreases from `0.41331%`
+to `0.37792%` to `0.35279%`.
+
+Promotion is nevertheless rejected without threshold relaxation. D=8/12/16
+mean drag coefficients are `1.32042`, `0.93800`, and `1.04777`. The D12-to-D16
+change is `10.476%` against the unchanged `5%` gate, the sequence is
+non-monotonic, and no admissible three-grid Richardson fit exists. The archived
+phase history also exposes a duration sensitivity worth resolving before a
+larger grid: fourth-to-fifth convective-window means change `11.54%`, `13.28%`,
+and `0.052%` on D=8, D=12, and D=16. A short extension of only the two cheaper
+coarse cases can therefore distinguish transient-window bias from spatial
+non-convergence before paying for D=20. The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-refinement.json`
+and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-refinement.svg`.
+
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

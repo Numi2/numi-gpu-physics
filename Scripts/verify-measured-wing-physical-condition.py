@@ -324,6 +324,18 @@ def main() -> None:
     ):
         if not decision[key]:
             raise SystemExit(f"recursive regularization A/B lost {key}")
+    for key in (
+        "stationaryWallRecursiveRegularizationLadderCompleted",
+        "stationaryWallRecursiveRegularizationLadderActivationNonIncreasing",
+        "stationaryWallRecursiveRegularizationLadderCorrectionNonIncreasing",
+        "stationaryWallRecursiveRegularizationLadderForceConvergenceFailureConfirmed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"recursive regularization ladder lost {key}")
+    if decision["stationaryWallRecursiveRegularizationLadderPassed"]:
+        raise SystemExit("recursive regularization ladder must retain its failed verdict")
+    if decision["stationaryWallRecursiveRegularizationLadderPromoted"]:
+        raise SystemExit("recursive regularization must remain excluded from bird replay")
     if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
         raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
@@ -1663,6 +1675,170 @@ def main() -> None:
         if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
             raise SystemExit(f"{figure_path} has changed figure hash")
 
+    recursive_ladder_path = Path(
+        decision["stationaryWallRecursiveRegularizationLadderArtifact"]
+    )
+    recursive_ladder_bytes = recursive_ladder_path.read_bytes()
+    if hashlib.sha256(recursive_ladder_bytes).hexdigest() != decision[
+        "stationaryWallRecursiveRegularizationLadderArtifactSHA256"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} has changed artifact hash")
+    recursive_ladder = json.loads(recursive_ladder_bytes)
+    if recursive_ladder["schemaVersion"] != 1:
+        raise SystemExit(f"{recursive_ladder_path} has changed schema")
+    if recursive_ladder["classification"] != decision[
+        "stationaryWallRecursiveRegularizationLadderClassification"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} has changed classification")
+    if recursive_ladder["limiterMode"] != decision[
+        "stationaryWallRecursiveRegularizationLadderMode"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} has changed collision mode")
+    if recursive_ladder["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{recursive_ladder_path} no longer uses production Metal")
+    if recursive_ladder["passed"]:
+        raise SystemExit(f"{recursive_ladder_path} must retain blocked promotion")
+    if not recursive_ladder["limiterActivationNonIncreasing"]:
+        raise SystemExit(f"{recursive_ladder_path} lost activation improvement")
+    if not recursive_ladder["limiterCorrectionNonIncreasing"]:
+        raise SystemExit(f"{recursive_ladder_path} lost correction improvement")
+    for key in (
+        "observedDragConvergenceOrder",
+        "richardsonExtrapolatedDragCoefficient",
+        "fineGridConvergenceIndex",
+    ):
+        if recursive_ladder.get(key) is not None:
+            raise SystemExit(
+                f"{recursive_ladder_path} must not report {key} for non-monotonic drag"
+            )
+    for key, expected in (
+        ("domainLengthDiameters", 10.0),
+        ("domainCrossflowDiameters", 6.0),
+        ("sphereCenterFromInletDiameters", 3.0),
+        ("spongeWidthDiameters", 0.5),
+        ("requestedConvectiveTimes", 5.0),
+        ("reynoldsNumber", 9367.4),
+        ("latticeFarFieldSpeed", 0.08),
+        ("maximumAllowedLimiterActivationFraction", 0.05),
+        ("maximumAllowedRelativeLimiterCorrection", 0.01),
+        ("maximumAllowedRelativeRMSForceResidual", 0.005),
+        ("maximumAllowedPeakForceResidualRatio", 0.001),
+        ("maximumAllowedFinestTwoDragChange", 0.05),
+    ):
+        close(recursive_ladder[key], expected, 1.0e-14, f"recursive ladder {key}")
+    recursive_ladder_cases = recursive_ladder["cases"]
+    recursive_expected_case_values = {
+        "diameterCells": decision[
+            "stationaryWallRecursiveRegularizationLadderDiameterCells"
+        ],
+        "domainCells": decision[
+            "stationaryWallRecursiveRegularizationLadderDomainCells"
+        ],
+        "requestedSteps": decision[
+            "stationaryWallRecursiveRegularizationLadderRequestedSteps"
+        ],
+        "sourceAwareStabilityPassed": decision[
+            "stationaryWallRecursiveRegularizationLadderSourceAwareStabilityPassed"
+        ],
+        "forceBudgetPassed": decision[
+            "stationaryWallRecursiveRegularizationLadderForceBudgetPassed"
+        ],
+        "limiterNonIntrusivePassed": decision[
+            "stationaryWallRecursiveRegularizationLadderNonIntrusivePassed"
+        ],
+    }
+    for key, expected in recursive_expected_case_values.items():
+        if [case[key] for case in recursive_ladder_cases] != expected:
+            raise SystemExit(f"{recursive_ladder_path} has changed {key}")
+    for case in recursive_ladder_cases:
+        if case["minimumObservedPopulation"] <= 0:
+            raise SystemExit(f"{recursive_ladder_path} lost population positivity")
+        if not case["passed"]:
+            raise SystemExit(f"{recursive_ladder_path} case lost individual gates")
+        if not case["globalLedgerClosed"]:
+            raise SystemExit(f"{recursive_ladder_path} global ledger no longer closes")
+        if not case["controlVolumeOutsideSponge"]:
+            raise SystemExit(f"{recursive_ladder_path} control volume entered sponge")
+        if case["maximumSolidControlSurfaceCrossingLinkCount"] != 0:
+            raise SystemExit(
+                f"{recursive_ladder_path} control surface crosses solid links"
+            )
+        if any(
+            sample["controlVolumeSpongeCellCount"] != 0
+            or sample["solidControlSurfaceCrossingLinkCount"] != 0
+            for sample in case["samples"]
+        ):
+            raise SystemExit(
+                f"{recursive_ladder_path} phase history lost control isolation"
+            )
+        if [sample["step"] for sample in case["samples"]] != list(
+            range(1, case["requestedSteps"] + 1)
+        ):
+            raise SystemExit(
+                f"{recursive_ladder_path} phase history is not contiguous"
+            )
+    for key, decision_key in (
+        ("controlVolumeLimiterActivationFraction", "stationaryWallRecursiveRegularizationLadderControlActivationFractions"),
+        ("relativeControlVolumeLimiterL1Correction", "stationaryWallRecursiveRegularizationLadderControlRelativeL1Corrections"),
+        ("relativeControlVolumeLimiterL2Correction", "stationaryWallRecursiveRegularizationLadderControlRelativeL2Corrections"),
+        ("meanDragCoefficientLastConvectiveTime", "stationaryWallRecursiveRegularizationLadderMeanDragCoefficients"),
+    ):
+        for actual, expected in zip(
+            [case[key] for case in recursive_ladder_cases],
+            decision[decision_key],
+        ):
+            close(actual, expected, 1.0e-14, f"recursive ladder {key}")
+    close(
+        recursive_ladder["relativeFinestTwoDragChange"],
+        decision[
+            "stationaryWallRecursiveRegularizationLadderRelativeFinestTwoDragChange"
+        ],
+        1.0e-14,
+        "recursive ladder finest-two drag change",
+    )
+    if recursive_ladder["relativeFinestTwoDragChange"] <= recursive_ladder[
+        "maximumAllowedFinestTwoDragChange"
+    ]:
+        raise SystemExit(f"{recursive_ladder_path} must retain force failure")
+    for case_index, case in enumerate(recursive_ladder_cases):
+        window_means = []
+        for window_index in range(5):
+            values = [
+                sample["dragCoefficient"]
+                for sample in case["samples"]
+                if window_index < sample["convectiveTime"] <= window_index + 1
+            ]
+            if not values:
+                raise SystemExit(
+                    f"{recursive_ladder_path} lost convective window {window_index + 1}"
+                )
+            window_means.append(sum(values) / len(values))
+        for actual, expected in zip(
+            window_means,
+            decision[
+                "stationaryWallRecursiveRegularizationLadderConvectiveWindowMeanDragCoefficients"
+            ][case_index],
+        ):
+            close(actual, expected, 1.0e-14, "recursive ladder window mean")
+        fourth_to_fifth = abs(window_means[4] - window_means[3]) / max(
+            abs(window_means[4]), 1.0e-30
+        )
+        close(
+            fourth_to_fifth,
+            decision[
+                "stationaryWallRecursiveRegularizationLadderFourthToFifthRelativeDragChanges"
+            ][case_index],
+            1.0e-14,
+            "recursive ladder duration sensitivity",
+        )
+    for path_key, hash_key in (
+        ("stationaryWallRecursiveRegularizationLadderFigurePNG", "stationaryWallRecursiveRegularizationLadderFigurePNGSHA256"),
+        ("stationaryWallRecursiveRegularizationLadderFigureSVG", "stationaryWallRecursiveRegularizationLadderFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -1804,6 +1980,30 @@ def main() -> None:
         "recursive_regularization_candidate_l1_l2_percent: "
         f"{100.0 * recursive_candidate['relativeControlVolumeCorrectionL1']:.6f},"
         f"{100.0 * recursive_candidate['relativeControlVolumeCorrectionL2']:.6f}"
+    )
+    print(
+        "recursive_regularization_ladder_classification: "
+        f"{recursive_ladder['classification']}"
+    )
+    print(
+        "recursive_regularization_ladder_drag_coefficients: "
+        + ",".join(
+            f"{case['meanDragCoefficientLastConvectiveTime']:.9f}"
+            for case in recursive_ladder_cases
+        )
+    )
+    print(
+        "recursive_regularization_ladder_finest_drag_change_percent: "
+        f"{100.0 * recursive_ladder['relativeFinestTwoDragChange']:.6f}"
+    )
+    print(
+        "recursive_regularization_ladder_fourth_to_fifth_change_percent: "
+        + ",".join(
+            f"{100.0 * value:.6f}"
+            for value in decision[
+                "stationaryWallRecursiveRegularizationLadderFourthToFifthRelativeDragChanges"
+            ]
+        )
     )
     print("passed: true")
 

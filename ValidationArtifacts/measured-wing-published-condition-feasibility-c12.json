@@ -12,7 +12,7 @@
     },
     "physicalConditionAudit": {
       "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
-      "sha256": "506ff88b35087db839755fd81394bab418b90db1c7addedacc35e3ef1ffea334"
+      "sha256": "437f899a9333f34a187ae4a49b892690d4a08134df6971726c20fd54521d0f48"
     },
     "publishedConditionDOI": "10.1155/2022/5433184"
   },

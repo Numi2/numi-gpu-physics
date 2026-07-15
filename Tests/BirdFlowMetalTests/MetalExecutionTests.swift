@@ -1087,6 +1087,77 @@ func productionMetalGeometricLimiterLadderBlocksNonConvergedPromotion()
 }
 
 @Test
+func productionMetalRecursiveRegularizationLadderBlocksForcePromotion()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRecursiveRegularizationLadder()
+
+    #expect(
+        report.classification
+            == "stationary-wall-recursive-regularization-ladder-not-accepted"
+    )
+    #expect(report.cases.map(\.diameterCells) == [8, 12, 16])
+    #expect(
+        report.cases.map(\.domainCells) == [
+            SIMD3<Int>(80, 48, 48),
+            SIMD3<Int>(120, 72, 72),
+            SIMD3<Int>(160, 96, 96),
+        ]
+    )
+    #expect(report.cases.map(\.requestedSteps) == [500, 750, 1_000])
+    #expect(report.cases.allSatisfy {
+        $0.minimumObservedPopulation! > 0
+            && $0.sourceAwareStabilityPassed
+            && $0.forceBudgetPassed
+            && $0.limiterNonIntrusivePassed
+            && $0.passed
+            && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && $0.controlVolumeOutsideSponge
+            && $0.globalLedgerClosed
+    })
+    #expect(
+        report.cases.map(\.meanDragCoefficientLastConvectiveTime) == [
+            1.320_419_274_473_607_9,
+            0.937_999_642_875_562_3,
+            1.047_765_781_965_056,
+        ]
+    )
+    #expect(
+        report.cases.map(\.controlVolumeLimiterActivationFraction) == [
+            0.000_135_208_333_333_333_34,
+            0.000_108_731_138_545_953_36,
+            0.000_064_514_973_958_333_33,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL1Correction) == [
+            0.000_243_629_770_367_964_17,
+            0.000_234_932_111_125_003_3,
+            0.000_193_226_315_210_837_67,
+        ]
+    )
+    #expect(
+        report.cases.map(\.relativeControlVolumeLimiterL2Correction) == [
+            0.004_133_143_671_728_516,
+            0.003_779_166_883_736_146,
+            0.003_527_852_471_536_101_6,
+        ]
+    )
+    #expect(
+        report.relativeFinestTwoDragChange
+            == 0.104_762_095_669_540_23
+    )
+    #expect(report.limiterActivationNonIncreasing)
+    #expect(report.limiterCorrectionNonIncreasing)
+    #expect(report.observedDragConvergenceOrder == nil)
+    #expect(report.richardsonExtrapolatedDragCoefficient == nil)
+    #expect(report.fineGridConvergenceIndex == nil)
+    #expect(!report.passed)
+}
+
+@Test
 func productionMetalRadialLimiterLocalizationConfirmsBulkSpread()
     throws
 {

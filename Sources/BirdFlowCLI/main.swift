@@ -356,6 +356,7 @@ private struct TranslatingBodyArguments {
     var trtCollisionDecomposition = false
     var symmetricLimiterAB = false
     var geometricLimiterLadder = false
+    var recursiveRegularizationLadder = false
     var radialLimiterLocalization = false
     var bulkCollisionOperatorAB = false
     var recursiveRegularizationAB = false
@@ -386,6 +387,8 @@ private struct TranslatingBodyArguments {
                 symmetricLimiterAB = true
             case "--geometric-limiter-ladder":
                 geometricLimiterLadder = true
+            case "--recursive-regularization-ladder":
+                recursiveRegularizationLadder = true
             case "--radial-limiter-localization":
                 radialLimiterLocalization = true
             case "--bulk-collision-operator-ab":
@@ -463,6 +466,11 @@ private struct TranslatingBodyArguments {
                 "--geometric-limiter-ladder requires --stationary-wall"
             )
         }
+        if recursiveRegularizationLadder && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-ladder requires --stationary-wall"
+            )
+        }
         if radialLimiterLocalization && !stationaryWall {
             throw CLIError.invalidArgument(
                 "--radial-limiter-localization requires --stationary-wall"
@@ -485,6 +493,7 @@ private struct TranslatingBodyArguments {
             trtCollisionDecomposition,
             symmetricLimiterAB,
             geometricLimiterLadder,
+            recursiveRegularizationLadder,
             radialLimiterLocalization,
             bulkCollisionOperatorAB,
             recursiveRegularizationAB
@@ -499,6 +508,7 @@ private struct TranslatingBodyArguments {
             && !trtCollisionDecomposition
             && !symmetricLimiterAB
             && !geometricLimiterLadder
+            && !recursiveRegularizationLadder
             && !radialLimiterLocalization
             && !bulkCollisionOperatorAB
             && !recursiveRegularizationAB {
@@ -527,6 +537,8 @@ private struct TranslatingBodyArguments {
                            Compare the locked c16 control and symmetric limiter
       --geometric-limiter-ladder
                            Run true D=8/12/16 source-aware sphere refinement
+      --recursive-regularization-ladder
+                           Run RR3 through the unchanged D=8/12/16 sphere refinement
       --radial-limiter-localization
                            Localize D=16 limiter intervention by sphere distance
       --bulk-collision-operator-ab
@@ -1464,9 +1476,14 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
                 }
                 return
             }
-            if arguments.geometricLimiterLadder {
-                let report = try MetalTranslatingBodyTopologyValidator
-                    .runStationaryWallGeometricLimiterLadder()
+            if arguments.geometricLimiterLadder
+                || arguments.recursiveRegularizationLadder
+            {
+                let report = try arguments.recursiveRegularizationLadder
+                    ? MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallRecursiveRegularizationLadder()
+                    : MetalTranslatingBodyTopologyValidator
+                        .runStationaryWallGeometricLimiterLadder()
                 if let archivePath = arguments.archivePath {
                     try writeJSON(report, to: archivePath)
                 }
@@ -1502,7 +1519,7 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
                 }
                 guard report.passed else {
                     throw MetalTranslatingBodyTopologyValidationError.failed(
-                        "geometric symmetric-limiter ladder did not pass"
+                        "geometric collision-operator ladder did not pass"
                     )
                 }
                 return

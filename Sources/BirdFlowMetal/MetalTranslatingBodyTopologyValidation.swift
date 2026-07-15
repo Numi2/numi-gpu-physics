@@ -1573,6 +1573,48 @@ public enum MetalTranslatingBodyTopologyValidator {
     public static func runStationaryWallGeometricLimiterLadder()
         throws -> MetalStationaryWallGeometricLimiterLadderReport
     {
+        try runStationaryWallGeometricCollisionLadder(
+            collisionOperator: .symmetricLimitedTRT,
+            limiterMode:
+                "cell-local common scale on complete symmetric TRT increment",
+            acceptedClassification:
+                "stationary-wall-geometric-limiter-ladder-accepted",
+            rejectedClassification:
+                "stationary-wall-geometric-limiter-ladder-not-accepted",
+            acceptedVerdict:
+                "The source-aware symmetric limiter remains positive, conservative, non-intrusive, and grid-convergent across geometrically similar D=8/12/16 stationary spheres. It may proceed to the published five-cycle flapping-wing ladder.",
+            rejectedVerdict:
+                "At least one predeclared source-aware stability, force-budget, limiter-intervention, or grid-convergence gate failed. Keep the limiter out of coupled bird replay and use the archived resolution trend to isolate the remaining defect."
+        )
+    }
+
+    public static func runStationaryWallRecursiveRegularizationLadder()
+        throws -> MetalStationaryWallGeometricLimiterLadderReport
+    {
+        try runStationaryWallGeometricCollisionLadder(
+            collisionOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            limiterMode:
+                "recursive second-plus-supported-third-order D3Q19 Hermite reconstruction with a convex equilibrium-to-post-collision positivity scale",
+            acceptedClassification:
+                "stationary-wall-recursive-regularization-ladder-accepted",
+            rejectedClassification:
+                "stationary-wall-recursive-regularization-ladder-not-accepted",
+            acceptedVerdict:
+                "The recursive-regularized BGK candidate remains positive, conservative, non-intrusive, and grid-convergent across geometrically similar D=8/12/16 stationary spheres. It is eligible for production integration followed by the published five-cycle flapping-wing regression ladder.",
+            rejectedVerdict:
+                "At least one unchanged source-aware stability, force-budget, correction-intervention, trend, or drag-convergence gate failed. Keep recursive-regularized BGK out of coupled bird replay and use the archived resolution trend to isolate the remaining defect."
+        )
+    }
+
+    private static func runStationaryWallGeometricCollisionLadder(
+        collisionOperator: BulkCollisionOperator,
+        limiterMode: String,
+        acceptedClassification: String,
+        rejectedClassification: String,
+        acceptedVerdict: String,
+        rejectedVerdict: String
+    ) throws -> MetalStationaryWallGeometricLimiterLadderReport {
 #if canImport(Metal)
         let startTime = Date()
         let backend = try MetalBackend(fastMath: false)
@@ -1643,7 +1685,14 @@ public enum MetalTranslatingBodyTopologyValidator {
                 backend: backend,
                 linkForceMode: 6,
                 caseConfiguration: configuration,
-                symmetricPositivityLimiterEnabled: true,
+                symmetricPositivityLimiterEnabled:
+                    collisionOperator == .symmetricLimitedTRT,
+                positivityPreservingRegularizedCollisionEnabled:
+                    collisionOperator
+                        == .positivityPreservingRegularizedBGK,
+                positivityPreservingRecursiveRegularizedCollisionEnabled:
+                    collisionOperator
+                        == .positivityPreservingRecursiveRegularizedBGK,
                 conservationLedgerEnabled: true
             )
             let initial = try simulation.copyPopulations()
@@ -1938,18 +1987,17 @@ public enum MetalTranslatingBodyTopologyValidator {
             && correctionNonIncreasing
             && fit != nil
         let classification = passed
-            ? "stationary-wall-geometric-limiter-ladder-accepted"
-            : "stationary-wall-geometric-limiter-ladder-not-accepted"
+            ? acceptedClassification
+            : rejectedClassification
         let verdict = passed
-            ? "The source-aware symmetric limiter remains positive, conservative, non-intrusive, and grid-convergent across geometrically similar D=8/12/16 stationary spheres. It may proceed to the published five-cycle flapping-wing ladder."
-            : "At least one predeclared source-aware stability, force-budget, limiter-intervention, or grid-convergence gate failed. Keep the limiter out of coupled bird replay and use the archived resolution trend to isolate the remaining defect."
+            ? acceptedVerdict
+            : rejectedVerdict
         return MetalStationaryWallGeometricLimiterLadderReport(
             schemaVersion: 1,
             deviceName: backend.device.name,
             productionKernel: "stepFluidTRT",
             ledgerCaptureKernel: "captureSymmetricLimiterLedger",
-            limiterMode:
-                "cell-local common scale on complete symmetric TRT increment",
+            limiterMode: limiterMode,
             classification: classification,
             reynoldsNumber: reynoldsNumber,
             latticeFarFieldSpeed: referenceSpeed,

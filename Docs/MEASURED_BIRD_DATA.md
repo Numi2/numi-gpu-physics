@@ -394,3 +394,12 @@ closed while reducing activation to `0.00645%`, relative L1 correction to
 D=16 gate and is eligible for the locked D=8/12/16 geometric ladder. It remains
 excluded from measured-bird replay until that ladder establishes non-intrusive
 correction and force convergence on every grid.
+
+The RR3 ladder now gives a deliberate negative promotion result. All three
+grids remain positive, source/force closed, and non-intrusive, with activation
+and both correction norms decreasing under refinement. Drag does not converge:
+D=8/12/16 coefficients are `1.32042`, `0.93800`, and `1.04777`; the finest-two
+change is `10.476%` against the unchanged `5%` gate and no Richardson fit
+exists. RR3 therefore remains excluded from measured-bird replay. Because the
+D=8 and D=12 fourth-to-fifth convective-window means still change `11.54%` and
+`13.28%`, a cheap duration-sensitivity extension precedes any D=20 study.
