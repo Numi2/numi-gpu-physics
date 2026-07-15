@@ -634,10 +634,10 @@ func productionMetalHighReStationaryWallSphereConfirmsGeneralCurvedLinkInstabili
     #expect(report.cases.map(\.matchedBirdChordCells) == [8, 12, 16])
     #expect(
         report.cases.compactMap(\.firstNonFiniteLoadStep)
-            == [267, 267, 267]
+            == [105, 105, 105]
     )
     #expect(report.cases.allSatisfy {
-        $0.finiteLoadSteps == 266
+        $0.finiteLoadSteps == 104
             && !$0.populationsFinite
             && !$0.fieldsFinite
             && !$0.loadsFinite
@@ -652,7 +652,7 @@ func productionMetalHighReStationaryWallSphereConfirmsGeneralCurvedLinkInstabili
 }
 
 @Test
-func productionMetalStationaryWallRelaxationSweepFindsNonMonotonicStability()
+func productionMetalStationaryWallRelaxationSweepBracketsMonotonicThreshold()
     throws
 {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
@@ -662,34 +662,34 @@ func productionMetalStationaryWallRelaxationSweepFindsNonMonotonicStability()
     #expect(report.diagnosticCompleted)
     #expect(
         report.classification
-            == "stationary-wall-relaxation-stability-nonmonotonic"
+            == "stationary-wall-relaxation-threshold-bracketed"
     )
     #expect(report.firstTransitionBracketed)
-    #expect(!report.stabilityMonotonicWithMargin)
-    #expect(!report.thresholdBracketed)
+    #expect(report.stabilityMonotonicWithMargin)
+    #expect(report.thresholdBracketed)
     #expect(report.points.count == 14)
     #expect(
         report.points.map(\.stabilityPassed)
             == [
-                false, false, false, false, false, false, false,
-                false, true, false, true, true, true, true,
+                false, false, false, false, false, false, true,
+                true, true, true, true, true, true, true,
             ]
     )
     #expect(
         report.points.map(\.firstNonFiniteLoadStep)
             == [
-                267, 268, 273, 280, 324, 451, 472,
-                488, nil, 496, nil, nil, nil, nil,
+                105, 107, 112, 123, 208, 454, nil,
+                nil, nil, nil, nil, nil, nil, nil,
             ]
     )
+    #expect(report.unstableTauPlusMarginsAfterFirstStable.isEmpty)
     #expect(
-        report.unstableTauPlusMarginsAfterFirstStable.count == 1
+        abs((report.firstTransitionLowerUnstableTauPlusMarginAboveHalf ?? 0)
+            - 0.009_999_990_463_256_836) < 1.0e-12
     )
     #expect(
-        abs(
-            report.unstableTauPlusMarginsAfterFirstStable[0]
-                - 0.016250014305114746
-        ) < 1.0e-12
+        abs((report.firstTransitionUpperStableTauPlusMarginAboveHalf ?? 0)
+            - 0.012_499_988_079_071_045) < 1.0e-12
     )
     #expect(report.points.allSatisfy {
         $0.newlyCoveredCellEvents == 0
@@ -701,7 +701,7 @@ func productionMetalStationaryWallRelaxationSweepFindsNonMonotonicStability()
 }
 
 @Test
-func productionMetalStationaryWallLongHorizonConfirmsDelayedDivergence()
+func productionMetalStationaryWallLongHorizonSurvivesCorrectedThreshold()
     throws
 {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
@@ -711,25 +711,251 @@ func productionMetalStationaryWallLongHorizonConfirmsDelayedDivergence()
     #expect(report.diagnosticCompleted)
     #expect(
         report.classification
-            == "stationary-wall-500-step-stability-horizon-censored"
+            == "stationary-wall-apparent-stability-survives-1000"
     )
-    #expect(report.survivingPointCount == 0)
-    #expect(!report.allApparentStablePointsSurvived)
+    #expect(report.survivingPointCount == 3)
+    #expect(report.allApparentStablePointsSurvived)
     #expect(
         report.points.map(\.firstNonFiniteLoadStep)
-            == [519, 566, 588]
+            == [nil, nil, nil]
     )
     #expect(report.points.allSatisfy {
-        !$0.stabilityPassed
+        $0.stabilityPassed
             && !$0.fullAcceptancePassed
-            && !$0.populationsFinite
-            && !$0.fieldsFinite
-            && !$0.loadsFinite
+            && $0.populationsFinite
+            && $0.fieldsFinite
+            && $0.loadsFinite
             && $0.newlyCoveredCellEvents == 0
             && $0.newlyUncoveredCellEvents == 0
             && $0.topologyTransitionSteps == 0
             && ($0.maximumMeasuredForceMagnitude ?? 0) > 0
     })
+}
+
+@Test
+func productionMetalStationaryWallC16LocatesFirstPopulationPositivityLoss()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallC16PopulationPositivity()
+    let repeated = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallC16PopulationPositivity()
+    let firstNegative = try #require(report.firstNegative)
+    let firstNonFinite = try #require(report.firstNonFinite)
+    let repeatedNegative = try #require(repeated.firstNegative)
+    let repeatedNonFinite = try #require(repeated.firstNonFinite)
+
+    #expect(report.diagnosticCompleted)
+    #expect(report.diagnosticKernel == "reducePopulationMinimum")
+    #expect(
+        report.classification
+            == "stationary-wall-c16-first-positivity-loss-curved-boundary-adjacent-fluid-pull"
+    )
+    #expect(report.domainCells == SIMD3<Int>(56, 24, 24))
+    #expect(report.matchedBirdChordCells == 16)
+    #expect(report.completedSteps == 106)
+    #expect(report.minimumHistory.count == report.completedSteps + 1)
+    #expect((report.initialMinimum.minimumPopulation ?? 0) > 0)
+    #expect(firstNegative.step == 27)
+    #expect(firstNegative.directionIndex == 10)
+    #expect(firstNegative.cell == SIMD3<Int>(5, 9, 12))
+    #expect(firstNegative.pullSourceCell == SIMD3<Int>(6, 8, 12))
+    #expect(firstNegative.cellAdjacentToSphere)
+    #expect(!firstNegative.pullSourceIsSolid)
+    #expect(!firstNegative.insideSponge)
+    #expect(
+        firstNegative.populationUpdatePath
+            == "ordinary-fluid-pull-trt-collision"
+    )
+    #expect(
+        abs(firstNegative.signedDistanceToSphereSurfaceCells
+            - 0.320_714_214_271_425_2) < 1.0e-12
+    )
+    #expect(firstNonFinite.step == 105)
+    #expect(firstNonFinite.directionIndex == 0)
+    #expect(firstNonFinite.cell == SIMD3<Int>(2, 10, 9))
+    #expect(firstNonFinite.valueClassification == "nan")
+    #expect(report.firstNonFiniteLoadStep == 105)
+    #expect(report.newlyCoveredCellEvents == 0)
+    #expect(report.newlyUncoveredCellEvents == 0)
+    #expect(report.topologyTransitionSteps == 0)
+    #expect(repeatedNegative.step == firstNegative.step)
+    #expect(repeatedNegative.directionIndex == firstNegative.directionIndex)
+    #expect(repeatedNegative.cell == firstNegative.cell)
+    #expect(repeatedNonFinite.step == firstNonFinite.step)
+    #expect(repeatedNonFinite.directionIndex == firstNonFinite.directionIndex)
+    #expect(repeatedNonFinite.cell == firstNonFinite.cell)
+}
+
+@Test
+func productionMetalStationaryWallC16IsolatesSymmetricTRTOvershoot()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallC16TRTCollisionDecomposition()
+    let repeated = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallC16TRTCollisionDecomposition()
+    let failing = report.failingDirection
+
+    #expect(report.diagnosticCompleted)
+    #expect(
+        report.classification
+            == "stationary-wall-c16-trt-symmetric-relaxation-overshoot"
+    )
+    #expect(report.captureStep == 27)
+    #expect(report.targetCell == SIMD3<Int>(5, 9, 12))
+    #expect(report.targetAdjacentToSphere)
+    #expect(!report.targetIsSolid)
+    #expect(report.solidPullSourceCount == 5)
+    #expect(report.outsideDomainPullSourceCount == 0)
+    #expect(report.spongeFactor == 0)
+    #expect(report.allPulledPopulationsPositive)
+    #expect(report.directionTerms.count == D3Q19.count)
+    #expect(report.minimumActualPostCollisionDirection == 10)
+    #expect(report.dominantDestabilizingRelaxationMode == "symmetric")
+    #expect(report.maximumAbsolutePredictionResidual <= 1.0e-7)
+    #expect(report.maximumAbsoluteBoundaryWallCorrection == 0)
+    #expect(report.failingBoundaryInterpolation == nil)
+    #expect(failing.directionIndex == 10)
+    #expect(failing.latticeDirection == SIMD3<Int>(-1, 1, 0))
+    #expect(failing.pullSourceCell == SIMD3<Int>(6, 8, 12))
+    #expect(failing.pullSourceInsideDomain)
+    #expect(!failing.pullSourceIsSolid)
+    #expect(abs(failing.pulledPopulation - 0.030_865_484_848_618_507) < 1e-12)
+    #expect(
+        abs(failing.symmetricRelaxationIncrement
+            - -0.030_936_071_649_193_764) < 1e-12
+    )
+    #expect(
+        abs(failing.antisymmetricRelaxationIncrement
+            - 0.000_009_069_985_026_144_423) < 1e-12
+    )
+    #expect(failing.postWithoutSymmetricIncrement > 0)
+    #expect(failing.postWithoutAntisymmetricIncrement < 0)
+    #expect(abs(failing.actualPostCollision - -0.000_061_517_086_578_533_05) < 1e-12)
+    #expect(report.newlyCoveredCellEvents == 0)
+    #expect(report.newlyUncoveredCellEvents == 0)
+    #expect(report.topologyTransitionSteps == 0)
+    #expect(
+        repeated.classification == report.classification
+            && repeated.failingDirection.directionIndex
+                == failing.directionIndex
+            && repeated.failingDirection.pulledPopulation
+                == failing.pulledPopulation
+            && repeated.failingDirection.symmetricRelaxationIncrement
+                == failing.symmetricRelaxationIncrement
+            && repeated.failingDirection.antisymmetricRelaxationIncrement
+                == failing.antisymmetricRelaxationIncrement
+            && repeated.failingDirection.actualPostCollision
+                == failing.actualPostCollision
+    )
+}
+
+@Test
+func productionMetalStationaryWallC16LimiterAttributesOpenFlowSources()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallC16SymmetricLimiterAB()
+    let repeated = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallC16SymmetricLimiterAB()
+    let control = report.control
+    let treatment = report.treatment
+
+    #expect(report.diagnosticCompleted)
+    #expect(
+        report.classification
+            == "stationary-wall-c16-limiter-clears-positivity-open-flow-sources-attributed"
+    )
+    #expect(control.firstNegativePopulationStep == 27)
+    #expect(control.firstNonFinitePopulationStep == 105)
+    #expect(control.firstNonFiniteLoadStep == 105)
+    #expect(control.limiterActivationCellSteps == 0)
+    #expect(treatment.completedSteps == 500)
+    #expect(treatment.firstNegativePopulationStep == nil)
+    #expect(treatment.firstNonFinitePopulationStep == nil)
+    #expect(treatment.firstNonFiniteLoadStep == nil)
+    #expect(treatment.populationsFinite)
+    #expect(treatment.fieldsFinite)
+    #expect(treatment.loadsFinite)
+    #expect(treatment.limiterActivationCellSteps == 1_417_658)
+    #expect(treatment.limiterActivationSteps == 467)
+    #expect(treatment.firstLimiterActivationStep == 27)
+    #expect(treatment.firstZeroLimiterScaleStep == nil)
+    #expect(treatment.maximumLimiterActivationsInOneStep == 6_819)
+    #expect(treatment.minimumLimiterScale == 0.001_427_769_660_949_707)
+    #expect(!treatment.stabilityPassed)
+    #expect(!treatment.forceBudgetPassed)
+    #expect(!treatment.fullAcceptancePassed)
+    #expect(
+        abs((treatment.relativePopulationMassDrift ?? 0)
+            - 0.001_828_893_701_613_996_1) < 1e-12
+    )
+    #expect(
+        abs((treatment.minimumObservedPopulation ?? 0)
+            - 8.728_420_652_914_792e-9) < 1e-16
+    )
+    #expect(
+        abs((treatment.maximumConservativeForceResidual ?? 0)
+            - 0.240_913_338_520_273_2) < 1e-10
+    )
+    #expect(
+        abs((treatment.conservativeRelativeRMSResidual ?? 0)
+            - 0.039_365_997_984_204_02) < 1e-10
+    )
+    #expect(report.maximumPreActivationMeasuredForceDifference == 0)
+    #expect(report.maximumPreActivationBudgetForceDifference == 0)
+    let ledger = report.treatmentConservationLedger
+    #expect(ledger.samples.count == 500)
+    #expect(ledger.samples.map(\.step) == Array(1...500))
+    #expect(ledger.globalLedgerClosed)
+    #expect(ledger.forceResidualLedgerClosed)
+    #expect(ledger.dominantGlobalMassContribution == "open-far-field")
+    #expect(ledger.dominantControlVolumeMomentumContribution == "sponge")
+    #expect(ledger.relativeCumulativeLimiterMassContribution < 1.0e-6)
+    #expect(ledger.relativeRMSUnexplainedForceResidual < 5.0e-3)
+    #expect(ledger.maximumPeakUnexplainedForceResidualFraction < 1.0e-2)
+    #expect(ledger.relativeRMSBoundaryLoadClosureResidual < 1.0e-6)
+    #expect(
+        abs(ledger.cumulativeObservedGlobal.mass
+            - -58.992_806_583_177_3) < 1.0e-9
+    )
+    #expect(
+        abs(ledger.cumulativeFarFieldGlobal.mass
+            - -212.358_820_101_246_24) < 1.0e-9
+    )
+    #expect(
+        abs(ledger.cumulativeSpongeGlobal.mass
+            - 152.514_207_968_932_17) < 1.0e-9
+    )
+    #expect(
+        abs(ledger.RMSControlVolumeSpongeForceNewtons
+            - 0.125_603_589_121_954_38) < 1.0e-10
+    )
+    #expect(ledger.RMSControlVolumeSymmetricLimiterForceNewtons < 1.0e-6)
+    #expect(ledger.maximumBoundaryLoadClosureResidualNewtons < 5.0e-6)
+    #expect(
+        repeated.classification == report.classification
+            && repeated.control.firstNegativePopulationStep
+                == control.firstNegativePopulationStep
+            && repeated.treatment.firstNegativePopulationStep
+                == treatment.firstNegativePopulationStep
+            && repeated.treatment.limiterActivationCellSteps
+                == treatment.limiterActivationCellSteps
+            && repeated.treatment.firstZeroLimiterScaleStep
+                == treatment.firstZeroLimiterScaleStep
+            && repeated.treatment.minimumObservedPopulation
+                == treatment.minimumObservedPopulation
+            && repeated.treatmentConservationLedger
+                .cumulativeObservedGlobal.mass
+                == ledger.cumulativeObservedGlobal.mass
+            && repeated.treatmentConservationLedger
+                .RMSControlVolumeSpongeForceNewtons
+                == ledger.RMSControlVolumeSpongeForceNewtons
+    )
 }
 
 @Test

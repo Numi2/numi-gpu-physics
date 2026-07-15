@@ -55,6 +55,10 @@ REQUIRED_KERNELS = {
     "storeForceTorqueSample",
     "storeRunSample",
     "gatherFloatValues",
+    "reducePopulationMinimum",
+    "captureTRTCollisionDecomposition",
+    "captureSymmetricLimiterLedger",
+    "reduceSymmetricLimiterLedger",
     "integrateBirdBody",
 }
 
@@ -138,6 +142,16 @@ def main() -> int:
         fail(
             "Swift pipeline names differ from Metal entry points: "
             f"pipelines={sorted(pipelines)}"
+        )
+
+    if re.search(
+        r"wallVelocity:\s*SIMD4<Float>\(\s*"
+        r"caseConfiguration\.wallVelocityLattice\s*,",
+        swift,
+    ) is None:
+        fail(
+            "translating-sphere GPU wall velocity is not sourced from "
+            "caseConfiguration.wallVelocityLattice"
         )
 
     c_block = re.search(
@@ -413,6 +427,10 @@ def main() -> int:
         "storeForceTorqueSample": 3,
         "storeRunSample": 5,
         "gatherFloatValues": 4,
+        "reducePopulationMinimum": 3,
+        "captureTRTCollisionDecomposition": 8,
+        "captureSymmetricLimiterLedger": 7,
+        "reduceSymmetricLimiterLedger": 3,
         "integrateBirdBody": 4,
     }
     for kernel, count in expected_buffers.items():
@@ -512,6 +530,21 @@ def main() -> int:
             "private func encodeFluidStep(",
             ["currentPopulations", "nextPopulations", "currentSolidMask", "nextSolidMask", "wallVelocity", "density", "velocity", "reductionA", "bodyStateBuffer", "uniforms"],
             ["populationsIn", "populationsOut", "solidPrevious", "solidCurrent", "wallVelocity", "density", "velocity", "partialLoads", "body", "uniforms"],
+        ),
+        "captureTRTCollisionDecomposition": (
+            "private func encodeTRTCollisionDecomposition(",
+            ["currentPopulations", "nextPopulations", "nextSolid", "wallVelocity", "trtCollisionTerms", "trtCollisionSummary", "uniforms", "targetGID"],
+            ["populationsIn", "populationsOut", "solidCurrent", "wallVelocity", "terms", "summary", "uniforms", "targetGID"],
+        ),
+        "captureSymmetricLimiterLedger": (
+            "private func encodeConservationLedgerCapture(",
+            ["currentPopulations", "nextPopulations", "nextSolid", "wallVelocity", "conservationLedgerCells", "uniforms", "ledgerBounds"],
+            ["populationsIn", "populationsOut", "solidCurrent", "wallVelocity", "ledgers", "uniforms", "bounds"],
+        ),
+        "reduceSymmetricLimiterLedger": (
+            "private func encodeConservationLedgerReduction(",
+            ["conservationLedgerCells", "conservationLedgerPartials", "cellCount"],
+            ["input", "output", "inputCount"],
         ),
         "reduceForceTorque": (
             "private func encodeReduction(",

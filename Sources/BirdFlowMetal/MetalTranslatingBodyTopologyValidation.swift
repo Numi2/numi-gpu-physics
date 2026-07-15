@@ -216,6 +216,332 @@ public struct MetalStationaryWallLongHorizonSurvivalReport:
     public let diagnosticCompleted: Bool
 }
 
+public struct MetalStationaryWallPopulationMinimumSample:
+    Codable, Sendable
+{
+    public let step: Int
+    public let minimumPopulation: Double?
+    public let valueClassification: String
+    public let directionIndex: Int
+    public let latticeDirection: SIMD3<Int>
+    public let cell: SIMD3<Int>
+    public let signedDistanceToSphereSurfaceCells: Double
+    public let absoluteDistanceToSphereSurfaceCells: Double
+    public let cellIsSolid: Bool
+    public let cellAdjacentToSphere: Bool
+    public let pullSourceCell: SIMD3<Int>
+    public let pullSourceInsideDomain: Bool
+    public let pullSourceIsSolid: Bool
+    public let pullSourceSignedDistanceToSphereSurfaceCells: Double?
+    public let populationUpdatePath: String
+    public let distanceToNearestDomainBoundaryCells: Int
+    public let insideSponge: Bool
+    public let spongeFactor: Double
+}
+
+public struct MetalStationaryWallPopulationPositivityReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let diagnosticKernel: String
+    public let domainCells: SIMD3<Int>
+    public let sphereCenterCells: SIMD3<Double>
+    public let sphereRadiusCells: Double
+    public let farFieldVelocityLattice: Double
+    public let wallVelocityLattice: Double
+    public let spongeWidthCells: Int
+    public let spongeStrength: Double
+    public let matchedBirdChordCells: Int
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let tauPlusMarginAboveHalf: Double
+    public let requestedSteps: Int
+    public let completedSteps: Int
+    public let runtimeSeconds: Double
+    public let initialMinimum: MetalStationaryWallPopulationMinimumSample
+    public let firstNegative: MetalStationaryWallPopulationMinimumSample?
+    public let firstNonFinite: MetalStationaryWallPopulationMinimumSample?
+    public let firstNonFiniteLoadStep: Int?
+    public let newlyCoveredCellEvents: Int
+    public let newlyUncoveredCellEvents: Int
+    public let topologyTransitionSteps: Int
+    public let minimumHistory: [MetalStationaryWallPopulationMinimumSample]
+    public let classification: String
+    public let scientificVerdict: String
+    public let diagnosticCompleted: Bool
+}
+
+public struct MetalStationaryWallTRTCollisionDirectionTerm:
+    Codable, Sendable
+{
+    public let directionIndex: Int
+    public let latticeDirection: SIMD3<Int>
+    public let pullSourceCell: SIMD3<Int>
+    public let pullSourceInsideDomain: Bool
+    public let pullSourceIsSolid: Bool
+    public let pulledPopulation: Double
+    public let equilibriumPopulation: Double
+    public let symmetricNonequilibrium: Double
+    public let antisymmetricNonequilibrium: Double
+    public let symmetricRelaxationIncrement: Double
+    public let antisymmetricRelaxationIncrement: Double
+    public let postWithoutSymmetricIncrement: Double
+    public let postWithoutAntisymmetricIncrement: Double
+    public let predictedPostCollision: Double
+    public let actualPostCollision: Double
+    public let predictionResidual: Double
+}
+
+public struct MetalStationaryWallTRTCollisionDecompositionReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let diagnosticKernel: String
+    public let domainCells: SIMD3<Int>
+    public let sphereCenterCells: SIMD3<Double>
+    public let sphereRadiusCells: Double
+    public let farFieldVelocityLattice: Double
+    public let wallVelocityLattice: Double
+    public let spongeWidthCells: Int
+    public let spongeStrength: Double
+    public let matchedBirdChordCells: Int
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let tauPlusMarginAboveHalf: Double
+    public let captureStep: Int
+    public let targetCell: SIMD3<Int>
+    public let targetSignedDistanceToSphereSurfaceCells: Double
+    public let targetAdjacentToSphere: Bool
+    public let density: Double
+    public let velocityLattice: SIMD3<Double>
+    public let omegaPlus: Double
+    public let omegaMinus: Double
+    public let spongeFactor: Double
+    public let targetIsSolid: Bool
+    public let solidPullSourceCount: Int
+    public let outsideDomainPullSourceCount: Int
+    public let allPulledPopulationsPositive: Bool
+    public let minimumPulledPopulation: Double
+    public let minimumActualPostCollisionDirection: Int
+    public let maximumAbsolutePredictionResidual: Double
+    public let failingDirection: MetalStationaryWallTRTCollisionDirectionTerm
+    public let failingBoundaryInterpolation:
+        MetalStationaryWallBoundaryInterpolationComponent?
+    public let maximumAbsoluteBoundaryWallCorrection: Double
+    public let directionTerms: [MetalStationaryWallTRTCollisionDirectionTerm]
+    public let newlyCoveredCellEvents: Int
+    public let newlyUncoveredCellEvents: Int
+    public let topologyTransitionSteps: Int
+    public let dominantDestabilizingRelaxationMode: String
+    public let classification: String
+    public let scientificVerdict: String
+    public let runtimeSeconds: Double
+    public let diagnosticCompleted: Bool
+}
+
+public struct MetalStationaryWallSymmetricLimiterCaseReport:
+    Codable, Sendable
+{
+    public let limiterEnabled: Bool
+    public let requestedSteps: Int
+    public let completedSteps: Int
+    public let firstNegativePopulationStep: Int?
+    public let firstNonFinitePopulationStep: Int?
+    public let firstNonFiniteLoadStep: Int?
+    public let initialPopulationMass: Double
+    public let finalPopulationMass: Double?
+    public let relativePopulationMassDrift: Double?
+    public let minimumObservedPopulation: Double?
+    public let finalMinimumPopulation: Double?
+    public let maximumAbsolutePopulation: Double?
+    public let populationsFinite: Bool
+    public let fieldsFinite: Bool
+    public let loadsFinite: Bool
+    public let limiterActivationCellSteps: Int
+    public let limiterActivationSteps: Int
+    public let firstLimiterActivationStep: Int?
+    public let firstZeroLimiterScaleStep: Int?
+    public let maximumLimiterActivationsInOneStep: Int
+    public let minimumLimiterScale: Double?
+    public let newlyCoveredCellEvents: Int
+    public let newlyUncoveredCellEvents: Int
+    public let topologyTransitionSteps: Int
+    public let conservativeRMSForceResidual: Double?
+    public let maximumConservativeForceResidual: Double?
+    public let conservativeRelativeRMSResidual: Double?
+    public let rawBudgetRMSForceMagnitude: Double?
+    public let maximumMeasuredForceMagnitude: Double?
+    public let relativeResidualGateApplied: Bool
+    public let stabilityPassed: Bool
+    public let forceBudgetPassed: Bool
+    public let fullAcceptancePassed: Bool
+}
+
+public struct MetalStationaryWallConservationContribution:
+    Codable, Sendable
+{
+    public let mass: Double
+    public let momentumLattice: SIMD3<Double>
+}
+
+public struct MetalStationaryWallConservationLedgerSample:
+    Codable, Sendable
+{
+    public let step: Int
+    public let activatedCellCount: Int
+    public let boundaryLinkCount: Int
+    public let farFieldLinkCount: Int
+    public let spongeCellCount: Int
+    public let activatedBoundaryLinkCount: Int
+    public let activatedSpongeCellCount: Int
+    public let controlVolumeSpongeCellCount: Int
+    public let controlVolumeActivatedCellCount: Int
+    public let observedGlobal: MetalStationaryWallConservationContribution
+    public let boundaryGlobal: MetalStationaryWallConservationContribution
+    public let farFieldGlobal: MetalStationaryWallConservationContribution
+    public let collisionGlobal: MetalStationaryWallConservationContribution
+    public let symmetricLimiterGlobal:
+        MetalStationaryWallConservationContribution
+    public let spongeGlobal: MetalStationaryWallConservationContribution
+    public let globalClosureResidual:
+        MetalStationaryWallConservationContribution
+    public let controlVolumeCollision:
+        MetalStationaryWallConservationContribution
+    public let controlVolumeSymmetricLimiter:
+        MetalStationaryWallConservationContribution
+    public let controlVolumeSponge:
+        MetalStationaryWallConservationContribution
+    public let activatedCellBoundary:
+        MetalStationaryWallConservationContribution
+    public let activatedCellSponge:
+        MetalStationaryWallConservationContribution
+    public let measuredForceNewtons: SIMD3<Double>
+    public let rawBudgetForceNewtons: SIMD3<Double>
+    public let forceBudgetResidualNewtons: SIMD3<Double>
+    public let attributedControlVolumeSourceForceNewtons: SIMD3<Double>
+    public let unexplainedForceResidualNewtons: SIMD3<Double>
+    public let boundaryLoadClosureResidualNewtons: SIMD3<Double>
+}
+
+public struct MetalStationaryWallConservationLedgerReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let definition: String
+    public let samples: [MetalStationaryWallConservationLedgerSample]
+    public let cumulativeObservedGlobal:
+        MetalStationaryWallConservationContribution
+    public let cumulativeBoundaryGlobal:
+        MetalStationaryWallConservationContribution
+    public let cumulativeFarFieldGlobal:
+        MetalStationaryWallConservationContribution
+    public let cumulativeCollisionGlobal:
+        MetalStationaryWallConservationContribution
+    public let cumulativeSymmetricLimiterGlobal:
+        MetalStationaryWallConservationContribution
+    public let cumulativeSpongeGlobal:
+        MetalStationaryWallConservationContribution
+    public let cumulativeControlVolumeCollision:
+        MetalStationaryWallConservationContribution
+    public let cumulativeControlVolumeSymmetricLimiter:
+        MetalStationaryWallConservationContribution
+    public let cumulativeControlVolumeSponge:
+        MetalStationaryWallConservationContribution
+    public let cumulativeGlobalClosureResidual:
+        MetalStationaryWallConservationContribution
+    public let finalMinusInitialPopulationMass: Double
+    public let observedMassHistoryResidual: Double
+    public let maximumPerStepGlobalMassClosureResidual: Double
+    public let maximumPerStepGlobalMomentumClosureResidual: Double
+    public let maximumPerStepLimiterMassContribution: Double
+    public let maximumPerStepLimiterMomentumContribution: Double
+    public let relativeCumulativeLimiterMassContribution: Double
+    public let maximumForceBudgetResidualNewtons: Double
+    public let maximumAttributedControlVolumeSourceForceNewtons: Double
+    public let maximumUnexplainedForceResidualNewtons: Double
+    public let maximumBoundaryLoadClosureResidualNewtons: Double
+    public let RMSForceBudgetResidualNewtons: Double
+    public let RMSAttributedControlVolumeSourceForceNewtons: Double
+    public let RMSUnexplainedForceResidualNewtons: Double
+    public let RMSControlVolumeCollisionForceNewtons: Double
+    public let RMSControlVolumeSymmetricLimiterForceNewtons: Double
+    public let RMSControlVolumeSpongeForceNewtons: Double
+    public let relativeRMSUnexplainedForceResidual: Double
+    public let maximumPeakUnexplainedForceResidualFraction: Double
+    public let relativeRMSBoundaryLoadClosureResidual: Double
+    public let maximumAllowedRelativeRMSUnexplainedForceResidual: Double
+    public let maximumAllowedPeakUnexplainedForceResidualFraction: Double
+    public let dominantGlobalMassContribution: String
+    public let dominantControlVolumeMomentumContribution: String
+    public let globalLedgerClosed: Bool
+    public let forceResidualLedgerClosed: Bool
+}
+
+public struct MetalStationaryWallSymmetricLimiterABReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let limiterMode: String
+    public let limiterPopulationFloorDefinition: String
+    public let domainCells: SIMD3<Int>
+    public let sphereCenterCells: SIMD3<Double>
+    public let sphereRadiusCells: Double
+    public let farFieldVelocityLattice: Double
+    public let wallVelocityLattice: Double
+    public let spongeWidthCells: Int
+    public let spongeStrength: Double
+    public let matchedBirdChordCells: Int
+    public let latticeKinematicViscosity: Double
+    public let tauPlus: Double
+    public let tauPlusMarginAboveHalf: Double
+    public let requestedStepsPerCase: Int
+    public let maximumAllowedRelativePopulationMassDrift: Double
+    public let maximumAllowedAbsolutePopulation: Double
+    public let maximumAllowedConservativeForceResidual: Double
+    public let maximumAllowedConservativeRelativeRMSResidual: Double
+    public let maximumPreActivationMeasuredForceDifference: Double
+    public let maximumPreActivationBudgetForceDifference: Double
+    public let control: MetalStationaryWallSymmetricLimiterCaseReport
+    public let treatment: MetalStationaryWallSymmetricLimiterCaseReport
+    public let treatmentConservationLedger:
+        MetalStationaryWallConservationLedgerReport
+    public let classification: String
+    public let scientificVerdict: String
+    public let runtimeSeconds: Double
+    public let diagnosticCompleted: Bool
+}
+
+public struct MetalStationaryWallBoundaryInterpolationComponent:
+    Codable, Sendable
+{
+    public let directionIndex: Int
+    public let branch: String
+    public let linkFraction: Double
+    public let reflectedPopulation: Double
+    public let auxiliaryPopulation: Double
+    public let auxiliaryCell: SIMD3<Int>?
+    public let auxiliaryRole: String
+    public let wallCorrection: Double
+    public let reflectedContribution: Double
+    public let auxiliaryContribution: Double
+    public let wallCorrectionContribution: Double
+    public let reconstructedPopulation: Double
+    public let contributionClosureResidual: Double
+    public let dominantNegativeContribution: String
+}
+
+private struct MetalPopulationMinimumRecord {
+    let rawValue: Float
+    let linearIndex: UInt32
+    let nonFinite: Bool
+}
+
 public enum MetalTranslatingBodyTopologyValidator {
     public static let gridResolution = 24
     public static let sphereRadiusCells = 3.25
@@ -270,6 +596,568 @@ public enum MetalTranslatingBodyTopologyValidator {
             wallSpeed: 0,
             farFieldSpeed: 0.08
         )
+    }
+
+    public static func runStationaryWallC16PopulationPositivity(
+        steps: Int = 500
+    ) throws -> MetalStationaryWallPopulationPositivityReport {
+        guard steps == 500 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall c16 population positivity uses a locked 500-step ceiling"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let domain = try GridSize(x: 56, y: 24, z: 24)
+        let center = SIMD3<Float>(8, 12, 12)
+        let radius = Float(sphereRadiusCells)
+        let viscosity: Float = 8.782_491_2e-5
+        let spongeWidth = 4
+        let spongeStrength: Float = 0.04
+        let configuration = MetalTranslatingBodyCaseConfiguration(
+            grid: domain,
+            sphereRadiusCells: radius,
+            referenceSpeedLattice: 0.08,
+            geometryTranslationSpeedLattice: 0,
+            wallVelocityLattice: 0,
+            wallVelocityMode: HighReSphereWallMode.uniform.rawValue,
+            initialFluidVelocityLattice: 0.08,
+            periodicBoundaries: false,
+            spongeStrength: spongeStrength,
+            latticeKinematicViscosity: viscosity,
+            initialCenter: center,
+            controlMinimum: SIMD3<UInt32>(2, 2, 2),
+            controlMaximumExclusive: SIMD3<UInt32>(54, 22, 22)
+        )
+        let simulation = try MetalTranslatingBodyTopologySimulation(
+            backend: backend,
+            linkForceMode: 6,
+            caseConfiguration: configuration
+        )
+        let centerDouble = SIMD3<Double>(
+            Double(center.x),
+            Double(center.y),
+            Double(center.z)
+        )
+        let initialMinimum = populationMinimumSample(
+            try simulation.capturePopulationMinimum(),
+            step: 0,
+            domain: domain,
+            sphereCenter: centerDouble,
+            sphereRadius: Double(radius),
+            spongeWidth: spongeWidth,
+            spongeStrength: Double(spongeStrength)
+        )
+        let history = try simulation.run(
+            steps: steps,
+            capturePopulationMinimum: true,
+            stopOneStepAfterFirstNonFinitePopulation: true
+        )
+        let samples = [initialMinimum] + history.enumerated().compactMap {
+            index, state in
+            state.populationMinimum.map {
+                populationMinimumSample(
+                    $0,
+                    step: index + 1,
+                    domain: domain,
+                    sphereCenter: centerDouble,
+                    sphereRadius: Double(radius),
+                    spongeWidth: spongeWidth,
+                    spongeStrength: Double(spongeStrength)
+                )
+            }
+        }
+        let firstNegative = samples.first {
+            ($0.minimumPopulation ?? 0) < 0
+        }
+        let firstNonFinite = samples.first {
+            $0.valueClassification != "finite"
+        }
+        let firstNonFiniteLoadStep = history.firstIndex {
+            !vectorIsFinite($0.measuredForce)
+                || !vectorIsFinite($0.rawBudgetForce)
+        }.map { $0 + 1 }
+        let coveredEvents = history.reduce(0) {
+            $0 + $1.newlyCoveredCells
+        }
+        let uncoveredEvents = history.reduce(0) {
+            $0 + $1.newlyUncoveredCells
+        }
+        let transitionSteps = history.reduce(0) {
+            $0 + (($1.newlyCoveredCells > 0
+                || $1.newlyUncoveredCells > 0) ? 1 : 0)
+        }
+        let firstLocation = firstNegative.map(populationLocation)
+            ?? "not-observed"
+        let nonFiniteLocation = firstNonFinite.map(populationLocation)
+            ?? "not-observed"
+        let diagnosticCompleted = initialMinimum.valueClassification == "finite"
+            && (initialMinimum.minimumPopulation ?? -.infinity) > 0
+            && firstNegative != nil
+            && firstNonFinite != nil
+            && samples.count == history.count + 1
+            && coveredEvents == 0
+            && uncoveredEvents == 0
+            && transitionSteps == 0
+        let classification = diagnosticCompleted
+            ? "stationary-wall-c16-first-positivity-loss-\(firstLocation)"
+            : "stationary-wall-c16-population-positivity-incomplete"
+        let verdict: String
+        if let firstNegative, let firstNonFinite {
+            verdict = "The first negative c16 stationary-sphere population occurs at step \(firstNegative.step), q=\(firstNegative.directionIndex), cell=\(firstNegative.cell), signed sphere distance \(firstNegative.signedDistanceToSphereSurfaceCells) cells, classified as \(firstLocation), through \(firstNegative.populationUpdatePath). The first non-finite population occurs at step \(firstNonFinite.step), q=\(firstNonFinite.directionIndex), cell=\(firstNonFinite.cell), classified as \(nonFiniteLocation). This localizes the positivity defect before changing the bird solver."
+        } else {
+            verdict = "The locked c16 run did not capture both a first negative and first non-finite population within the requested ceiling."
+        }
+        return MetalStationaryWallPopulationPositivityReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            diagnosticKernel: "reducePopulationMinimum",
+            domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
+            sphereCenterCells: centerDouble,
+            sphereRadiusCells: Double(radius),
+            farFieldVelocityLattice: 0.08,
+            wallVelocityLattice: 0,
+            spongeWidthCells: spongeWidth,
+            spongeStrength: Double(spongeStrength),
+            matchedBirdChordCells: 16,
+            latticeKinematicViscosity:
+                Double(simulation.latticeKinematicViscosity),
+            tauPlus: Double(simulation.tauPlus),
+            tauPlusMarginAboveHalf: Double(simulation.tauPlus - 0.5),
+            requestedSteps: steps,
+            completedSteps: history.count,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            initialMinimum: initialMinimum,
+            firstNegative: firstNegative,
+            firstNonFinite: firstNonFinite,
+            firstNonFiniteLoadStep: firstNonFiniteLoadStep,
+            newlyCoveredCellEvents: coveredEvents,
+            newlyUncoveredCellEvents: uncoveredEvents,
+            topologyTransitionSteps: transitionSteps,
+            minimumHistory: samples,
+            classification: classification,
+            scientificVerdict: verdict,
+            diagnosticCompleted: diagnosticCompleted
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func runStationaryWallC16TRTCollisionDecomposition(
+        captureStep: Int = 27
+    ) throws -> MetalStationaryWallTRTCollisionDecompositionReport {
+        guard captureStep == 27 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall c16 TRT decomposition uses locked step 27"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let domain = try GridSize(x: 56, y: 24, z: 24)
+        let center = SIMD3<Float>(8, 12, 12)
+        let centerDouble = SIMD3<Double>(8, 12, 12)
+        let radius = Float(sphereRadiusCells)
+        let viscosity: Float = 8.782_491_2e-5
+        let spongeWidth = 4
+        let spongeStrength: Float = 0.04
+        let target = SIMD3<UInt32>(5, 9, 12)
+        let targetInt = SIMD3<Int>(5, 9, 12)
+        let configuration = MetalTranslatingBodyCaseConfiguration(
+            grid: domain,
+            sphereRadiusCells: radius,
+            referenceSpeedLattice: 0.08,
+            geometryTranslationSpeedLattice: 0,
+            wallVelocityLattice: 0,
+            wallVelocityMode: HighReSphereWallMode.uniform.rawValue,
+            initialFluidVelocityLattice: 0.08,
+            periodicBoundaries: false,
+            spongeStrength: spongeStrength,
+            latticeKinematicViscosity: viscosity,
+            initialCenter: center,
+            controlMinimum: SIMD3<UInt32>(2, 2, 2),
+            controlMaximumExclusive: SIMD3<UInt32>(54, 22, 22)
+        )
+        let simulation = try MetalTranslatingBodyTopologySimulation(
+            backend: backend,
+            linkForceMode: 6,
+            caseConfiguration: configuration
+        )
+        let (history, capture) = try simulation.runTRTCollisionDecomposition(
+            steps: captureStep,
+            targetCell: target
+        )
+        let terms = collisionTerms(capture, targetCell: targetInt)
+        guard let failing = terms.min(by: {
+            $0.actualPostCollision < $1.actualPostCollision
+        }), let failingRaw = capture.terms.first(where: {
+            Int($0.metadata.x) == failing.directionIndex
+        }) else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "TRT decomposition returned no direction terms"
+            )
+        }
+        let failingBoundary = failingRaw.boundaryMetadata.x != 0
+            ? boundaryInterpolationComponent(failingRaw, domain: domain)
+            : nil
+        let maximumBoundaryWallCorrection = capture.terms
+            .filter { $0.boundaryMetadata.x != 0 }
+            .map { abs(Double($0.boundaryValues0.w)) }
+            .max() ?? 0
+        let allPulledPositive = terms.allSatisfy {
+            $0.pulledPopulation.isFinite && $0.pulledPopulation > 0
+        }
+        let minimumPulled = terms.map(\.pulledPopulation).min()
+            ?? -.infinity
+        let coveredEvents = history.reduce(0) {
+            $0 + $1.newlyCoveredCells
+        }
+        let uncoveredEvents = history.reduce(0) {
+            $0 + $1.newlyUncoveredCells
+        }
+        let transitionSteps = history.reduce(0) {
+            $0 + (($1.newlyCoveredCells > 0
+                || $1.newlyUncoveredCells > 0) ? 1 : 0)
+        }
+        let targetDistance = signedSphereDistance(
+            targetInt,
+            center: centerDouble,
+            radius: Double(radius)
+        )
+        let targetAdjacent = D3Q19.directions.dropFirst().contains { raw in
+            let neighbor = SIMD3<Int>(
+                targetInt.x - Int(raw.x),
+                targetInt.y - Int(raw.y),
+                targetInt.z - Int(raw.z)
+            )
+            return signedSphereDistance(
+                neighbor,
+                center: centerDouble,
+                radius: Double(radius)
+            ) <= 0
+        }
+        let symmetricNecessary =
+            failing.postWithoutSymmetricIncrement >= 0
+        let antisymmetricNecessary =
+            failing.postWithoutAntisymmetricIncrement >= 0
+        let dominantMode = failing.symmetricRelaxationIncrement
+            < failing.antisymmetricRelaxationIncrement
+            ? "symmetric"
+            : "antisymmetric"
+        let modeClassification: String
+        switch (symmetricNecessary, antisymmetricNecessary) {
+        case (true, false):
+            modeClassification = "symmetric-relaxation-overshoot"
+        case (false, true):
+            modeClassification = "antisymmetric-relaxation-overshoot"
+        case (true, true):
+            modeClassification = "coupled-relaxation-overshoot"
+        case (false, false):
+            modeClassification = "both-modes-independently-destabilizing"
+        }
+        let maximumResidual = Double(capture.relaxation.w)
+        let solidSourceCount = Int(capture.metadata.y)
+        let outsideSourceCount = Int(capture.metadata.z)
+        let targetIsSolid = capture.metadata.w != 0
+        let diagnosticCompleted = history.count == captureStep
+            && terms.count == D3Q19.count
+            && capture.metadata.x
+                == UInt32(
+                    targetInt.x
+                        + domain.x * (targetInt.y + domain.y * targetInt.z)
+                )
+            && allPulledPositive
+            && outsideSourceCount == 0
+            && !targetIsSolid
+            && abs(Double(capture.relaxation.z)) <= 1.0e-12
+            && maximumResidual <= 1.0e-7
+            && maximumBoundaryWallCorrection <= 1.0e-12
+            && failing.directionIndex == 10
+            && failing.actualPostCollision < 0
+            && coveredEvents == 0
+            && uncoveredEvents == 0
+            && transitionSteps == 0
+        let classification = diagnosticCompleted
+            ? "stationary-wall-c16-trt-\(modeClassification)"
+            : "stationary-wall-c16-trt-decomposition-incomplete"
+        let verdict = "At step \(captureStep), every reconstructed population entering cell \(targetInt) is positive. For q=\(failing.directionIndex), the pulled population \(failing.pulledPopulation), symmetric increment \(failing.symmetricRelaxationIncrement), and antisymmetric increment \(failing.antisymmetricRelaxationIncrement) produce \(failing.actualPostCollision). Removing the symmetric increment gives \(failing.postWithoutSymmetricIncrement); removing the antisymmetric increment gives \(failing.postWithoutAntisymmetricIncrement). The dominant destabilizing mode is \(dominantMode), classified as \(modeClassification)."
+        return MetalStationaryWallTRTCollisionDecompositionReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            diagnosticKernel: "captureTRTCollisionDecomposition",
+            domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
+            sphereCenterCells: centerDouble,
+            sphereRadiusCells: Double(radius),
+            farFieldVelocityLattice: 0.08,
+            wallVelocityLattice: 0,
+            spongeWidthCells: spongeWidth,
+            spongeStrength: Double(spongeStrength),
+            matchedBirdChordCells: 16,
+            latticeKinematicViscosity:
+                Double(simulation.latticeKinematicViscosity),
+            tauPlus: Double(simulation.tauPlus),
+            tauPlusMarginAboveHalf: Double(simulation.tauPlus - 0.5),
+            captureStep: captureStep,
+            targetCell: targetInt,
+            targetSignedDistanceToSphereSurfaceCells: targetDistance,
+            targetAdjacentToSphere: targetAdjacent,
+            density: Double(capture.macroscopic.x),
+            velocityLattice: SIMD3<Double>(
+                Double(capture.macroscopic.y),
+                Double(capture.macroscopic.z),
+                Double(capture.macroscopic.w)
+            ),
+            omegaPlus: Double(capture.relaxation.x),
+            omegaMinus: Double(capture.relaxation.y),
+            spongeFactor: Double(capture.relaxation.z),
+            targetIsSolid: targetIsSolid,
+            solidPullSourceCount: solidSourceCount,
+            outsideDomainPullSourceCount: outsideSourceCount,
+            allPulledPopulationsPositive: allPulledPositive,
+            minimumPulledPopulation: minimumPulled,
+            minimumActualPostCollisionDirection: failing.directionIndex,
+            maximumAbsolutePredictionResidual: maximumResidual,
+            failingDirection: failing,
+            failingBoundaryInterpolation: failingBoundary,
+            maximumAbsoluteBoundaryWallCorrection:
+                maximumBoundaryWallCorrection,
+            directionTerms: terms,
+            newlyCoveredCellEvents: coveredEvents,
+            newlyUncoveredCellEvents: uncoveredEvents,
+            topologyTransitionSteps: transitionSteps,
+            dominantDestabilizingRelaxationMode: dominantMode,
+            classification: classification,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            diagnosticCompleted: diagnosticCompleted
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func runStationaryWallC16SymmetricLimiterAB(
+        steps: Int = 500
+    ) throws -> MetalStationaryWallSymmetricLimiterABReport {
+        guard steps == 500 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall c16 symmetric-limiter A/B uses a locked 500-step contract"
+            )
+        }
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let domain = try GridSize(x: 56, y: 24, z: 24)
+        let center = SIMD3<Float>(8, 12, 12)
+        let radius = Float(sphereRadiusCells)
+        let viscosity: Float = 8.782_491_2e-5
+        let spongeStrength: Float = 0.04
+        let maximumMassDrift = 1.0e-3
+        let maximumAbsolutePopulation = 10.0
+        let maximumForceResidual = 5.0e-4
+        let maximumRelativeResidual = 5.0e-3
+        let configuration = MetalTranslatingBodyCaseConfiguration(
+            grid: domain,
+            sphereRadiusCells: radius,
+            referenceSpeedLattice: 0.08,
+            geometryTranslationSpeedLattice: 0,
+            wallVelocityLattice: 0,
+            wallVelocityMode: HighReSphereWallMode.uniform.rawValue,
+            initialFluidVelocityLattice: 0.08,
+            periodicBoundaries: false,
+            spongeStrength: spongeStrength,
+            latticeKinematicViscosity: viscosity,
+            initialCenter: center,
+            controlMinimum: SIMD3<UInt32>(2, 2, 2),
+            controlMaximumExclusive: SIMD3<UInt32>(54, 22, 22)
+        )
+        let controlSimulation = try MetalTranslatingBodyTopologySimulation(
+            backend: backend,
+            linkForceMode: 6,
+            caseConfiguration: configuration
+        )
+        let controlInitial = try controlSimulation.copyPopulations()
+        let controlHistory = try controlSimulation.run(
+            steps: steps,
+            capturePopulationMinimum: true,
+            stopOneStepAfterFirstNonFinitePopulation: true
+        )
+        let controlFinal = try controlSimulation.copyPopulations()
+        let control = symmetricLimiterCaseReport(
+            limiterEnabled: false,
+            requestedSteps: steps,
+            initialPopulations: controlInitial,
+            finalPopulations: controlFinal,
+            history: controlHistory,
+            cellCount: domain.cellCount,
+            maximumMassDrift: maximumMassDrift,
+            maximumAbsolutePopulation: maximumAbsolutePopulation,
+            maximumForceResidual: maximumForceResidual,
+            maximumRelativeResidual: maximumRelativeResidual
+        )
+
+        let treatmentSimulation = try MetalTranslatingBodyTopologySimulation(
+            backend: backend,
+            linkForceMode: 6,
+            caseConfiguration: configuration,
+            symmetricPositivityLimiterEnabled: true,
+            conservationLedgerEnabled: true
+        )
+        let treatmentInitial = try treatmentSimulation.copyPopulations()
+        let treatmentHistory = try treatmentSimulation.run(
+            steps: steps,
+            capturePopulationMinimum: true,
+            stopOneStepAfterFirstNonFinitePopulation: true,
+            captureConservationLedger: true
+        )
+        let treatmentFinal = try treatmentSimulation.copyPopulations()
+        let treatment = symmetricLimiterCaseReport(
+            limiterEnabled: true,
+            requestedSteps: steps,
+            initialPopulations: treatmentInitial,
+            finalPopulations: treatmentFinal,
+            history: treatmentHistory,
+            cellCount: domain.cellCount,
+            maximumMassDrift: maximumMassDrift,
+            maximumAbsolutePopulation: maximumAbsolutePopulation,
+            maximumForceResidual: maximumForceResidual,
+            maximumRelativeResidual: maximumRelativeResidual
+        )
+        let conservationLedger = conservationLedgerReport(
+            history: treatmentHistory,
+            initialPopulationMass: treatment.initialPopulationMass,
+            finalPopulationMass: treatment.finalPopulationMass,
+            forceToPhysical: Double(treatmentSimulation.forceToPhysical)
+        )
+
+        let preActivationCount = max(
+            0,
+            (treatment.firstLimiterActivationStep ?? 1) - 1
+        )
+        let comparisonCount = min(
+            preActivationCount,
+            min(controlHistory.count, treatmentHistory.count)
+        )
+        var maximumPreActivationMeasuredDifference = 0.0
+        var maximumPreActivationBudgetDifference = 0.0
+        if comparisonCount > 0 {
+            for index in 0..<comparisonCount {
+                maximumPreActivationMeasuredDifference = max(
+                    maximumPreActivationMeasuredDifference,
+                    magnitude(
+                        doubleVector(
+                            controlHistory[index].measuredForce
+                                - treatmentHistory[index].measuredForce
+                        )
+                    )
+                )
+                maximumPreActivationBudgetDifference = max(
+                    maximumPreActivationBudgetDifference,
+                    magnitude(
+                        doubleVector(
+                            controlHistory[index].rawBudgetForce
+                                - treatmentHistory[index].rawBudgetForce
+                        )
+                    )
+                )
+            }
+        }
+        let diagnosticCompleted = control.firstNegativePopulationStep == 27
+            && control.firstNonFinitePopulationStep == 105
+            && control.firstNonFiniteLoadStep == 105
+            && control.limiterActivationCellSteps == 0
+            && treatment.limiterActivationCellSteps > 0
+            && treatment.firstLimiterActivationStep == 27
+            && maximumPreActivationMeasuredDifference <= 1.0e-12
+            && maximumPreActivationBudgetDifference <= 1.0e-12
+            && control.newlyCoveredCellEvents == 0
+            && control.newlyUncoveredCellEvents == 0
+            && control.topologyTransitionSteps == 0
+            && treatment.newlyCoveredCellEvents == 0
+            && treatment.newlyUncoveredCellEvents == 0
+            && treatment.topologyTransitionSteps == 0
+            && conservationLedger.samples.count == steps
+            && conservationLedger.globalLedgerClosed
+            && conservationLedger.forceResidualLedgerClosed
+            && (treatment.completedSteps == steps
+                || treatment.firstNonFinitePopulationStep != nil)
+        let classification: String
+        let verdict: String
+        let treatmentPositivityCleared = treatment.completedSteps == steps
+            && treatment.firstNegativePopulationStep == nil
+            && treatment.firstNonFinitePopulationStep == nil
+            && treatment.firstNonFiniteLoadStep == nil
+            && treatment.populationsFinite
+            && treatment.fieldsFinite
+            && treatment.loadsFinite
+        let conservationSourcesAttributed =
+            conservationLedger.globalLedgerClosed
+            && conservationLedger.forceResidualLedgerClosed
+            && conservationLedger.relativeCumulativeLimiterMassContribution
+                <= 1.0e-6
+            && conservationLedger.dominantGlobalMassContribution
+                == "open-far-field"
+            && conservationLedger
+                .dominantControlVolumeMomentumContribution == "sponge"
+        if treatment.fullAcceptancePassed {
+            classification = "stationary-wall-c16-symmetric-limiter-clears-stability-and-budget"
+            verdict = "The conservative symmetric-mode limiter keeps the locked c16 stationary-sphere case finite and positive for 500 steps while retaining the mass and momentum-budget gates. It may proceed to the c8/c12/c16 canonical ladder before any bird replay."
+        } else if treatmentPositivityCleared && conservationSourcesAttributed {
+            classification = "stationary-wall-c16-limiter-clears-positivity-open-flow-sources-attributed"
+            verdict = "The symmetric-mode limiter keeps the corrected stationary-wall c16 case finite and positive for 500 steps. Its cumulative mass contribution is negligible, the global mass ledger closes to open-far-field and sponge terms, the boundary load closes independently, and sponge momentum explains the control-volume force residual. The existing raw mass and budget flags count expected open-flow sources as error; keep the limiter diagnostic-only until source-aware gates are added and rerun."
+        } else if treatmentPositivityCleared {
+            classification = "stationary-wall-c16-symmetric-limiter-clears-positivity-conservation-open"
+            verdict = "The symmetric-mode limiter keeps the corrected stationary-wall c16 case finite and positive for 500 steps, but the source ledger does not yet close the mass and force-budget residuals. Keep it diagnostic-only."
+        } else {
+            classification = "stationary-wall-c16-symmetric-limiter-insufficient"
+            verdict = "The symmetric-only positivity limiter does not keep the locked c16 stationary-sphere case finite and positive for 500 steps. Do not promote it to production bird physics."
+        }
+        return MetalStationaryWallSymmetricLimiterABReport(
+            schemaVersion: 2,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            limiterMode:
+                "cell-local common scale on complete symmetric TRT increment",
+            limiterPopulationFloorDefinition:
+                "max(1e-12, 1e-6 * max(feq_q, 0))",
+            domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
+            sphereCenterCells: SIMD3<Double>(8, 12, 12),
+            sphereRadiusCells: Double(radius),
+            farFieldVelocityLattice: 0.08,
+            wallVelocityLattice: 0,
+            spongeWidthCells: 4,
+            spongeStrength: Double(spongeStrength),
+            matchedBirdChordCells: 16,
+            latticeKinematicViscosity:
+                Double(treatmentSimulation.latticeKinematicViscosity),
+            tauPlus: Double(treatmentSimulation.tauPlus),
+            tauPlusMarginAboveHalf:
+                Double(treatmentSimulation.tauPlus - 0.5),
+            requestedStepsPerCase: steps,
+            maximumAllowedRelativePopulationMassDrift: maximumMassDrift,
+            maximumAllowedAbsolutePopulation: maximumAbsolutePopulation,
+            maximumAllowedConservativeForceResidual: maximumForceResidual,
+            maximumAllowedConservativeRelativeRMSResidual:
+                maximumRelativeResidual,
+            maximumPreActivationMeasuredForceDifference:
+                maximumPreActivationMeasuredDifference,
+            maximumPreActivationBudgetForceDifference:
+                maximumPreActivationBudgetDifference,
+            control: control,
+            treatment: treatment,
+            treatmentConservationLedger: conservationLedger,
+            classification: classification,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            diagnosticCompleted: diagnosticCompleted
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
     }
 
     public static func runStationaryWallRelaxationSweep(
@@ -490,7 +1378,7 @@ public enum MetalTranslatingBodyTopologyValidator {
         let verdict: String
         if allSurvived {
             classification = "stationary-wall-apparent-stability-survives-1000"
-            verdict = "All apparent 500-step stability points remain finite for 1000 steps. The non-monotonic band persists over the extended horizon."
+            verdict = "All selected points above the corrected 500-step monotonic stability threshold remain finite for 1000 steps. They still require force-budget acceptance before promotion."
         } else if survivingCount == 0 {
             classification = "stationary-wall-500-step-stability-horizon-censored"
             verdict = "Every apparent 500-step stability point becomes non-finite before 1000 steps. The earlier islands were delayed divergence censored by the shorter horizon."
@@ -995,6 +1883,767 @@ public enum MetalTranslatingBodyTopologyValidator {
 #endif
     }
 
+#if canImport(Metal)
+    private static func collisionTerms(
+        _ capture: MetalTRTCollisionCapture,
+        targetCell: SIMD3<Int>
+    ) -> [MetalStationaryWallTRTCollisionDirectionTerm] {
+        capture.terms.map { raw in
+            let q = Int(raw.metadata.x)
+            let lattice = D3Q19.directions[q]
+            let direction = SIMD3<Int>(
+                Int(lattice.x),
+                Int(lattice.y),
+                Int(lattice.z)
+            )
+            let source = SIMD3<Int>(
+                targetCell.x - direction.x,
+                targetCell.y - direction.y,
+                targetCell.z - direction.z
+            )
+            let pulled = Double(raw.values0.x)
+            let symmetricIncrement = Double(raw.values1.x)
+            let antisymmetricIncrement = Double(raw.values1.y)
+            let predicted = Double(raw.values1.z)
+            let actual = Double(raw.values1.w)
+            return MetalStationaryWallTRTCollisionDirectionTerm(
+                directionIndex: q,
+                latticeDirection: direction,
+                pullSourceCell: source,
+                pullSourceInsideDomain: raw.metadata.w == 0,
+                pullSourceIsSolid: raw.metadata.z != 0,
+                pulledPopulation: pulled,
+                equilibriumPopulation: Double(raw.values0.y),
+                symmetricNonequilibrium: Double(raw.values0.z),
+                antisymmetricNonequilibrium: Double(raw.values0.w),
+                symmetricRelaxationIncrement: symmetricIncrement,
+                antisymmetricRelaxationIncrement:
+                    antisymmetricIncrement,
+                postWithoutSymmetricIncrement:
+                    pulled + antisymmetricIncrement,
+                postWithoutAntisymmetricIncrement:
+                    pulled + symmetricIncrement,
+                predictedPostCollision: predicted,
+                actualPostCollision: actual,
+                predictionResidual: actual - predicted
+            )
+        }.sorted { $0.directionIndex < $1.directionIndex }
+    }
+
+    private static func boundaryInterpolationComponent(
+        _ raw: GPUTRTCollisionTerm,
+        domain: GridSize
+    ) -> MetalStationaryWallBoundaryInterpolationComponent {
+        let branchCode = Int(raw.boundaryMetadata.y)
+        let branch: String
+        let auxiliaryRole: String
+        switch branchCode {
+        case 1:
+            branch = "halfway-fallback"
+            auxiliaryRole = "none"
+        case 2:
+            branch = "interpolated-near-wall"
+            auxiliaryRole = "farther-fluid-outgoing"
+        case 3:
+            branch = "interpolated-far-wall"
+            auxiliaryRole = "previous-target-incoming"
+        default:
+            branch = "not-a-boundary-link"
+            auxiliaryRole = "none"
+        }
+        let auxiliaryCell: SIMD3<Int>?
+        let auxiliaryIndex = raw.boundaryMetadata.z
+        if auxiliaryIndex == UInt32.max {
+            auxiliaryCell = nil
+        } else {
+            let index = Int(auxiliaryIndex)
+            auxiliaryCell = SIMD3<Int>(
+                index % domain.x,
+                (index / domain.x) % domain.y,
+                index / (domain.x * domain.y)
+            )
+        }
+        let contributions = [
+            ("reflected", Double(raw.boundaryContributions.x)),
+            ("auxiliary", Double(raw.boundaryContributions.y)),
+            ("wall-correction", Double(raw.boundaryContributions.z)),
+        ]
+        let dominantNegative = contributions.min {
+            $0.1 < $1.1
+        }.map { $0.1 < 0 ? $0.0 : "none" } ?? "none"
+        let reconstructed = Double(raw.boundaryContributions.w)
+        let contributionSum = contributions.reduce(0.0) {
+            $0 + $1.1
+        }
+        return MetalStationaryWallBoundaryInterpolationComponent(
+            directionIndex: Int(raw.metadata.x),
+            branch: branch,
+            linkFraction: Double(raw.boundaryValues0.y),
+            reflectedPopulation: Double(raw.boundaryValues0.x),
+            auxiliaryPopulation: Double(raw.boundaryValues0.z),
+            auxiliaryCell: auxiliaryCell,
+            auxiliaryRole: auxiliaryRole,
+            wallCorrection: Double(raw.boundaryValues0.w),
+            reflectedContribution: Double(raw.boundaryContributions.x),
+            auxiliaryContribution: Double(raw.boundaryContributions.y),
+            wallCorrectionContribution:
+                Double(raw.boundaryContributions.z),
+            reconstructedPopulation: reconstructed,
+            contributionClosureResidual: reconstructed - contributionSum,
+            dominantNegativeContribution: dominantNegative
+        )
+    }
+
+    private static func conservationLedgerReport(
+        history: [MetalTranslatingBodyTopologyStep],
+        initialPopulationMass: Double,
+        finalPopulationMass: Double?,
+        forceToPhysical: Double
+    ) -> MetalStationaryWallConservationLedgerReport {
+        var samples: [MetalStationaryWallConservationLedgerSample] = []
+        samples.reserveCapacity(history.count)
+        var observed = SIMD4<Double>.zero
+        var boundary = SIMD4<Double>.zero
+        var farField = SIMD4<Double>.zero
+        var collision = SIMD4<Double>.zero
+        var limiter = SIMD4<Double>.zero
+        var sponge = SIMD4<Double>.zero
+        var collisionControl = SIMD4<Double>.zero
+        var limiterControl = SIMD4<Double>.zero
+        var spongeControl = SIMD4<Double>.zero
+        var closure = SIMD4<Double>.zero
+        var maximumMassClosure = 0.0
+        var maximumMomentumClosure = 0.0
+        var maximumLimiterMass = 0.0
+        var maximumLimiterMomentum = 0.0
+        var maximumForceResidual = 0.0
+        var maximumAttributedSource = 0.0
+        var maximumUnexplainedForce = 0.0
+        var maximumBoundaryLoadClosure = 0.0
+        var forceResidualSquared = 0.0
+        var attributedSourceSquared = 0.0
+        var unexplainedSquared = 0.0
+        var boundaryLoadClosureSquared = 0.0
+        var measuredForceSquared = 0.0
+        var collisionControlSquared = 0.0
+        var limiterControlSquared = 0.0
+        var spongeControlSquared = 0.0
+
+        for (index, step) in history.enumerated() {
+            guard let raw = step.conservationLedger else { continue }
+            let accounted = raw.boundaryGlobal
+                + raw.farFieldGlobal
+                + raw.collisionGlobal
+                + raw.limiterGlobal
+                + raw.spongeGlobal
+            let stepClosure = raw.observedGlobal - accounted
+            let forceResidual = doubleVector(
+                step.measuredForce - step.rawBudgetForce
+            )
+            let controlSource = raw.collisionControl
+                + raw.limiterControl
+                + raw.spongeControl
+            let attributedSourceForce = SIMD3<Double>(
+                controlSource.y * forceToPhysical,
+                controlSource.z * forceToPhysical,
+                controlSource.w * forceToPhysical
+            )
+            let unexplainedForce = forceResidual - attributedSourceForce
+            let boundaryFluidMomentumForce = SIMD3<Double>(
+                raw.boundaryGlobal.y * forceToPhysical,
+                raw.boundaryGlobal.z * forceToPhysical,
+                raw.boundaryGlobal.w * forceToPhysical
+            )
+            let measuredForce = doubleVector(step.measuredForce)
+            let boundaryLoadClosure = measuredForce
+                + boundaryFluidMomentumForce
+            let collisionControlForce = SIMD3<Double>(
+                raw.collisionControl.y * forceToPhysical,
+                raw.collisionControl.z * forceToPhysical,
+                raw.collisionControl.w * forceToPhysical
+            )
+            let limiterControlForce = SIMD3<Double>(
+                raw.limiterControl.y * forceToPhysical,
+                raw.limiterControl.z * forceToPhysical,
+                raw.limiterControl.w * forceToPhysical
+            )
+            let spongeControlForce = SIMD3<Double>(
+                raw.spongeControl.y * forceToPhysical,
+                raw.spongeControl.z * forceToPhysical,
+                raw.spongeControl.w * forceToPhysical
+            )
+
+            observed += raw.observedGlobal
+            boundary += raw.boundaryGlobal
+            farField += raw.farFieldGlobal
+            collision += raw.collisionGlobal
+            limiter += raw.limiterGlobal
+            sponge += raw.spongeGlobal
+            collisionControl += raw.collisionControl
+            limiterControl += raw.limiterControl
+            spongeControl += raw.spongeControl
+            closure += stepClosure
+            maximumMassClosure = max(
+                maximumMassClosure,
+                abs(stepClosure.x)
+            )
+            maximumMomentumClosure = max(
+                maximumMomentumClosure,
+                magnitude(SIMD3<Double>(
+                    stepClosure.y,
+                    stepClosure.z,
+                    stepClosure.w
+                ))
+            )
+            maximumLimiterMass = max(
+                maximumLimiterMass,
+                abs(raw.limiterGlobal.x)
+            )
+            maximumLimiterMomentum = max(
+                maximumLimiterMomentum,
+                magnitude(SIMD3<Double>(
+                    raw.limiterGlobal.y,
+                    raw.limiterGlobal.z,
+                    raw.limiterGlobal.w
+                ))
+            )
+            maximumForceResidual = max(
+                maximumForceResidual,
+                magnitude(forceResidual)
+            )
+            maximumAttributedSource = max(
+                maximumAttributedSource,
+                magnitude(attributedSourceForce)
+            )
+            maximumUnexplainedForce = max(
+                maximumUnexplainedForce,
+                magnitude(unexplainedForce)
+            )
+            maximumBoundaryLoadClosure = max(
+                maximumBoundaryLoadClosure,
+                magnitude(boundaryLoadClosure)
+            )
+            forceResidualSquared += squaredMagnitude(forceResidual)
+            attributedSourceSquared += squaredMagnitude(
+                attributedSourceForce
+            )
+            unexplainedSquared += squaredMagnitude(unexplainedForce)
+            boundaryLoadClosureSquared += squaredMagnitude(
+                boundaryLoadClosure
+            )
+            measuredForceSquared += squaredMagnitude(measuredForce)
+            collisionControlSquared += squaredMagnitude(
+                collisionControlForce
+            )
+            limiterControlSquared += squaredMagnitude(limiterControlForce)
+            spongeControlSquared += squaredMagnitude(spongeControlForce)
+
+            samples.append(MetalStationaryWallConservationLedgerSample(
+                step: index + 1,
+                activatedCellCount: raw.activatedCellCount,
+                boundaryLinkCount: raw.boundaryLinkCount,
+                farFieldLinkCount: raw.farFieldLinkCount,
+                spongeCellCount: raw.spongeCellCount,
+                activatedBoundaryLinkCount:
+                    raw.activatedBoundaryLinkCount,
+                activatedSpongeCellCount: raw.activatedSpongeCellCount,
+                controlVolumeSpongeCellCount:
+                    raw.controlVolumeSpongeCellCount,
+                controlVolumeActivatedCellCount:
+                    raw.controlVolumeActivatedCellCount,
+                observedGlobal: conservationContribution(raw.observedGlobal),
+                boundaryGlobal: conservationContribution(raw.boundaryGlobal),
+                farFieldGlobal: conservationContribution(raw.farFieldGlobal),
+                collisionGlobal:
+                    conservationContribution(raw.collisionGlobal),
+                symmetricLimiterGlobal:
+                    conservationContribution(raw.limiterGlobal),
+                spongeGlobal: conservationContribution(raw.spongeGlobal),
+                globalClosureResidual:
+                    conservationContribution(stepClosure),
+                controlVolumeCollision:
+                    conservationContribution(raw.collisionControl),
+                controlVolumeSymmetricLimiter:
+                    conservationContribution(raw.limiterControl),
+                controlVolumeSponge:
+                    conservationContribution(raw.spongeControl),
+                activatedCellBoundary:
+                    conservationContribution(raw.boundaryActivated),
+                activatedCellSponge:
+                    conservationContribution(raw.spongeActivated),
+                measuredForceNewtons: measuredForce,
+                rawBudgetForceNewtons: doubleVector(step.rawBudgetForce),
+                forceBudgetResidualNewtons: forceResidual,
+                attributedControlVolumeSourceForceNewtons:
+                    attributedSourceForce,
+                unexplainedForceResidualNewtons: unexplainedForce,
+                boundaryLoadClosureResidualNewtons: boundaryLoadClosure
+            ))
+        }
+
+        let count = max(Double(samples.count), 1)
+        let finalMinusInitial = (finalPopulationMass ?? .nan)
+            - initialPopulationMass
+        let observedMassHistoryResidual = observed.x - finalMinusInitial
+        let globalLedgerClosed = samples.count == history.count
+            && maximumMassClosure <= 5.0e-3
+            && maximumMomentumClosure <= 5.0e-3
+            && abs(observedMassHistoryResidual) <= 5.0e-2
+        let relativeRMSUnexplained = sqrt(
+            unexplainedSquared / max(forceResidualSquared, 1.0e-30)
+        )
+        let maximumPeakUnexplainedFraction = maximumUnexplainedForce
+            / max(maximumForceResidual, 1.0e-30)
+        let relativeRMSBoundaryLoadClosure = sqrt(
+            boundaryLoadClosureSquared
+                / max(measuredForceSquared, 1.0e-30)
+        )
+        let allowedRelativeRMSUnexplained = 5.0e-3
+        let allowedPeakUnexplainedFraction = 1.0e-2
+        let forceResidualLedgerClosed = relativeRMSUnexplained
+                <= allowedRelativeRMSUnexplained
+            && maximumPeakUnexplainedFraction
+                <= allowedPeakUnexplainedFraction
+            && relativeRMSBoundaryLoadClosure <= 5.0e-5
+        let massCandidates: [(String, Double)] = [
+            ("curved-boundary", abs(boundary.x)),
+            ("open-far-field", abs(farField.x)),
+            ("baseline-collision", abs(collision.x)),
+            ("symmetric-limiter", abs(limiter.x)),
+            ("sponge", abs(sponge.x)),
+        ]
+        let dominantMass = massCandidates.max { $0.1 < $1.1 }?.0
+            ?? "none"
+        let collisionRMS = sqrt(collisionControlSquared / count)
+        let limiterRMS = sqrt(limiterControlSquared / count)
+        let spongeRMS = sqrt(spongeControlSquared / count)
+        let controlCandidates: [(String, Double)] = [
+            ("baseline-collision", collisionRMS),
+            ("symmetric-limiter", limiterRMS),
+            ("sponge", spongeRMS),
+        ]
+        let dominantControl = controlCandidates.max { $0.1 < $1.1 }?.0
+            ?? "none"
+
+        return MetalStationaryWallConservationLedgerReport(
+            schemaVersion: 1,
+            definition: "global observed population change = curved-boundary replacement + open-far-field replacement + baseline TRT collision + symmetric-scale limiter + sponge; measured minus control-volume budget force = collision + limiter + sponge momentum sources inside the control volume",
+            samples: samples,
+            cumulativeObservedGlobal: conservationContribution(observed),
+            cumulativeBoundaryGlobal: conservationContribution(boundary),
+            cumulativeFarFieldGlobal: conservationContribution(farField),
+            cumulativeCollisionGlobal: conservationContribution(collision),
+            cumulativeSymmetricLimiterGlobal:
+                conservationContribution(limiter),
+            cumulativeSpongeGlobal: conservationContribution(sponge),
+            cumulativeControlVolumeCollision:
+                conservationContribution(collisionControl),
+            cumulativeControlVolumeSymmetricLimiter:
+                conservationContribution(limiterControl),
+            cumulativeControlVolumeSponge:
+                conservationContribution(spongeControl),
+            cumulativeGlobalClosureResidual:
+                conservationContribution(closure),
+            finalMinusInitialPopulationMass: finalMinusInitial,
+            observedMassHistoryResidual: observedMassHistoryResidual,
+            maximumPerStepGlobalMassClosureResidual: maximumMassClosure,
+            maximumPerStepGlobalMomentumClosureResidual:
+                maximumMomentumClosure,
+            maximumPerStepLimiterMassContribution: maximumLimiterMass,
+            maximumPerStepLimiterMomentumContribution:
+                maximumLimiterMomentum,
+            relativeCumulativeLimiterMassContribution:
+                abs(limiter.x) / max(abs(initialPopulationMass), 1.0e-30),
+            maximumForceBudgetResidualNewtons: maximumForceResidual,
+            maximumAttributedControlVolumeSourceForceNewtons:
+                maximumAttributedSource,
+            maximumUnexplainedForceResidualNewtons:
+                maximumUnexplainedForce,
+            maximumBoundaryLoadClosureResidualNewtons:
+                maximumBoundaryLoadClosure,
+            RMSForceBudgetResidualNewtons:
+                sqrt(forceResidualSquared / count),
+            RMSAttributedControlVolumeSourceForceNewtons:
+                sqrt(attributedSourceSquared / count),
+            RMSUnexplainedForceResidualNewtons:
+                sqrt(unexplainedSquared / count),
+            RMSControlVolumeCollisionForceNewtons: collisionRMS,
+            RMSControlVolumeSymmetricLimiterForceNewtons: limiterRMS,
+            RMSControlVolumeSpongeForceNewtons: spongeRMS,
+            relativeRMSUnexplainedForceResidual:
+                relativeRMSUnexplained,
+            maximumPeakUnexplainedForceResidualFraction:
+                maximumPeakUnexplainedFraction,
+            relativeRMSBoundaryLoadClosureResidual:
+                relativeRMSBoundaryLoadClosure,
+            maximumAllowedRelativeRMSUnexplainedForceResidual:
+                allowedRelativeRMSUnexplained,
+            maximumAllowedPeakUnexplainedForceResidualFraction:
+                allowedPeakUnexplainedFraction,
+            dominantGlobalMassContribution: dominantMass,
+            dominantControlVolumeMomentumContribution: dominantControl,
+            globalLedgerClosed: globalLedgerClosed,
+            forceResidualLedgerClosed: forceResidualLedgerClosed
+        )
+    }
+
+    private static func conservationContribution(
+        _ value: SIMD4<Double>
+    ) -> MetalStationaryWallConservationContribution {
+        MetalStationaryWallConservationContribution(
+            mass: value.x,
+            momentumLattice: SIMD3<Double>(value.y, value.z, value.w)
+        )
+    }
+
+    private static func symmetricLimiterCaseReport(
+        limiterEnabled: Bool,
+        requestedSteps: Int,
+        initialPopulations: [Float],
+        finalPopulations: [Float],
+        history: [MetalTranslatingBodyTopologyStep],
+        cellCount: Int,
+        maximumMassDrift: Double,
+        maximumAbsolutePopulation: Double,
+        maximumForceResidual: Double,
+        maximumRelativeResidual: Double
+    ) -> MetalStationaryWallSymmetricLimiterCaseReport {
+        let initialMass = initialPopulations.reduce(0.0) {
+            $0 + Double($1)
+        }
+        let populationsFinite = finalPopulations.allSatisfy(\.isFinite)
+        let fieldsFinite = populationsFinite
+            && macroscopicFieldsAreFinite(
+                populations: finalPopulations,
+                cellCount: cellCount
+            )
+        let finalMassValue = finalPopulations.reduce(0.0) {
+            $0 + Double($1)
+        }
+        let finalMass = populationsFinite ? finalMassValue : nil
+        let massDrift = finalMass.map {
+            abs($0 - initialMass) / max(abs(initialMass), 1.0e-30)
+        }
+        let finalMinimum = populationsFinite
+            ? finalPopulations.min().map(Double.init)
+            : nil
+        let maximumAbsolute = populationsFinite
+            ? finalPopulations.lazy.map { abs(Double($0)) }.max()
+            : nil
+        let firstNegative = history.firstIndex { step in
+            guard let minimum = step.populationMinimum,
+                  !minimum.nonFinite else { return false }
+            return minimum.rawValue < 0
+        }.map { $0 + 1 }
+        let firstNonFinitePopulation = history.firstIndex {
+            $0.populationMinimum?.nonFinite == true
+        }.map { $0 + 1 }
+        let minimumObserved = history.compactMap { step -> Double? in
+            guard let minimum = step.populationMinimum,
+                  !minimum.nonFinite else { return nil }
+            return Double(minimum.rawValue)
+        }.min()
+        let firstInvalidLoad = history.firstIndex {
+            !vectorIsFinite($0.measuredForce)
+                || !vectorIsFinite($0.rawBudgetForce)
+        }
+        let loadsFinite = firstInvalidLoad == nil
+        let finiteHistory = history.prefix(firstInvalidLoad ?? history.count)
+        let residuals = finiteHistory.map {
+            doubleVector($0.measuredForce - $0.rawBudgetForce)
+        }
+        let budgets = finiteHistory.map {
+            doubleVector($0.rawBudgetForce)
+        }
+        let measured = finiteHistory.map {
+            doubleVector($0.measuredForce)
+        }
+        let residualSquared = residuals.reduce(0.0) {
+            $0 + squaredMagnitude($1)
+        }
+        let budgetSquared = budgets.reduce(0.0) {
+            $0 + squaredMagnitude($1)
+        }
+        let rmsResidual = residuals.isEmpty
+            ? nil
+            : sqrt(residualSquared / Double(residuals.count))
+        let maximumResidual = residuals.map(magnitude).max()
+        let relativeResidual = residuals.isEmpty
+            ? nil
+            : sqrt(residualSquared / max(budgetSquared, 1.0e-30))
+        let rawBudgetRMS = budgets.isEmpty
+            ? nil
+            : sqrt(budgetSquared / Double(budgets.count))
+        let maximumMeasured = measured.map(magnitude).max()
+        let relativeGateApplied =
+            (rawBudgetRMS ?? .infinity) > maximumForceResidual
+        let activationCellSteps = history.reduce(0) {
+            $0 + $1.symmetricLimiterActivationCount
+        }
+        let activationSteps = history.reduce(0) {
+            $0 + ($1.symmetricLimiterActivationCount > 0 ? 1 : 0)
+        }
+        let firstActivation = history.firstIndex {
+            $0.symmetricLimiterActivationCount > 0
+        }.map { $0 + 1 }
+        let firstZeroScale = history.firstIndex {
+            $0.symmetricLimiterMinimumScale == 0
+        }.map { $0 + 1 }
+        let maximumActivationsInOneStep = history.map(
+            \.symmetricLimiterActivationCount
+        ).max() ?? 0
+        let minimumScale = history.compactMap(
+            \.symmetricLimiterMinimumScale
+        ).map(Double.init).min()
+        let coveredEvents = history.reduce(0) {
+            $0 + $1.newlyCoveredCells
+        }
+        let uncoveredEvents = history.reduce(0) {
+            $0 + $1.newlyUncoveredCells
+        }
+        let transitionSteps = history.reduce(0) {
+            $0 + (($1.newlyCoveredCells > 0
+                || $1.newlyUncoveredCells > 0) ? 1 : 0)
+        }
+        let stabilityPassed = history.count == requestedSteps
+            && firstNegative == nil
+            && firstNonFinitePopulation == nil
+            && populationsFinite
+            && fieldsFinite
+            && loadsFinite
+            && (massDrift ?? .infinity) <= maximumMassDrift
+            && (maximumAbsolute ?? .infinity)
+                <= maximumAbsolutePopulation
+            && coveredEvents == 0
+            && uncoveredEvents == 0
+            && transitionSteps == 0
+        let forceBudgetPassed = (maximumResidual ?? .infinity)
+                <= maximumForceResidual
+            && (!relativeGateApplied
+                || (relativeResidual ?? .infinity)
+                    <= maximumRelativeResidual)
+        return MetalStationaryWallSymmetricLimiterCaseReport(
+            limiterEnabled: limiterEnabled,
+            requestedSteps: requestedSteps,
+            completedSteps: history.count,
+            firstNegativePopulationStep: firstNegative,
+            firstNonFinitePopulationStep: firstNonFinitePopulation,
+            firstNonFiniteLoadStep: firstInvalidLoad.map { $0 + 1 },
+            initialPopulationMass: initialMass,
+            finalPopulationMass: finalMass,
+            relativePopulationMassDrift: massDrift,
+            minimumObservedPopulation: minimumObserved,
+            finalMinimumPopulation: finalMinimum,
+            maximumAbsolutePopulation: maximumAbsolute,
+            populationsFinite: populationsFinite,
+            fieldsFinite: fieldsFinite,
+            loadsFinite: loadsFinite,
+            limiterActivationCellSteps: activationCellSteps,
+            limiterActivationSteps: activationSteps,
+            firstLimiterActivationStep: firstActivation,
+            firstZeroLimiterScaleStep: firstZeroScale,
+            maximumLimiterActivationsInOneStep:
+                maximumActivationsInOneStep,
+            minimumLimiterScale: minimumScale,
+            newlyCoveredCellEvents: coveredEvents,
+            newlyUncoveredCellEvents: uncoveredEvents,
+            topologyTransitionSteps: transitionSteps,
+            conservativeRMSForceResidual: rmsResidual,
+            maximumConservativeForceResidual: maximumResidual,
+            conservativeRelativeRMSResidual: relativeResidual,
+            rawBudgetRMSForceMagnitude: rawBudgetRMS,
+            maximumMeasuredForceMagnitude: maximumMeasured,
+            relativeResidualGateApplied: relativeGateApplied,
+            stabilityPassed: stabilityPassed,
+            forceBudgetPassed: forceBudgetPassed,
+            fullAcceptancePassed: stabilityPassed && forceBudgetPassed
+        )
+    }
+#endif
+
+    private static func populationMinimumSample(
+        _ record: MetalPopulationMinimumRecord,
+        step: Int,
+        domain: GridSize,
+        sphereCenter: SIMD3<Double>,
+        sphereRadius: Double,
+        spongeWidth: Int,
+        spongeStrength: Double
+    ) -> MetalStationaryWallPopulationMinimumSample {
+        let cellCount = domain.cellCount
+        let linearIndex = Int(record.linearIndex)
+        let directionIndex = linearIndex / cellCount
+        let cellIndex = linearIndex % cellCount
+        let xy = domain.x * domain.y
+        let z = cellIndex / xy
+        let remainder = cellIndex - z * xy
+        let y = remainder / domain.x
+        let x = remainder - y * domain.x
+        let cell = SIMD3<Int>(x, y, z)
+        let rawDirection = D3Q19.directions[directionIndex]
+        let direction = SIMD3<Int>(
+            Int(rawDirection.x),
+            Int(rawDirection.y),
+            Int(rawDirection.z)
+        )
+        let pullSource = SIMD3<Int>(
+            cell.x - direction.x,
+            cell.y - direction.y,
+            cell.z - direction.z
+        )
+        let pullSourceInside = populationCellIsInside(
+            pullSource,
+            domain: domain
+        )
+        let signedDistance = signedSphereDistance(
+            cell,
+            center: sphereCenter,
+            radius: sphereRadius
+        )
+        let cellIsSolid = signedDistance <= 0
+        let pullSourceIsSolid = pullSourceInside
+            && signedSphereDistance(
+                pullSource,
+                center: sphereCenter,
+                radius: sphereRadius
+            ) <= 0
+        let pullSourceSignedDistance = pullSourceInside
+            ? signedSphereDistance(
+                pullSource,
+                center: sphereCenter,
+                radius: sphereRadius
+            )
+            : nil
+        let adjacentToSphere = !cellIsSolid
+            && D3Q19.directions.dropFirst().contains { raw in
+                let offset = SIMD3<Int>(
+                    Int(raw.x),
+                    Int(raw.y),
+                    Int(raw.z)
+                )
+                let neighbor = SIMD3<Int>(
+                    cell.x - offset.x,
+                    cell.y - offset.y,
+                    cell.z - offset.z
+                )
+                return populationCellIsInside(neighbor, domain: domain)
+                    && signedSphereDistance(
+                        neighbor,
+                        center: sphereCenter,
+                        radius: sphereRadius
+                    ) <= 0
+            }
+        let boundaryDistance = min(
+            min(x, domain.x - 1 - x),
+            min(
+                min(y, domain.y - 1 - y),
+                min(z, domain.z - 1 - z)
+            )
+        )
+        let insideSponge = boundaryDistance < spongeWidth
+        let normalizedSpongeDistance = insideSponge
+            ? min(
+                max(
+                    (Double(spongeWidth) - Double(boundaryDistance))
+                        / max(Double(spongeWidth), 1),
+                    0
+                ),
+                1
+            )
+            : 0
+        let classification: String
+        if !record.nonFinite {
+            classification = "finite"
+        } else if record.rawValue.isNaN {
+            classification = "nan"
+        } else if record.rawValue == .infinity {
+            classification = "positive-infinity"
+        } else if record.rawValue == -.infinity {
+            classification = "negative-infinity"
+        } else {
+            classification = "non-finite"
+        }
+        let updatePath: String
+        if cellIsSolid {
+            updatePath = "solid-equilibrium-reset"
+        } else if !pullSourceInside {
+            updatePath = "far-field-input-trt-collision"
+        } else if pullSourceIsSolid {
+            updatePath = "curved-boundary-reconstruction-trt-collision"
+        } else {
+            updatePath = "ordinary-fluid-pull-trt-collision"
+        }
+        return MetalStationaryWallPopulationMinimumSample(
+            step: step,
+            minimumPopulation:
+                record.nonFinite ? nil : Double(record.rawValue),
+            valueClassification: classification,
+            directionIndex: directionIndex,
+            latticeDirection: direction,
+            cell: cell,
+            signedDistanceToSphereSurfaceCells: signedDistance,
+            absoluteDistanceToSphereSurfaceCells: abs(signedDistance),
+            cellIsSolid: cellIsSolid,
+            cellAdjacentToSphere: adjacentToSphere,
+            pullSourceCell: pullSource,
+            pullSourceInsideDomain: pullSourceInside,
+            pullSourceIsSolid: pullSourceIsSolid,
+            pullSourceSignedDistanceToSphereSurfaceCells:
+                pullSourceSignedDistance,
+            populationUpdatePath: updatePath,
+            distanceToNearestDomainBoundaryCells: boundaryDistance,
+            insideSponge: insideSponge,
+            spongeFactor: spongeStrength
+                * normalizedSpongeDistance
+                * normalizedSpongeDistance
+        )
+    }
+
+    private static func populationLocation(
+        _ sample: MetalStationaryWallPopulationMinimumSample
+    ) -> String {
+        if !sample.pullSourceInsideDomain {
+            return "far-field-boundary"
+        }
+        if sample.pullSourceIsSolid {
+            return "curved-boundary-reconstruction"
+        }
+        if sample.cellAdjacentToSphere {
+            return "curved-boundary-adjacent-fluid-pull"
+        }
+        if sample.insideSponge {
+            return "sponge"
+        }
+        return "fluid-interior"
+    }
+
+    private static func populationCellIsInside(
+        _ cell: SIMD3<Int>,
+        domain: GridSize
+    ) -> Bool {
+        cell.x >= 0 && cell.y >= 0 && cell.z >= 0
+            && cell.x < domain.x
+            && cell.y < domain.y
+            && cell.z < domain.z
+    }
+
+    private static func signedSphereDistance(
+        _ cell: SIMD3<Int>,
+        center: SIMD3<Double>,
+        radius: Double
+    ) -> Double {
+        let relative = SIMD3<Double>(
+            Double(cell.x) + 0.5 - center.x,
+            Double(cell.y) + 0.5 - center.y,
+            Double(cell.z) + 0.5 - center.z
+        )
+        return sqrt(
+            relative.x * relative.x
+                + relative.y * relative.y
+                + relative.z * relative.z
+        ) - radius
+    }
+
     private static func doubleVector(
         _ value: SIMD3<Float>
     ) -> SIMD3<Double> {
@@ -1121,12 +2770,116 @@ private struct GPUTranslatingTopologyBudget {
     var topologyReservoirCorrection: SIMD4<Float>
 }
 
+private struct GPUPopulationMinimum {
+    var comparisonValue: Float
+    var rawValue: Float
+    var linearIndex: UInt32
+    var nonFinite: UInt32
+}
+
+private struct GPUTRTCollisionTerm {
+    var values0: SIMD4<Float>
+    var values1: SIMD4<Float>
+    var boundaryValues0: SIMD4<Float>
+    var boundaryContributions: SIMD4<Float>
+    var metadata: SIMD4<UInt32>
+    var boundaryMetadata: SIMD4<UInt32>
+}
+
+private struct GPUTRTCollisionSummary {
+    var macroscopic: SIMD4<Float>
+    var relaxation: SIMD4<Float>
+    var limiter: SIMD4<Float>
+    var metadata: SIMD4<UInt32>
+}
+
+private struct GPUSymmetricLimiterLedger {
+    var observedGlobal: SIMD4<Float>
+    var boundaryGlobal: SIMD4<Float>
+    var farFieldGlobal: SIMD4<Float>
+    var collisionGlobal: SIMD4<Float>
+    var limiterGlobal: SIMD4<Float>
+    var spongeGlobal: SIMD4<Float>
+    var collisionControl: SIMD4<Float>
+    var limiterControl: SIMD4<Float>
+    var spongeControl: SIMD4<Float>
+    var boundaryActivated: SIMD4<Float>
+    var spongeActivated: SIMD4<Float>
+    var counts: SIMD4<UInt32>
+    var activatedCounts: SIMD4<UInt32>
+}
+
+private struct MetalSymmetricLimiterLedgerRaw {
+    var observedGlobal = SIMD4<Double>.zero
+    var boundaryGlobal = SIMD4<Double>.zero
+    var farFieldGlobal = SIMD4<Double>.zero
+    var collisionGlobal = SIMD4<Double>.zero
+    var limiterGlobal = SIMD4<Double>.zero
+    var spongeGlobal = SIMD4<Double>.zero
+    var collisionControl = SIMD4<Double>.zero
+    var limiterControl = SIMD4<Double>.zero
+    var spongeControl = SIMD4<Double>.zero
+    var boundaryActivated = SIMD4<Double>.zero
+    var spongeActivated = SIMD4<Double>.zero
+    var activatedCellCount = 0
+    var boundaryLinkCount = 0
+    var farFieldLinkCount = 0
+    var spongeCellCount = 0
+    var activatedBoundaryLinkCount = 0
+    var activatedSpongeCellCount = 0
+    var controlVolumeSpongeCellCount = 0
+    var controlVolumeActivatedCellCount = 0
+
+    mutating func add(_ value: GPUSymmetricLimiterLedger) {
+        observedGlobal += doubleVector(value.observedGlobal)
+        boundaryGlobal += doubleVector(value.boundaryGlobal)
+        farFieldGlobal += doubleVector(value.farFieldGlobal)
+        collisionGlobal += doubleVector(value.collisionGlobal)
+        limiterGlobal += doubleVector(value.limiterGlobal)
+        spongeGlobal += doubleVector(value.spongeGlobal)
+        collisionControl += doubleVector(value.collisionControl)
+        limiterControl += doubleVector(value.limiterControl)
+        spongeControl += doubleVector(value.spongeControl)
+        boundaryActivated += doubleVector(value.boundaryActivated)
+        spongeActivated += doubleVector(value.spongeActivated)
+        activatedCellCount += Int(value.counts.x)
+        boundaryLinkCount += Int(value.counts.y)
+        farFieldLinkCount += Int(value.counts.z)
+        spongeCellCount += Int(value.counts.w)
+        activatedBoundaryLinkCount += Int(value.activatedCounts.x)
+        activatedSpongeCellCount += Int(value.activatedCounts.y)
+        controlVolumeSpongeCellCount += Int(value.activatedCounts.z)
+        controlVolumeActivatedCellCount += Int(value.activatedCounts.w)
+    }
+
+    private func doubleVector(_ value: SIMD4<Float>) -> SIMD4<Double> {
+        SIMD4<Double>(
+            Double(value.x),
+            Double(value.y),
+            Double(value.z),
+            Double(value.w)
+        )
+    }
+}
+
+private struct MetalTRTCollisionCapture {
+    let macroscopic: SIMD4<Float>
+    let relaxation: SIMD4<Float>
+    let limiter: SIMD4<Float>
+    let metadata: SIMD4<UInt32>
+    let terms: [GPUTRTCollisionTerm]
+}
+
 private struct MetalTranslatingBodyTopologyStep {
     let measuredForce: SIMD3<Float>
     let rawBudgetForce: SIMD3<Float>
     let newlyCoveredCells: Int
     let newlyUncoveredCells: Int
     let solidControlSurfaceCrossingLinkCount: Int
+    let populationMinimum: MetalPopulationMinimumRecord?
+    let symmetricLimiterActivationCount: Int
+    let symmetricLimiterMinimumScale: Float?
+    let conservationLedger: MetalSymmetricLimiterLedgerRaw?
 }
 
 private final class MetalTranslatingBodyTopologySimulation {
@@ -1134,6 +2887,8 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let configuration: SimulationConfiguration
     private let periodicBoundaries: Bool
     private let linkForceMode: UInt32
+    private let symmetricPositivityLimiterEnabled: Bool
+    private let conservationLedgerEnabled: Bool
     private let parameters: MTLBuffer
     private let bodyState: MTLBuffer
     private let populationsA: MTLBuffer
@@ -1149,6 +2904,11 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let budgetBeforeB: MTLBuffer
     private let budgetAfterA: MTLBuffer
     private let budgetAfterB: MTLBuffer
+    private let populationMinimumPartials: MTLBuffer
+    private let trtCollisionTerms: MTLBuffer
+    private let trtCollisionSummary: MTLBuffer
+    private let conservationLedgerCells: MTLBuffer?
+    private let conservationLedgerPartials: MTLBuffer?
     private let initializePipeline: MTLComputePipelineState
     private let geometryPipeline: MTLComputePipelineState
     private let fluidPipeline: MTLComputePipelineState
@@ -1156,20 +2916,31 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let budgetBeforePipeline: MTLComputePipelineState
     private let budgetAfterPipeline: MTLComputePipelineState
     private let budgetReductionPipeline: MTLComputePipelineState
+    private let populationMinimumPipeline: MTLComputePipelineState
+    private let trtCollisionDecompositionPipeline: MTLComputePipelineState
+    private let conservationLedgerCapturePipeline: MTLComputePipelineState
+    private let conservationLedgerReductionPipeline: MTLComputePipelineState
     private let partialCount: Int
+    private let populationPartialCount: Int
     private let bounds: GPUTranslatingTopologyBounds
     private var currentPopulations: MTLBuffer
     private var nextPopulations: MTLBuffer
     private var currentSolid: MTLBuffer
     private var nextSolid: MTLBuffer
+    private var latestTRTCollisionCapture: MetalTRTCollisionCapture?
 
     init(
         backend: MetalBackend,
         linkForceMode: UInt32,
-        caseConfiguration: MetalTranslatingBodyCaseConfiguration
+        caseConfiguration: MetalTranslatingBodyCaseConfiguration,
+        symmetricPositivityLimiterEnabled: Bool = false,
+        conservationLedgerEnabled: Bool = false
     ) throws {
         self.backend = backend
         self.linkForceMode = linkForceMode
+        self.symmetricPositivityLimiterEnabled =
+            symmetricPositivityLimiterEnabled
+        self.conservationLedgerEnabled = conservationLedgerEnabled
         periodicBoundaries = caseConfiguration.periodicBoundaries
         let grid = caseConfiguration.grid
         let referenceSpeed = caseConfiguration.referenceSpeedLattice
@@ -1215,7 +2986,7 @@ private final class MetalTranslatingBodyTopologySimulation {
                     0
                 ),
                 wallVelocity: SIMD4<Float>(
-                    referenceSpeed,
+                    caseConfiguration.wallVelocityLattice,
                     0,
                     0,
                     caseConfiguration.wallVelocityMode
@@ -1251,6 +3022,18 @@ private final class MetalTranslatingBodyTopologySimulation {
         budgetReductionPipeline = try backend.pipeline(
             named: "reduceControlVolumeMomentumBudget"
         )
+        populationMinimumPipeline = try backend.pipeline(
+            named: "reducePopulationMinimum"
+        )
+        trtCollisionDecompositionPipeline = try backend.pipeline(
+            named: "captureTRTCollisionDecomposition"
+        )
+        conservationLedgerCapturePipeline = try backend.pipeline(
+            named: "captureSymmetricLimiterLedger"
+        )
+        conservationLedgerReductionPipeline = try backend.pipeline(
+            named: "reduceSymmetricLimiterLedger"
+        )
 
         let cells = grid.cellCount
         let populationBytes = D3Q19.count * cells
@@ -1260,10 +3043,24 @@ private final class MetalTranslatingBodyTopologySimulation {
         let densityBytes = cells * MemoryLayout<Float>.stride
         let velocityBytes = cells * MemoryLayout<SIMD4<Float>>.stride
         partialCount = max(1, (cells + 255) / 256)
+        populationPartialCount = max(
+            1,
+            (D3Q19.count * cells + 255) / 256
+        )
         let loadBytes = partialCount * MemoryLayout<GPUForceTorque>.stride
         let budgetBytes = partialCount
             * MemoryLayout<GPUTranslatingTopologyBudget>.stride
-        try backend.validateAllocationPlan(bufferLengths: [
+        let populationMinimumBytes = populationPartialCount
+            * MemoryLayout<GPUPopulationMinimum>.stride
+        let trtCollisionTermBytes = D3Q19.count
+            * MemoryLayout<GPUTRTCollisionTerm>.stride
+        let trtCollisionSummaryBytes =
+            MemoryLayout<GPUTRTCollisionSummary>.stride
+        let conservationLedgerCellBytes = cells
+            * MemoryLayout<GPUSymmetricLimiterLedger>.stride
+        let conservationLedgerPartialBytes = partialCount
+            * MemoryLayout<GPUSymmetricLimiterLedger>.stride
+        var allocationLengths = [
             MemoryLayout<GPUTranslatingTopologyParameters>.stride,
             MemoryLayout<GPUBirdBodyState>.stride,
             populationBytes, populationBytes,
@@ -1271,7 +3068,14 @@ private final class MetalTranslatingBodyTopologySimulation {
             densityBytes, velocityBytes,
             loadBytes, loadBytes,
             budgetBytes, budgetBytes, budgetBytes, budgetBytes,
-        ])
+            populationMinimumBytes,
+            trtCollisionTermBytes, trtCollisionSummaryBytes,
+        ]
+        if conservationLedgerEnabled {
+            allocationLengths.append(conservationLedgerCellBytes)
+            allocationLengths.append(conservationLedgerPartialBytes)
+        }
+        try backend.validateAllocationPlan(bufferLengths: allocationLengths)
         populationsA = try backend.makePrivateBuffer(length: populationBytes)
         populationsB = try backend.makePrivateBuffer(length: populationBytes)
         solidA = try backend.makePrivateBuffer(length: maskBytes)
@@ -1285,6 +3089,27 @@ private final class MetalTranslatingBodyTopologySimulation {
         budgetBeforeB = try backend.makeSharedBuffer(length: budgetBytes)
         budgetAfterA = try backend.makeSharedBuffer(length: budgetBytes)
         budgetAfterB = try backend.makeSharedBuffer(length: budgetBytes)
+        populationMinimumPartials = try backend.makeSharedBuffer(
+            length: populationMinimumBytes
+        )
+        trtCollisionTerms = try backend.makeSharedBuffer(
+            length: trtCollisionTermBytes
+        )
+        trtCollisionSummary = try backend.makeSharedBuffer(
+            length: trtCollisionSummaryBytes
+        )
+        if conservationLedgerEnabled {
+            conservationLedgerCells = try backend.makePrivateBuffer(
+                length: conservationLedgerCellBytes
+            )
+            conservationLedgerPartials = try backend.makeSharedBuffer(
+                length: conservationLedgerPartialBytes
+            )
+        }
+        else {
+            conservationLedgerCells = nil
+            conservationLedgerPartials = nil
+        }
         currentPopulations = populationsA
         nextPopulations = populationsB
         currentSolid = solidA
@@ -1298,6 +3123,10 @@ private final class MetalTranslatingBodyTopologySimulation {
 
     var tauPlus: Float {
         configuration.scaling.tauPlus
+    }
+
+    var forceToPhysical: Float {
+        configuration.scaling.forceToPhysical
     }
 
     func copyPopulations() throws -> [Float] {
@@ -1326,9 +3155,56 @@ private final class MetalTranslatingBodyTopologySimulation {
         return Array(UnsafeBufferPointer(start: pointer, count: count))
     }
 
-    func run(steps: Int) throws -> [MetalTranslatingBodyTopologyStep] {
+    func capturePopulationMinimum() throws -> MetalPopulationMinimumRecord {
+        guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create population-minimum command buffer."
+            )
+        }
+        try encodePopulationMinimum(
+            commandBuffer: commandBuffer,
+            populations: currentPopulations
+        )
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+        return readPopulationMinimum()
+    }
+
+    func runTRTCollisionDecomposition(
+        steps: Int,
+        targetCell: SIMD3<UInt32>
+    ) throws -> ([MetalTranslatingBodyTopologyStep], MetalTRTCollisionCapture) {
+        latestTRTCollisionCapture = nil
+        let history = try run(
+            steps: steps,
+            collisionDecompositionStep: steps,
+            collisionTargetCell: targetCell
+        )
+        guard let capture = latestTRTCollisionCapture else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "TRT collision decomposition was not captured"
+            )
+        }
+        return (history, capture)
+    }
+
+    func run(
+        steps: Int,
+        capturePopulationMinimum: Bool = false,
+        stopOneStepAfterFirstNonFinitePopulation: Bool = false,
+        collisionDecompositionStep: Int? = nil,
+        collisionTargetCell: SIMD3<UInt32>? = nil,
+        captureConservationLedger: Bool = false
+    ) throws -> [MetalTranslatingBodyTopologyStep] {
+        if captureConservationLedger && !conservationLedgerEnabled {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "conservation ledger capture was not enabled at allocation"
+            )
+        }
         var history: [MetalTranslatingBodyTopologyStep] = []
         history.reserveCapacity(steps)
+        var firstNonFinitePopulationStep: Int?
         for step in 1...steps {
             guard let commandBuffer = backend.queue.makeCommandBuffer() else {
                 throw BirdFlowError.commandBufferFailed(
@@ -1348,6 +3224,24 @@ private final class MetalTranslatingBodyTopologySimulation {
                 commandBuffer: commandBuffer,
                 uniforms: &uniforms
             )
+            if captureConservationLedger {
+                try encodeConservationLedgerCapture(
+                    commandBuffer: commandBuffer,
+                    uniforms: &uniforms
+                )
+                try encodeConservationLedgerReduction(
+                    commandBuffer: commandBuffer
+                )
+            }
+            let captureCollision = collisionDecompositionStep == step
+                && collisionTargetCell != nil
+            if captureCollision, let collisionTargetCell {
+                try encodeTRTCollisionDecomposition(
+                    commandBuffer: commandBuffer,
+                    uniforms: &uniforms,
+                    targetCell: collisionTargetCell
+                )
+            }
             let load = try encodeTopologyLoadReduction(
                 commandBuffer: commandBuffer
             )
@@ -1355,6 +3249,12 @@ private final class MetalTranslatingBodyTopologySimulation {
                 commandBuffer: commandBuffer,
                 uniforms: &uniforms
             )
+            if capturePopulationMinimum {
+                try encodePopulationMinimum(
+                    commandBuffer: commandBuffer,
+                    populations: nextPopulations
+                )
+            }
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
             try check(commandBuffer)
@@ -1374,6 +3274,15 @@ private final class MetalTranslatingBodyTopologySimulation {
             let outwardFlux = vector(rawBefore.outwardMomentumFlux)
             let rawBudget = (oldMomentum - newMomentum - outwardFlux)
                 * configuration.scaling.forceToPhysical
+            let populationMinimum = capturePopulationMinimum
+                ? readPopulationMinimum()
+                : nil
+            if captureCollision {
+                latestTRTCollisionCapture = readTRTCollisionDecomposition()
+            }
+            let conservationLedger = captureConservationLedger
+                ? try readConservationLedger()
+                : nil
             history.append(MetalTranslatingBodyTopologyStep(
                 measuredForce: vector(rawLoad.force),
                 rawBudgetForce: rawBudget,
@@ -1385,12 +3294,218 @@ private final class MetalTranslatingBodyTopologySimulation {
                 ),
                 solidControlSurfaceCrossingLinkCount: Int(
                     rawBefore.outwardMomentumFlux.w.rounded()
-                )
+                ),
+                populationMinimum: populationMinimum,
+                symmetricLimiterActivationCount:
+                    Int(rawLoad.force.w.rounded()),
+                symmetricLimiterMinimumScale: rawLoad.force.w > 0
+                    ? 1 - rawLoad.torque.w
+                    : nil,
+                conservationLedger: conservationLedger
             ))
             swap(&currentPopulations, &nextPopulations)
             swap(&currentSolid, &nextSolid)
+            if stopOneStepAfterFirstNonFinitePopulation {
+                if let firstNonFinitePopulationStep,
+                   step > firstNonFinitePopulationStep {
+                    break
+                }
+                if populationMinimum?.nonFinite == true {
+                    firstNonFinitePopulationStep = step
+                }
+            }
         }
         return history
+    }
+
+    private func encodeConservationLedgerCapture(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let conservationLedgerCells,
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode symmetric-limiter conservation capture."
+            )
+        }
+        var ledgerBounds = bounds
+        encoder.setBuffer(currentPopulations, offset: 0, index: 0)
+        encoder.setBuffer(nextPopulations, offset: 0, index: 1)
+        encoder.setBuffer(nextSolid, offset: 0, index: 2)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 3)
+        encoder.setBuffer(conservationLedgerCells, offset: 0, index: 4)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 5
+        )
+        encoder.setBytes(
+            &ledgerBounds,
+            length: MemoryLayout<GPUTranslatingTopologyBounds>.stride,
+            index: 6
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: conservationLedgerCapturePipeline,
+            count: configuration.grid.cellCount
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeConservationLedgerReduction(
+        commandBuffer: MTLCommandBuffer
+    ) throws {
+        guard let conservationLedgerCells,
+              let conservationLedgerPartials,
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to reduce symmetric-limiter conservation capture."
+            )
+        }
+        var cellCount = UInt32(configuration.grid.cellCount)
+        encoder.setBuffer(conservationLedgerCells, offset: 0, index: 0)
+        encoder.setBuffer(conservationLedgerPartials, offset: 0, index: 1)
+        encoder.setBytes(
+            &cellCount,
+            length: MemoryLayout<UInt32>.stride,
+            index: 2
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: conservationLedgerReductionPipeline,
+            count: partialCount
+        )
+        encoder.endEncoding()
+    }
+
+    private func readConservationLedger() throws
+        -> MetalSymmetricLimiterLedgerRaw
+    {
+        guard let conservationLedgerPartials else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "conservation ledger partial buffer is unavailable"
+            )
+        }
+        let pointer = conservationLedgerPartials.contents()
+            .assumingMemoryBound(to: GPUSymmetricLimiterLedger.self)
+        var total = MetalSymmetricLimiterLedgerRaw()
+        for index in 0..<partialCount {
+            total.add(pointer[index])
+        }
+        return total
+    }
+
+    private func encodeTRTCollisionDecomposition(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        targetCell: SIMD3<UInt32>
+    ) throws {
+        guard targetCell.x < UInt32(configuration.grid.x),
+              targetCell.y < UInt32(configuration.grid.y),
+              targetCell.z < UInt32(configuration.grid.z) else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "TRT decomposition target lies outside the domain"
+            )
+        }
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode the TRT collision decomposition."
+            )
+        }
+        var targetGID = targetCell.x
+            + UInt32(configuration.grid.x)
+                * (targetCell.y
+                    + UInt32(configuration.grid.y) * targetCell.z)
+        encoder.setBuffer(currentPopulations, offset: 0, index: 0)
+        encoder.setBuffer(nextPopulations, offset: 0, index: 1)
+        encoder.setBuffer(nextSolid, offset: 0, index: 2)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 3)
+        encoder.setBuffer(trtCollisionTerms, offset: 0, index: 4)
+        encoder.setBuffer(trtCollisionSummary, offset: 0, index: 5)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 6
+        )
+        encoder.setBytes(
+            &targetGID,
+            length: MemoryLayout<UInt32>.stride,
+            index: 7
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: trtCollisionDecompositionPipeline,
+            count: 1
+        )
+        encoder.endEncoding()
+    }
+
+    private func readTRTCollisionDecomposition()
+        -> MetalTRTCollisionCapture
+    {
+        let summary = trtCollisionSummary.contents()
+            .assumingMemoryBound(to: GPUTRTCollisionSummary.self).pointee
+        let pointer = trtCollisionTerms.contents()
+            .assumingMemoryBound(to: GPUTRTCollisionTerm.self)
+        let terms = Array(
+            UnsafeBufferPointer(start: pointer, count: D3Q19.count)
+        )
+        return MetalTRTCollisionCapture(
+            macroscopic: summary.macroscopic,
+            relaxation: summary.relaxation,
+            limiter: summary.limiter,
+            metadata: summary.metadata,
+            terms: terms
+        )
+    }
+
+    private func encodePopulationMinimum(
+        commandBuffer: MTLCommandBuffer,
+        populations: MTLBuffer
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode the population-minimum reduction."
+            )
+        }
+        var populationCount = UInt32(
+            D3Q19.count * configuration.grid.cellCount
+        )
+        encoder.setBuffer(populations, offset: 0, index: 0)
+        encoder.setBuffer(populationMinimumPartials, offset: 0, index: 1)
+        encoder.setBytes(
+            &populationCount,
+            length: MemoryLayout<UInt32>.stride,
+            index: 2
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: populationMinimumPipeline,
+            count: Int(populationCount),
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+    }
+
+    private func readPopulationMinimum() -> MetalPopulationMinimumRecord {
+        let pointer = populationMinimumPartials.contents()
+            .assumingMemoryBound(to: GPUPopulationMinimum.self)
+        var selected = pointer[0]
+        if populationPartialCount > 1 {
+            for index in 1..<populationPartialCount {
+                let candidate = pointer[index]
+                if candidate.comparisonValue < selected.comparisonValue
+                    || (candidate.comparisonValue == selected.comparisonValue
+                        && candidate.linearIndex < selected.linearIndex) {
+                    selected = candidate
+                }
+            }
+        }
+        return MetalPopulationMinimumRecord(
+            rawValue: selected.rawValue,
+            linearIndex: selected.linearIndex,
+            nonFinite: selected.nonFinite != 0
+        )
     }
 
     private func makeUniforms(time: Float) -> GPUUniforms {
@@ -1408,7 +3523,7 @@ private final class MetalTranslatingBodyTopologySimulation {
                 0,
                 Float(linkForceMode),
                 1,
-                -1
+                symmetricPositivityLimiterEnabled ? -2 : -1
             )
         )
     }

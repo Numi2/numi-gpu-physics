@@ -151,6 +151,53 @@ struct GPUForceTorque {
     float4 torque;
 };
 
+/// Diagnostic-only partial reduction record. `comparisonValue` maps every
+/// non-finite population to negative infinity so the host can locate the
+/// first invalid value without copying the direction-major population field.
+struct GPUPopulationMinimum {
+    float comparisonValue;
+    float rawValue;
+    uint linearIndex;
+    uint nonFinite;
+};
+
+/// One direction of a diagnostic-only TRT collision decomposition. Float4 and
+/// uint4 fields keep the layout identical to the Swift readback structure.
+struct GPUTRTCollisionTerm {
+    float4 values0;
+    float4 values1;
+    float4 boundaryValues0;
+    float4 boundaryContributions;
+    uint4 metadata;
+    uint4 boundaryMetadata;
+};
+
+struct GPUTRTCollisionSummary {
+    float4 macroscopic;
+    float4 relaxation;
+    float4 limiter;
+    uint4 metadata;
+};
+
+/// Diagnostic-only conservation ledger. Each float4 stores mass in x and
+/// lattice momentum in yzw. The capture kernel writes one record per cell;
+/// a second kernel reduces deterministic blocks of 256 cells.
+struct GPUSymmetricLimiterLedger {
+    float4 observedGlobal;
+    float4 boundaryGlobal;
+    float4 farFieldGlobal;
+    float4 collisionGlobal;
+    float4 limiterGlobal;
+    float4 spongeGlobal;
+    float4 collisionControl;
+    float4 limiterControl;
+    float4 spongeControl;
+    float4 boundaryActivated;
+    float4 spongeActivated;
+    uint4 counts;
+    uint4 activatedCounts;
+};
+
 struct GPUControlVolumeBounds {
     uint4 minimum;
     uint4 maximumExclusive;
@@ -1743,6 +1790,8 @@ kernel void stepFluidTRT(
     bool accumulateLoads = uniforms.gravity.w != 0.0f;
     float3 cellForcePhysical = float3(0);
     float3 cellTorquePhysical = float3(0);
+    float limiterActivation = 0.0f;
+    float limiterMaximumRestriction = 0.0f;
 
     if (gid < uniforms.grid.w) {
         uint3 size = uniforms.grid.xyz;
@@ -2087,29 +2136,112 @@ kernel void stepFluidTRT(
             );
             float capturedDensity = 0.0f;
             float3 capturedMomentum = float3(0);
+            bool symmetricPositivityLimiter =
+                uniforms.caseParameters.w < -1.5f;
 
-            for (uint q = 0; q < Q; ++q) {
-                uint qo = OPP[q];
-                float fPlus = 0.5f * (f[q] + f[qo]);
-                float fMinus = 0.5f * (f[q] - f[qo]);
-                float eqPlus = 0.5f * (feq[q] + feq[qo]);
-                float eqMinus = 0.5f * (feq[q] - feq[qo]);
-                float post = f[q]
-                    - omegaPlus * (fPlus - eqPlus)
-                    - omegaMinus * (fMinus - eqMinus);
+            // Preserve the production/control arithmetic literally. Even an
+            // algebraically equivalent regrouping perturbs the low-margin c16
+            // trajectory before the diagnostic limiter first activates.
+            if (!symmetricPositivityLimiter) {
+                for (uint q = 0; q < Q; ++q) {
+                    uint qo = OPP[q];
+                    float fPlus = 0.5f * (f[q] + f[qo]);
+                    float fMinus = 0.5f * (f[q] - f[qo]);
+                    float eqPlus = 0.5f * (feq[q] + feq[qo]);
+                    float eqMinus = 0.5f * (feq[q] - feq[qo]);
+                    float post = f[q]
+                        - omegaPlus * (fPlus - eqPlus)
+                        - omegaMinus * (fMinus - eqMinus);
 
-                if (sponge > 0.0f) {
-                    float far = equilibrium(
-                        q,
-                        uniforms.farFieldLattice.w,
-                        uniforms.farFieldLattice.xyz
-                    );
-                    post = mix(post, far, sponge);
+                    if (sponge > 0.0f) {
+                        float far = equilibrium(
+                            q,
+                            uniforms.farFieldLattice.w,
+                            uniforms.farFieldLattice.xyz
+                        );
+                        post = mix(post, far, sponge);
+                    }
+                    populationsOut[q * uniforms.grid.w + gid] = post;
+                    if (captureFields) {
+                        capturedDensity += post;
+                        capturedMomentum += post * float3(C[q]);
+                    }
                 }
-                populationsOut[q * uniforms.grid.w + gid] = post;
-                if (captureFields) {
-                    capturedDensity += post;
-                    capturedMomentum += post * float3(C[q]);
+            }
+            else {
+                float symmetricIncrements[19];
+                float antisymmetricIncrements[19];
+                float symmetricScale = 1.0f;
+
+                for (uint q = 0; q < Q; ++q) {
+                    uint qo = OPP[q];
+                    float fPlus = 0.5f * (f[q] + f[qo]);
+                    float fMinus = 0.5f * (f[q] - f[qo]);
+                    float eqPlus = 0.5f * (feq[q] + feq[qo]);
+                    float eqMinus = 0.5f * (feq[q] - feq[qo]);
+                    float symmetricIncrement = -omegaPlus
+                        * (fPlus - eqPlus);
+                    float antisymmetricIncrement = -omegaMinus
+                        * (fMinus - eqMinus);
+                    symmetricIncrements[q] = symmetricIncrement;
+                    antisymmetricIncrements[q] = antisymmetricIncrement;
+
+                    if (symmetricIncrement < 0.0f) {
+                        float base = f[q] + antisymmetricIncrement;
+                        float populationFloor = max(
+                            1.0e-12f,
+                            1.0e-6f * max(feq[q], 0.0f)
+                        );
+                        if (base + symmetricIncrement < populationFloor) {
+                            float candidate = clamp(
+                                (base - populationFloor)
+                                    / max(-symmetricIncrement, 1.0e-30f),
+                                0.0f,
+                                1.0f
+                            );
+                            symmetricScale = min(symmetricScale, candidate);
+                        }
+                    }
+                }
+
+                if (symmetricScale < 1.0f) {
+                    limiterActivation = 1.0f;
+                    limiterMaximumRestriction = 1.0f - symmetricScale;
+                }
+
+                for (uint q = 0; q < Q; ++q) {
+                    float post;
+                    if (symmetricScale < 1.0f) {
+                        post = f[q]
+                            + symmetricScale * symmetricIncrements[q]
+                            + antisymmetricIncrements[q];
+                    }
+                    else {
+                        // A treatment cell that did not activate must remain
+                        // bit-identical to the production/control collision.
+                        uint qo = OPP[q];
+                        float fPlus = 0.5f * (f[q] + f[qo]);
+                        float fMinus = 0.5f * (f[q] - f[qo]);
+                        float eqPlus = 0.5f * (feq[q] + feq[qo]);
+                        float eqMinus = 0.5f * (feq[q] - feq[qo]);
+                        post = f[q]
+                            - omegaPlus * (fPlus - eqPlus)
+                            - omegaMinus * (fMinus - eqMinus);
+                    }
+
+                    if (sponge > 0.0f) {
+                        float far = equilibrium(
+                            q,
+                            uniforms.farFieldLattice.w,
+                            uniforms.farFieldLattice.xyz
+                        );
+                        post = mix(post, far, sponge);
+                    }
+                    populationsOut[q * uniforms.grid.w + gid] = post;
+                    if (captureFields) {
+                        capturedDensity += post;
+                        capturedMomentum += post * float3(C[q]);
+                    }
                 }
             }
 
@@ -2136,8 +2268,14 @@ kernel void stepFluidTRT(
         return;
     }
 
-    groupForces[threadIndex] = float4(cellForcePhysical, 0);
-    groupTorques[threadIndex] = float4(cellTorquePhysical, 0);
+    groupForces[threadIndex] = float4(
+        cellForcePhysical,
+        limiterActivation
+    );
+    groupTorques[threadIndex] = float4(
+        cellTorquePhysical,
+        limiterMaximumRestriction
+    );
     threadgroup_barrier(mem_flags::mem_threadgroup);
 
     // Lane zero uses the original ascending 256-cell summation order, keeping
@@ -2145,13 +2283,313 @@ kernel void stepFluidTRT(
     if (threadIndex == 0u) {
         float3 force = float3(0);
         float3 torque = float3(0);
+        float activationCount = 0.0f;
+        float maximumRestriction = 0.0f;
         for (uint index = 0; index < threadsPerThreadgroup; ++index) {
             force += groupForces[index].xyz;
             torque += groupTorques[index].xyz;
+            activationCount += groupForces[index].w;
+            maximumRestriction = max(
+                maximumRestriction,
+                groupTorques[index].w
+            );
         }
-        partialLoads[threadgroupPosition].force = float4(force, 0);
-        partialLoads[threadgroupPosition].torque = float4(torque, 0);
+        partialLoads[threadgroupPosition].force = float4(
+            force,
+            activationCount
+        );
+        partialLoads[threadgroupPosition].torque = float4(
+            torque,
+            maximumRestriction
+        );
     }
+}
+
+/// Reconstructs one ordinary-fluid TRT update from the production step's
+/// input and output fields. The locked diagnostic requires every pull source
+/// to be fluid; source flags make that precondition explicit instead of
+/// silently duplicating the curved-wall operator here.
+kernel void captureTRTCollisionDecomposition(
+    device const float* populationsIn [[buffer(0)]],
+    device const float* populationsOut [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device GPUTRTCollisionTerm* terms [[buffer(4)]],
+    device GPUTRTCollisionSummary* summary [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    constant uint& targetGID [[buffer(7)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid != 0u || targetGID >= uniforms.grid.w) {
+        return;
+    }
+
+    uint3 size = uniforms.grid.xyz;
+    uint3 target = unflatten(targetGID, size);
+    float f[19];
+    uint sourceIndices[19];
+    uint sourceSolid[19];
+    uint sourceOutside[19];
+    float4 boundaryValues[19];
+    float4 boundaryContributions[19];
+    uint4 boundaryMetadata[19];
+    uint solidSourceCount = 0u;
+    uint outsideSourceCount = 0u;
+    float rho = 0.0f;
+    float3 momentum = float3(0);
+
+    for (uint q = 0u; q < Q; ++q) {
+        boundaryValues[q] = float4(0);
+        boundaryContributions[q] = float4(0);
+        boundaryMetadata[q] = uint4(0);
+        int3 sourceCell = int3(target) - C[q];
+        bool outside = !inside(sourceCell, size);
+        uint source = 0xffffffffu;
+        bool isSolidSource = false;
+        float value;
+        if (outside) {
+            value = equilibrium(
+                q,
+                uniforms.farFieldLattice.w,
+                uniforms.farFieldLattice.xyz
+            );
+            outsideSourceCount += 1u;
+        }
+        else {
+            source = flatten(uint3(sourceCell), size);
+            isSolidSource = solidCurrent[source] != 0;
+            if (isSolidSource) {
+                solidSourceCount += 1u;
+                float reflected = populationsIn[
+                    OPP[q] * uniforms.grid.w + targetGID
+                ];
+                float3 direction = float3(C[q]);
+                float linkFraction = 0.5f;
+                float3 wall = wallVelocity[source].xyz;
+                uint farther = 0u;
+                bool interpolatedBoundary =
+                    uniforms.caseParameters.w < -0.5f;
+                if (interpolatedBoundary) {
+                    linkFraction = clamp(
+                        populationsIn[q * uniforms.grid.w + source],
+                        1.0e-4f,
+                        1.0f
+                    );
+                    wall = mix(
+                        wallVelocity[targetGID].xyz,
+                        wallVelocity[source].xyz,
+                        linkFraction
+                    );
+                    if (linkFraction <= 0.5f) {
+                        int3 fartherCell = int3(target) + C[q];
+                        if (inside(fartherCell, size)) {
+                            farther = flatten(uint3(fartherCell), size);
+                        }
+                        if (!inside(fartherCell, size)
+                            || solidCurrent[farther] != 0) {
+                            interpolatedBoundary = false;
+                            linkFraction = 0.5f;
+                            wall = wallVelocity[source].xyz;
+                        }
+                    }
+                }
+                float wallCorrection = 2.0f
+                    * W[q]
+                    * uniforms.farFieldLattice.w
+                    * dot(direction, wall)
+                    / CS2;
+                value = reflected + wallCorrection;
+                float auxiliaryPopulation = 0.0f;
+                float reflectedContribution = reflected;
+                float auxiliaryContribution = 0.0f;
+                float wallContribution = wallCorrection;
+                uint auxiliaryIndex = 0xffffffffu;
+                uint branch = 1u;
+                if (interpolatedBoundary) {
+                    if (linkFraction <= 0.5f) {
+                        float fartherOutgoing = populationsIn[
+                            OPP[q] * uniforms.grid.w + farther
+                        ];
+                        reflectedContribution = 2.0f
+                            * linkFraction * reflected;
+                        auxiliaryPopulation = fartherOutgoing;
+                        auxiliaryContribution = (1.0f
+                            - 2.0f * linkFraction) * fartherOutgoing;
+                        wallContribution = wallCorrection;
+                        value = reflectedContribution
+                            + auxiliaryContribution
+                            + wallContribution;
+                        auxiliaryIndex = farther;
+                        branch = 2u;
+                    }
+                    else {
+                        float previousIncoming = populationsIn[
+                            q * uniforms.grid.w + targetGID
+                        ];
+                        reflectedContribution = reflected
+                            / (2.0f * linkFraction);
+                        auxiliaryPopulation = previousIncoming;
+                        auxiliaryContribution = (2.0f * linkFraction
+                            - 1.0f) * previousIncoming
+                            / (2.0f * linkFraction);
+                        wallContribution = wallCorrection
+                            / (2.0f * linkFraction);
+                        value = reflectedContribution
+                            + auxiliaryContribution
+                            + wallContribution;
+                        auxiliaryIndex = targetGID;
+                        branch = 3u;
+                    }
+                }
+                boundaryValues[q] = float4(
+                    reflected,
+                    linkFraction,
+                    auxiliaryPopulation,
+                    wallCorrection
+                );
+                boundaryContributions[q] = float4(
+                    reflectedContribution,
+                    auxiliaryContribution,
+                    wallContribution,
+                    value
+                );
+                boundaryMetadata[q] = uint4(
+                    1u,
+                    branch,
+                    auxiliaryIndex,
+                    interpolatedBoundary ? 1u : 0u
+                );
+            }
+            else {
+                value = populationsIn[q * uniforms.grid.w + source];
+            }
+        }
+        f[q] = value;
+        sourceIndices[q] = source;
+        sourceSolid[q] = isSolidSource ? 1u : 0u;
+        sourceOutside[q] = outside ? 1u : 0u;
+        rho += value;
+        momentum += value * float3(C[q]);
+    }
+
+    rho = max(rho, 1.0e-8f);
+    float3 velocity = momentum / rho;
+    float feq[19];
+    for (uint q = 0u; q < Q; ++q) {
+        feq[q] = equilibrium(q, rho, velocity);
+    }
+
+    float omegaPlus = uniforms.latticeAndSponge.x;
+    float omegaMinus = uniforms.latticeAndSponge.y;
+    float sponge = spongeFactor(
+        target,
+        size,
+        uniforms.latticeAndSponge.w,
+        uniforms.latticeAndSponge.z
+    );
+    bool symmetricPositivityLimiter =
+        uniforms.caseParameters.w < -1.5f;
+    float symmetricScale = 1.0f;
+    if (symmetricPositivityLimiter) {
+        for (uint q = 0u; q < Q; ++q) {
+            uint qo = OPP[q];
+            float symmetricNonequilibrium = 0.5f * (f[q] + f[qo])
+                - 0.5f * (feq[q] + feq[qo]);
+            float antisymmetricNonequilibrium = 0.5f * (f[q] - f[qo])
+                - 0.5f * (feq[q] - feq[qo]);
+            float symmetricIncrement = -omegaPlus
+                * symmetricNonequilibrium;
+            float antisymmetricIncrement = -omegaMinus
+                * antisymmetricNonequilibrium;
+            if (symmetricIncrement < 0.0f) {
+                float base = f[q] + antisymmetricIncrement;
+                float populationFloor = max(
+                    1.0e-12f,
+                    1.0e-6f * max(feq[q], 0.0f)
+                );
+                if (base + symmetricIncrement < populationFloor) {
+                    float candidate = clamp(
+                        (base - populationFloor)
+                            / max(-symmetricIncrement, 1.0e-30f),
+                        0.0f,
+                        1.0f
+                    );
+                    symmetricScale = min(symmetricScale, candidate);
+                }
+            }
+        }
+    }
+    float maximumPredictionError = 0.0f;
+    for (uint q = 0u; q < Q; ++q) {
+        uint qo = OPP[q];
+        float symmetricNonequilibrium = 0.5f * (f[q] + f[qo])
+            - 0.5f * (feq[q] + feq[qo]);
+        float antisymmetricNonequilibrium = 0.5f * (f[q] - f[qo])
+            - 0.5f * (feq[q] - feq[qo]);
+        float symmetricIncrement = -omegaPlus
+            * symmetricNonequilibrium;
+        float antisymmetricIncrement = -omegaMinus
+            * antisymmetricNonequilibrium;
+        float predicted = f[q]
+            + (symmetricPositivityLimiter
+                ? symmetricScale * symmetricIncrement
+                : symmetricIncrement)
+            + antisymmetricIncrement;
+        if (sponge > 0.0f) {
+            float far = equilibrium(
+                q,
+                uniforms.farFieldLattice.w,
+                uniforms.farFieldLattice.xyz
+            );
+            predicted = mix(predicted, far, sponge);
+        }
+        float actual = populationsOut[q * uniforms.grid.w + targetGID];
+        maximumPredictionError = max(
+            maximumPredictionError,
+            abs(predicted - actual)
+        );
+        terms[q].values0 = float4(
+            f[q],
+            feq[q],
+            symmetricNonequilibrium,
+            antisymmetricNonequilibrium
+        );
+        terms[q].values1 = float4(
+            symmetricIncrement,
+            antisymmetricIncrement,
+            predicted,
+            actual
+        );
+        terms[q].boundaryValues0 = boundaryValues[q];
+        terms[q].boundaryContributions = boundaryContributions[q];
+        terms[q].metadata = uint4(
+            q,
+            sourceIndices[q],
+            sourceSolid[q],
+            sourceOutside[q]
+        );
+        terms[q].boundaryMetadata = boundaryMetadata[q];
+    }
+
+    summary[0].macroscopic = float4(rho, velocity);
+    summary[0].relaxation = float4(
+        omegaPlus,
+        omegaMinus,
+        sponge,
+        maximumPredictionError
+    );
+    summary[0].limiter = float4(
+        symmetricScale,
+        symmetricPositivityLimiter ? 1.0f : 0.0f,
+        symmetricScale < 1.0f ? 1.0f : 0.0f,
+        0.0f
+    );
+    summary[0].metadata = uint4(
+        targetGID,
+        solidSourceCount,
+        outsideSourceCount,
+        solidCurrent[targetGID] != 0 ? 1u : 0u
+    );
 }
 
 inline bool insideControlVolume(
@@ -2160,6 +2598,334 @@ inline bool insideControlVolume(
 ) {
     return all(cell >= int3(bounds.minimum.xyz))
         && all(cell < int3(bounds.maximumExclusive.xyz));
+}
+
+/// Reconstructs the exact stationary-sphere treatment step without mutating
+/// solver state. Internal streaming cancels only after global reduction;
+/// boundary and far-field terms explicitly pair each reconstructed incoming
+/// population with the outgoing population it replaces.
+kernel void captureSymmetricLimiterLedger(
+    device const float* populationsIn [[buffer(0)]],
+    device const float* populationsOut [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device GPUSymmetricLimiterLedger* ledgers [[buffer(4)]],
+    constant GPUUniforms& uniforms [[buffer(5)]],
+    constant GPUControlVolumeBounds& bounds [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+
+    GPUSymmetricLimiterLedger ledger;
+    ledger.observedGlobal = float4(0);
+    ledger.boundaryGlobal = float4(0);
+    ledger.farFieldGlobal = float4(0);
+    ledger.collisionGlobal = float4(0);
+    ledger.limiterGlobal = float4(0);
+    ledger.spongeGlobal = float4(0);
+    ledger.collisionControl = float4(0);
+    ledger.limiterControl = float4(0);
+    ledger.spongeControl = float4(0);
+    ledger.boundaryActivated = float4(0);
+    ledger.spongeActivated = float4(0);
+    ledger.counts = uint4(0);
+    ledger.activatedCounts = uint4(0);
+
+    uint3 size = uniforms.grid.xyz;
+    uint3 cell = unflatten(gid, size);
+    if (solidCurrent[gid] != 0) {
+        // Geometry deliberately reuses dormant solid population slots for
+        // link fractions before this diagnostic executes. They are not fluid
+        // mass and must not enter the observed population balance.
+        ledgers[gid] = ledger;
+        return;
+    }
+
+    for (uint q = 0u; q < Q; ++q) {
+        float delta = populationsOut[q * uniforms.grid.w + gid]
+            - populationsIn[q * uniforms.grid.w + gid];
+        ledger.observedGlobal += float4(delta, delta * float3(C[q]));
+    }
+
+    float f[19];
+    float rho = 0.0f;
+    float3 momentum = float3(0);
+    uint boundaryLinkCount = 0u;
+    uint farFieldLinkCount = 0u;
+    bool interiorDomain = cell.x > 0u
+        && cell.y > 0u
+        && cell.z > 0u
+        && cell.x + 1u < size.x
+        && cell.y + 1u < size.y
+        && cell.z + 1u < size.z;
+
+    for (uint q = 0u; q < Q; ++q) {
+        int3 sourceCell = int3(cell) - C[q];
+        float value;
+        bool useFarField = false;
+        if (!interiorDomain && !inside(sourceCell, size)) {
+            if (uniforms.flags.w != 0u) {
+                sourceCell.x = sourceCell.x < 0
+                    ? int(size.x) - 1
+                    : (sourceCell.x >= int(size.x) ? 0 : sourceCell.x);
+                sourceCell.y = sourceCell.y < 0
+                    ? int(size.y) - 1
+                    : (sourceCell.y >= int(size.y) ? 0 : sourceCell.y);
+                sourceCell.z = sourceCell.z < 0
+                    ? int(size.z) - 1
+                    : (sourceCell.z >= int(size.z) ? 0 : sourceCell.z);
+            }
+            else {
+                useFarField = true;
+            }
+        }
+
+        if (useFarField) {
+            value = equilibrium(
+                q,
+                uniforms.farFieldLattice.w,
+                uniforms.farFieldLattice.xyz
+            );
+            float outgoing = populationsIn[
+                OPP[q] * uniforms.grid.w + gid
+            ];
+            float massDelta = value - outgoing;
+            float3 direction = float3(C[q]);
+            ledger.farFieldGlobal += float4(
+                massDelta,
+                (value + outgoing) * direction
+            );
+            farFieldLinkCount += 1u;
+        }
+        else {
+            uint source = flatten(uint3(sourceCell), size);
+            if (solidCurrent[source] != 0) {
+                float reflected = populationsIn[
+                    OPP[q] * uniforms.grid.w + gid
+                ];
+                float3 direction = float3(C[q]);
+                float linkFraction = 0.5f;
+                float3 wall = wallVelocity[source].xyz;
+                uint farther = 0u;
+                bool interpolatedBoundary =
+                    uniforms.caseParameters.w < -0.5f;
+                if (interpolatedBoundary) {
+                    linkFraction = clamp(
+                        populationsIn[q * uniforms.grid.w + source],
+                        1.0e-4f,
+                        1.0f
+                    );
+                    wall = mix(
+                        wallVelocity[gid].xyz,
+                        wallVelocity[source].xyz,
+                        linkFraction
+                    );
+                    if (linkFraction <= 0.5f) {
+                        int3 fartherCell = int3(cell) + C[q];
+                        if (inside(fartherCell, size)) {
+                            farther = flatten(uint3(fartherCell), size);
+                        }
+                        if (!inside(fartherCell, size)
+                            || solidCurrent[farther] != 0) {
+                            interpolatedBoundary = false;
+                            linkFraction = 0.5f;
+                            wall = wallVelocity[source].xyz;
+                        }
+                    }
+                }
+                float wallCorrection = 2.0f
+                    * W[q]
+                    * uniforms.farFieldLattice.w
+                    * dot(direction, wall)
+                    / CS2;
+                value = reflected + wallCorrection;
+                if (interpolatedBoundary) {
+                    if (linkFraction <= 0.5f) {
+                        float fartherOutgoing = populationsIn[
+                            OPP[q] * uniforms.grid.w + farther
+                        ];
+                        value = 2.0f * linkFraction * reflected
+                            + (1.0f - 2.0f * linkFraction)
+                                * fartherOutgoing
+                            + wallCorrection;
+                    }
+                    else {
+                        float previousIncoming = populationsIn[
+                            q * uniforms.grid.w + gid
+                        ];
+                        value = (reflected + wallCorrection)
+                                / (2.0f * linkFraction)
+                            + (2.0f * linkFraction - 1.0f)
+                                * previousIncoming
+                                / (2.0f * linkFraction);
+                    }
+                }
+                float massDelta = value - reflected;
+                ledger.boundaryGlobal += float4(
+                    massDelta,
+                    (value + reflected) * direction
+                );
+                boundaryLinkCount += 1u;
+            }
+            else {
+                value = populationsIn[q * uniforms.grid.w + source];
+            }
+        }
+        f[q] = value;
+        rho += value;
+        momentum += value * float3(C[q]);
+    }
+
+    rho = max(rho, 1.0e-8f);
+    float3 velocity = momentum / rho;
+    float feq[19];
+    for (uint q = 0u; q < Q; ++q) {
+        feq[q] = equilibrium(q, rho, velocity);
+    }
+    float omegaPlus = uniforms.latticeAndSponge.x;
+    float omegaMinus = uniforms.latticeAndSponge.y;
+    float sponge = spongeFactor(
+        cell,
+        size,
+        uniforms.latticeAndSponge.w,
+        uniforms.latticeAndSponge.z
+    );
+    float symmetricIncrements[19];
+    float antisymmetricIncrements[19];
+    float symmetricScale = 1.0f;
+    for (uint q = 0u; q < Q; ++q) {
+        uint qo = OPP[q];
+        float fPlus = 0.5f * (f[q] + f[qo]);
+        float fMinus = 0.5f * (f[q] - f[qo]);
+        float eqPlus = 0.5f * (feq[q] + feq[qo]);
+        float eqMinus = 0.5f * (feq[q] - feq[qo]);
+        float symmetricIncrement = -omegaPlus * (fPlus - eqPlus);
+        float antisymmetricIncrement = -omegaMinus * (fMinus - eqMinus);
+        symmetricIncrements[q] = symmetricIncrement;
+        antisymmetricIncrements[q] = antisymmetricIncrement;
+        if (symmetricIncrement < 0.0f) {
+            float base = f[q] + antisymmetricIncrement;
+            float populationFloor = max(
+                1.0e-12f,
+                1.0e-6f * max(feq[q], 0.0f)
+            );
+            if (base + symmetricIncrement < populationFloor) {
+                float candidate = clamp(
+                    (base - populationFloor)
+                        / max(-symmetricIncrement, 1.0e-30f),
+                    0.0f,
+                    1.0f
+                );
+                symmetricScale = min(symmetricScale, candidate);
+            }
+        }
+    }
+
+    bool activated = symmetricScale < 1.0f;
+    bool inControl = insideControlVolume(int3(cell), bounds);
+    for (uint q = 0u; q < Q; ++q) {
+        uint qo = OPP[q];
+        float fPlus = 0.5f * (f[q] + f[qo]);
+        float fMinus = 0.5f * (f[q] - f[qo]);
+        float eqPlus = 0.5f * (feq[q] + feq[qo]);
+        float eqMinus = 0.5f * (feq[q] - feq[qo]);
+        float unlimited = f[q]
+            - omegaPlus * (fPlus - eqPlus)
+            - omegaMinus * (fMinus - eqMinus);
+        float limited = activated
+            ? f[q]
+                + symmetricScale * symmetricIncrements[q]
+                + antisymmetricIncrements[q]
+            : unlimited;
+        float actual = populationsOut[q * uniforms.grid.w + gid];
+        float collisionDelta = unlimited - f[q];
+        float limiterDelta = limited - unlimited;
+        float spongeDelta = actual - limited;
+        float3 direction = float3(C[q]);
+        float4 collisionTerm = float4(
+            collisionDelta,
+            collisionDelta * direction
+        );
+        float4 limiterTerm = float4(
+            limiterDelta,
+            limiterDelta * direction
+        );
+        float4 spongeTerm = float4(
+            spongeDelta,
+            spongeDelta * direction
+        );
+        ledger.collisionGlobal += collisionTerm;
+        ledger.limiterGlobal += limiterTerm;
+        ledger.spongeGlobal += spongeTerm;
+        if (inControl) {
+            ledger.collisionControl += collisionTerm;
+            ledger.limiterControl += limiterTerm;
+            ledger.spongeControl += spongeTerm;
+        }
+    }
+
+    if (activated) {
+        ledger.boundaryActivated = ledger.boundaryGlobal;
+        ledger.spongeActivated = ledger.spongeGlobal;
+    }
+    ledger.counts = uint4(
+        activated ? 1u : 0u,
+        boundaryLinkCount,
+        farFieldLinkCount,
+        sponge > 0.0f ? 1u : 0u
+    );
+    ledger.activatedCounts = uint4(
+        activated ? boundaryLinkCount : 0u,
+        activated && sponge > 0.0f ? 1u : 0u,
+        inControl && sponge > 0.0f ? 1u : 0u,
+        inControl && activated ? 1u : 0u
+    );
+    ledgers[gid] = ledger;
+}
+
+kernel void reduceSymmetricLimiterLedger(
+    device const GPUSymmetricLimiterLedger* input [[buffer(0)]],
+    device GPUSymmetricLimiterLedger* output [[buffer(1)]],
+    constant uint& inputCount [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint start = gid * 256u;
+    if (start >= inputCount) {
+        return;
+    }
+    GPUSymmetricLimiterLedger total;
+    total.observedGlobal = float4(0);
+    total.boundaryGlobal = float4(0);
+    total.farFieldGlobal = float4(0);
+    total.collisionGlobal = float4(0);
+    total.limiterGlobal = float4(0);
+    total.spongeGlobal = float4(0);
+    total.collisionControl = float4(0);
+    total.limiterControl = float4(0);
+    total.spongeControl = float4(0);
+    total.boundaryActivated = float4(0);
+    total.spongeActivated = float4(0);
+    total.counts = uint4(0);
+    total.activatedCounts = uint4(0);
+    uint end = min(start + 256u, inputCount);
+    for (uint index = start; index < end; ++index) {
+        total.observedGlobal += input[index].observedGlobal;
+        total.boundaryGlobal += input[index].boundaryGlobal;
+        total.farFieldGlobal += input[index].farFieldGlobal;
+        total.collisionGlobal += input[index].collisionGlobal;
+        total.limiterGlobal += input[index].limiterGlobal;
+        total.spongeGlobal += input[index].spongeGlobal;
+        total.collisionControl += input[index].collisionControl;
+        total.limiterControl += input[index].limiterControl;
+        total.spongeControl += input[index].spongeControl;
+        total.boundaryActivated += input[index].boundaryActivated;
+        total.spongeActivated += input[index].spongeActivated;
+        total.counts += input[index].counts;
+        total.activatedCounts += input[index].activatedCounts;
+    }
+    output[gid] = total;
 }
 
 /// Captures P(n) and the exact streaming flux before geometry reuses dormant
@@ -2393,14 +3159,21 @@ kernel void reduceForceTorque(
 
     float3 force = float3(0);
     float3 torque = float3(0);
+    float activationCount = 0.0f;
+    float maximumRestriction = 0.0f;
     uint end = min(start + 256u, inputCount);
     for (uint index = start; index < end; ++index) {
         force += input[index].force.xyz;
         torque += input[index].torque.xyz;
+        activationCount += input[index].force.w;
+        maximumRestriction = max(
+            maximumRestriction,
+            input[index].torque.w
+        );
     }
 
-    output[gid].force = float4(force, 0);
-    output[gid].torque = float4(torque, 0);
+    output[gid].force = float4(force, activationCount);
+    output[gid].torque = float4(torque, maximumRestriction);
 }
 
 /// Records a reduced moving-boundary load without synchronizing the CPU. A
@@ -2452,6 +3225,65 @@ kernel void gatherFloatValues(
 ) {
     if (gid < count) {
         gathered[gid] = values[indices[gid]];
+    }
+}
+
+/// Reduces all direction-major populations to one deterministic minimum per
+/// 256-lane threadgroup. Ties select the lowest linear population index.
+kernel void reducePopulationMinimum(
+    device const float* populations [[buffer(0)]],
+    device GPUPopulationMinimum* partials [[buffer(1)]],
+    constant uint& populationCount [[buffer(2)]],
+    uint gid [[thread_position_in_grid]],
+    uint tid [[thread_index_in_threadgroup]],
+    uint group [[threadgroup_position_in_grid]]
+) {
+    threadgroup float comparisonValues[256];
+    threadgroup float rawValues[256];
+    threadgroup uint indices[256];
+    threadgroup uint nonFiniteFlags[256];
+
+    float raw = as_type<float>(0x7f800000u);
+    float comparison = raw;
+    uint index = 0xffffffffu;
+    uint nonFinite = 0u;
+    if (gid < populationCount) {
+        raw = populations[gid];
+        index = gid;
+        nonFinite = isfinite(raw) ? 0u : 1u;
+        comparison = nonFinite == 0u
+            ? raw
+            : as_type<float>(0xff800000u);
+    }
+    comparisonValues[tid] = comparison;
+    rawValues[tid] = raw;
+    indices[tid] = index;
+    nonFiniteFlags[tid] = nonFinite;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    for (uint stride = 128u; stride > 0u; stride >>= 1u) {
+        if (tid < stride) {
+            uint other = tid + stride;
+            bool replace = comparisonValues[other] < comparisonValues[tid]
+                || (comparisonValues[other] == comparisonValues[tid]
+                    && indices[other] < indices[tid]);
+            if (replace) {
+                comparisonValues[tid] = comparisonValues[other];
+                rawValues[tid] = rawValues[other];
+                indices[tid] = indices[other];
+                nonFiniteFlags[tid] = nonFiniteFlags[other];
+            }
+        }
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+    }
+
+    if (tid == 0u) {
+        partials[group] = {
+            comparisonValues[0],
+            rawValues[0],
+            indices[0],
+            nonFiniteFlags[0]
+        };
     }
 }
 

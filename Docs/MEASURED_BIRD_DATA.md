@@ -322,29 +322,40 @@ The stationary-wall discriminator is:
   --json
 ```
 
-With maintained far-field boundaries and the established `0.04` sphere
-sponge, all c8/c12/c16 cases become non-finite at step `267`. They have zero
-topology events and stationary wall velocity, while their nonzero pre-failure
-loads prove the flow is active. The `1.44 s` Apple M4 result is archived in
-`ValidationArtifacts/measured-wing-high-re-stationary-wall-sphere-stability.json`.
-Thus the moving-wall correction accelerates but does not cause the instability;
-curved halfway bounce-back at the matched low relaxation margins is sufficient.
-The relaxation sweep command adds `--relaxation-sweep` to the stationary-wall
-invocation. Across fourteen 500-step points, the first surviving margin is
-`0.015625`, followed by a reproducible failure at `0.01625` on step `496`, then
-survival at `0.016875` and above. The `8.38 s` Apple M4 record is archived in
-`ValidationArtifacts/measured-wing-stationary-wall-relaxation-sweep.json`.
-The outcome is non-monotonic and every point still fails the separate full
-force-budget acceptance contract, so viscosity-only tuning is not a robust
-fix. The next highest-ROI experiment is a 1,000-step survival audit of margins
-`0.015625`, `0.016875`, and `0.02` to distinguish genuine stability islands
-from divergence delayed just beyond the 500-step observation window.
+The boundary-component capture found that this supposedly stationary case had
+been passing `referenceSpeedLattice` to the GPU wall parameter. The GPU now
+uses `caseConfiguration.wallVelocityLattice`, the static audit locks that
+wiring, and every invalid stationary-wall artifact has been replaced. The
+genuinely moving-wall cases are unaffected because both speeds coincide there.
 
-The `--long-horizon-survival` audit resolves that ambiguity: all three cases
-become non-finite at steps `519`, `566`, and `588`, respectively. The `2.92 s`
-Apple M4 result repeats exactly and is archived in
-`ValidationArtifacts/measured-wing-stationary-wall-long-horizon-survival.json`.
-The apparent 500-step islands were delayed divergence. The next highest-ROI
-experiment is a spatial positivity diagnostic on the published c16 stationary
-sphere, locating the first failing population by direction, cell, and distance
-to the curved boundary before choosing a limiter or boundary-operator change.
+With the corrected zero wall speed, maintained far-field boundaries, and the
+`0.04` sphere sponge, all c8/c12/c16 cases become non-finite at step `105`
+after 104 finite load samples. The corrected fourteen-point relaxation sweep
+is monotonic: margin `0.01` fails at step `454`, `0.0125` is the first stable
+500-step point, and every larger sampled margin through `0.05` remains finite.
+The `--long-horizon-survival` audit then keeps margins `0.015625`, `0.016875`,
+and `0.02` finite through 1,000 steps with relative mass drift near `1e-4`.
+All still fail the independent force-budget acceptance contract.
+
+The corrected c16 positivity trace locates the first negative at step `27`:
+`q=10`, direction `(-1,1,0)`, boundary-adjacent cell `(5,9,12)`, and signed
+sphere distance `0.320714` cells. Five pull directions reach the sphere, but
+the failing `q=10` source `(6,8,12)` is ordinary fluid and the event is outside
+the sponge. The first NaN follows at step `105`, inside the sponge and
+coincident with the first non-finite load. The one-cell TRT decomposition
+closes within `7.45e-9`; every reconstructed incoming value is positive and
+the captured stationary-wall correction is exactly zero. The `q=10` symmetric
+increment is `-0.03093607`, while the antisymmetric increment is a stabilizing
+`+9.07e-6`, isolating symmetric TRT overshoot at `omegaPlus=1.9989468`.
+
+The corrected symmetric-limiter treatment finishes all 500 steps finite and
+positive, with minimum population `8.72842e-9`; the control becomes negative
+at `27` and non-finite at `105`. Its per-step mass/momentum ledger closes the
+apparent conservation failure. Open far-field replacement contributes
+`-212.359` mass units and sponge relaxation `+152.514`, while limiting
+contributes only `-0.0151`, or `4.69e-7` of initial mass. Sponge momentum is
+`0.125604 N` RMS versus `3.34e-7 N` RMS from limiting and explains the old
+force residual to `0.287%` RMS. Boundary load closes independently to
+`3.03e-7` relative RMS. The limiter is therefore not the conservation source,
+but remains diagnostic-only until the same c16 case passes a sponge-excluded
+control volume and source-aware global mass gate before refinement.
