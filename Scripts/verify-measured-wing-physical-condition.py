@@ -161,6 +161,24 @@ def main() -> None:
         raise SystemExit(
             "general curved moving-link instability must remain confirmed"
         )
+    if decision["stationaryWallSphereStabilityPassed"]:
+        raise SystemExit(
+            "stationary-wall sphere stability gate must retain its failed verdict"
+        )
+    if not decision["stationaryWallSphereRelativeResidualGateApplied"]:
+        raise SystemExit(
+            "stationary-wall relative residual gate must remain active"
+        )
+    if decision["movingWallPopulationCorrectionInstabilityIsolated"]:
+        raise SystemExit(
+            "moving-wall population correction must not remain isolated as required"
+        )
+    if not decision[
+        "generalCurvedHalfwayBounceBackLowRelaxationInstabilityConfirmed"
+    ]:
+        raise SystemExit(
+            "general curved halfway-bounce-back instability must remain confirmed"
+        )
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
     feasibilities = []
     for key in (
@@ -395,6 +413,77 @@ def main() -> None:
         if component["newlyUncoveredCellEvents"] != 0:
             raise SystemExit(f"{decomposition_path} contains uncover events")
 
+    stationary_path = Path(
+        decision["stationaryWallSphereStabilityArtifact"]
+    )
+    stationary = json.loads(
+        stationary_path.read_text(encoding="utf-8")
+    )
+    stationary_audit_hash = stationary["sourceLocks"][
+        "physicalConditionAudit"
+    ]["sha256"]
+    if stationary_audit_hash != actual_audit_hash:
+        raise SystemExit(
+            f"{stationary_path} has a stale physical-condition audit hash"
+        )
+    decomposition_hash = hashlib.sha256(
+        decomposition_path.read_bytes()
+    ).hexdigest()
+    locked_decomposition_hash = stationary["sourceLocks"][
+        "wallDecompositionArtifact"
+    ]["sha256"]
+    if locked_decomposition_hash != decomposition_hash:
+        raise SystemExit(
+            f"{stationary_path} has a stale wall-decomposition artifact hash"
+        )
+    if stationary["passed"]:
+        raise SystemExit(f"{stationary_path} must retain its failed verdict")
+    if (
+        stationary["classification"]
+        != "high-re-stationary-wall-sphere-unstable-general-curved-link-path-confirmed"
+    ):
+        raise SystemExit(f"{stationary_path} has changed classification")
+    if stationary["topologyChanges"]:
+        raise SystemExit(f"{stationary_path} must retain fixed occupancy")
+    if stationary["translationSpeedLattice"] != 0:
+        raise SystemExit(f"{stationary_path} must retain fixed geometry")
+    if stationary["wallVelocityLattice"] != 0:
+        raise SystemExit(f"{stationary_path} must retain a stationary wall")
+    if stationary["periodicBoundaries"]:
+        raise SystemExit(f"{stationary_path} must retain maintained far-field boundaries")
+    close(stationary["spongeStrength"], 0.04, 1.0e-14, "stationary sphere sponge")
+    if stationary["farFieldVelocityLattice"] <= 0:
+        raise SystemExit(f"{stationary_path} must retain uniform external flow")
+    stationary_cases = stationary["cases"]
+    if [case["matchedBirdChordCells"] for case in stationary_cases] != [
+        8,
+        12,
+        16,
+    ]:
+        raise SystemExit(f"{stationary_path} has unexpected matched cases")
+    for case in stationary_cases:
+        if case["passed"]:
+            raise SystemExit(f"{stationary_path} contains a passing case")
+        if case["finiteLoadSteps"] != 266:
+            raise SystemExit(f"{stationary_path} has changed finite history length")
+        if case["firstNonFiniteLoadStep"] != 267:
+            raise SystemExit(f"{stationary_path} has changed failure step")
+        if any(
+            case[key]
+            for key in ("populationsFinite", "fieldsFinite", "loadsFinite")
+        ):
+            raise SystemExit(f"{stationary_path} must retain non-finite state")
+        if not case["relativeResidualGateApplied"]:
+            raise SystemExit(f"{stationary_path} must retain an active relative gate")
+        if case["maximumMeasuredForceMagnitude"] <= 0.01:
+            raise SystemExit(f"{stationary_path} did not measure an active load")
+        if case["newlyCoveredCellEvents"] != 0:
+            raise SystemExit(f"{stationary_path} contains cover events")
+        if case["newlyUncoveredCellEvents"] != 0:
+            raise SystemExit(f"{stationary_path} contains uncover events")
+        if case["topologyTransitionSteps"] != 0:
+            raise SystemExit(f"{stationary_path} contains topology transitions")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -442,6 +531,14 @@ def main() -> None:
         )
     )
     print(f"wall_decomposition_classification: {decomposition['classification']}")
+    print(f"stationary_wall_classification: {stationary['classification']}")
+    print(
+        "stationary_wall_first_non_finite_steps: "
+        + ",".join(
+            str(case["firstNonFiniteLoadStep"])
+            for case in stationary_cases
+        )
+    )
     print("passed: true")
 
 

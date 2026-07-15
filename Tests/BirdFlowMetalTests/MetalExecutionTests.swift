@@ -612,6 +612,46 @@ func productionMetalHighReWallComponentDecompositionConfirmsGeneralInstability()
 }
 
 @Test
+func productionMetalHighReStationaryWallSphereConfirmsGeneralCurvedLinkInstability()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runHighReStationaryWallSphereStability()
+
+    #expect(!report.passed)
+    #expect(
+        report.classification
+            == "high-re-stationary-wall-sphere-unstable-general-curved-link-path-confirmed"
+    )
+    #expect(!report.topologyChanges)
+    #expect(!report.periodicBoundaries)
+    #expect(report.spongeStrength > 0)
+    #expect(report.translationSpeedLattice == 0)
+    #expect(report.wallVelocityLattice == 0)
+    #expect(report.wallVelocityMode == "stationary")
+    #expect(report.farFieldVelocityLattice > 0)
+    #expect(report.cases.map(\.matchedBirdChordCells) == [8, 12, 16])
+    #expect(
+        report.cases.compactMap(\.firstNonFiniteLoadStep)
+            == [267, 267, 267]
+    )
+    #expect(report.cases.allSatisfy {
+        $0.finiteLoadSteps == 266
+            && !$0.populationsFinite
+            && !$0.fieldsFinite
+            && !$0.loadsFinite
+            && $0.newlyCoveredCellEvents == 0
+            && $0.newlyUncoveredCellEvents == 0
+            && $0.topologyTransitionSteps == 0
+            && $0.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && ($0.maximumMeasuredForceMagnitude ?? 0) > 0.01
+            && $0.relativeResidualGateApplied
+            && !$0.passed
+    })
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

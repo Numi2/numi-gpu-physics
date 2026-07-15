@@ -90,6 +90,9 @@ public struct MetalHighReTranslatingBodyCaseResult: Codable, Sendable {
     public let conservativeRMSForceResidual: Double?
     public let maximumConservativeForceResidual: Double?
     public let conservativeRelativeRMSResidual: Double?
+    public let rawBudgetRMSForceMagnitude: Double?
+    public let maximumMeasuredForceMagnitude: Double?
+    public let relativeResidualGateApplied: Bool
     public let passed: Bool
 }
 
@@ -101,11 +104,14 @@ public struct MetalHighReTranslatingBodyStabilityReport:
     public let productionKernel: String
     public let topologyKernel: String
     public let topologyChanges: Bool
+    public let periodicBoundaries: Bool
+    public let spongeStrength: Double
     public let domainCells: SIMD3<Int>
     public let sphereRadiusCells: Double
     public let translationSpeedLattice: Double
     public let wallVelocityLattice: Double
     public let wallVelocityMode: String
+    public let farFieldVelocityLattice: Double
     public let requestedSteps: Int
     public let displacementCells: Double
     public let runtimeSeconds: Double
@@ -180,6 +186,18 @@ public enum MetalTranslatingBodyTopologyValidator {
         )
     }
 
+    public static func runHighReStationaryWallSphereStability(
+        steps: Int = 500
+    ) throws -> MetalHighReTranslatingBodyStabilityReport {
+        try runHighReStability(
+            steps: steps,
+            topologyChanges: false,
+            wallMode: .uniform,
+            wallSpeed: 0,
+            farFieldSpeed: 0.08
+        )
+    }
+
     public static func runHighReFixedOccupancyWallDecomposition(
         steps: Int = 500
     ) throws -> MetalHighReFixedOccupancyWallDecompositionReport {
@@ -241,7 +259,9 @@ public enum MetalTranslatingBodyTopologyValidator {
     private static func runHighReStability(
         steps: Int,
         topologyChanges: Bool,
-        wallMode: HighReSphereWallMode
+        wallMode: HighReSphereWallMode,
+        wallSpeed: Float = 0.08,
+        farFieldSpeed: Float = 0
     ) throws -> MetalHighReTranslatingBodyStabilityReport {
         guard steps == 500 else {
             throw MetalTranslatingBodyTopologyValidationError.failed(
@@ -252,7 +272,7 @@ public enum MetalTranslatingBodyTopologyValidator {
         let startTime = Date()
         let backend = try MetalBackend(fastMath: false)
         let domain = try GridSize(x: 56, y: 24, z: 24)
-        let wallSpeed: Float = 0.08
+        let referenceSpeed = max(wallSpeed, farFieldSpeed)
         let geometrySpeed: Float = topologyChanges ? wallSpeed : 0
         let maximumMassDrift = 1.0e-3
         let maximumAbsolutePopulation = 10.0
@@ -267,9 +287,13 @@ public enum MetalTranslatingBodyTopologyValidator {
             let caseConfiguration = MetalTranslatingBodyCaseConfiguration(
                 grid: domain,
                 sphereRadiusCells: Float(sphereRadiusCells),
+                referenceSpeedLattice: referenceSpeed,
                 geometryTranslationSpeedLattice: geometrySpeed,
                 wallVelocityLattice: wallSpeed,
                 wallVelocityMode: wallMode.rawValue,
+                initialFluidVelocityLattice: farFieldSpeed,
+                periodicBoundaries: farFieldSpeed == 0,
+                spongeStrength: farFieldSpeed > 0 ? 0.04 : 0,
                 latticeKinematicViscosity: viscosity,
                 initialCenter: SIMD3<Float>(8, 12, 12),
                 controlMinimum: SIMD3<UInt32>(2, 2, 2),
@@ -321,6 +345,9 @@ public enum MetalTranslatingBodyTopologyValidator {
             let rawForces = finiteHistory.map {
                 doubleVector($0.rawBudgetForce)
             }
+            let measuredForces = finiteHistory.map {
+                doubleVector($0.measuredForce)
+            }
             let residualSquared = residuals.reduce(0.0) {
                 $0 + squaredMagnitude($1)
             }
@@ -334,6 +361,16 @@ public enum MetalTranslatingBodyTopologyValidator {
             let relativeResidual = residuals.isEmpty
                 ? nil
                 : sqrt(residualSquared / max(budgetSquared, 1.0e-30))
+            let rawBudgetRMS = rawForces.isEmpty
+                ? nil
+                : sqrt(budgetSquared / Double(rawForces.count))
+            let maximumMeasuredForce = measuredForces.map(magnitude).max()
+            // A relative residual is undefined as a useful acceptance metric
+            // when the independent budget signal is below the locked absolute
+            // residual tolerance. In that regime, retain the absolute gate and
+            // report that the relative gate was intentionally not applied.
+            let relativeResidualGateApplied =
+                (rawBudgetRMS ?? .infinity) > maximumForceResidual
             let coveredEvents = history.reduce(0) {
                 $0 + $1.newlyCoveredCells
             }
@@ -363,8 +400,9 @@ public enum MetalTranslatingBodyTopologyValidator {
                 && (maximumAbsolute ?? .infinity)
                     <= maximumAbsolutePopulation
                 && (maximumResidual ?? .infinity) <= maximumForceResidual
-                && (relativeResidual ?? .infinity)
-                    <= maximumRelativeResidual
+                && (!relativeResidualGateApplied
+                    || (relativeResidual ?? .infinity)
+                        <= maximumRelativeResidual)
 
             return MetalHighReTranslatingBodyCaseResult(
                 matchedBirdChordCells: chordCells,
@@ -392,13 +430,23 @@ public enum MetalTranslatingBodyTopologyValidator {
                 conservativeRMSForceResidual: rmsResidual,
                 maximumConservativeForceResidual: maximumResidual,
                 conservativeRelativeRMSResidual: relativeResidual,
+                rawBudgetRMSForceMagnitude: rawBudgetRMS,
+                maximumMeasuredForceMagnitude: maximumMeasuredForce,
+                relativeResidualGateApplied: relativeResidualGateApplied,
                 passed: passed
             )
         }
         let passed = cases.allSatisfy(\.passed)
         let classification: String
         let verdict: String
-        if topologyChanges {
+        if farFieldSpeed > 0, wallSpeed == 0 {
+            classification = passed
+                ? "high-re-stationary-wall-sphere-stable-moving-wall-correction-isolated"
+                : "high-re-stationary-wall-sphere-unstable-general-curved-link-path-confirmed"
+            verdict = passed
+                ? "Matched high-Re TRT remains finite on a stationary curved sphere in uniform flow. The moving-wall population correction is the remaining destabilizing difference from the failed fixed-occupancy moving-wall cases."
+                : "Matched high-Re TRT becomes non-finite on a stationary curved sphere in uniform flow. The instability is general to curved halfway-link bounce-back and low-relaxation collision rather than requiring the moving-wall population correction."
+        } else if topologyChanges {
             classification = passed
                 ? "high-re-cell-crossing-stable-deforming-interpolation-path-suspect"
                 : "high-re-cell-crossing-unstable-moving-boundary-path-confirmed"
@@ -426,11 +474,14 @@ public enum MetalTranslatingBodyTopologyValidator {
             productionKernel: "stepFluidTRT",
             topologyKernel: "buildTranslatingSphereTopology",
             topologyChanges: topologyChanges,
+            periodicBoundaries: farFieldSpeed == 0,
+            spongeStrength: farFieldSpeed > 0 ? 0.04 : 0,
             domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
             sphereRadiusCells: sphereRadiusCells,
             translationSpeedLattice: Double(geometrySpeed),
             wallVelocityLattice: Double(wallSpeed),
-            wallVelocityMode: wallMode.name,
+            wallVelocityMode: wallSpeed == 0 ? "stationary" : wallMode.name,
+            farFieldVelocityLattice: Double(farFieldSpeed),
             requestedSteps: steps,
             displacementCells: Double(geometrySpeed) * Double(steps),
             runtimeSeconds: Date().timeIntervalSince(startTime),
@@ -678,9 +729,13 @@ import Metal
 private struct MetalTranslatingBodyCaseConfiguration {
     let grid: GridSize
     let sphereRadiusCells: Float
+    let referenceSpeedLattice: Float
     let geometryTranslationSpeedLattice: Float
     let wallVelocityLattice: Float
     let wallVelocityMode: Float
+    let initialFluidVelocityLattice: Float
+    let periodicBoundaries: Bool
+    let spongeStrength: Float
     let latticeKinematicViscosity: Float
     let initialCenter: SIMD3<Float>
     let controlMinimum: SIMD3<UInt32>
@@ -696,6 +751,10 @@ private struct MetalTranslatingBodyCaseConfiguration {
             sphereRadiusCells: Float(
                 MetalTranslatingBodyTopologyValidator.sphereRadiusCells
             ),
+            referenceSpeedLattice: Float(
+                MetalTranslatingBodyTopologyValidator
+                    .translationSpeedLattice
+            ),
             geometryTranslationSpeedLattice: Float(
                 MetalTranslatingBodyTopologyValidator
                     .translationSpeedLattice
@@ -705,6 +764,9 @@ private struct MetalTranslatingBodyCaseConfiguration {
                     .translationSpeedLattice
             ),
             wallVelocityMode: 0,
+            initialFluidVelocityLattice: 0,
+            periodicBoundaries: true,
+            spongeStrength: 0,
             latticeKinematicViscosity: 0.1,
             initialCenter: SIMD3<Float>(8, 12, 12),
             controlMinimum: SIMD3<UInt32>(2, 2, 2),
@@ -742,6 +804,7 @@ private struct MetalTranslatingBodyTopologyStep {
 private final class MetalTranslatingBodyTopologySimulation {
     private let backend: MetalBackend
     private let configuration: SimulationConfiguration
+    private let periodicBoundaries: Bool
     private let linkForceMode: UInt32
     private let parameters: MTLBuffer
     private let bodyState: MTLBuffer
@@ -779,8 +842,9 @@ private final class MetalTranslatingBodyTopologySimulation {
     ) throws {
         self.backend = backend
         self.linkForceMode = linkForceMode
+        periodicBoundaries = caseConfiguration.periodicBoundaries
         let grid = caseConfiguration.grid
-        let referenceSpeed = caseConfiguration.wallVelocityLattice
+        let referenceSpeed = caseConfiguration.referenceSpeedLattice
         let characteristicLengthCells = 8
         let targetReynoldsNumber = referenceSpeed
             * Float(characteristicLengthCells)
@@ -798,9 +862,13 @@ private final class MetalTranslatingBodyTopologySimulation {
             domainOriginMeters: .zero,
             scaling: scaling,
             physicalAirDensity: 1,
-            farFieldVelocityMetersPerSecond: .zero,
+            farFieldVelocityMetersPerSecond: SIMD3<Float>(
+                caseConfiguration.initialFluidVelocityLattice,
+                0,
+                0
+            ),
             spongeWidthCells: 4,
-            spongeStrength: 0,
+            spongeStrength: caseConfiguration.spongeStrength,
             freeFlight: false,
             gravityMetersPerSecondSquared: .zero,
             fastMath: false
@@ -1007,7 +1075,7 @@ private final class MetalTranslatingBodyTopologySimulation {
             captureMacroscopicFields: false,
             accumulateLoads: true,
             hasPreviousGeometry: true,
-            periodicBoundaries: true,
+            periodicBoundaries: periodicBoundaries,
             caseParameters: SIMD4<Float>(
                 0,
                 Float(linkForceMode),

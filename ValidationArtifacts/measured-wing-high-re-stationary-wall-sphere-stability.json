@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "reportIdentifier": "maeda-dong-high-re-stationary-wall-sphere-stability-v1",
+  "classification": "high-re-stationary-wall-sphere-unstable-general-curved-link-path-confirmed",
+  "generatedBy": ".build/release/birdflow validate translating-body --high-re-stability --fixed-occupancy --stationary-wall --json",
+  "deviceName": "Apple M4",
+  "runtimeSeconds": 1.44336998462677,
+  "sourceLocks": {
+    "physicalConditionAudit": {
+      "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
+      "sha256": "91a440b84c75bb733466e979e66060a056e0a7d182013a9c6763032eb29691da"
+    },
+    "wallDecompositionArtifact": {
+      "path": "ValidationArtifacts/measured-wing-high-re-fixed-occupancy-wall-decomposition.json",
+      "sha256": "e9060f7dc119ab1b4b63ea3bfd830faa55a0cb045e28128bdce4dee452976c15"
+    },
+    "publishedConditionDOI": "10.1155/2022/5433184"
+  },
+  "productionKernel": "stepFluidTRT",
+  "topologyKernel": "buildTranslatingSphereTopology",
+  "topologyChanges": false,
+  "periodicBoundaries": false,
+  "spongeStrength": 0.04,
+  "domainCells": [56, 24, 24],
+  "sphereRadiusCells": 3.25,
+  "translationSpeedLattice": 0.0,
+  "wallVelocityLattice": 0.0,
+  "wallVelocityMode": "stationary",
+  "farFieldVelocityLattice": 0.07999999821186066,
+  "requestedSteps": 500,
+  "cases": [
+    {
+      "matchedBirdChordCells": 8,
+      "latticeKinematicViscosity": 0.000043824278691317886,
+      "tauPlusMarginAboveHalf": 0.00013148784637451172,
+      "finiteLoadSteps": 266,
+      "firstNonFiniteLoadStep": 267,
+      "maximumMeasuredForceMagnitude": 256347750.19609818,
+      "newlyCoveredCellEvents": 0,
+      "newlyUncoveredCellEvents": 0,
+      "topologyTransitionSteps": 0,
+      "maximumSolidControlSurfaceCrossingLinkCount": 0,
+      "populationsFinite": false,
+      "fieldsFinite": false,
+      "loadsFinite": false,
+      "relativeResidualGateApplied": true,
+      "passed": false
+    },
+    {
+      "matchedBirdChordCells": 12,
+      "latticeKinematicViscosity": 0.00006582454079762101,
+      "tauPlusMarginAboveHalf": 0.00019747018814086914,
+      "finiteLoadSteps": 266,
+      "firstNonFiniteLoadStep": 267,
+      "maximumMeasuredForceMagnitude": 261601293.40604347,
+      "newlyCoveredCellEvents": 0,
+      "newlyUncoveredCellEvents": 0,
+      "topologyTransitionSteps": 0,
+      "maximumSolidControlSurfaceCrossingLinkCount": 0,
+      "populationsFinite": false,
+      "fieldsFinite": false,
+      "loadsFinite": false,
+      "relativeResidualGateApplied": true,
+      "passed": false
+    },
+    {
+      "matchedBirdChordCells": 16,
+      "latticeKinematicViscosity": 0.00008782491204328835,
+      "tauPlusMarginAboveHalf": 0.00026345252990722656,
+      "finiteLoadSteps": 266,
+      "firstNonFiniteLoadStep": 267,
+      "maximumMeasuredForceMagnitude": 220321659.35012892,
+      "newlyCoveredCellEvents": 0,
+      "newlyUncoveredCellEvents": 0,
+      "topologyTransitionSteps": 0,
+      "maximumSolidControlSurfaceCrossingLinkCount": 0,
+      "populationsFinite": false,
+      "fieldsFinite": false,
+      "loadsFinite": false,
+      "relativeResidualGateApplied": true,
+      "passed": false
+    }
+  ],
+  "passed": false,
+  "scientificVerdict": "All three matched low-relaxation cases become non-finite at step 267 with a stationary curved sphere, maintained uniform 0.08 lattice flow, the established 0.04 sponge, and zero topology events. The active pre-failure load rules out the transparent periodic equilibrium. Curved halfway bounce-back at the published low relaxation margins is sufficient for instability; moving-wall forcing accelerates failure but is not required."
+}

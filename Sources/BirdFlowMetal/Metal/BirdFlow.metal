@@ -1555,7 +1555,9 @@ kernel void initializeTranslatingSphereTopology(
     bool isSphere = dot(relative, relative) <= radius * radius;
     uchar part = isSphere ? uchar(1) : uchar(0);
     float3 wall = translatingSphereWallVelocity(parameters, relative);
-    float3 initialVelocity = isSphere ? wall : float3(0);
+    float3 initialVelocity = isSphere
+        ? wall
+        : uniforms.farFieldLattice.xyz;
 
     solidA[gid] = part;
     solidB[gid] = part;

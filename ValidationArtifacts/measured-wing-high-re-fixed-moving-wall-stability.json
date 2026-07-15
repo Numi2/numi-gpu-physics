@@ -8,7 +8,7 @@
   "sourceLocks": {
     "physicalConditionAudit": {
       "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
-      "sha256": "80214fa9c3b4df3ce4a8a396b45474d4d4fb95a7f664f1993adf4a03b5356dda"
+      "sha256": "91a440b84c75bb733466e979e66060a056e0a7d182013a9c6763032eb29691da"
     },
     "publishedConditionDOI": "10.1155/2022/5433184"
   },

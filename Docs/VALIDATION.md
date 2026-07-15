@@ -714,11 +714,32 @@ topology events, and is archived in
 The interaction is therefore general to curved moving links at these low TRT
 relaxation margins, although normal forcing is more aggressive.
 
-The highest-ROI next gate is the same fixed sphere with a stationary wall in
-uniform lattice flow `0.08`. It removes only the moving-wall population
-correction. A pass isolates that correction; a failure identifies general
-curved halfway bounce-back/TRT instability. Either result costs about one
-second and gives a concrete stabilization target before another bird replay.
+The stationary-wall discriminator is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --json
+```
+
+The active external-flow canonical uses maintained far-field boundaries and
+the established sphere benchmark's `0.04` sponge. The c8/c12/c16 cases all
+become non-finite at step `267`, with zero topology events and stationary wall
+velocity. Pre-failure loads are nonzero, so this is not the transparent
+periodic equilibrium that an earlier diagnostic attempt correctly rejected.
+The `1.44 s` Apple M4 run is archived in
+`ValidationArtifacts/measured-wing-high-re-stationary-wall-sphere-stability.json`.
+Curved halfway bounce-back at the matched low relaxation margins is therefore
+unstable without topology or a moving-wall population correction. Moving-wall
+forcing accelerates the failure, but it is not required.
+
+The highest-ROI next gate is a short relaxation-margin sweep on this active
+stationary sphere. It changes only viscosity and should locate the critical
+stable `tauPlus - 0.5` in a few seconds. That tells us whether a modest
+resolution/Reynolds adjustment is enough or whether the curved boundary needs
+a positivity-preserving collision stabilization before another bird replay.
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

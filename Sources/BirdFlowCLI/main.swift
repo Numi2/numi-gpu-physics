@@ -104,7 +104,7 @@ private struct Arguments {
     Canonical GPU validation:
       birdflow validate shear-wave [--resolution N] [--json]
       birdflow validate moving-wall [--resolution N] [--json]
-      birdflow validate translating-body [--high-re-stability] [--fixed-occupancy] [--decompose-wall-velocity] [--json]
+      birdflow validate translating-body [--high-re-stability] [--fixed-occupancy] [--decompose-wall-velocity | --stationary-wall] [--json]
       birdflow validate sphere [--resolution N] [--json]
       birdflow validate wing [--resolution N] [--json]
       birdflow validate flapping-wing [--chord-cells N] [--json]
@@ -349,6 +349,7 @@ private struct TranslatingBodyArguments {
     var highReStability = false
     var fixedOccupancy = false
     var decomposeWallVelocity = false
+    var stationaryWall = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -361,6 +362,8 @@ private struct TranslatingBodyArguments {
                 fixedOccupancy = true
             case "--decompose-wall-velocity":
                 decomposeWallVelocity = true
+            case "--stationary-wall":
+                stationaryWall = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -384,6 +387,16 @@ private struct TranslatingBodyArguments {
                 "--decompose-wall-velocity requires --high-re-stability and --fixed-occupancy"
             )
         }
+        if stationaryWall && (!highReStability || !fixedOccupancy) {
+            throw CLIError.invalidArgument(
+                "--stationary-wall requires --high-re-stability and --fixed-occupancy"
+            )
+        }
+        if stationaryWall && decomposeWallVelocity {
+            throw CLIError.invalidArgument(
+                "--stationary-wall cannot be combined with --decompose-wall-velocity"
+            )
+        }
     }
 
     static let help = """
@@ -393,6 +406,7 @@ private struct TranslatingBodyArguments {
       --fixed-occupancy    Hold the curved sphere fixed while retaining wall speed
       --decompose-wall-velocity
                            Compare tangential-only and normal-only wall forcing
+      --stationary-wall    Hold the sphere and wall fixed in uniform 0.08 flow
       --json               Emit the machine-readable validation report
       --help               Show this help
 
@@ -1220,6 +1234,19 @@ private func runMovingWallValidation(_ values: [String]) throws {
 private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
+        if arguments.stationaryWall {
+            let report = try MetalTranslatingBodyTopologyValidator
+                .runHighReStationaryWallSphereStability()
+            if arguments.json {
+                try printJSON(report)
+            } else {
+                print("production_kernel: \(report.productionKernel)")
+                print("device: \(report.deviceName)")
+                print("classification: \(report.classification)")
+                print("stationary_wall_stable: \(report.passed)")
+            }
+            return
+        }
         if arguments.decomposeWallVelocity {
             let report = try MetalTranslatingBodyTopologyValidator
                 .runHighReFixedOccupancyWallDecomposition()

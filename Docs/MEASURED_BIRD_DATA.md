@@ -312,7 +312,23 @@ events and is archived in
 Thus the low-margin instability is general to curved moving links rather than
 normal-only, although normal forcing grows unstable sooner.
 
-The next highest-ROI experiment is a stationary-wall sphere in uniform lattice
-flow `0.08`. It removes only the moving-wall population correction, separating
-that term from general curved halfway bounce-back/TRT instability in about one
-second before any bird rerun.
+The stationary-wall discriminator is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --json
+```
+
+With maintained far-field boundaries and the established `0.04` sphere
+sponge, all c8/c12/c16 cases become non-finite at step `267`. They have zero
+topology events and stationary wall velocity, while their nonzero pre-failure
+loads prove the flow is active. The `1.44 s` Apple M4 result is archived in
+`ValidationArtifacts/measured-wing-high-re-stationary-wall-sphere-stability.json`.
+Thus the moving-wall correction accelerates but does not cause the instability;
+curved halfway bounce-back at the matched low relaxation margins is sufficient.
+The next highest-ROI experiment is a short relaxation-margin sweep on this
+active stationary sphere to locate the stable threshold before choosing a
+collision or boundary stabilization.
