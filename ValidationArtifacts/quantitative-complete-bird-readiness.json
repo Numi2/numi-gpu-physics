@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
   "scientificStatus": "solver contract implemented; same-specimen biological input absent",
   "solverCapabilities": {
@@ -52,6 +52,24 @@
       "minimumCycles": 5,
       "stationarityMaximumFraction": 0.05,
       "finePairMaximumFraction": 0.05
+    },
+    "forwardFlightTrimSearch": {
+      "implemented": true,
+      "variables": [
+        "body-local pitch offset",
+        "freestream/reference-speed scale"
+      ],
+      "pitchBoundsDegrees": [-20, 20],
+      "speedScaleBounds": [0.6, 1.4],
+      "physicalViscosityPreserved": true,
+      "measuredGeometryOrKinematicsModified": false,
+      "minimumScreeningCycles": 2,
+      "minimumSelectedCandidateConfirmationCycles": 5,
+      "maximumRelativeBalanceResidual": 0.05,
+      "maximumStationarityFraction": 0.05,
+      "exactBaseAndBestCandidateInputsArchived": true,
+      "hoverWithoutDeclaredControlRejected": true,
+      "realSpecimenTrimExecuted": false
     }
   },
   "availableSameStudyInput": {
@@ -99,12 +117,14 @@
   "localVerification": {
     "date": "2026-07-16",
     "device": "Apple M4",
-    "swiftTestsPassed": 85,
-    "swiftTestRuntimeSeconds": 528.362,
-    "swiftTestCommandWallSeconds": 533.82,
+    "swiftTestsPassed": 86,
+    "swiftTestRuntimeSeconds": 767.717,
+    "swiftTestCommandWallSeconds": 768.27,
     "focusedCoupledMomentumReleaseTestsPassed": 1,
     "focusedCoupledMomentumReleaseRuntimeSeconds": 0.062,
     "focusedSchema2PartLoadArchiveTestsPassed": 1,
+    "focusedTrimOptimizerAndArchiveTestsPassed": 1,
+    "focusedTrimOptimizerAndArchiveRuntimeSeconds": 0.005,
     "focusedPostOptimizationMetalTestsPassed": 3,
     "releaseBuildPassed": true,
     "releaseFreeFlightSmokePassed": true,

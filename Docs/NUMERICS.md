@@ -198,6 +198,16 @@ left/right signed actuator power. Anatomical pitch and tip-twist angles reverse
 their algebraic rotation on the right outward span, so identical bilateral
 inputs generate physical mirror geometry and wall velocity.
 
+Forward-flight trim uses a bounded two-variable Gauss-Newton solve in body
+pitch offset and log airspeed. Each Jacobian requires the current point plus
+`2 deg` pitch and `5%` speed perturbations; updates are limited to `5 deg` and
+`10%`, within total bounds of `+/-20 deg` and `0.6...1.4` speed scale. Airspeed,
+reference speed, and Reynolds number scale together, preserving physical
+kinematic viscosity. All six force/moment components enter the normalized
+least-squares residual. Candidate screening is at least two cycles; the
+selected point is independently rerun for at least five cycles and must keep
+net force, aerodynamic torque, and final-cycle stationarity below `5%`.
+
 ## Derived pressure
 
 For reference lattice density one, physical gauge pressure is:

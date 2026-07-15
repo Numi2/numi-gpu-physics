@@ -165,14 +165,14 @@ Results:
   boundary and `5.0808e-5` total-system relative RMS closure against a locked
   `0.005` limit. Lazy compact reductions leave normal batched production and
   viewer execution unchanged.
-- The complete local Apple-M4 suite passed all `85` tests in `528.362 s`
-  (`533.82 s` command wall time). The
+- The complete local Apple-M4 suite passed all `86` tests in `767.717 s`
+  (`768.27 s` command wall time). The
   new exact-first-event Mach monitor, schema-2 strict loader, CPU/Metal wing
   reaction reference, four-substep parity, and 256-step torque-free and
   constant-torque rotational canonicals all passed, along with the new
-  per-part archive and bilateral actuator gate. The release products and both
-  standalone Metal libraries compiled; a four-substep free-flight release
-  smoke completed.
+  per-part archive, bilateral actuator gate, bounded trim optimizer, and
+  byte-exact trim archive round trip. The release products and both standalone
+  Metal libraries compiled; a four-substep free-flight release smoke completed.
 - The coupled momentum and per-part canonical also passed a focused
   release-mode run in `0.062 s`; both standalone Metal libraries compiled after the new kernels
   were added, and the static Swift/Metal binding audit passed. No hosted CI
@@ -186,17 +186,26 @@ Results:
   sign convention. With the physical mirror restored, relative bilateral
   residuals are `7.6318046e-7` force, `4.4050828e-6` hinge torque, and
   `1.5049285e-5` actuator power against the unchanged `0.02` limit.
+- A bounded forward-flight trim harness now searches only body-local pitch and
+  airspeed, scales Reynolds number with speed to preserve physical viscosity,
+  and minimizes all six force/moment components. Two-cycle candidates feed a
+  five-cycle selected-point confirmation under unchanged `5%` balance and
+  stationarity gates. Archives retain the base and exact derived best input;
+  no real-specimen trim result is claimed while that input remains absent.
+- The bounded optimizer and byte-exact archive round trip passed in debug and
+  release mode (`0.005 s` focused test). The release CLI exposes separate
+  screening/confirmation durations and rejects ambiguous duration, free-flight,
+  refinement, and momentum-ledger option combinations.
 
 ## Verification boundary
 
-The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, translating and oscillating planar-wall profiles and forces, topology-changing momentum closure, fixed-sphere curved-boundary drag/refinement/symmetry, isolated fixed-wing lift/drag/refinement/symmetry, prescribed-wing analytic normalization/kinematics, CPU/Metal geometry agreement, sub-cell link placement, phase capture/vortex diagnostics, fixed-thickness 20/24 prescribed-wing convergence, measured-data contract/interpolation/GPU replay plumbing, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. Forced channel flow remains absent. The prior interpolated full flapping ladder used the retired legacy force default; its refinement and repeatability evidence remains diagnostic, but its absolute-load verdict is not a result for the promoted estimator. The prescribed flapping-wing canonical is accepted; quantitative complete-bird use remains blocked by an actual measured specimen, higher-fidelity measured surface geometry where required, per-part symmetry reporting, bird-load grid convergence, and free-flight momentum/body-step refinement.
+The current tests prove buildability, cross-language consistency, the independent reference algebra/convergence result, production-Metal periodic shear-wave decay and convergence, steps 1–8 population agreement, translating and oscillating planar-wall profiles and forces, topology-changing momentum closure, fixed-sphere curved-boundary drag/refinement/symmetry, isolated fixed-wing lift/drag/refinement/symmetry, prescribed-wing analytic normalization/kinematics, CPU/Metal geometry agreement, sub-cell link placement, phase capture/vortex diagnostics, fixed-thickness 20/24 prescribed-wing convergence, measured-data contract/interpolation/GPU replay plumbing, live Metal command ordering, moving-wing/free-flight batch invariance, field capture, deterministic load agreement, and one-step CPU/GPU rigid-body parity. Forced channel flow remains absent. The prior interpolated full flapping ladder used the retired legacy force default; its refinement and repeatability evidence remains diagnostic, but its absolute-load verdict is not a result for the promoted estimator. The prescribed flapping-wing canonical is accepted; quantitative complete-bird use remains blocked by an actual measured specimen, higher-fidelity measured surface geometry where required, executed real-specimen trim and per-part results, bird-load grid convergence, and free-flight momentum/body-step refinement.
 
 Quantitative complete-bird use still requires the remaining ladder in
 `Docs/VALIDATION.md`, including forced channel flow, Metal-versus-reference
 field comparisons, one real same-specimen dataset and appropriate surface
-representation, executed bird-load/body-step refinement, trim, per-part
-  aerodynamic actuator effort, and executed real-specimen external-momentum
-  evidence. Runtime Mach/domain monitoring, rigid prescribed-wing inertial
-  hinge reaction, and the external linear-momentum archive gate are now
-  implemented. The optimization timings above are engineering evidence only
-  and are not aerodynamic validation.
+representation, executed bird-load/body-step refinement, confirmed trim, and
+executed real-specimen external-momentum evidence. Runtime Mach/domain
+monitoring, rigid prescribed-wing inertial hinge reaction, and the external
+linear-momentum archive gate are now implemented. The optimization timings
+above are engineering evidence only and are not aerodynamic validation.

@@ -117,6 +117,103 @@ func measuredBirdLoaderRejectsUnknownKeys() throws {
 }
 
 @Test
+func measuredBirdTrimOptimizerRecoversBoundedLinearBalance() throws {
+    let targetPitch = Double(radians(3))
+    let targetLogSpeed = log(1.04)
+    let evaluations = try solveMeasuredBirdTrimCoordinates(
+        iterations: 2,
+        pitchStepRadians: Double(radians(2)),
+        logSpeedStep: log(1.05),
+        pitchBoundsRadians:
+            Double(radians(-20))...Double(radians(20)),
+        logSpeedBounds: log(0.6)...log(1.4)
+    ) { pitch, logSpeed in
+        [
+            (pitch - targetPitch) / Double(radians(5)),
+            (logSpeed - targetLogSpeed) / log(1.1),
+            0, 0, 0, 0,
+        ]
+    }
+    let best = try #require(evaluations.min {
+        $0.objective < $1.objective
+    })
+    #expect(abs(best.pitchOffsetRadians - targetPitch) < 1.0e-8)
+    #expect(abs(best.logSpeedScale - targetLogSpeed) < 1.0e-8)
+    #expect(best.objective < 1.0e-7)
+    #expect(evaluations.count <= 7)
+
+    let candidate = MeasuredBirdTrimCandidateReport(
+        pitchOffsetDegrees: 3,
+        speedScale: 1.04,
+        candidateDatasetSHA256: String(repeating: "b", count: 64),
+        targetReynoldsNumber: 1040,
+        steps: 10,
+        cycles: 5,
+        runtimeSeconds: 0.1,
+        finalCycleMeanAerodynamicForceNewtons: .zero,
+        finalCycleMeanNetForceNewtons: .zero,
+        finalCycleMeanAerodynamicTorqueNewtonMeters: .zero,
+        relativeNetForceResidual: 0,
+        relativeTorqueResidual: 0,
+        stationarityForceFraction: 0,
+        stationarityTorqueFraction: 0,
+        normalizedBalanceObjective: 0
+    )
+    let report = MeasuredBirdTrimSearchReport(
+        schemaVersion: MeasuredBirdTrimSearchReport.schemaVersion,
+        datasetIdentifier: "trim-archive-fixture",
+        specimenIdentifier: "fixture",
+        baseInputSHA256: String(repeating: "a", count: 64),
+        deviceName: "test",
+        chordCells: 8,
+        screeningCycles: 2,
+        confirmationCycles: 5,
+        requestedIterations: 2,
+        candidateDefinition: "test",
+        pitchBoundsDegrees: SIMD2<Float>(-20, 20),
+        speedScaleBounds: SIMD2<Float>(0.6, 1.4),
+        candidates: [candidate],
+        bestCandidate: candidate,
+        maximumAllowedRelativeBalanceResidual: 0.05,
+        maximumAllowedStationarityFraction: 0.05,
+        passed: true,
+        scientificVerdict: "test fixture"
+    )
+    let baseData = Data("base-input".utf8)
+    let bestData = Data("best-input".utf8)
+    let archive = FileManager.default.temporaryDirectory
+        .appendingPathComponent(
+            "birdflow-trim-archive-\(UUID())",
+            isDirectory: true
+        )
+    defer { try? FileManager.default.removeItem(at: archive) }
+    try MeasuredBirdReplay.archiveTrimSearch(
+        report,
+        baseInput: baseData,
+        bestCandidateInput: bestData,
+        directory: archive
+    )
+    #expect(
+        try Data(contentsOf: archive.appendingPathComponent(
+            "base-input.json"
+        )) == baseData
+    )
+    #expect(
+        try Data(contentsOf: archive.appendingPathComponent(
+            "best-candidate-input.json"
+        )) == bestData
+    )
+    let archivedReport = try JSONDecoder().decode(
+        MeasuredBirdTrimSearchReport.self,
+        from: Data(contentsOf: archive.appendingPathComponent(
+            "trim-search-report.json"
+        ))
+    )
+    #expect(archivedReport.baseInputSHA256 == report.baseInputSHA256)
+    #expect(archivedReport.bestCandidate.speedScale == 1.04)
+}
+
+@Test
 func measuredBirdSchema2RequiresAndAcceptsRigidWingMassContract() throws {
     let data = try Data(contentsOf: measuredFixtureURL)
     var root = try #require(
@@ -161,6 +258,37 @@ func measuredBirdSchema2RequiresAndAcceptsRigidWingMassContract() throws {
     #expect(
         audit.wingInertialTreatment == "prescribedRigidWingMomentumV1"
     )
+    let trimCandidate = try makeMeasuredBirdTrimCandidate(
+        loaded,
+        pitchOffsetRadians: radians(5),
+        speedScale: 1.1
+    )
+    let baseViscosity = loaded.dataset.replay
+        .referenceSpeedMetersPerSecond
+        * loaded.dataset.geometry.wingRootChordMeters
+        / loaded.dataset.replay.targetReynoldsNumber
+    let candidateViscosity = trimCandidate.dataset.replay
+        .referenceSpeedMetersPerSecond
+        * trimCandidate.dataset.geometry.wingRootChordMeters
+        / trimCandidate.dataset.replay.targetReynoldsNumber
+    #expect(
+        abs(candidateViscosity - baseViscosity)
+            <= max(1.0e-9, abs(baseViscosity) * 1.0e-6)
+    )
+    #expect(
+        trimCandidate.dataset.replay.farFieldVelocityMetersPerSecond
+            == loaded.dataset.replay.farFieldVelocityMetersPerSecond * 1.1
+    )
+    #expect(trimCandidate.sourceSHA256 != loaded.sourceSHA256)
+    #expect(
+        trimCandidate.dataset.provenance.processingDescription
+            .contains("BirdFlow forward-flight trim candidate")
+    )
+    var hover = loaded
+    hover.dataset.replay.farFieldVelocityMetersPerSecond = .zero
+    #expect(throws: MeasuredBirdReplayError.self) {
+        _ = try MeasuredBirdReplay.runTrimSearch(hover)
+    }
 
     #if canImport(Metal)
     let archive = FileManager.default.temporaryDirectory

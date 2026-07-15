@@ -1186,10 +1186,18 @@ Required harness work before these criteria are measurable:
   and archives hinge-shifted aerodynamic torque, prescribed-wing inertial
   reaction, required actuator torque, and signed mechanical power. Symmetry is
   an explicit gate rather than an assumption about measured animals.
+- `--trim-search` implements a reproducible forward-flight prescribed-balance
+  search over bounded body pitch and airspeed only. It preserves physical
+  viscosity, measured geometry, and measured kinematics; archives the exact
+  base and selected derived inputs; screens candidates for at least two cycles;
+  and confirms the selected point for at least five cycles against unchanged
+  `5%` force, moment, and stationarity gates. Hover is rejected without a
+  declared physical control variable.
 
 Status: solver-side runtime bounds, body-step refinement, rigid prescribed
-wing inertia/hinge treatment, and the external linear-momentum ledger are
-implemented. Quantitative free-flight remains blocked by the absent
-same-specimen schema-2 dataset, trim, and actual bird load/body refinement
-results. See
+wing inertia/hinge treatment, the external linear-momentum ledger, per-part
+actuator effort, and the forward-flight trim-search harness are implemented.
+Quantitative free-flight remains blocked by the absent same-specimen schema-2
+dataset and therefore has no executed real-specimen trim, load refinement,
+body refinement, or bounded free-flight result. See
 `ValidationArtifacts/quantitative-complete-bird-readiness.json`.

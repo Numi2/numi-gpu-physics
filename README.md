@@ -314,6 +314,26 @@ For deliberately symmetric input, add `--expect-bilateral-symmetry` to apply
 the locked `2%` mirrored force, hinge-torque, and actuator-power gate. It is
 opt-in because measured left/right asymmetry can be physical.
 
+For a schema-2 forward-flight specimen with nonzero freestream,
+`--trim-search` performs a bounded body-pitch/airspeed Gauss-Newton search. It
+uses two-cycle candidates at the requested screening grid, then reruns only the
+selected point for at least five cycles before applying the unchanged `5%`
+force, moment, and stationarity gates:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/schema-2-specimen.json \
+  --chord-cells 8 --trim-search --trim-iterations 2 \
+  --archive /path/to/trim-search --json
+```
+
+The archive retains the byte-identical base input, every candidate result, and
+the exact derived best-candidate JSON. Speed and Reynolds number scale together
+so physical viscosity is unchanged; measured geometry and wing kinematics are
+never tuned. A passing prescribed trim search is still not free-flight
+boundedness or grid/body-step acceptance. Hover trim is rejected until the
+input declares a physical aerodynamic control variable.
+
 The diagnostic is opt-in and lazily allocates only compact reduction buffers;
 normal batched solver/viewer throughput is unchanged. The current missing-data decision is retained in
 [`ValidationArtifacts/quantitative-complete-bird-readiness.json`](ValidationArtifacts/quantitative-complete-bird-readiness.json).
@@ -327,6 +347,8 @@ Quantitative complete-bird claims still require:
 - an actual measured specimen with body, both wings, tail, mass properties, geometry provenance, and synchronized kinematics;
 - a surface representation appropriate to the measured feather/wing geometry;
 - passing the five-cycle `8/12/16` measured-bird load ladder;
+- a passing five-cycle-confirmed prescribed trim search at the declared flight
+  condition, followed by bounded free-flight confirmation;
 - a passing archived per-part load/actuator report on that specimen, with the
   bilateral symmetry gate enabled only when its input is intentionally
   symmetric;

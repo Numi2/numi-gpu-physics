@@ -255,6 +255,10 @@ private struct MeasuredBirdReplayArguments {
     var bodySubsteps = 1
     var bodyRefinement = false
     var loadRefinement = false
+    var trimSearch = false
+    var trimIterations = 2
+    var trimScreeningCycles: Float = 2
+    var trimConfirmationCycles: Float = 5
     var momentumLedger = false
     var partLoads = false
     var expectBilateralSymmetry = false
@@ -339,6 +343,38 @@ private struct MeasuredBirdReplayArguments {
                 freeFlight = true
             case "--load-refinement":
                 loadRefinement = true
+            case "--trim-search":
+                trimSearch = true
+            case "--trim-iterations":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      (1...6).contains(value) else {
+                    throw CLIError.invalidArgument(
+                        "--trim-iterations requires an integer in 1...6"
+                    )
+                }
+                trimIterations = value
+            case "--trim-screening-cycles":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value >= 2 else {
+                    throw CLIError.invalidArgument(
+                        "--trim-screening-cycles requires a value of at least 2"
+                    )
+                }
+                trimScreeningCycles = value
+            case "--trim-confirmation-cycles":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value >= 5 else {
+                    throw CLIError.invalidArgument(
+                        "--trim-confirmation-cycles requires a value of at least 5"
+                    )
+                }
+                trimConfirmationCycles = value
             case "--momentum-ledger":
                 momentumLedger = true
                 freeFlight = true
@@ -383,6 +419,14 @@ private struct MeasuredBirdReplayArguments {
                 "--body-refinement and --load-refinement are separate controlled experiments"
             )
         }
+        if trimSearch
+            && (freeFlight || bodyRefinement || loadRefinement
+                || momentumLedger || steps != nil || bodySubsteps != 1
+                || cycles != 1) {
+            throw CLIError.invalidArgument(
+                "--trim-search controls its own duration and is incompatible with --cycles, --steps, --body-substeps, free-flight, refinement, or momentum-ledger modes"
+            )
+        }
         if momentumLedger && (bodyRefinement || loadRefinement) {
             throw CLIError.invalidArgument(
                 "--momentum-ledger is a single-run gate and cannot be combined with refinement ladders"
@@ -393,7 +437,9 @@ private struct MeasuredBirdReplayArguments {
                 "refinement reports cannot use the single-run --archive path"
             )
         }
-        if auditOnly && (freeFlight || bodyRefinement || loadRefinement) {
+        if auditOnly
+            && (freeFlight || bodyRefinement || loadRefinement
+                || trimSearch) {
             throw CLIError.invalidArgument(
                 "--audit-only cannot be combined with execution modes"
             )
@@ -412,6 +458,13 @@ private struct MeasuredBirdReplayArguments {
       --body-substeps N  Rigid-body-only substeps per fluid step (1...64)
       --body-refinement  Run locked 1/2/4 body-substep ladder; requires --steps
       --load-refinement  Run five-cycle prescribed 8/12/16 load ladder
+      --trim-search      Search bounded body pitch/airspeed for prescribed force/moment balance
+      --trim-iterations N
+                         Gauss-Newton updates for trim search (default: 2; range: 1...6)
+      --trim-screening-cycles VALUE
+                         Cycles per trim candidate (default/minimum: 2)
+      --trim-confirmation-cycles VALUE
+                         Cycles for the selected candidate (default/minimum: 5)
       --momentum-ledger  Record direct fluid/body/wing external impulse closure; implies --free-flight
       --part-loads       Record conservative body/wing/tail loads and wing actuator effort; implies --momentum-ledger
       --expect-bilateral-symmetry
@@ -1265,6 +1318,44 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
             print(
                 "fine_torque_difference_fraction: "
                     + String(report.finePairTorqueDifferenceFraction)
+            )
+            print("passed: \(report.passed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        return
+    }
+    if arguments.trimSearch {
+        let report = try MeasuredBirdReplay.runTrimSearch(
+            loaded,
+            chordCells: arguments.chordCells,
+            screeningCycles: arguments.trimScreeningCycles,
+            confirmationCycles: arguments.trimConfirmationCycles,
+            iterations: arguments.trimIterations,
+            batchSize: arguments.batchSize,
+            archiveDirectory: arguments.archivePath.map {
+                URL(fileURLWithPath: $0, isDirectory: true)
+            }
+        )
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("candidates: \(report.candidates.count)")
+            print(
+                "best_pitch_offset_deg: "
+                    + String(report.bestCandidate.pitchOffsetDegrees)
+            )
+            print(
+                "best_speed_scale: "
+                    + String(report.bestCandidate.speedScale)
+            )
+            print(
+                "relative_net_force_residual: "
+                    + String(report.bestCandidate.relativeNetForceResidual)
+            )
+            print(
+                "relative_torque_residual: "
+                    + String(report.bestCandidate.relativeTorqueResidual)
             )
             print("passed: \(report.passed)")
             print("scientific_verdict: \(report.scientificVerdict)")

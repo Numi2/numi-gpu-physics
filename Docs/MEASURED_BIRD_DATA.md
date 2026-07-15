@@ -131,6 +131,23 @@ uses one rigid mass frame per wing, schema 2 rejects distributed tip twist;
 twisting measured wings require a future distributed-mass model rather than a
 hidden approximation.
 
+## Forward-flight trim search
+
+For schema-2 inputs with nonzero freestream, `--trim-search` varies only a
+body-local pitch offset and a uniform airspeed scale. Reynolds number is scaled
+with airspeed so the specimen's physical viscosity is preserved. Geometry,
+mass properties, gravity, and every measured wing angle/rate remain unchanged.
+The bounded optimizer minimizes all three net-force and three aerodynamic-
+moment components, and the selected candidate must pass a separate five-cycle
+confirmation at the locked `5%` balance and stationarity thresholds.
+
+The trim archive stores the exact base input and exact derived best-candidate
+input. This is a reproducible prescribed balance search, not evidence that the
+free-flight trajectory is bounded. Zero-freestream hover is rejected because
+pitch and speed do not provide an independent hover control; a future hover
+search requires a physically declared control such as stroke-plane or
+amplitude authority rather than altering measured kinematics silently.
+
 Free flight is deliberately unavailable to schema 1 measured inputs:
 
 ```bash
