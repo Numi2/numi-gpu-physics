@@ -27,7 +27,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 
 - **One coupled stack:** fluid populations, articulated geometry, moving-wall treatment, topology changes, load extraction, and body dynamics live in one executable system.
 - **GPU-resident science:** production stepping, geometry preparation, diagnostics, load reduction, Q criterion, marching cubes, pathlines, and rendering all use Metal.
-- **Estimator-independent checks:** boundary loads are closed against fluid momentum storage and control-surface flux, not merely compared with a second force formula.
+- **Estimator-independent checks:** boundary loads close against fluid momentum storage and control-surface flux; free flight also closes direct fluid + body + wing momentum against far-field, sponge, and gravity impulse.
 - **Negative results are first-class artifacts:** rejected operators, failed gates, source locks, phase histories, and exact thresholds are committed beside accepted results.
 - **Measured-motion ready:** periodic left/right stroke, deviation, pitch, and twist are replayed with consistent pose and physical angular rates; exact input bytes and SHA-256 are retained.
 - **No hosted macOS bill:** Swift and Metal validation is intentionally local. This repository contains no GitHub Actions workflows.
@@ -45,7 +45,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
-| Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | schema-2 wing inertia/hinge reactions, runtime aborts, and independent load/body ladders are ready; real complete specimen input is absent |
+| Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
 The most important accepted flapping result is committed as [`flapping-wing-fixed-thickness-acceptance.json`](ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json). The current high-Re open question is committed as [`measured-wing-stationary-wall-recursive-regularization-duration.json`](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json).
 
@@ -295,7 +295,20 @@ For a same-specimen schema-2 input, `--load-refinement` runs the locked
 five-cycle `8/12/16` load ladder and `--body-refinement --steps N` runs the
 same-fluid `1/2/4` body-substep ladder. Free flight records bilateral inertial
 hinge reactions and aborts on the first GPU-recorded Mach, clearance, or
-non-finite-state event. The current missing-data decision is retained in
+non-finite-state event. Add `--momentum-ledger` to a free-flight replay to
+archive direct population/body/wing momentum, far-field and sponge sources,
+gravity, persistent-link exchange, inferred topology conversion, and both
+locked `0.5%` closure gates:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/schema-2-specimen.json \
+  --chord-cells 12 --steps 100 --body-substeps 4 \
+  --momentum-ledger --archive /path/to/free-flight-ledger --json
+```
+
+The diagnostic is opt-in and lazily allocates only compact reduction buffers;
+normal batched solver/viewer throughput is unchanged. The current missing-data decision is retained in
 [`ValidationArtifacts/quantitative-complete-bird-readiness.json`](ValidationArtifacts/quantitative-complete-bird-readiness.json).
 
 ## Scientific boundary
@@ -310,8 +323,8 @@ Quantitative complete-bird claims still require:
 - per-part left/right symmetry and force reporting;
 - an archived free-flight run that stays inside the implemented per-step Mach
   and sponge/domain abort bounds;
-- free-flight momentum closure and a passing implemented `1/2/4` rigid-body
-  substep ladder;
+- a passing archived `--momentum-ledger` run and the implemented `1/2/4`
+  rigid-body substep ladder on the real specimen;
 - same-specimen schema-2 wing inertia and a passing archived hinge-reaction
   treatment (or a separately justified massless-wing scientific model);
 - forced channel-flow coverage and any turbulence/flexibility model required by the target regime.

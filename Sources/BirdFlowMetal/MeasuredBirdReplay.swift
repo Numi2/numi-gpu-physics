@@ -260,6 +260,7 @@ public struct MeasuredBirdReplayReport: Codable, Sendable {
     public var meanWingHingeReactionForceNewtons: SIMD3<Float>
     public var meanWingHingeReactionTorqueNewtonMeters: SIMD3<Float>
     public var runtimeSafety: RuntimeSafetyReport?
+    public var coupledMomentumLedger: CoupledMomentumLedgerReport?
     public var samples: [MeasuredBirdReplayPhaseSample]
     public var passed: Bool
     public var scientificVerdict: String
@@ -545,6 +546,7 @@ public enum MeasuredBirdReplay {
         batchSize: Int = 32,
         freeFlight: Bool = false,
         bodySubsteps: Int = 1,
+        captureCoupledMomentumLedger: Bool = false,
         archiveDirectory: URL? = nil
     ) throws -> MeasuredBirdReplayReport {
         #if canImport(Metal)
@@ -563,6 +565,11 @@ public enum MeasuredBirdReplay {
                 || loaded.dataset.prescribedWingDynamics == nil) {
             throw MeasuredBirdReplayError.invalidInput(
                 "quantitative free flight requires schema 2 measured bilateral wing mass properties; schema 1 remains prescribed-replay only"
+            )
+        }
+        if captureCoupledMomentumLedger && !freeFlight {
+            throw MeasuredBirdReplayError.invalidInput(
+                "the coupled momentum ledger requires free-flight replay"
             )
         }
         let plan = try makePlan(
@@ -588,12 +595,23 @@ public enum MeasuredBirdReplay {
             initialBodyState: plan.initialBodyState
         )
         let start = ProcessInfo.processInfo.systemUptime
-        let result = try simulation.advance(
-            steps: steps,
-            batchSize: min(batchSize, steps),
-            fieldCapture: .disabled,
-            recordRunSamples: true
-        )
+        let result: AdvanceResult
+        let momentumLedger: CoupledMomentumLedgerReport?
+        if captureCoupledMomentumLedger {
+            let coupled = try simulation.advanceWithCoupledMomentumLedger(
+                steps: steps
+            )
+            result = coupled.advanceResult
+            momentumLedger = coupled.ledger
+        } else {
+            result = try simulation.advance(
+                steps: steps,
+                batchSize: min(batchSize, steps),
+                fieldCapture: .disabled,
+                recordRunSamples: true
+            )
+            momentumLedger = nil
+        }
         let runtime = ProcessInfo.processInfo.systemUptime - start
         let frequency = loaded.dataset.kinematics.frequencyHz
         let samples = result.runSamples.map { sample in
@@ -633,7 +651,9 @@ public enum MeasuredBirdReplay {
             cycles: Float(steps)
                 * plan.configuration.scaling.timeStepSeconds
                 * frequency,
-            batchSize: min(batchSize, steps),
+            batchSize: captureCoupledMomentumLedger
+                ? 1
+                : min(batchSize, steps),
             freeFlight: freeFlight,
             bodySubsteps: bodySubsteps,
             runtimeSeconds: runtime,
@@ -642,9 +662,14 @@ public enum MeasuredBirdReplay {
             meanWingHingeReactionForceNewtons: meanHingeForce,
             meanWingHingeReactionTorqueNewtonMeters: meanHingeTorque,
             runtimeSafety: result.runtimeSafety,
+            coupledMomentumLedger: momentumLedger,
             samples: samples,
-            passed: true,
-            scientificVerdict: freeFlight
+            passed: momentumLedger?.passed ?? true,
+            scientificVerdict: captureCoupledMomentumLedger
+                ? (momentumLedger?.passed == true
+                    ? "free-flight replay and coupled external linear-momentum ledger passed; body-step, grid, and trim acceptance remain separate gates"
+                    : "free-flight momentum closure failed; quantitative loads are rejected")
+                : freeFlight
                 ? "free-flight replay completed inside runtime bounds; body-step, grid, trim, and momentum-ledger acceptance were not evaluated"
                 : "prescribed replay completed; grid convergence and force-balance acceptance were not evaluated"
         )
@@ -825,6 +850,37 @@ public enum MeasuredBirdReplay {
                 to: temporary.appendingPathComponent("report.json"),
                 options: .atomic
             )
+            if let ledger = report.coupledMomentumLedger {
+                try encoder.encode(ledger).write(
+                    to: temporary.appendingPathComponent(
+                        "coupled-momentum-ledger.json"
+                    ),
+                    options: .atomic
+                )
+                var ledgerCSV = "step,time_s,boundary_residual_x_kg_mps,boundary_residual_y_kg_mps,boundary_residual_z_kg_mps,system_residual_x_kg_mps,system_residual_y_kg_mps,system_residual_z_kg_mps,topology_x_kg_mps,topology_y_kg_mps,topology_z_kg_mps,topology_transition_cells\n"
+                for sample in ledger.samples {
+                    ledgerCSV += [
+                        String(sample.step),
+                        String(sample.timeSeconds),
+                        String(sample.boundaryClosureResidual.x),
+                        String(sample.boundaryClosureResidual.y),
+                        String(sample.boundaryClosureResidual.z),
+                        String(sample.externalSystemClosureResidual.x),
+                        String(sample.externalSystemClosureResidual.y),
+                        String(sample.externalSystemClosureResidual.z),
+                        String(sample.inferredTopologyConversionImpulseToFluid.x),
+                        String(sample.inferredTopologyConversionImpulseToFluid.y),
+                        String(sample.inferredTopologyConversionImpulseToFluid.z),
+                        String(sample.topologyTransitionCellCount),
+                    ].joined(separator: ",") + "\n"
+                }
+                try Data(ledgerCSV.utf8).write(
+                    to: temporary.appendingPathComponent(
+                        "coupled-momentum-ledger.csv"
+                    ),
+                    options: .atomic
+                )
+            }
             try loaded.sourceData.write(
                 to: temporary.appendingPathComponent("input.json"),
                 options: .atomic
@@ -864,6 +920,7 @@ public enum MeasuredBirdReplay {
             BirdFlowMetal measured-bird replay archive schema (report.audit.schemaVersion)
             input.json is the exact byte-for-byte input; verify SHA-256 against report.json.
             phase-loads.csv records trajectory, total aerodynamic load, and prescribed-wing inertial hinge reaction.
+            When requested, coupled-momentum-ledger.json/csv record the direct fluid/body/wing external-system balance.
             Geometry representation: \(report.audit.geometryRepresentation).
             This archive does not by itself establish grid convergence or quantitative bird-flight validity.
             """

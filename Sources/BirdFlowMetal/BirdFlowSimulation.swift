@@ -25,6 +25,321 @@ private final class ObservationSlot {
     }
 }
 
+private struct ExternalFluidSourceCapture {
+    var farField: SIMD4<Float>
+    var sponge: SIMD4<Float>
+    var persistentLinkExchange: SIMD4<Float>
+    var counts: SIMD4<UInt32>
+}
+
+/// Lazily allocated so normal solver/viewer runs pay neither memory nor
+/// dispatch overhead for publication diagnostics.
+private final class CoupledMomentumDiagnosticResources {
+    private let backend: MetalBackend
+    private let partialCount: Int
+    private let measurePipeline: MTLComputePipelineState
+    private let changePipeline: MTLComputePipelineState
+    private let reducePipeline: MTLComputePipelineState
+    private let sourcePipeline: MTLComputePipelineState
+    private let sourceReductionPipeline: MTLComputePipelineState
+    private let momentumA: MTLBuffer
+    private let momentumB: MTLBuffer
+    private let sourceA: MTLBuffer
+    private let sourceB: MTLBuffer
+
+    init(backend: MetalBackend, cellCount: Int) throws {
+        self.backend = backend
+        partialCount = max(1, (cellCount + 255) / 256)
+        measurePipeline = try backend.pipeline(
+            named: "measureFluidMassMomentum"
+        )
+        changePipeline = try backend.pipeline(
+            named: "measureFluidMassMomentumChange"
+        )
+        reducePipeline = try backend.pipeline(
+            named: "reduceFluidMassMomentum"
+        )
+        sourcePipeline = try backend.pipeline(
+            named: "captureExternalFluidSources"
+        )
+        sourceReductionPipeline = try backend.pipeline(
+            named: "reduceExternalFluidSources"
+        )
+        let momentumBytes = partialCount
+            * MemoryLayout<GPUFluidMassMomentum>.stride
+        let sourceBytes = partialCount
+            * MemoryLayout<GPUExternalFluidSourceLedger>.stride
+        try backend.validateAllocationPlan(
+            bufferLengths: [
+                momentumBytes, momentumBytes,
+                sourceBytes, sourceBytes,
+            ]
+        )
+        momentumA = try backend.makeSharedBuffer(length: momentumBytes)
+        momentumB = try backend.makeSharedBuffer(length: momentumBytes)
+        sourceA = try backend.makeSharedBuffer(length: sourceBytes)
+        sourceB = try backend.makeSharedBuffer(length: sourceBytes)
+        momentumA.label = "Coupled ledger fluid momentum A"
+        momentumB.label = "Coupled ledger fluid momentum B"
+        sourceA.label = "Coupled ledger external sources A"
+        sourceB.label = "Coupled ledger external sources B"
+    }
+
+    func measureFluid(
+        populations: MTLBuffer,
+        solid: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws -> SIMD4<Float> {
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode fluid-momentum measurement."
+            )
+        }
+        encoder.label = "Direct fluid mass/momentum reduction"
+        encoder.setBuffer(populations, offset: 0, index: 0)
+        encoder.setBuffer(solid, offset: 0, index: 1)
+        encoder.setBuffer(momentumA, offset: 0, index: 2)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: measurePipeline,
+            count: Int(uniforms.grid.w),
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+        let total = try encodeMomentumReduction(
+            commandBuffer: commandBuffer,
+            initial: momentumA
+        )
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer, operation: "fluid-momentum measurement")
+        return total.contents()
+            .assumingMemoryBound(to: GPUFluidMassMomentum.self)
+            .pointee.massAndMomentum
+    }
+
+    func captureStep(
+        populationsIn: MTLBuffer,
+        populationsOut: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws -> (change: SIMD4<Float>, sources: ExternalFluidSourceCapture) {
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let changeEncoder = commandBuffer.makeComputeCommandEncoder()
+        else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode coupled momentum change."
+            )
+        }
+        changeEncoder.label = "Direct fluid momentum change"
+        changeEncoder.setBuffer(populationsIn, offset: 0, index: 0)
+        changeEncoder.setBuffer(populationsOut, offset: 0, index: 1)
+        changeEncoder.setBuffer(solidPrevious, offset: 0, index: 2)
+        changeEncoder.setBuffer(solidCurrent, offset: 0, index: 3)
+        changeEncoder.setBuffer(momentumA, offset: 0, index: 4)
+        changeEncoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 5
+        )
+        backend.dispatch1DPadded(
+            encoder: changeEncoder,
+            pipeline: changePipeline,
+            count: Int(uniforms.grid.w),
+            threadsPerThreadgroup: 256
+        )
+        changeEncoder.endEncoding()
+        let momentumTotal = try encodeMomentumReduction(
+            commandBuffer: commandBuffer,
+            initial: momentumA
+        )
+
+        guard let sourceEncoder = commandBuffer.makeComputeCommandEncoder()
+        else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode external fluid sources."
+            )
+        }
+        sourceEncoder.label = "Far-field, sponge, and persistent links"
+        sourceEncoder.setBuffer(populationsIn, offset: 0, index: 0)
+        sourceEncoder.setBuffer(populationsOut, offset: 0, index: 1)
+        sourceEncoder.setBuffer(solidPrevious, offset: 0, index: 2)
+        sourceEncoder.setBuffer(solidCurrent, offset: 0, index: 3)
+        sourceEncoder.setBuffer(wallVelocity, offset: 0, index: 4)
+        sourceEncoder.setBuffer(sourceA, offset: 0, index: 5)
+        sourceEncoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 6
+        )
+        backend.dispatch1DPadded(
+            encoder: sourceEncoder,
+            pipeline: sourcePipeline,
+            count: Int(uniforms.grid.w),
+            threadsPerThreadgroup: 256
+        )
+        sourceEncoder.endEncoding()
+        let sourceTotal = try encodeSourceReduction(
+            commandBuffer: commandBuffer,
+            initial: sourceA
+        )
+
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer, operation: "coupled momentum capture")
+        let change = momentumTotal.contents()
+            .assumingMemoryBound(to: GPUFluidMassMomentum.self)
+            .pointee.massAndMomentum
+        let raw = sourceTotal.contents()
+            .assumingMemoryBound(to: GPUExternalFluidSourceLedger.self)
+            .pointee
+        return (
+            change,
+            ExternalFluidSourceCapture(
+                farField: raw.farField,
+                sponge: raw.sponge,
+                persistentLinkExchange: raw.persistentLinkExchange,
+                counts: raw.counts
+            )
+        )
+    }
+
+    private func encodeMomentumReduction(
+        commandBuffer: MTLCommandBuffer,
+        initial: MTLBuffer
+    ) throws -> MTLBuffer {
+        var input = initial
+        var output = input === momentumA ? momentumB : momentumA
+        var inputCount = partialCount
+        while inputCount > 1 {
+            let outputCount = (inputCount + 255) / 256
+            var count = UInt32(inputCount)
+            guard let encoder = commandBuffer.makeComputeCommandEncoder()
+            else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to reduce fluid momentum."
+                )
+            }
+            encoder.setBuffer(input, offset: 0, index: 0)
+            encoder.setBuffer(output, offset: 0, index: 1)
+            encoder.setBytes(
+                &count,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: reducePipeline,
+                count: outputCount
+            )
+            encoder.endEncoding()
+            inputCount = outputCount
+            input = output
+            output = output === momentumA ? momentumB : momentumA
+        }
+        return input
+    }
+
+    private func encodeSourceReduction(
+        commandBuffer: MTLCommandBuffer,
+        initial: MTLBuffer
+    ) throws -> MTLBuffer {
+        var input = initial
+        var output = input === sourceA ? sourceB : sourceA
+        var inputCount = partialCount
+        while inputCount > 1 {
+            let outputCount = (inputCount + 255) / 256
+            var count = UInt32(inputCount)
+            guard let encoder = commandBuffer.makeComputeCommandEncoder()
+            else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to reduce external fluid sources."
+                )
+            }
+            encoder.setBuffer(input, offset: 0, index: 0)
+            encoder.setBuffer(output, offset: 0, index: 1)
+            encoder.setBytes(
+                &count,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: sourceReductionPipeline,
+                count: outputCount
+            )
+            encoder.endEncoding()
+            inputCount = outputCount
+            input = output
+            output = output === sourceA ? sourceB : sourceA
+        }
+        return input
+    }
+
+    private func check(
+        _ commandBuffer: MTLCommandBuffer,
+        operation: String
+    ) throws {
+        guard commandBuffer.status == .completed else {
+            throw BirdFlowError.commandBufferFailed(
+                "The \(operation) failed: "
+                    + (commandBuffer.error?.localizedDescription
+                        ?? "unknown Metal error")
+            )
+        }
+    }
+}
+
+private func latticeMomentum(_ value: SIMD4<Float>) -> SIMD3<Double> {
+    SIMD3<Double>(Double(value.y), Double(value.z), Double(value.w))
+}
+
+private func double3(_ value: SIMD3<Float>) -> SIMD3<Double> {
+    SIMD3<Double>(Double(value.x), Double(value.y), Double(value.z))
+}
+
+private func squaredMagnitude(_ value: SIMD3<Double>) -> Double {
+    value.x * value.x + value.y * value.y + value.z * value.z
+}
+
+private func magnitude(_ value: SIMD3<Double>) -> Double {
+    sqrt(squaredMagnitude(value))
+}
+
+private func sampleIsFinite(_ sample: CoupledMomentumLedgerSample) -> Bool {
+    let vectors = [
+        sample.fluidMomentumBefore,
+        sample.fluidMomentumAfter,
+        sample.directlyReducedFluidMomentumChange,
+        sample.wholeBirdTranslationalMomentumBefore,
+        sample.wholeBirdTranslationalMomentumAfter,
+        sample.prescribedWingInternalMomentumBefore,
+        sample.prescribedWingInternalMomentumAfter,
+        sample.aerodynamicImpulse,
+        sample.gravityImpulse,
+        sample.farFieldImpulseToFluid,
+        sample.spongeImpulseToFluid,
+        sample.persistentLinkExchangeImpulseToFluid,
+        sample.inferredTopologyConversionImpulseToFluid,
+        sample.fluidBoundaryImpulse,
+        sample.boundaryClosureResidual,
+        sample.totalSystemMomentumChange,
+        sample.recordedExternalImpulse,
+        sample.externalSystemClosureResidual,
+    ]
+    return sample.timeSeconds.isFinite && vectors.allSatisfy {
+        $0.x.isFinite && $0.y.isFinite && $0.z.isFinite
+    }
+}
+
 public final class BirdFlowSimulation: @unchecked Sendable {
     public let configuration: SimulationConfiguration
     public let bird: BirdParameters
@@ -67,6 +382,8 @@ public final class BirdFlowSimulation: @unchecked Sendable {
     private var terminalFailure: BirdFlowError?
     private var runSampleBuffer: MTLBuffer?
     private var runSampleCapacity = 0
+    private var coupledMomentumDiagnostics:
+        CoupledMomentumDiagnosticResources?
 
     private let observationCondition = NSCondition()
     private var latestPublishedSlot: Int?
@@ -410,6 +727,252 @@ public final class BirdFlowSimulation: @unchecked Sendable {
             runtimeSafety: configuration.freeFlight
                 ? readRuntimeSafetyReport()
                 : nil
+        )
+    }
+
+    /// Advances one fluid step per command buffer while recording an
+    /// independent total-system linear-momentum ledger. This path is intended
+    /// for validation archives, not throughput runs; ordinary `advance` keeps
+    /// its fused batches and has no diagnostic overhead.
+    @discardableResult
+    public func advanceWithCoupledMomentumLedger(
+        steps: Int,
+        maximumRelativeResidual: Double = 0.005
+    ) throws -> CoupledMomentumAdvanceResult {
+        guard configuration.freeFlight else {
+            throw BirdFlowError.momentumLedgerUnavailable(
+                "the total-system ledger requires freeFlight=true"
+            )
+        }
+        guard steps > 0,
+              maximumRelativeResidual.isFinite,
+              maximumRelativeResidual > 0 else {
+            throw BirdFlowError.invalidAdvanceRequest(
+                steps: steps,
+                batchSize: 1
+            )
+        }
+        guard configuration.spongeStrength < 1.0 - 1.0e-6 else {
+            throw BirdFlowError.momentumLedgerUnavailable(
+                "spongeStrength must be below 0.999999 so the pre-sponge population can be reconstructed exactly"
+            )
+        }
+
+        try waitForGPU()
+        if coupledMomentumDiagnostics == nil {
+            coupledMomentumDiagnostics = try
+                CoupledMomentumDiagnosticResources(
+                    backend: backend,
+                    cellCount: configuration.grid.cellCount
+                )
+        }
+        guard let diagnostics = coupledMomentumDiagnostics else {
+            throw BirdFlowError.momentumLedgerUnavailable(
+                "diagnostic resources could not be allocated"
+            )
+        }
+
+        let dt = Double(configuration.scaling.timeStepSeconds)
+        let momentumScale = Double(configuration.scaling.forceToPhysical)
+            * dt
+        let mass = Double(bird.massKilograms)
+        let gravity = double3(
+            configuration.gravityMetersPerSecondSquared
+        )
+        var samples: [CoupledMomentumLedgerSample] = []
+        samples.reserveCapacity(steps)
+        var runSamples: [RunSample] = []
+        runSamples.reserveCapacity(steps)
+        var finalAdvance = AdvanceResult()
+
+        var initialUniforms = GPUUniforms(
+            configuration: configuration,
+            time: timeSeconds,
+            captureMacroscopicFields: false,
+            hasPreviousGeometry: true
+        )
+        var fluidBeforeRaw = try diagnostics.measureFluid(
+            populations: currentPopulations,
+            solid: currentSolidMask,
+            uniforms: &initialUniforms
+        )
+
+        for _ in 0..<steps {
+            let bodyBefore = currentBodyState()
+            let wingBefore = currentWingLinearMomentum()
+            finalAdvance = try advance(
+                steps: 1,
+                batchSize: 1,
+                fieldCapture: .disabled,
+                recordRunSamples: true
+            )
+            runSamples.append(contentsOf: finalAdvance.runSamples)
+
+            var uniforms = GPUUniforms(
+                configuration: configuration,
+                time: timeSeconds,
+                captureMacroscopicFields: false,
+                hasPreviousGeometry: true
+            )
+            let fluidAfterRaw = try diagnostics.measureFluid(
+                populations: currentPopulations,
+                solid: currentSolidMask,
+                uniforms: &uniforms
+            )
+            let captured = try diagnostics.captureStep(
+                populationsIn: nextPopulations,
+                populationsOut: currentPopulations,
+                solidPrevious: nextSolidMask,
+                solidCurrent: currentSolidMask,
+                wallVelocity: wallVelocity,
+                uniforms: &uniforms
+            )
+
+            let bodyAfter = currentBodyState()
+            let wingAfter = currentWingLinearMomentum()
+            let aerodynamicLoad = lastLoadBuffer.contents()
+                .assumingMemoryBound(to: GPUForceTorque.self)
+                .pointee.coreValue
+            let fluidBefore = latticeMomentum(fluidBeforeRaw)
+                * momentumScale
+            let fluidAfter = latticeMomentum(fluidAfterRaw)
+                * momentumScale
+            let fluidChange = latticeMomentum(captured.change)
+                * momentumScale
+            let bodyMomentumBefore = double3(
+                bodyBefore.linearVelocityMetersPerSecond
+            ) * mass
+            let bodyMomentumAfter = double3(
+                bodyAfter.linearVelocityMetersPerSecond
+            ) * mass
+            let aerodynamicImpulse = double3(
+                aerodynamicLoad.forceNewtons
+            ) * dt
+            let gravityImpulse = gravity * (mass * dt)
+            let farFieldImpulse = latticeMomentum(
+                captured.sources.farField
+            ) * momentumScale
+            let spongeImpulse = latticeMomentum(
+                captured.sources.sponge
+            ) * momentumScale
+            let linkImpulse = latticeMomentum(
+                captured.sources.persistentLinkExchange
+            ) * momentumScale
+            let fluidBoundaryImpulse = fluidChange
+                - farFieldImpulse
+                - spongeImpulse
+            let topologyImpulse = fluidBoundaryImpulse - linkImpulse
+            let boundaryResidual = aerodynamicImpulse
+                + fluidBoundaryImpulse
+            let totalChange = fluidChange
+                + (bodyMomentumAfter - bodyMomentumBefore)
+                + (wingAfter - wingBefore)
+            let externalImpulse = farFieldImpulse
+                + spongeImpulse
+                + gravityImpulse
+            let systemResidual = totalChange - externalImpulse
+
+            samples.append(
+                CoupledMomentumLedgerSample(
+                    step: stepIndex,
+                    timeSeconds: timeSeconds,
+                    fluidMomentumBefore: fluidBefore,
+                    fluidMomentumAfter: fluidAfter,
+                    directlyReducedFluidMomentumChange: fluidChange,
+                    wholeBirdTranslationalMomentumBefore:
+                        bodyMomentumBefore,
+                    wholeBirdTranslationalMomentumAfter:
+                        bodyMomentumAfter,
+                    prescribedWingInternalMomentumBefore: wingBefore,
+                    prescribedWingInternalMomentumAfter: wingAfter,
+                    aerodynamicImpulse: aerodynamicImpulse,
+                    gravityImpulse: gravityImpulse,
+                    farFieldImpulseToFluid: farFieldImpulse,
+                    spongeImpulseToFluid: spongeImpulse,
+                    persistentLinkExchangeImpulseToFluid: linkImpulse,
+                    inferredTopologyConversionImpulseToFluid:
+                        topologyImpulse,
+                    fluidBoundaryImpulse: fluidBoundaryImpulse,
+                    boundaryClosureResidual: boundaryResidual,
+                    totalSystemMomentumChange: totalChange,
+                    recordedExternalImpulse: externalImpulse,
+                    externalSystemClosureResidual: systemResidual,
+                    farFieldLinkCount: Int(captured.sources.counts.x),
+                    spongeCellCount: Int(captured.sources.counts.y),
+                    persistentBoundaryLinkCount:
+                        Int(captured.sources.counts.z),
+                    topologyTransitionCellCount:
+                        Int(captured.sources.counts.w)
+                )
+            )
+            fluidBeforeRaw = fluidAfterRaw
+        }
+
+        func rms(
+            _ keyPath: KeyPath<CoupledMomentumLedgerSample, SIMD3<Double>>
+        ) -> Double {
+            sqrt(
+                samples.reduce(0.0) {
+                    $0 + squaredMagnitude($1[keyPath: keyPath])
+                } / Double(samples.count)
+            )
+        }
+        func maximum(
+            _ keyPath: KeyPath<CoupledMomentumLedgerSample, SIMD3<Double>>
+        ) -> Double {
+            samples.map { magnitude($0[keyPath: keyPath]) }.max() ?? 0
+        }
+        let aeroRMS = rms(\.aerodynamicImpulse)
+        let externalRMS = rms(\.recordedExternalImpulse)
+        let boundaryRMS = rms(\.boundaryClosureResidual)
+        let systemRMS = rms(\.externalSystemClosureResidual)
+        let boundaryReference = max(aeroRMS, 1.0e-30)
+        let systemReference = max(max(aeroRMS, externalRMS), 1.0e-30)
+        let relativeBoundary = boundaryRMS / boundaryReference
+        let relativeSystem = systemRMS / systemReference
+        let finite = samples.allSatisfy(sampleIsFinite)
+        let passed = finite
+            && relativeBoundary <= maximumRelativeResidual
+            && relativeSystem <= maximumRelativeResidual
+        let report = CoupledMomentumLedgerReport(
+            schemaVersion: CoupledMomentumLedgerReport.schemaVersion,
+            deviceName: metalDevice.name,
+            steps: steps,
+            timeStepSeconds: configuration.scaling.timeStepSeconds,
+            momentumDefinition:
+                "direct population momentum + whole-bird translational momentum + prescribed-wing momentum relative to the registered body frame; external impulse = open far field + sponge + gravity",
+            topologyDefinition:
+                "fluid boundary impulse minus independently reconstructed persistent-link exchange; this source-closure remainder includes cover/uncover conversion without rereading dormant solid population slots",
+            samples: samples,
+            RMSAerodynamicImpulse: aeroRMS,
+            RMSExternalImpulse: externalRMS,
+            RMSBoundaryClosureResidual: boundaryRMS,
+            RMSExternalSystemClosureResidual: systemRMS,
+            maximumBoundaryClosureResidual:
+                maximum(\.boundaryClosureResidual),
+            maximumExternalSystemClosureResidual:
+                maximum(\.externalSystemClosureResidual),
+            relativeRMSBoundaryClosureResidual: relativeBoundary,
+            relativeRMSExternalSystemClosureResidual: relativeSystem,
+            maximumAllowedRelativeRMSBoundaryClosureResidual:
+                maximumRelativeResidual,
+            maximumAllowedRelativeRMSExternalSystemClosureResidual:
+                maximumRelativeResidual,
+            finite: finite,
+            passed: passed,
+            scientificVerdict: passed
+                ? "coupled external linear-momentum and fluid/boundary impulse gates passed"
+                : "coupled momentum closure failed; do not accept quantitative free-flight loads"
+        )
+        return CoupledMomentumAdvanceResult(
+            advanceResult: AdvanceResult(
+                runSamples: runSamples,
+                fieldFramePublished: false,
+                droppedFieldFrameCount:
+                    finalAdvance.droppedFieldFrameCount,
+                runtimeSafety: finalAdvance.runtimeSafety
+            ),
+            ledger: report
         )
     }
 
@@ -1097,6 +1660,23 @@ public final class BirdFlowSimulation: @unchecked Sendable {
         return configuration.freeFlight ? readRuntimeSafetyReport() : nil
     }
 
+    private func currentBodyState() -> BirdBodyState {
+        bodyStateBuffer.contents()
+            .assumingMemoryBound(to: GPUBirdBodyState.self)
+            .pointee.coreValue
+    }
+
+    private func currentWingLinearMomentum() -> SIMD3<Double> {
+        let value = wingMomentumBuffer.contents()
+            .assumingMemoryBound(to: GPUWingMomentumState.self)
+            .pointee
+        return SIMD3<Double>(
+            Double(value.leftLinear.x + value.rightLinear.x),
+            Double(value.leftLinear.y + value.rightLinear.y),
+            Double(value.leftLinear.z + value.rightLinear.z)
+        )
+    }
+
     private func readRuntimeSafetyReport() -> RuntimeSafetyReport {
         let value = runtimeSafetyBuffer.contents()
             .assumingMemoryBound(to: GPURuntimeSafetyRecord.self)
@@ -1465,6 +2045,14 @@ public final class BirdFlowSimulation {
                 batchSize: batchSize
             )
         }
+        throw BirdFlowError.metalUnavailable
+    }
+
+    @discardableResult
+    public func advanceWithCoupledMomentumLedger(
+        steps: Int,
+        maximumRelativeResidual: Double = 0.005
+    ) throws -> CoupledMomentumAdvanceResult {
         throw BirdFlowError.metalUnavailable
     }
 

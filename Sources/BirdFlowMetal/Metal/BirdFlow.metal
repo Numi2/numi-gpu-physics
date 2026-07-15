@@ -249,6 +249,17 @@ struct GPUControlVolumeBudget {
     float4 topologyReservoirCorrection;
 };
 
+struct GPUFluidMassMomentum {
+    float4 massAndMomentum;
+};
+
+struct GPUExternalFluidSourceLedger {
+    float4 farField;
+    float4 sponge;
+    float4 persistentLinkExchange;
+    uint4 counts;
+};
+
 struct GPURunSample {
     float4 timeAndPosition;
     float4 orientation;
@@ -3522,6 +3533,276 @@ kernel void storeControlVolumeMomentumAfterSample(
         history[sampleIndex].topologyReservoirCorrection =
             total[0].topologyReservoirCorrection;
     }
+}
+
+/// Directly reduces the mass and linear momentum of fluid nodes. This is an
+/// opt-in diagnostic kernel: the production stream/collision path gains no
+/// extra writes or branches when the coupled momentum ledger is disabled.
+kernel void measureFluidMassMomentum(
+    device const float* populations [[buffer(0)]],
+    device const uchar* solid [[buffer(1)]],
+    device GPUFluidMassMomentum* partials [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupValues[256];
+    float4 value = float4(0);
+    if (gid < uniforms.grid.w && solid[gid] == 0) {
+        for (uint q = 0u; q < Q; ++q) {
+            float population = populations[q * uniforms.grid.w + gid];
+            value += float4(population, population * float3(C[q]));
+        }
+    }
+    groupValues[threadIndex] = value;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        float4 total = float4(0);
+        for (uint index = 0u; index < threadsPerThreadgroup; ++index) {
+            total += groupValues[index];
+        }
+        partials[threadgroupPosition].massAndMomentum = total;
+    }
+}
+
+kernel void reduceFluidMassMomentum(
+    device const GPUFluidMassMomentum* input [[buffer(0)]],
+    device GPUFluidMassMomentum* output [[buffer(1)]],
+    constant uint& inputCount [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint start = gid * 256u;
+    if (start >= inputCount) {
+        return;
+    }
+    float4 total = float4(0);
+    uint end = min(start + 256u, inputCount);
+    for (uint index = start; index < end; ++index) {
+        total += input[index].massAndMomentum;
+    }
+    output[gid].massAndMomentum = total;
+}
+
+/// Reduces P(n+1)-P(n) in one pass, avoiding catastrophic cancellation when
+/// a large uniform far-field momentum is present. Masking each side
+/// independently includes cover/uncover topology changes exactly.
+kernel void measureFluidMassMomentumChange(
+    device const float* populationsIn [[buffer(0)]],
+    device const float* populationsOut [[buffer(1)]],
+    device const uchar* solidPrevious [[buffer(2)]],
+    device const uchar* solidCurrent [[buffer(3)]],
+    device GPUFluidMassMomentum* partials [[buffer(4)]],
+    constant GPUUniforms& uniforms [[buffer(5)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupValues[256];
+    float4 value = float4(0);
+    if (gid < uniforms.grid.w) {
+        bool oldFluid = solidPrevious[gid] == 0;
+        bool newFluid = solidCurrent[gid] == 0;
+        for (uint q = 0u; q < Q; ++q) {
+            float delta = 0.0f;
+            if (newFluid) {
+                delta += populationsOut[q * uniforms.grid.w + gid];
+            }
+            if (oldFluid) {
+                delta -= populationsIn[q * uniforms.grid.w + gid];
+            }
+            value += float4(delta, delta * float3(C[q]));
+        }
+    }
+    groupValues[threadIndex] = value;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        float4 total = float4(0);
+        for (uint index = 0u; index < threadsPerThreadgroup; ++index) {
+            total += groupValues[index];
+        }
+        partials[threadgroupPosition].massAndMomentum = total;
+    }
+}
+
+/// Reconstructs only the external source terms needed by the production
+/// total-system ledger. Sponge impulse is recovered from
+/// f_out=(1-s)f_post+s*f_far, so the kernel avoids duplicating TRT collision
+/// arithmetic and remains valid for every production collision operator.
+kernel void captureExternalFluidSources(
+    device const float* populationsIn [[buffer(0)]],
+    device const float* populationsOut [[buffer(1)]],
+    device const uchar* solidPrevious [[buffer(2)]],
+    device const uchar* solidCurrent [[buffer(3)]],
+    device const float4* wallVelocity [[buffer(4)]],
+    device GPUExternalFluidSourceLedger* partials [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupFarField[256];
+    threadgroup float4 groupSponge[256];
+    threadgroup float4 groupLinkExchange[256];
+    threadgroup uint4 groupCounts[256];
+
+    float4 farFieldSource = float4(0);
+    float4 spongeSource = float4(0);
+    float4 persistentLinkSource = float4(0);
+    uint4 counts = uint4(0);
+
+    if (gid < uniforms.grid.w) {
+        uint3 size = uniforms.grid.xyz;
+        uint3 cell = unflatten(gid, size);
+        bool wasSolid = solidPrevious[gid] != 0;
+        bool isSolid = solidCurrent[gid] != 0;
+        if (wasSolid != isSolid) {
+            counts.w = 1u;
+        }
+        if (!isSolid) {
+            bool persistentTarget = !wasSolid;
+            bool interiorDomain = cell.x > 0u
+                && cell.y > 0u
+                && cell.z > 0u
+                && cell.x + 1u < size.x
+                && cell.y + 1u < size.y
+                && cell.z + 1u < size.z;
+            for (uint q = 0u; q < Q; ++q) {
+                int3 sourceCell = int3(cell) - C[q];
+                bool outsideDomain = !interiorDomain
+                    && !inside(sourceCell, size);
+                if (outsideDomain && uniforms.flags.w == 0u) {
+                    float incoming = equilibrium(
+                        q,
+                        uniforms.farFieldLattice.w,
+                        uniforms.farFieldLattice.xyz
+                    );
+                    float outgoing = populationsIn[
+                        OPP[q] * uniforms.grid.w + gid
+                    ];
+                    float3 direction = float3(C[q]);
+                    farFieldSource += float4(
+                        incoming - outgoing,
+                        (incoming + outgoing) * direction
+                    );
+                    counts.x += 1u;
+                    continue;
+                }
+                if (outsideDomain) {
+                    sourceCell.x = sourceCell.x < 0
+                        ? int(size.x) - 1
+                        : (sourceCell.x >= int(size.x)
+                            ? 0
+                            : sourceCell.x);
+                    sourceCell.y = sourceCell.y < 0
+                        ? int(size.y) - 1
+                        : (sourceCell.y >= int(size.y)
+                            ? 0
+                            : sourceCell.y);
+                    sourceCell.z = sourceCell.z < 0
+                        ? int(size.z) - 1
+                        : (sourceCell.z >= int(size.z)
+                            ? 0
+                            : sourceCell.z);
+                }
+                uint source = flatten(uint3(sourceCell), size);
+                bool persistentSolidSource = solidCurrent[source] != 0
+                    && solidPrevious[source] != 0;
+                if (persistentTarget && persistentSolidSource) {
+                    float reflected = populationsIn[
+                        OPP[q] * uniforms.grid.w + gid
+                    ];
+                    float3 direction = float3(C[q]);
+                    float wallCorrection = 2.0f
+                        * W[q]
+                        * uniforms.farFieldLattice.w
+                        * dot(direction, wallVelocity[source].xyz)
+                        / CS2;
+                    float incoming = reflected + wallCorrection;
+                    persistentLinkSource += float4(
+                        incoming - reflected,
+                        (incoming + reflected) * direction
+                    );
+                    counts.z += 1u;
+                }
+            }
+
+            float sponge = spongeFactor(
+                cell,
+                size,
+                uniforms.latticeAndSponge.w,
+                uniforms.latticeAndSponge.z
+            );
+            if (sponge > 0.0f) {
+                float inverseUnsponge = 1.0f / max(1.0f - sponge, 1.0e-7f);
+                for (uint q = 0u; q < Q; ++q) {
+                    float actual = populationsOut[
+                        q * uniforms.grid.w + gid
+                    ];
+                    float far = equilibrium(
+                        q,
+                        uniforms.farFieldLattice.w,
+                        uniforms.farFieldLattice.xyz
+                    );
+                    float delta = sponge * (far - actual)
+                        * inverseUnsponge;
+                    spongeSource += float4(
+                        delta,
+                        delta * float3(C[q])
+                    );
+                }
+                counts.y = 1u;
+            }
+        }
+    }
+
+    groupFarField[threadIndex] = farFieldSource;
+    groupSponge[threadIndex] = spongeSource;
+    groupLinkExchange[threadIndex] = persistentLinkSource;
+    groupCounts[threadIndex] = counts;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        GPUExternalFluidSourceLedger total;
+        total.farField = float4(0);
+        total.sponge = float4(0);
+        total.persistentLinkExchange = float4(0);
+        total.counts = uint4(0);
+        for (uint index = 0u; index < threadsPerThreadgroup; ++index) {
+            total.farField += groupFarField[index];
+            total.sponge += groupSponge[index];
+            total.persistentLinkExchange += groupLinkExchange[index];
+            total.counts += groupCounts[index];
+        }
+        partials[threadgroupPosition] = total;
+    }
+}
+
+kernel void reduceExternalFluidSources(
+    device const GPUExternalFluidSourceLedger* input [[buffer(0)]],
+    device GPUExternalFluidSourceLedger* output [[buffer(1)]],
+    constant uint& inputCount [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint start = gid * 256u;
+    if (start >= inputCount) {
+        return;
+    }
+    GPUExternalFluidSourceLedger total;
+    total.farField = float4(0);
+    total.sponge = float4(0);
+    total.persistentLinkExchange = float4(0);
+    total.counts = uint4(0);
+    uint end = min(start + 256u, inputCount);
+    for (uint index = start; index < end; ++index) {
+        total.farField += input[index].farField;
+        total.sponge += input[index].sponge;
+        total.persistentLinkExchange += input[index].persistentLinkExchange;
+        total.counts += input[index].counts;
+    }
+    output[gid] = total;
 }
 
 kernel void reduceForceTorque(

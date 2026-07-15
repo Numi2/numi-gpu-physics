@@ -712,6 +712,72 @@ func metalWingInertialReactionMatchesIndependentCPUReference() throws {
 }
 
 @Test
+func productionFreeFlightClosesCoupledExternalMomentumLedger() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    var testCase = try compactMetalTestCase(freeFlight: true)
+    testCase.configuration.gravityMetersPerSecondSquared =
+        SIMD3<Float>(0, -0.5, 0)
+    let wing = WingInertialProperties(
+        massKilograms: 0.001,
+        centerOfMassFromHingeMeters: SIMD3<Float>(0, 0.012, 0),
+        principalInertiaKilogramMetersSquared:
+            SIMD3<Float>(2e-8, 3e-8, 1e-7)
+    )
+    var bird = testCase.bird
+    bird.prescribedWingDynamics = PrescribedWingDynamics(
+        sourceCitation: "same-specimen coupled-ledger fixture",
+        left: wing,
+        right: wing
+    )
+    let simulation = try BirdFlowSimulation(
+        configuration: testCase.configuration,
+        bird: bird,
+        initialBodyState: testCase.state
+    )
+    let result = try simulation.advanceWithCoupledMomentumLedger(steps: 4)
+
+    #expect(result.advanceResult.runSamples.count == 4)
+    #expect(result.ledger.samples.count == 4)
+    #expect(try JSONEncoder().encode(result.ledger).count > 0)
+    #expect(result.ledger.finite)
+    #expect(result.ledger.passed)
+    #expect(
+        result.ledger.relativeRMSBoundaryClosureResidual
+            <= result.ledger
+                .maximumAllowedRelativeRMSBoundaryClosureResidual
+    )
+    #expect(
+        result.ledger.relativeRMSExternalSystemClosureResidual
+            <= result.ledger
+                .maximumAllowedRelativeRMSExternalSystemClosureResidual
+    )
+    #expect(
+        result.ledger.samples.contains {
+            $0.persistentBoundaryLinkCount > 0
+                && $0.topologyTransitionCellCount > 0
+        }
+    )
+    #expect(
+        result.ledger.samples.allSatisfy {
+            $0.farFieldLinkCount > 0 && $0.spongeCellCount > 0
+        }
+    )
+    #expect(
+        result.ledger.samples.allSatisfy {
+            $0.gravityImpulse.y < 0
+        }
+    )
+    #expect(
+        result.ledger.samples.contains {
+            let delta = $0.prescribedWingInternalMomentumAfter
+                - $0.prescribedWingInternalMomentumBefore
+            return sqrt(delta.x * delta.x + delta.y * delta.y
+                + delta.z * delta.z) > 1e-12
+        }
+    )
+}
+
+@Test
 func productionMetalShearWavePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalShearWaveValidator.run()

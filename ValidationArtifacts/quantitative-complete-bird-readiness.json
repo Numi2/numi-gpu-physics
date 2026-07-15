@@ -1,11 +1,19 @@
 {
-  "schemaVersion": 1,
-  "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-15",
+  "schemaVersion": 2,
+  "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
   "scientificStatus": "solver contract implemented; same-specimen biological input absent",
   "solverCapabilities": {
     "measuredCompleteBirdSchema": "measured-bird-v2",
     "prescribedBilateralKinematics": true,
     "prescribedWingMomentumReaction": true,
+    "coupledExternalLinearMomentumLedger": {
+      "implemented": true,
+      "maximumRelativeRMSResidual": 0.005,
+      "compactCanonicalBoundaryRelativeRMS": 0.0000024482773610630826,
+      "compactCanonicalExternalSystemRelativeRMS": 0.000050808418222741587,
+      "maximumAbsoluteResidualKilogramMetersPerSecond": 6.078202996130613e-10,
+      "productionHotPathOverheadWhenDisabled": false
+    },
     "bilateralHingeReactionArchive": true,
     "independentCPUToMetalWingReactionReference": true,
     "multiStepRotationalCanonicals": [
@@ -74,8 +82,10 @@
   "localVerification": {
     "date": "2026-07-15",
     "device": "Apple M4",
-    "swiftTestsPassed": 84,
-    "swiftTestRuntimeSeconds": 494.992,
+    "swiftTestsPassed": 85,
+    "swiftTestRuntimeSeconds": 474.789,
+    "focusedCoupledMomentumReleaseTestsPassed": 1,
+    "focusedCoupledMomentumReleaseRuntimeSeconds": 0.073,
     "focusedPostOptimizationMetalTestsPassed": 3,
     "releaseBuildPassed": true,
     "releaseFreeFlightSmokePassed": true,

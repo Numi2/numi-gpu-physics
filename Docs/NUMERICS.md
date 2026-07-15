@@ -164,6 +164,28 @@ sponge plus three stencil cells. It freezes the exact first violation and the
 host stops before submitting another batch if Mach exceeds `0.15`, clearance
 is negative, or state is non-finite.
 
+The publication diagnostic `advanceWithCoupledMomentumLedger` deliberately
+runs one fluid step per command buffer. It reduces `P(n+1)-P(n)` directly from
+the two population fields with independent old/new occupancy masks, avoiding
+loss of significance from subtracting two large far-field momenta. A second
+compact reduction reconstructs open-boundary and sponge source impulses
+without adding writes to `stepFluidTRT`; persistent solid links are separated
+from the cover/uncover remainder. The gated identity is
+
+```text
+delta(P_fluid + M V_body + P_wing,relative)
+    = I_far-field + I_sponge + I_gravity
+```
+
+and the independent force-side identity is
+
+```text
+I_aerodynamic + I_fluid-boundary = 0.
+```
+
+The diagnostic buffers are lazily allocated and ordinary batched stepping has
+zero additional memory traffic or dispatches.
+
 ## Derived pressure
 
 For reference lattice density one, physical gauge pressure is:

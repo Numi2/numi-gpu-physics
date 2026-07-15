@@ -1169,11 +1169,19 @@ Required harness work before these criteria are measurable:
   CLI archives the reactions and provides locked body/load refinement ladders;
 - 256-step torque-free and constant-torque asymmetric-body CPU/Metal
   canonicals are implemented in addition to one-step/substep parity; and
-- archive a control-volume momentum budget including fluid momentum, far-field boundary flux, sponge impulse, bird load, gravity, and topology-conversion impulse; current CLI output does not expose the boundary/sponge terms.
+- the opt-in `--momentum-ledger` free-flight path directly reduces fluid
+  momentum on both sides of every step, records whole-bird translation and
+  prescribed-wing internal momentum, and independently reconstructs open
+  far-field, sponge, persistent-link, gravity, and source-closure-inferred
+  topology impulses. It archives JSON/CSV and applies unchanged `0.5%`
+  relative RMS boundary and total-system gates. The compact four-step moving
+  topology/gravity canonical closed at `2.4483e-6` boundary and `5.0808e-5`
+  total-system relative RMS, with maximum absolute residual below
+  `6.1e-10 kg m/s`.
 
-Status: solver-side runtime bounds, body-step refinement, and rigid prescribed
-wing inertia/hinge treatment are implemented. Quantitative free-flight remains
-blocked by the absent same-specimen schema-2 dataset, the complete external
-momentum ledger, trim, per-part aerodynamic actuator effort, and actual
-bird load/body refinement results. See
+Status: solver-side runtime bounds, body-step refinement, rigid prescribed
+wing inertia/hinge treatment, and the external linear-momentum ledger are
+implemented. Quantitative free-flight remains blocked by the absent
+same-specimen schema-2 dataset, trim, per-part aerodynamic actuator effort,
+and actual bird load/body refinement results. See
 `ValidationArtifacts/quantitative-complete-bird-readiness.json`.

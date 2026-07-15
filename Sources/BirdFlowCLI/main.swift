@@ -255,6 +255,7 @@ private struct MeasuredBirdReplayArguments {
     var bodySubsteps = 1
     var bodyRefinement = false
     var loadRefinement = false
+    var momentumLedger = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -336,6 +337,9 @@ private struct MeasuredBirdReplayArguments {
                 freeFlight = true
             case "--load-refinement":
                 loadRefinement = true
+            case "--momentum-ledger":
+                momentumLedger = true
+                freeFlight = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -368,6 +372,11 @@ private struct MeasuredBirdReplayArguments {
                 "--body-refinement and --load-refinement are separate controlled experiments"
             )
         }
+        if momentumLedger && (bodyRefinement || loadRefinement) {
+            throw CLIError.invalidArgument(
+                "--momentum-ledger is a single-run gate and cannot be combined with refinement ladders"
+            )
+        }
         if (bodyRefinement || loadRefinement), archivePath != nil {
             throw CLIError.invalidArgument(
                 "refinement reports cannot use the single-run --archive path"
@@ -392,6 +401,7 @@ private struct MeasuredBirdReplayArguments {
       --body-substeps N  Rigid-body-only substeps per fluid step (1...64)
       --body-refinement  Run locked 1/2/4 body-substep ladder; requires --steps
       --load-refinement  Run five-cycle prescribed 8/12/16 load ladder
+      --momentum-ledger  Record direct fluid/body/wing external impulse closure; implies --free-flight
       --archive DIR      Save exact input, SHA-linked report, and phase loads
       --json             Emit machine-readable audit or replay report
       --help             Show this help
@@ -1255,6 +1265,7 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
         batchSize: arguments.batchSize,
         freeFlight: arguments.freeFlight,
         bodySubsteps: arguments.bodySubsteps,
+        captureCoupledMomentumLedger: arguments.momentumLedger,
         archiveDirectory: arguments.archivePath.map {
             URL(fileURLWithPath: $0, isDirectory: true)
         }
@@ -1284,6 +1295,19 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
                 "minimum_sponge_clearance_m: "
                     + String(safety.minimumSpongeClearanceMeters)
             )
+        }
+        if let ledger = report.coupledMomentumLedger {
+            print(
+                "relative_boundary_momentum_residual: "
+                    + String(ledger.relativeRMSBoundaryClosureResidual)
+            )
+            print(
+                "relative_external_system_momentum_residual: "
+                    + String(
+                        ledger.relativeRMSExternalSystemClosureResidual
+                    )
+            )
+            print("momentum_ledger_passed: \(ledger.passed)")
         }
         print("runtime_s: \(report.runtimeSeconds)")
         print("passed: \(report.passed)")

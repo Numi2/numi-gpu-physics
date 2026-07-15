@@ -158,12 +158,23 @@ Results:
   first Mach, sponge/three-cell-clearance, or non-finite failure. The source
   audit still finds no complete same-specimen dataset, so no quantitative bird
   result is claimed.
-- The complete local Apple-M4 suite passed all `84` tests in `494.99 s`. The
+- The opt-in coupled free-flight ledger now closes direct population momentum,
+  whole-bird translation, prescribed-wing internal momentum, far-field,
+  sponge, gravity, persistent-link exchange, and the inferred topology
+  remainder. Its four-step moving-topology/gravity gate measured `2.4483e-6`
+  boundary and `5.0808e-5` total-system relative RMS closure against a locked
+  `0.005` limit. Lazy compact reductions leave normal batched production and
+  viewer execution unchanged.
+- The complete local Apple-M4 suite passed all `85` tests in `474.789 s`. The
   new exact-first-event Mach monitor, schema-2 strict loader, CPU/Metal wing
   reaction reference, four-substep parity, and 256-step torque-free and
   constant-torque rotational canonicals all passed. The release products and
   both standalone Metal libraries compiled; a four-substep free-flight release
-  smoke completed. No hosted CI was used.
+  smoke completed.
+- The coupled momentum canonical also passed a focused release-mode run in
+  `0.073 s`; both standalone Metal libraries compiled after the new kernels
+  were added, and the static Swift/Metal binding audit passed. No hosted CI
+  was used.
 
 ## Verification boundary
 
@@ -173,7 +184,8 @@ Quantitative complete-bird use still requires the remaining ladder in
 `Docs/VALIDATION.md`, including forced channel flow, Metal-versus-reference
 field comparisons, one real same-specimen dataset and appropriate surface
 representation, executed bird-load/body-step refinement, trim, per-part
-aerodynamic actuator effort, and the complete external momentum ledger.
-Runtime Mach/domain monitoring and rigid prescribed-wing inertial hinge
-reaction are now implemented. The optimization timings above are engineering
-evidence only and are not aerodynamic validation.
+  aerodynamic actuator effort, and executed real-specimen external-momentum
+  evidence. Runtime Mach/domain monitoring, rigid prescribed-wing inertial
+  hinge reaction, and the external linear-momentum archive gate are now
+  implemented. The optimization timings above are engineering evidence only
+  and are not aerodynamic validation.

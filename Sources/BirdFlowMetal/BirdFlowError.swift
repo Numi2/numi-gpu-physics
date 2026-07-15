@@ -12,6 +12,7 @@ public enum BirdFlowError: Error, CustomStringConvertible {
     case workingSetExceedsRecommendation(bytes: Int, recommended: Int)
     case invalidAdvanceRequest(steps: Int, batchSize: Int)
     case invalidObservationBufferCount(Int)
+    case momentumLedgerUnavailable(String)
     case commandBufferFailed(String)
     case runtimeSafetyViolation(RuntimeSafetyReport)
     case simulationStateInvalidated(String)
@@ -40,6 +41,8 @@ public enum BirdFlowError: Error, CustomStringConvertible {
             return "Advance requires steps >= 0 and batchSize > 0; received steps=\(steps), batchSize=\(batchSize)."
         case .invalidObservationBufferCount(let count):
             return "Observation buffer count must be between 1 and 4; received \(count)."
+        case .momentumLedgerUnavailable(let message):
+            return "The coupled momentum ledger is unavailable: \(message)"
         case .commandBufferFailed(let message):
             return "A Metal command buffer failed: \(message)"
         case .runtimeSafetyViolation(let report):

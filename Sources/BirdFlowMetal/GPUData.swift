@@ -211,6 +211,23 @@ struct GPUWingInertialReaction {
     }
 }
 
+/// Compact opt-in partial used by the coupled total-system momentum ledger.
+/// `massAndMomentum` stores mass in x and lattice momentum in yzw.
+struct GPUFluidMassMomentum {
+    var massAndMomentum: SIMD4<Float>
+}
+
+/// External fluid sources reconstructed outside the production hot path.
+/// Each float4 stores mass in x and lattice momentum in yzw.
+struct GPUExternalFluidSourceLedger {
+    var farField: SIMD4<Float>
+    var sponge: SIMD4<Float>
+    var persistentLinkExchange: SIMD4<Float>
+    /// x=far-field links, y=sponge cells, z=persistent boundary links,
+    /// w=cover + uncover transition cells.
+    var counts: SIMD4<UInt32>
+}
+
 /// GPU-owned extrema and first-event ledger for free-flight validity bounds.
 /// A single monitoring thread updates it after every body integration.
 struct GPURuntimeSafetyRecord {
