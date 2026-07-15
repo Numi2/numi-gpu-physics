@@ -376,3 +376,12 @@ limiter L1 remains within `0.25D` and `88.58%` lies beyond `1D`. The remaining
 defect is therefore not boundary-localized; measured-bird promotion now
 requires a bulk collision-operator A/B followed by the unchanged geometric
 ladder.
+
+The locked D=16 A/B keeps every physical and numerical boundary fixed while
+replacing only the bulk collision. A second-order Hermite-regularized,
+convex-positive BGK candidate cuts control-volume activation from `8.070%` to
+`0.028%` and relative L1 correction from `6.169%` to `0.053%`; positivity,
+source closure, and force closure pass. It remains excluded from measured-bird
+replay because relative L2 correction is `1.0968%` against the unchanged `1%`
+gate. The candidate is rejected before a refinement ladder, preserving the
+measured-data validation boundary.

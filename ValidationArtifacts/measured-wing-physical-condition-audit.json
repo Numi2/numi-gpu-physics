@@ -257,6 +257,29 @@
     "stationaryWallC16RadialLimiterFinalFarFieldActivationFraction": 0.8828161052145824,
     "stationaryWallC16RadialLimiterBoundaryLocalized": false,
     "stationaryWallC16RadialLimiterBulkCollisionPathConfirmed": true,
+    "stationaryWallC16BulkCollisionABCompleted": true,
+    "stationaryWallC16BulkCollisionABArtifact": "ValidationArtifacts/measured-wing-stationary-wall-c16-bulk-collision-operator-ab.json",
+    "stationaryWallC16BulkCollisionABArtifactSHA256": "a2aadc14eeed13549b0d65dc2aa9a25a7d353c9ead565beee152c1b7fa32ff63",
+    "stationaryWallC16BulkCollisionABFigurePNG": "ValidationArtifacts/Figures/stationary-wall-bulk-collision-operator-ab.png",
+    "stationaryWallC16BulkCollisionABFigurePNGSHA256": "8ad1c93dc31ca7e9fe9f484ae08c096f80cf4da11de760df61cdd13a49086735",
+    "stationaryWallC16BulkCollisionABFigureSVG": "ValidationArtifacts/Figures/stationary-wall-bulk-collision-operator-ab.svg",
+    "stationaryWallC16BulkCollisionABFigureSVGSHA256": "5d5e891418c57c2e1f185db1911ff206d3a7fcb82053fbd3e42bb7569234d9e5",
+    "stationaryWallC16BulkCollisionABPassed": true,
+    "stationaryWallC16BulkCollisionABClassification": "stationary-wall-c16-regularized-candidate-rejected",
+    "stationaryWallC16BulkCollisionABControlOperator": "symmetric-limited-trt",
+    "stationaryWallC16BulkCollisionABCandidateOperator": "positivity-preserving-regularized-bgk",
+    "stationaryWallC16BulkCollisionABControlActivationFraction": 0.08069937174479166,
+    "stationaryWallC16BulkCollisionABCandidateActivationFraction": 0.00028028211805555554,
+    "stationaryWallC16BulkCollisionABControlRelativeL1Correction": 0.061685687048698354,
+    "stationaryWallC16BulkCollisionABCandidateRelativeL1Correction": 0.0005304366756187873,
+    "stationaryWallC16BulkCollisionABControlRelativeL2Correction": 0.14538806015902322,
+    "stationaryWallC16BulkCollisionABCandidateRelativeL2Correction": 0.010968289256290249,
+    "stationaryWallC16BulkCollisionABCandidatePositivityPassed": true,
+    "stationaryWallC16BulkCollisionABCandidateGlobalLedgerClosed": true,
+    "stationaryWallC16BulkCollisionABCandidateForceBudgetPassed": true,
+    "stationaryWallC16BulkCollisionABCandidateNonIntrusivePassed": false,
+    "stationaryWallC16BulkCollisionABCandidateEligibleForRefinement": false,
+    "stationaryWallC16BulkCollisionABCandidateRejectedBeforeLadder": true,
     "authoritativeHierarchy": [
       "Use the literal Re=9367.4 to reproduce the published numerical target.",
       "Use equation 8's Uref=7.1758 m/s and equation 9's denominator for force coefficients.",
@@ -264,7 +287,7 @@
       "Retain Re=9315.65 as an arithmetic-closure sensitivity point.",
       "Do not use Table 3's 7.58 m/s for normalization."
     ],
-    "nextGate": "Do not enable the symmetric limiter in flapping or measured-bird replay. The D=16 radial diagnostic proves that correction propagates into the bulk flow: at tU/D=5, 88.58% of limiter L1 lies beyond 1D and only 1.11% remains within 0.25D. Run a controlled positivity-preserving or regularized bulk collision-operator A/B on D=16, then promote only a successful candidate to the unchanged D=8/12/16 geometric ladder. Promotion still requires non-increasing intervention, control-volume activation and L1/L2 correction below the locked gates, and converged drag without relaxing any threshold."
+    "nextGate": "Do not enable either the symmetric-limited TRT control or the rejected second-order regularized BGK candidate in flapping or measured-bird replay. The D=16 A/B cuts control-volume activation to 0.028% and relative L1 correction to 0.053%, but relative L2 correction is 1.0968% against the unchanged 1% gate. Test a TRT-compatible recursive-regularized or central-moment candidate on the same D=16 contract, then promote only a candidate that clears every unchanged gate to the D=8/12/16 geometric ladder."
   },
-  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state; the published CFD convention remains an explicit sensitivity input. The c8, c12, and c16 measured-wing feasibility runs remain non-finite and are not quantitative bird results. Corrected stationary-sphere diagnostics isolate the first positivity loss to symmetric TRT over-relaxation. A symmetric limiter keeps c16 positive and source/force-budget closed, but the geometrically similar D=8/12/16 ladder gives an admissible negative result: sponge-excluded activation grows 3.53%, 6.65%, 8.07%, interior L2 correction remains 11.71%, 14.74%, 14.54%, and finest-two drag changes 14.81% against a 5% gate with no monotonic convergence. The D=16 radial diagnostic closes to 8.02e-7 and shows why: limiting begins within one lattice cell of the sphere, then propagates through the physical flow. At tU/D=5 only 1.11% of limiter L1 remains within 0.25D while 88.58% lies beyond 1D. A boundary-only repair is therefore rejected; a bulk collision-operator A/B must pass the unchanged geometric ladder before any flapping or measured-bird promotion."
+  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state; the published CFD convention remains an explicit sensitivity input. The c8, c12, and c16 measured-wing feasibility runs remain non-finite and are not quantitative bird results. Corrected stationary-sphere diagnostics isolate the first positivity loss to symmetric TRT over-relaxation. A symmetric limiter keeps c16 positive and source/force-budget closed, but the geometrically similar D=8/12/16 ladder gives an admissible negative result: sponge-excluded activation grows 3.53%, 6.65%, 8.07%, interior L2 correction remains 11.71%, 14.74%, 14.54%, and finest-two drag changes 14.81% against a 5% gate with no monotonic convergence. The D=16 radial diagnostic closes to 8.02e-7 and shows why: limiting begins within one lattice cell of the sphere, then propagates through the physical flow. At tU/D=5 only 1.11% of limiter L1 remains within 0.25D while 88.58% lies beyond 1D. A controlled D=16 bulk collision A/B then shows that second-order regularized positive BGK preserves positivity and source/force closure while reducing activation by 99.65% and relative L1 correction by 99.14%. It is nevertheless rejected because relative L2 correction is 1.0968% against the unchanged 1% gate. No boundary-only repair, flapping replay, measured-bird replay, or refinement ladder is promoted from this result."
 }

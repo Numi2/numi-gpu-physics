@@ -1151,6 +1151,77 @@ func productionMetalRadialLimiterLocalizationConfirmsBulkSpread()
 }
 
 @Test
+func productionMetalBulkCollisionABRejectsNarrowL2GateMiss()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallBulkCollisionOperatorAB()
+
+    #expect(
+        report.classification
+            == "stationary-wall-c16-regularized-candidate-rejected"
+    )
+    #expect(report.diameterCells == 16)
+    #expect(report.domainCells == SIMD3<Int>(160, 96, 96))
+    #expect(report.requestedSteps == 1_000)
+    #expect(report.requestedConvectiveTimes == 5)
+    #expect(report.maximumAllowedRelativeRMSForceResidual == 5.0e-3)
+    #expect(report.maximumAllowedPeakForceResidualRatio == 1.0e-3)
+    #expect(
+        report.maximumAllowedCorrectionActivationFraction == 5.0e-2
+    )
+    #expect(report.maximumAllowedRelativeCorrection == 1.0e-2)
+    #expect(report.control.operatorName == "symmetric-limited-trt")
+    #expect(
+        report.candidate.operatorName
+            == "positivity-preserving-regularized-bgk"
+    )
+    #expect(report.control.populationPositivityPassed)
+    #expect(report.control.forceBudgetPassed)
+    #expect(report.control.globalLedgerClosed)
+    #expect(report.candidate.populationPositivityPassed)
+    #expect(report.candidate.forceBudgetPassed)
+    #expect(report.candidate.globalLedgerClosed)
+    #expect(report.candidate.radialCaptureCompleted)
+    #expect(
+        report.control.controlVolumeCorrectionActivationFraction
+            == 0.080_699_371_744_791_66
+    )
+    #expect(
+        report.candidate.controlVolumeCorrectionActivationFraction
+            == 0.000_280_282_118_055_555_54
+    )
+    #expect(
+        report.candidate.relativeControlVolumeCorrectionL1
+            == 0.000_530_436_675_618_787_3
+    )
+    #expect(
+        report.candidate.relativeControlVolumeCorrectionL2
+            == 0.010_968_289_256_290_249
+    )
+    #expect(
+        report.candidate.maximumObservedRadialClosureResidual
+            == 6.833_866_619_265_361e-9
+    )
+    #expect(
+        report.candidate.conservativeRelativeRMSForceResidual
+            == 0.001_206_533_568_215_771_8
+    )
+    #expect(
+        report.candidate.maximumForceBudgetResidualRatio
+            == 0.000_700_797_686_941_622_9
+    )
+    #expect(report.candidateToControlActivationRatio < 0.0035)
+    #expect(report.candidateToControlCorrectionL1Ratio < 0.0087)
+    #expect(!report.candidate.correctionNonIntrusivePassed)
+    #expect(!report.candidateEligibleForRefinement)
+    #expect(report.gridConvergenceStillRequired)
+    #expect(report.diagnosticCompleted)
+    #expect(report.passed)
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

@@ -299,6 +299,20 @@ def main() -> None:
             raise SystemExit(f"radial limiter localization lost {key}")
     if decision["stationaryWallC16RadialLimiterBoundaryLocalized"]:
         raise SystemExit("radial limiter must remain classified as non-local")
+    for key in (
+        "stationaryWallC16BulkCollisionABCompleted",
+        "stationaryWallC16BulkCollisionABPassed",
+        "stationaryWallC16BulkCollisionABCandidatePositivityPassed",
+        "stationaryWallC16BulkCollisionABCandidateGlobalLedgerClosed",
+        "stationaryWallC16BulkCollisionABCandidateForceBudgetPassed",
+        "stationaryWallC16BulkCollisionABCandidateRejectedBeforeLadder",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"bulk collision A/B lost {key}")
+    if decision["stationaryWallC16BulkCollisionABCandidateNonIntrusivePassed"]:
+        raise SystemExit("regularized candidate must retain failed intrusion gate")
+    if decision["stationaryWallC16BulkCollisionABCandidateEligibleForRefinement"]:
+        raise SystemExit("regularized candidate must remain excluded from refinement")
     if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
         raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
@@ -1428,6 +1442,111 @@ def main() -> None:
         if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
             raise SystemExit(f"{figure_path} has changed figure hash")
 
+    collision_ab_path = Path(
+        decision["stationaryWallC16BulkCollisionABArtifact"]
+    )
+    collision_ab_bytes = collision_ab_path.read_bytes()
+    if hashlib.sha256(collision_ab_bytes).hexdigest() != decision[
+        "stationaryWallC16BulkCollisionABArtifactSHA256"
+    ]:
+        raise SystemExit(f"{collision_ab_path} has changed artifact hash")
+    collision_ab = json.loads(collision_ab_bytes)
+    if collision_ab["schemaVersion"] != 1:
+        raise SystemExit(f"{collision_ab_path} has changed schema")
+    if collision_ab["classification"] != decision[
+        "stationaryWallC16BulkCollisionABClassification"
+    ]:
+        raise SystemExit(f"{collision_ab_path} has changed classification")
+    if not collision_ab["diagnosticCompleted"] or not collision_ab["passed"]:
+        raise SystemExit(f"{collision_ab_path} did not complete")
+    if collision_ab["candidateEligibleForRefinement"]:
+        raise SystemExit(f"{collision_ab_path} candidate cannot be promoted")
+    if not collision_ab["gridConvergenceStillRequired"]:
+        raise SystemExit(f"{collision_ab_path} hides the required grid ladder")
+    if collision_ab["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{collision_ab_path} no longer uses production Metal")
+    if collision_ab["ledgerCaptureKernel"] != "captureSymmetricLimiterLedger":
+        raise SystemExit(f"{collision_ab_path} changed ledger capture")
+    if collision_ab["radialReductionKernel"] != "reduceSymmetricLimiterRadialBins":
+        raise SystemExit(f"{collision_ab_path} changed radial reduction")
+    if collision_ab["diameterCells"] != 16 or collision_ab["domainCells"] != [160, 96, 96]:
+        raise SystemExit(f"{collision_ab_path} changed geometry")
+    if collision_ab["requestedSteps"] != 1000:
+        raise SystemExit(f"{collision_ab_path} changed horizon")
+    for key, expected in (
+        ("maximumAllowedRelativeRMSForceResidual", 5.0e-3),
+        ("maximumAllowedPeakForceResidualRatio", 1.0e-3),
+        ("maximumAllowedCorrectionActivationFraction", 5.0e-2),
+        ("maximumAllowedRelativeCorrection", 1.0e-2),
+        ("maximumAllowedRadialClosureResidual", 1.0e-4),
+    ):
+        close(collision_ab[key], expected, 1.0e-15, f"collision A/B {key}")
+    control = collision_ab["control"]
+    candidate = collision_ab["candidate"]
+    if control["operatorName"] != decision[
+        "stationaryWallC16BulkCollisionABControlOperator"
+    ]:
+        raise SystemExit(f"{collision_ab_path} changed control operator")
+    if candidate["operatorName"] != decision[
+        "stationaryWallC16BulkCollisionABCandidateOperator"
+    ]:
+        raise SystemExit(f"{collision_ab_path} changed candidate operator")
+    for case in (control, candidate):
+        if case["completedSteps"] != 1000:
+            raise SystemExit(f"{collision_ab_path} case did not complete")
+        if not all(
+            case[key]
+            for key in (
+                "populationPositivityPassed",
+                "controlVolumeIsolationPassed",
+                "globalLedgerClosed",
+                "forceBudgetPassed",
+                "radialCaptureCompleted",
+            )
+        ):
+            raise SystemExit(f"{collision_ab_path} lost a mandatory closure gate")
+        if case["maximumObservedRadialClosureResidual"] > collision_ab[
+            "maximumAllowedRadialClosureResidual"
+        ]:
+            raise SystemExit(f"{collision_ab_path} radial ledger no longer closes")
+    for case_key, field, decision_key in (
+        ("control", "controlVolumeCorrectionActivationFraction", "stationaryWallC16BulkCollisionABControlActivationFraction"),
+        ("candidate", "controlVolumeCorrectionActivationFraction", "stationaryWallC16BulkCollisionABCandidateActivationFraction"),
+        ("control", "relativeControlVolumeCorrectionL1", "stationaryWallC16BulkCollisionABControlRelativeL1Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL1", "stationaryWallC16BulkCollisionABCandidateRelativeL1Correction"),
+        ("control", "relativeControlVolumeCorrectionL2", "stationaryWallC16BulkCollisionABControlRelativeL2Correction"),
+        ("candidate", "relativeControlVolumeCorrectionL2", "stationaryWallC16BulkCollisionABCandidateRelativeL2Correction"),
+    ):
+        close(
+            collision_ab[case_key][field],
+            decision[decision_key],
+            1.0e-14,
+            f"collision A/B {case_key} {field}",
+        )
+    if candidate["controlVolumeCorrectionActivationFraction"] > collision_ab[
+        "maximumAllowedCorrectionActivationFraction"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate activation regressed")
+    if candidate["relativeControlVolumeCorrectionL1"] > collision_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate L1 correction regressed")
+    if candidate["relativeControlVolumeCorrectionL2"] <= collision_ab[
+        "maximumAllowedRelativeCorrection"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate must retain the L2 miss")
+    if candidate["correctionNonIntrusivePassed"] or candidate[
+        "eligibleForRefinement"
+    ]:
+        raise SystemExit(f"{collision_ab_path} candidate was incorrectly promoted")
+    for path_key, hash_key in (
+        ("stationaryWallC16BulkCollisionABFigurePNG", "stationaryWallC16BulkCollisionABFigurePNGSHA256"),
+        ("stationaryWallC16BulkCollisionABFigureSVG", "stationaryWallC16BulkCollisionABFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -1544,6 +1663,17 @@ def main() -> None:
         "radial_limiter_final_near_far_percent: "
         f"{100.0 * radial['finalNearSurfaceLimiterL1Fraction']:.6f},"
         f"{100.0 * radial['finalFarFieldLimiterL1Fraction']:.6f}"
+    )
+    print(f"bulk_collision_ab_classification: {collision_ab['classification']}")
+    print(
+        "bulk_collision_ab_control_candidate_activation_percent: "
+        f"{100.0 * control['controlVolumeCorrectionActivationFraction']:.6f},"
+        f"{100.0 * candidate['controlVolumeCorrectionActivationFraction']:.6f}"
+    )
+    print(
+        "bulk_collision_ab_candidate_l1_l2_percent: "
+        f"{100.0 * candidate['relativeControlVolumeCorrectionL1']:.6f},"
+        f"{100.0 * candidate['relativeControlVolumeCorrectionL2']:.6f}"
     )
     print("passed: true")
 

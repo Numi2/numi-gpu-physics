@@ -357,6 +357,7 @@ private struct TranslatingBodyArguments {
     var symmetricLimiterAB = false
     var geometricLimiterLadder = false
     var radialLimiterLocalization = false
+    var bulkCollisionOperatorAB = false
     var json = false
     var archivePath: String?
 
@@ -386,6 +387,8 @@ private struct TranslatingBodyArguments {
                 geometricLimiterLadder = true
             case "--radial-limiter-localization":
                 radialLimiterLocalization = true
+            case "--bulk-collision-operator-ab":
+                bulkCollisionOperatorAB = true
             case "--archive":
                 index += 1
                 guard index < values.count else {
@@ -462,6 +465,11 @@ private struct TranslatingBodyArguments {
                 "--radial-limiter-localization requires --stationary-wall"
             )
         }
+        if bulkCollisionOperatorAB && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--bulk-collision-operator-ab requires --stationary-wall"
+            )
+        }
         let stationaryDiagnostics = [
             relaxationSweep,
             longHorizonSurvival,
@@ -469,7 +477,8 @@ private struct TranslatingBodyArguments {
             trtCollisionDecomposition,
             symmetricLimiterAB,
             geometricLimiterLadder,
-            radialLimiterLocalization
+            radialLimiterLocalization,
+            bulkCollisionOperatorAB
         ].filter { $0 }.count
         if stationaryDiagnostics > 1 {
             throw CLIError.invalidArgument(
@@ -481,7 +490,8 @@ private struct TranslatingBodyArguments {
             && !trtCollisionDecomposition
             && !symmetricLimiterAB
             && !geometricLimiterLadder
-            && !radialLimiterLocalization {
+            && !radialLimiterLocalization
+            && !bulkCollisionOperatorAB {
             throw CLIError.invalidArgument(
                 "--archive requires an archive-capable stationary-wall diagnostic"
             )
@@ -509,6 +519,8 @@ private struct TranslatingBodyArguments {
                            Run true D=8/12/16 source-aware sphere refinement
       --radial-limiter-localization
                            Localize D=16 limiter intervention by sphere distance
+      --bulk-collision-operator-ab
+                           Compare limited TRT with regularized positive BGK at D=16
       --archive FILE       Write the selected diagnostic to an exact JSON file
       --json               Emit the machine-readable validation report
       --help               Show this help
@@ -1349,6 +1361,56 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
         if arguments.stationaryWall {
+            if arguments.bulkCollisionOperatorAB {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallBulkCollisionOperatorAB()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    for item in [report.control, report.candidate] {
+                        print(
+                            "operator=\(item.operatorName): "
+                                + "steps=\(item.completedSteps) "
+                                + "Cd=\(item.meanDragCoefficientLastConvectiveTime) "
+                                + "control_activation=\(item.controlVolumeCorrectionActivationFraction) "
+                                + "control_correction_L1=\(item.relativeControlVolumeCorrectionL1) "
+                                + "force_RMS=\(item.conservativeRelativeRMSForceResidual) "
+                                + "eligible=\(item.eligibleForRefinement)"
+                        )
+                    }
+                    print(
+                        "candidate_to_control_activation: "
+                            + String(
+                                report.candidateToControlActivationRatio
+                            )
+                    )
+                    print(
+                        "candidate_to_control_correction_L1: "
+                            + String(
+                                report.candidateToControlCorrectionL1Ratio
+                            )
+                    )
+                    print(
+                        "candidate_eligible_for_refinement: "
+                            + String(
+                                report.candidateEligibleForRefinement
+                            )
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "bulk collision-operator A/B did not complete"
+                    )
+                }
+                return
+            }
             if arguments.radialLimiterLocalization {
                 let report = try MetalTranslatingBodyTopologyValidator
                     .runStationaryWallRadialLimiterLocalization()

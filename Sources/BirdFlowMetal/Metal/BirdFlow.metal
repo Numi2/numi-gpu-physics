@@ -194,8 +194,8 @@ struct GPUSymmetricLimiterLedger {
     float4 spongeControl;
     float4 boundaryActivated;
     float4 spongeActivated;
-    // x/y: limiter L1 and squared L2 correction; z/w: unlimited TRT
-    // collision L1 and squared L2 increment. Diagnostic-only.
+    // x/y: positivity-correction L1 and squared L2; z/w: unbounded
+    // selected-collision L1 and squared L2 increment. Diagnostic-only.
     float4 limiterNorms;
     float4 limiterControlNorms;
     uint4 counts;
@@ -2148,13 +2148,106 @@ kernel void stepFluidTRT(
             );
             float capturedDensity = 0.0f;
             float3 capturedMomentum = float3(0);
+            bool positivityPreservingRegularizedCollision =
+                uniforms.caseParameters.w < -2.5f;
             bool symmetricPositivityLimiter =
-                uniforms.caseParameters.w < -1.5f;
+                uniforms.caseParameters.w < -1.5f
+                && !positivityPreservingRegularizedCollision;
 
             // Preserve the production/control arithmetic literally. Even an
             // algebraically equivalent regrouping perturbs the low-margin c16
             // trajectory before the diagnostic limiter first activates.
-            if (!symmetricPositivityLimiter) {
+            if (positivityPreservingRegularizedCollision) {
+                // Projection-based regularization retains only the second-order
+                // non-equilibrium Hermite tensor. The unbounded BGK relaxation
+                // therefore filters unsupported ghost modes while preserving
+                // the density, momentum, and viscosity selected by omegaPlus.
+                float3 diagonalStress = float3(0);
+                float3 offDiagonalStress = float3(0);
+                for (uint q = 0; q < Q; ++q) {
+                    float3 direction = float3(C[q]);
+                    float nonequilibrium = f[q] - feq[q];
+                    diagonalStress += nonequilibrium * float3(
+                        direction.x * direction.x - CS2,
+                        direction.y * direction.y - CS2,
+                        direction.z * direction.z - CS2
+                    );
+                    offDiagonalStress += nonequilibrium * float3(
+                        direction.x * direction.y,
+                        direction.x * direction.z,
+                        direction.y * direction.z
+                    );
+                }
+
+                float unboundedPost[19];
+                float positivityScale = 1.0f;
+                constexpr float inverseTwoCS4 = 4.5f;
+                for (uint q = 0; q < Q; ++q) {
+                    float3 direction = float3(C[q]);
+                    float contraction = dot(
+                        float3(
+                            direction.x * direction.x - CS2,
+                            direction.y * direction.y - CS2,
+                            direction.z * direction.z - CS2
+                        ),
+                        diagonalStress
+                    ) + 2.0f * dot(
+                        float3(
+                            direction.x * direction.y,
+                            direction.x * direction.z,
+                            direction.y * direction.z
+                        ),
+                        offDiagonalStress
+                    );
+                    float regularizedNonequilibrium = W[q]
+                        * inverseTwoCS4 * contraction;
+                    float candidate = feq[q]
+                        + (1.0f - omegaPlus)
+                            * regularizedNonequilibrium;
+                    unboundedPost[q] = candidate;
+                    float populationFloor = max(
+                        1.0e-12f,
+                        1.0e-6f * max(feq[q], 0.0f)
+                    );
+                    if (candidate < populationFloor) {
+                        float admissible = clamp(
+                            (feq[q] - populationFloor)
+                                / max(feq[q] - candidate, 1.0e-30f),
+                            0.0f,
+                            1.0f
+                        );
+                        positivityScale = min(
+                            positivityScale,
+                            admissible
+                        );
+                    }
+                }
+
+                if (positivityScale < 1.0f) {
+                    limiterActivation = 1.0f;
+                    limiterMaximumRestriction = 1.0f - positivityScale;
+                }
+                for (uint q = 0; q < Q; ++q) {
+                    // A single convex scale retains the conserved moments of
+                    // both equilibrium and the regularized collision state.
+                    float post = feq[q] + positivityScale
+                        * (unboundedPost[q] - feq[q]);
+                    if (sponge > 0.0f) {
+                        float far = equilibrium(
+                            q,
+                            uniforms.farFieldLattice.w,
+                            uniforms.farFieldLattice.xyz
+                        );
+                        post = mix(post, far, sponge);
+                    }
+                    populationsOut[q * uniforms.grid.w + gid] = post;
+                    if (captureFields) {
+                        capturedDensity += post;
+                        capturedMomentum += post * float3(C[q]);
+                    }
+                }
+            }
+            else if (!symmetricPositivityLimiter) {
                 for (uint q = 0; q < Q; ++q) {
                     uint qo = OPP[q];
                     float fPlus = 0.5f * (f[q] + f[qo]);
@@ -2806,53 +2899,123 @@ kernel void captureSymmetricLimiterLedger(
         uniforms.latticeAndSponge.w,
         uniforms.latticeAndSponge.z
     );
-    float symmetricIncrements[19];
-    float antisymmetricIncrements[19];
-    float symmetricScale = 1.0f;
-    for (uint q = 0u; q < Q; ++q) {
-        uint qo = OPP[q];
-        float fPlus = 0.5f * (f[q] + f[qo]);
-        float fMinus = 0.5f * (f[q] - f[qo]);
-        float eqPlus = 0.5f * (feq[q] + feq[qo]);
-        float eqMinus = 0.5f * (feq[q] - feq[qo]);
-        float symmetricIncrement = -omegaPlus * (fPlus - eqPlus);
-        float antisymmetricIncrement = -omegaMinus * (fMinus - eqMinus);
-        symmetricIncrements[q] = symmetricIncrement;
-        antisymmetricIncrements[q] = antisymmetricIncrement;
-        if (symmetricIncrement < 0.0f) {
-            float base = f[q] + antisymmetricIncrement;
+    bool positivityPreservingRegularizedCollision =
+        uniforms.caseParameters.w < -2.5f;
+    float unboundedPost[19];
+    float treatedPost[19];
+    float correctionScale = 1.0f;
+    if (positivityPreservingRegularizedCollision) {
+        float3 diagonalStress = float3(0);
+        float3 offDiagonalStress = float3(0);
+        for (uint q = 0u; q < Q; ++q) {
+            float3 direction = float3(C[q]);
+            float nonequilibrium = f[q] - feq[q];
+            diagonalStress += nonequilibrium * float3(
+                direction.x * direction.x - CS2,
+                direction.y * direction.y - CS2,
+                direction.z * direction.z - CS2
+            );
+            offDiagonalStress += nonequilibrium * float3(
+                direction.x * direction.y,
+                direction.x * direction.z,
+                direction.y * direction.z
+            );
+        }
+        constexpr float inverseTwoCS4 = 4.5f;
+        for (uint q = 0u; q < Q; ++q) {
+            float3 direction = float3(C[q]);
+            float contraction = dot(
+                float3(
+                    direction.x * direction.x - CS2,
+                    direction.y * direction.y - CS2,
+                    direction.z * direction.z - CS2
+                ),
+                diagonalStress
+            ) + 2.0f * dot(
+                float3(
+                    direction.x * direction.y,
+                    direction.x * direction.z,
+                    direction.y * direction.z
+                ),
+                offDiagonalStress
+            );
+            float regularizedNonequilibrium = W[q]
+                * inverseTwoCS4 * contraction;
+            float candidate = feq[q]
+                + (1.0f - omegaPlus) * regularizedNonequilibrium;
+            unboundedPost[q] = candidate;
             float populationFloor = max(
                 1.0e-12f,
                 1.0e-6f * max(feq[q], 0.0f)
             );
-            if (base + symmetricIncrement < populationFloor) {
-                float candidate = clamp(
-                    (base - populationFloor)
-                        / max(-symmetricIncrement, 1.0e-30f),
+            if (candidate < populationFloor) {
+                float admissible = clamp(
+                    (feq[q] - populationFloor)
+                        / max(feq[q] - candidate, 1.0e-30f),
                     0.0f,
                     1.0f
                 );
-                symmetricScale = min(symmetricScale, candidate);
+                correctionScale = min(correctionScale, admissible);
             }
+        }
+        for (uint q = 0u; q < Q; ++q) {
+            treatedPost[q] = feq[q] + correctionScale
+                * (unboundedPost[q] - feq[q]);
+        }
+    }
+    else {
+        float symmetricIncrements[19];
+        float antisymmetricIncrements[19];
+        for (uint q = 0u; q < Q; ++q) {
+            uint qo = OPP[q];
+            float fPlus = 0.5f * (f[q] + f[qo]);
+            float fMinus = 0.5f * (f[q] - f[qo]);
+            float eqPlus = 0.5f * (feq[q] + feq[qo]);
+            float eqMinus = 0.5f * (feq[q] - feq[qo]);
+            float symmetricIncrement = -omegaPlus * (fPlus - eqPlus);
+            float antisymmetricIncrement = -omegaMinus
+                * (fMinus - eqMinus);
+            symmetricIncrements[q] = symmetricIncrement;
+            antisymmetricIncrements[q] = antisymmetricIncrement;
+            if (symmetricIncrement < 0.0f) {
+                float base = f[q] + antisymmetricIncrement;
+                float populationFloor = max(
+                    1.0e-12f,
+                    1.0e-6f * max(feq[q], 0.0f)
+                );
+                if (base + symmetricIncrement < populationFloor) {
+                    float candidate = clamp(
+                        (base - populationFloor)
+                            / max(-symmetricIncrement, 1.0e-30f),
+                        0.0f,
+                        1.0f
+                    );
+                    correctionScale = min(correctionScale, candidate);
+                }
+            }
+        }
+        for (uint q = 0u; q < Q; ++q) {
+            uint qo = OPP[q];
+            float fPlus = 0.5f * (f[q] + f[qo]);
+            float fMinus = 0.5f * (f[q] - f[qo]);
+            float eqPlus = 0.5f * (feq[q] + feq[qo]);
+            float eqMinus = 0.5f * (feq[q] - feq[qo]);
+            unboundedPost[q] = f[q]
+                - omegaPlus * (fPlus - eqPlus)
+                - omegaMinus * (fMinus - eqMinus);
+            treatedPost[q] = correctionScale < 1.0f
+                ? f[q]
+                    + correctionScale * symmetricIncrements[q]
+                    + antisymmetricIncrements[q]
+                : unboundedPost[q];
         }
     }
 
-    bool activated = symmetricScale < 1.0f;
+    bool activated = correctionScale < 1.0f;
     bool inControl = insideControlVolume(int3(cell), bounds);
     for (uint q = 0u; q < Q; ++q) {
-        uint qo = OPP[q];
-        float fPlus = 0.5f * (f[q] + f[qo]);
-        float fMinus = 0.5f * (f[q] - f[qo]);
-        float eqPlus = 0.5f * (feq[q] + feq[qo]);
-        float eqMinus = 0.5f * (feq[q] - feq[qo]);
-        float unlimited = f[q]
-            - omegaPlus * (fPlus - eqPlus)
-            - omegaMinus * (fMinus - eqMinus);
-        float limited = activated
-            ? f[q]
-                + symmetricScale * symmetricIncrements[q]
-                + antisymmetricIncrements[q]
-            : unlimited;
+        float unlimited = unboundedPost[q];
+        float limited = treatedPost[q];
         float actual = populationsOut[q * uniforms.grid.w + gid];
         float collisionDelta = unlimited - f[q];
         float limiterDelta = limited - unlimited;

@@ -953,6 +953,46 @@ The exact report and figure are
 `ValidationArtifacts/measured-wing-stationary-wall-c16-radial-limiter-localization.json`
 and `ValidationArtifacts/Figures/stationary-wall-radial-limiter-localization.svg`.
 
+The locked D=16 bulk collision-operator A/B is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --bulk-collision-operator-ab \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-bulk-collision-operator-ab.json
+```
+
+Both 1,000-step cases retain the radial-localization geometry, `Re=9367.4`,
+`U=0.08`, sponge, control volume, stationary curved-wall reconstruction, load
+estimator, population floor, and capture/reduction kernels. The control is the
+source-aware symmetric-limited TRT treatment. The candidate projects the
+pre-collision nonequilibrium distribution onto its second-order Hermite stress
+tensor, applies the viscosity-setting `omegaPlus` BGK relaxation, then uses one
+cell-local convex scale from equilibrium to the unbounded regularized state.
+The common scale preserves density and momentum while enforcing the same
+positive-population floor. This is the projection-based regularization of
+[Latt and Chopard](https://arxiv.org/abs/physics/0506157), used here only as a
+diagnostic candidate rather than a production-model promotion.
+
+The promotion gates are copied without relaxation from the geometric ladder:
+relative RMS force residual at most `0.5%`, peak force residual ratio at most
+`0.1%`, control-volume correction activation at most `5%`, and both relative L1
+and L2 correction at most `1%`. Population positivity, global source-ledger
+closure, boundary/load closure, sponge exclusion, control-surface isolation,
+and final radial closure are also mandatory.
+
+The regularized candidate remains positive for all 1,000 steps, closes the
+global source ledger, closes its radial reduction to `6.83e-9`, and passes the
+force gates (`0.1207%` relative RMS and `0.0701%` peak ratio). It reduces
+control-volume correction activation from `8.070%` to `0.028%` and relative L1
+correction from `6.169%` to `0.053%`. It is nevertheless rejected: relative L2
+correction is `1.0968%`, above the locked `1.0000%` gate. No D=8/12/16 ladder
+is justified for this candidate. The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-c16-bulk-collision-operator-ab.json`
+and `ValidationArtifacts/Figures/stationary-wall-bulk-collision-operator-ab.svg`.
+
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 
