@@ -344,6 +344,59 @@ public enum ReadmeShowcaseCapture {
       context: graphics
     )
 
+    let validationPanel = NSRect(
+      x: CGFloat(width) - margin - 258 * scale,
+      y: panel.minY,
+      width: 258 * scale,
+      height: panel.height
+    )
+    graphics.setFillColor(
+      NSColor(calibratedWhite: 0.015, alpha: 0.76).cgColor
+    )
+    graphics.addPath(
+      CGPath(
+        roundedRect: validationPanel,
+        cornerWidth: 12 * scale,
+        cornerHeight: 12 * scale,
+        transform: nil
+      )
+    )
+    graphics.fillPath()
+    drawText(
+      "VALIDATION PROGRESS",
+      font: CTFontCreateUIFontForLanguage(
+        .emphasizedSystem,
+        13 * scale,
+        nil
+      )!,
+      color: NSColor.white.cgColor,
+      position: CGPoint(
+        x: validationPanel.minX + 15 * scale,
+        y: validationPanel.minY + 31 * scale
+      ),
+      tracking: 0.35 * scale,
+      context: graphics
+    )
+    drawText(
+      "C16 SOURCE-AWARE  •  PASSED",
+      font: CTFontCreateUIFontForLanguage(
+        .userFixedPitch,
+        10.5 * scale,
+        nil
+      )!,
+      color: NSColor(
+        calibratedRed: 0.34,
+        green: 0.93,
+        blue: 0.72,
+        alpha: 1
+      ).cgColor,
+      position: CGPoint(
+        x: validationPanel.minX + 15 * scale,
+        y: validationPanel.minY + 12 * scale
+      ),
+      context: graphics
+    )
+
     var badgeX = margin
     badgeX = drawBadge(
       "PRESSURE",

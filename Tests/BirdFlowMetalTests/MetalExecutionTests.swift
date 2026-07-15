@@ -854,7 +854,7 @@ func productionMetalStationaryWallC16IsolatesSymmetricTRTOvershoot()
 }
 
 @Test
-func productionMetalStationaryWallC16LimiterAttributesOpenFlowSources()
+func productionMetalStationaryWallC16LimiterPassesSourceAwareAcceptance()
     throws
 {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
@@ -868,7 +868,7 @@ func productionMetalStationaryWallC16LimiterAttributesOpenFlowSources()
     #expect(report.diagnosticCompleted)
     #expect(
         report.classification
-            == "stationary-wall-c16-limiter-clears-positivity-open-flow-sources-attributed"
+            == "stationary-wall-c16-symmetric-limiter-source-aware-accepted"
     )
     #expect(control.firstNegativePopulationStep == 27)
     #expect(control.firstNonFinitePopulationStep == 105)
@@ -937,6 +937,42 @@ func productionMetalStationaryWallC16LimiterAttributesOpenFlowSources()
     )
     #expect(ledger.RMSControlVolumeSymmetricLimiterForceNewtons < 1.0e-6)
     #expect(ledger.maximumBoundaryLoadClosureResidualNewtons < 5.0e-6)
+    let sourceAware = report.sourceAwareTreatment
+    let sourceAwareLedger = report.sourceAwareTreatmentConservationLedger
+    #expect(report.sourceAwareControlMinimumCells == SIMD3<Int>(4, 4, 4))
+    #expect(
+        report.sourceAwareControlMaximumExclusiveCells
+            == SIMD3<Int>(52, 20, 20)
+    )
+    #expect(report.sourceAwareMaximumSolidControlSurfaceCrossingLinkCount == 0)
+    #expect(report.sourceAwareControlVolumeOutsideSponge)
+    #expect(report.sourceAwareStabilityPassed)
+    #expect(report.sourceAwareForceBudgetPassed)
+    #expect(report.sourceAwareAcceptancePassed)
+    #expect(sourceAware.completedSteps == 500)
+    #expect(sourceAware.firstNegativePopulationStep == nil)
+    #expect(sourceAware.firstNonFinitePopulationStep == nil)
+    #expect(sourceAware.firstNonFiniteLoadStep == nil)
+    #expect(sourceAware.forceBudgetPassed)
+    #expect(!sourceAware.stabilityPassed)
+    #expect(!sourceAware.fullAcceptancePassed)
+    #expect(
+        abs((sourceAware.maximumConservativeForceResidual ?? 0)
+            - 0.000_464_316_268_781_87) < 1e-10
+    )
+    #expect(
+        abs((sourceAware.conservativeRelativeRMSResidual ?? 0)
+            - 0.000_053_737_304_229_604_57) < 1e-12
+    )
+    #expect(sourceAwareLedger.globalLedgerClosed)
+    #expect(!sourceAwareLedger.forceResidualLedgerClosed)
+    #expect(
+        sourceAwareLedger.samples.allSatisfy {
+            $0.controlVolumeSpongeCellCount == 0
+        }
+    )
+    #expect(sourceAwareLedger.RMSControlVolumeSpongeForceNewtons == 0)
+    #expect(sourceAwareLedger.relativeRMSBoundaryLoadClosureResidual < 1.0e-6)
     #expect(
         repeated.classification == report.classification
             && repeated.control.firstNegativePopulationStep
@@ -955,6 +991,13 @@ func productionMetalStationaryWallC16LimiterAttributesOpenFlowSources()
             && repeated.treatmentConservationLedger
                 .RMSControlVolumeSpongeForceNewtons
                 == ledger.RMSControlVolumeSpongeForceNewtons
+            && repeated.sourceAwareAcceptancePassed
+                == report.sourceAwareAcceptancePassed
+            && repeated.sourceAwareTreatment.maximumConservativeForceResidual
+                == sourceAware.maximumConservativeForceResidual
+            && repeated.sourceAwareTreatmentConservationLedger
+                .RMSControlVolumeSpongeForceNewtons
+                == sourceAwareLedger.RMSControlVolumeSpongeForceNewtons
     )
 }
 

@@ -356,6 +356,11 @@ apparent conservation failure. Open far-field replacement contributes
 contributes only `-0.0151`, or `4.69e-7` of initial mass. Sponge momentum is
 `0.125604 N` RMS versus `3.34e-7 N` RMS from limiting and explains the old
 force residual to `0.287%` RMS. Boundary load closes independently to
-`3.03e-7` relative RMS. The limiter is therefore not the conservation source,
-but remains diagnostic-only until the same c16 case passes a sponge-excluded
-control volume and source-aware global mass gate before refinement.
+`3.03e-7` relative RMS. A follow-up c16 run moves the control volume wholly
+outside the four-cell sponge (`[4,4,4]` through `[52,20,20]`), where all 500
+samples contain zero sponge cells and zero solid links cross the control
+surface. The global source ledger closes, maximum raw force residual is
+`0.000464316 N` under the `0.0005 N` gate, and relative RMS residual is
+`0.00537%` under the `0.5%` gate. The source-aware c16 acceptance passes. The
+limiter is promoted to the c8/c12/c16 stationary-sphere refinement ladder but
+remains excluded from coupled bird replay until that resolution gate passes.

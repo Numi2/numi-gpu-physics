@@ -511,6 +511,17 @@ public struct MetalStationaryWallSymmetricLimiterABReport:
     public let treatment: MetalStationaryWallSymmetricLimiterCaseReport
     public let treatmentConservationLedger:
         MetalStationaryWallConservationLedgerReport
+    public let sourceAwareControlMinimumCells: SIMD3<Int>
+    public let sourceAwareControlMaximumExclusiveCells: SIMD3<Int>
+    public let sourceAwareTreatment:
+        MetalStationaryWallSymmetricLimiterCaseReport
+    public let sourceAwareTreatmentConservationLedger:
+        MetalStationaryWallConservationLedgerReport
+    public let sourceAwareMaximumSolidControlSurfaceCrossingLinkCount: Int
+    public let sourceAwareControlVolumeOutsideSponge: Bool
+    public let sourceAwareStabilityPassed: Bool
+    public let sourceAwareForceBudgetPassed: Bool
+    public let sourceAwareAcceptancePassed: Bool
     public let classification: String
     public let scientificVerdict: String
     public let runtimeSeconds: Double
@@ -1034,6 +1045,86 @@ public enum MetalTranslatingBodyTopologyValidator {
             forceToPhysical: Double(treatmentSimulation.forceToPhysical)
         )
 
+        let sourceAwareControlMinimum = SIMD3<UInt32>(4, 4, 4)
+        let sourceAwareControlMaximum = SIMD3<UInt32>(52, 20, 20)
+        let sourceAwareConfiguration = MetalTranslatingBodyCaseConfiguration(
+            grid: domain,
+            sphereRadiusCells: radius,
+            referenceSpeedLattice: 0.08,
+            geometryTranslationSpeedLattice: 0,
+            wallVelocityLattice: 0,
+            wallVelocityMode: HighReSphereWallMode.uniform.rawValue,
+            initialFluidVelocityLattice: 0.08,
+            periodicBoundaries: false,
+            spongeStrength: spongeStrength,
+            latticeKinematicViscosity: viscosity,
+            initialCenter: center,
+            controlMinimum: sourceAwareControlMinimum,
+            controlMaximumExclusive: sourceAwareControlMaximum
+        )
+        let sourceAwareSimulation = try MetalTranslatingBodyTopologySimulation(
+            backend: backend,
+            linkForceMode: 6,
+            caseConfiguration: sourceAwareConfiguration,
+            symmetricPositivityLimiterEnabled: true,
+            conservationLedgerEnabled: true
+        )
+        let sourceAwareInitial = try sourceAwareSimulation.copyPopulations()
+        let sourceAwareHistory = try sourceAwareSimulation.run(
+            steps: steps,
+            capturePopulationMinimum: true,
+            stopOneStepAfterFirstNonFinitePopulation: true,
+            captureConservationLedger: true
+        )
+        let sourceAwareFinal = try sourceAwareSimulation.copyPopulations()
+        let sourceAwareTreatment = symmetricLimiterCaseReport(
+            limiterEnabled: true,
+            requestedSteps: steps,
+            initialPopulations: sourceAwareInitial,
+            finalPopulations: sourceAwareFinal,
+            history: sourceAwareHistory,
+            cellCount: domain.cellCount,
+            maximumMassDrift: maximumMassDrift,
+            maximumAbsolutePopulation: maximumAbsolutePopulation,
+            maximumForceResidual: maximumForceResidual,
+            maximumRelativeResidual: maximumRelativeResidual
+        )
+        let sourceAwareLedger = conservationLedgerReport(
+            history: sourceAwareHistory,
+            initialPopulationMass: sourceAwareTreatment.initialPopulationMass,
+            finalPopulationMass: sourceAwareTreatment.finalPopulationMass,
+            forceToPhysical: Double(sourceAwareSimulation.forceToPhysical)
+        )
+        let sourceAwareMaximumCrossingLinks = sourceAwareHistory.map(
+            \.solidControlSurfaceCrossingLinkCount
+        ).max() ?? 0
+        let sourceAwareControlVolumeOutsideSponge = sourceAwareLedger.samples
+            .allSatisfy { $0.controlVolumeSpongeCellCount == 0 }
+        let sourceAwareStabilityPassed =
+            sourceAwareTreatment.completedSteps == steps
+            && sourceAwareTreatment.firstNegativePopulationStep == nil
+            && sourceAwareTreatment.firstNonFinitePopulationStep == nil
+            && sourceAwareTreatment.firstNonFiniteLoadStep == nil
+            && sourceAwareTreatment.populationsFinite
+            && sourceAwareTreatment.fieldsFinite
+            && sourceAwareTreatment.loadsFinite
+            && (sourceAwareTreatment.maximumAbsolutePopulation ?? .infinity)
+                <= maximumAbsolutePopulation
+            && sourceAwareTreatment.newlyCoveredCellEvents == 0
+            && sourceAwareTreatment.newlyUncoveredCellEvents == 0
+            && sourceAwareTreatment.topologyTransitionSteps == 0
+            && sourceAwareLedger.globalLedgerClosed
+            && sourceAwareLedger.relativeCumulativeLimiterMassContribution
+                <= 1.0e-6
+        let sourceAwareForceBudgetPassed =
+            sourceAwareMaximumCrossingLinks == 0
+            && sourceAwareControlVolumeOutsideSponge
+            && sourceAwareTreatment.forceBudgetPassed
+            && sourceAwareLedger.relativeRMSBoundaryLoadClosureResidual
+                <= 5.0e-5
+        let sourceAwareAcceptancePassed = sourceAwareStabilityPassed
+            && sourceAwareForceBudgetPassed
+
         let preActivationCount = max(
             0,
             (treatment.firstLimiterActivationStep ?? 1) - 1
@@ -1083,6 +1174,8 @@ public enum MetalTranslatingBodyTopologyValidator {
             && conservationLedger.samples.count == steps
             && conservationLedger.globalLedgerClosed
             && conservationLedger.forceResidualLedgerClosed
+            && sourceAwareLedger.samples.count == steps
+            && sourceAwareControlVolumeOutsideSponge
             && (treatment.completedSteps == steps
                 || treatment.firstNonFinitePopulationStep != nil)
         let classification: String
@@ -1103,7 +1196,10 @@ public enum MetalTranslatingBodyTopologyValidator {
                 == "open-far-field"
             && conservationLedger
                 .dominantControlVolumeMomentumContribution == "sponge"
-        if treatment.fullAcceptancePassed {
+        if sourceAwareAcceptancePassed {
+            classification = "stationary-wall-c16-symmetric-limiter-source-aware-accepted"
+            verdict = "The conservative symmetric-mode limiter keeps the locked c16 stationary-sphere case finite and positive for 500 steps. The global source ledger replaces the invalid closed-domain mass-drift gate, and a control volume wholly outside the four-cell sponge closes the source-aware force budget with no solid link crossing its surface. The c16 treatment is accepted for the promoted c8/c12/c16 refinement ladder before bird replay."
+        } else if treatment.fullAcceptancePassed {
             classification = "stationary-wall-c16-symmetric-limiter-clears-stability-and-budget"
             verdict = "The conservative symmetric-mode limiter keeps the locked c16 stationary-sphere case finite and positive for 500 steps while retaining the mass and momentum-budget gates. It may proceed to the c8/c12/c16 canonical ladder before any bird replay."
         } else if treatmentPositivityCleared && conservationSourcesAttributed {
@@ -1117,7 +1213,7 @@ public enum MetalTranslatingBodyTopologyValidator {
             verdict = "The symmetric-only positivity limiter does not keep the locked c16 stationary-sphere case finite and positive for 500 steps. Do not promote it to production bird physics."
         }
         return MetalStationaryWallSymmetricLimiterABReport(
-            schemaVersion: 2,
+            schemaVersion: 3,
             deviceName: backend.device.name,
             productionKernel: "stepFluidTRT",
             limiterMode:
@@ -1150,6 +1246,17 @@ public enum MetalTranslatingBodyTopologyValidator {
             control: control,
             treatment: treatment,
             treatmentConservationLedger: conservationLedger,
+            sourceAwareControlMinimumCells: SIMD3<Int>(4, 4, 4),
+            sourceAwareControlMaximumExclusiveCells: SIMD3<Int>(52, 20, 20),
+            sourceAwareTreatment: sourceAwareTreatment,
+            sourceAwareTreatmentConservationLedger: sourceAwareLedger,
+            sourceAwareMaximumSolidControlSurfaceCrossingLinkCount:
+                sourceAwareMaximumCrossingLinks,
+            sourceAwareControlVolumeOutsideSponge:
+                sourceAwareControlVolumeOutsideSponge,
+            sourceAwareStabilityPassed: sourceAwareStabilityPassed,
+            sourceAwareForceBudgetPassed: sourceAwareForceBudgetPassed,
+            sourceAwareAcceptancePassed: sourceAwareAcceptancePassed,
             classification: classification,
             scientificVerdict: verdict,
             runtimeSeconds: Date().timeIntervalSince(startTime),

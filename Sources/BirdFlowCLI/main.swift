@@ -1355,6 +1355,13 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
                             + "mass_source=\(ledger.dominantGlobalMassContribution) "
                             + "momentum_source=\(ledger.dominantControlVolumeMomentumContribution)"
                     )
+                    print(
+                        "source_aware_acceptance: outside_sponge=\(report.sourceAwareControlVolumeOutsideSponge) "
+                            + "crossing_links=\(report.sourceAwareMaximumSolidControlSurfaceCrossingLinkCount) "
+                            + "stability=\(report.sourceAwareStabilityPassed) "
+                            + "force_budget=\(report.sourceAwareForceBudgetPassed) "
+                            + "accepted=\(report.sourceAwareAcceptancePassed)"
+                    )
                     print("diagnostic_completed: \(report.diagnosticCompleted)")
                 }
                 guard report.diagnosticCompleted else {

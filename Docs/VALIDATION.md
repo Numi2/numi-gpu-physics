@@ -868,16 +868,25 @@ against curved-boundary fluid momentum to `3.03e-7` relative RMS. Open-domain
 mass flux and sponge forcing, not limiter arithmetic or boundary load
 accounting, caused the raw gate failures.
 
-Two Apple M4 release runs match exactly apart from runtime; the archived run
-takes `0.995 s` and is stored in
+Two Apple M4 release runs match exactly apart from runtime. The expanded
+three-case diagnostic is stored in
 `ValidationArtifacts/measured-wing-stationary-wall-c16-symmetric-limiter-ab.json`.
-The limiter remains diagnostic-only because the existing acceptance contract
-has not yet been replaced and rerun.
 
-The highest-ROI next gate is the same c16 treatment with a control volume
-wholly outside the four-cell sponge and a source-closed global mass check in
-place of the closed-domain zero-drift rule. It reuses this one-second history
-and can provide a valid acceptance decision before any refinement ladder.
+The source-aware treatment repeats the identical fluid history with control
+bounds `[4,4,4]` through `[52,20,20]`, wholly outside the four-cell sponge.
+Every one of its 500 samples contains zero control-volume sponge cells, and no
+solid link crosses the control surface. The global source ledger replaces the
+invalid closed-domain zero-mass-drift rule and closes. With the sponge removed
+from the local momentum budget, the canonical raw budget also passes: maximum
+residual is `0.000464316 N` under the `0.0005 N` gate and relative RMS residual
+is `5.37373e-5` (`0.00537%`) under the `0.5%` gate. Boundary load retains
+`3.03e-7` relative RMS closure. The c16 source-aware acceptance therefore
+passes; the limiter is promoted to the locked c8/c12/c16 stationary-sphere
+refinement ladder, not yet to coupled bird replay.
+
+That ladder is now the highest-ROI gate. It tests whether the accepted c16
+correction is resolution-robust before the limiter can alter any expensive
+measured-bird simulation.
 
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.

@@ -267,6 +267,17 @@ def main() -> None:
     ):
         if not decision[key]:
             raise SystemExit(f"c16 source attribution lost {key}")
+    for key in (
+        "stationaryWallC16SourceAwareAcceptanceCompleted",
+        "stationaryWallC16SourceAwareAcceptanceRepeatMatched",
+        "stationaryWallC16SourceAwareControlVolumeOutsideSponge",
+        "stationaryWallC16SourceAwareGlobalLedgerClosed",
+        "stationaryWallC16SourceAwareStabilityPassed",
+        "stationaryWallC16SourceAwareForceBudgetPassed",
+        "stationaryWallC16SourceAwareAcceptancePassed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"c16 source-aware acceptance lost {key}")
     if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
         raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
@@ -979,11 +990,10 @@ def main() -> None:
     if not limiter["diagnosticCompleted"]:
         raise SystemExit(f"{limiter_path} must remain complete")
     if limiter["classification"] != (
-        "stationary-wall-c16-limiter-clears-positivity-"
-        "open-flow-sources-attributed"
+        "stationary-wall-c16-symmetric-limiter-source-aware-accepted"
     ):
         raise SystemExit(f"{limiter_path} has changed classification")
-    if limiter["schemaVersion"] != 2:
+    if limiter["schemaVersion"] != 3:
         raise SystemExit(f"{limiter_path} has changed schema")
     if limiter["requestedStepsPerCase"] != 500:
         raise SystemExit(f"{limiter_path} has changed its horizon")
@@ -1120,6 +1130,75 @@ def main() -> None:
         raise SystemExit(f"{limiter_path} force-source peak no longer closes")
     if ledger["relativeRMSBoundaryLoadClosureResidual"] > 1.0e-6:
         raise SystemExit(f"{limiter_path} boundary load no longer closes")
+
+    if limiter["sourceAwareControlMinimumCells"] != decision[
+        "stationaryWallC16SourceAwareControlMinimumCells"
+    ]:
+        raise SystemExit(f"{limiter_path} changed source-aware control minimum")
+    if limiter["sourceAwareControlMaximumExclusiveCells"] != decision[
+        "stationaryWallC16SourceAwareControlMaximumExclusiveCells"
+    ]:
+        raise SystemExit(f"{limiter_path} changed source-aware control maximum")
+    if limiter["sourceAwareMaximumSolidControlSurfaceCrossingLinkCount"] != decision[
+        "stationaryWallC16SourceAwareMaximumSolidControlSurfaceCrossingLinkCount"
+    ]:
+        raise SystemExit(f"{limiter_path} changed source-aware crossing links")
+    for key in (
+        "sourceAwareControlVolumeOutsideSponge",
+        "sourceAwareStabilityPassed",
+        "sourceAwareForceBudgetPassed",
+        "sourceAwareAcceptancePassed",
+    ):
+        if not limiter[key]:
+            raise SystemExit(f"{limiter_path} lost {key}")
+    source_aware = limiter["sourceAwareTreatment"]
+    if source_aware["completedSteps"] != 500:
+        raise SystemExit(f"{limiter_path} source-aware treatment did not finish")
+    if any(
+        source_aware.get(key) is not None
+        for key in (
+            "firstNegativePopulationStep",
+            "firstNonFinitePopulationStep",
+            "firstNonFiniteLoadStep",
+        )
+    ):
+        raise SystemExit(f"{limiter_path} source-aware treatment is not finite-positive")
+    if not source_aware["forceBudgetPassed"]:
+        raise SystemExit(f"{limiter_path} source-aware raw force budget failed")
+    if source_aware["stabilityPassed"] or source_aware["fullAcceptancePassed"]:
+        raise SystemExit(f"{limiter_path} must preserve the superseded mass-drift flags")
+    close(
+        source_aware["maximumConservativeForceResidual"],
+        decision["stationaryWallC16SourceAwareMaximumForceResidual"],
+        1.0e-14,
+        "c16 source-aware maximum force residual",
+    )
+    close(
+        source_aware["conservativeRelativeRMSResidual"],
+        decision["stationaryWallC16SourceAwareRelativeRMSResidual"],
+        1.0e-14,
+        "c16 source-aware relative RMS residual",
+    )
+    source_aware_ledger = limiter["sourceAwareTreatmentConservationLedger"]
+    if not source_aware_ledger["globalLedgerClosed"]:
+        raise SystemExit(f"{limiter_path} source-aware global ledger failed")
+    if any(
+        sample["controlVolumeSpongeCellCount"] != 0
+        for sample in source_aware_ledger["samples"]
+    ):
+        raise SystemExit(f"{limiter_path} source-aware control contains sponge cells")
+    close(
+        source_aware_ledger["RMSControlVolumeSpongeForceNewtons"],
+        decision["stationaryWallC16SourceAwareSpongeRMSForceNewtons"],
+        1.0e-14,
+        "c16 source-aware sponge RMS force",
+    )
+    close(
+        source_aware_ledger["relativeRMSBoundaryLoadClosureResidual"],
+        decision["stationaryWallC16SourceAwareBoundaryLoadRelativeRMSClosureResidual"],
+        1.0e-14,
+        "c16 source-aware boundary load closure",
+    )
 
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
