@@ -357,6 +357,7 @@ private struct TranslatingBodyArguments {
     var symmetricLimiterAB = false
     var geometricLimiterLadder = false
     var recursiveRegularizationLadder = false
+    var recursiveRegularizationDuration = false
     var radialLimiterLocalization = false
     var bulkCollisionOperatorAB = false
     var recursiveRegularizationAB = false
@@ -389,6 +390,8 @@ private struct TranslatingBodyArguments {
                 geometricLimiterLadder = true
             case "--recursive-regularization-ladder":
                 recursiveRegularizationLadder = true
+            case "--recursive-regularization-duration":
+                recursiveRegularizationDuration = true
             case "--radial-limiter-localization":
                 radialLimiterLocalization = true
             case "--bulk-collision-operator-ab":
@@ -471,6 +474,11 @@ private struct TranslatingBodyArguments {
                 "--recursive-regularization-ladder requires --stationary-wall"
             )
         }
+        if recursiveRegularizationDuration && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-duration requires --stationary-wall"
+            )
+        }
         if radialLimiterLocalization && !stationaryWall {
             throw CLIError.invalidArgument(
                 "--radial-limiter-localization requires --stationary-wall"
@@ -494,9 +502,10 @@ private struct TranslatingBodyArguments {
             symmetricLimiterAB,
             geometricLimiterLadder,
             recursiveRegularizationLadder,
+            recursiveRegularizationDuration,
             radialLimiterLocalization,
             bulkCollisionOperatorAB,
-            recursiveRegularizationAB
+            recursiveRegularizationAB,
         ].filter { $0 }.count
         if stationaryDiagnostics > 1 {
             throw CLIError.invalidArgument(
@@ -509,6 +518,7 @@ private struct TranslatingBodyArguments {
             && !symmetricLimiterAB
             && !geometricLimiterLadder
             && !recursiveRegularizationLadder
+            && !recursiveRegularizationDuration
             && !radialLimiterLocalization
             && !bulkCollisionOperatorAB
             && !recursiveRegularizationAB {
@@ -539,6 +549,8 @@ private struct TranslatingBodyArguments {
                            Run true D=8/12/16 source-aware sphere refinement
       --recursive-regularization-ladder
                            Run RR3 through the unchanged D=8/12/16 sphere refinement
+      --recursive-regularization-duration
+                           Extend only RR3 D=8/12 to ten convective times
       --radial-limiter-localization
                            Localize D=16 limiter intervention by sphere distance
       --bulk-collision-operator-ab
@@ -1472,6 +1484,42 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
                 guard report.passed else {
                     throw MetalTranslatingBodyTopologyValidationError.failed(
                         "radial limiter localization did not close"
+                    )
+                }
+                return
+            }
+            if arguments.recursiveRegularizationDuration {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRecursiveRegularizationDurationSensitivity()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    for item in report.cases {
+                        print(
+                            "D=\(item.numericalCase.diameterCells): "
+                                + "steps=\(item.numericalCase.requestedSteps) "
+                                + "window_Cd=\(item.convectiveWindowMeanDragCoefficients) "
+                                + "fourth_to_fifth=\(item.fourthToFifthRelativeDragChange) "
+                                + "ninth_to_tenth=\(item.ninthToTenthRelativeDragChange) "
+                                + "fifth_to_tenth=\(item.fifthToTenthRelativeDragChange) "
+                                + "stable=\(item.durationStabilityPassed)"
+                        )
+                    }
+                    print(
+                        "baseline_window_bias_confirmed: "
+                            + String(report.baselineWindowBiasConfirmed)
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "recursive-regularization duration diagnostic did not complete"
                     )
                 }
                 return

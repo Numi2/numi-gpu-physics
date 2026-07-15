@@ -403,3 +403,12 @@ change is `10.476%` against the unchanged `5%` gate and no Richardson fit
 exists. RR3 therefore remains excluded from measured-bird replay. Because the
 D=8 and D=12 fourth-to-fifth convective-window means still change `11.54%` and
 `13.28%`, a cheap duration-sensitivity extension precedes any D=20 study.
+
+That controlled extension is now complete through ten convective times. D=12
+clears duration sensitivity: ninth-to-tenth drag changes `4.543%` and
+fifth-to-tenth changes `2.177%`. D=8 remains unresolved at `46.848%` and
+`29.219%`, respectively, despite retaining positivity, conservation,
+force-budget, and non-intrusive correction gates. RR3 therefore remains
+excluded from measured-bird replay. The next gate extends only D=8 and uses its
+measured shedding period to form period-complete block means and uncertainty;
+D=20 remains deferred until the coarse unsteady statistic is defensible.

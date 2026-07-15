@@ -1061,6 +1061,37 @@ non-convergence before paying for D=20. The exact report and figure are
 `ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-refinement.json`
 and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-refinement.svg`.
 
+The controlled coarse-grid duration diagnostic is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --recursive-regularization-duration \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json
+```
+
+It changes only the requested duration and runs only D=8/12, the two cases
+whose fourth-to-fifth window changes exceeded 11%. Both histories reach ten
+convective times and retain population positivity, source-ledger closure,
+force-budget closure, control-volume isolation, and the unchanged non-intrusive
+correction gates. D=12 clears the predeclared late-window check: ninth-to-tenth
+mean drag changes `4.543%` against `5%`, and its fifth-to-tenth change is only
+`2.177%`. D=8 does not settle: its ninth-to-tenth change is `46.848%`, its
+fifth-to-tenth change is `29.219%`, and the ninth one-convective-time mean has a
+large excursion. The five-convective-time spatial ladder therefore cannot yet
+be reclassified as duration-biased, and D=20 is deferred.
+
+This is an admissible negative result, not a numerical failure: every
+individual physics and accounting gate passes, while the separate scientific
+duration flag remains false. The next gate should extend only D=8 and estimate
+the dominant shedding period plus uncertainty from period-complete block means.
+That avoids treating adjacent one-convective-time samples of an unsteady wake as
+independent steady estimates. The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json`
+and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-duration.svg`.
+
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 

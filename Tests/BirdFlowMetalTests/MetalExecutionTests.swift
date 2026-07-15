@@ -1158,6 +1158,80 @@ func productionMetalRecursiveRegularizationLadderBlocksForcePromotion()
 }
 
 @Test
+func productionMetalRecursiveRegularizationDurationIsolatedToCoarseGrid()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRecursiveRegularizationDurationSensitivity()
+
+    #expect(report.diagnosticCompleted)
+    #expect(report.passed)
+    #expect(report.allIndividualGatesPassed)
+    #expect(!report.durationStabilityPassed)
+    #expect(!report.baselineWindowBiasConfirmed)
+    #expect(
+        report.classification
+            == "stationary-wall-recursive-regularization-duration-sensitivity-unresolved"
+    )
+    #expect(report.cases.map(\.numericalCase.diameterCells) == [8, 12])
+    #expect(report.cases.map(\.numericalCase.requestedSteps) == [1_000, 1_500])
+    #expect(report.cases.map(\.durationStabilityPassed) == [false, true])
+    #expect(report.cases.allSatisfy {
+        $0.convectiveWindowMeanDragCoefficients.count == 10
+            && $0.numericalCase.minimumObservedPopulation! > 0
+            && $0.numericalCase.sourceAwareStabilityPassed
+            && $0.numericalCase.forceBudgetPassed
+            && $0.numericalCase.limiterNonIntrusivePassed
+            && $0.numericalCase.passed
+    })
+    #expect(
+        report.cases.map(\.convectiveWindowMeanDragCoefficients) == [
+            [
+                2.369_455_981_679_001_5,
+                1.408_184_798_511_469_5,
+                1.731_478_738_960_702_7,
+                1.472_755_450_406_484_4,
+                1.320_419_274_473_607_4,
+                1.096_411_397_415_869,
+                0.915_080_342_850_593_9,
+                0.888_956_676_225_704_2,
+                1.500_565_699_113_433_5,
+                1.021_846_406_462_214_4,
+            ],
+            [
+                1.984_614_267_531_931_4,
+                1.206_195_965_715_711_7,
+                1.232_629_458_775_543,
+                1.062_570_391_176_398,
+                0.937_999_642_875_561_6,
+                1.043_141_320_901_888_3,
+                0.854_767_216_137_004_2,
+                0.957_864_771_781_523_6,
+                0.959_717_456_202_050_5,
+                0.918_010_967_125_758_7,
+            ],
+        ]
+    )
+    #expect(
+        abs(report.cases[0].ninthToTenthRelativeDragChange
+            - 0.468_484_587_922_188_06) < 1.0e-12
+    )
+    #expect(
+        abs(report.cases[1].ninthToTenthRelativeDragChange
+            - 0.045_431_362_554_275_93) < 1.0e-12
+    )
+    #expect(
+        abs(report.cases[0].fifthToTenthRelativeDragChange
+            - 0.292_189_575_774_990_6) < 1.0e-12
+    )
+    #expect(
+        abs(report.cases[1].fifthToTenthRelativeDragChange
+            - 0.021_773_896_462_682_064) < 1.0e-12
+    )
+}
+
+@Test
 func productionMetalRadialLimiterLocalizationConfirmsBulkSpread()
     throws
 {

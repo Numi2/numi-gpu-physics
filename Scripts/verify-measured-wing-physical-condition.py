@@ -1839,6 +1839,141 @@ def main() -> None:
         if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
             raise SystemExit(f"{figure_path} has changed figure hash")
 
+    duration_path = Path(
+        decision["stationaryWallRecursiveRegularizationDurationArtifact"]
+    )
+    duration_bytes = duration_path.read_bytes()
+    if hashlib.sha256(duration_bytes).hexdigest() != decision[
+        "stationaryWallRecursiveRegularizationDurationArtifactSHA256"
+    ]:
+        raise SystemExit(f"{duration_path} has changed artifact hash")
+    duration = json.loads(duration_bytes)
+    if duration["schemaVersion"] != 1:
+        raise SystemExit(f"{duration_path} has changed schema")
+    if duration["classification"] != decision[
+        "stationaryWallRecursiveRegularizationDurationClassification"
+    ]:
+        raise SystemExit(f"{duration_path} has changed classification")
+    if duration["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{duration_path} no longer uses production Metal")
+    if duration["collisionMode"] != recursive_ladder["limiterMode"]:
+        raise SystemExit(f"{duration_path} has changed collision mode")
+    for key, expected in (
+        ("baselineConvectiveTimes", 5.0),
+        ("requestedConvectiveTimes", 10.0),
+        ("maximumAllowedLateWindowChange", 0.05),
+    ):
+        close(duration[key], expected, 1.0e-14, f"duration {key}")
+    if not duration["diagnosticCompleted"] or not duration["passed"]:
+        raise SystemExit(f"{duration_path} did not complete")
+    if not duration["allIndividualGatesPassed"]:
+        raise SystemExit(f"{duration_path} lost an individual numerical gate")
+    if duration["durationStabilityPassed"]:
+        raise SystemExit(f"{duration_path} must retain unresolved D=8 duration")
+    if duration["baselineWindowBiasConfirmed"]:
+        raise SystemExit(
+            f"{duration_path} must not claim bias before both cases are stable"
+        )
+    duration_cases = duration["cases"]
+    numerical_cases = [item["numericalCase"] for item in duration_cases]
+    if [case["diameterCells"] for case in numerical_cases] != decision[
+        "stationaryWallRecursiveRegularizationDurationDiameterCells"
+    ]:
+        raise SystemExit(f"{duration_path} has changed diameters")
+    if [case["requestedSteps"] for case in numerical_cases] != decision[
+        "stationaryWallRecursiveRegularizationDurationRequestedSteps"
+    ]:
+        raise SystemExit(f"{duration_path} has changed durations")
+    if [item["durationStabilityPassed"] for item in duration_cases] != decision[
+        "stationaryWallRecursiveRegularizationDurationCaseStabilityPassed"
+    ]:
+        raise SystemExit(f"{duration_path} has changed per-case stability")
+    for case_index, item in enumerate(duration_cases):
+        case = item["numericalCase"]
+        if case["minimumObservedPopulation"] <= 0:
+            raise SystemExit(f"{duration_path} lost population positivity")
+        if not all(
+            case[key]
+            for key in (
+                "sourceAwareStabilityPassed",
+                "forceBudgetPassed",
+                "limiterNonIntrusivePassed",
+                "globalLedgerClosed",
+                "controlVolumeOutsideSponge",
+                "passed",
+            )
+        ):
+            raise SystemExit(f"{duration_path} lost a numerical gate")
+        if case["maximumSolidControlSurfaceCrossingLinkCount"] != 0:
+            raise SystemExit(f"{duration_path} control surface crosses solid links")
+        if [sample["step"] for sample in case["samples"]] != list(
+            range(1, case["requestedSteps"] + 1)
+        ):
+            raise SystemExit(f"{duration_path} phase history is not contiguous")
+        window_means = []
+        for window_index in range(10):
+            values = [
+                sample["dragCoefficient"]
+                for sample in case["samples"]
+                if window_index < sample["convectiveTime"] <= window_index + 1
+            ]
+            if not values:
+                raise SystemExit(
+                    f"{duration_path} lost convective window {window_index + 1}"
+                )
+            window_means.append(sum(values) / len(values))
+        expected_windows = decision[
+            "stationaryWallRecursiveRegularizationDurationConvectiveWindowMeanDragCoefficients"
+        ][case_index]
+        for actual, embedded, expected in zip(
+            window_means,
+            item["convectiveWindowMeanDragCoefficients"],
+            expected_windows,
+        ):
+            close(actual, embedded, 1.0e-14, "duration embedded window mean")
+            close(actual, expected, 1.0e-14, "duration locked window mean")
+        derived_changes = (
+            abs(window_means[4] - window_means[3])
+            / max(abs(window_means[4]), 1.0e-30),
+            abs(window_means[9] - window_means[8])
+            / max(abs(window_means[9]), 1.0e-30),
+            abs(window_means[9] - window_means[4])
+            / max(abs(window_means[9]), 1.0e-30),
+        )
+        change_fields = (
+            "fourthToFifthRelativeDragChange",
+            "ninthToTenthRelativeDragChange",
+            "fifthToTenthRelativeDragChange",
+        )
+        decision_fields = (
+            "stationaryWallRecursiveRegularizationDurationFourthToFifthRelativeDragChanges",
+            "stationaryWallRecursiveRegularizationDurationNinthToTenthRelativeDragChanges",
+            "stationaryWallRecursiveRegularizationDurationFifthToTenthRelativeDragChanges",
+        )
+        for actual, item_field, decision_field in zip(
+            derived_changes, change_fields, decision_fields
+        ):
+            close(actual, item[item_field], 1.0e-14, f"duration {item_field}")
+            close(
+                actual,
+                decision[decision_field][case_index],
+                1.0e-14,
+                f"duration locked {item_field}",
+            )
+    for path_key, hash_key in (
+        (
+            "stationaryWallRecursiveRegularizationDurationFigurePNG",
+            "stationaryWallRecursiveRegularizationDurationFigurePNGSHA256",
+        ),
+        (
+            "stationaryWallRecursiveRegularizationDurationFigureSVG",
+            "stationaryWallRecursiveRegularizationDurationFigureSVGSHA256",
+        ),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -2003,6 +2138,24 @@ def main() -> None:
             for value in decision[
                 "stationaryWallRecursiveRegularizationLadderFourthToFifthRelativeDragChanges"
             ]
+        )
+    )
+    print(
+        "recursive_regularization_duration_classification: "
+        f"{duration['classification']}"
+    )
+    print(
+        "recursive_regularization_duration_ninth_to_tenth_change_percent: "
+        + ",".join(
+            f"{100.0 * item['ninthToTenthRelativeDragChange']:.6f}"
+            for item in duration_cases
+        )
+    )
+    print(
+        "recursive_regularization_duration_fifth_to_tenth_change_percent: "
+        + ",".join(
+            f"{100.0 * item['fifthToTenthRelativeDragChange']:.6f}"
+            for item in duration_cases
         )
     )
     print("passed: true")

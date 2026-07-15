@@ -636,6 +636,39 @@ public struct MetalStationaryWallGeometricLimiterLadderReport:
     public let passed: Bool
 }
 
+public struct MetalStationaryWallRecursiveDurationCaseReport:
+    Codable, Sendable
+{
+    public let numericalCase: MetalStationaryWallGeometricLimiterCaseReport
+    public let convectiveWindowMeanDragCoefficients: [Double]
+    public let fourthToFifthRelativeDragChange: Double
+    public let ninthToTenthRelativeDragChange: Double
+    public let fifthToTenthRelativeDragChange: Double
+    public let durationStabilityPassed: Bool
+}
+
+public struct MetalStationaryWallRecursiveDurationReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let ledgerCaptureKernel: String
+    public let collisionMode: String
+    public let classification: String
+    public let baselineConvectiveTimes: Double
+    public let requestedConvectiveTimes: Double
+    public let maximumAllowedLateWindowChange: Double
+    public let cases: [MetalStationaryWallRecursiveDurationCaseReport]
+    public let allIndividualGatesPassed: Bool
+    public let durationStabilityPassed: Bool
+    public let baselineWindowBiasConfirmed: Bool
+    public let scientificVerdict: String
+    public let runtimeSeconds: Double
+    public let diagnosticCompleted: Bool
+    public let passed: Bool
+}
+
 public struct MetalStationaryWallRadialLimiterBin: Codable, Sendable {
     public let binIndex: Int
     public let minimumSurfaceDistanceDiameters: Double
@@ -1584,7 +1617,9 @@ public enum MetalTranslatingBodyTopologyValidator {
             acceptedVerdict:
                 "The source-aware symmetric limiter remains positive, conservative, non-intrusive, and grid-convergent across geometrically similar D=8/12/16 stationary spheres. It may proceed to the published five-cycle flapping-wing ladder.",
             rejectedVerdict:
-                "At least one predeclared source-aware stability, force-budget, limiter-intervention, or grid-convergence gate failed. Keep the limiter out of coupled bird replay and use the archived resolution trend to isolate the remaining defect."
+                "At least one predeclared source-aware stability, force-budget, limiter-intervention, or grid-convergence gate failed. Keep the limiter out of coupled bird replay and use the archived resolution trend to isolate the remaining defect.",
+            diameters: [8, 12, 16],
+            requestedConvectiveTimes: 5
         )
     }
 
@@ -1603,8 +1638,128 @@ public enum MetalTranslatingBodyTopologyValidator {
             acceptedVerdict:
                 "The recursive-regularized BGK candidate remains positive, conservative, non-intrusive, and grid-convergent across geometrically similar D=8/12/16 stationary spheres. It is eligible for production integration followed by the published five-cycle flapping-wing regression ladder.",
             rejectedVerdict:
-                "At least one unchanged source-aware stability, force-budget, correction-intervention, trend, or drag-convergence gate failed. Keep recursive-regularized BGK out of coupled bird replay and use the archived resolution trend to isolate the remaining defect."
+                "At least one unchanged source-aware stability, force-budget, correction-intervention, trend, or drag-convergence gate failed. Keep recursive-regularized BGK out of coupled bird replay and use the archived resolution trend to isolate the remaining defect.",
+            diameters: [8, 12, 16],
+            requestedConvectiveTimes: 5
         )
+    }
+
+    public static func runStationaryWallRecursiveRegularizationDurationSensitivity()
+        throws -> MetalStationaryWallRecursiveDurationReport
+    {
+        let startTime = Date()
+        let raw = try runStationaryWallGeometricCollisionLadder(
+            collisionOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            limiterMode:
+                "recursive second-plus-supported-third-order D3Q19 Hermite reconstruction with a convex equilibrium-to-post-collision positivity scale",
+            acceptedClassification: "internal-duration-run-accepted",
+            rejectedClassification: "internal-duration-run-not-accepted",
+            acceptedVerdict: "Internal duration run completed.",
+            rejectedVerdict: "Internal duration run did not meet ladder gates.",
+            diameters: [8, 12],
+            requestedConvectiveTimes: 10
+        )
+        let baselineConvectiveTimes = 5.0
+        let maximumLateWindowChange = 5.0e-2
+        let cases = raw.cases.map { item in
+            let windowMeans = (0..<10).map { windowIndex in
+                let lower = Double(windowIndex)
+                let upper = Double(windowIndex + 1)
+                let samples = item.samples.filter {
+                    $0.convectiveTime > lower && $0.convectiveTime <= upper
+                }
+                return samples.reduce(0) { $0 + $1.dragCoefficient }
+                    / Double(max(samples.count, 1))
+            }
+            let fourthToFifth = relativeChange(
+                from: windowMeans[3],
+                to: windowMeans[4]
+            )
+            let ninthToTenth = relativeChange(
+                from: windowMeans[8],
+                to: windowMeans[9]
+            )
+            let fifthToTenth = relativeChange(
+                from: windowMeans[4],
+                to: windowMeans[9]
+            )
+            return MetalStationaryWallRecursiveDurationCaseReport(
+                numericalCase: item,
+                convectiveWindowMeanDragCoefficients: windowMeans,
+                fourthToFifthRelativeDragChange: fourthToFifth,
+                ninthToTenthRelativeDragChange: ninthToTenth,
+                fifthToTenthRelativeDragChange: fifthToTenth,
+                durationStabilityPassed:
+                    ninthToTenth <= maximumLateWindowChange
+            )
+        }
+        let allIndividualGatesPassed = cases.allSatisfy {
+            $0.numericalCase.passed
+        }
+        let durationStabilityPassed = cases.allSatisfy {
+            $0.durationStabilityPassed
+        }
+        let baselineWindowBiasConfirmed = durationStabilityPassed
+            && cases.contains {
+                $0.fifthToTenthRelativeDragChange > maximumLateWindowChange
+            }
+        let diagnosticCompleted = cases.count == 2
+            && cases.map(\.numericalCase.diameterCells) == [8, 12]
+            && cases.allSatisfy {
+                $0.numericalCase.completedConvectiveTimes >= 10
+                    && $0.convectiveWindowMeanDragCoefficients.count == 10
+                    && $0.convectiveWindowMeanDragCoefficients.allSatisfy {
+                        $0.isFinite
+                    }
+            }
+            && allIndividualGatesPassed
+        let classification: String
+        let verdict: String
+        if !diagnosticCompleted {
+            classification =
+                "stationary-wall-recursive-regularization-duration-invalid"
+            verdict =
+                "The controlled D=8/12 ten-convective-time diagnostic did not complete all unchanged positivity, conservation, force-budget, and correction gates. Do not interpret its duration trend."
+        } else if !durationStabilityPassed {
+            classification =
+                "stationary-wall-recursive-regularization-duration-sensitivity-unresolved"
+            verdict =
+                "At least one D=8/12 drag history still changes by more than 5% between the ninth and tenth convective windows. Extend only that resolution before spending on D=20 or coupled bird replay."
+        } else if baselineWindowBiasConfirmed {
+            classification =
+                "stationary-wall-recursive-regularization-duration-window-bias-confirmed"
+            verdict =
+                "Both coarse histories are late-window stable, while at least one fifth-window drag differs from its tenth-window value by more than 5%. The previous five-convective-time spatial comparison contained material transient-window bias and must be replaced before judging spatial convergence."
+        } else {
+            classification =
+                "stationary-wall-recursive-regularization-duration-window-insensitive"
+            verdict =
+                "Both D=8/12 histories are late-window stable and their fifth-to-tenth drag changes remain within 5%. The prior five-convective-time nonconvergence is not explained by duration bias; D=20 is the next discriminating spatial test."
+        }
+        return MetalStationaryWallRecursiveDurationReport(
+            schemaVersion: 1,
+            deviceName: raw.deviceName,
+            productionKernel: raw.productionKernel,
+            ledgerCaptureKernel: raw.ledgerCaptureKernel,
+            collisionMode: raw.limiterMode,
+            classification: classification,
+            baselineConvectiveTimes: baselineConvectiveTimes,
+            requestedConvectiveTimes: 10,
+            maximumAllowedLateWindowChange: maximumLateWindowChange,
+            cases: cases,
+            allIndividualGatesPassed: allIndividualGatesPassed,
+            durationStabilityPassed: durationStabilityPassed,
+            baselineWindowBiasConfirmed: baselineWindowBiasConfirmed,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            diagnosticCompleted: diagnosticCompleted,
+            passed: diagnosticCompleted
+        )
+    }
+
+    private static func relativeChange(from: Double, to: Double) -> Double {
+        abs(to - from) / max(abs(to), 1.0e-30)
     }
 
     private static func runStationaryWallGeometricCollisionLadder(
@@ -1613,15 +1768,15 @@ public enum MetalTranslatingBodyTopologyValidator {
         acceptedClassification: String,
         rejectedClassification: String,
         acceptedVerdict: String,
-        rejectedVerdict: String
+        rejectedVerdict: String,
+        diameters: [Int],
+        requestedConvectiveTimes: Double
     ) throws -> MetalStationaryWallGeometricLimiterLadderReport {
 #if canImport(Metal)
         let startTime = Date()
         let backend = try MetalBackend(fastMath: false)
-        let diameters = [8, 12, 16]
         let reynoldsNumber = 9_367.4
         let referenceSpeed = 0.08
-        let requestedConvectiveTimes = 5.0
         let domainLengthDiameters = 10
         let domainCrossflowDiameters = 6
         let sphereCenterFromInletDiameters = 3
