@@ -369,3 +369,10 @@ against a `5%` gate. All cases are positive, source-closed, and force-budget
 closed, which isolates the remaining failure to intrusive, resolution-dependent
 collision limiting in the physical flow region. The limiter therefore remains
 excluded from coupled bird replay.
+
+The D=16 radial follow-up closes its eight shell sums to `8.02e-7`. Limiting
+begins within one lattice cell of the sphere, but by `tU/D=5` only `1.11%` of
+limiter L1 remains within `0.25D` and `88.58%` lies beyond `1D`. The remaining
+defect is therefore not boundary-localized; measured-bird promotion now
+requires a bulk collision-operator A/B followed by the unchanged geometric
+ladder.

@@ -1087,6 +1087,70 @@ func productionMetalGeometricLimiterLadderBlocksNonConvergedPromotion()
 }
 
 @Test
+func productionMetalRadialLimiterLocalizationConfirmsBulkSpread()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRadialLimiterLocalization()
+
+    #expect(
+        report.classification
+            == "stationary-wall-c16-limiter-spreads-beyond-one-diameter"
+    )
+    #expect(report.diameterCells == 16)
+    #expect(report.domainCells == SIMD3<Int>(160, 96, 96))
+    #expect(report.requestedSteps == 1_000)
+    #expect(report.firstLimiterActivationStep == 15)
+    #expect(report.captureSteps == [15, 100, 250, 500, 750, 1_000])
+    #expect(report.snapshots.count == 6)
+    #expect(report.snapshots.allSatisfy {
+        $0.bins.count == 8
+            && $0.controlVolumeActivatedCellCount
+                == $0.radialActivatedCellCount
+    })
+    #expect(report.populationPositivityPassed)
+    #expect(report.controlVolumeIsolationPassed)
+    #expect(report.radialClosurePassed)
+    #expect(
+        report.maximumObservedRadialClosureResidual
+            == 8.020_495_835_516_945e-7
+    )
+    #expect(
+        report.snapshots.map(\.nearSurfaceLimiterL1Fraction) == [
+            1.0,
+            0.978_399_312_519_672_6,
+            0.615_454_825_060_189_7,
+            0.088_729_193_613_708_62,
+            0.014_959_690_373_206_012,
+            0.011_087_400_338_434_607,
+        ]
+    )
+    #expect(
+        report.snapshots.map(\.farFieldLimiterL1Fraction) == [
+            0.0,
+            0.0,
+            0.0,
+            0.615_804_579_684_624_1,
+            0.846_335_207_430_926_7,
+            0.885_807_187_892_694_4,
+        ]
+    )
+    #expect(
+        report.snapshots.last!.bins.map(\.activatedCellCount) == [
+            525, 639, 1_615, 5_144, 20_518, 105_636, 102_338, 6_289,
+        ]
+    )
+    #expect(
+        report.snapshots.last!.bins.map(\.boundaryLinkCount) == [
+            4_416, 288, 0, 0, 0, 0, 0, 0,
+        ]
+    )
+    #expect(!report.boundaryLocalized)
+    #expect(report.passed)
+}
+
+@Test
 func productionMetalFixedSpherePassesCanonicalGates() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalSphereValidator.run()

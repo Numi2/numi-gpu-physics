@@ -636,6 +636,88 @@ public struct MetalStationaryWallGeometricLimiterLadderReport:
     public let passed: Bool
 }
 
+public struct MetalStationaryWallRadialLimiterBin: Codable, Sendable {
+    public let binIndex: Int
+    public let minimumSurfaceDistanceDiameters: Double
+    public let maximumSurfaceDistanceDiameters: Double?
+    public let minimumSurfaceDistanceCells: Double
+    public let maximumSurfaceDistanceCells: Double?
+    public let fluidCellCount: Int
+    public let activatedCellCount: Int
+    public let activationFraction: Double
+    public let fractionOfSnapshotActivatedCells: Double
+    public let boundaryLinkCount: Int
+    public let activatedBoundaryLinkCount: Int
+    public let limiterL1Correction: Double
+    public let limiterL2Correction: Double
+    public let collisionL1Increment: Double
+    public let collisionL2Increment: Double
+    public let relativeLimiterL1Correction: Double
+    public let relativeLimiterL2Correction: Double
+    public let fractionOfSnapshotLimiterL1Correction: Double
+}
+
+public struct MetalStationaryWallRadialLimiterSnapshot:
+    Codable, Sendable
+{
+    public let step: Int
+    public let convectiveTime: Double
+    public let minimumPopulation: Double
+    public let dragCoefficient: Double
+    public let controlVolumeActivatedCellCount: Int
+    public let radialActivatedCellCount: Int
+    public let nearSurfaceLimiterL1Fraction: Double
+    public let farFieldLimiterL1Fraction: Double
+    public let nearSurfaceActivationFraction: Double
+    public let farFieldActivationFraction: Double
+    public let relativeLimiterL1ClosureResidual: Double
+    public let relativeLimiterL2SquaredClosureResidual: Double
+    public let relativeCollisionL1ClosureResidual: Double
+    public let relativeCollisionL2SquaredClosureResidual: Double
+    public let bins: [MetalStationaryWallRadialLimiterBin]
+}
+
+public struct MetalStationaryWallRadialLimiterReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let ledgerCaptureKernel: String
+    public let radialReductionKernel: String
+    public let classification: String
+    public let reynoldsNumber: Double
+    public let latticeFarFieldSpeed: Double
+    public let latticeMachNumber: Double
+    public let diameterCells: Int
+    public let domainCells: SIMD3<Int>
+    public let sphereCenterCells: SIMD3<Double>
+    public let sphereRadiusCells: Double
+    public let spongeWidthCells: Int
+    public let controlMinimumCells: SIMD3<Int>
+    public let controlMaximumExclusiveCells: SIMD3<Int>
+    public let requestedSteps: Int
+    public let firstLimiterActivationStep: Int?
+    public let captureSteps: [Int]
+    public let radialUpperEdgesDiameters: [Double]
+    public let nearSurfaceMaximumDistanceDiameters: Double
+    public let farFieldMinimumDistanceDiameters: Double
+    public let minimumBoundaryLocalizedLimiterL1Fraction: Double
+    public let maximumBoundaryLocalizedFarFieldLimiterL1Fraction: Double
+    public let maximumAllowedRadialClosureResidual: Double
+    public let maximumObservedRadialClosureResidual: Double
+    public let finalNearSurfaceLimiterL1Fraction: Double
+    public let finalFarFieldLimiterL1Fraction: Double
+    public let finalNearSurfaceActivationFraction: Double
+    public let finalFarFieldActivationFraction: Double
+    public let populationPositivityPassed: Bool
+    public let controlVolumeIsolationPassed: Bool
+    public let radialClosurePassed: Bool
+    public let boundaryLocalized: Bool
+    public let snapshots: [MetalStationaryWallRadialLimiterSnapshot]
+    public let scientificVerdict: String
+    public let runtimeSeconds: Double
+    public let passed: Bool
+}
+
 public struct MetalStationaryWallBoundaryInterpolationComponent:
     Codable, Sendable
 {
@@ -1787,6 +1869,312 @@ public enum MetalTranslatingBodyTopologyValidator {
             scientificVerdict: verdict,
             runtimeSeconds: Date().timeIntervalSince(startTime),
             passed: passed
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func runStationaryWallRadialLimiterLocalization()
+        throws -> MetalStationaryWallRadialLimiterReport
+    {
+#if canImport(Metal)
+        let startTime = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let diameter = 16
+        let radius = Float(diameter) * 0.5
+        let reynoldsNumber = 9_367.4
+        let referenceSpeed = 0.08
+        let domain = try GridSize(x: 160, y: 96, z: 96)
+        let center = SIMD3<Float>(48, 48, 48)
+        let spongeWidth = 8
+        let controlMinimum = SIMD3<UInt32>(8, 8, 8)
+        let controlMaximum = SIMD3<UInt32>(152, 88, 88)
+        let requestedSteps = 1_000
+        let captureSteps = [15, 100, 250, 500, 750, 1_000]
+        let captureStepSet = Set(captureSteps)
+        let radialEdges = [
+            0.0625, 0.125, 0.25, 0.5, 1.0, 2.0, 3.0,
+        ]
+        let nearSurfaceMaximum = 0.25
+        let farFieldMinimum = 1.0
+        let minimumNearSurfaceFraction = 0.80
+        let maximumFarFieldFraction = 0.05
+        let maximumClosureResidual = 1.0e-4
+        let viscosity = Float(
+            referenceSpeed * Double(diameter) / reynoldsNumber
+        )
+        let configuration = MetalTranslatingBodyCaseConfiguration(
+            grid: domain,
+            sphereRadiusCells: radius,
+            referenceSpeedLattice: Float(referenceSpeed),
+            geometryTranslationSpeedLattice: 0,
+            wallVelocityLattice: 0,
+            wallVelocityMode: HighReSphereWallMode.uniform.rawValue,
+            initialFluidVelocityLattice: Float(referenceSpeed),
+            periodicBoundaries: false,
+            spongeStrength: 0.04,
+            latticeKinematicViscosity: viscosity,
+            initialCenter: center,
+            controlMinimum: controlMinimum,
+            controlMaximumExclusive: controlMaximum,
+            characteristicLengthCells: diameter,
+            spongeWidthCells: spongeWidth
+        )
+        let simulation = try MetalTranslatingBodyTopologySimulation(
+            backend: backend,
+            linkForceMode: 6,
+            caseConfiguration: configuration,
+            symmetricPositivityLimiterEnabled: true,
+            conservationLedgerEnabled: true
+        )
+        let history = try simulation.run(
+            steps: requestedSteps,
+            capturePopulationMinimum: true,
+            stopOneStepAfterFirstNonFinitePopulation: true,
+            captureConservationLedger: true,
+            radialCaptureSteps: captureStepSet
+        )
+        let forceDenominator = 0.5 * referenceSpeed * referenceSpeed
+            * Double.pi * pow(Double(radius), 2)
+        var snapshots: [MetalStationaryWallRadialLimiterSnapshot] = []
+        snapshots.reserveCapacity(captureSteps.count)
+        var maximumObservedClosure = 0.0
+        var activationCountsClose = true
+
+        for captureStep in captureSteps where captureStep <= history.count {
+            let step = history[captureStep - 1]
+            guard let raw = step.conservationLedger,
+                  let rawBins = step.radialLimiterBins,
+                  let populationMinimum = step.populationMinimum else {
+                continue
+            }
+            let totalLimiterL1 = rawBins.reduce(0.0) { $0 + $1.norms.x }
+            let totalLimiterL2Squared = rawBins.reduce(0.0) {
+                $0 + $1.norms.y
+            }
+            let totalCollisionL1 = rawBins.reduce(0.0) { $0 + $1.norms.z }
+            let totalCollisionL2Squared = rawBins.reduce(0.0) {
+                $0 + $1.norms.w
+            }
+            let radialActivatedCount = rawBins.reduce(0) {
+                $0 + $1.activatedCellCount
+            }
+            activationCountsClose = activationCountsClose
+                && radialActivatedCount
+                    == raw.controlVolumeActivatedCellCount
+            func relativeResidual(_ actual: Double, _ expected: Double)
+                -> Double
+            {
+                abs(actual - expected) / max(abs(expected), 1.0e-30)
+            }
+            let limiterL1Closure = relativeResidual(
+                totalLimiterL1,
+                raw.limiterControlNorms.x
+            )
+            let limiterL2Closure = relativeResidual(
+                totalLimiterL2Squared,
+                raw.limiterControlNorms.y
+            )
+            let collisionL1Closure = relativeResidual(
+                totalCollisionL1,
+                raw.limiterControlNorms.z
+            )
+            let collisionL2Closure = relativeResidual(
+                totalCollisionL2Squared,
+                raw.limiterControlNorms.w
+            )
+            maximumObservedClosure = max(
+                maximumObservedClosure,
+                limiterL1Closure,
+                limiterL2Closure,
+                collisionL1Closure,
+                collisionL2Closure
+            )
+            let bins = rawBins.enumerated().map { index, bin in
+                let minimumDistance = index == 0
+                    ? 0
+                    : radialEdges[index - 1]
+                let maximumDistance = index < radialEdges.count
+                    ? radialEdges[index]
+                    : nil
+                return MetalStationaryWallRadialLimiterBin(
+                    binIndex: index,
+                    minimumSurfaceDistanceDiameters: minimumDistance,
+                    maximumSurfaceDistanceDiameters: maximumDistance,
+                    minimumSurfaceDistanceCells:
+                        minimumDistance * Double(diameter),
+                    maximumSurfaceDistanceCells:
+                        maximumDistance.map { $0 * Double(diameter) },
+                    fluidCellCount: bin.fluidCellCount,
+                    activatedCellCount: bin.activatedCellCount,
+                    activationFraction: Double(bin.activatedCellCount)
+                        / max(Double(bin.fluidCellCount), 1),
+                    fractionOfSnapshotActivatedCells:
+                        Double(bin.activatedCellCount)
+                        / max(Double(radialActivatedCount), 1),
+                    boundaryLinkCount: bin.boundaryLinkCount,
+                    activatedBoundaryLinkCount:
+                        bin.activatedBoundaryLinkCount,
+                    limiterL1Correction: bin.norms.x,
+                    limiterL2Correction: sqrt(max(bin.norms.y, 0)),
+                    collisionL1Increment: bin.norms.z,
+                    collisionL2Increment: sqrt(max(bin.norms.w, 0)),
+                    relativeLimiterL1Correction:
+                        bin.norms.x / max(bin.norms.z, 1.0e-30),
+                    relativeLimiterL2Correction:
+                        sqrt(max(bin.norms.y, 0))
+                        / max(sqrt(max(bin.norms.w, 0)), 1.0e-30),
+                    fractionOfSnapshotLimiterL1Correction:
+                        bin.norms.x / max(totalLimiterL1, 1.0e-30)
+                )
+            }
+            let nearBins = bins.filter {
+                ($0.maximumSurfaceDistanceDiameters ?? .infinity)
+                    <= nearSurfaceMaximum
+            }
+            let farBins = bins.filter {
+                $0.minimumSurfaceDistanceDiameters >= farFieldMinimum
+            }
+            snapshots.append(MetalStationaryWallRadialLimiterSnapshot(
+                step: captureStep,
+                convectiveTime: Double(captureStep) * referenceSpeed
+                    / Double(diameter),
+                minimumPopulation: Double(populationMinimum.rawValue),
+                dragCoefficient:
+                    Double(step.measuredForce.x) / forceDenominator,
+                controlVolumeActivatedCellCount:
+                    raw.controlVolumeActivatedCellCount,
+                radialActivatedCellCount: radialActivatedCount,
+                nearSurfaceLimiterL1Fraction: nearBins.reduce(0) {
+                    $0 + $1.fractionOfSnapshotLimiterL1Correction
+                },
+                farFieldLimiterL1Fraction: farBins.reduce(0) {
+                    $0 + $1.fractionOfSnapshotLimiterL1Correction
+                },
+                nearSurfaceActivationFraction: nearBins.reduce(0) {
+                    $0 + $1.fractionOfSnapshotActivatedCells
+                },
+                farFieldActivationFraction: farBins.reduce(0) {
+                    $0 + $1.fractionOfSnapshotActivatedCells
+                },
+                relativeLimiterL1ClosureResidual: limiterL1Closure,
+                relativeLimiterL2SquaredClosureResidual: limiterL2Closure,
+                relativeCollisionL1ClosureResidual: collisionL1Closure,
+                relativeCollisionL2SquaredClosureResidual:
+                    collisionL2Closure,
+                bins: bins
+            ))
+        }
+
+        let firstActivationStep = history.firstIndex {
+            $0.symmetricLimiterActivationCount > 0
+        }.map { $0 + 1 }
+        let populationPositivityPassed = history.count == requestedSteps
+            && history.allSatisfy {
+                guard let minimum = $0.populationMinimum else { return false }
+                return !minimum.nonFinite
+                    && minimum.rawValue.isFinite
+                    && minimum.rawValue > 0
+                    && $0.measuredForce.x.isFinite
+                    && $0.measuredForce.y.isFinite
+                    && $0.measuredForce.z.isFinite
+            }
+        let controlVolumeIsolationPassed = history.allSatisfy {
+            $0.solidControlSurfaceCrossingLinkCount == 0
+        } && snapshots.allSatisfy { snapshot in
+            let raw = history[snapshot.step - 1].conservationLedger
+            return raw?.controlVolumeSpongeCellCount == 0
+        }
+        let radialClosurePassed = activationCountsClose
+            && maximumObservedClosure <= maximumClosureResidual
+        let diagnosticPassed = snapshots.count == captureSteps.count
+            && firstActivationStep == captureSteps.first
+            && populationPositivityPassed
+            && controlVolumeIsolationPassed
+            && radialClosurePassed
+        let finalSnapshot = snapshots.last
+        let finalNearFraction = finalSnapshot?
+            .nearSurfaceLimiterL1Fraction ?? 0
+        let finalFarFraction = finalSnapshot?
+            .farFieldLimiterL1Fraction ?? 1
+        let finalNearActivation = finalSnapshot?
+            .nearSurfaceActivationFraction ?? 0
+        let finalFarActivation = finalSnapshot?
+            .farFieldActivationFraction ?? 1
+        let boundaryLocalized = diagnosticPassed
+            && finalNearFraction >= minimumNearSurfaceFraction
+            && finalFarFraction <= maximumFarFieldFraction
+        let classification: String
+        if !diagnosticPassed {
+            classification = "stationary-wall-c16-radial-localization-invalid"
+        }
+        else if boundaryLocalized {
+            classification =
+                "stationary-wall-c16-limiter-curved-boundary-localized"
+        }
+        else if finalFarFraction > maximumFarFieldFraction {
+            classification =
+                "stationary-wall-c16-limiter-spreads-beyond-one-diameter"
+        }
+        else {
+            classification =
+                "stationary-wall-c16-limiter-not-near-surface-localized"
+        }
+        let verdict = boundaryLocalized
+            ? "At the final snapshot at least 80% of limiter L1 correction remains within 0.25D of the sphere and no more than 5% lies beyond 1D. Prioritize a curved-boundary-specific correction before changing the bulk collision operator."
+            : "The final limiter correction does not satisfy the predeclared curved-boundary localization contract. Use its radial spread to choose a collision-operator A/B before any flapping or measured-bird replay."
+        return MetalStationaryWallRadialLimiterReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            productionKernel: "stepFluidTRT",
+            ledgerCaptureKernel: "captureSymmetricLimiterLedger",
+            radialReductionKernel: "reduceSymmetricLimiterRadialBins",
+            classification: classification,
+            reynoldsNumber: reynoldsNumber,
+            latticeFarFieldSpeed: referenceSpeed,
+            latticeMachNumber: referenceSpeed / sqrt(1.0 / 3.0),
+            diameterCells: diameter,
+            domainCells: SIMD3<Int>(domain.x, domain.y, domain.z),
+            sphereCenterCells: SIMD3<Double>(
+                Double(center.x), Double(center.y), Double(center.z)
+            ),
+            sphereRadiusCells: Double(radius),
+            spongeWidthCells: spongeWidth,
+            controlMinimumCells: SIMD3<Int>(
+                Int(controlMinimum.x),
+                Int(controlMinimum.y),
+                Int(controlMinimum.z)
+            ),
+            controlMaximumExclusiveCells: SIMD3<Int>(
+                Int(controlMaximum.x),
+                Int(controlMaximum.y),
+                Int(controlMaximum.z)
+            ),
+            requestedSteps: requestedSteps,
+            firstLimiterActivationStep: firstActivationStep,
+            captureSteps: captureSteps,
+            radialUpperEdgesDiameters: radialEdges,
+            nearSurfaceMaximumDistanceDiameters: nearSurfaceMaximum,
+            farFieldMinimumDistanceDiameters: farFieldMinimum,
+            minimumBoundaryLocalizedLimiterL1Fraction:
+                minimumNearSurfaceFraction,
+            maximumBoundaryLocalizedFarFieldLimiterL1Fraction:
+                maximumFarFieldFraction,
+            maximumAllowedRadialClosureResidual: maximumClosureResidual,
+            maximumObservedRadialClosureResidual: maximumObservedClosure,
+            finalNearSurfaceLimiterL1Fraction: finalNearFraction,
+            finalFarFieldLimiterL1Fraction: finalFarFraction,
+            finalNearSurfaceActivationFraction: finalNearActivation,
+            finalFarFieldActivationFraction: finalFarActivation,
+            populationPositivityPassed: populationPositivityPassed,
+            controlVolumeIsolationPassed: controlVolumeIsolationPassed,
+            radialClosurePassed: radialClosurePassed,
+            boundaryLocalized: boundaryLocalized,
+            snapshots: snapshots,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(startTime),
+            passed: diagnosticPassed
         )
 #else
         throw BirdFlowError.metalUnavailable
@@ -3535,6 +3923,19 @@ private struct GPUSymmetricLimiterLedger {
     var activatedCounts: SIMD4<UInt32>
 }
 
+private struct GPUSymmetricLimiterRadialBin {
+    var norms: SIMD4<Float>
+    var counts: SIMD4<UInt32>
+}
+
+private struct MetalSymmetricLimiterRadialBinRaw {
+    let norms: SIMD4<Double>
+    let fluidCellCount: Int
+    let activatedCellCount: Int
+    let boundaryLinkCount: Int
+    let activatedBoundaryLinkCount: Int
+}
+
 private struct MetalSymmetricLimiterLedgerRaw {
     var observedGlobal = SIMD4<Double>.zero
     var boundaryGlobal = SIMD4<Double>.zero
@@ -3610,6 +4011,7 @@ private struct MetalTranslatingBodyTopologyStep {
     let symmetricLimiterActivationCount: Int
     let symmetricLimiterMinimumScale: Float?
     let conservationLedger: MetalSymmetricLimiterLedgerRaw?
+    let radialLimiterBins: [MetalSymmetricLimiterRadialBinRaw]?
 }
 
 private final class MetalTranslatingBodyTopologySimulation {
@@ -3619,6 +4021,7 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let linkForceMode: UInt32
     private let symmetricPositivityLimiterEnabled: Bool
     private let conservationLedgerEnabled: Bool
+    private let characteristicLengthCells: Int
     private let parameters: MTLBuffer
     private let bodyState: MTLBuffer
     private let populationsA: MTLBuffer
@@ -3639,6 +4042,7 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let trtCollisionSummary: MTLBuffer
     private let conservationLedgerCells: MTLBuffer?
     private let conservationLedgerPartials: MTLBuffer?
+    private let radialLimiterBins: MTLBuffer?
     private let initializePipeline: MTLComputePipelineState
     private let geometryPipeline: MTLComputePipelineState
     private let fluidPipeline: MTLComputePipelineState
@@ -3650,6 +4054,7 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let trtCollisionDecompositionPipeline: MTLComputePipelineState
     private let conservationLedgerCapturePipeline: MTLComputePipelineState
     private let conservationLedgerReductionPipeline: MTLComputePipelineState
+    private let radialLimiterReductionPipeline: MTLComputePipelineState
     private let partialCount: Int
     private let populationPartialCount: Int
     private let bounds: GPUTranslatingTopologyBounds
@@ -3671,6 +4076,8 @@ private final class MetalTranslatingBodyTopologySimulation {
         self.symmetricPositivityLimiterEnabled =
             symmetricPositivityLimiterEnabled
         self.conservationLedgerEnabled = conservationLedgerEnabled
+        characteristicLengthCells =
+            caseConfiguration.characteristicLengthCells
         periodicBoundaries = caseConfiguration.periodicBoundaries
         let grid = caseConfiguration.grid
         let referenceSpeed = caseConfiguration.referenceSpeedLattice
@@ -3765,6 +4172,9 @@ private final class MetalTranslatingBodyTopologySimulation {
         conservationLedgerReductionPipeline = try backend.pipeline(
             named: "reduceSymmetricLimiterLedger"
         )
+        radialLimiterReductionPipeline = try backend.pipeline(
+            named: "reduceSymmetricLimiterRadialBins"
+        )
 
         let cells = grid.cellCount
         let populationBytes = D3Q19.count * cells
@@ -3791,6 +4201,8 @@ private final class MetalTranslatingBodyTopologySimulation {
             * MemoryLayout<GPUSymmetricLimiterLedger>.stride
         let conservationLedgerPartialBytes = partialCount
             * MemoryLayout<GPUSymmetricLimiterLedger>.stride
+        let radialLimiterBinBytes = partialCount * 8
+            * MemoryLayout<GPUSymmetricLimiterRadialBin>.stride
         var allocationLengths = [
             MemoryLayout<GPUTranslatingTopologyParameters>.stride,
             MemoryLayout<GPUBirdBodyState>.stride,
@@ -3805,6 +4217,7 @@ private final class MetalTranslatingBodyTopologySimulation {
         if conservationLedgerEnabled {
             allocationLengths.append(conservationLedgerCellBytes)
             allocationLengths.append(conservationLedgerPartialBytes)
+            allocationLengths.append(radialLimiterBinBytes)
         }
         try backend.validateAllocationPlan(bufferLengths: allocationLengths)
         populationsA = try backend.makePrivateBuffer(length: populationBytes)
@@ -3836,10 +4249,14 @@ private final class MetalTranslatingBodyTopologySimulation {
             conservationLedgerPartials = try backend.makeSharedBuffer(
                 length: conservationLedgerPartialBytes
             )
+            radialLimiterBins = try backend.makeSharedBuffer(
+                length: radialLimiterBinBytes
+            )
         }
         else {
             conservationLedgerCells = nil
             conservationLedgerPartials = nil
+            radialLimiterBins = nil
         }
         currentPopulations = populationsA
         nextPopulations = populationsB
@@ -3926,11 +4343,17 @@ private final class MetalTranslatingBodyTopologySimulation {
         stopOneStepAfterFirstNonFinitePopulation: Bool = false,
         collisionDecompositionStep: Int? = nil,
         collisionTargetCell: SIMD3<UInt32>? = nil,
-        captureConservationLedger: Bool = false
+        captureConservationLedger: Bool = false,
+        radialCaptureSteps: Set<Int> = []
     ) throws -> [MetalTranslatingBodyTopologyStep] {
         if captureConservationLedger && !conservationLedgerEnabled {
             throw MetalTranslatingBodyTopologyValidationError.failed(
                 "conservation ledger capture was not enabled at allocation"
+            )
+        }
+        if !radialCaptureSteps.isEmpty && !captureConservationLedger {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "radial limiter capture requires the conservation ledger"
             )
         }
         var history: [MetalTranslatingBodyTopologyStep] = []
@@ -3963,6 +4386,12 @@ private final class MetalTranslatingBodyTopologySimulation {
                 try encodeConservationLedgerReduction(
                     commandBuffer: commandBuffer
                 )
+                if radialCaptureSteps.contains(step) {
+                    try encodeRadialLimiterReduction(
+                        commandBuffer: commandBuffer,
+                        uniforms: &uniforms
+                    )
+                }
             }
             let captureCollision = collisionDecompositionStep == step
                 && collisionTargetCell != nil
@@ -4014,6 +4443,9 @@ private final class MetalTranslatingBodyTopologySimulation {
             let conservationLedger = captureConservationLedger
                 ? try readConservationLedger()
                 : nil
+            let radialBins = radialCaptureSteps.contains(step)
+                ? try readRadialLimiterBins()
+                : nil
             history.append(MetalTranslatingBodyTopologyStep(
                 measuredForce: vector(rawLoad.force),
                 rawBudgetForce: rawBudget,
@@ -4032,7 +4464,8 @@ private final class MetalTranslatingBodyTopologySimulation {
                 symmetricLimiterMinimumScale: rawLoad.force.w > 0
                     ? 1 - rawLoad.torque.w
                     : nil,
-                conservationLedger: conservationLedger
+                conservationLedger: conservationLedger,
+                radialLimiterBins: radialBins
             ))
             swap(&currentPopulations, &nextPopulations)
             swap(&currentSolid, &nextSolid)
@@ -4124,6 +4557,81 @@ private final class MetalTranslatingBodyTopologySimulation {
             total.add(pointer[index])
         }
         return total
+    }
+
+    private func encodeRadialLimiterReduction(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let conservationLedgerCells,
+              let radialLimiterBins,
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode radial limiter localization."
+            )
+        }
+        var ledgerBounds = bounds
+        var diameterCells = Float(characteristicLengthCells)
+        encoder.setBuffer(conservationLedgerCells, offset: 0, index: 0)
+        encoder.setBuffer(nextSolid, offset: 0, index: 1)
+        encoder.setBuffer(radialLimiterBins, offset: 0, index: 2)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        encoder.setBytes(
+            &ledgerBounds,
+            length: MemoryLayout<GPUTranslatingTopologyBounds>.stride,
+            index: 4
+        )
+        encoder.setBuffer(parameters, offset: 0, index: 5)
+        encoder.setBytes(
+            &diameterCells,
+            length: MemoryLayout<Float>.stride,
+            index: 6
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: radialLimiterReductionPipeline,
+            count: partialCount * 8
+        )
+        encoder.endEncoding()
+    }
+
+    private func readRadialLimiterBins() throws
+        -> [MetalSymmetricLimiterRadialBinRaw]
+    {
+        guard let radialLimiterBins else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "radial limiter bin buffer is unavailable"
+            )
+        }
+        let pointer = radialLimiterBins.contents()
+            .assumingMemoryBound(to: GPUSymmetricLimiterRadialBin.self)
+        var norms = Array(repeating: SIMD4<Double>.zero, count: 8)
+        var counts = Array(repeating: SIMD4<UInt64>.zero, count: 8)
+        for partial in 0..<partialCount {
+            for bin in 0..<8 {
+                let value = pointer[partial * 8 + bin]
+                norms[bin] += doubleVector(value.norms)
+                counts[bin] &+= SIMD4<UInt64>(
+                    UInt64(value.counts.x),
+                    UInt64(value.counts.y),
+                    UInt64(value.counts.z),
+                    UInt64(value.counts.w)
+                )
+            }
+        }
+        return (0..<8).map { index in
+            return MetalSymmetricLimiterRadialBinRaw(
+                norms: norms[index],
+                fluidCellCount: Int(counts[index].x),
+                activatedCellCount: Int(counts[index].y),
+                boundaryLinkCount: Int(counts[index].z),
+                activatedBoundaryLinkCount: Int(counts[index].w)
+            )
+        }
     }
 
     private func encodeTRTCollisionDecomposition(
@@ -4505,6 +5013,15 @@ private final class MetalTranslatingBodyTopologySimulation {
 
     private func vector(_ value: SIMD4<Float>) -> SIMD3<Float> {
         SIMD3<Float>(value.x, value.y, value.z)
+    }
+
+    private func doubleVector(_ value: SIMD4<Float>) -> SIMD4<Double> {
+        SIMD4<Double>(
+            Double(value.x),
+            Double(value.y),
+            Double(value.z),
+            Double(value.w)
+        )
     }
 
     private func check(_ commandBuffer: MTLCommandBuffer) throws {

@@ -8,11 +8,11 @@
   "sourceLocks": {
     "physicalConditionAudit": {
       "path": "ValidationArtifacts/measured-wing-physical-condition-audit.json",
-      "sha256": "31a470e1a4c2d0dd3b03d706bcac80e9f6973666f34c2c797a5dbb75a37671d0"
+      "sha256": "b1e1d0ab242967a4a9a410cc5575cf25e482ef8c9a21161059eb7e4273854393"
     },
     "stationaryWallSphereArtifact": {
       "path": "ValidationArtifacts/measured-wing-high-re-stationary-wall-sphere-stability.json",
-      "sha256": "f87681571f0a6bd3ff6352ba70d7d358e0d9a99bbc299daa4261fb928d897246"
+      "sha256": "1226b9ba0586509f330a1faf2fc21878cef520c0b0662ec4fb73ca5bf0a76162"
     },
     "publishedConditionDOI": "10.1155/2022/5433184"
   },

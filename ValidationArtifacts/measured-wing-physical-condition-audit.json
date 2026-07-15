@@ -238,6 +238,25 @@
     "stationaryWallGeometricLimiterRelativeFinestTwoDragChange": 0.1481241682213902,
     "stationaryWallGeometricLimiterObservedDragConvergenceOrder": null,
     "stationaryWallGeometricLimiterControlVolumeFailureConfirmed": true,
+    "stationaryWallC16RadialLimiterLocalizationCompleted": true,
+    "stationaryWallC16RadialLimiterLocalizationArtifact": "ValidationArtifacts/measured-wing-stationary-wall-c16-radial-limiter-localization.json",
+    "stationaryWallC16RadialLimiterLocalizationArtifactSHA256": "5d65599c6e9ec3e8ae15bf6380c0909c0e9bce6ba01ea623e41b4668d71928b8",
+    "stationaryWallC16RadialLimiterLocalizationFigurePNG": "ValidationArtifacts/Figures/stationary-wall-radial-limiter-localization.png",
+    "stationaryWallC16RadialLimiterLocalizationFigurePNGSHA256": "0320c69d4532b3cbc0bf8e0be74c893f5521a2a257f10535b47829a37b5edb21",
+    "stationaryWallC16RadialLimiterLocalizationFigureSVG": "ValidationArtifacts/Figures/stationary-wall-radial-limiter-localization.svg",
+    "stationaryWallC16RadialLimiterLocalizationFigureSVGSHA256": "3b3f2866cb430bcd60913aec101706ff72a24d844d8e6979adeeb6065c426949",
+    "stationaryWallC16RadialLimiterLocalizationRepeatMatched": true,
+    "stationaryWallC16RadialLimiterLocalizationPassed": true,
+    "stationaryWallC16RadialLimiterLocalizationClassification": "stationary-wall-c16-limiter-spreads-beyond-one-diameter",
+    "stationaryWallC16RadialLimiterFirstActivationStep": 15,
+    "stationaryWallC16RadialLimiterCaptureSteps": [15, 100, 250, 500, 750, 1000],
+    "stationaryWallC16RadialLimiterMaximumClosureResidual": 8.020495835516945e-7,
+    "stationaryWallC16RadialLimiterFinalNearSurfaceL1Fraction": 0.011087400338434607,
+    "stationaryWallC16RadialLimiterFinalFarFieldL1Fraction": 0.8858071878926944,
+    "stationaryWallC16RadialLimiterFinalNearSurfaceActivationFraction": 0.011450161513613291,
+    "stationaryWallC16RadialLimiterFinalFarFieldActivationFraction": 0.8828161052145824,
+    "stationaryWallC16RadialLimiterBoundaryLocalized": false,
+    "stationaryWallC16RadialLimiterBulkCollisionPathConfirmed": true,
     "authoritativeHierarchy": [
       "Use the literal Re=9367.4 to reproduce the published numerical target.",
       "Use equation 8's Uref=7.1758 m/s and equation 9's denominator for force coefficients.",
@@ -245,7 +264,7 @@
       "Retain Re=9315.65 as an arithmetic-closure sensitivity point.",
       "Do not use Table 3's 7.58 m/s for normalization."
     ],
-    "nextGate": "Do not enable the symmetric limiter in flapping or measured-bird replay. First localize limiter activation and correction by distance from the sphere inside the sponge-excluded control volume, then run a controlled collision-operator A/B through the same D=8/12/16 geometric ladder. Promotion requires non-increasing intervention, control-volume activation and L1/L2 correction below the locked gates, and converged drag without relaxing any threshold."
+    "nextGate": "Do not enable the symmetric limiter in flapping or measured-bird replay. The D=16 radial diagnostic proves that correction propagates into the bulk flow: at tU/D=5, 88.58% of limiter L1 lies beyond 1D and only 1.11% remains within 0.25D. Run a controlled positivity-preserving or regularized bulk collision-operator A/B on D=16, then promote only a successful candidate to the unchanged D=8/12/16 geometric ladder. Promotion still requires non-increasing intervention, control-volume activation and L1/L2 correction below the locked gates, and converged drag without relaxing any threshold."
   },
-  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state; the published CFD convention remains an explicit sensitivity input. The c8, c12, and c16 measured-wing feasibility runs remain non-finite and are not quantitative bird results. A host-plumbing audit found that the stationary-sphere validation had incorrectly copied referenceSpeedLattice into the GPU wall velocity instead of the requested wallVelocityLattice. After correction, the true zero-wall, 0.08-flow sphere fails at step 105 for all three published margins, with zero topology events. The 500-step relaxation response is monotonic: failure moves from step 105 to 454 as tauPlus margin rises, and stability begins between margins 0.00999999 and 0.01249999. At c16 the first negative occurs at step 27, q=10, cell (5,9,12), adjacent to the sphere but pulled from ordinary fluid. The symmetric TRT increment -0.03093607 creates the negative while the antisymmetric increment is stabilizing. A symmetric limiter keeps the corrected c16 case finite and positive through 500 steps. Its global ledger closes population change and attributes the old raw gates to open far-field replacement and sponge relaxation; the limiter contributes only 4.69e-7 of initial mass and boundary load closes to 3.03e-7 relative RMS. The source-aware c16 rerun is positive, source-closed, force-budget closed, and outside the sponge. The geometrically similar D=8/12/16 ladder then gives an admissible negative result: all grids retain those closures, but sponge-excluded limiter activation grows 3.53%, 6.65%, 8.07%, interior L2 correction remains 11.71%, 14.74%, 14.54%, and finest-two drag changes 14.81% against a 5% gate with no monotonic convergence. The limiter is therefore not promoted to flapping or measured-bird replay."
+  "scientificVerdict": "The original Maeda deposit does not report a measured Reynolds number or complete atmospheric state; the published CFD convention remains an explicit sensitivity input. The c8, c12, and c16 measured-wing feasibility runs remain non-finite and are not quantitative bird results. Corrected stationary-sphere diagnostics isolate the first positivity loss to symmetric TRT over-relaxation. A symmetric limiter keeps c16 positive and source/force-budget closed, but the geometrically similar D=8/12/16 ladder gives an admissible negative result: sponge-excluded activation grows 3.53%, 6.65%, 8.07%, interior L2 correction remains 11.71%, 14.74%, 14.54%, and finest-two drag changes 14.81% against a 5% gate with no monotonic convergence. The D=16 radial diagnostic closes to 8.02e-7 and shows why: limiting begins within one lattice cell of the sphere, then propagates through the physical flow. At tU/D=5 only 1.11% of limiter L1 remains within 0.25D while 88.58% lies beyond 1D. A boundary-only repair is therefore rejected; a bulk collision-operator A/B must pass the unchanged geometric ladder before any flapping or measured-bird promotion."
 }

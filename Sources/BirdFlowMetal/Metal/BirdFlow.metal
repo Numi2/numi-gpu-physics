@@ -202,6 +202,14 @@ struct GPUSymmetricLimiterLedger {
     uint4 activatedCounts;
 };
 
+/// Diagnostic-only spatial reduction. Norms use the same layout as
+/// GPUSymmetricLimiterLedger.limiterNorms. Counts are fluid cells, activated
+/// cells, boundary links, and activated boundary links respectively.
+struct GPUSymmetricLimiterRadialBin {
+    float4 norms;
+    uint4 counts;
+};
+
 struct GPUControlVolumeBounds {
     uint4 minimum;
     uint4 maximumExclusive;
@@ -2944,6 +2952,77 @@ kernel void reduceSymmetricLimiterLedger(
         total.activatedCounts += input[index].activatedCounts;
     }
     output[gid] = total;
+}
+
+/// Deterministically localizes an already captured limiter ledger into eight
+/// shells outside the stationary sphere. Each output covers the same 256-cell
+/// block as the global ledger reduction so the host can close shell sums
+/// without a different long floating-point accumulation. Seven edges are
+/// measured in sphere diameters: 1/16, 1/8, 1/4, 1/2, 1, 2, and 3. Only the
+/// sponge-excluded control volume contributes.
+kernel void reduceSymmetricLimiterRadialBins(
+    device const GPUSymmetricLimiterLedger* cells [[buffer(0)]],
+    device const uchar* solidCurrent [[buffer(1)]],
+    device GPUSymmetricLimiterRadialBin* bins [[buffer(2)]],
+    constant GPUUniforms& uniforms [[buffer(3)]],
+    constant GPUControlVolumeBounds& bounds [[buffer(4)]],
+    constant GPUTranslatingSphereParameters& parameters [[buffer(5)]],
+    constant float& diameterCells [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    constexpr uint binCount = 8u;
+    uint bin = gid % binCount;
+    uint block = gid / binCount;
+    uint start = block * 256u;
+    if (start >= uniforms.grid.w) {
+        return;
+    }
+    constexpr float edges[7] = {
+        0.0625f,
+        0.125f,
+        0.25f,
+        0.5f,
+        1.0f,
+        2.0f,
+        3.0f
+    };
+    float4 norms = float4(0);
+    uint4 counts = uint4(0);
+    float3 center = parameters.initialCenterAndRadius.xyz;
+    float radius = parameters.initialCenterAndRadius.w;
+    uint end = min(start + 256u, uniforms.grid.w);
+    for (uint cellIndex = start; cellIndex < end; ++cellIndex) {
+        if (solidCurrent[cellIndex] != 0) {
+            continue;
+        }
+        uint3 cell = unflatten(cellIndex, uniforms.grid.xyz);
+        if (!insideControlVolume(int3(cell), bounds)) {
+            continue;
+        }
+        float surfaceDistanceDiameters = max(
+            0.0f,
+            (length(float3(cell) + 0.5f - center) - radius)
+                / diameterCells
+        );
+        uint selectedBin = 0u;
+        while (selectedBin + 1u < binCount
+            && surfaceDistanceDiameters >= edges[selectedBin]) {
+            selectedBin += 1u;
+        }
+        if (selectedBin != bin) {
+            continue;
+        }
+        GPUSymmetricLimiterLedger ledger = cells[cellIndex];
+        norms += ledger.limiterNorms;
+        counts += uint4(
+            1u,
+            ledger.counts.x,
+            ledger.counts.y,
+            ledger.activatedCounts.x
+        );
+    }
+    bins[gid].norms = norms;
+    bins[gid].counts = counts;
 }
 
 /// Captures P(n) and the exact streaming flux before geometry reuses dormant

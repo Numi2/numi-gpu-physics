@@ -356,6 +356,7 @@ private struct TranslatingBodyArguments {
     var trtCollisionDecomposition = false
     var symmetricLimiterAB = false
     var geometricLimiterLadder = false
+    var radialLimiterLocalization = false
     var json = false
     var archivePath: String?
 
@@ -383,6 +384,8 @@ private struct TranslatingBodyArguments {
                 symmetricLimiterAB = true
             case "--geometric-limiter-ladder":
                 geometricLimiterLadder = true
+            case "--radial-limiter-localization":
+                radialLimiterLocalization = true
             case "--archive":
                 index += 1
                 guard index < values.count else {
@@ -454,13 +457,19 @@ private struct TranslatingBodyArguments {
                 "--geometric-limiter-ladder requires --stationary-wall"
             )
         }
+        if radialLimiterLocalization && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--radial-limiter-localization requires --stationary-wall"
+            )
+        }
         let stationaryDiagnostics = [
             relaxationSweep,
             longHorizonSurvival,
             populationPositivity,
             trtCollisionDecomposition,
             symmetricLimiterAB,
-            geometricLimiterLadder
+            geometricLimiterLadder,
+            radialLimiterLocalization
         ].filter { $0 }.count
         if stationaryDiagnostics > 1 {
             throw CLIError.invalidArgument(
@@ -471,7 +480,8 @@ private struct TranslatingBodyArguments {
             && !populationPositivity
             && !trtCollisionDecomposition
             && !symmetricLimiterAB
-            && !geometricLimiterLadder {
+            && !geometricLimiterLadder
+            && !radialLimiterLocalization {
             throw CLIError.invalidArgument(
                 "--archive requires an archive-capable stationary-wall diagnostic"
             )
@@ -497,6 +507,8 @@ private struct TranslatingBodyArguments {
                            Compare the locked c16 control and symmetric limiter
       --geometric-limiter-ladder
                            Run true D=8/12/16 source-aware sphere refinement
+      --radial-limiter-localization
+                           Localize D=16 limiter intervention by sphere distance
       --archive FILE       Write the selected diagnostic to an exact JSON file
       --json               Emit the machine-readable validation report
       --help               Show this help
@@ -1337,6 +1349,42 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
     let arguments = try TranslatingBodyArguments(values)
     if arguments.highReStability {
         if arguments.stationaryWall {
+            if arguments.radialLimiterLocalization {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRadialLimiterLocalization()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print(
+                        "first_activation_step: "
+                            + String(describing:
+                                report.firstLimiterActivationStep)
+                    )
+                    for snapshot in report.snapshots {
+                        print(
+                            "tU/D=\(snapshot.convectiveTime): "
+                                + "near_L1=\(snapshot.nearSurfaceLimiterL1Fraction) "
+                                + "far_L1=\(snapshot.farFieldLimiterL1Fraction) "
+                                + "near_active=\(snapshot.nearSurfaceActivationFraction) "
+                                + "far_active=\(snapshot.farFieldActivationFraction)"
+                        )
+                    }
+                    print("boundary_localized: \(report.boundaryLocalized)")
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "radial limiter localization did not close"
+                    )
+                }
+                return
+            }
             if arguments.geometricLimiterLadder {
                 let report = try MetalTranslatingBodyTopologyValidator
                     .runStationaryWallGeometricLimiterLadder()

@@ -289,6 +289,16 @@ def main() -> None:
         raise SystemExit("geometric limiter ladder must retain its failed verdict")
     if decision["stationaryWallGeometricLimiterPromoted"]:
         raise SystemExit("geometric limiter must remain excluded from bird replay")
+    for key in (
+        "stationaryWallC16RadialLimiterLocalizationCompleted",
+        "stationaryWallC16RadialLimiterLocalizationRepeatMatched",
+        "stationaryWallC16RadialLimiterLocalizationPassed",
+        "stationaryWallC16RadialLimiterBulkCollisionPathConfirmed",
+    ):
+        if not decision[key]:
+            raise SystemExit(f"radial limiter localization lost {key}")
+    if decision["stationaryWallC16RadialLimiterBoundaryLocalized"]:
+        raise SystemExit("radial limiter must remain classified as non-local")
     if not decision["stationaryWallGPUVelocityUsesConfiguredWallSpeed"]:
         raise SystemExit("GPU wall velocity must remain sourced from the configured wall speed")
     actual_audit_hash = hashlib.sha256(audit_bytes).hexdigest()
@@ -1323,6 +1333,101 @@ def main() -> None:
         if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
             raise SystemExit(f"{figure_path} has changed figure hash")
 
+    radial_path = Path(
+        decision["stationaryWallC16RadialLimiterLocalizationArtifact"]
+    )
+    radial_bytes = radial_path.read_bytes()
+    if hashlib.sha256(radial_bytes).hexdigest() != decision[
+        "stationaryWallC16RadialLimiterLocalizationArtifactSHA256"
+    ]:
+        raise SystemExit(f"{radial_path} has changed artifact hash")
+    radial = json.loads(radial_bytes)
+    if radial["schemaVersion"] != 1:
+        raise SystemExit(f"{radial_path} has changed schema")
+    if radial["classification"] != decision[
+        "stationaryWallC16RadialLimiterLocalizationClassification"
+    ]:
+        raise SystemExit(f"{radial_path} has changed classification")
+    if radial["productionKernel"] != "stepFluidTRT":
+        raise SystemExit(f"{radial_path} no longer uses production Metal")
+    if radial["radialReductionKernel"] != "reduceSymmetricLimiterRadialBins":
+        raise SystemExit(f"{radial_path} has changed radial reduction")
+    if radial["diameterCells"] != 16 or radial["domainCells"] != [160, 96, 96]:
+        raise SystemExit(f"{radial_path} has changed geometry")
+    if radial["requestedSteps"] != 1000:
+        raise SystemExit(f"{radial_path} has changed horizon")
+    if radial["firstLimiterActivationStep"] != decision[
+        "stationaryWallC16RadialLimiterFirstActivationStep"
+    ]:
+        raise SystemExit(f"{radial_path} has changed first activation")
+    if radial["captureSteps"] != decision[
+        "stationaryWallC16RadialLimiterCaptureSteps"
+    ]:
+        raise SystemExit(f"{radial_path} has changed capture steps")
+    if not all(
+        radial[key]
+        for key in (
+            "populationPositivityPassed",
+            "controlVolumeIsolationPassed",
+            "radialClosurePassed",
+            "passed",
+        )
+    ):
+        raise SystemExit(f"{radial_path} lost a diagnostic acceptance gate")
+    if radial["boundaryLocalized"]:
+        raise SystemExit(f"{radial_path} must retain bulk-flow spread")
+    close(
+        radial["maximumObservedRadialClosureResidual"],
+        decision["stationaryWallC16RadialLimiterMaximumClosureResidual"],
+        1.0e-14,
+        "radial maximum closure residual",
+    )
+    if radial["maximumObservedRadialClosureResidual"] > radial[
+        "maximumAllowedRadialClosureResidual"
+    ]:
+        raise SystemExit(f"{radial_path} no longer closes")
+    for key, decision_key in (
+        ("finalNearSurfaceLimiterL1Fraction", "stationaryWallC16RadialLimiterFinalNearSurfaceL1Fraction"),
+        ("finalFarFieldLimiterL1Fraction", "stationaryWallC16RadialLimiterFinalFarFieldL1Fraction"),
+        ("finalNearSurfaceActivationFraction", "stationaryWallC16RadialLimiterFinalNearSurfaceActivationFraction"),
+        ("finalFarFieldActivationFraction", "stationaryWallC16RadialLimiterFinalFarFieldActivationFraction"),
+    ):
+        close(radial[key], decision[decision_key], 1.0e-14, f"radial {key}")
+    radial_snapshots = radial["snapshots"]
+    if [snapshot["step"] for snapshot in radial_snapshots] != radial["captureSteps"]:
+        raise SystemExit(f"{radial_path} has non-contiguous captures")
+    for snapshot in radial_snapshots:
+        bins = snapshot["bins"]
+        if [bin_["binIndex"] for bin_ in bins] != list(range(8)):
+            raise SystemExit(f"{radial_path} has changed radial bins")
+        if snapshot["controlVolumeActivatedCellCount"] != snapshot[
+            "radialActivatedCellCount"
+        ]:
+            raise SystemExit(f"{radial_path} activation bins do not close")
+        close(
+            sum(bin_["fractionOfSnapshotLimiterL1Correction"] for bin_ in bins),
+            1.0,
+            1.0e-12,
+            "radial limiter L1 allocation",
+        )
+        close(
+            sum(bin_["fractionOfSnapshotActivatedCells"] for bin_ in bins),
+            1.0,
+            1.0e-12,
+            "radial activation allocation",
+        )
+    if [bin_["boundaryLinkCount"] for bin_ in radial_snapshots[-1]["bins"]] != [
+        4416, 288, 0, 0, 0, 0, 0, 0,
+    ]:
+        raise SystemExit(f"{radial_path} changed boundary-shell placement")
+    for path_key, hash_key in (
+        ("stationaryWallC16RadialLimiterLocalizationFigurePNG", "stationaryWallC16RadialLimiterLocalizationFigurePNGSHA256"),
+        ("stationaryWallC16RadialLimiterLocalizationFigureSVG", "stationaryWallC16RadialLimiterLocalizationFigureSVGSHA256"),
+    ):
+        figure_path = Path(decision[path_key])
+        if hashlib.sha256(figure_path.read_bytes()).hexdigest() != decision[hash_key]:
+            raise SystemExit(f"{figure_path} has changed figure hash")
+
     print(f"audit: {arguments.audit}")
     print(f"reference_speed_mps: {speed:.12f}")
     print(f"rounded_input_reynolds: {reynolds:.9f}")
@@ -1433,6 +1538,12 @@ def main() -> None:
     print(
         "geometric_limiter_finest_drag_change_percent: "
         f"{100.0 * geometric['relativeFinestTwoDragChange']:.6f}"
+    )
+    print(f"radial_limiter_classification: {radial['classification']}")
+    print(
+        "radial_limiter_final_near_far_percent: "
+        f"{100.0 * radial['finalNearSurfaceLimiterL1Fraction']:.6f},"
+        f"{100.0 * radial['finalFarFieldLimiterL1Fraction']:.6f}"
     )
     print("passed: true")
 

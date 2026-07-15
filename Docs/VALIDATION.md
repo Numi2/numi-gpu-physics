@@ -919,6 +919,40 @@ this same ladder, preceded by radial localization of limiter corrections. It
 must reduce interior intervention and restore convergence before another
 bird-scale run is justified.
 
+The D=16 radial localization is:
+
+```bash
+.build/release/birdflow validate translating-body \
+  --high-re-stability \
+  --fixed-occupancy \
+  --stationary-wall \
+  --radial-limiter-localization \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-c16-radial-limiter-localization.json
+```
+
+It reuses the accepted source-aware control volume and captures the known first
+activation at step 15 plus steps 100, 250, 500, 750, and 1,000. A deterministic
+GPU reduction partitions the physical flow into eight shells with outer edges
+at `1/16`, `1/8`, `1/4`, `1/2`, `1`, `2`, and `3` sphere diameters from the
+surface. Every shell sum closes back to the independent control-volume ledger;
+the maximum relative closure residual is `8.02e-7` under the predeclared
+`1e-4` gate.
+
+The limiter starts at the curved wall: at `tU/D=0.075`, all correction and all
+40 activated control-volume cells are within one lattice cell of the surface.
+It then propagates outward. At `tU/D=2.5`, `61.58%` of limiter L1 is already
+beyond `1D`; by `tU/D=5`, the fraction is `88.58%`, while only `1.11%` remains
+within `0.25D`. Activated-cell shares give the same result (`88.28%` beyond
+`1D`, `1.15%` within `0.25D`). The predeclared boundary-localization contract
+required at least `80%` near-surface correction and no more than `5%` beyond
+`1D`, so it fails by a wide margin. This rules out a boundary-only limiter
+repair and directs the next A/B toward a genuinely positivity-preserving or
+regularized bulk collision model at the same Reynolds number and geometry.
+
+The exact report and figure are
+`ValidationArtifacts/measured-wing-stationary-wall-c16-radial-limiter-localization.json`
+and `ValidationArtifacts/Figures/stationary-wall-radial-limiter-localization.svg`.
+
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.
 
