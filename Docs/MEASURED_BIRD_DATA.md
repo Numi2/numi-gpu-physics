@@ -37,6 +37,16 @@ reconstructed wing or body meshes described in its article. The compact locked
 result is `ValidationArtifacts/measured-wing-source-audit.json`; the full
 per-frame report is regenerated from the original archives.
 
+The complete Figshare collection and supplementary methods were independently
+rechecked on 16 July 2026. The collection adds four synchronized 8-bit camera
+exports and four left-wingtip phases used to establish global axes, but no
+camera calibration archive, original 12-bit MRAW frames, complete left wing,
+body/tail reconstruction, specimen identifier, or mass/inertia record. The
+exact inventory and disposition are locked in
+`ValidationArtifacts/maeda-same-specimen-source-gap-audit.json`. The
+corresponding-author availability checklist is
+`Docs/SAME_SPECIMEN_DATA_REQUEST.md`.
+
 `--require-complete-bird` deliberately exits with status `2` for these sources.
 They do not report the body radii, body-COM wing root, principal inertia, tail
 geometry, measured left wing, or a physical wing thickness required by schema

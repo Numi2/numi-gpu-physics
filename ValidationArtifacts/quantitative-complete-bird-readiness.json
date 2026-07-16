@@ -107,6 +107,19 @@
       "physical wing thickness"
     ]
   },
+  "sourceAcquisitionAudit": {
+    "publicRecordRecheckedAt": "2026-07-16",
+    "figshareCollectionDOI": "10.6084/m9.figshare.c.3866650",
+    "completePublicCollectionEnumerated": true,
+    "supplementaryMethodsMD5": "51734a99e596170e1b7a85716b9eb5b6",
+    "newSameSpecimenSchema2FieldsFound": false,
+    "sourceGapArtifact": "ValidationArtifacts/maeda-same-specimen-source-gap-audit.json",
+    "availabilityRequest": "Docs/SAME_SPECIMEN_DATA_REQUEST.md",
+    "correspondingAuthor": "Hao Liu",
+    "correspondingAuthorEmail": "hliu@faculty.chiba-u.jp",
+    "authorOrZooRecordsRequired": true,
+    "newMeasurementCampaignRequiredIfSameIndividualMassAndInertiaRecordsAreAbsent": true
+  },
   "rejectedHybridCandidates": [
     {
       "source": "Read et al. hummingbird turning dataset",
@@ -127,6 +140,7 @@
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
+    "nextAction": "send the low-burden availability checklist to the corresponding author; if same-individual inertial records are absent, plan a new specimen-complete measurement campaign",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {

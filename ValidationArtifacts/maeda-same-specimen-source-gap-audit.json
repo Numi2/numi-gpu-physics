@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "auditIdentifier": "maeda-2017-same-specimen-source-gap-2026-07-16",
+  "verifiedAt": "2026-07-16",
+  "scope": "Public records associated with the single Amazilia amazilia flight recorded at Tama Zoological Park on 2012-11-10",
+  "primarySources": {
+    "article": {
+      "doi": "10.1098/rsos.170307",
+      "pmcid": "PMC5627076",
+      "license": "CC-BY-4.0"
+    },
+    "figshareCollection": {
+      "doi": "10.6084/m9.figshare.c.3866650",
+      "collectionId": 3866650,
+      "publicAPI": "https://api.figshare.com/v2/collections/3866650/articles"
+    },
+    "rightWingGrid": {
+      "articleId": 5406124,
+      "doi": "10.6084/m9.figshare.5406124.v1",
+      "file": "rsos170307_si_008.zip",
+      "bytes": 10104013,
+      "md5": "805a482f5a6e6f8395f74e0706629190"
+    },
+    "supplementaryMethods": {
+      "articleId": 5357443,
+      "version": 2,
+      "file": "rsos170307_si_001.pdf",
+      "bytes": 4538296,
+      "md5": "51734a99e596170e1b7a85716b9eb5b6",
+      "metadataModifiedAt": "2026-02-18T13:38:53Z",
+      "fileContentChangedFromPublishedLock": false
+    }
+  },
+  "publicCollectionInventory": [
+    {
+      "articleId": 5357443,
+      "role": "supplementary methods PDF",
+      "file": "rsos170307_si_001.pdf",
+      "md5": "51734a99e596170e1b7a85716b9eb5b6"
+    },
+    {
+      "articleId": 5406124,
+      "role": "17-phase reconstructed right-wing grid",
+      "file": "rsos170307_si_008.zip",
+      "md5": "805a482f5a6e6f8395f74e0706629190"
+    },
+    {
+      "articleId": 5357428,
+      "role": "camera video S1",
+      "file": "rsos170307_si_002.avi",
+      "md5": "5efd4df0eeab296d2e288a2f96fa5ae3"
+    },
+    {
+      "articleId": 5357452,
+      "role": "camera video S2",
+      "file": "rsos170307_si_003.avi",
+      "md5": "9b4a078dee6d893ebbd704c8a9273e5c"
+    },
+    {
+      "articleId": 5406133,
+      "role": "camera video S3",
+      "file": "rsos170307_si_004.avi",
+      "md5": "2607269253e141ccd7136b66e3f17928"
+    },
+    {
+      "articleId": 5406130,
+      "role": "camera video S4",
+      "file": "rsos170307_si_005.avi",
+      "md5": "7139770a1dd3a4ae845c0815aef2c5a4"
+    },
+    {
+      "articleId": 5406115,
+      "role": "traced-line video S5",
+      "file": "rsos170307_si_006.mp4",
+      "md5": "92fad155df1f5656b76a27dcf04e0063"
+    },
+    {
+      "articleId": 5406112,
+      "role": "reconstructed-wing video S6",
+      "file": "rsos170307_si_007.mp4",
+      "md5": "b01f17624903693f8105e585c5c61334"
+    }
+  ],
+  "subjectIdentityEvidence": {
+    "species": "Amazilia amazilia",
+    "recordingDate": "2012-11-10",
+    "location": "Tama Zoological Park greenhouse, Tokyo, Japan",
+    "publicSpecimenIdentifier": null,
+    "sameIndividualAssertion": "authors believed the same individual always came to the same feeder",
+    "sex": "unknown",
+    "exactAge": "unknown",
+    "minimumReportedAgeYears": 10,
+    "physicalContactPermitted": false
+  },
+  "publicEvidence": {
+    "rightWingSurfaceAndMotion": "available for one selected wingbeat as 17 reconstructed phases",
+    "leftWingEvidence": "left wingtip tracked at four phases for global-axis construction; no deposited left-wing surface or track coordinates",
+    "bodyAndTailEvidence": "visible in public camera videos but no deposited calibrated surface, outline tracks, or body-COM registration",
+    "cameraEvidence": "four synchronized 2000 fps videos are public as 8-bit AVI exports; original 12-bit MRAW, calibration matrices/images, and 2D tracks are not deposited",
+    "atmosphericEvidence": "approximate greenhouse temperature only; pressure, humidity, density, and viscosity are not reported",
+    "massAndInertiaEvidence": "no same-individual body mass, whole-bird inertia, or bilateral wing mass properties are deposited"
+  },
+  "schema2Disposition": [
+    {
+      "field": "provenance.specimenIdentifier",
+      "status": "blocked",
+      "uniqueSource": "original authors or Tama Zoological Park animal record"
+    },
+    {
+      "field": "geometry complete body and tail surface",
+      "status": "blocked",
+      "uniqueSource": "unpublished calibrated images/tracks or a new same-specimen reconstruction"
+    },
+    {
+      "field": "bilateral wing surface and kinematics",
+      "status": "blocked",
+      "uniqueSource": "unpublished left-wing tracks or calibrated raw images"
+    },
+    {
+      "field": "geometry.massKilograms and principalInertiaKilogramMetersSquared",
+      "status": "blocked",
+      "uniqueSource": "same-individual veterinary measurement, preserved specimen, or author-qualified measurement"
+    },
+    {
+      "field": "prescribedWingDynamics left and right mass, COM, inertia",
+      "status": "blocked",
+      "uniqueSource": "same-individual measurement or preserved specimen"
+    },
+    {
+      "field": "physical wing thickness and distributed twist inertia",
+      "status": "blocked",
+      "uniqueSource": "same-individual feather/wing measurement and a distributed-mass model"
+    }
+  ],
+  "acquisitionPath": {
+    "firstContact": {
+      "name": "Hao Liu",
+      "role": "corresponding author",
+      "email": "hliu@faculty.chiba-u.jp",
+      "currentInstitutionEvidence": "Chiba University Graduate School of Engineering and Center for Aerial Intelligent Vehicles",
+      "requestDocument": "Docs/SAME_SPECIMEN_DATA_REQUEST.md"
+    },
+    "initialReplyBurden": "yes/no/unknown checklist; no file transfer required",
+    "authorOrZooRecordsCanPotentiallyUnblock": [
+      "exact animal identifier",
+      "body mass near the recording date",
+      "same-individual preservation or accession record",
+      "camera calibration and raw synchronized frames",
+      "body, wing-base, left-wing, and tail tracks",
+      "greenhouse pressure or humidity"
+    ],
+    "likelyRequiresNewMeasurementIfAbsent": [
+      "whole-bird center of mass and principal inertia",
+      "bilateral wing mass, center of mass, and inertia",
+      "physical wing thickness or feather mass distribution"
+    ]
+  },
+  "decision": {
+    "publicPackageSatisfiesMeasuredWingReplay": true,
+    "publicPackageSatisfiesCompleteBirdSchema1": false,
+    "publicPackageSatisfiesQuantitativeFreeFlightSchema2": false,
+    "nextAction": "send the availability checklist to the corresponding author; if same-individual inertial records do not exist, design a new specimen-complete measurement campaign",
+    "antiFabricationRule": "species averages, another zoo bird, or another study specimen must be labeled hybrid sensitivity input and cannot close this audit"
+  }
+}
