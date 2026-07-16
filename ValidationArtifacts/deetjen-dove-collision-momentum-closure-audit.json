@@ -1,0 +1,47 @@
+{
+  "auditIdentifier": "deetjen-ob-f03-collision-momentum-closure-audit-v1",
+  "cases": [
+    {
+      "collisionLimiterActivationCount": 55,
+      "maximumGlobalFluidClosureResidualNewtons": 0.04880094899138374,
+      "maximumRawControlVolumeClosureResidualNewtons": 0.026256586261680998,
+      "minimumPopulation": 2.6415549747582645e-09,
+      "operator": "positivity-preserving-regularized-bgk",
+      "passed": true,
+      "relativeRMSGlobalFluidClosureResidual": 0.0011458604199016593,
+      "relativeRMSRawControlVolumeClosureResidual": 0.0007944033022869337
+    },
+    {
+      "collisionLimiterActivationCount": 28,
+      "maximumGlobalFluidClosureResidualNewtons": 0.05033071641300324,
+      "maximumRawControlVolumeClosureResidualNewtons": 0.030423800801920746,
+      "minimumPopulation": 3.2018481199713733e-09,
+      "operator": "positivity-preserving-recursive-regularized-bgk",
+      "passed": true,
+      "relativeRMSGlobalFluidClosureResidual": 0.0011452658714590752,
+      "relativeRMSRawControlVolumeClosureResidual": 0.000798695710657271
+    }
+  ],
+  "checks": {
+    "allCandidateRunsCompleted": true,
+    "bothCandidatesEligible": true,
+    "bothControlVolumeClosures": true,
+    "bothGlobalClosures": true,
+    "candidateOrder": true,
+    "fixedScreenContract": true,
+    "nonAcceptanceBoundary": true,
+    "parentVerdict": true,
+    "schemaAndHashes": true
+  },
+  "claimBoundary": "This audit independently reconstructs the committed near-wing and global momentum-closure arithmetic. It advances both candidates to the extended pilot only; it does not select a production operator or establish experimental-force agreement.",
+  "eligibleCollisionOperators": [
+    "positivity-preserving-regularized-bgk",
+    "positivity-preserving-recursive-regularized-bgk"
+  ],
+  "forceTargetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "generatedBy": "Scripts/audit-dove-collision-momentum-closure.py",
+  "momentumClosureGatePassed": true,
+  "reportSHA256": "68e0381defc7341a08297b8643da7dc7825f57faf02362372bee3a533bddbb13",
+  "schemaVersion": 1,
+  "surfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
+}

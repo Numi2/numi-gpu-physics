@@ -262,6 +262,90 @@ public struct MetalIndexedBirdSurfaceCollisionPreRollABReport:
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceControlVolumeBounds:
+    Codable, Sendable {
+    public let minimumX: Int
+    public let minimumY: Int
+    public let minimumZ: Int
+    public let maximumExclusiveX: Int
+    public let maximumExclusiveY: Int
+    public let maximumExclusiveZ: Int
+}
+
+public struct MetalIndexedBirdSurfaceMomentumClosureSample:
+    Codable, Sendable {
+    public let step: Int
+    public let sourceTimeSeconds: Double
+    public let aerodynamicForceNewtons: SIMD3<Double>
+    public let negativeFluidMomentumStorageRateNewtons: SIMD3<Double>
+    public let negativeControlSurfaceMomentumFluxNewtons: SIMD3<Double>
+    public let topologyReservoirCorrectionNewtons: SIMD3<Double>
+    public let rawControlVolumeBudgetForceNewtons: SIMD3<Double>
+    public let rawControlVolumeClosureResidualNewtons: SIMD3<Double>
+    public let globalFluidMomentumChangeRateNewtons: SIMD3<Double>
+    public let globalFarFieldMomentumSourceRateNewtons: SIMD3<Double>
+    public let globalSpongeMomentumSourceRateNewtons: SIMD3<Double>
+    public let globalFluidBudgetForceNewtons: SIMD3<Double>
+    public let globalFluidClosureResidualNewtons: SIMD3<Double>
+    public let solidControlSurfaceCrossingLinkCount: Int
+    public let minimumPopulation: Double
+}
+
+public struct MetalIndexedBirdSurfaceMomentumClosureCase:
+    Codable, Sendable {
+    public let collisionOperator: String
+    public let requestedSteps: Int
+    public let completedSteps: Int
+    public let runtimeSeconds: Double
+    public let collisionLimiterActivationCount: Double
+    public let collisionLimiterActivationFractionOfCellSteps: Double
+    public let maximumCollisionRestriction: Double
+    public let minimumPopulation: Double
+    public let allValuesFinite: Bool
+    public let sampledPopulationPositivityPassed: Bool
+    public let maximumSolidControlSurfaceCrossingLinkCount: Int
+    public let RMSAerodynamicForceNewtons: Double
+    public let RMSRawControlVolumeBudgetForceNewtons: Double
+    public let RMSRawControlVolumeClosureResidualNewtons: Double
+    public let relativeRMSRawControlVolumeClosureResidual: Double
+    public let maximumRawControlVolumeClosureResidualNewtons: Double
+    public let RMSGlobalFluidBudgetForceNewtons: Double
+    public let RMSGlobalFluidClosureResidualNewtons: Double
+    public let relativeRMSGlobalFluidClosureResidual: Double
+    public let maximumGlobalFluidClosureResidualNewtons: Double
+    public let momentumClosurePassed: Bool
+    public let eligibleForExtendedPilot: Bool
+    public let samples: [MetalIndexedBirdSurfaceMomentumClosureSample]
+}
+
+public struct MetalIndexedBirdSurfaceMomentumClosureReport:
+    Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let requestedSteps: Int
+    public let controlVolume: MetalIndexedBirdSurfaceControlVolumeBounds
+    public let spongeWidthCells: Int
+    public let minimumControlSurfaceDistanceFromDomainBoundaryCells: Int
+    public let minimumControlSurfaceDistanceFromSweptSurfaceCells: Double
+    public let maximumAllowedRelativeRMSClosureResidual: Double
+    public let maximumCorrectionActivationFraction: Double
+    public let fixedInputs: String
+    public let cases: [MetalIndexedBirdSurfaceMomentumClosureCase]
+    public let eligibleCollisionOperators: [String]
+    public let allCandidateRunsCompleted: Bool
+    public let screeningGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -273,11 +357,17 @@ public enum MetalIndexedBirdSurfacePilotValidator {
     public static let fluidStepsPerForceSample = 16
     public static let collisionPreRollPopulationDiagnosticStride = 1
     public static let collisionPreRollMaximumActivationFraction = 0.05
+    public static let collisionMomentumMaximumRelativeRMSResidual = 0.005
+    public static let collisionMomentumCandidateOperators:
+        [MetalIndexedBirdSurfaceCollisionOperator] = [
+            .positivityPreservingRegularizedBGK,
+            .positivityPreservingRecursiveRegularizedBGK
+        ]
     public static let collisionPreRollOperators:
         [MetalIndexedBirdSurfaceCollisionOperator] = [
             .productionTRT,
             .positivityPreservingRegularizedBGK,
-            .positivityPreservingRecursiveRegularizedBGK,
+            .positivityPreservingRecursiveRegularizedBGK
         ]
 
     public static func plan(
@@ -519,6 +609,114 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                     + "closure and extended pilot; it does not promote the "
                     + "operator to production, compare experimental forces, "
                     + "or establish grid convergence."
+            )
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionMomentumClosure(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75
+    ) throws -> MetalIndexedBirdSurfaceMomentumClosureReport {
+        let plan = try plan(
+            surface: surface,
+            target: target,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells
+        )
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let cases = try collisionMomentumCandidateOperators.map {
+            try replay.runCollisionMomentumClosure(
+                plan: plan,
+                collisionOperator: $0,
+                maximumRelativeRMSResidual:
+                    collisionMomentumMaximumRelativeRMSResidual,
+                maximumCorrectionActivationFraction:
+                    collisionPreRollMaximumActivationFraction
+            )
+        }
+        let metadata = replay.collisionMomentumControlVolumeMetadata
+        let eligible = cases.filter(\.eligibleForExtendedPilot)
+            .map(\.collisionOperator)
+        let allCompleted = cases.count
+                == collisionMomentumCandidateOperators.count
+            && cases.allSatisfy {
+                $0.completedSteps == plan.preRollFluidSteps
+            }
+        let passed = allCompleted && !eligible.isEmpty
+        return MetalIndexedBirdSurfaceMomentumClosureReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            requestedSteps: plan.preRollFluidSteps,
+            controlVolume: metadata.bounds,
+            spongeWidthCells: plan.spongeWidthCells,
+            minimumControlSurfaceDistanceFromDomainBoundaryCells:
+                metadata.minimumDomainDistanceCells,
+            minimumControlSurfaceDistanceFromSweptSurfaceCells:
+                metadata.minimumSweptSurfaceDistanceCells,
+            maximumAllowedRelativeRMSClosureResidual:
+                collisionMomentumMaximumRelativeRMSResidual,
+            maximumCorrectionActivationFraction:
+                collisionPreRollMaximumActivationFraction,
+            fixedInputs: (
+                "geometry, kinematics, grid, time step, viscosity floor, "
+                    + "far-field boundary, sponge, moving-boundary operator, "
+                    + "force estimator, and numerical gates"
+            ),
+            cases: cases,
+            eligibleCollisionOperators: eligible,
+            allCandidateRunsCompleted: allCompleted,
+            screeningGatePassed: passed,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: passed
+                ? (eligible.count == cases.count
+                    ? (
+                        "Both positivity-preserving collision candidates "
+                            + "closed the independent near-wing and global "
+                            + "measured-dove momentum budgets through the "
+                            + "fixed 800-step pre-roll."
+                    )
+                    : (
+                        "At least one positivity-preserving collision "
+                            + "candidate closed both independent measured-"
+                            + "dove momentum budgets through the fixed "
+                            + "800-step pre-roll."
+                    ))
+                : (
+                    "No candidate completed and closed both independent "
+                        + "measured-dove momentum budgets under the locked "
+                        + "pre-roll contract."
+                ),
+            claimBoundary: (
+                "This gate accepts candidate-specific momentum consistency "
+                    + "only. Eligibility permits the fixed extended pilot; "
+                    + "it does not select a production collision operator, "
+                    + "compare experimental forces, or establish grid "
+                    + "convergence."
             )
         )
 #else
@@ -872,6 +1070,183 @@ public enum MetalIndexedBirdSurfaceValidator {
 }
 
 #if canImport(Metal)
+private struct GPUIndexedControlVolumeBounds {
+    var minimum: SIMD4<UInt32>
+    var maximumExclusive: SIMD4<UInt32>
+}
+
+private struct GPUIndexedControlVolumeBudget {
+    var oldFluidMomentum: SIMD4<Float>
+    var newFluidMomentum: SIMD4<Float>
+    var outwardMomentumFlux: SIMD4<Float>
+    var topologyReservoirCorrection: SIMD4<Float>
+}
+
+private final class IndexedControlVolumeDiagnosticResources {
+    private let backend: MetalBackend
+    private let partialCount: Int
+    private let beforePipeline: MTLComputePipelineState
+    private let afterPipeline: MTLComputePipelineState
+    private let reductionPipeline: MTLComputePipelineState
+    private let beforeA: MTLBuffer
+    private let beforeB: MTLBuffer
+    private let afterA: MTLBuffer
+    private let afterB: MTLBuffer
+
+    init(backend: MetalBackend, cellCount: Int) throws {
+        self.backend = backend
+        partialCount = max(1, (cellCount + 255) / 256)
+        beforePipeline = try backend.pipeline(
+            named: "measureControlVolumeMomentumBeforeStep"
+        )
+        afterPipeline = try backend.pipeline(
+            named: "measureControlVolumeMomentumAfterStep"
+        )
+        reductionPipeline = try backend.pipeline(
+            named: "reduceControlVolumeMomentumBudget"
+        )
+        let bytes = partialCount
+            * MemoryLayout<GPUIndexedControlVolumeBudget>.stride
+        try backend.validateAllocationPlan(bufferLengths: [
+            bytes, bytes, bytes, bytes
+        ])
+        beforeA = try backend.makeSharedBuffer(length: bytes)
+        beforeB = try backend.makeSharedBuffer(length: bytes)
+        afterA = try backend.makeSharedBuffer(length: bytes)
+        afterB = try backend.makeSharedBuffer(length: bytes)
+    }
+
+    func encodeBefore(
+        commandBuffer: MTLCommandBuffer,
+        populations: MTLBuffer,
+        solid: MTLBuffer,
+        bounds: GPUIndexedControlVolumeBounds,
+        uniforms: inout GPUUniforms
+    ) throws -> MTLBuffer {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode indexed control-volume pre-step momentum."
+            )
+        }
+        var localBounds = bounds
+        encoder.setBuffer(populations, offset: 0, index: 0)
+        encoder.setBuffer(solid, offset: 0, index: 1)
+        encoder.setBuffer(beforeA, offset: 0, index: 2)
+        encoder.setBytes(
+            &localBounds,
+            length: MemoryLayout<GPUIndexedControlVolumeBounds>.stride,
+            index: 3
+        )
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 4
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: beforePipeline,
+            count: Int(uniforms.grid.w),
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+        return try encodeReduction(
+            commandBuffer: commandBuffer,
+            input: beforeA,
+            scratch: beforeB
+        )
+    }
+
+    func encodeAfter(
+        commandBuffer: MTLCommandBuffer,
+        populations: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        coveredFluidMomentum: MTLBuffer,
+        bounds: GPUIndexedControlVolumeBounds,
+        uniforms: inout GPUUniforms
+    ) throws -> MTLBuffer {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode indexed control-volume post-step momentum."
+            )
+        }
+        var localBounds = bounds
+        encoder.setBuffer(populations, offset: 0, index: 0)
+        encoder.setBuffer(solidPrevious, offset: 0, index: 1)
+        encoder.setBuffer(solidCurrent, offset: 0, index: 2)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 3)
+        encoder.setBuffer(coveredFluidMomentum, offset: 0, index: 4)
+        encoder.setBuffer(afterA, offset: 0, index: 5)
+        encoder.setBytes(
+            &localBounds,
+            length: MemoryLayout<GPUIndexedControlVolumeBounds>.stride,
+            index: 6
+        )
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 7
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: afterPipeline,
+            count: Int(uniforms.grid.w),
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+        return try encodeReduction(
+            commandBuffer: commandBuffer,
+            input: afterA,
+            scratch: afterB
+        )
+    }
+
+    func read(_ buffer: MTLBuffer) -> GPUIndexedControlVolumeBudget {
+        buffer.contents()
+            .assumingMemoryBound(to: GPUIndexedControlVolumeBudget.self)
+            .pointee
+    }
+
+    private func encodeReduction(
+        commandBuffer: MTLCommandBuffer,
+        input initial: MTLBuffer,
+        scratch initialScratch: MTLBuffer
+    ) throws -> MTLBuffer {
+        var input = initial
+        var output = initialScratch
+        var count = partialCount
+        while count > 1 {
+            let outputCount = (count + 255) / 256
+            var count32 = UInt32(count)
+            guard let encoder = commandBuffer.makeComputeCommandEncoder()
+            else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to reduce indexed control-volume momentum."
+                )
+            }
+            encoder.setBuffer(input, offset: 0, index: 0)
+            encoder.setBuffer(output, offset: 0, index: 1)
+            encoder.setBytes(
+                &count32,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: reductionPipeline,
+                count: outputCount
+            )
+            encoder.endEncoding()
+            count = outputCount
+            input = output
+            output = output === initial
+                ? initialScratch : initial
+        }
+        return input
+    }
+}
+
 private final class MetalIndexedBirdSurfaceReplay {
     struct Snapshot {
         let prepared: [GPUPreparedMeasuredWingPoint]
@@ -1255,6 +1630,492 @@ private final class MetalIndexedBirdSurfaceReplay {
         return CPURaster(
             partIdentifiers: mask,
             wallVelocityAndDistance: wall
+        )
+    }
+
+    var collisionMomentumControlVolumeMetadata: (
+        bounds: MetalIndexedBirdSurfaceControlVolumeBounds,
+        minimumDomainDistanceCells: Int,
+        minimumSweptSurfaceDistanceCells: Double
+    ) {
+        let inset = configuration.spongeWidthCells + 1
+        let maximumX = grid.x - inset
+        let maximumY = grid.y - inset
+        let maximumZ = grid.z - inset
+        let bounds = MetalIndexedBirdSurfaceControlVolumeBounds(
+            minimumX: inset,
+            minimumY: inset,
+            minimumZ: inset,
+            maximumExclusiveX: maximumX,
+            maximumExclusiveY: maximumY,
+            maximumExclusiveZ: maximumZ
+        )
+        let minimumDomainDistance = min(
+            inset - 1,
+            grid.x - 1 - maximumX,
+            grid.y - 1 - maximumY,
+            grid.z - 1 - maximumZ
+        )
+        let origin = configuration.domainOriginMeters
+        let cellSize = configuration.scaling.cellSizeMeters
+        let lowerSurface = origin + SIMD3<Float>(repeating: Float(inset))
+            * cellSize
+        let upperSurface = origin + SIMD3<Float>(
+            Float(maximumX), Float(maximumY), Float(maximumZ)
+        ) * cellSize
+        let lowerClearance = (dataset.minimumPositionMeters - lowerSurface)
+            / SIMD3<Float>(repeating: cellSize)
+        let upperClearance = (upperSurface - dataset.maximumPositionMeters)
+            / SIMD3<Float>(repeating: cellSize)
+        let sweptDistance = min(
+            lowerClearance.x,
+            lowerClearance.y,
+            lowerClearance.z,
+            upperClearance.x,
+            upperClearance.y,
+            upperClearance.z
+        )
+        return (
+            bounds,
+            minimumDomainDistance,
+            Double(sweptDistance)
+        )
+    }
+
+    func runCollisionMomentumClosure(
+        plan: MetalIndexedBirdSurfacePilotPlan,
+        collisionOperator: MetalIndexedBirdSurfaceCollisionOperator,
+        maximumRelativeRMSResidual: Double,
+        maximumCorrectionActivationFraction: Double
+    ) throws -> MetalIndexedBirdSurfaceMomentumClosureCase {
+        let started = Date()
+        let requestedSteps = plan.preRollFluidSteps
+        guard requestedSteps > 0,
+              collisionOperator != .productionTRT,
+              maximumRelativeRMSResidual.isFinite,
+              maximumRelativeRMSResidual > 0,
+              maximumCorrectionActivationFraction.isFinite,
+              maximumCorrectionActivationFraction > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "collision momentum-closure contract is invalid"
+            )
+        }
+        let metadata = collisionMomentumControlVolumeMetadata
+        guard metadata.minimumDomainDistanceCells
+                >= configuration.spongeWidthCells,
+              metadata.minimumSweptSurfaceDistanceCells > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "collision momentum control surface overlaps the sponge or swept bird"
+            )
+        }
+        let bounds = GPUIndexedControlVolumeBounds(
+            minimum: SIMD4<UInt32>(
+                UInt32(metadata.bounds.minimumX),
+                UInt32(metadata.bounds.minimumY),
+                UInt32(metadata.bounds.minimumZ),
+                0
+            ),
+            maximumExclusive: SIMD4<UInt32>(
+                UInt32(metadata.bounds.maximumExclusiveX),
+                UInt32(metadata.bounds.maximumExclusiveY),
+                UInt32(metadata.bounds.maximumExclusiveZ),
+                0
+            )
+        )
+        let cellCount = grid.cellCount
+        let populationCount = D3Q19.count * cellCount
+        let populationBytes = populationCount * MemoryLayout<Float>.stride
+        let maskBytes = cellCount * MemoryLayout<UInt8>.stride
+        let densityBytes = cellCount * MemoryLayout<Float>.stride
+        let velocityBytes = cellCount * MemoryLayout<SIMD4<Float>>.stride
+        let partialCount = max(1, (cellCount + 255) / 256)
+        let reductionBytes = partialCount
+            * MemoryLayout<GPUForceTorque>.stride
+        let populationPartialCount = max(1, (populationCount + 255) / 256)
+        let populationMinimumBytes = populationPartialCount
+            * MemoryLayout<GPUIndexedPopulationMinimum>.stride
+        try backend.validateAllocationPlan(bufferLengths: [
+            populationBytes, populationBytes,
+            maskBytes, densityBytes, velocityBytes,
+            reductionBytes, reductionBytes,
+            populationMinimumBytes,
+            MemoryLayout<GPUBirdBodyState>.stride
+        ])
+        let populationsA = try backend.makePrivateBuffer(
+            length: populationBytes
+        )
+        let populationsB = try backend.makePrivateBuffer(
+            length: populationBytes
+        )
+        let solidPrevious = try backend.makePrivateBuffer(length: maskBytes)
+        let densityScratch = try backend.makePrivateBuffer(length: densityBytes)
+        let velocityAndCoveredMomentum = try backend.makePrivateBuffer(
+            length: velocityBytes
+        )
+        let reductionA = try backend.makeSharedBuffer(length: reductionBytes)
+        let reductionB = try backend.makeSharedBuffer(length: reductionBytes)
+        let populationMinimumPartials = try backend.makeSharedBuffer(
+            length: populationMinimumBytes
+        )
+        let bodyCenter = 0.5 * (
+            dataset.minimumPositionMeters + dataset.maximumPositionMeters
+        )
+        let bodyState = try backend.makeSharedBuffer(
+            value: GPUBirdBodyState(BirdBodyState(positionMeters: bodyCenter))
+        )
+        let controlDiagnostics = try IndexedControlVolumeDiagnosticResources(
+            backend: backend,
+            cellCount: cellCount
+        )
+        let globalDiagnostics = try CoupledMomentumDiagnosticResources(
+            backend: backend,
+            cellCount: cellCount
+        )
+        let initializePipeline = try backend.pipeline(
+            named: "initializePopulations"
+        )
+        let linkPipeline = try backend.pipeline(
+            named: "buildMeasuredWingSurfaceLinks"
+        )
+        let fluidPipeline = try backend.pipeline(named: "stepFluidTRT")
+        let forceReductionPipeline = try backend.pipeline(
+            named: "reduceForceTorque"
+        )
+        let populationMinimumPipeline = try backend.pipeline(
+            named: "reducePopulationMinimum"
+        )
+
+        let initialTime = dataset.frameTimesSeconds[0]
+        updateSurfaceTime(initialTime)
+        var initialUniforms = makePilotUniforms(
+            step: 0,
+            hasPreviousGeometry: false,
+            collisionOperator: collisionOperator
+        )
+        guard let initialization = backend.queue.makeCommandBuffer() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to initialize collision momentum closure."
+            )
+        }
+        try encodeIndexedPreparation(commandBuffer: initialization)
+        try encodeClear(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        try encodeIndexedRaster(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        try encodeIndexedResolve(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        guard let initialBlit = initialization.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to copy the collision momentum initial mask."
+            )
+        }
+        initialBlit.copy(
+            from: partMask,
+            sourceOffset: 0,
+            to: solidPrevious,
+            destinationOffset: 0,
+            size: maskBytes
+        )
+        initialBlit.endEncoding()
+        try encodeCouplingInitialization(
+            commandBuffer: initialization,
+            populations: populationsA,
+            solid: solidPrevious,
+            density: densityScratch,
+            velocity: velocityAndCoveredMomentum,
+            uniforms: &initialUniforms,
+            pipeline: initializePipeline
+        )
+        initialization.commit()
+        initialization.waitUntilCompleted()
+        try check(initialization)
+
+        var populationsIn = populationsA
+        var populationsOut = populationsB
+        var completedSteps = 0
+        var activationCount = 0.0
+        var maximumRestriction = 0.0
+        var minimumPopulation = Double.infinity
+        var maximumSolidCrossings = 0
+        var allFinite = true
+        var samples: [MetalIndexedBirdSurfaceMomentumClosureSample] = []
+        samples.reserveCapacity(requestedSteps)
+        let forceScale = Double(configuration.scaling.forceToPhysical)
+
+        for step in 1...requestedSteps {
+            let sourceTime = initialTime
+                + Float(step) * configuration.scaling.timeStepSeconds
+            guard sourceTime <= dataset.frameTimesSeconds.last! + 1e-7 else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "collision momentum closure exceeds the surface sequence"
+                )
+            }
+            updateSurfaceTime(sourceTime)
+            var uniforms = makePilotUniforms(
+                step: step,
+                hasPreviousGeometry: true,
+                collisionOperator: collisionOperator
+            )
+            var beforeUniforms = uniforms
+            let globalFluidBefore = try globalDiagnostics.measureFluid(
+                populations: populationsIn,
+                solid: solidPrevious,
+                uniforms: &beforeUniforms
+            )
+            guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to create collision momentum step."
+                )
+            }
+            let beforeBudget = try controlDiagnostics.encodeBefore(
+                commandBuffer: commandBuffer,
+                populations: populationsIn,
+                solid: solidPrevious,
+                bounds: bounds,
+                uniforms: &uniforms
+            )
+            try encodeIndexedPreparation(commandBuffer: commandBuffer)
+            try encodeClear(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms
+            )
+            try encodeIndexedRaster(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms
+            )
+            try encodeFlowResolve(
+                commandBuffer: commandBuffer,
+                solidPrevious: solidPrevious,
+                previousPopulations: populationsIn,
+                coveredFluidMomentum: velocityAndCoveredMomentum,
+                uniforms: &uniforms
+            )
+            try encodeCouplingLinks(
+                commandBuffer: commandBuffer,
+                populations: populationsIn,
+                uniforms: &uniforms,
+                pipeline: linkPipeline
+            )
+            try encodeCouplingFluid(
+                commandBuffer: commandBuffer,
+                populationsIn: populationsIn,
+                populationsOut: populationsOut,
+                solidPrevious: solidPrevious,
+                density: densityScratch,
+                velocity: velocityAndCoveredMomentum,
+                partialLoads: reductionA,
+                bodyState: bodyState,
+                uniforms: &uniforms,
+                pipeline: fluidPipeline
+            )
+            let reducedLoad = try encodeCouplingForceReduction(
+                commandBuffer: commandBuffer,
+                reductionA: reductionA,
+                reductionB: reductionB,
+                partialCount: partialCount,
+                pipeline: forceReductionPipeline
+            )
+            let afterBudget = try controlDiagnostics.encodeAfter(
+                commandBuffer: commandBuffer,
+                populations: populationsOut,
+                solidPrevious: solidPrevious,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                coveredFluidMomentum: velocityAndCoveredMomentum,
+                bounds: bounds,
+                uniforms: &uniforms
+            )
+            try encodePopulationMinimum(
+                commandBuffer: commandBuffer,
+                populations: populationsOut,
+                partials: populationMinimumPartials,
+                populationCount: populationCount,
+                pipeline: populationMinimumPipeline
+            )
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+            try check(commandBuffer)
+            completedSteps = step
+
+            let rawLoad = reducedLoad.contents()
+                .assumingMemoryBound(to: GPUForceTorque.self)
+                .pointee
+            activationCount += Double(rawLoad.force.w)
+            maximumRestriction = max(
+                maximumRestriction,
+                Double(rawLoad.torque.w)
+            )
+            let load = rawLoad.coreValue.forceNewtons
+            let aerodynamic = SIMD3<Double>(
+                Double(load.x), Double(load.y), Double(load.z)
+            )
+            let before = controlDiagnostics.read(beforeBudget)
+            let after = controlDiagnostics.read(afterBudget)
+            let oldMomentum = indexedControlVector(
+                before.oldFluidMomentum
+            )
+            let newMomentum = indexedControlVector(
+                after.newFluidMomentum
+            )
+            let outwardFlux = indexedControlVector(
+                before.outwardMomentumFlux
+            )
+            let reservoir = indexedControlVector(
+                after.topologyReservoirCorrection
+            )
+            let negativeStorage = (oldMomentum - newMomentum) * forceScale
+            let negativeFlux = -outwardFlux * forceScale
+            let reservoirForce = reservoir * forceScale
+            let rawBudget = negativeStorage + negativeFlux
+            let rawResidual = aerodynamic - rawBudget
+            let solidCrossings = Int(
+                before.outwardMomentumFlux.w.rounded()
+            )
+            maximumSolidCrossings = max(
+                maximumSolidCrossings,
+                solidCrossings
+            )
+
+            var afterUniforms = uniforms
+            let globalFluidAfter = try globalDiagnostics.measureFluid(
+                populations: populationsOut,
+                solid: partMask,
+                uniforms: &afterUniforms
+            )
+            let globalSources = try globalDiagnostics.captureSources(
+                populationsIn: populationsIn,
+                populationsOut: populationsOut,
+                solidPrevious: solidPrevious,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                uniforms: &uniforms,
+                advanceSolidPrevious: solidPrevious
+            )
+            let globalChange = physicalMomentum(
+                globalFluidAfter - globalFluidBefore,
+                scale: 1
+            )
+            let farField = physicalMomentum(
+                globalSources.farField,
+                scale: 1
+            )
+            let sponge = physicalMomentum(
+                globalSources.sponge,
+                scale: 1
+            )
+            let globalChangeRate = globalChange * forceScale
+            let farFieldRate = farField * forceScale
+            let spongeRate = sponge * forceScale
+            let globalBudget = -globalChangeRate
+                + farFieldRate + spongeRate
+            let globalResidual = aerodynamic - globalBudget
+            let minimum = readPopulationMinimum(
+                partials: populationMinimumPartials,
+                partialCount: populationPartialCount
+            )
+            let populationValue = minimum.nonFinite == 0
+                ? Double(minimum.rawValue) : 0
+            minimumPopulation = min(minimumPopulation, populationValue)
+            let sample = MetalIndexedBirdSurfaceMomentumClosureSample(
+                step: step,
+                sourceTimeSeconds: Double(sourceTime),
+                aerodynamicForceNewtons: aerodynamic,
+                negativeFluidMomentumStorageRateNewtons: negativeStorage,
+                negativeControlSurfaceMomentumFluxNewtons: negativeFlux,
+                topologyReservoirCorrectionNewtons: reservoirForce,
+                rawControlVolumeBudgetForceNewtons: rawBudget,
+                rawControlVolumeClosureResidualNewtons: rawResidual,
+                globalFluidMomentumChangeRateNewtons: globalChangeRate,
+                globalFarFieldMomentumSourceRateNewtons: farFieldRate,
+                globalSpongeMomentumSourceRateNewtons: spongeRate,
+                globalFluidBudgetForceNewtons: globalBudget,
+                globalFluidClosureResidualNewtons: globalResidual,
+                solidControlSurfaceCrossingLinkCount: solidCrossings,
+                minimumPopulation: populationValue
+            )
+            samples.append(sample)
+            allFinite = allFinite
+                && minimum.nonFinite == 0
+                && rawLoad.force.w.isFinite
+                && rawLoad.torque.w.isFinite
+                && momentumClosureSampleIsFinite(sample)
+            if !allFinite || populationValue <= 0 {
+                break
+            }
+            swap(&populationsIn, &populationsOut)
+        }
+
+        let aerodynamicRMS = vectorRMS(
+            samples.map(\.aerodynamicForceNewtons)
+        )
+        let rawBudgetRMS = vectorRMS(
+            samples.map(\.rawControlVolumeBudgetForceNewtons)
+        )
+        let rawResidualRMS = vectorRMS(
+            samples.map(\.rawControlVolumeClosureResidualNewtons)
+        )
+        let globalBudgetRMS = vectorRMS(
+            samples.map(\.globalFluidBudgetForceNewtons)
+        )
+        let globalResidualRMS = vectorRMS(
+            samples.map(\.globalFluidClosureResidualNewtons)
+        )
+        let relativeRaw = rawResidualRMS
+            / max(aerodynamicRMS, rawBudgetRMS, 1.0e-30)
+        let relativeGlobal = globalResidualRMS
+            / max(aerodynamicRMS, globalBudgetRMS, 1.0e-30)
+        let maximumRaw = samples.map {
+            vectorMagnitude($0.rawControlVolumeClosureResidualNewtons)
+        }.max() ?? .infinity
+        let maximumGlobal = samples.map {
+            vectorMagnitude($0.globalFluidClosureResidualNewtons)
+        }.max() ?? .infinity
+        let activationFraction = activationCount
+            / max(Double(cellCount * completedSteps), 1)
+        let positivityPassed = allFinite && minimumPopulation > 0
+        let passed = completedSteps == requestedSteps
+            && samples.count == requestedSteps
+            && positivityPassed
+            && maximumSolidCrossings == 0
+            && relativeRaw <= maximumRelativeRMSResidual
+            && relativeGlobal <= maximumRelativeRMSResidual
+            && activationFraction <= maximumCorrectionActivationFraction
+            && metadata.minimumDomainDistanceCells
+                >= configuration.spongeWidthCells
+            && metadata.minimumSweptSurfaceDistanceCells > 0
+        return MetalIndexedBirdSurfaceMomentumClosureCase(
+            collisionOperator: collisionOperator.rawValue,
+            requestedSteps: requestedSteps,
+            completedSteps: completedSteps,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            collisionLimiterActivationCount: activationCount,
+            collisionLimiterActivationFractionOfCellSteps:
+                activationFraction,
+            maximumCollisionRestriction: maximumRestriction,
+            minimumPopulation: minimumPopulation.isFinite
+                ? minimumPopulation : 0,
+            allValuesFinite: allFinite,
+            sampledPopulationPositivityPassed: positivityPassed,
+            maximumSolidControlSurfaceCrossingLinkCount:
+                maximumSolidCrossings,
+            RMSAerodynamicForceNewtons: aerodynamicRMS,
+            RMSRawControlVolumeBudgetForceNewtons: rawBudgetRMS,
+            RMSRawControlVolumeClosureResidualNewtons: rawResidualRMS,
+            relativeRMSRawControlVolumeClosureResidual: relativeRaw,
+            maximumRawControlVolumeClosureResidualNewtons: maximumRaw,
+            RMSGlobalFluidBudgetForceNewtons: globalBudgetRMS,
+            RMSGlobalFluidClosureResidualNewtons: globalResidualRMS,
+            relativeRMSGlobalFluidClosureResidual: relativeGlobal,
+            maximumGlobalFluidClosureResidualNewtons: maximumGlobal,
+            momentumClosurePassed: passed,
+            eligibleForExtendedPilot: passed,
+            samples: samples
         )
     }
 
@@ -2677,6 +3538,12 @@ private func physicalMomentum(
     )
 }
 
+private func indexedControlVector(
+    _ raw: SIMD4<Float>
+) -> SIMD3<Double> {
+    SIMD3<Double>(Double(raw.x), Double(raw.y), Double(raw.z))
+}
+
 private func pilotMean(_ values: [Double]) -> Double {
     guard !values.isEmpty else { return 0 }
     return values.reduce(0, +) / Double(values.count)
@@ -2740,6 +3607,26 @@ private func couplingSampleIsFinite(
     ].allSatisfy { vector in
         vector.x.isFinite && vector.y.isFinite && vector.z.isFinite
     }
+}
+
+private func momentumClosureSampleIsFinite(
+    _ sample: MetalIndexedBirdSurfaceMomentumClosureSample
+) -> Bool {
+    [
+        sample.aerodynamicForceNewtons,
+        sample.negativeFluidMomentumStorageRateNewtons,
+        sample.negativeControlSurfaceMomentumFluxNewtons,
+        sample.topologyReservoirCorrectionNewtons,
+        sample.rawControlVolumeBudgetForceNewtons,
+        sample.rawControlVolumeClosureResidualNewtons,
+        sample.globalFluidMomentumChangeRateNewtons,
+        sample.globalFarFieldMomentumSourceRateNewtons,
+        sample.globalSpongeMomentumSourceRateNewtons,
+        sample.globalFluidBudgetForceNewtons,
+        sample.globalFluidClosureResidualNewtons,
+    ].allSatisfy { vector in
+        vector.x.isFinite && vector.y.isFinite && vector.z.isFinite
+    } && sample.minimumPopulation.isFinite
 }
 
 private func vectorMagnitude(_ vector: SIMD3<Double>) -> Double {

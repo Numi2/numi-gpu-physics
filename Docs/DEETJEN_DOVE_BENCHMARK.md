@@ -287,6 +287,33 @@ operator into measured-bird production, compare experimental forces, or clear
 the unresolved RR3 sphere force statistic. Five-flight repeatability and
 measured-force refinement remain deferred.
 
+Reproduce the candidate-specific momentum gate with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-momentum-closure \
+  --archive ValidationArtifacts/deetjen-dove-collision-momentum-closure.json \
+  --json
+
+python3 Scripts/audit-dove-collision-momentum-closure.py
+```
+
+The fixed control volume spans `[7,68) x [7,62) x [7,59)` on the unchanged
+`75 x 69 x 66` grid. It is five cells beyond the complete swept surface,
+outside the six-cell sponge, and records zero solid-crossing links. Over all
+800 pre-roll steps, regularized BGK and RR3 close the conservative moving-
+domain load against independent storage-plus-flux force at `0.07944%` and
+`0.07987%` relative RMS. A whole-domain before/after fluid ledger with only
+far-field and sponge sources removed closes at `0.11459%` and `0.11453%`.
+The independent audit rebuilds both residual histories and all summary values.
+
+Both candidates therefore advance to the fixed extended pilot. This result
+does not select RR3 from its lower activation count, promote either operator,
+apply an experimental-force gate at the viscosity-distorted coarse grid, or
+clear the later refinement/repeatability requirements.
+
 ## Reproducible acquisition
 
 The default command is read-only. It verifies the Dryad/Zenodo identity,

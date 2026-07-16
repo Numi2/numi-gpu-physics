@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 12,
+  "schemaVersion": 13,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
-  "scientificStatus": "solver contract implemented; indexed experimental geometry, production impulse coupling, and measured force registration accepted; coarse dove pilot localizes a production-TRT failure and two positivity-preserving candidates survive the fixed pre-roll screen; same-specimen biological free-flight input absent",
+  "scientificStatus": "solver contract implemented; indexed experimental geometry, production impulse coupling, and measured force registration accepted; coarse dove pilot localizes a production-TRT failure and both positivity-preserving candidates pass fixed pre-roll stability plus independent momentum closure; same-specimen biological free-flight input absent",
   "solverCapabilities": {
     "measuredCompleteBirdSchema": "measured-bird-v2",
     "prescribedBilateralKinematics": true,
@@ -155,6 +155,8 @@
     "coarseFluidPilotAudit": "ValidationArtifacts/deetjen-dove-coarse-force-pilot-audit.json",
     "collisionPreRollAB": "ValidationArtifacts/deetjen-dove-collision-pre-roll-ab.json",
     "collisionPreRollABAudit": "ValidationArtifacts/deetjen-dove-collision-pre-roll-ab-audit.json",
+    "collisionMomentumClosure": "ValidationArtifacts/deetjen-dove-collision-momentum-closure.json",
+    "collisionMomentumClosureAudit": "ValidationArtifacts/deetjen-dove-collision-momentum-closure-audit.json",
     "selectedBird": "OB",
     "selectedFlight": "2018_12_11_OB_F03",
     "measuredTargets": [
@@ -297,23 +299,45 @@
       "reportSHA256": "35f3424ad67c797cfa45192ca0df36b6b4ce86888d3dd02c1c39f3f40ee52832",
       "auditSHA256": "7b82d794f8000cc48bd619192e9f752b18a7cafc046a66f92c742fa937762c96"
     },
+    "collisionMomentumClosureResult": {
+      "device": "Apple M4",
+      "requestedSteps": 800,
+      "controlVolume": [7, 7, 7, 68, 62, 59],
+      "minimumControlSurfaceDistanceFromSweptSurfaceCells": 5,
+      "minimumControlSurfaceDistanceFromDomainBoundaryCells": 6,
+      "maximumSolidControlSurfaceCrossingLinkCount": 0,
+      "maximumAllowedRelativeRMSClosureResidual": 0.005,
+      "regularizedBGKRelativeRMSControlVolumeResidual": 0.0007944033022869335,
+      "regularizedBGKRelativeRMSGlobalResidual": 0.001145860419901659,
+      "recursiveRegularizedBGKRelativeRMSControlVolumeResidual": 0.0007986957106572706,
+      "recursiveRegularizedBGKRelativeRMSGlobalResidual": 0.001145265871459075,
+      "eligibleCollisionOperators": [
+        "positivity-preserving-regularized-bgk",
+        "positivity-preserving-recursive-regularized-bgk"
+      ],
+      "screeningGatePassed": true,
+      "experimentalAgreementGateApplied": false,
+      "artifactAuditPassed": true,
+      "reportSHA256": "68e0381defc7341a08297b8643da7dc7825f57faf02362372bee3a533bddbb13",
+      "auditSHA256": "8af947eec274f718e717262de5da9973d5ae7d1ab5499357c0676edeb7f71cf4"
+    },
     "quantitativeFreeFlightSchema2Ready": false,
     "reasonFreeFlightRemainsBlocked": "the source assumes bilateral surface symmetry and models the distributed wing mass; same-specimen bilateral wing and registered whole-bird inertia are not measured",
     "antiFabricationRule": "derived lateral force, per-wing loads, or modeled inertia must not be relabeled as experimental measurements",
-    "nextAction": "close both surviving collision candidates against candidate-specific moving-boundary fluid momentum before extending either through the full comparison window"
+    "nextAction": "run the fixed full-window extended pilot for both momentum-closed collision candidates before selecting an operator or allocating a measured-force refinement ladder"
   },
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
-    "nextAction": "continue the Maeda availability request for strict schema 2 while running candidate-specific Deetjen momentum closure for regularized BGK and RR3",
+    "nextAction": "continue the Maeda availability request for strict schema 2 while running the fixed full-window Deetjen extended pilot for both momentum-closed collision candidates",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {
     "date": "2026-07-16",
     "device": "Apple M4",
-    "swiftTestsPassed": 94,
-    "swiftTestRuntimeSeconds": 404.11,
-    "swiftTestCommandWallSeconds": 404.3,
+    "swiftTestsPassed": 95,
+    "swiftTestRuntimeSeconds": 511.639,
+    "swiftTestCommandWallSeconds": 511.8,
     "focusedCoupledMomentumReleaseTestsPassed": 1,
     "focusedCoupledMomentumReleaseRuntimeSeconds": 0.062,
     "focusedSchema2PartLoadArchiveTestsPassed": 1,
@@ -347,6 +371,12 @@
     "deetjenDoveCollisionPreRollABControlFailureReproduced": true,
     "deetjenDoveCollisionPreRollABScreeningPassed": true,
     "deetjenDoveCollisionPreRollABArtifactAuditPassed": true,
-    "deetjenDoveCollisionPreRollABEligibleCandidates": 2
+    "deetjenDoveCollisionPreRollABEligibleCandidates": 2,
+    "deetjenDoveCollisionMomentumClosureExecuted": true,
+    "deetjenDoveCollisionMomentumClosurePassed": true,
+    "deetjenDoveCollisionMomentumClosureArtifactAuditPassed": true,
+    "deetjenDoveCollisionMomentumClosureEligibleCandidates": 2,
+    "focusedDeetjenDoveCollisionMomentumClosureTestsPassed": 1,
+    "focusedDeetjenDoveCollisionMomentumClosureRuntimeSeconds": 15.155
   }
 }

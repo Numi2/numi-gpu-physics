@@ -153,17 +153,64 @@ func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
         MetalIndexedBirdSurfacePilotValidator
             .collisionPreRollMaximumActivationFraction == 0.05
     )
+    #expect(
+        MetalIndexedBirdSurfacePilotValidator
+            .collisionMomentumMaximumRelativeRMSResidual == 0.005
+    )
     let operators = MetalIndexedBirdSurfacePilotValidator
         .collisionPreRollOperators
     #expect(operators.map(\.rawValue) == [
         "production-trt",
         "positivity-preserving-regularized-bgk",
-        "positivity-preserving-recursive-regularized-bgk",
+        "positivity-preserving-recursive-regularized-bgk"
     ])
     #expect(operators.map(\.caseParameterW) == [-1, -3, -4])
+    #expect(
+        MetalIndexedBirdSurfacePilotValidator
+            .collisionMomentumCandidateOperators.map(\.rawValue) == [
+                "positivity-preserving-regularized-bgk",
+                "positivity-preserving-recursive-regularized-bgk"
+            ]
+    )
 }
 
 #if canImport(Metal)
+@Test
+func measuredBirdCollisionCandidatesCloseIndependentMomentumBudgets() throws {
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .collisionMomentumClosure(surface: surface, target: target)
+    #expect(report.screeningGatePassed)
+    #expect(report.allCandidateRunsCompleted)
+    #expect(report.cases.count == 2)
+    #expect(report.eligibleCollisionOperators == [
+        "positivity-preserving-regularized-bgk",
+        "positivity-preserving-recursive-regularized-bgk"
+    ])
+    #expect(report.minimumControlSurfaceDistanceFromSweptSurfaceCells >= 5)
+    #expect(
+        report.minimumControlSurfaceDistanceFromDomainBoundaryCells
+            >= report.spongeWidthCells
+    )
+    for result in report.cases {
+        #expect(result.completedSteps == 800)
+        #expect(result.samples.count == 800)
+        #expect(result.maximumSolidControlSurfaceCrossingLinkCount == 0)
+        #expect(result.sampledPopulationPositivityPassed)
+        #expect(result.momentumClosurePassed)
+        #expect(
+            result.relativeRMSRawControlVolumeClosureResidual <= 0.005
+        )
+        #expect(result.relativeRMSGlobalFluidClosureResidual <= 0.005)
+    }
+}
+
 @Test
 func indexedBirdSurfaceMetalGeometryClosesAllFramesAndCPUMilestones() throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(

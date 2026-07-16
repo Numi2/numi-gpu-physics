@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **Collision screen passed; candidate momentum closure next** | production TRT fails at `4.6875 ms`; regularized BGK and RR3 remain positive through the fixed 800-step pre-roll |
+| Measured dove external-force benchmark | **Candidate momentum closure passed; extended pilot next** | both regularized BGK and RR3 close near-wing/global momentum below `0.12%` through the fixed 800-step pre-roll |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -135,9 +135,21 @@ and independent audit are
 [`deetjen-dove-collision-pre-roll-ab.json`](ValidationArtifacts/deetjen-dove-collision-pre-roll-ab.json)
 and
 [`deetjen-dove-collision-pre-roll-ab-audit.json`](ValidationArtifacts/deetjen-dove-collision-pre-roll-ab-audit.json).
-Both candidates are eligible only for a candidate-specific momentum-closure
-gate and extended pilot. Neither is promoted to measured-bird production, and
-no measured-force ladder should run yet.
+Both candidates then replayed the same 800 steps with a fixed control surface
+five cells outside the swept bird and outside the six-cell sponge. The
+conservative load closed against independent momentum storage plus surface flux
+at `0.07944%` relative RMS for regularized BGK and `0.07987%` for RR3. A second
+whole-domain before/after fluid ledger, corrected only for measured far-field
+and sponge impulse, closed at `0.11459%` and `0.11453%`. No solid crossed the
+control surface. The complete histories and independently reconstructed
+arithmetic are
+[`deetjen-dove-collision-momentum-closure.json`](ValidationArtifacts/deetjen-dove-collision-momentum-closure.json)
+and
+[`deetjen-dove-collision-momentum-closure-audit.json`](ValidationArtifacts/deetjen-dove-collision-momentum-closure-audit.json).
+Both candidates advance to the fixed extended pilot; the lower RR3 activation
+count is not used as a post-hoc promotion rule. Neither operator is yet the
+measured-bird production default, and no measured-force refinement ladder
+should run before the extended pilot completes.
 
 ## Latest high-Re result
 

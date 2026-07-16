@@ -1223,8 +1223,33 @@ cell-steps (`2.013e-7`); RR3 activates in 28 (`1.025e-7`), both below the fixed
 `ValidationArtifacts/deetjen-dove-collision-pre-roll-ab.json` and
 `ValidationArtifacts/deetjen-dove-collision-pre-roll-ab-audit.json`.
 This is a stability screen, not collision promotion. The next admissible step
-is candidate-specific momentum closure for both survivors, followed by an
-extended pilot—not the measured-force refinement ladder.
+is candidate-specific momentum closure for both survivors, not the measured-
+force refinement ladder.
+
+Run that locked closure with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-momentum-closure \
+  --archive ValidationArtifacts/deetjen-dove-collision-momentum-closure.json \
+  --json
+
+python3 Scripts/audit-dove-collision-momentum-closure.py
+```
+
+Both candidates complete the same 800 steps with positive populations and
+finite loads. The fixed `[7,68) x [7,62) x [7,59)` control volume remains five
+cells outside the swept surface, outside the six-cell sponge, with zero solid-
+crossing links. Regularized BGK and RR3 close raw momentum storage plus surface
+flux against the conservative boundary load at `7.944e-4` and `7.987e-4`
+relative RMS. The separate whole-domain fluid/source ledger closes at
+`1.1459e-3` and `1.1453e-3`. All results clear the unchanged `0.005` threshold,
+and the independent audit reconstructs all 1,600 step samples and summary
+statistics. This accepts momentum consistency only. Both candidates advance to
+the fixed extended pilot; the RR3 activation advantage is not a production-
+selection rule, and experimental agreement/refinement remain deferred.
 
 ## 8. Complete measured bird
 

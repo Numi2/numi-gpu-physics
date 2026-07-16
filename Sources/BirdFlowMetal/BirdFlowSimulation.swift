@@ -218,7 +218,8 @@ final class CoupledMomentumDiagnosticResources {
         solidPrevious: MTLBuffer,
         solidCurrent: MTLBuffer,
         wallVelocity: MTLBuffer,
-        uniforms: inout GPUUniforms
+        uniforms: inout GPUUniforms,
+        advanceSolidPrevious: MTLBuffer? = nil
     ) throws -> ExternalFluidSourceCapture {
         guard let commandBuffer = backend.queue.makeCommandBuffer(),
               let encoder = commandBuffer.makeComputeCommandEncoder() else {
@@ -249,6 +250,21 @@ final class CoupledMomentumDiagnosticResources {
             commandBuffer: commandBuffer,
             initial: sourceA
         )
+        if let advanceSolidPrevious {
+            guard let blit = commandBuffer.makeBlitCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to advance the coupled momentum mask."
+                )
+            }
+            blit.copy(
+                from: solidCurrent,
+                sourceOffset: 0,
+                to: advanceSolidPrevious,
+                destinationOffset: 0,
+                size: solidCurrent.length
+            )
+            blit.endEncoding()
+        }
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
         try check(commandBuffer, operation: "external source capture")
