@@ -578,6 +578,7 @@ def main() -> None:
     for index, (name, evidence, topology) in enumerate(component_specs):
         components.append({
             "name": name,
+            "partIdentifier": index + 1,
             "evidenceClass": evidence,
             "vertexOffset": int(vertex_offsets[index]),
             "vertexCount": vertex_counts[index],

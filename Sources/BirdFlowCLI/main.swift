@@ -128,6 +128,84 @@ private struct Arguments {
     Measured prescribed replay:
       birdflow replay measured-bird --input DATASET.json [--audit-only] [--json]
       birdflow replay measured-wing --input SURFACE.json [--fluid-cycle] [--json]
+      birdflow replay measured-bird-surface --input MANIFEST.json [--archive FILE] [--json]
+    """
+}
+
+private struct MeasuredBirdSurfaceReplayArguments {
+    var inputPath: String?
+    var archivePath: String?
+    var cellSizeMeters: Float = 0.01
+    var halfThicknessCells: Float = 0.75
+    var json = false
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--input":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--input requires an indexed surface manifest path"
+                    )
+                }
+                inputPath = values[index]
+            case "--archive":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output JSON path"
+                    )
+                }
+                archivePath = values[index]
+            case "--cell-size-meters":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value.isFinite,
+                      value > 0 else {
+                    throw CLIError.invalidArgument(
+                        "--cell-size-meters requires a positive finite value"
+                    )
+                }
+                cellSizeMeters = value
+            case "--half-thickness-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      (0.5...2).contains(value) else {
+                    throw CLIError.invalidArgument(
+                        "--half-thickness-cells requires a value in [0.5, 2]"
+                    )
+                }
+                halfThicknessCells = value
+            case "--json":
+                json = true
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown measured-bird-surface replay option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+        guard inputPath != nil else {
+            throw CLIError.invalidArgument(
+                "measured-bird-surface replay requires --input MANIFEST.json"
+            )
+        }
+    }
+
+    static let help = """
+    birdflow replay measured-bird-surface --input MANIFEST.json [options]
+
+      --cell-size-meters V      Geometry-audit cell size (default: 0.01)
+      --half-thickness-cells V  Sheet half-thickness (default: 0.75)
+      --archive FILE            Atomically archive the parity report as JSON
+      --json                    Emit the machine-readable parity report
     """
 }
 
@@ -1691,6 +1769,53 @@ private func runMeasuredWingReplay(_ values: [String]) throws {
     }
 }
 
+private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
+    let arguments = try MeasuredBirdSurfaceReplayArguments(values)
+    let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: URL(fileURLWithPath: arguments.inputPath!)
+    )
+    let report = try MetalIndexedBirdSurfaceValidator.audit(
+        dataset,
+        cellSizeMeters: arguments.cellSizeMeters,
+        halfThicknessCells: arguments.halfThicknessCells
+    )
+    if let archivePath = arguments.archivePath {
+        try writeJSON(report, to: archivePath)
+    }
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("dataset: \(report.datasetIdentifier)")
+        print("device: \(report.deviceName)")
+        print("frames: \(report.frameCount)")
+        print("vertices_per_frame: \(report.vertexCount)")
+        print("triangles: \(report.triangleCount)")
+        print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+        print("runtime_s: \(report.runtimeSeconds)")
+        print(
+            "maximum_prepared_position_error_m: "
+                + String(report.maximumPreparedPositionErrorMeters)
+        )
+        print(
+            "maximum_prepared_velocity_error_mps: "
+                + String(report.maximumPreparedVelocityErrorMetersPerSecond)
+        )
+        print(
+            "maximum_cpu_mask_mismatch_cells: "
+                + String(report.maximumCPUMaskMismatchCellCount)
+        )
+        print("all_components_present: \(report.allComponentsPresentEveryFrame)")
+        print("fluid_collision_executed: \(report.fluidCollisionExecuted)")
+        print("force_accumulation_executed: \(report.forceAccumulationExecuted)")
+        print("passed: \(report.passed)")
+    }
+    guard report.passed else {
+        throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+            "indexed Metal geometry parity gate failed"
+        )
+    }
+}
+
 private func printShearWaveReport(
     _ report: MetalShearWaveValidationReport
 ) {
@@ -2719,7 +2844,7 @@ private func run(_ values: [String]) throws {
     } else if values.count > 1, values[1] == "replay" {
         guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow replay <measured-bird|measured-wing> --input DATASET.json [options]"
+                "Use: birdflow replay <measured-bird|measured-wing|measured-bird-surface> --input DATASET.json [options]"
             )
         }
         switch values[2] {
@@ -2727,9 +2852,11 @@ private func run(_ values: [String]) throws {
             try runMeasuredBirdReplay(values)
         case "measured-wing":
             try runMeasuredWingReplay(values)
+        case "measured-bird-surface":
+            try runMeasuredBirdSurfaceReplay(values)
         default:
             throw CLIError.invalidArgument(
-                "Use: birdflow replay <measured-bird|measured-wing> --input DATASET.json [options]"
+                "Use: birdflow replay <measured-bird|measured-wing|measured-bird-surface> --input DATASET.json [options]"
             )
         }
     } else {

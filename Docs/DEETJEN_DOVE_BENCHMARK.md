@@ -95,7 +95,7 @@ It deliberately recorded BirdFlow coordinate registration, topology conversion,
 and force sign/axis promotion as false at that stage. Decoding a field is not
 the same as proving its physical mapping.
 
-## Compact complete-surface gate
+## Compact complete-surface gates
 
 The next CPU-only gate is complete. The converter writes 144 non-periodic
 laboratory-frame samples with 2,157 vertices per frame and one fixed 3,968-
@@ -135,9 +135,28 @@ python3 Scripts/audit-dove-surface-sequence.py \
   --output ValidationArtifacts/deetjen-dove-surface-cpu-parity.json
 ```
 
-This proves conversion and wall-velocity input quality only. Metal occupancy,
-fluid loads, force-axis/sign closure, repeatability across five flights, and
-numerical refinement remain open.
+Run the separate geometry-only Metal gate after the CPU artifact passes:
+
+```bash
+swift run birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --archive ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json
+```
+
+On Apple M4, all 144 frames plus five fractional-time interpolation probes
+complete in `7.02 s` on a `59 x 53 x 50` grid. The host selects the common
+interpolation interval once, avoiding the same timestamp scan in all 2,157
+vertex threads. Strict Metal interpolation differs from the CPU reference by at
+most `1.669e-8 m` in position and `1.907e-6 m/s` in vertex velocity. Five exact
+CPU raster milestones have zero mask mismatches, `2.182e-5` maximum lattice
+wall-velocity difference, and `1.574e-5` maximum signed-distance difference in
+cell units. Body, both wings, and tail remain present in every frame and probe.
+
+This closes conversion plus indexed Metal interpolation, component masks,
+rasterization, and occupied-cell wall velocity. The gate allocates no fluid
+populations and dispatches neither collision nor force accumulation. Fluid
+loads, force-axis/sign closure, repeatability across five flights, and numerical
+refinement remain open.
 
 ## Reproducible acquisition
 

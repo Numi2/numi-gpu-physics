@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **Surface CPU gate accepted; Metal/force open** | fixed 144-frame complete surface has 2,157 vertices and 3,968 triangles; independent source/area/bounds/wall-speed parity passes |
+| Measured dove external-force benchmark | **CPU + Metal geometry accepted; fluid/force open** | all 144 indexed frames preserve four components with exact CPU/GPU occupancy; position error including fractional-time probes is `1.67e-8 m` |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -68,6 +68,15 @@ limit. Independent CPU reconstruction passes every binary, topology, area,
 coordinate-bound, and adjacent-frame wall-speed check; the exact artifacts are
 [`manifest.json`](ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json) and
 [`deetjen-dove-surface-cpu-parity.json`](ValidationArtifacts/deetjen-dove-surface-cpu-parity.json).
+The geometry-only Apple M4 replay then dispatches the generic indexed Metal
+prepare/raster/resolve path for all 144 frames on a `59 x 53 x 50` grid. It
+preserves all four components every frame, matches CPU occupancy exactly at five
+milestones, and bounds wall-velocity and signed-distance differences by
+`2.182e-5` lattice and `1.574e-5` cells. Five additional fractional-time probes
+exercise interpolation between stored frames. The archived 7.02-second result is
+[`deetjen-dove-indexed-metal-geometry.json`](ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json).
+It deliberately executes no collision or force kernel, so aerodynamic agreement
+remains open.
 
 ## Latest high-Re result
 

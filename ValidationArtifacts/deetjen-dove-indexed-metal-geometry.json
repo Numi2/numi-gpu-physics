@@ -1,0 +1,2514 @@
+{
+  "allComponentsPresentEveryFrame" : true,
+  "allValuesFinite" : true,
+  "cellSizeMeters" : 0.009999999776482582,
+  "claimBoundary" : "This geometry-only gate closes indexed loading, non-periodic interpolation, component occupancy, rasterization, and wall velocity. It executes no fluid collision or force accumulation and implies no aerodynamic agreement.",
+  "cpuRasterMilestoneFrames" : [
+    0,
+    33,
+    89,
+    126,
+    143
+  ],
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "deviceName" : "Apple M4",
+  "fluidCollisionExecuted" : false,
+  "forceAccumulationExecuted" : false,
+  "fractionalInterpolationProbeTimesSeconds" : [
+    0.0005000000237487257,
+    0.03350000083446503,
+    0.08950000256299973,
+    0.12650001049041748,
+    0.14250001311302185
+  ],
+  "frameAudits" : [
+    {
+      "componentSolidCellCounts" : [
+        463,
+        382,
+        386,
+        592
+      ],
+      "cpuMaskMismatchCellCount" : 0,
+      "cpuRasterCompared" : true,
+      "frameIndex" : 0,
+      "maximumCPUSignedDistanceDifferenceCells" : 1.5735626220703125e-05,
+      "maximumCPUWallVelocityDifferenceLattice" : 2.1818828827235848e-05,
+      "maximumLatticeWallSpeed" : 0.02342613972723484,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "07546354b4c334ad8d8cfd627271ee86f32d0f3e4fb1022836eca567388dd343",
+      "solidCellCount" : 1823,
+      "sourceFrameNumber" : -1943,
+      "timeSeconds" : 0
+    },
+    {
+      "componentSolidCellCounts" : [
+        444,
+        342,
+        318,
+        582
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 1,
+      "maximumLatticeWallSpeed" : 0.02402549795806408,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "9593b2532bd21ce1e761361dd67a3f965c8e878d1062fbd33075b5945a8c0b1a",
+      "solidCellCount" : 1686,
+      "sourceFrameNumber" : -1942,
+      "timeSeconds" : 0.0010000000474974513
+    },
+    {
+      "componentSolidCellCounts" : [
+        440,
+        319,
+        306,
+        579
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 2,
+      "maximumLatticeWallSpeed" : 0.02444855310022831,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "bb1e36e43451db68958dd1e6878d80798911bfa849f2ad78d5d4b2344c21eae0",
+      "solidCellCount" : 1644,
+      "sourceFrameNumber" : -1941,
+      "timeSeconds" : 0.0020000000949949026
+    },
+    {
+      "componentSolidCellCounts" : [
+        434,
+        302,
+        309,
+        575
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 3,
+      "maximumLatticeWallSpeed" : 0.02475711703300476,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "3b34b626fe3a385fa4e61ec03fac2e015aa17e5e719b0b4142d6cbe07967aa10",
+      "solidCellCount" : 1620,
+      "sourceFrameNumber" : -1940,
+      "timeSeconds" : 0.003000000026077032
+    },
+    {
+      "componentSolidCellCounts" : [
+        444,
+        291,
+        287,
+        566
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 4,
+      "maximumLatticeWallSpeed" : 0.025093691423535347,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "6a46a42b348ce26e22ead4ef138756642c6539fe1992c6f3fb2542a1b217400f",
+      "solidCellCount" : 1588,
+      "sourceFrameNumber" : -1939,
+      "timeSeconds" : 0.004000000189989805
+    },
+    {
+      "componentSolidCellCounts" : [
+        443,
+        279,
+        286,
+        572
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 5,
+      "maximumLatticeWallSpeed" : 0.02618533745408058,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "0c865a0425a83a859b4b86183f1c105cbaa22dcafd7be2222391ec573a597ec6",
+      "solidCellCount" : 1580,
+      "sourceFrameNumber" : -1938,
+      "timeSeconds" : 0.004999999888241291
+    },
+    {
+      "componentSolidCellCounts" : [
+        451,
+        288,
+        271,
+        556
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 6,
+      "maximumLatticeWallSpeed" : 0.02733263187110424,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "73152ad23e5a78c4a586ca5903cd42d7f2a29a77f5b77fc13667accbccabad54",
+      "solidCellCount" : 1566,
+      "sourceFrameNumber" : -1937,
+      "timeSeconds" : 0.006000000052154064
+    },
+    {
+      "componentSolidCellCounts" : [
+        450,
+        271,
+        278,
+        551
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 7,
+      "maximumLatticeWallSpeed" : 0.02863154746592045,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.1680077705022995e-06,
+      "occupancySHA256" : "2821b80bf2b62091d9000ba7dbf50aae02a3d1d6550cebe405f388c5f1759800",
+      "solidCellCount" : 1550,
+      "sourceFrameNumber" : -1936,
+      "timeSeconds" : 0.007000000216066837
+    },
+    {
+      "componentSolidCellCounts" : [
+        451,
+        288,
+        277,
+        545
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 8,
+      "maximumLatticeWallSpeed" : 0.02999868057668209,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.1680077705022995e-06,
+      "occupancySHA256" : "290efda0be24791baa9dc6f8a337d0025f16f77fddcf329d75330f3ab387892c",
+      "solidCellCount" : 1561,
+      "sourceFrameNumber" : -1935,
+      "timeSeconds" : 0.00800000037997961
+    },
+    {
+      "componentSolidCellCounts" : [
+        465,
+        255,
+        296,
+        539
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 9,
+      "maximumLatticeWallSpeed" : 0.03093678690493107,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "ad3c6a7a55f004de7ba038230c33c19d227b2b7dd52cecfab5617dba13cee3c9",
+      "solidCellCount" : 1555,
+      "sourceFrameNumber" : -1934,
+      "timeSeconds" : 0.008999999612569809
+    },
+    {
+      "componentSolidCellCounts" : [
+        456,
+        288,
+        272,
+        527
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 10,
+      "maximumLatticeWallSpeed" : 0.03193223476409912,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "fe5becfdb56b815dc98175342d143081ba80190557e72aded5b43c2efc4d401e",
+      "solidCellCount" : 1543,
+      "sourceFrameNumber" : -1933,
+      "timeSeconds" : 0.009999999776482582
+    },
+    {
+      "componentSolidCellCounts" : [
+        462,
+        276,
+        264,
+        532
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 11,
+      "maximumLatticeWallSpeed" : 0.03169509768486023,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5413986400672e-07,
+      "occupancySHA256" : "47374a53d876af5447b84b5823913dd28a7708cb7065b9cc18572563346ff9d0",
+      "solidCellCount" : 1534,
+      "sourceFrameNumber" : -1932,
+      "timeSeconds" : 0.010999999940395355
+    },
+    {
+      "componentSolidCellCounts" : [
+        457,
+        283,
+        277,
+        528
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 12,
+      "maximumLatticeWallSpeed" : 0.03188718110322952,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "9dbd0076d71a087cf555b4f78af7d91b20da2c11df4d91c1e59b9bfa0c594bb4",
+      "solidCellCount" : 1545,
+      "sourceFrameNumber" : -1931,
+      "timeSeconds" : 0.012000000104308128
+    },
+    {
+      "componentSolidCellCounts" : [
+        452,
+        283,
+        286,
+        526
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 13,
+      "maximumLatticeWallSpeed" : 0.03182723745703697,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "aa2a0ae41b20d34b0df23b13bec370013de3b9ece4a15406e22664eb02ae0c8e",
+      "solidCellCount" : 1547,
+      "sourceFrameNumber" : -1930,
+      "timeSeconds" : 0.013000000268220901
+    },
+    {
+      "componentSolidCellCounts" : [
+        453,
+        290,
+        286,
+        531
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 14,
+      "maximumLatticeWallSpeed" : 0.032331109046936035,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "65ab4c3e5e832c56bf66d23eb7751ef64169da832049ee24bb4c283824a2b4c3",
+      "solidCellCount" : 1560,
+      "sourceFrameNumber" : -1929,
+      "timeSeconds" : 0.014000000432133675
+    },
+    {
+      "componentSolidCellCounts" : [
+        464,
+        284,
+        277,
+        523
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 15,
+      "maximumLatticeWallSpeed" : 0.03323505446314812,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "74b1573b2b8e64bf546e4e5347e8c98a2235e5e8fda44b5ef376104b97a1a29e",
+      "solidCellCount" : 1548,
+      "sourceFrameNumber" : -1928,
+      "timeSeconds" : 0.014999999664723873
+    },
+    {
+      "componentSolidCellCounts" : [
+        474,
+        287,
+        277,
+        524
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 16,
+      "maximumLatticeWallSpeed" : 0.03369355574250221,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "b8d50cb036f8432345487836d878985bd815cc65a7e4a914a8768c45e5df1161",
+      "solidCellCount" : 1562,
+      "sourceFrameNumber" : -1927,
+      "timeSeconds" : 0.01600000075995922
+    },
+    {
+      "componentSolidCellCounts" : [
+        473,
+        276,
+        279,
+        522
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 17,
+      "maximumLatticeWallSpeed" : 0.03365424647927284,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0728836059570312e-06,
+      "occupancySHA256" : "332855f8dd66d56c5410c10998d7c4b06c7b3dac226e86700fb43adfcc950786",
+      "solidCellCount" : 1550,
+      "sourceFrameNumber" : -1926,
+      "timeSeconds" : 0.017000000923871994
+    },
+    {
+      "componentSolidCellCounts" : [
+        474,
+        273,
+        271,
+        518
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 18,
+      "maximumLatticeWallSpeed" : 0.032929472625255585,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "b31c160fb58f2fd9a5cbd373c9a3713a69af98d07af2859b1b847069cf815985",
+      "solidCellCount" : 1536,
+      "sourceFrameNumber" : -1925,
+      "timeSeconds" : 0.017999999225139618
+    },
+    {
+      "componentSolidCellCounts" : [
+        471,
+        253,
+        258,
+        512
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 19,
+      "maximumLatticeWallSpeed" : 0.031257301568984985,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "3226afad8aba4526703ecaea8add35093b67e8461da120a69243a602b603cf27",
+      "solidCellCount" : 1494,
+      "sourceFrameNumber" : -1924,
+      "timeSeconds" : 0.01899999938905239
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        265,
+        266,
+        543
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 20,
+      "maximumLatticeWallSpeed" : 0.02917560748755932,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.3486991292666062e-06,
+      "occupancySHA256" : "69b18aaf54061dada4ae5fabb62359162c23eaab638f07b7da5859782a1067a5",
+      "solidCellCount" : 1543,
+      "sourceFrameNumber" : -1923,
+      "timeSeconds" : 0.019999999552965164
+    },
+    {
+      "componentSolidCellCounts" : [
+        468,
+        262,
+        263,
+        546
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 21,
+      "maximumLatticeWallSpeed" : 0.027862681075930595,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "019cf4db975f5d75428619f73d2e3c6e12581c595f62275cd11941a54bea7f96",
+      "solidCellCount" : 1539,
+      "sourceFrameNumber" : -1922,
+      "timeSeconds" : 0.020999999716877937
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        260,
+        263,
+        508
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 22,
+      "maximumLatticeWallSpeed" : 0.025635642930865288,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "1b90dad872f33df1cb6529d4e4c70d60799d7f19da90752e423626ef4c9fb420",
+      "solidCellCount" : 1490,
+      "sourceFrameNumber" : -1921,
+      "timeSeconds" : 0.02199999988079071
+    },
+    {
+      "componentSolidCellCounts" : [
+        462,
+        269,
+        263,
+        518
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 23,
+      "maximumLatticeWallSpeed" : 0.023286035284399986,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "e1e02d815ef45a0a8af0265bae1fb4384ab3273b8a17d2f2240e99abc02bb352",
+      "solidCellCount" : 1512,
+      "sourceFrameNumber" : -1920,
+      "timeSeconds" : 0.023000000044703484
+    },
+    {
+      "componentSolidCellCounts" : [
+        457,
+        269,
+        263,
+        513
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 24,
+      "maximumLatticeWallSpeed" : 0.021193739026784897,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.848052294117224e-07,
+      "occupancySHA256" : "3fa1866ceefa2efcc5b5a16fa9338ae5d5b2d49ae0c7900accab18be834e0ad2",
+      "solidCellCount" : 1502,
+      "sourceFrameNumber" : -1919,
+      "timeSeconds" : 0.024000000208616257
+    },
+    {
+      "componentSolidCellCounts" : [
+        451,
+        283,
+        279,
+        509
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 25,
+      "maximumLatticeWallSpeed" : 0.019510358572006226,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "5c32b0dc3fc2d6d28f165797086d069ef806514e8f42abc52b5e01a0badf0a9b",
+      "solidCellCount" : 1522,
+      "sourceFrameNumber" : -1918,
+      "timeSeconds" : 0.02500000037252903
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        260,
+        269,
+        509
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 26,
+      "maximumLatticeWallSpeed" : 0.018554577603936195,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "6154a3fdc66bcbae8b992632c8d8c7a7f400422d11623c7c22d0a29bd320fa96",
+      "solidCellCount" : 1497,
+      "sourceFrameNumber" : -1917,
+      "timeSeconds" : 0.026000000536441803
+    },
+    {
+      "componentSolidCellCounts" : [
+        462,
+        274,
+        268,
+        516
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 27,
+      "maximumLatticeWallSpeed" : 0.017570359632372856,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "cda9206fc39351a25bdc29051b4da3bb320573806e1abb8b3e21cce7d340be96",
+      "solidCellCount" : 1520,
+      "sourceFrameNumber" : -1916,
+      "timeSeconds" : 0.027000000700354576
+    },
+    {
+      "componentSolidCellCounts" : [
+        454,
+        272,
+        270,
+        515
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 28,
+      "maximumLatticeWallSpeed" : 0.01591927744448185,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "f66a6b6bceec7dae2283c7ea1da9fc5597910febc326450e9a767ff5c5385fa8",
+      "solidCellCount" : 1511,
+      "sourceFrameNumber" : -1915,
+      "timeSeconds" : 0.02800000086426735
+    },
+    {
+      "componentSolidCellCounts" : [
+        461,
+        275,
+        286,
+        509
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 29,
+      "maximumLatticeWallSpeed" : 0.01464580837637186,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "aa6a1f25efeee74344bed1ac52545bf020bd55d5929d8b464f2d14d54721e8d9",
+      "solidCellCount" : 1531,
+      "sourceFrameNumber" : -1914,
+      "timeSeconds" : 0.028999999165534973
+    },
+    {
+      "componentSolidCellCounts" : [
+        456,
+        283,
+        280,
+        506
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 30,
+      "maximumLatticeWallSpeed" : 0.013642076402902603,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "f2a657c727e4d3ce457890b8dd6927129c8ca8a45cccd627acc95a427422d3c9",
+      "solidCellCount" : 1525,
+      "sourceFrameNumber" : -1913,
+      "timeSeconds" : 0.029999999329447746
+    },
+    {
+      "componentSolidCellCounts" : [
+        463,
+        287,
+        302,
+        512
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 31,
+      "maximumLatticeWallSpeed" : 0.013897054828703403,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "31f8970f1e96d3a1694fe3b6a780f3eeef17cb128658c13f79707706d6e6ef99",
+      "solidCellCount" : 1564,
+      "sourceFrameNumber" : -1912,
+      "timeSeconds" : 0.03099999949336052
+    },
+    {
+      "componentSolidCellCounts" : [
+        457,
+        305,
+        315,
+        514
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 32,
+      "maximumLatticeWallSpeed" : 0.013527076691389084,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.76837158203125e-07,
+      "occupancySHA256" : "8c728397016dd841c522cb35dc3886457c62217b2ddd5b40123b0880137480a5",
+      "solidCellCount" : 1591,
+      "sourceFrameNumber" : -1911,
+      "timeSeconds" : 0.03200000151991844
+    },
+    {
+      "componentSolidCellCounts" : [
+        454,
+        323,
+        331,
+        501
+      ],
+      "cpuMaskMismatchCellCount" : 0,
+      "cpuRasterCompared" : true,
+      "frameIndex" : 33,
+      "maximumCPUSignedDistanceDifferenceCells" : 1.52587890625e-05,
+      "maximumCPUWallVelocityDifferenceLattice" : 7.293399217900287e-09,
+      "maximumLatticeWallSpeed" : 0.012779967859387398,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "00d8730e2ddda2210b68f5c7d416106ce48c3bc16ad47957e4c698e05dc26b6c",
+      "solidCellCount" : 1609,
+      "sourceFrameNumber" : -1910,
+      "timeSeconds" : 0.032999999821186066
+    },
+    {
+      "componentSolidCellCounts" : [
+        460,
+        317,
+        329,
+        506
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 34,
+      "maximumLatticeWallSpeed" : 0.01263042725622654,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.462856051963172e-07,
+      "occupancySHA256" : "bd899e5e101cc0dad9ba55c46d7118b754ff01c40b16869dd36cda5ac60f84a7",
+      "solidCellCount" : 1612,
+      "sourceFrameNumber" : -1909,
+      "timeSeconds" : 0.03400000184774399
+    },
+    {
+      "componentSolidCellCounts" : [
+        463,
+        336,
+        333,
+        500
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 35,
+      "maximumLatticeWallSpeed" : 0.012128305621445179,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "fce1d195c2ae6313d162202e6ac72eb00ce1e7080916e2658f6cae0b3a434bf5",
+      "solidCellCount" : 1632,
+      "sourceFrameNumber" : -1908,
+      "timeSeconds" : 0.03500000014901161
+    },
+    {
+      "componentSolidCellCounts" : [
+        456,
+        346,
+        341,
+        505
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 36,
+      "maximumLatticeWallSpeed" : 0.011243926361203194,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.7706993200336e-07,
+      "occupancySHA256" : "0c09b7e47af08a04483005f8975bcd90dba253dc531d2de3b970e74d28a9b6b6",
+      "solidCellCount" : 1648,
+      "sourceFrameNumber" : -1907,
+      "timeSeconds" : 0.035999998450279236
+    },
+    {
+      "componentSolidCellCounts" : [
+        458,
+        344,
+        354,
+        500
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 37,
+      "maximumLatticeWallSpeed" : 0.0099465511739254,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.924151539853483e-07,
+      "occupancySHA256" : "6fca71e5aa809f4844aaed2e0d297a001a0560636820d8f4698dfd3edfcc10e5",
+      "solidCellCount" : 1656,
+      "sourceFrameNumber" : -1906,
+      "timeSeconds" : 0.03700000047683716
+    },
+    {
+      "componentSolidCellCounts" : [
+        460,
+        363,
+        346,
+        501
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 38,
+      "maximumLatticeWallSpeed" : 0.010199204087257385,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.915124804938387e-07,
+      "occupancySHA256" : "bf752446f70d4f6d5106885a36bb2198f96a02104759cb569ad08059d0451017",
+      "solidCellCount" : 1670,
+      "sourceFrameNumber" : -1905,
+      "timeSeconds" : 0.03799999877810478
+    },
+    {
+      "componentSolidCellCounts" : [
+        460,
+        362,
+        357,
+        496
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 39,
+      "maximumLatticeWallSpeed" : 0.010908745229244232,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.915124804938387e-07,
+      "occupancySHA256" : "9875dd072ec62dcd9e44d92918b7ec1c8d62c98baeddcd4bd8ee42626c75f88e",
+      "solidCellCount" : 1675,
+      "sourceFrameNumber" : -1904,
+      "timeSeconds" : 0.039000000804662704
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        364,
+        366,
+        491
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 40,
+      "maximumLatticeWallSpeed" : 0.012398116290569305,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.462856051963172e-07,
+      "occupancySHA256" : "3f1e0c8e2e4b6d2072233b008ce8a79d7192883f1bc6ed3ccf27f74eb2245652",
+      "solidCellCount" : 1680,
+      "sourceFrameNumber" : -1903,
+      "timeSeconds" : 0.03999999910593033
+    },
+    {
+      "componentSolidCellCounts" : [
+        450,
+        372,
+        369,
+        495
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 41,
+      "maximumLatticeWallSpeed" : 0.01367141678929329,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "e1b85b7d0b1e5aad5155795ed3f95d80fce82d8c9145ce07cc4fddafdc44bcdd",
+      "solidCellCount" : 1686,
+      "sourceFrameNumber" : -1902,
+      "timeSeconds" : 0.04100000113248825
+    },
+    {
+      "componentSolidCellCounts" : [
+        455,
+        361,
+        370,
+        480
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 42,
+      "maximumLatticeWallSpeed" : 0.014974178746342659,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "98535c97d6236eef6e02baec41c3da2d3e8ac72661c13457e241bafc71573bc8",
+      "solidCellCount" : 1666,
+      "sourceFrameNumber" : -1901,
+      "timeSeconds" : 0.041999999433755875
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        374,
+        364,
+        470
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 43,
+      "maximumLatticeWallSpeed" : 0.01576991379261017,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.915124804938387e-07,
+      "occupancySHA256" : "6e5bfd924c36fc3786bd57d7e689a3a92e977f123c1c264d6a7ece7be8170c66",
+      "solidCellCount" : 1667,
+      "sourceFrameNumber" : -1900,
+      "timeSeconds" : 0.0430000014603138
+    },
+    {
+      "componentSolidCellCounts" : [
+        466,
+        383,
+        384,
+        464
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 44,
+      "maximumLatticeWallSpeed" : 0.016689768061041832,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.848052294117224e-07,
+      "occupancySHA256" : "bab3d650f141ea0ccb40e720b299dd8f4bf4fdd78f9b462ded76faa4048d8b2e",
+      "solidCellCount" : 1697,
+      "sourceFrameNumber" : -1899,
+      "timeSeconds" : 0.04399999976158142
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        378,
+        381,
+        454
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 45,
+      "maximumLatticeWallSpeed" : 0.018055342137813568,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "6b865ec33baa5f292cb3e6cd79b65b204ddb7404a1594e7281f0d8c6c571c8d3",
+      "solidCellCount" : 1682,
+      "sourceFrameNumber" : -1898,
+      "timeSeconds" : 0.04500000178813934
+    },
+    {
+      "componentSolidCellCounts" : [
+        457,
+        386,
+        375,
+        443
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 46,
+      "maximumLatticeWallSpeed" : 0.01920393295586109,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "44111a2d32da13b5357022b34eae47ea309ab69d9472fe4972c4305f6919729c",
+      "solidCellCount" : 1661,
+      "sourceFrameNumber" : -1897,
+      "timeSeconds" : 0.04600000008940697
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        382,
+        385,
+        444
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 47,
+      "maximumLatticeWallSpeed" : 0.019490135833621025,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "416c08cd8c3b07620cbbbd9cc12a08ae465cee4c9e8ca2cd873aca20ecc83020",
+      "solidCellCount" : 1670,
+      "sourceFrameNumber" : -1896,
+      "timeSeconds" : 0.04699999839067459
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        397,
+        384,
+        436
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 48,
+      "maximumLatticeWallSpeed" : 0.01989901065826416,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.848052294117224e-07,
+      "occupancySHA256" : "a46c4838c541856bc1a9fe6dba20ddde351cb4a92ebee6386b2adb134a21636f",
+      "solidCellCount" : 1686,
+      "sourceFrameNumber" : -1895,
+      "timeSeconds" : 0.04800000041723251
+    },
+    {
+      "componentSolidCellCounts" : [
+        457,
+        384,
+        393,
+        441
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 49,
+      "maximumLatticeWallSpeed" : 0.020809441804885864,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "d47156e52f5950c2220fd4f5166d94d418f5b8895962398d50f89b0b11e1778d",
+      "solidCellCount" : 1675,
+      "sourceFrameNumber" : -1894,
+      "timeSeconds" : 0.04899999871850014
+    },
+    {
+      "componentSolidCellCounts" : [
+        452,
+        402,
+        413,
+        441
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 50,
+      "maximumLatticeWallSpeed" : 0.022987138479948044,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "5f9c59f0943f3fb40cbe86a275f3662b253bca44a001be43ee66d0094a1b20f0",
+      "solidCellCount" : 1708,
+      "sourceFrameNumber" : -1893,
+      "timeSeconds" : 0.05000000074505806
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        411,
+        414,
+        443
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 51,
+      "maximumLatticeWallSpeed" : 0.024243442341685295,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "31e85636dd8dd3f8b5c521b2468bba64c964881b19d911eec28706737f57637a",
+      "solidCellCount" : 1727,
+      "sourceFrameNumber" : -1892,
+      "timeSeconds" : 0.050999999046325684
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        420,
+        417,
+        449
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 52,
+      "maximumLatticeWallSpeed" : 0.023644842207431793,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.1680077705022995e-06,
+      "occupancySHA256" : "c5e483b66281f6567712e46686a21d708d260529f38b2d4cce1a25791a8037a3",
+      "solidCellCount" : 1755,
+      "sourceFrameNumber" : -1891,
+      "timeSeconds" : 0.052000001072883606
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        427,
+        422,
+        452
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 53,
+      "maximumLatticeWallSpeed" : 0.022725587710738182,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 8.259061701210157e-07,
+      "occupancySHA256" : "ee3921a7b816fc4d8dd65e0f41e29a92de02b2311aa7c2286f12f35c1a005347",
+      "solidCellCount" : 1770,
+      "sourceFrameNumber" : -1890,
+      "timeSeconds" : 0.05299999937415123
+    },
+    {
+      "componentSolidCellCounts" : [
+        472,
+        428,
+        421,
+        458
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 54,
+      "maximumLatticeWallSpeed" : 0.023385999724268913,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "d083da020a7bd8c441a839241870cb632bd4297c7ec80fe0c98198018d471d5b",
+      "solidCellCount" : 1779,
+      "sourceFrameNumber" : -1889,
+      "timeSeconds" : 0.05400000140070915
+    },
+    {
+      "componentSolidCellCounts" : [
+        468,
+        423,
+        438,
+        474
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 55,
+      "maximumLatticeWallSpeed" : 0.024971507489681244,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "a71210f53af39e46d97024511cbd07ea9cef0ef6ae7a445caad252cea890e33e",
+      "solidCellCount" : 1803,
+      "sourceFrameNumber" : -1888,
+      "timeSeconds" : 0.054999999701976776
+    },
+    {
+      "componentSolidCellCounts" : [
+        473,
+        424,
+        424,
+        479
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 56,
+      "maximumLatticeWallSpeed" : 0.02469094656407833,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "5d4f83e2f53c2b788e263c0d48b7a8ee8053f4ced0440ac0c7fcaf713e56842d",
+      "solidCellCount" : 1800,
+      "sourceFrameNumber" : -1887,
+      "timeSeconds" : 0.0560000017285347
+    },
+    {
+      "componentSolidCellCounts" : [
+        474,
+        431,
+        424,
+        496
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 57,
+      "maximumLatticeWallSpeed" : 0.02446274273097515,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.555351425660774e-07,
+      "occupancySHA256" : "5f47ac273e1a1b410e5e53486f1501067095f510fc38fd7a43df507f9ab3d08f",
+      "solidCellCount" : 1825,
+      "sourceFrameNumber" : -1886,
+      "timeSeconds" : 0.05700000002980232
+    },
+    {
+      "componentSolidCellCounts" : [
+        465,
+        429,
+        422,
+        499
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 58,
+      "maximumLatticeWallSpeed" : 0.023689307272434235,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "d9baf88c237378fb2600d52abeb1a8f390400166dcbc50f68dd7ce752819e5c7",
+      "solidCellCount" : 1815,
+      "sourceFrameNumber" : -1885,
+      "timeSeconds" : 0.057999998331069946
+    },
+    {
+      "componentSolidCellCounts" : [
+        477,
+        434,
+        447,
+        521
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 59,
+      "maximumLatticeWallSpeed" : 0.02363480068743229,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0679050319595262e-06,
+      "occupancySHA256" : "4a30f51b5a75a56d941ef50b280366706443584a93c9b4e13f31f3bdf797dd89",
+      "solidCellCount" : 1879,
+      "sourceFrameNumber" : -1884,
+      "timeSeconds" : 0.05900000035762787
+    },
+    {
+      "componentSolidCellCounts" : [
+        472,
+        438,
+        411,
+        530
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 60,
+      "maximumLatticeWallSpeed" : 0.022867241874337196,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.1680077705022995e-06,
+      "occupancySHA256" : "4a765fc0f7e568c552e8f3c317d6f8bd436aa5c6637f730c604d519dd7ac6c08",
+      "solidCellCount" : 1851,
+      "sourceFrameNumber" : -1883,
+      "timeSeconds" : 0.05999999865889549
+    },
+    {
+      "componentSolidCellCounts" : [
+        478,
+        431,
+        461,
+        534
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 61,
+      "maximumLatticeWallSpeed" : 0.02459121122956276,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "630162778362fa4e3b6d8c5ed234474fc8ad851d6dca814fb5f2541b604a8791",
+      "solidCellCount" : 1904,
+      "sourceFrameNumber" : -1882,
+      "timeSeconds" : 0.061000000685453415
+    },
+    {
+      "componentSolidCellCounts" : [
+        483,
+        432,
+        424,
+        552
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 62,
+      "maximumLatticeWallSpeed" : 0.026509182527661324,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0679050319595262e-06,
+      "occupancySHA256" : "58ff40ba058a3997def7f5d10a40b4c06683984183da28fe708dc4c1c530a68d",
+      "solidCellCount" : 1891,
+      "sourceFrameNumber" : -1881,
+      "timeSeconds" : 0.06199999898672104
+    },
+    {
+      "componentSolidCellCounts" : [
+        474,
+        436,
+        440,
+        557
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 63,
+      "maximumLatticeWallSpeed" : 0.028631847351789474,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "a22c4edd9406bb9943d6c5c5ccfb1e42a0a9cd99cb7ef8f1a1597c97ddcf14dd",
+      "solidCellCount" : 1907,
+      "sourceFrameNumber" : -1880,
+      "timeSeconds" : 0.06300000101327896
+    },
+    {
+      "componentSolidCellCounts" : [
+        483,
+        406,
+        424,
+        557
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 64,
+      "maximumLatticeWallSpeed" : 0.03139185905456543,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "c67b197fc64714b928a917dd135c51ee5443b3d5410a003703feed5d335a02f6",
+      "solidCellCount" : 1870,
+      "sourceFrameNumber" : -1879,
+      "timeSeconds" : 0.06400000303983688
+    },
+    {
+      "componentSolidCellCounts" : [
+        479,
+        429,
+        444,
+        555
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 65,
+      "maximumLatticeWallSpeed" : 0.029905937612056732,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "64021956c836ba517b269d6ff2f193b0de730999f98734b3243aa7608596b8db",
+      "solidCellCount" : 1907,
+      "sourceFrameNumber" : -1878,
+      "timeSeconds" : 0.06499999761581421
+    },
+    {
+      "componentSolidCellCounts" : [
+        464,
+        412,
+        418,
+        570
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 66,
+      "maximumLatticeWallSpeed" : 0.03245585784316063,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0679050319595262e-06,
+      "occupancySHA256" : "4c373be22be13a0f4e504e728bb6b9bc7a00c65577c2c1e81aeb89289afbb2e6",
+      "solidCellCount" : 1864,
+      "sourceFrameNumber" : -1877,
+      "timeSeconds" : 0.06599999964237213
+    },
+    {
+      "componentSolidCellCounts" : [
+        471,
+        432,
+        431,
+        566
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 67,
+      "maximumLatticeWallSpeed" : 0.03356078267097473,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0925712103926344e-06,
+      "occupancySHA256" : "16e287aa317d8b3ec59ac2079c3aebcd2f70234fea5684a3b9a19f07af73042a",
+      "solidCellCount" : 1900,
+      "sourceFrameNumber" : -1876,
+      "timeSeconds" : 0.06700000166893005
+    },
+    {
+      "componentSolidCellCounts" : [
+        482,
+        425,
+        436,
+        579
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 68,
+      "maximumLatticeWallSpeed" : 0.032106366008520126,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "a9a3ce893c66540768f85e13807da0b4caebde5f06f52cd07389f122e90755ba",
+      "solidCellCount" : 1922,
+      "sourceFrameNumber" : -1875,
+      "timeSeconds" : 0.06800000369548798
+    },
+    {
+      "componentSolidCellCounts" : [
+        474,
+        424,
+        440,
+        576
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 69,
+      "maximumLatticeWallSpeed" : 0.03132802993059158,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0728836059570312e-06,
+      "occupancySHA256" : "2dd37fa0a226ef7c2ac31c816da4b6caecaf814a0537cd762efdc46867af8be4",
+      "solidCellCount" : 1914,
+      "sourceFrameNumber" : -1874,
+      "timeSeconds" : 0.0689999982714653
+    },
+    {
+      "componentSolidCellCounts" : [
+        463,
+        440,
+        438,
+        570
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 70,
+      "maximumLatticeWallSpeed" : 0.028270810842514038,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "f4092473f69e3ac463e0612bf12c74fa5515d36891bdeecd8701376adc9f25d3",
+      "solidCellCount" : 1911,
+      "sourceFrameNumber" : -1873,
+      "timeSeconds" : 0.07000000029802322
+    },
+    {
+      "componentSolidCellCounts" : [
+        467,
+        439,
+        448,
+        570
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 71,
+      "maximumLatticeWallSpeed" : 0.026585660874843597,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "5ebbfb4addc13ffa08bbc956521256e9e8a5425016aad490439c96515f2b4e83",
+      "solidCellCount" : 1924,
+      "sourceFrameNumber" : -1872,
+      "timeSeconds" : 0.07100000232458115
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        428,
+        439,
+        571
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 72,
+      "maximumLatticeWallSpeed" : 0.02461540326476097,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "141ac91321a65f3a9eb51863b2f0385fac94fe314df7f3ebcb0c919f0d6617b6",
+      "solidCellCount" : 1897,
+      "sourceFrameNumber" : -1871,
+      "timeSeconds" : 0.07199999690055847
+    },
+    {
+      "componentSolidCellCounts" : [
+        459,
+        440,
+        453,
+        555
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 73,
+      "maximumLatticeWallSpeed" : 0.02414255030453205,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "f2c727167150ac094118f4b3a3bf69c74068678a53d4b9e943a2fd04b694fba5",
+      "solidCellCount" : 1907,
+      "sourceFrameNumber" : -1870,
+      "timeSeconds" : 0.0729999989271164
+    },
+    {
+      "componentSolidCellCounts" : [
+        466,
+        437,
+        437,
+        549
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 74,
+      "maximumLatticeWallSpeed" : 0.02331635169684887,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "22068771f27fb74881c5b5dd7a7e9a8b542f1ec80e4b891a885828fb07e2ad36",
+      "solidCellCount" : 1889,
+      "sourceFrameNumber" : -1869,
+      "timeSeconds" : 0.07400000095367432
+    },
+    {
+      "componentSolidCellCounts" : [
+        471,
+        445,
+        437,
+        535
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 75,
+      "maximumLatticeWallSpeed" : 0.022893086075782776,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0728836059570312e-06,
+      "occupancySHA256" : "e9a89e99858b48a3a79449e25fae9ad2405944216013bb6f6559efa267953130",
+      "solidCellCount" : 1888,
+      "sourceFrameNumber" : -1868,
+      "timeSeconds" : 0.07500000298023224
+    },
+    {
+      "componentSolidCellCounts" : [
+        458,
+        444,
+        433,
+        541
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 76,
+      "maximumLatticeWallSpeed" : 0.02140360325574875,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "24ceb39b7ef8ed3ab6b4016cfc5bb1a83aed01c81282c75aad47059fb67904fc",
+      "solidCellCount" : 1876,
+      "sourceFrameNumber" : -1867,
+      "timeSeconds" : 0.07599999755620956
+    },
+    {
+      "componentSolidCellCounts" : [
+        451,
+        441,
+        457,
+        522
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 77,
+      "maximumLatticeWallSpeed" : 0.019579583778977394,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.848052294117224e-07,
+      "occupancySHA256" : "7d90baf201f333822f1d8a0a48b51ebaa08c73193024074cfd726da184df51da",
+      "solidCellCount" : 1871,
+      "sourceFrameNumber" : -1866,
+      "timeSeconds" : 0.07699999958276749
+    },
+    {
+      "componentSolidCellCounts" : [
+        443,
+        451,
+        444,
+        524
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 78,
+      "maximumLatticeWallSpeed" : 0.017528636381030083,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "4057d8c845c45e89813ed965aedea801452a44bf750abe0b39df2d1e213f8370",
+      "solidCellCount" : 1862,
+      "sourceFrameNumber" : -1865,
+      "timeSeconds" : 0.07800000160932541
+    },
+    {
+      "componentSolidCellCounts" : [
+        450,
+        464,
+        447,
+        515
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 79,
+      "maximumLatticeWallSpeed" : 0.015077903866767883,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "98c17f5c81a25b9c5e10105395ea3be4081679a2195743bce194331aa5a4be4c",
+      "solidCellCount" : 1876,
+      "sourceFrameNumber" : -1864,
+      "timeSeconds" : 0.07900000363588333
+    },
+    {
+      "componentSolidCellCounts" : [
+        457,
+        460,
+        449,
+        516
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 80,
+      "maximumLatticeWallSpeed" : 0.01324567012488842,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.915124804938387e-07,
+      "occupancySHA256" : "c5ca892d3e943a2d98e24b33845999b71f33e16529d4c13645da800c3cb04acf",
+      "solidCellCount" : 1882,
+      "sourceFrameNumber" : -1863,
+      "timeSeconds" : 0.07999999821186066
+    },
+    {
+      "componentSolidCellCounts" : [
+        455,
+        458,
+        446,
+        509
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 81,
+      "maximumLatticeWallSpeed" : 0.011533430777490139,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "ec1c4e063df31f11484eaa5140d9ae9705a51047123dcaf617f7d7d38202fab8",
+      "solidCellCount" : 1868,
+      "sourceFrameNumber" : -1862,
+      "timeSeconds" : 0.08100000023841858
+    },
+    {
+      "componentSolidCellCounts" : [
+        450,
+        449,
+        453,
+        503
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 82,
+      "maximumLatticeWallSpeed" : 0.011764341965317726,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.951133405484143e-07,
+      "occupancySHA256" : "84e600c069d8a23b6789eb0b212fb60ff25e4c495d039a235c5469bfe6a8cc46",
+      "solidCellCount" : 1855,
+      "sourceFrameNumber" : -1861,
+      "timeSeconds" : 0.0820000022649765
+    },
+    {
+      "componentSolidCellCounts" : [
+        453,
+        454,
+        441,
+        497
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 83,
+      "maximumLatticeWallSpeed" : 0.010992790572345257,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.76837158203125e-07,
+      "occupancySHA256" : "bc42c60d77a285638c09f3c63f3d1392864c258aad4def2ee6f9c28ced0128b6",
+      "solidCellCount" : 1845,
+      "sourceFrameNumber" : -1860,
+      "timeSeconds" : 0.08299999684095383
+    },
+    {
+      "componentSolidCellCounts" : [
+        448,
+        441,
+        418,
+        490
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 84,
+      "maximumLatticeWallSpeed" : 0.010637780651450157,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.915124804938387e-07,
+      "occupancySHA256" : "d21e871c3e8cea023bb34404bc1ec98fa18fda95ed33b611fe754cf72b24dc40",
+      "solidCellCount" : 1797,
+      "sourceFrameNumber" : -1859,
+      "timeSeconds" : 0.08399999886751175
+    },
+    {
+      "componentSolidCellCounts" : [
+        449,
+        422,
+        406,
+        500
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 85,
+      "maximumLatticeWallSpeed" : 0.014460942707955837,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "b92bd189533300b0d900f00bb3ca20cbce73c2df5372076f01c6270cdc95e7e2",
+      "solidCellCount" : 1777,
+      "sourceFrameNumber" : -1858,
+      "timeSeconds" : 0.08500000089406967
+    },
+    {
+      "componentSolidCellCounts" : [
+        443,
+        411,
+        408,
+        496
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 86,
+      "maximumLatticeWallSpeed" : 0.016539722681045532,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "20b73a14ba17fba777926b43ecdc148698940ed070115c61f547f124593d7159",
+      "solidCellCount" : 1758,
+      "sourceFrameNumber" : -1857,
+      "timeSeconds" : 0.0860000029206276
+    },
+    {
+      "componentSolidCellCounts" : [
+        445,
+        407,
+        388,
+        495
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 87,
+      "maximumLatticeWallSpeed" : 0.01749555580317974,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "3bb35bd6b00ced86c9bc6de04413d16f81696844bd4d296aa83c848364b06df7",
+      "solidCellCount" : 1735,
+      "sourceFrameNumber" : -1856,
+      "timeSeconds" : 0.08699999749660492
+    },
+    {
+      "componentSolidCellCounts" : [
+        448,
+        385,
+        392,
+        495
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 88,
+      "maximumLatticeWallSpeed" : 0.018109580501914024,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.462856051963172e-07,
+      "occupancySHA256" : "922640211810e4513f934676df82c69a9a97e25aab406b3db28adc000a7cc02e",
+      "solidCellCount" : 1720,
+      "sourceFrameNumber" : -1855,
+      "timeSeconds" : 0.08799999952316284
+    },
+    {
+      "componentSolidCellCounts" : [
+        453,
+        368,
+        373,
+        490
+      ],
+      "cpuMaskMismatchCellCount" : 0,
+      "cpuRasterCompared" : true,
+      "frameIndex" : 89,
+      "maximumCPUSignedDistanceDifferenceCells" : 1.3828277587890625e-05,
+      "maximumCPUWallVelocityDifferenceLattice" : 1.5440065226357547e-07,
+      "maximumLatticeWallSpeed" : 0.018380584195256233,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "617c62dd2a135d536b810598f5c41a382eeeb460fdb0dd19603676d51706dbfd",
+      "solidCellCount" : 1684,
+      "sourceFrameNumber" : -1854,
+      "timeSeconds" : 0.08900000154972076
+    },
+    {
+      "componentSolidCellCounts" : [
+        448,
+        370,
+        361,
+        491
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 90,
+      "maximumLatticeWallSpeed" : 0.01814122125506401,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "f182d26332dc1104327e3a7b7d5f2b98c930a57d26f0a0cb3c7536f586cdeffe",
+      "solidCellCount" : 1670,
+      "sourceFrameNumber" : -1853,
+      "timeSeconds" : 0.09000000357627869
+    },
+    {
+      "componentSolidCellCounts" : [
+        446,
+        349,
+        356,
+        487
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 91,
+      "maximumLatticeWallSpeed" : 0.02943868562579155,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "79c8d77539f526bd74d556156cf17a0d03646d7771b297babe42267541b549f7",
+      "solidCellCount" : 1638,
+      "sourceFrameNumber" : -1852,
+      "timeSeconds" : 0.09099999815225601
+    },
+    {
+      "componentSolidCellCounts" : [
+        447,
+        354,
+        380,
+        486
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 92,
+      "maximumLatticeWallSpeed" : 0.023171178996562958,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0925712103926344e-06,
+      "occupancySHA256" : "1e8c8eb81599f4c0b0d2d05b580277f9d74e2f1995e5564b440c16178ec5231b",
+      "solidCellCount" : 1667,
+      "sourceFrameNumber" : -1851,
+      "timeSeconds" : 0.09200000017881393
+    },
+    {
+      "componentSolidCellCounts" : [
+        453,
+        371,
+        359,
+        492
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 93,
+      "maximumLatticeWallSpeed" : 0.030998336151242256,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "6f0005450a77a3a3309dd8124b8313965780aaa41d1c48fa555459d266d869ed",
+      "solidCellCount" : 1675,
+      "sourceFrameNumber" : -1850,
+      "timeSeconds" : 0.09300000220537186
+    },
+    {
+      "componentSolidCellCounts" : [
+        446,
+        348,
+        338,
+        500
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 94,
+      "maximumLatticeWallSpeed" : 0.023593399673700333,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "3e45d2e81ff2f953405a97b8225857e38fa42def164305f98fa5e422a4f62a85",
+      "solidCellCount" : 1632,
+      "sourceFrameNumber" : -1849,
+      "timeSeconds" : 0.09399999678134918
+    },
+    {
+      "componentSolidCellCounts" : [
+        439,
+        352,
+        368,
+        494
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 95,
+      "maximumLatticeWallSpeed" : 0.021821554750204086,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "b694478899cd34cfb88e97880d2ea58cf2ac3830785b24b598a5edd4fb2f3fb1",
+      "solidCellCount" : 1653,
+      "sourceFrameNumber" : -1848,
+      "timeSeconds" : 0.0949999988079071
+    },
+    {
+      "componentSolidCellCounts" : [
+        438,
+        351,
+        363,
+        498
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 96,
+      "maximumLatticeWallSpeed" : 0.022796791046857834,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "2479cffcbf84a9124513e21e69241ea52ac9c044c62295f5f6a81d47fb0838a3",
+      "solidCellCount" : 1650,
+      "sourceFrameNumber" : -1847,
+      "timeSeconds" : 0.09600000083446503
+    },
+    {
+      "componentSolidCellCounts" : [
+        445,
+        361,
+        340,
+        488
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 97,
+      "maximumLatticeWallSpeed" : 0.022999290376901627,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "123683ea2b2916a60ea2c07c59c465746e68437141947fd0bf827e07e22d1e37",
+      "solidCellCount" : 1634,
+      "sourceFrameNumber" : -1846,
+      "timeSeconds" : 0.09700000286102295
+    },
+    {
+      "componentSolidCellCounts" : [
+        443,
+        346,
+        345,
+        493
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 98,
+      "maximumLatticeWallSpeed" : 0.023117320612072945,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "c6793dd021baf5d3ce27e02ebac299e9a86e59b570bbbad65d89e8246321f8e0",
+      "solidCellCount" : 1627,
+      "sourceFrameNumber" : -1845,
+      "timeSeconds" : 0.09799999743700027
+    },
+    {
+      "componentSolidCellCounts" : [
+        446,
+        334,
+        337,
+        496
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 99,
+      "maximumLatticeWallSpeed" : 0.022845275700092316,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.1680077705022995e-06,
+      "occupancySHA256" : "9c5faded14fb6be25b1fc407f5619428903affb56c2ce6e3feb7ae836c709d96",
+      "solidCellCount" : 1613,
+      "sourceFrameNumber" : -1844,
+      "timeSeconds" : 0.0989999994635582
+    },
+    {
+      "componentSolidCellCounts" : [
+        433,
+        315,
+        326,
+        496
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 100,
+      "maximumLatticeWallSpeed" : 0.02259037084877491,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "03281de9363f25de576eb7e33f2ab3499ae2444b44f99b8e2bec9736c01bae4c",
+      "solidCellCount" : 1570,
+      "sourceFrameNumber" : -1843,
+      "timeSeconds" : 0.10000000149011612
+    },
+    {
+      "componentSolidCellCounts" : [
+        442,
+        318,
+        327,
+        487
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 101,
+      "maximumLatticeWallSpeed" : 0.023560363799333572,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0925712103926344e-06,
+      "occupancySHA256" : "d09897b6835b37e34d29199df1f6b7f87e6e10abf336417cc127ed3ca66b460f",
+      "solidCellCount" : 1574,
+      "sourceFrameNumber" : -1842,
+      "timeSeconds" : 0.10100000351667404
+    },
+    {
+      "componentSolidCellCounts" : [
+        440,
+        319,
+        311,
+        486
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 102,
+      "maximumLatticeWallSpeed" : 0.024746226146817207,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "4e393d0c252591f1ecfd172433f555deb282ce116bc8af6189e12570eafd6d3b",
+      "solidCellCount" : 1556,
+      "sourceFrameNumber" : -1841,
+      "timeSeconds" : 0.10199999809265137
+    },
+    {
+      "componentSolidCellCounts" : [
+        442,
+        319,
+        306,
+        490
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 103,
+      "maximumLatticeWallSpeed" : 0.025684934109449387,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "c3dae92594947617c66bbf6aaa0bc764c97b638fca7901e9b53be3ed1eaf31f7",
+      "solidCellCount" : 1557,
+      "sourceFrameNumber" : -1840,
+      "timeSeconds" : 0.10300000011920929
+    },
+    {
+      "componentSolidCellCounts" : [
+        453,
+        314,
+        321,
+        490
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 104,
+      "maximumLatticeWallSpeed" : 0.03323588892817497,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.9073486328125e-06,
+      "occupancySHA256" : "d3083a647d86da73d6d2a1ecb92cc4441bc2f8cc6f67b15eec9c4406ba729e3e",
+      "solidCellCount" : 1578,
+      "sourceFrameNumber" : -1839,
+      "timeSeconds" : 0.10400000214576721
+    },
+    {
+      "componentSolidCellCounts" : [
+        454,
+        328,
+        315,
+        486
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 105,
+      "maximumLatticeWallSpeed" : 0.04000000283122063,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.9073486328125e-06,
+      "occupancySHA256" : "edbe45190f465fb5bdfd7362c9c875693e9cee927f6e88c1f590a8b104eddec2",
+      "solidCellCount" : 1583,
+      "sourceFrameNumber" : -1838,
+      "timeSeconds" : 0.10499999672174454
+    },
+    {
+      "componentSolidCellCounts" : [
+        452,
+        329,
+        312,
+        484
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 106,
+      "maximumLatticeWallSpeed" : 0.025356553494930267,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "8b80653562bf25986b23d182748564f7507a9e14246c7fe87c9ed99c81ef032d",
+      "solidCellCount" : 1577,
+      "sourceFrameNumber" : -1837,
+      "timeSeconds" : 0.10599999874830246
+    },
+    {
+      "componentSolidCellCounts" : [
+        449,
+        331,
+        344,
+        487
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 107,
+      "maximumLatticeWallSpeed" : 0.029348062351346016,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "009ec74b5534faa0fb3267fa8055221d5def7c5e53a765162b8b35a3fccb6752",
+      "solidCellCount" : 1611,
+      "sourceFrameNumber" : -1836,
+      "timeSeconds" : 0.10700000077486038
+    },
+    {
+      "componentSolidCellCounts" : [
+        451,
+        324,
+        322,
+        493
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 108,
+      "maximumLatticeWallSpeed" : 0.021413646638393402,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "be56ab8e5582f8c40bd82af3538021c2e97dd3d65d8065cff2aaff0b76bcbfe6",
+      "solidCellCount" : 1590,
+      "sourceFrameNumber" : -1835,
+      "timeSeconds" : 0.1080000028014183
+    },
+    {
+      "componentSolidCellCounts" : [
+        461,
+        326,
+        323,
+        492
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 109,
+      "maximumLatticeWallSpeed" : 0.02156897448003292,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "a091bff25020ef4e2a91adcf353091c5a2c2f633b1192886b99e8b8d972f0890",
+      "solidCellCount" : 1602,
+      "sourceFrameNumber" : -1834,
+      "timeSeconds" : 0.10899999737739563
+    },
+    {
+      "componentSolidCellCounts" : [
+        463,
+        311,
+        322,
+        489
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 110,
+      "maximumLatticeWallSpeed" : 0.021732600405812263,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 8.259061701210157e-07,
+      "occupancySHA256" : "11bd6c0e8d6900616f1e224d9c00adc98dcb364d2287f3f9cf751b5131b6e216",
+      "solidCellCount" : 1585,
+      "sourceFrameNumber" : -1833,
+      "timeSeconds" : 0.10999999940395355
+    },
+    {
+      "componentSolidCellCounts" : [
+        456,
+        315,
+        303,
+        480
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 111,
+      "maximumLatticeWallSpeed" : 0.021564576774835587,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "5108bae7cc11d3075d41b9d794ade4eb34cd718ed83b86e9d2e6959fdb72b2cc",
+      "solidCellCount" : 1554,
+      "sourceFrameNumber" : -1832,
+      "timeSeconds" : 0.11100000143051147
+    },
+    {
+      "componentSolidCellCounts" : [
+        466,
+        308,
+        301,
+        481
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 112,
+      "maximumLatticeWallSpeed" : 0.020802531391382217,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "272c1faac89c8a9a2a58aa8575ed1751d406ec8f37610fda7339976018603596",
+      "solidCellCount" : 1556,
+      "sourceFrameNumber" : -1831,
+      "timeSeconds" : 0.1120000034570694
+    },
+    {
+      "componentSolidCellCounts" : [
+        454,
+        294,
+        316,
+        487
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 113,
+      "maximumLatticeWallSpeed" : 0.02001802809536457,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "f3779c4921bae9f14042278afb704c2c58c8cc0ce0ccb4f58f12c62d70ed2337",
+      "solidCellCount" : 1551,
+      "sourceFrameNumber" : -1830,
+      "timeSeconds" : 0.11299999803304672
+    },
+    {
+      "componentSolidCellCounts" : [
+        458,
+        287,
+        305,
+        496
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 114,
+      "maximumLatticeWallSpeed" : 0.019207125529646873,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 7.152557373046875e-07,
+      "occupancySHA256" : "0e28d19b386287ce94068e834bfc0b5727afbca7313ceb7162564cc25175ebdd",
+      "solidCellCount" : 1546,
+      "sourceFrameNumber" : -1829,
+      "timeSeconds" : 0.11400000005960464
+    },
+    {
+      "componentSolidCellCounts" : [
+        461,
+        295,
+        291,
+        493
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 115,
+      "maximumLatticeWallSpeed" : 0.018445955589413643,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "334c2070ec949dc54d44ec3cae4d11558084f5a8fe2499f0ecafe84df14b0f81",
+      "solidCellCount" : 1540,
+      "sourceFrameNumber" : -1828,
+      "timeSeconds" : 0.11500000208616257
+    },
+    {
+      "componentSolidCellCounts" : [
+        466,
+        299,
+        292,
+        499
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 116,
+      "maximumLatticeWallSpeed" : 0.018570253625512123,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "47af8a4f82d64eea92ff7d5e89c2b1e48ce2f3585dd4db4809fd74ab8c5b3ca7",
+      "solidCellCount" : 1556,
+      "sourceFrameNumber" : -1827,
+      "timeSeconds" : 0.11599999666213989
+    },
+    {
+      "componentSolidCellCounts" : [
+        461,
+        294,
+        309,
+        493
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 117,
+      "maximumLatticeWallSpeed" : 0.019504304975271225,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "7f8a3c503d821d71593718e2209c146a2db618600f97495850668dc1d018aaee",
+      "solidCellCount" : 1557,
+      "sourceFrameNumber" : -1826,
+      "timeSeconds" : 0.11699999868869781
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        302,
+        305,
+        499
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 118,
+      "maximumLatticeWallSpeed" : 0.018023237586021423,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "7fe897d8f257652d6bcdeb84cb0db0a4694d27ee5960beb2699e101d2939f1d6",
+      "solidCellCount" : 1575,
+      "sourceFrameNumber" : -1825,
+      "timeSeconds" : 0.11800000071525574
+    },
+    {
+      "componentSolidCellCounts" : [
+        458,
+        324,
+        304,
+        495
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 119,
+      "maximumLatticeWallSpeed" : 0.020263954997062683,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "6d4e1946df263082ee1b1bb95c12efc00dcc021cbb509065be11af291fc76d11",
+      "solidCellCount" : 1581,
+      "sourceFrameNumber" : -1824,
+      "timeSeconds" : 0.11900000274181366
+    },
+    {
+      "componentSolidCellCounts" : [
+        453,
+        325,
+        328,
+        509
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 120,
+      "maximumLatticeWallSpeed" : 0.017877109348773956,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "86925f460d9ca57604f65c75cae44850af36b9cce28fcc15414175abda8a9156",
+      "solidCellCount" : 1615,
+      "sourceFrameNumber" : -1823,
+      "timeSeconds" : 0.11999999731779099
+    },
+    {
+      "componentSolidCellCounts" : [
+        458,
+        355,
+        329,
+        496
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 121,
+      "maximumLatticeWallSpeed" : 0.016087355092167854,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "556a1f0bd36f1e8c249b4812b76d2e30f671b21f38346aaed742824f3892c7f3",
+      "solidCellCount" : 1638,
+      "sourceFrameNumber" : -1822,
+      "timeSeconds" : 0.12099999934434891
+    },
+    {
+      "componentSolidCellCounts" : [
+        466,
+        342,
+        342,
+        513
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 122,
+      "maximumLatticeWallSpeed" : 0.015056022442877293,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "2e5a253725909e932290a918b4bc9a44f4324d986d4bdcacb02f0d78da56f7aa",
+      "solidCellCount" : 1663,
+      "sourceFrameNumber" : -1821,
+      "timeSeconds" : 0.12200000137090683
+    },
+    {
+      "componentSolidCellCounts" : [
+        452,
+        337,
+        322,
+        519
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 123,
+      "maximumLatticeWallSpeed" : 0.013552979566156864,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "bf6607a5b45df7db8368e9e54b59fa4c450186494d0c18b825e8244396fe8536",
+      "solidCellCount" : 1630,
+      "sourceFrameNumber" : -1820,
+      "timeSeconds" : 0.12300000339746475
+    },
+    {
+      "componentSolidCellCounts" : [
+        457,
+        319,
+        320,
+        516
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 124,
+      "maximumLatticeWallSpeed" : 0.012081862427294254,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.915124804938387e-07,
+      "occupancySHA256" : "70d8f0f818dc1f10151937547c879a43707fce5b6f1e805cee0839f996bcc909",
+      "solidCellCount" : 1612,
+      "sourceFrameNumber" : -1819,
+      "timeSeconds" : 0.12399999797344208
+    },
+    {
+      "componentSolidCellCounts" : [
+        452,
+        327,
+        328,
+        512
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 125,
+      "maximumLatticeWallSpeed" : 0.011028530076146126,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.76837158203125e-07,
+      "occupancySHA256" : "98c8e3ee2d0783d42fd3058d4a5660d793ad31f7c49ec06c4d9994f189eda147",
+      "solidCellCount" : 1619,
+      "sourceFrameNumber" : -1818,
+      "timeSeconds" : 0.125
+    },
+    {
+      "componentSolidCellCounts" : [
+        449,
+        350,
+        331,
+        519
+      ],
+      "cpuMaskMismatchCellCount" : 0,
+      "cpuRasterCompared" : true,
+      "frameIndex" : 126,
+      "maximumCPUSignedDistanceDifferenceCells" : 1.049041748046875e-05,
+      "maximumCPUWallVelocityDifferenceLattice" : 1.1274870814759197e-08,
+      "maximumLatticeWallSpeed" : 0.010623183101415634,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.805480102731963e-07,
+      "occupancySHA256" : "af10588b18c35a64346c3aba1cc1cf12f580e86765782632a0b6053068550e37",
+      "solidCellCount" : 1649,
+      "sourceFrameNumber" : -1817,
+      "timeSeconds" : 0.12600000202655792
+    },
+    {
+      "componentSolidCellCounts" : [
+        452,
+        371,
+        347,
+        511
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 127,
+      "maximumLatticeWallSpeed" : 0.01514364778995514,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 6.743495646333031e-07,
+      "occupancySHA256" : "82c1820becf288806e2a4c082c8f1c4e3ed937531b8b6d26fd0bd42b335338bd",
+      "solidCellCount" : 1681,
+      "sourceFrameNumber" : -1816,
+      "timeSeconds" : 0.12700000405311584
+    },
+    {
+      "componentSolidCellCounts" : [
+        467,
+        383,
+        368,
+        504
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 128,
+      "maximumLatticeWallSpeed" : 0.019155584275722504,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.777675712830387e-07,
+      "occupancySHA256" : "7a2035fa3ff7a89d9dee12572c8b92835010629af17309a2bcd85ff9b4602d7e",
+      "solidCellCount" : 1722,
+      "sourceFrameNumber" : -1815,
+      "timeSeconds" : 0.12800000607967377
+    },
+    {
+      "componentSolidCellCounts" : [
+        463,
+        393,
+        366,
+        508
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 129,
+      "maximumLatticeWallSpeed" : 0.013717909343540668,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "fb3168535888ae2372df31dd55dd3e3abc3d032fffda32acf4dc29e1fcccf0d8",
+      "solidCellCount" : 1730,
+      "sourceFrameNumber" : -1814,
+      "timeSeconds" : 0.1289999932050705
+    },
+    {
+      "componentSolidCellCounts" : [
+        454,
+        397,
+        384,
+        505
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 130,
+      "maximumLatticeWallSpeed" : 0.014919701963663101,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 4.915124804938387e-07,
+      "occupancySHA256" : "a101f58befa7baf3d9b8840649cdb7e71cabb4105e356a4d69000761f22440ae",
+      "solidCellCount" : 1740,
+      "sourceFrameNumber" : -1813,
+      "timeSeconds" : 0.12999999523162842
+    },
+    {
+      "componentSolidCellCounts" : [
+        464,
+        391,
+        392,
+        507
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 131,
+      "maximumLatticeWallSpeed" : 0.01617860421538353,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 5.331201577973843e-07,
+      "occupancySHA256" : "c335d931530998e2f6860c45981b76b828550ac1760d3d7eff3c451d5bee2cda",
+      "solidCellCount" : 1754,
+      "sourceFrameNumber" : -1812,
+      "timeSeconds" : 0.13099999725818634
+    },
+    {
+      "componentSolidCellCounts" : [
+        465,
+        383,
+        404,
+        529
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 132,
+      "maximumLatticeWallSpeed" : 0.018561886623501778,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.53790731728077e-07,
+      "occupancySHA256" : "2f8fb2b049d757248e18c006c89bbadaa903e3554a0ffc0564f0bdee7c5052d4",
+      "solidCellCount" : 1781,
+      "sourceFrameNumber" : -1811,
+      "timeSeconds" : 0.13199999928474426
+    },
+    {
+      "componentSolidCellCounts" : [
+        463,
+        398,
+        408,
+        495
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 133,
+      "maximumLatticeWallSpeed" : 0.020024534314870834,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "74a4fba558e4fb871e1b0eba7ffe9cb9819ef6263c144d9cc65aaf2840e08e15",
+      "solidCellCount" : 1764,
+      "sourceFrameNumber" : -1810,
+      "timeSeconds" : 0.13300000131130219
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        397,
+        397,
+        506
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 134,
+      "maximumLatticeWallSpeed" : 0.020837411284446716,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0115243185282452e-06,
+      "occupancySHA256" : "34dba64b7b717d48ed8e26c762ec152c113a68fbd67e9e9a86fa8def9b558913",
+      "solidCellCount" : 1769,
+      "sourceFrameNumber" : -1809,
+      "timeSeconds" : 0.1340000033378601
+    },
+    {
+      "componentSolidCellCounts" : [
+        458,
+        404,
+        410,
+        515
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 135,
+      "maximumLatticeWallSpeed" : 0.02119997888803482,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.5367431640625e-07,
+      "occupancySHA256" : "747f4a09e8f0465f88fc74cc8694c2feb18d9a5cf9c2060621bd299b74318453",
+      "solidCellCount" : 1787,
+      "sourceFrameNumber" : -1808,
+      "timeSeconds" : 0.13500000536441803
+    },
+    {
+      "componentSolidCellCounts" : [
+        462,
+        408,
+        392,
+        527
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 136,
+      "maximumLatticeWallSpeed" : 0.0219600647687912,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "3d0b0f7cde946ba1563f24de29de00670f8085041e8385b30cbe9feaf25ea2f7",
+      "solidCellCount" : 1789,
+      "sourceFrameNumber" : -1807,
+      "timeSeconds" : 0.13600000739097595
+    },
+    {
+      "componentSolidCellCounts" : [
+        460,
+        385,
+        400,
+        533
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 137,
+      "maximumLatticeWallSpeed" : 0.022711515426635742,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 9.830249609876773e-07,
+      "occupancySHA256" : "2caff8b283c5622093785fd743c0ebbbba8034b861a88edc4b8f21c350cb1476",
+      "solidCellCount" : 1778,
+      "sourceFrameNumber" : -1806,
+      "timeSeconds" : 0.13699999451637268
+    },
+    {
+      "componentSolidCellCounts" : [
+        477,
+        402,
+        402,
+        541
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 138,
+      "maximumLatticeWallSpeed" : 0.023184429854154587,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "15a4ed3fd145ec74725221a00553af4c9c686621ad8c9a3f6a0af0596539c0d3",
+      "solidCellCount" : 1822,
+      "sourceFrameNumber" : -1805,
+      "timeSeconds" : 0.1379999965429306
+    },
+    {
+      "componentSolidCellCounts" : [
+        463,
+        397,
+        404,
+        563
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 139,
+      "maximumLatticeWallSpeed" : 0.024143073707818985,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0728836059570312e-06,
+      "occupancySHA256" : "7d93a6843189d1ba44765c7bafc63d6c368d22833e4ede5754aea6cb3d8d3857",
+      "solidCellCount" : 1827,
+      "sourceFrameNumber" : -1804,
+      "timeSeconds" : 0.13899999856948853
+    },
+    {
+      "componentSolidCellCounts" : [
+        467,
+        392,
+        392,
+        569
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 140,
+      "maximumLatticeWallSpeed" : 0.02573174424469471,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0925712103926344e-06,
+      "occupancySHA256" : "b21ca70c8d711c1776e3fbdbbf2a63e2ca64f8d4c153632d29bfe98ca0bbb672",
+      "solidCellCount" : 1820,
+      "sourceFrameNumber" : -1803,
+      "timeSeconds" : 0.14000000059604645
+    },
+    {
+      "componentSolidCellCounts" : [
+        460,
+        388,
+        392,
+        588
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 141,
+      "maximumLatticeWallSpeed" : 0.02751860022544861,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "cb86594e1c867d5ae3a5fb59b43ddfbc5945d4cb11c890d6dd725ee2c48fe368",
+      "solidCellCount" : 1828,
+      "sourceFrameNumber" : -1802,
+      "timeSeconds" : 0.14100000262260437
+    },
+    {
+      "componentSolidCellCounts" : [
+        472,
+        390,
+        404,
+        614
+      ],
+      "cpuRasterCompared" : false,
+      "frameIndex" : 142,
+      "maximumLatticeWallSpeed" : 0.03092372976243496,
+      "maximumPreparedPositionErrorMeters" : 0,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "b75b4ea64b157a58ab3b2b6f10a21741aa207c295834ad26626252a50465049b",
+      "solidCellCount" : 1880,
+      "sourceFrameNumber" : -1801,
+      "timeSeconds" : 0.1420000046491623
+    },
+    {
+      "componentSolidCellCounts" : [
+        469,
+        405,
+        405,
+        630
+      ],
+      "cpuMaskMismatchCellCount" : 0,
+      "cpuRasterCompared" : true,
+      "frameIndex" : 143,
+      "maximumCPUSignedDistanceDifferenceCells" : 1.3470649719238281e-05,
+      "maximumCPUWallVelocityDifferenceLattice" : 1.1243020026086015e-07,
+      "maximumLatticeWallSpeed" : 0.030511632561683655,
+      "maximumPreparedPositionErrorMeters" : 9.313225746154785e-10,
+      "maximumPreparedVelocityErrorMetersPerSecond" : 1.0662403155947686e-06,
+      "occupancySHA256" : "c8cd89efa20b9d573f24a0996801677df69238669282bd00e59770bc072cfd65",
+      "solidCellCount" : 1909,
+      "sourceFrameNumber" : -1800,
+      "timeSeconds" : 0.14300000667572021
+    }
+  ],
+  "frameCount" : 144,
+  "geometryKernelSequence" : [
+    "prepareIndexedBirdSurface",
+    "clearMeasuredWingSurface",
+    "rasterizeIndexedBirdSurface",
+    "resolveIndexedBirdSurface"
+  ],
+  "gridX" : 59,
+  "gridY" : 53,
+  "gridZ" : 50,
+  "halfThicknessCells" : 0.75,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumCPUMaskMismatchCellCount" : 0,
+  "maximumCPUSignedDistanceDifferenceCells" : 1.5735626220703125e-05,
+  "maximumCPUWallVelocityDifferenceLattice" : 2.1818828827235848e-05,
+  "maximumPreparedPositionErrorMeters" : 1.6686016124367598e-08,
+  "maximumPreparedVelocityErrorMetersPerSecond" : 1.9073486328125e-06,
+  "passed" : true,
+  "runtimeSeconds" : 7.018607974052429,
+  "schemaVersion" : 2,
+  "scientificTier" : "derived-measured-complete-surface",
+  "sourceMuscleModelSHA256" : "499378e2beebce224fd178732a8ff0ecae920eab9d024d82b8dc3b695cfce1a1",
+  "sourceSurfaceSHA256" : "985700b8904813dbdf62fc8339d5bc034f75a0862414b584313a23778c00f789",
+  "triangleCount" : 3968,
+  "vertexCount" : 2157
+}

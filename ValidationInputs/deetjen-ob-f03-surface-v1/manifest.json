@@ -382,6 +382,7 @@
       {
         "evidenceClass": "measured-processed-surface",
         "name": "body",
+        "partIdentifier": 1,
         "topology": {
           "firstCount": 39,
           "kind": "structured-grid",
@@ -396,6 +397,7 @@
       {
         "evidenceClass": "measured-outline-derived-gap-filled-surface",
         "name": "leftWing",
+        "partIdentifier": 2,
         "topology": {
           "firstCount": 9,
           "kind": "structured-grid",
@@ -410,6 +412,7 @@
       {
         "evidenceClass": "bilateral-reflection-assumption",
         "name": "rightWing",
+        "partIdentifier": 3,
         "topology": {
           "firstCount": 9,
           "kind": "structured-grid",
@@ -424,6 +427,7 @@
       {
         "evidenceClass": "measured-processed-surface-derived-fixed-parameterization",
         "name": "tail",
+        "partIdentifier": 4,
         "topology": {
           "angularCount": 17,
           "kind": "polar-grid",

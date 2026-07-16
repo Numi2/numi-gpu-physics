@@ -66,7 +66,7 @@
   "depositedMaximumBladeElementSpeedMetersPerSecond": 21.36866978299887,
   "gatePassed": true,
   "generatedBy": "Scripts/convert-dove-surface-sequence.py",
-  "manifestSHA256": "c2e8581c0b562b01e28eaebbc29e93b66583f3316709ae3ad1482e09b96d7e61",
+  "manifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
   "maximumAdjacentPointSpeedMetersPerSecond": 25.230468203493405,
   "maximumEndToStartPointJumpMeters": 0.3400017359344018,
   "maximumFloat32QuantizationErrorMeters": 1.4779648005447399e-08,

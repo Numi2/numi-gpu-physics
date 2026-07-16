@@ -1136,6 +1136,10 @@ Before the fluid comparison, acceptance requires:
 - compact surface conversion preserves source landmarks, areas, topology,
   body/wing/world transforms, and wall velocity within preregistered tolerances
   (**passed** for the selected flight);
+- generic indexed Metal interpolation/rasterization preserves all component
+  masks and wall velocity against an independent CPU raster without executing
+  fluid or force kernels (**passed** for all 144 frames, with exact occupancy at
+  five milestones);
 - the source force sign and axes close independently against the registered
   BirdFlow frame;
 - the five flights for bird `OB` establish a measurement/biological
@@ -1155,11 +1159,18 @@ outline remesh was rejected because it generated a false `91.9 m/s` tip speed.
 
 Status: selective source acquisition, integrity, MATLAB decoding, timing,
 compact topology, coordinate registration, and CPU wall-velocity parity pass.
-Metal replay and every fluid comparison remain open. Evidence is in
+The geometry-only Metal replay also passes on Apple M4 in `7.02 s` for all 144
+stored frames plus five fractional-time interpolation probes. All four
+components remain present, the five CPU milestones have zero occupancy
+mismatches, and maximum position/wall-velocity/signed-distance differences are
+`1.669e-8 m`, `2.182e-5` lattice, and `1.574e-5` cells. Fluid collision, force
+accumulation, and every experimental-force comparison remain open. Evidence is in
 `ValidationArtifacts/deetjen-dove-source-qualification.json` and
 `ValidationArtifacts/deetjen-dove-engineering-ingestion.json`, plus
 `ValidationArtifacts/deetjen-dove-surface-conversion.json` and
-`ValidationArtifacts/deetjen-dove-surface-cpu-parity.json`.
+`ValidationArtifacts/deetjen-dove-surface-cpu-parity.json`, with the complete
+144-frame GPU audit in
+`ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json`.
 
 ## 8. Complete measured bird
 

@@ -406,6 +406,14 @@ struct GPUMeasuredWingSurfaceParameters {
     var timingAndBounds: SIMD4<Float>
 }
 
+/// Fixed indexed complete-bird surface. counts.w is the host-selected first
+/// interpolation frame; queryTimeAndThickness.x is the current nonperiodic time.
+struct GPUIndexedBirdSurfaceParameters {
+    var counts: SIMD4<UInt32>
+    var queryTimeAndThickness: SIMD4<Float>
+    var translationAndVelocityScale: SIMD4<Float>
+}
+
 struct GPUPreparedMeasuredWingPoint {
     var position: SIMD4<Float>
     var velocity: SIMD4<Float>

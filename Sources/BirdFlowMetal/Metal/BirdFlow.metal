@@ -145,6 +145,12 @@ struct GPUMeasuredWingSurfaceParameters {
     float4 timingAndBounds;
 };
 
+struct GPUIndexedBirdSurfaceParameters {
+    uint4 counts;
+    float4 queryTimeAndThickness;
+    float4 translationAndVelocityScale;
+};
+
 struct GPUPreparedMeasuredWingPoint {
     float4 position;
     float4 velocity;
@@ -1254,6 +1260,156 @@ inline MeasuredTriangleClosestPoint measuredTriangleClosestPoint(
         a + ab * v + ac * w,
         float3(1.0f - v - w, v, w)
     };
+}
+
+/// Interpolates a non-periodic fixed-topology complete-bird surface. The host
+/// selects the common interval once, avoiding a timestamp scan in every vertex
+/// thread. Exact interior keyframes use the following segment; the final frame
+/// uses the preceding segment, matching the CPU one-sided endpoint contract.
+kernel void prepareIndexedBirdSurface(
+    device const float4* sourcePoints [[buffer(0)]],
+    device const float* frameTimes [[buffer(1)]],
+    device GPUPreparedMeasuredWingPoint* prepared [[buffer(2)]],
+    constant GPUIndexedBirdSurfaceParameters& surface [[buffer(3)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint vertexCount = surface.counts.x;
+    uint frameCount = surface.counts.z;
+    if (gid >= vertexCount) {
+        return;
+    }
+    float queryTime = surface.queryTimeAndThickness.x;
+    uint first = min(surface.counts.w, frameCount - 2u);
+    uint second = first + 1u;
+    float duration = frameTimes[second] - frameTimes[first];
+    float blend = clamp(
+        (queryTime - frameTimes[first]) / duration,
+        0.0f,
+        1.0f
+    );
+    float3 firstPoint = sourcePoints[first * vertexCount + gid].xyz;
+    float3 secondPoint = sourcePoints[second * vertexCount + gid].xyz;
+    float3 delta = secondPoint - firstPoint;
+    prepared[gid].position = float4(
+        surface.translationAndVelocityScale.xyz
+            + mix(firstPoint, secondPoint, blend),
+        0
+    );
+    prepared[gid].velocity = float4(
+        delta / duration * surface.translationAndVelocityScale.w,
+        0
+    );
+}
+
+inline uint3 indexedBirdTriangle(
+    device const ushort* triangleIndices,
+    uint triangle
+) {
+    uint offset = 3u * triangle;
+    return uint3(
+        triangleIndices[offset],
+        triangleIndices[offset + 1u],
+        triangleIndices[offset + 2u]
+    );
+}
+
+/// One thread owns one indexed triangle and visits only its expanded voxel
+/// AABB. The existing 20-bit distance plus 12-bit triangle key stays intact.
+kernel void rasterizeIndexedBirdSurface(
+    device const GPUPreparedMeasuredWingPoint* prepared [[buffer(0)]],
+    device const ushort* triangleIndices [[buffer(1)]],
+    device atomic_uint* distanceKeys [[buffer(2)]],
+    constant GPUIndexedBirdSurfaceParameters& surface [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    uint triangle [[thread_position_in_grid]]
+) {
+    uint triangleCount = surface.counts.y;
+    if (triangle >= triangleCount || triangle >= 4096u) {
+        return;
+    }
+    uint3 indices = indexedBirdTriangle(triangleIndices, triangle);
+    float3 a = prepared[indices.x].position.xyz;
+    float3 b = prepared[indices.y].position.xyz;
+    float3 c = prepared[indices.z].position.xyz;
+    float cellSize = uniforms.originAndCellSize.w;
+    float guard = surface.queryTimeAndThickness.y + 2.0f * cellSize;
+    float3 lowerWorld = min(a, min(b, c)) - guard;
+    float3 upperWorld = max(a, max(b, c)) + guard;
+    int3 lower = int3(floor(
+        (lowerWorld - uniforms.originAndCellSize.xyz) / cellSize - 0.5f
+    ));
+    int3 upper = int3(ceil(
+        (upperWorld - uniforms.originAndCellSize.xyz) / cellSize - 0.5f
+    ));
+    lower = clamp(lower, int3(0), int3(uniforms.grid.xyz) - 1);
+    upper = clamp(upper, int3(0), int3(uniforms.grid.xyz) - 1);
+    for (int z = lower.z; z <= upper.z; ++z) {
+        for (int y = lower.y; y <= upper.y; ++y) {
+            for (int x = lower.x; x <= upper.x; ++x) {
+                uint3 cell = uint3(x, y, z);
+                float3 world = cellPosition(cell, uniforms);
+                MeasuredTriangleClosestPoint closest =
+                    measuredTriangleClosestPoint(world, a, b, c);
+                float distanceCells = length(world - closest.position) / cellSize;
+                uint distanceBin = min(
+                    uint(round(distanceCells * 65536.0f)),
+                    0xFFFFFu
+                );
+                uint key = (distanceBin << 12u) | triangle;
+                uint gid = flatten(cell, uniforms.grid.xyz);
+                atomic_fetch_min_explicit(
+                    &distanceKeys[gid], key, memory_order_relaxed
+                );
+            }
+        }
+    }
+}
+
+/// Resolves indexed occupancy to canonical part identifiers 1...4 and the
+/// barycentrically matching lattice wall velocity.
+kernel void resolveIndexedBirdSurface(
+    device uchar* partIdentifiers [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device const GPUPreparedMeasuredWingPoint* prepared [[buffer(2)]],
+    device const ushort* triangleIndices [[buffer(3)]],
+    device const uchar* trianglePartIdentifiers [[buffer(4)]],
+    device const atomic_uint* distanceKeys [[buffer(5)]],
+    constant GPUIndexedBirdSurfaceParameters& surface [[buffer(6)]],
+    constant GPUUniforms& uniforms [[buffer(7)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= uniforms.grid.w) {
+        return;
+    }
+    uint key = atomic_load_explicit(&distanceKeys[gid], memory_order_relaxed);
+    if (key == UINT_MAX) {
+        return;
+    }
+    uint triangle = key & 0xFFFu;
+    if (triangle >= surface.counts.y) {
+        return;
+    }
+    uint3 indices = indexedBirdTriangle(triangleIndices, triangle);
+    uint3 cell = unflatten(gid, uniforms.grid.xyz);
+    float3 world = cellPosition(cell, uniforms);
+    MeasuredTriangleClosestPoint closest = measuredTriangleClosestPoint(
+        world,
+        prepared[indices.x].position.xyz,
+        prepared[indices.y].position.xyz,
+        prepared[indices.z].position.xyz
+    );
+    float3 velocity = closest.barycentric.x * prepared[indices.x].velocity.xyz
+        + closest.barycentric.y * prepared[indices.y].velocity.xyz
+        + closest.barycentric.z * prepared[indices.z].velocity.xyz;
+    float signedDistance = length(world - closest.position)
+        - surface.queryTimeAndThickness.y;
+    partIdentifiers[gid] = signedDistance <= 0.0f
+        ? trianglePartIdentifiers[triangle]
+        : uchar(0);
+    wallVelocity[gid] = float4(
+        velocity,
+        signedDistance / uniforms.originAndCellSize.w
+    );
 }
 
 inline void considerMeasuredTriangle(

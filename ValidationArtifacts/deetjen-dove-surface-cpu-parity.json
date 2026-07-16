@@ -81,7 +81,7 @@
   "cpuParityPassed": true,
   "depositedMaximumBladeElementSpeedMetersPerSecond": 21.36866978299887,
   "generatedBy": "Scripts/audit-dove-surface-sequence.py",
-  "manifestSHA256": "c2e8581c0b562b01e28eaebbc29e93b66583f3316709ae3ad1482e09b96d7e61",
+  "manifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
   "maximumAdjacentPointSpeedMetersPerSecond": 25.230468372370886,
   "maximumSpeedToDepositedBladeSpeedRatio": 1.1807224609013567,
   "minimumTriangleAreaSquareMeters": 1.3517536338432456e-08,

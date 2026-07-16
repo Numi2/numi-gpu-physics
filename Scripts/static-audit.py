@@ -18,6 +18,7 @@ SWIFT_FILES = (
     ROOT / "Sources/BirdFlowMetal/MetalSphereValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalWingValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalFlappingWingValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalIndexedBirdSurfaceValidation.swift",
     ROOT / "Sources/BirdFlowMetal/BirdPartLoadDiagnostics.swift",
 )
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
@@ -37,6 +38,9 @@ REQUIRED_KERNELS = {
     "rasterizeMeasuredWingSurface",
     "resolveMeasuredWingSurface",
     "buildMeasuredWingSurfaceLinks",
+    "prepareIndexedBirdSurface",
+    "rasterizeIndexedBirdSurface",
+    "resolveIndexedBirdSurface",
     "initializePopulations",
     "extractMacroscopicFields",
     "initializeShearWave",
@@ -336,6 +340,9 @@ def main() -> int:
         "GPUMeasuredWingSurfaceParameters": [
             "counts", "pointCounts", "rootAndHalfThickness", "timingAndBounds",
         ],
+        "GPUIndexedBirdSurfaceParameters": [
+            "counts", "queryTimeAndThickness", "translationAndVelocityScale",
+        ],
         "GPUPreparedMeasuredWingPoint": ["position", "velocity"],
         "GPUForceTorque": ["force", "torque"],
         "GPURuntimeSafetyRecord": ["metrics", "event"],
@@ -438,6 +445,9 @@ def main() -> int:
         "rasterizeMeasuredWingSurface": 4,
         "resolveMeasuredWingSurface": 9,
         "buildMeasuredWingSurfaceLinks": 4,
+        "prepareIndexedBirdSurface": 4,
+        "rasterizeIndexedBirdSurface": 5,
+        "resolveIndexedBirdSurface": 8,
         "initializePopulations": 6,
         "extractMacroscopicFields": 4,
         "initializeShearWave": 4,
@@ -499,6 +509,21 @@ def main() -> int:
             "private func encodeMeasuredPreparation(",
             ["measuredSourcePoints", "measuredPhases", "prepared", "parameters", "uniforms"],
             ["sourcePoints", "phases", "prepared", "surface", "uniforms"],
+        ),
+        "prepareIndexedBirdSurface": (
+            "private func encodeIndexedPreparation(",
+            ["sourcePoints", "frameTimes", "prepared", "parameters"],
+            ["sourcePoints", "frameTimes", "prepared", "surface"],
+        ),
+        "rasterizeIndexedBirdSurface": (
+            "private func encodeIndexedRaster(",
+            ["prepared", "triangleIndices", "distanceKeys", "parameters", "uniforms"],
+            ["prepared", "triangleIndices", "distanceKeys", "surface", "uniforms"],
+        ),
+        "resolveIndexedBirdSurface": (
+            "private func encodeIndexedResolve(",
+            ["partMask", "wallVelocityAndDistance", "prepared", "triangleIndices", "trianglePartIdentifiers", "distanceKeys", "parameters", "uniforms"],
+            ["partIdentifiers", "wallVelocity", "prepared", "triangleIndices", "trianglePartIdentifiers", "distanceKeys", "surface", "uniforms"],
         ),
         "buildPrescribedFlappingWing": (
             "private func encodePrescribedGeometry(",
