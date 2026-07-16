@@ -1,0 +1,54 @@
+{
+  "auditIdentifier": "deetjen-ob-f03-collision-extended-pilot-audit-v1",
+  "cases": [
+    {
+      "collisionLimiterActivationCount": 55,
+      "collisionLimiterActivationFractionOfCellSteps": 4.264581456917492e-08,
+      "completedFluidSteps": 3776,
+      "endpointNormalizedRMSError": 5.664596408765528,
+      "intervalMeanNormalizedRMSError": 2.2743396121950874,
+      "minimumSampledPopulation": 2.6415549747582645e-09,
+      "operator": "positivity-preserving-regularized-bgk",
+      "passed": true,
+      "registeredForceErrorsUsedAsGate": false
+    },
+    {
+      "collisionLimiterActivationCount": 28,
+      "collisionLimiterActivationFractionOfCellSteps": 2.1710596507943598e-08,
+      "completedFluidSteps": 3776,
+      "endpointNormalizedRMSError": 5.676027623198696,
+      "intervalMeanNormalizedRMSError": 2.2638867092530095,
+      "minimumSampledPopulation": 3.2018481199713733e-09,
+      "operator": "positivity-preserving-recursive-regularized-bgk",
+      "passed": true,
+      "registeredForceErrorsUsedAsGate": false
+    }
+  ],
+  "checks": {
+    "bothCandidatesCompleted": true,
+    "bothCandidatesEligible": true,
+    "candidateOrder": true,
+    "endpointPairwiseDifference": true,
+    "fixedRunContract": true,
+    "identicalPlans": true,
+    "intervalPairwiseDifference": true,
+    "measuredErrorsAreDescriptive": true,
+    "nonAcceptanceBoundary": true,
+    "parentVerdict": true,
+    "registeredWindow": true,
+    "schemaAndHashes": true
+  },
+  "claimBoundary": "This audit independently reconstructs registered samples, force statistics, correction fractions, and candidate differences. It clears both candidates only for controlled collision discrimination; coarse-grid measured-force errors remain descriptive and cannot establish experimental agreement or select a production operator.",
+  "eligibleCollisionOperators": [
+    "positivity-preserving-regularized-bgk",
+    "positivity-preserving-recursive-regularized-bgk"
+  ],
+  "endpointPairwiseNormalizedRMSDifference": 0.006555495205720026,
+  "extendedPilotGatePassed": true,
+  "forceTargetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "generatedBy": "Scripts/audit-dove-collision-extended-pilot.py",
+  "intervalMeanPairwiseNormalizedRMSDifference": 0.008823724456705272,
+  "reportSHA256": "ee3fd7ed5bd9eaf936f3707f0bd3a998208f5ffff74f50d4d666c694450f4a34",
+  "schemaVersion": 1,
+  "surfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
+}

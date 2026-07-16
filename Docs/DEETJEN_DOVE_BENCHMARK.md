@@ -314,6 +314,33 @@ does not select RR3 from its lower activation count, promote either operator,
 apply an experimental-force gate at the viscosity-distorted coarse grid, or
 clear the later refinement/repeatability requirements.
 
+Reproduce the full registered-window extension with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-extended-pilot \
+  --archive ValidationArtifacts/deetjen-dove-collision-extended-pilot.json
+
+python3 Scripts/audit-dove-collision-extended-pilot.py
+```
+
+Regularized BGK and RR3 both complete all 3,776 steps and 187 registered
+comparison samples with finite loads and positive populations. Their minimum
+populations are `2.642e-9` and `3.202e-9`. Correction remains limited to the
+same 55 and 28 cell-steps, now `4.265e-8` and `2.171e-8` of all cell-steps.
+Endpoint and interval-mean force histories differ between operators by only
+`0.656%` and `0.882%` normalized RMS. The independent audit reconstructs all
+force statistics and pairwise differences from the archived samples.
+
+The reported endpoint measured-force errors (`5.665` and `5.676`) and interval-
+mean errors (`2.274` and `2.264`) are descriptive only. The pilot remains
+`68.07x` over-viscous, so these values cannot select a collision operator or
+support experimental agreement. A preregistered two-operator 8/12-grid
+discriminator is the next allocation; only its winner should advance to the
+16-cell completion run.
+
 ## Reproducible acquisition
 
 The default command is read-only. It verifies the Dryad/Zenodo identity,
@@ -388,12 +415,13 @@ causes a hard failure.
 Source acquisition, MATLAB decoding, synchronization reconstruction, compact
 topology conversion, BirdFlow frame registration, independent CPU parity,
 indexed Metal geometry, production impulse coupling, and force target
-registration are complete. The coarse prescribed-motion pilot is executed and
-fails its pre-roll positivity/load gate with a localized near-wall population.
-The fixed-input collision screen now has two pre-roll survivors. Quantitative
-experimental acceptance begins only after candidate-specific momentum closure
-and an extended pilot pass, the five-flight repeatability envelope is
-established, and time/space refinement is preregistered and passed.
+registration are complete. The coarse production-TRT pilot fails its pre-roll
+positivity/load gate with a localized near-wall population. Two positivity-
+preserving alternatives pass the fixed pre-roll, independent momentum closure,
+and the full 3,776-step registered-window extension. Quantitative experimental
+acceptance still requires a preregistered operator/refinement decision, the
+five-flight repeatability envelope, source-condition time/space refinement,
+and measured-force acceptance without the current viscosity distortion.
 
 ## Claim after a successful ladder
 

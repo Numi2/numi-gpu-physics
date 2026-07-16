@@ -346,6 +346,37 @@ public struct MetalIndexedBirdSurfaceMomentumClosureReport:
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceExtendedPilotCase: Codable, Sendable {
+    public let collisionOperator: String
+    public let completionAndPositivityGatePassed: Bool
+    public let correctionIntrusionGatePassed: Bool
+    public let eligibleForRefinementDiscrimination: Bool
+    public let report: MetalIndexedBirdSurfacePilotReport
+}
+
+public struct MetalIndexedBirdSurfaceExtendedPilotReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let requestedFluidSteps: Int
+    public let requestedComparisonSamples: Int
+    public let populationDiagnosticStride: Int
+    public let maximumCorrectionActivationFraction: Double
+    public let fixedInputs: String
+    public let cases: [MetalIndexedBirdSurfaceExtendedPilotCase]
+    public let eligibleCollisionOperators: [String]
+    public let allCandidateRunsCompleted: Bool
+    public let endpointPairwiseNormalizedRMSDifference: Double?
+    public let intervalMeanPairwiseNormalizedRMSDifference: Double?
+    public let screeningGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -358,6 +389,7 @@ public enum MetalIndexedBirdSurfacePilotValidator {
     public static let collisionPreRollPopulationDiagnosticStride = 1
     public static let collisionPreRollMaximumActivationFraction = 0.05
     public static let collisionMomentumMaximumRelativeRMSResidual = 0.005
+    public static let collisionExtendedPilotPopulationDiagnosticStride = 1
     public static let collisionMomentumCandidateOperators:
         [MetalIndexedBirdSurfaceCollisionOperator] = [
             .positivityPreservingRegularizedBGK,
@@ -717,6 +749,149 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                     + "it does not select a production collision operator, "
                     + "compare experimental forces, or establish grid "
                     + "convergence."
+            )
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionExtendedPilot(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75
+    ) throws -> MetalIndexedBirdSurfaceExtendedPilotReport {
+        let plan = try plan(
+            surface: surface,
+            target: target,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells
+        )
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let cases = try collisionMomentumCandidateOperators.map { collisionOperator in
+            let report = try replay.runCoarseForcePilot(
+                target: target,
+                plan: plan,
+                collisionOperator: collisionOperator,
+                maximumFluidSteps: plan.totalFluidSteps,
+                populationDiagnosticStride:
+                    collisionExtendedPilotPopulationDiagnosticStride,
+                stopAtFirstNegativePopulation: true
+            )
+            let completionPassed = report.completedFluidSteps
+                    == plan.totalFluidSteps
+                && report.recordedComparisonSamples
+                    == plan.comparisonForceSamples
+                && report.recordedPopulationDiagnosticSamples
+                    == plan.totalFluidSteps
+                && report.allComponentsPresentAtComparisonSamples
+                && report.allLoadsFinite
+                && report.allSampledPopulationsFinite
+                && report.sampledPopulationPositivityPassed
+                && report.firstNonFiniteLoadStep == nil
+                && report.firstNonFinitePopulationStep == nil
+                && report.firstNegativePopulationStep == nil
+                && report.integrationGatePassed
+            let correctionPassed = report
+                    .collisionLimiterActivationFractionOfCellSteps
+                    <= collisionPreRollMaximumActivationFraction
+                && report.maximumCollisionRestriction.isFinite
+            return MetalIndexedBirdSurfaceExtendedPilotCase(
+                collisionOperator: collisionOperator.rawValue,
+                completionAndPositivityGatePassed: completionPassed,
+                correctionIntrusionGatePassed: correctionPassed,
+                eligibleForRefinementDiscrimination:
+                    completionPassed && correctionPassed,
+                report: report
+            )
+        }
+        let eligible = cases.filter(\.eligibleForRefinementDiscrimination)
+            .map(\.collisionOperator)
+        let allCompleted = cases.count
+                == collisionMomentumCandidateOperators.count
+            && cases.allSatisfy {
+                $0.report.completedFluidSteps == plan.totalFluidSteps
+            }
+        let endpointDifference = pilotPairwiseNormalizedRMSDifference(
+            first: cases.first?.report.samples.map(
+                \.endpointComputedForceNewtons
+            ),
+            second: cases.last?.report.samples.map(
+                \.endpointComputedForceNewtons
+            )
+        )
+        let intervalDifference = pilotPairwiseNormalizedRMSDifference(
+            first: cases.first?.report.samples.map(
+                \.intervalMeanComputedForceNewtons
+            ),
+            second: cases.last?.report.samples.map(
+                \.intervalMeanComputedForceNewtons
+            )
+        )
+        let passed = allCompleted && !eligible.isEmpty
+        return MetalIndexedBirdSurfaceExtendedPilotReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            requestedFluidSteps: plan.totalFluidSteps,
+            requestedComparisonSamples: plan.comparisonForceSamples,
+            populationDiagnosticStride:
+                collisionExtendedPilotPopulationDiagnosticStride,
+            maximumCorrectionActivationFraction:
+                collisionPreRollMaximumActivationFraction,
+            fixedInputs: (
+                "geometry, kinematics, grid, time step, viscosity floor, "
+                    + "far-field boundary, sponge, moving-boundary operator, "
+                    + "force estimator, comparison window, and numerical "
+                    + "gates"
+            ),
+            cases: cases,
+            eligibleCollisionOperators: eligible,
+            allCandidateRunsCompleted: allCompleted,
+            endpointPairwiseNormalizedRMSDifference: endpointDifference,
+            intervalMeanPairwiseNormalizedRMSDifference: intervalDifference,
+            screeningGatePassed: passed,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: passed
+                ? (eligible.count == cases.count
+                    ? (
+                        "Both momentum-closed collision candidates completed "
+                            + "the fixed full-window dove pilot with positive "
+                            + "finite populations and loads."
+                    )
+                    : (
+                        "One momentum-closed collision candidate completed "
+                            + "the fixed full-window dove pilot."
+                    ))
+                : (
+                    "No momentum-closed collision candidate completed the "
+                        + "fixed full-window dove pilot under the locked "
+                        + "stability and correction contract."
+                ),
+            claimBoundary: (
+                "This is a viscosity-floor engineering extension through the "
+                    + "registered force window. Measured-force errors and "
+                    + "candidate differences are descriptive only. Passing "
+                    + "permits a controlled collision-discrimination study; "
+                    + "it does not select a production operator, establish "
+                    + "experimental agreement, or clear grid refinement."
             )
         )
 #else
@@ -3563,6 +3738,32 @@ private func pilotNormalizedRMSError(
             + measured[index].y * measured[index].y
     }
     return sqrt(numerator / max(denominator, 1e-30))
+}
+
+private func pilotPairwiseNormalizedRMSDifference(
+    first: [SIMD3<Double>]?,
+    second: [SIMD3<Double>]?
+) -> Double? {
+    guard let first,
+          let second,
+          first.count == second.count,
+          !first.isEmpty else { return nil }
+    var numerator = 0.0
+    var firstEnergy = 0.0
+    var secondEnergy = 0.0
+    for index in first.indices {
+        let difference = first[index] - second[index]
+        numerator += difference.x * difference.x
+            + difference.y * difference.y
+            + difference.z * difference.z
+        firstEnergy += first[index].x * first[index].x
+            + first[index].y * first[index].y
+            + first[index].z * first[index].z
+        secondEnergy += second[index].x * second[index].x
+            + second[index].y * second[index].y
+            + second[index].z * second[index].z
+    }
+    return sqrt(numerator / max(0.5 * (firstEnergy + secondEnergy), 1e-30))
 }
 
 private func pilotTrapezoidalImpulse(

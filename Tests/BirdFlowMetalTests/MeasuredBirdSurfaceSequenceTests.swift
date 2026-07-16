@@ -157,6 +157,10 @@ func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
         MetalIndexedBirdSurfacePilotValidator
             .collisionMomentumMaximumRelativeRMSResidual == 0.005
     )
+    #expect(
+        MetalIndexedBirdSurfacePilotValidator
+            .collisionExtendedPilotPopulationDiagnosticStride == 1
+    )
     let operators = MetalIndexedBirdSurfacePilotValidator
         .collisionPreRollOperators
     #expect(operators.map(\.rawValue) == [
@@ -208,6 +212,48 @@ func measuredBirdCollisionCandidatesCloseIndependentMomentumBudgets() throws {
             result.relativeRMSRawControlVolumeClosureResidual <= 0.005
         )
         #expect(result.relativeRMSGlobalFluidClosureResidual <= 0.005)
+    }
+}
+
+@Test
+func measuredBirdCollisionCandidatesCompleteExtendedPilot() throws {
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .collisionExtendedPilot(surface: surface, target: target)
+    #expect(report.screeningGatePassed)
+    #expect(report.allCandidateRunsCompleted)
+    #expect(report.requestedFluidSteps == 3_776)
+    #expect(report.requestedComparisonSamples == 187)
+    #expect(report.populationDiagnosticStride == 1)
+    #expect(report.cases.count == 2)
+    #expect(report.eligibleCollisionOperators == [
+        "positivity-preserving-regularized-bgk",
+        "positivity-preserving-recursive-regularized-bgk"
+    ])
+    #expect(report.endpointPairwiseNormalizedRMSDifference != nil)
+    #expect(report.intervalMeanPairwiseNormalizedRMSDifference != nil)
+    for result in report.cases {
+        #expect(result.completionAndPositivityGatePassed)
+        #expect(result.correctionIntrusionGatePassed)
+        #expect(result.eligibleForRefinementDiscrimination)
+        #expect(result.report.completedFluidSteps == 3_776)
+        #expect(result.report.recordedComparisonSamples == 187)
+        #expect(result.report.recordedPopulationDiagnosticSamples == 3_776)
+        #expect(result.report.allComponentsPresentAtComparisonSamples)
+        #expect(result.report.allLoadsFinite)
+        #expect(result.report.allSampledPopulationsFinite)
+        #expect(result.report.sampledPopulationPositivityPassed)
+        #expect(result.report.integrationGatePassed)
+        #expect(
+            result.report.collisionLimiterActivationFractionOfCellSteps
+                <= report.maximumCorrectionActivationFraction
+        )
     }
 }
 

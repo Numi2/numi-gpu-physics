@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **Candidate momentum closure passed; extended pilot next** | both regularized BGK and RR3 close near-wing/global momentum below `0.12%` through the fixed 800-step pre-roll |
+| Measured dove external-force benchmark | **Full-window numerical pilot passed; refinement open** | both regularized BGK and RR3 remain positive through all 3,776 steps and differ by less than `0.9%`; coarse measured-force error is descriptive at `68.07x` source viscosity |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -146,10 +146,22 @@ arithmetic are
 [`deetjen-dove-collision-momentum-closure.json`](ValidationArtifacts/deetjen-dove-collision-momentum-closure.json)
 and
 [`deetjen-dove-collision-momentum-closure-audit.json`](ValidationArtifacts/deetjen-dove-collision-momentum-closure-audit.json).
-Both candidates advance to the fixed extended pilot; the lower RR3 activation
-count is not used as a post-hoc promotion rule. Neither operator is yet the
-measured-bird production default, and no measured-force refinement ladder
-should run before the extended pilot completes.
+Both candidates then completed the fixed 3,776-step extended pilot through all
+187 registered comparison samples. Every-step diagnostics remained finite and
+positive. Regularized BGK retained only 55 corrected cell-steps
+(`4.265e-8` of all cell-steps), while RR3 retained 28 (`2.171e-8`). Their
+phase histories are close: endpoint and interval-mean pairwise normalized RMS
+differences are `0.656%` and `0.882%`. The archive and independent
+reconstruction are
+[`deetjen-dove-collision-extended-pilot.json`](ValidationArtifacts/deetjen-dove-collision-extended-pilot.json)
+and
+[`deetjen-dove-collision-extended-pilot-audit.json`](ValidationArtifacts/deetjen-dove-collision-extended-pilot-audit.json).
+The endpoint measured-force errors (`5.665`/`5.676`) and interval errors
+(`2.274`/`2.264`) are recorded but not acceptance gates because this grid uses
+`68.07x` source viscosity. Neither operator is yet the measured-bird production
+default. The next economical discriminator is a preregistered two-operator
+8/12-grid comparison; only its winner should incur the full 16-cell completion
+run.
 
 ## Latest high-Re result
 

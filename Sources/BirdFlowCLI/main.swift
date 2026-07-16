@@ -130,7 +130,7 @@ private struct Arguments {
       birdflow replay measured-wing --input SURFACE.json [--fluid-cycle] [--json]
       birdflow replay measured-bird-surface --input MANIFEST.json \
         [--coupling-gate | --coarse-fluid-pilot | --collision-pre-roll-ab | \
-         --collision-momentum-closure] \
+         --collision-momentum-closure | --collision-extended-pilot] \
         [--force-target TARGET.json] \
         [--archive FILE] [--json]
     """
@@ -146,6 +146,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var coarseFluidPilot = false
     var collisionPreRollAB = false
     var collisionMomentumClosure = false
+    var collisionExtendedPilot = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -205,6 +206,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 collisionPreRollAB = true
             case "--collision-momentum-closure":
                 collisionMomentumClosure = true
+            case "--collision-extended-pilot":
+                collisionExtendedPilot = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -224,7 +227,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
         }
         let selectedModes = [
             couplingGate, coarseFluidPilot, collisionPreRollAB,
-            collisionMomentumClosure
+            collisionMomentumClosure, collisionExtendedPilot
         ].filter { $0 }.count
         guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
@@ -232,7 +235,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
             )
         }
         let needsForceTarget = coarseFluidPilot || collisionPreRollAB
-            || collisionMomentumClosure
+            || collisionMomentumClosure || collisionExtendedPilot
         guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
                 "the coarse pilot and collision diagnostics require --force-target; other modes reject it"
@@ -250,6 +253,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
       --collision-pre-roll-ab    Screen TRT/regularized/RR3 for 800 fixed steps
       --collision-momentum-closure
                                  Close both surviving candidates against near-wing and global momentum
+      --collision-extended-pilot Run both momentum-closed candidates through all 3,776 fixed steps
       --force-target FILE        Registered measured two-component force target
       --archive FILE            Atomically archive the parity report as JSON
       --json                    Emit the machine-readable parity report
@@ -1821,6 +1825,81 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
         manifestURL: URL(fileURLWithPath: arguments.inputPath!)
     )
+    if arguments.collisionExtendedPilot {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionExtendedPilot(
+                surface: dataset,
+                target: target,
+                cellSizeMeters: arguments.cellSizeMeters,
+                halfThicknessCells: arguments.halfThicknessCells
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("device: \(report.deviceName)")
+            print("extended_pilot_steps: \(report.requestedFluidSteps)")
+            print(
+                "comparison_samples: \(report.requestedComparisonSamples)"
+            )
+            for result in report.cases {
+                print(
+                    "\(result.collisionOperator): steps="
+                        + String(result.report.completedFluidSteps)
+                        + " minimum_population="
+                        + String(result.report.minimumSampledPopulation)
+                        + " activation_fraction="
+                        + String(
+                            result.report
+                                .collisionLimiterActivationFractionOfCellSteps
+                        )
+                        + " endpoint_normalized_rms_error="
+                        + (result.report.endpointNormalizedRMSError.map {
+                            String($0)
+                        } ?? "unavailable")
+                        + " interval_normalized_rms_error="
+                        + (result.report.intervalMeanNormalizedRMSError.map {
+                            String($0)
+                        } ?? "unavailable")
+                        + " eligible="
+                        + String(
+                            result.eligibleForRefinementDiscrimination
+                        )
+                )
+            }
+            print(
+                "endpoint_pairwise_normalized_rms_difference: "
+                    + (report.endpointPairwiseNormalizedRMSDifference.map {
+                        String($0)
+                    } ?? "unavailable")
+            )
+            print(
+                "interval_pairwise_normalized_rms_difference: "
+                    + (report.intervalMeanPairwiseNormalizedRMSDifference.map {
+                        String($0)
+                    } ?? "unavailable")
+            )
+            print(
+                "eligible_collision_operators: "
+                    + report.eligibleCollisionOperators.joined(separator: ",")
+            )
+            print("screening_gate_passed: \(report.screeningGatePassed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.screeningGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "indexed Metal collision extended-pilot gate failed"
+            )
+        }
+        return
+    }
     if arguments.collisionMomentumClosure {
         let target = try MeasuredBirdForceTargetLoader.load(
             targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),

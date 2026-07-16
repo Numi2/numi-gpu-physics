@@ -1251,6 +1251,33 @@ statistics. This accepts momentum consistency only. Both candidates advance to
 the fixed extended pilot; the RR3 activation advantage is not a production-
 selection rule, and experimental agreement/refinement remain deferred.
 
+Run the full registered-window extension with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-extended-pilot \
+  --archive ValidationArtifacts/deetjen-dove-collision-extended-pilot.json
+
+python3 Scripts/audit-dove-collision-extended-pilot.py
+```
+
+Both candidates complete all 3,776 steps and all 187 comparison samples with
+finite loads and positive every-step population diagnostics. Regularized BGK
+and RR3 retain minima `2.642e-9` and `3.202e-9`; their correction counts remain
+55 and 28, now only `4.265e-8` and `2.171e-8` of the longer run's cell-steps.
+The candidate force histories differ by `0.656%` endpoint and `0.882%`
+interval-mean normalized RMS. The independent audit reconstructs the complete
+registered window and both parent differences.
+
+This is a numerical full-window gate. The endpoint measured-force errors
+`5.665/5.676` and interval-mean errors `2.274/2.264` are descriptive because
+the pilot viscosity is `68.07x` the source value. They cannot select an
+operator or establish experimental agreement. The next admissible allocation
+is a preregistered two-operator 8/12-grid discriminator; only its selected
+candidate advances to the 16-cell completion run.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

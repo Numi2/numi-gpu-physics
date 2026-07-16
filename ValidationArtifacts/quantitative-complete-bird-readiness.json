@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 13,
+  "schemaVersion": 14,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
-  "scientificStatus": "solver contract implemented; indexed experimental geometry, production impulse coupling, and measured force registration accepted; coarse dove pilot localizes a production-TRT failure and both positivity-preserving candidates pass fixed pre-roll stability plus independent momentum closure; same-specimen biological free-flight input absent",
+  "scientificStatus": "solver contract implemented; indexed experimental geometry, production impulse coupling, and measured force registration accepted; coarse dove pilot localizes a production-TRT failure and both positivity-preserving candidates pass pre-roll stability, independent momentum closure, and the full 3,776-step registered-window numerical gate; same-specimen biological free-flight input absent",
   "solverCapabilities": {
     "measuredCompleteBirdSchema": "measured-bird-v2",
     "prescribedBilateralKinematics": true,
@@ -157,6 +157,8 @@
     "collisionPreRollABAudit": "ValidationArtifacts/deetjen-dove-collision-pre-roll-ab-audit.json",
     "collisionMomentumClosure": "ValidationArtifacts/deetjen-dove-collision-momentum-closure.json",
     "collisionMomentumClosureAudit": "ValidationArtifacts/deetjen-dove-collision-momentum-closure-audit.json",
+    "collisionExtendedPilot": "ValidationArtifacts/deetjen-dove-collision-extended-pilot.json",
+    "collisionExtendedPilotAudit": "ValidationArtifacts/deetjen-dove-collision-extended-pilot-audit.json",
     "selectedBird": "OB",
     "selectedFlight": "2018_12_11_OB_F03",
     "measuredTargets": [
@@ -321,23 +323,53 @@
       "reportSHA256": "68e0381defc7341a08297b8643da7dc7825f57faf02362372bee3a533bddbb13",
       "auditSHA256": "8af947eec274f718e717262de5da9973d5ae7d1ab5499357c0676edeb7f71cf4"
     },
+    "collisionExtendedPilotResult": {
+      "device": "Apple M4",
+      "requestedFluidSteps": 3776,
+      "requestedComparisonSamples": 187,
+      "populationDiagnosticStride": 1,
+      "maximumCorrectionActivationFraction": 0.05,
+      "regularizedBGKRuntimeSeconds": 13.313531994819641,
+      "regularizedBGKMinimumPopulation": 2.6415549747582645E-9,
+      "regularizedBGKCorrectionActivationCount": 55,
+      "regularizedBGKCorrectionActivationFraction": 4.264581456917492E-8,
+      "regularizedBGKEndpointNormalizedRMSError": 5.664596408765528,
+      "regularizedBGKIntervalMeanNormalizedRMSError": 2.2743396121950874,
+      "recursiveRegularizedBGKRuntimeSeconds": 13.633483052253723,
+      "recursiveRegularizedBGKMinimumPopulation": 3.2018481199713733E-9,
+      "recursiveRegularizedBGKCorrectionActivationCount": 28,
+      "recursiveRegularizedBGKCorrectionActivationFraction": 2.1710596507943598E-8,
+      "recursiveRegularizedBGKEndpointNormalizedRMSError": 5.676027623198696,
+      "recursiveRegularizedBGKIntervalMeanNormalizedRMSError": 2.2638867092530095,
+      "endpointPairwiseNormalizedRMSDifference": 0.006555495205720026,
+      "intervalMeanPairwiseNormalizedRMSDifference": 0.008823724456705272,
+      "eligibleCollisionOperators": [
+        "positivity-preserving-regularized-bgk",
+        "positivity-preserving-recursive-regularized-bgk"
+      ],
+      "screeningGatePassed": true,
+      "experimentalAgreementGateApplied": false,
+      "artifactAuditPassed": true,
+      "reportSHA256": "ee3fd7ed5bd9eaf936f3707f0bd3a998208f5ffff74f50d4d666c694450f4a34",
+      "auditSHA256": "cf756451c8720c2ccd4a7f94187730edf3738a88415e2e1b695d73ebee696fc8"
+    },
     "quantitativeFreeFlightSchema2Ready": false,
     "reasonFreeFlightRemainsBlocked": "the source assumes bilateral surface symmetry and models the distributed wing mass; same-specimen bilateral wing and registered whole-bird inertia are not measured",
     "antiFabricationRule": "derived lateral force, per-wing loads, or modeled inertia must not be relabeled as experimental measurements",
-    "nextAction": "run the fixed full-window extended pilot for both momentum-closed collision candidates before selecting an operator or allocating a measured-force refinement ladder"
+    "nextAction": "preregister and run a two-operator 8/12-grid collision discriminator; use grid trend and cross-canonical consistency rather than the 68.07x-over-viscous coarse measured error, then carry only the selected operator into the 16-cell completion run"
   },
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
-    "nextAction": "continue the Maeda availability request for strict schema 2 while running the fixed full-window Deetjen extended pilot for both momentum-closed collision candidates",
+    "nextAction": "continue the Maeda availability request for strict schema 2 while running the preregistered two-operator Deetjen 8/12-grid discriminator before a single-operator 16-cell completion run",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {
     "date": "2026-07-16",
     "device": "Apple M4",
-    "swiftTestsPassed": 95,
-    "swiftTestRuntimeSeconds": 511.639,
-    "swiftTestCommandWallSeconds": 511.8,
+    "swiftTestsPassed": 96,
+    "swiftTestRuntimeSeconds": 538.942,
+    "swiftTestCommandWallSeconds": 542.0,
     "focusedCoupledMomentumReleaseTestsPassed": 1,
     "focusedCoupledMomentumReleaseRuntimeSeconds": 0.062,
     "focusedSchema2PartLoadArchiveTestsPassed": 1,
@@ -377,6 +409,13 @@
     "deetjenDoveCollisionMomentumClosureArtifactAuditPassed": true,
     "deetjenDoveCollisionMomentumClosureEligibleCandidates": 2,
     "focusedDeetjenDoveCollisionMomentumClosureTestsPassed": 1,
-    "focusedDeetjenDoveCollisionMomentumClosureRuntimeSeconds": 15.155
+    "focusedDeetjenDoveCollisionMomentumClosureRuntimeSeconds": 15.155,
+    "deetjenDoveCollisionExtendedPilotExecuted": true,
+    "deetjenDoveCollisionExtendedPilotPassed": true,
+    "deetjenDoveCollisionExtendedPilotArtifactAuditPassed": true,
+    "deetjenDoveCollisionExtendedPilotEligibleCandidates": 2,
+    "deetjenDoveCollisionExtendedPilotComparisonSamplesPerCandidate": 187,
+    "focusedDeetjenDoveCollisionExtendedPilotTestsPassed": 1,
+    "focusedDeetjenDoveCollisionExtendedPilotRuntimeSeconds": 57.693
   }
 }
