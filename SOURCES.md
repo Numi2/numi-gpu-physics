@@ -36,4 +36,9 @@
 - M. E. Deetjen et al., “High-speed surface reconstruction of a flying bird using structured light,” J. Exp. Biol. 220 (2017): https://doi.org/10.1242/jeb.149708
 - C. Berg and J. M. V. Rayner, “The moment of inertia of bird wings and the inertial power requirement for flapping flight,” J. Exp. Biol. 198 (1995): https://doi.org/10.1242/jeb.198.8.1655
 
+The committed `ValidationInputs/deetjen-ob-f03-surface-v1` files are a
+provenance-locked CC0 derivative of the selected Dryad flight. The uncompressed
+MATLAB source remains outside this repository; the manifest records both source
+SHA-256 values and every measured, derived, and assumed field.
+
 The code in this repository is original and does not copy PyFR source. PyFR was used to study component boundaries, precompiled kernel execution, backend separation, data ownership, and command-graph organization. The numerical references above informed the choice of a regular low-Mach lattice, moving boundaries, TRT collision, and momentum-exchange loads.

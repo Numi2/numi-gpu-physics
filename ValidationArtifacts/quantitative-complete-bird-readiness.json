@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 6,
+  "schemaVersion": 7,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
   "scientificStatus": "solver contract implemented; same-specimen biological input absent",
   "solverCapabilities": {
@@ -143,6 +143,9 @@
     "datasetDOI": "10.5061/dryad.wwpzgmsqs",
     "sourceQualification": "ValidationArtifacts/deetjen-dove-source-qualification.json",
     "engineeringIngestion": "ValidationArtifacts/deetjen-dove-engineering-ingestion.json",
+    "surfaceConversion": "ValidationArtifacts/deetjen-dove-surface-conversion.json",
+    "surfaceCPUParity": "ValidationArtifacts/deetjen-dove-surface-cpu-parity.json",
+    "surfaceInputManifest": "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json",
     "selectedBird": "OB",
     "selectedFlight": "2018_12_11_OB_F03",
     "measuredTargets": [
@@ -154,16 +157,23 @@
     "selectiveSurfaceSubsetCompressedBytes": 671462764,
     "selectiveSurfaceSubsetAcquiredAndCRCVerified": true,
     "kinematicsForceSynchronizationReconstructed": true,
-    "birdFlowSurfaceConversionPassed": false,
+    "birdFlowSurfaceConversionPassed": true,
+    "surfaceCPUParityPassed": true,
+    "surfaceFrames": 144,
+    "surfaceVerticesPerFrame": 2157,
+    "surfaceTriangles": 3968,
+    "surfaceMaximumAdjacentPointSpeedMetersPerSecond": 25.230468372370886,
+    "surfaceMaximumSpeedToDepositedBladeSpeedRatio": 1.1807224609013567,
+    "metalIndexedSurfaceReplayPassed": false,
     "quantitativeFreeFlightSchema2Ready": false,
     "reasonFreeFlightRemainsBlocked": "the source assumes bilateral surface symmetry and models the distributed wing mass; same-specimen bilateral wing and registered whole-bird inertia are not measured",
     "antiFabricationRule": "derived lateral force, per-wing loads, or modeled inertia must not be relabeled as experimental measurements",
-    "nextAction": "convert the decoded 144-frame body, left-wing, and tail surfaces into a compact BirdFlow sequence and close coordinate, topology, and wall-velocity parity before a fluid run"
+    "nextAction": "load the fixed indexed sequence into a generic Metal surface path and close GPU interpolation, rasterization, component masks, and wall velocity against the accepted CPU artifact before enabling collision or force accumulation"
   },
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
-    "nextAction": "continue the Maeda availability request for strict schema 2 while independently implementing the qualified Deetjen OB F03 prescribed-motion measured-force benchmark",
+    "nextAction": "continue the Maeda availability request for strict schema 2 while advancing the CPU-cleared Deetjen OB F03 fixed surface through a geometry-only indexed Metal parity gate",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {
@@ -183,6 +193,7 @@
     "releaseFreeFlightSmokePassed": true,
     "staticSwiftMetalBindingAuditPassed": true,
     "solverAndVisualizationMetalCompilationPassed": true,
-    "githubActionsUsed": false
+    "githubActionsUsed": false,
+    "deetjenDoveSurfaceCPUParityPassed": true
   }
 }

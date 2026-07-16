@@ -89,11 +89,55 @@ the source data. The reproducible inspector established:
 - the source coordinates are millimeters and require an explicit `0.001`
   conversion before BirdFlow registration.
 
-The compact evidence is
+The ingestion evidence is
 [`deetjen-dove-engineering-ingestion.json`](../ValidationArtifacts/deetjen-dove-engineering-ingestion.json).
-It deliberately leaves BirdFlow coordinate registration, topology conversion,
-and force sign/axis promotion false. Decoding a field is not the same as
-proving its physical mapping.
+It deliberately recorded BirdFlow coordinate registration, topology conversion,
+and force sign/axis promotion as false at that stage. Decoding a field is not
+the same as proving its physical mapping.
+
+## Compact complete-surface gate
+
+The next CPU-only gate is complete. The converter writes 144 non-periodic
+laboratory-frame samples with 2,157 vertices per frame and one fixed 3,968-
+triangle topology: body, measured left wing, explicitly mirrored right wing,
+and tail. The 3.73 MB position stream and 23.8 KB index stream are small enough
+to version and remain 128 triangles below the current Metal identifier limit.
+
+The sparse measured-wing field contains visibility holes. The deposited
+`zAll` surface is therefore used only inside the observed outline. Directly
+remeshing the outline produced a false `91.9 m/s` tip speed when visibility
+changed between frames. A 15-frame cubic Savitzky-Golay regularization of the
+body-frame material coordinates reduces the maximum adjacent-frame speed to
+`25.2305 m/s`, or `1.1807x` the deposit's independently stored `21.3687 m/s`
+filtered blade-element maximum. The preregistered ceiling is `1.25x`.
+
+Independent decoding from the deposited MATLAB files passes all hashes,
+counts, index ranges, nondegeneracy, area, coordinate-bound, and wall-speed
+checks. Worst absolute area errors are `4.703%` for the body, `8.905%` for each
+wing, and `0.566%` for the tail. The wing tolerance is wider because temporal
+material-point continuity is more important to moving-wall impulse than a
+single-frame visibility outline.
+
+Reproduce both stages after acquiring the source subset:
+
+```bash
+python3 Scripts/convert-dove-surface-sequence.py \
+  --surface-mat /path/to/SurfFits.mat \
+  --muscle-model-mat /path/to/2018_12_11_OB_F03.mat \
+  --output ValidationInputs/deetjen-ob-f03-surface-v1 \
+  --audit ValidationArtifacts/deetjen-dove-surface-conversion.json
+
+python3 Scripts/audit-dove-surface-sequence.py \
+  --manifest ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --surface-mat /path/to/SurfFits.mat \
+  --muscle-model-mat /path/to/2018_12_11_OB_F03.mat \
+  --conversion-audit ValidationArtifacts/deetjen-dove-surface-conversion.json \
+  --output ValidationArtifacts/deetjen-dove-surface-cpu-parity.json
+```
+
+This proves conversion and wall-velocity input quality only. Metal occupancy,
+fluid loads, force-axis/sign closure, repeatability across five flights, and
+numerical refinement remain open.
 
 ## Reproducible acquisition
 
@@ -162,10 +206,10 @@ causes a hard failure.
    before freezing CFD error thresholds. Then run time-step and `8/12/16`
    spatial refinement without changing geometry or kinematics.
 
-Source acquisition, MATLAB decoding, and synchronization reconstruction are
-now complete. Compact topology conversion and BirdFlow frame registration are
-the active boundary. The first single-flight replay is an engineering
-integration gate. Quantitative
+Source acquisition, MATLAB decoding, synchronization reconstruction, compact
+topology conversion, BirdFlow frame registration, and independent CPU parity
+are complete. Generic indexed-surface Metal replay is the active boundary. The
+first single-flight replay is an engineering integration gate. Quantitative
 experimental acceptance begins only after the repeatability envelope and
 numerical refinement thresholds are preregistered from independent evidence.
 

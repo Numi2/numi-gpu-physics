@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **Ingestion accepted; surface conversion open** | one synchronized 1000 Hz surface/kinematic + 2000 Hz two-axis force flight CRC/SHA-verified; range acquisition reduces 19.3 GB to 671 MB |
+| Measured dove external-force benchmark | **Surface CPU gate accepted; Metal/force open** | fixed 144-frame complete surface has 2,157 vertices and 3,968 triangles; independent source/area/bounds/wall-speed parity passes |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -59,6 +59,15 @@ surface instead of downloading the 19.3 GB archive. See
 [`Docs/DEETJEN_DOVE_BENCHMARK.md`](Docs/DEETJEN_DOVE_BENCHMARK.md). Its inertia
 remains modeled, so it advances prescribed-force validation—not measured
 schema-2 free flight.
+
+The decoded surface is now a committed 3.73 MB float32 sequence with one fixed
+topology for the body, measured left wing, explicitly mirrored right wing, and
+tail. It uses the deposited laboratory motion without an artificial periodic
+wrap. The compact mesh stays 128 triangles below the current Metal identifier
+limit. Independent CPU reconstruction passes every binary, topology, area,
+coordinate-bound, and adjacent-frame wall-speed check; the exact artifacts are
+[`manifest.json`](ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json) and
+[`deetjen-dove-surface-cpu-parity.json`](ValidationArtifacts/deetjen-dove-surface-cpu-parity.json).
 
 ## Latest high-Re result
 

@@ -1134,7 +1134,8 @@ derived, and its 20-point wing mass distribution is cross-source scaled. Only
 Before the fluid comparison, acceptance requires:
 
 - compact surface conversion preserves source landmarks, areas, topology,
-  body/wing/world transforms, and wall velocity within preregistered tolerances;
+  body/wing/world transforms, and wall velocity within preregistered tolerances
+  (**passed** for the selected flight);
 - the source force sign and axes close independently against the registered
   BirdFlow frame;
 - the five flights for bird `OB` establish a measurement/biological
@@ -1144,11 +1145,21 @@ Before the fluid comparison, acceptance requires:
 - only horizontal/vertical total-force impulse, mean, peak phase, peak
   magnitude, and phase-resolved residuals determine experimental acceptance.
 
-Status: selective source acquisition, integrity, MATLAB decoding, and timing
-reconstruction pass. BirdFlow surface conversion and any fluid comparison are
-open. Evidence is in
+The committed non-periodic surface sequence contains 144 frames, 2,157
+vertices per frame, and 3,968 fixed triangles. Independent CPU decoding
+reproduces the source-area and coordinate-bound closure and limits the maximum
+adjacent-frame point speed to `25.2305 m/s`, `1.1807x` the deposited filtered
+blade-element maximum under the locked `1.25x` ceiling. Worst absolute area
+errors are `4.703%` body, `8.905%` wing, and `0.566%` tail. The original sparse
+outline remesh was rejected because it generated a false `91.9 m/s` tip speed.
+
+Status: selective source acquisition, integrity, MATLAB decoding, timing,
+compact topology, coordinate registration, and CPU wall-velocity parity pass.
+Metal replay and every fluid comparison remain open. Evidence is in
 `ValidationArtifacts/deetjen-dove-source-qualification.json` and
-`ValidationArtifacts/deetjen-dove-engineering-ingestion.json`.
+`ValidationArtifacts/deetjen-dove-engineering-ingestion.json`, plus
+`ValidationArtifacts/deetjen-dove-surface-conversion.json` and
+`ValidationArtifacts/deetjen-dove-surface-cpu-parity.json`.
 
 ## 8. Complete measured bird
 

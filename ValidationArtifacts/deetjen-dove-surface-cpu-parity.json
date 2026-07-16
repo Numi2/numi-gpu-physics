@@ -1,0 +1,91 @@
+{
+  "auditIdentifier": "deetjen-ob-f03-surface-cpu-parity-v1",
+  "checks": {
+    "bodyArea": true,
+    "bodyBounds": true,
+    "bounds": true,
+    "componentIndicesInRange": true,
+    "depositedMaximumSpeed": true,
+    "finitePositions": true,
+    "frameCount": true,
+    "frameNumberCount": true,
+    "globalIndicesInRange": true,
+    "leftWingArea": true,
+    "leftWingBounds": true,
+    "manifestSHA256": true,
+    "maximumSpeed": true,
+    "nondegenerateTriangles": true,
+    "nonperiodic": true,
+    "positionsByteCount": true,
+    "positionsSHA256": true,
+    "rightWingArea": true,
+    "rightWingBounds": true,
+    "strictlyIncreasingTimes": true,
+    "tailArea": true,
+    "tailBounds": true,
+    "triangleBudget": true,
+    "triangleCount": true,
+    "trianglesByteCount": true,
+    "trianglesSHA256": true,
+    "vertexCount": true,
+    "wallVelocityContinuity": true
+  },
+  "claimBoundary": "Independent CPU decoding closes binary identity, topology, source area, bounds, and adjacent-frame wall speed. No fluid or force result is implied.",
+  "closure": {
+    "body": {
+      "areaRelativeError": {
+        "maximum": -0.04703299902121627,
+        "maximumAbsolute": 0.04703304657234697,
+        "median": -0.04703302551919947,
+        "minimum": -0.04703304657234697,
+        "rms": 0.04703302575102614
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.0021807320426846105
+    },
+    "leftWing": {
+      "areaRelativeError": {
+        "maximum": 0.04675875812847585,
+        "maximumAbsolute": 0.08904835799453681,
+        "median": 0.0005831712636145125,
+        "minimum": -0.08904835799453681,
+        "rms": 0.022597996377894745
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.012958636689204751
+    },
+    "rightWing": {
+      "areaRelativeError": {
+        "maximum": 0.04675875812847585,
+        "maximumAbsolute": 0.08904836287416606,
+        "median": 0.0005831869171940562,
+        "minimum": -0.08904836287416606,
+        "rms": 0.022597997312792144
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.019283178763281485
+    },
+    "tail": {
+      "areaRelativeError": {
+        "maximum": -0.003763620223704134,
+        "maximumAbsolute": 0.005661162234566253,
+        "median": -0.004419153157627587,
+        "minimum": -0.005661162234566253,
+        "rms": 0.004464005552334906
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.0005252274615074881
+    }
+  },
+  "counts": {
+    "frames": 144,
+    "triangles": 3968,
+    "verticesPerFrame": 2157
+  },
+  "cpuParityPassed": true,
+  "depositedMaximumBladeElementSpeedMetersPerSecond": 21.36866978299887,
+  "generatedBy": "Scripts/audit-dove-surface-sequence.py",
+  "manifestSHA256": "c2e8581c0b562b01e28eaebbc29e93b66583f3316709ae3ad1482e09b96d7e61",
+  "maximumAdjacentPointSpeedMetersPerSecond": 25.230468372370886,
+  "maximumSpeedToDepositedBladeSpeedRatio": 1.1807224609013567,
+  "minimumTriangleAreaSquareMeters": 1.3517536338432456e-08,
+  "schemaVersion": 1,
+  "sourceMuscleModelSHA256": "499378e2beebce224fd178732a8ff0ecae920eab9d024d82b8dc3b695cfce1a1",
+  "sourceSurfaceSHA256": "985700b8904813dbdf62fc8339d5bc034f75a0862414b584313a23778c00f789"
+}

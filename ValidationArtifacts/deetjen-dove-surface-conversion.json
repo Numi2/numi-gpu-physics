@@ -1,0 +1,92 @@
+{
+  "auditIdentifier": "deetjen-ob-f03-fixed-surface-conversion-v1",
+  "checks": {
+    "bodyArea": true,
+    "bounds": true,
+    "fixedFiniteTopology": true,
+    "float32Quantization": true,
+    "leftWingArea": true,
+    "nonperiodicTimeContract": true,
+    "rightWingArea": true,
+    "sourceFrameTransformParity": true,
+    "tailArea": true,
+    "triangleBudget": true,
+    "wallVelocityContinuity": true
+  },
+  "claimBoundary": "This gate establishes a compact, fixed, finite, non-periodic complete-surface sequence with independently auditable geometry. It does not establish a Metal replay, fluid-force agreement, right-wing measurement, or free-flight closure.",
+  "closure": {
+    "body": {
+      "areaRelativeError": {
+        "maximum": -0.04703302665632403,
+        "maximumAbsolute": 0.04703302665632403,
+        "median": -0.04703302665632403,
+        "minimum": -0.04703302665632403,
+        "rms": 0.04703302665632403
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.00218073256826265
+    },
+    "leftWing": {
+      "areaRelativeError": {
+        "maximum": 0.046758752792286584,
+        "maximumAbsolute": 0.08904836807011651,
+        "median": 0.0005831812400687308,
+        "minimum": -0.08904836807011651,
+        "rms": 0.022597996991837312
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.012958636590155833
+    },
+    "rightWing": {
+      "areaRelativeError": {
+        "maximum": 0.046758752792286584,
+        "maximumAbsolute": 0.08904836807011651,
+        "median": 0.0005831812400687308,
+        "minimum": -0.08904836807011651,
+        "rms": 0.022597996991837312
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.01928317878744511
+    },
+    "tail": {
+      "areaRelativeError": {
+        "maximum": -0.003763611683597179,
+        "maximumAbsolute": 0.005661160890987782,
+        "median": -0.0044191482335699805,
+        "minimum": -0.005661160890987782,
+        "rms": 0.004464006651195494
+      },
+      "maximumAbsoluteBoundsErrorMeters": 0.0005252246846442765
+    }
+  },
+  "counts": {
+    "frames": 144,
+    "positionBytes": 3727296,
+    "triangleBytes": 23808,
+    "triangles": 3968,
+    "verticesPerFrame": 2157
+  },
+  "depositedMaximumBladeElementSpeedMetersPerSecond": 21.36866978299887,
+  "gatePassed": true,
+  "generatedBy": "Scripts/convert-dove-surface-sequence.py",
+  "manifestSHA256": "c2e8581c0b562b01e28eaebbc29e93b66583f3316709ae3ad1482e09b96d7e61",
+  "maximumAdjacentPointSpeedMetersPerSecond": 25.230468203493405,
+  "maximumEndToStartPointJumpMeters": 0.3400017359344018,
+  "maximumFloat32QuantizationErrorMeters": 1.4779648005447399e-08,
+  "maximumSourceTransformParityErrorMillimeters": 5.684341886080802e-14,
+  "maximumSpeedToDepositedBladeSpeedRatio": 1.1807224529983154,
+  "observedLeftWingColumnRange": {
+    "maximumEnd": 432,
+    "minimumStart": 171
+  },
+  "schemaVersion": 1,
+  "sourceMuscleModelSHA256": "499378e2beebce224fd178732a8ff0ecae920eab9d024d82b8dc3b695cfce1a1",
+  "sourceSurfaceSHA256": "985700b8904813dbdf62fc8339d5bc034f75a0862414b584313a23778c00f789",
+  "thresholds": {
+    "maximumBodyAreaAbsoluteRelativeError": 0.05,
+    "maximumBoundsErrorMeters": 0.02,
+    "maximumFloat32QuantizationErrorMeters": 1e-07,
+    "maximumSourceTransformParityErrorMillimeters": 1e-09,
+    "maximumSpeedToDepositedBladeSpeedRatio": 1.25,
+    "maximumTailAreaAbsoluteRelativeError": 0.01,
+    "maximumTriangleCount": 4096,
+    "maximumWingAreaAbsoluteRelativeError": 0.1
+  }
+}
