@@ -258,11 +258,34 @@ audit passes because it verifies the archive and the negative outcome; the
 pilot integration gate remains false. This distinction prevents an artifact-
 integrity pass from being misreported as physical acceptance.
 
-The highest-ROI next experiment is a controlled near-wall collision-operator
-A/B with geometry, grid, time step, viscosity floor, boundary treatment,
-sponge, and gates fixed. A candidate advances only if it survives at least the
-800-step pre-roll with positive populations and finite loads. Five-flight
-repeatability and measured-force refinement remain deferred until then.
+The controlled near-wall collision screen is now reproducible with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-pre-roll-ab \
+  --archive ValidationArtifacts/deetjen-dove-collision-pre-roll-ab.json \
+  --json
+
+python3 Scripts/audit-dove-collision-pre-roll-ab.py
+```
+
+Geometry, kinematics, grid, time step, viscosity floor, boundary treatment,
+sponge, force estimator, and thresholds are identical in all three arms.
+Population minimum is reduced every step. This localizes the production-TRT
+control's first negative population at step 150 (`4.6875 ms`) in the same
+direction-7 near-surface fluid cell. Positivity-preserving regularized BGK and
+recursive-regularized BGK both survive all 800 steps with finite loads and
+positive populations. Their convex correction activates in 55 and 28
+cell-steps (`2.013e-7` and `1.025e-7` of all cell-steps), both far below the
+fixed `5%` screening ceiling.
+
+The screen makes both candidates eligible for a candidate-specific momentum-
+closure gate and extended pilot only. It does not promote either collision
+operator into measured-bird production, compare experimental forces, or clear
+the unresolved RR3 sphere force statistic. Five-flight repeatability and
+measured-force refinement remain deferred.
 
 ## Reproducible acquisition
 
@@ -340,8 +363,9 @@ topology conversion, BirdFlow frame registration, independent CPU parity,
 indexed Metal geometry, production impulse coupling, and force target
 registration are complete. The coarse prescribed-motion pilot is executed and
 fails its pre-roll positivity/load gate with a localized near-wall population.
-Quantitative experimental acceptance begins only after a fixed-input collision
-candidate survives that boundary, the five-flight repeatability envelope is
+The fixed-input collision screen now has two pre-roll survivors. Quantitative
+experimental acceptance begins only after candidate-specific momentum closure
+and an extended pilot pass, the five-flight repeatability envelope is
 established, and time/space refinement is preregistered and passed.
 
 ## Claim after a successful ladder

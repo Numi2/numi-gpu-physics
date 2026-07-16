@@ -145,6 +145,22 @@ func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
     #expect(plan.sourceConditionTauPlusAtPilotGrid < plan.minimumAllowedTauPlus)
     #expect(plan.pilotToSourceViscosityRatio > 1)
     #expect(!plan.experimentalAgreementGateApplied)
+    #expect(
+        MetalIndexedBirdSurfacePilotValidator
+            .collisionPreRollPopulationDiagnosticStride == 1
+    )
+    #expect(
+        MetalIndexedBirdSurfacePilotValidator
+            .collisionPreRollMaximumActivationFraction == 0.05
+    )
+    let operators = MetalIndexedBirdSurfacePilotValidator
+        .collisionPreRollOperators
+    #expect(operators.map(\.rawValue) == [
+        "production-trt",
+        "positivity-preserving-regularized-bgk",
+        "positivity-preserving-recursive-regularized-bgk",
+    ])
+    #expect(operators.map(\.caseParameterW) == [-1, -3, -4])
 }
 
 #if canImport(Metal)

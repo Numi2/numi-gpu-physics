@@ -30,7 +30,7 @@
   },
   "outcome": "negative-pre-roll-population-stability-localization",
   "pilotIntegrationPassed": false,
-  "pilotSHA256": "3a7bc3bba79a62c605dba748ff73ca68fc383f4528794755749e3c3e01e14241",
+  "pilotSHA256": "90ef1c1e465ddc3eebad11acf112e41f0aefe345421aeceba1c48ec6bc142fe5",
   "schemaVersion": 1,
   "surfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
 }

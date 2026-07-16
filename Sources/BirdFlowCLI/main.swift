@@ -129,7 +129,8 @@ private struct Arguments {
       birdflow replay measured-bird --input DATASET.json [--audit-only] [--json]
       birdflow replay measured-wing --input SURFACE.json [--fluid-cycle] [--json]
       birdflow replay measured-bird-surface --input MANIFEST.json \
-        [--coupling-gate | --coarse-fluid-pilot --force-target TARGET.json] \
+        [--coupling-gate | --coarse-fluid-pilot | --collision-pre-roll-ab] \
+        [--force-target TARGET.json] \
         [--archive FILE] [--json]
     """
 }
@@ -142,6 +143,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var halfThicknessCells: Float = 0.75
     var couplingGate = false
     var coarseFluidPilot = false
+    var collisionPreRollAB = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -197,6 +199,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 couplingGate = true
             case "--coarse-fluid-pilot":
                 coarseFluidPilot = true
+            case "--collision-pre-roll-ab":
+                collisionPreRollAB = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -214,14 +218,18 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 "measured-bird-surface replay requires --input MANIFEST.json"
             )
         }
-        guard !(couplingGate && coarseFluidPilot) else {
+        let selectedModes = [
+            couplingGate, coarseFluidPilot, collisionPreRollAB,
+        ].filter { $0 }.count
+        guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
-                "choose either --coupling-gate or --coarse-fluid-pilot"
+                "choose only one measured-surface fluid validation mode"
             )
         }
-        guard coarseFluidPilot == (forceTargetPath != nil) else {
+        let needsForceTarget = coarseFluidPilot || collisionPreRollAB
+        guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
-                "--coarse-fluid-pilot requires --force-target, and the target is only valid for that pilot"
+                "the coarse pilot and collision A/B require --force-target; other modes reject it"
             )
         }
     }
@@ -233,6 +241,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
       --half-thickness-cells V  Sheet half-thickness (default: 0.75)
       --coupling-gate            Run the short production fluid/impulse gate
       --coarse-fluid-pilot       Run the preregistered viscosity-floor fluid pilot
+      --collision-pre-roll-ab    Screen TRT/regularized/RR3 for 800 fixed steps
       --force-target FILE        Registered measured two-component force target
       --archive FILE            Atomically archive the parity report as JSON
       --json                    Emit the machine-readable parity report
@@ -1804,6 +1813,56 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
         manifestURL: URL(fileURLWithPath: arguments.inputPath!)
     )
+    if arguments.collisionPreRollAB {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionPreRollAB(
+                surface: dataset,
+                target: target,
+                cellSizeMeters: arguments.cellSizeMeters,
+                halfThicknessCells: arguments.halfThicknessCells
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("device: \(report.deviceName)")
+            print("pre_roll_steps: \(report.requestedPreRollSteps)")
+            for result in report.cases {
+                print(
+                    "\(result.collisionOperator): steps="
+                        + String(result.completedPreRollSteps)
+                        + " minimum_population="
+                        + String(result.report.minimumSampledPopulation)
+                        + " activation_fraction="
+                        + String(
+                            result.report
+                                .collisionLimiterActivationFractionOfCellSteps
+                        )
+                        + " eligible="
+                        + String(result.eligibleForExtendedPilot)
+                )
+            }
+            print(
+                "eligible_collision_operators: "
+                    + report.eligibleCollisionOperators.joined(separator: ",")
+            )
+            print("screening_gate_passed: \(report.screeningGatePassed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.screeningGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "indexed Metal collision pre-roll A/B screening gate failed"
+            )
+        }
+        return
+    }
     if arguments.coarseFluidPilot {
         let target = try MeasuredBirdForceTargetLoader.load(
             targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),

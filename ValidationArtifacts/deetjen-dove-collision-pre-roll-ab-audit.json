@@ -1,0 +1,35 @@
+{
+  "artifactAuditPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-collision-pre-roll-ab-audit-v1",
+  "checks": {
+    "candidateInterventionOrdering": true,
+    "childFixedInputs": true,
+    "controlFailureReproduced": true,
+    "datasetLocks": true,
+    "eligibleSet": true,
+    "fixedScreenContract": true,
+    "nonAcceptanceBoundary": true,
+    "operatorOrder": true,
+    "recursiveCandidate": true,
+    "regularizedCandidate": true,
+    "schemaAndHashes": true
+  },
+  "claimBoundary": "This audit verifies the fixed-input stability screen and its arithmetic. Candidate eligibility requires a separate momentum closure and extended pilot before any production or experimental claim.",
+  "eligibleCollisionOperators": [
+    "positivity-preserving-regularized-bgk",
+    "positivity-preserving-recursive-regularized-bgk"
+  ],
+  "forceTargetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "generatedBy": "Scripts/audit-dove-collision-pre-roll-ab.py",
+  "metrics": {
+    "controlFirstNegativeStep": 150,
+    "recursiveActivationFraction": 1.0247401551749378e-07,
+    "recursiveMinimumPopulation": 3.2018481199713733e-09,
+    "regularizedActivationFraction": 2.0128824476650564e-07,
+    "regularizedMinimumPopulation": 2.6415549747582645e-09
+  },
+  "reportSHA256": "35f3424ad67c797cfa45192ca0df36b6b4ce86888d3dd02c1c39f3f40ee52832",
+  "schemaVersion": 1,
+  "screeningGatePassed": true,
+  "surfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
+}

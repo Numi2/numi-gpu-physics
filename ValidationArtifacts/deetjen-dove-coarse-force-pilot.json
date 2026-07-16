@@ -3,7 +3,9 @@
   "allLoadsFinite" : false,
   "allSampledPopulationsFinite" : true,
   "claimBoundary" : "This is a bounded engineering pilot for startup, sign, phase, moving-boundary force accounting, and sampled population positivity. Its viscosity is 68.1 times the measured source condition, so its force errors are descriptive only and cannot establish experimental agreement or quantitative bird flight.",
-  "collisionOperator" : "limited-TRT",
+  "collisionLimiterActivationCount" : 0,
+  "collisionLimiterActivationFractionOfCellSteps" : 0,
+  "collisionOperator" : "production-trt",
   "completedFluidSteps" : 331,
   "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
   "deviceName" : "Apple M4",
@@ -28,6 +30,7 @@
   "gridZ" : 66,
   "integrationGatePassed" : false,
   "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumCollisionRestriction" : 0,
   "minimumSampledPopulation" : -0.05179429426789284,
   "periodicBoundaries" : false,
   "plan" : {
@@ -57,9 +60,10 @@
     "spongeWidthCells" : 6,
     "totalFluidSteps" : 3776
   },
+  "populationDiagnosticStride" : 16,
   "recordedComparisonSamples" : 0,
   "recordedPopulationDiagnosticSamples" : 20,
-  "runtimeSeconds" : 0.7246220111846924,
+  "runtimeSeconds" : 0.642894983291626,
   "sampledPopulationPositivityPassed" : false,
   "samples" : [
 

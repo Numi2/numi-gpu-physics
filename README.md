@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **Input accepted; coarse CFD pilot exposes stability blocker** | target axes/time and production impulse close; first sampled negative population is localized at `5.5 ms`, before the scored window |
+| Measured dove external-force benchmark | **Collision screen passed; candidate momentum closure next** | production TRT fails at `4.6875 ms`; regularized BGK and RR3 remain positive through the fixed 800-step pre-roll |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -125,9 +125,19 @@ the scored window are not the immediate blocker. Evidence is
 [`deetjen-dove-coarse-force-pilot.json`](ValidationArtifacts/deetjen-dove-coarse-force-pilot.json)
 and
 [`deetjen-dove-coarse-force-pilot-audit.json`](ValidationArtifacts/deetjen-dove-coarse-force-pilot-audit.json).
-The next controlled experiment is a fixed-geometry/resolution near-wall
-collision-operator A/B; no measured-force ladder should run until one candidate
-survives the 800-step pre-roll with positive populations and finite loads.
+The fixed-input collision screen is now complete with population diagnostics at
+every step. Production TRT first becomes negative at step 150 (`4.6875 ms`) in
+the same direction-7 cell. Positivity-preserving regularized BGK and RR3 both
+finish all 800 pre-roll steps with finite loads and positive populations.
+Regularized BGK activates its convex correction in 55 cell-steps
+(`2.013e-7` of all cell-steps); RR3 activates in 28 (`1.025e-7`). The archive
+and independent audit are
+[`deetjen-dove-collision-pre-roll-ab.json`](ValidationArtifacts/deetjen-dove-collision-pre-roll-ab.json)
+and
+[`deetjen-dove-collision-pre-roll-ab-audit.json`](ValidationArtifacts/deetjen-dove-collision-pre-roll-ab-audit.json).
+Both candidates are eligible only for a candidate-specific momentum-closure
+gate and extended pilot. Neither is promoted to measured-bird production, and
+no measured-force ladder should run yet.
 
 ## Latest high-Re result
 

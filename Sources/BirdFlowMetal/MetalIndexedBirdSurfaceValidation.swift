@@ -109,6 +109,22 @@ public struct MetalIndexedBirdSurfaceCouplingReport: Codable, Sendable {
     public let claimBoundary: String
 }
 
+public enum MetalIndexedBirdSurfaceCollisionOperator: String, Codable, Sendable {
+    case productionTRT = "production-trt"
+    case positivityPreservingRegularizedBGK =
+        "positivity-preserving-regularized-bgk"
+    case positivityPreservingRecursiveRegularizedBGK =
+        "positivity-preserving-recursive-regularized-bgk"
+
+    var caseParameterW: Float {
+        switch self {
+        case .productionTRT: return -1
+        case .positivityPreservingRegularizedBGK: return -3
+        case .positivityPreservingRecursiveRegularizedBGK: return -4
+        }
+    }
+}
+
 public struct MetalIndexedBirdSurfacePilotPlan: Codable, Sendable {
     public let cellSizeMeters: Double
     public let halfThicknessCells: Double
@@ -168,7 +184,11 @@ public struct MetalIndexedBirdSurfacePilotReport: Codable, Sendable {
     public let completedFluidSteps: Int
     public let recordedComparisonSamples: Int
     public let recordedPopulationDiagnosticSamples: Int
+    public let populationDiagnosticStride: Int
     public let collisionOperator: String
+    public let collisionLimiterActivationCount: Double
+    public let collisionLimiterActivationFractionOfCellSteps: Double
+    public let maximumCollisionRestriction: Double
     public let forceEstimator: String
     public let periodicBoundaries: Bool
     public let allComponentsPresentAtComparisonSamples: Bool
@@ -209,6 +229,39 @@ public struct MetalIndexedBirdSurfacePilotReport: Codable, Sendable {
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceCollisionPreRollCase: Codable, Sendable {
+    public let collisionOperator: String
+    public let requestedPreRollSteps: Int
+    public let completedPreRollSteps: Int
+    public let perStepPopulationDiagnostics: Bool
+    public let positivityAndFiniteLoadGatePassed: Bool
+    public let correctionIntrusionGatePassed: Bool
+    public let eligibleForExtendedPilot: Bool
+    public let report: MetalIndexedBirdSurfacePilotReport
+}
+
+public struct MetalIndexedBirdSurfaceCollisionPreRollABReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let requestedPreRollSteps: Int
+    public let populationDiagnosticStride: Int
+    public let maximumCorrectionActivationFraction: Double
+    public let fixedInputs: String
+    public let cases: [MetalIndexedBirdSurfaceCollisionPreRollCase]
+    public let controlFailureReproduced: Bool
+    public let eligibleCollisionOperators: [String]
+    public let screeningGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -218,6 +271,14 @@ public enum MetalIndexedBirdSurfacePilotValidator {
     public static let spongeWidthCells = 6
     public static let spongeStrength: Float = 0.08
     public static let fluidStepsPerForceSample = 16
+    public static let collisionPreRollPopulationDiagnosticStride = 1
+    public static let collisionPreRollMaximumActivationFraction = 0.05
+    public static let collisionPreRollOperators:
+        [MetalIndexedBirdSurfaceCollisionOperator] = [
+            .productionTRT,
+            .positivityPreservingRegularizedBGK,
+            .positivityPreservingRecursiveRegularizedBGK,
+        ]
 
     public static func plan(
         surface: MeasuredBirdSurfaceSequence,
@@ -340,6 +401,125 @@ public enum MetalIndexedBirdSurfacePilotValidator {
         return try replay.runCoarseForcePilot(
             target: target,
             plan: plan
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionPreRollAB(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75
+    ) throws -> MetalIndexedBirdSurfaceCollisionPreRollABReport {
+        let plan = try plan(
+            surface: surface,
+            target: target,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells
+        )
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let cases = try collisionPreRollOperators.map { collisionOperator in
+            let report = try replay.runCoarseForcePilot(
+                target: target,
+                plan: plan,
+                collisionOperator: collisionOperator,
+                maximumFluidSteps: plan.preRollFluidSteps,
+                populationDiagnosticStride:
+                    collisionPreRollPopulationDiagnosticStride,
+                stopAtFirstNegativePopulation: true
+            )
+            let positivityAndFiniteLoadGatePassed =
+                report.completedFluidSteps == plan.preRollFluidSteps
+                && report.allLoadsFinite
+                && report.allSampledPopulationsFinite
+                && report.sampledPopulationPositivityPassed
+                && report.firstNegativePopulationStep == nil
+                && report.firstNonFinitePopulationStep == nil
+                && report.firstNonFiniteLoadStep == nil
+                && report.allComponentsPresentAtComparisonSamples
+            let correctionIntrusionGatePassed =
+                report.collisionLimiterActivationFractionOfCellSteps
+                    <= collisionPreRollMaximumActivationFraction
+                && report.maximumCollisionRestriction.isFinite
+            return MetalIndexedBirdSurfaceCollisionPreRollCase(
+                collisionOperator: collisionOperator.rawValue,
+                requestedPreRollSteps: plan.preRollFluidSteps,
+                completedPreRollSteps: report.completedFluidSteps,
+                perStepPopulationDiagnostics: true,
+                positivityAndFiniteLoadGatePassed:
+                    positivityAndFiniteLoadGatePassed,
+                correctionIntrusionGatePassed:
+                    correctionIntrusionGatePassed,
+                eligibleForExtendedPilot:
+                    collisionOperator != .productionTRT
+                        && positivityAndFiniteLoadGatePassed
+                        && correctionIntrusionGatePassed,
+                report: report
+            )
+        }
+        let controlFailureReproduced = cases.first?.collisionOperator
+                == MetalIndexedBirdSurfaceCollisionOperator.productionTRT.rawValue
+            && cases.first?.positivityAndFiniteLoadGatePassed == false
+        let eligible = cases.filter(\.eligibleForExtendedPilot)
+            .map(\.collisionOperator)
+        let screeningPassed = controlFailureReproduced && !eligible.isEmpty
+        let verdict = screeningPassed
+            ? (
+                "At least one positivity-preserving collision candidate "
+                    + "survived the fixed 800-step dove pre-roll with per-step "
+                    + "population diagnostics and activation below the fixed "
+                    + "five-percent cell-step ceiling."
+            )
+            : (
+                "No collision candidate cleared the fixed 800-step dove "
+                    + "pre-roll screening contract, or the production-TRT "
+                    + "control failure did not reproduce."
+            )
+        return MetalIndexedBirdSurfaceCollisionPreRollABReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            requestedPreRollSteps: plan.preRollFluidSteps,
+            populationDiagnosticStride:
+                collisionPreRollPopulationDiagnosticStride,
+            maximumCorrectionActivationFraction:
+                collisionPreRollMaximumActivationFraction,
+            fixedInputs: (
+                "geometry, kinematics, grid, time step, viscosity floor, "
+                    + "far-field boundary, sponge, moving-boundary operator, "
+                    + "force estimator, and numerical gates"
+            ),
+            cases: cases,
+            controlFailureReproduced: controlFailureReproduced,
+            eligibleCollisionOperators: eligible,
+            screeningGatePassed: screeningPassed,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: verdict,
+            claimBoundary: (
+                "This short A/B/C is a collision-stability screening gate. "
+                    + "Eligibility permits a candidate-specific momentum "
+                    + "closure and extended pilot; it does not promote the "
+                    + "operator to production, compare experimental forces, "
+                    + "or establish grid convergence."
+            )
         )
 #else
         throw BirdFlowError.metalUnavailable
@@ -1080,9 +1260,24 @@ private final class MetalIndexedBirdSurfaceReplay {
 
     func runCoarseForcePilot(
         target: MeasuredBirdForceTarget,
-        plan: MetalIndexedBirdSurfacePilotPlan
+        plan: MetalIndexedBirdSurfacePilotPlan,
+        collisionOperator: MetalIndexedBirdSurfaceCollisionOperator =
+            .productionTRT,
+        maximumFluidSteps: Int? = nil,
+        populationDiagnosticStride: Int = 16,
+        stopAtFirstNegativePopulation: Bool = false
     ) throws -> MetalIndexedBirdSurfacePilotReport {
         let started = Date()
+        let requestedFluidSteps = maximumFluidSteps ?? plan.totalFluidSteps
+        guard requestedFluidSteps > 0,
+              requestedFluidSteps <= plan.totalFluidSteps,
+              populationDiagnosticStride > 0,
+              plan.fluidStepsPerForceSample % populationDiagnosticStride == 0
+        else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "coarse-pilot step or population-diagnostic contract is invalid"
+            )
+        }
         let cellCount = grid.cellCount
         let populationCount = D3Q19.count * cellCount
         let populationBytes = populationCount * MemoryLayout<Float>.stride
@@ -1152,7 +1347,8 @@ private final class MetalIndexedBirdSurfaceReplay {
         updateSurfaceTime(initialTime)
         var initialUniforms = makePilotUniforms(
             step: 0,
-            hasPreviousGeometry: false
+            hasPreviousGeometry: false,
+            collisionOperator: collisionOperator
         )
         guard let initialization = backend.queue.makeCommandBuffer() else {
             throw BirdFlowError.commandBufferFailed(
@@ -1218,9 +1414,11 @@ private final class MetalIndexedBirdSurfaceReplay {
         var firstNegativePopulationCellCoordinate: SIMD3<Int>?
         var firstNegativePopulationDistance: Double?
         var firstNegativePopulationPartIdentifier: Int?
+        var collisionLimiterActivationCount = 0.0
+        var maximumCollisionRestriction = 0.0
         let dt = configuration.scaling.timeStepSeconds
 
-        for step in 1...plan.totalFluidSteps {
+        for step in 1...requestedFluidSteps {
             let sourceTime = initialTime + Float(step) * dt
             guard sourceTime <= dataset.frameTimesSeconds.last! + 1e-7 else {
                 throw MeasuredBirdSurfaceSequenceError.invalidDataset(
@@ -1228,10 +1426,13 @@ private final class MetalIndexedBirdSurfaceReplay {
                 )
             }
             let forceEndpoint = step % plan.fluidStepsPerForceSample == 0
+            let populationDiagnostic =
+                step % populationDiagnosticStride == 0
             updateSurfaceTime(sourceTime)
             var uniforms = makePilotUniforms(
                 step: step,
-                hasPreviousGeometry: true
+                hasPreviousGeometry: true,
+                collisionOperator: collisionOperator
             )
             guard let commandBuffer = backend.queue.makeCommandBuffer() else {
                 throw BirdFlowError.commandBufferFailed(
@@ -1279,7 +1480,7 @@ private final class MetalIndexedBirdSurfaceReplay {
                 partialCount: partialCount,
                 pipeline: forceReductionPipeline
             )
-            if forceEndpoint {
+            if populationDiagnostic {
                 try encodePopulationMinimum(
                     commandBuffer: commandBuffer,
                     populations: populationsOut,
@@ -1293,7 +1494,7 @@ private final class MetalIndexedBirdSurfaceReplay {
                     "Unable to advance the coarse-pilot topology."
                 )
             }
-            if forceEndpoint {
+            if populationDiagnostic {
                 stepBlit.copy(
                     from: partMask,
                     sourceOffset: 0,
@@ -1322,9 +1523,19 @@ private final class MetalIndexedBirdSurfaceReplay {
             try check(commandBuffer)
             completedSteps = step
 
-            let load = reducedLoad.contents()
+            let rawLoad = reducedLoad.contents()
                 .assumingMemoryBound(to: GPUForceTorque.self)
-                .pointee.coreValue.forceNewtons
+                .pointee
+            let load = rawLoad.coreValue.forceNewtons
+            if rawLoad.force.w.isFinite {
+                collisionLimiterActivationCount += Double(rawLoad.force.w)
+            }
+            if rawLoad.torque.w.isFinite {
+                maximumCollisionRestriction = max(
+                    maximumCollisionRestriction,
+                    Double(rawLoad.torque.w)
+                )
+            }
             let endpointForce = SIMD3<Double>(
                 Double(load.x), Double(load.y), Double(load.z)
             )
@@ -1338,7 +1549,7 @@ private final class MetalIndexedBirdSurfaceReplay {
             }
 
             var populationMinimum: GPUIndexedPopulationMinimum?
-            if forceEndpoint {
+            if populationDiagnostic {
                 populationDiagnosticSamples += 1
                 let minimum = readPopulationMinimum(
                     partials: populationMinimumPartials,
@@ -1430,7 +1641,12 @@ private final class MetalIndexedBirdSurfaceReplay {
                 }
             }
             swap(&populationsIn, &populationsOut)
-            if !loadFinite || (populationMinimum?.nonFinite ?? 0) != 0 {
+            let sampledNegative = populationMinimum.map {
+                $0.nonFinite == 0 && $0.rawValue < 0
+            } ?? false
+            if !loadFinite
+                || (populationMinimum?.nonFinite ?? 0) != 0
+                || (stopAtFirstNegativePopulation && sampledNegative) {
                 break
             }
         }
@@ -1517,7 +1733,14 @@ private final class MetalIndexedBirdSurfaceReplay {
             completedFluidSteps: completedSteps,
             recordedComparisonSamples: samples.count,
             recordedPopulationDiagnosticSamples: populationDiagnosticSamples,
-            collisionOperator: "limited-TRT",
+            populationDiagnosticStride: populationDiagnosticStride,
+            collisionOperator: collisionOperator.rawValue,
+            collisionLimiterActivationCount:
+                collisionLimiterActivationCount,
+            collisionLimiterActivationFractionOfCellSteps:
+                collisionLimiterActivationCount
+                    / max(Double(cellCount * completedSteps), 1),
+            maximumCollisionRestriction: maximumCollisionRestriction,
             forceEstimator: "conservative-moving-domain-mode-6",
             periodicBoundaries: false,
             allComponentsPresentAtComparisonSamples:
@@ -2161,7 +2384,8 @@ private final class MetalIndexedBirdSurfaceReplay {
 
     private func makePilotUniforms(
         step: Int,
-        hasPreviousGeometry: Bool
+        hasPreviousGeometry: Bool,
+        collisionOperator: MetalIndexedBirdSurfaceCollisionOperator
     ) -> GPUUniforms {
         GPUUniforms(
             configuration: configuration,
@@ -2170,7 +2394,9 @@ private final class MetalIndexedBirdSurfaceReplay {
             accumulateLoads: true,
             hasPreviousGeometry: hasPreviousGeometry,
             periodicBoundaries: false,
-            caseParameters: SIMD4<Float>(0, 6, 0, -1)
+            caseParameters: SIMD4<Float>(
+                0, 6, 0, collisionOperator.caseParameterW
+            )
         )
     }
 

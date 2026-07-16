@@ -1210,8 +1210,21 @@ errors. `ValidationArtifacts/deetjen-dove-coarse-force-pilot.json` records the
 negative integration result, while
 `ValidationArtifacts/deetjen-dove-coarse-force-pilot-audit.json` independently
 passes artifact arithmetic/provenance and retains `pilotIntegrationPassed=false`.
-The next admissible step is a fixed-input near-wall collision-operator A/B, not
-the measured-force refinement ladder.
+
+The following fixed-input collision screen runs production TRT,
+positivity-preserving regularized BGK, and positivity-preserving recursive-
+regularized BGK through the same 800-step pre-roll. It reduces the population
+minimum every step and obtains limiter activation from the existing fused load
+reduction. Production TRT reproduces the first negative population at step 150
+(`4.6875 ms`) in the same direction-7 cell. Both candidates complete 800 steps
+with finite loads and positive populations. Regularized BGK activates in 55
+cell-steps (`2.013e-7`); RR3 activates in 28 (`1.025e-7`), both below the fixed
+`5%` cell-step ceiling. The independent audit passes for
+`ValidationArtifacts/deetjen-dove-collision-pre-roll-ab.json` and
+`ValidationArtifacts/deetjen-dove-collision-pre-roll-ab-audit.json`.
+This is a stability screen, not collision promotion. The next admissible step
+is candidate-specific momentum closure for both survivors, followed by an
+extended pilot—not the measured-force refinement ladder.
 
 ## 8. Complete measured bird
 
