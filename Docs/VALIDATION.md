@@ -1098,6 +1098,58 @@ mass, left wing, tail, physical feather thickness, pressure, or humidity.
 The locked compact input SHA-256 is
 `5de3e1d9377ad652ab88d2f460287affd6055c69691e32f120d74cdf79628887`.
 
+## 7.5. Reconstructed dove with measured external force
+
+The Deetjen et al. Ringneck-dove deposit is qualified as a separate
+prescribed-motion experimental benchmark. It does not complete the Maeda
+specimen and does not satisfy schema 2. Its value is independent measured force:
+processed horizontal and vertical aerodynamic-force-platform histories are
+synchronized with structured-light body/tail/left-wing surfaces and tracked
+kinematics.
+
+Verify the remote source without downloading the 19.3 GB archive:
+
+```bash
+python3 Scripts/acquire-dove-benchmark.py --json
+```
+
+Selectively acquire and inspect the qualified `2018_12_11_OB_F03` flight:
+
+```bash
+python3 Scripts/acquire-dove-benchmark.py \
+  --download --include-surface \
+  --output /path/to/deetjen-ob-f03 --json
+
+python3 Scripts/inspect-dove-benchmark.py \
+  --input /path/to/deetjen-ob-f03 --include-surface
+```
+
+The source and engineering-ingestion artifacts lock all nine members, the
+`1000/2000 Hz` synchronization, body/wing/tail topology inventory, source
+coordinate scale, processed force window, and measured-versus-modeled boundary.
+The source's right wing is a symmetry assumption, lateral/per-wing forces are
+derived, and its 20-point wing mass distribution is cross-source scaled. Only
+`FxWings` and `FzWings` may enter the experimental-force verdict.
+
+Before the fluid comparison, acceptance requires:
+
+- compact surface conversion preserves source landmarks, areas, topology,
+  body/wing/world transforms, and wall velocity within preregistered tolerances;
+- the source force sign and axes close independently against the registered
+  BirdFlow frame;
+- the five flights for bird `OB` establish a measurement/biological
+  repeatability envelope before CFD error thresholds are frozen;
+- time-step and `8/12/16` spatial refinement pass without modifying measured
+  geometry or kinematics; and
+- only horizontal/vertical total-force impulse, mean, peak phase, peak
+  magnitude, and phase-resolved residuals determine experimental acceptance.
+
+Status: selective source acquisition, integrity, MATLAB decoding, and timing
+reconstruction pass. BirdFlow surface conversion and any fluid comparison are
+open. Evidence is in
+`ValidationArtifacts/deetjen-dove-source-qualification.json` and
+`ValidationArtifacts/deetjen-dove-engineering-ingestion.json`.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

@@ -28,4 +28,12 @@
 - H. Homann et al., “Particle-resolved direct numerical simulation of homogeneous isotropic turbulence modified by small fixed spheres,” JFM 804 (2016): https://doi.org/10.1017/jfm.2016.548
 - H. Li and M. R. A. Nabawy, “Wing Planform Effect on the Aerodynamics of Insect Wings,” Insects 13, 459 (2022): https://doi.org/10.3390/insects13050459
 
+## Measured avian geometry, kinematics, and force
+
+- M. E. Deetjen et al., “Small deviations in kinematics and body form dictate muscle performances in the finely tuned avian downstroke,” eLife 12, RP89968 (2024): https://doi.org/10.7554/eLife.89968
+- Deetjen et al. synchronized Ringneck-dove data and code, Dryad: https://doi.org/10.5061/dryad.wwpzgmsqs
+- M. E. Deetjen, D. D. Chin, and D. Lentink, “The aerodynamic force platform as an ergometer,” J. Exp. Biol. 223 (2020), including the earlier reconstruction-code deposit referenced by the 2023 dataset: https://doi.org/10.1242/jeb.220475
+- M. E. Deetjen et al., “High-speed surface reconstruction of a flying bird using structured light,” J. Exp. Biol. 220 (2017): https://doi.org/10.1242/jeb.149708
+- C. Berg and J. M. V. Rayner, “The moment of inertia of bird wings and the inertial power requirement for flapping flight,” J. Exp. Biol. 198 (1995): https://doi.org/10.1242/jeb.198.8.1655
+
 The code in this repository is original and does not copy PyFR source. PyFR was used to study component boundaries, precompiled kernel execution, backend separation, data ownership, and command-graph organization. The numerical references above informed the choice of a regular low-Mach lattice, moving boundaries, TRT collision, and momentum-exchange loads.

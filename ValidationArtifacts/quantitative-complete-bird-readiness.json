@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 5,
+  "schemaVersion": 6,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
   "scientificStatus": "solver contract implemented; same-specimen biological input absent",
   "solverCapabilities": {
@@ -137,10 +137,33 @@
       "reason": "verified archive contains reference-curve MATLAB inputs, not raw reconstructed complete-bird geometry"
     }
   ],
+  "alternativeExperimentalValidation": {
+    "source": "Deetjen et al. Ringneck-dove synchronized surface, kinematics, and aerodynamic-force dataset",
+    "articleDOI": "10.7554/eLife.89968",
+    "datasetDOI": "10.5061/dryad.wwpzgmsqs",
+    "sourceQualification": "ValidationArtifacts/deetjen-dove-source-qualification.json",
+    "engineeringIngestion": "ValidationArtifacts/deetjen-dove-engineering-ingestion.json",
+    "selectedBird": "OB",
+    "selectedFlight": "2018_12_11_OB_F03",
+    "measuredTargets": [
+      "horizontal external aerodynamic force",
+      "vertical external aerodynamic force"
+    ],
+    "qualifiedUse": "prescribed-motion experimental force validation",
+    "fullArchiveBytes": 19294077798,
+    "selectiveSurfaceSubsetCompressedBytes": 671462764,
+    "selectiveSurfaceSubsetAcquiredAndCRCVerified": true,
+    "kinematicsForceSynchronizationReconstructed": true,
+    "birdFlowSurfaceConversionPassed": false,
+    "quantitativeFreeFlightSchema2Ready": false,
+    "reasonFreeFlightRemainsBlocked": "the source assumes bilateral surface symmetry and models the distributed wing mass; same-specimen bilateral wing and registered whole-bird inertia are not measured",
+    "antiFabricationRule": "derived lateral force, per-wing loads, or modeled inertia must not be relabeled as experimental measurements",
+    "nextAction": "convert the decoded 144-frame body, left-wing, and tail surfaces into a compact BirdFlow sequence and close coordinate, topology, and wall-velocity parity before a fluid run"
+  },
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
-    "nextAction": "send the low-burden availability checklist to the corresponding author; if same-individual inertial records are absent, plan a new specimen-complete measurement campaign",
+    "nextAction": "continue the Maeda availability request for strict schema 2 while independently implementing the qualified Deetjen OB F03 prescribed-motion measured-force benchmark",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {

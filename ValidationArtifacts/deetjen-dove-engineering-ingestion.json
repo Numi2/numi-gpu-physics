@@ -1,0 +1,640 @@
+{
+  "auditIdentifier": "deetjen-ob-f03-engineering-ingestion-2026-07-16",
+  "generatedBy": "Scripts/inspect-dove-benchmark.py",
+  "massEvidence": {
+    "authorsFinalFourBirdMassesKilograms": [
+      0.14668484163567969,
+      0.16124822057813132,
+      0.1639025642234088,
+      0.1744002806131792
+    ],
+    "modelStatus": "cross-source scaled distribution; not measured schema-2 inertia",
+    "modeledSingleWingMassKilograms": 0.008680159200473651,
+    "modeledSingleWingPointMassCount": 20,
+    "selectedAuthorsFinalMassKilograms": 0.16124822057813132,
+    "selectedFlightPlatformBodyWeightNewtons": 1.677828069692669,
+    "selectedFlightPlatformEquivalentMassKilograms": 0.17103242300638827
+  },
+  "measuredForceWindow": {
+    "rawFxWings": {
+      "maximumNewtons": 0.24936539824213255,
+      "meanNewtons": -0.1440677816610199,
+      "minimumNewtons": -0.5968427096144293,
+      "rmsNewtons": 0.24459800493300174,
+      "trapezoidalImpulseNewtonSeconds": -0.02071129195759665
+    },
+    "rawFzWings": {
+      "maximumNewtons": -0.01933037111031668,
+      "meanNewtons": -1.1395946929728984,
+      "minimumNewtons": -3.431139952061078,
+      "rmsNewtons": 1.6070497411270233,
+      "trapezoidalImpulseNewtonSeconds": -0.16277386571180352
+    },
+    "signAndAxisPromotionStatus": "source convention reconstructed; independent BirdFlow frame registration still required",
+    "sourceConventionExternalFx": {
+      "maximumNewtons": 0.5968427096144293,
+      "meanNewtons": 0.1440677816610199,
+      "minimumNewtons": -0.24936539824213255,
+      "rmsNewtons": 0.24459800493300174,
+      "trapezoidalImpulseNewtonSeconds": 0.02071129195759665
+    },
+    "sourceConventionExternalFz": {
+      "maximumNewtons": 3.431139952061078,
+      "meanNewtons": 1.1395946929728984,
+      "minimumNewtons": 0.01933037111031668,
+      "rmsNewtons": 1.6070497411270233,
+      "trapezoidalImpulseNewtonSeconds": 0.16277386571180352
+    },
+    "sourcePlotAndImpulseMultiplier": -1,
+    "storedChannelInterpretation": "force-platform reaction after source processing"
+  },
+  "readiness": {
+    "birdFlowCoordinateRegistrationPassed": false,
+    "matlabInventoryPassed": true,
+    "measuredForceComparisonReady": false,
+    "memberIntegrityPassed": true,
+    "nextAction": "convert the 144 processed body, tail, and left-wing surface frames into a compact provenance-locked BirdFlow surface sequence and close its coordinates, topology, and wall velocity against this audit",
+    "processedSurfaceDecoded": true,
+    "surfaceTopologyConversionPassed": false,
+    "timingReconstructionPassed": true
+  },
+  "schemaVersion": 1,
+  "selectedFlight": {
+    "birdIdentifier": "OB",
+    "flightIdentifier": "2018_12_11_OB_F03",
+    "surfaceIncluded": true,
+    "verifiedMemberCount": 9
+  },
+  "sourceMemberVerification": [
+    {
+      "archivePath": "DoveMuscles_DataCode/9 MuscleModel/2TestRuns/BodyWeight.mat",
+      "bytes": 210,
+      "crc32": "61f3c098",
+      "evidenceClass": "derived-from-measurements",
+      "matlabVariables": {
+        "BW": [
+          1,
+          4
+        ]
+      },
+      "sha256": "7a74f122b0fc32536cf37d4f740deb4b57a084ac6e5c9f53b5858fe499097a05"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/2 Dissections/DataProcessing/DissectData.mat",
+      "bytes": 2417,
+      "crc32": "fdfe2750",
+      "evidenceClass": "measured-and-processed",
+      "sha256": "806316d4d878f8dee9c913a89b37fc5c343acf3151c66b88692b6e37b71c5c7c"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/2 Dissections/SurfArea/SurfAreas.mat",
+      "bytes": 3802,
+      "crc32": "b82ca754",
+      "evidenceClass": "measured-and-processed",
+      "sha256": "f710a7c8c476e330d89dbe3587e35da93d6789103e19f992cb7059ea73f4ee00"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/2 Dissections/SurfArea/WingSpan.mat",
+      "bytes": 301,
+      "crc32": "4ceae3c2",
+      "evidenceClass": "measured-and-processed",
+      "sha256": "19864fdbd0727f0588089e9fb95c1856722060e3ecb584f3e7ac9b24fd8a7370"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/6 SLS Reconstruction/2Intermediate/OB/2018_12_11_OB_F03/Kinematics.mat",
+      "bytes": 282731,
+      "crc32": "5c11cc4d",
+      "evidenceClass": "measured-and-processed",
+      "matlabVariables": {
+        "KinPts": [
+          5,
+          144,
+          25,
+          2
+        ],
+        "KinXYZFilt": [
+          25,
+          144,
+          3
+        ],
+        "KinXYZFilt_Wren": [
+          25,
+          144,
+          3
+        ],
+        "xyReproj": [
+          5,
+          144,
+          25,
+          2
+        ]
+      },
+      "sha256": "896ab2c570413bc73481b9022b0991c8dfd6c5851748a0d1ab16e89df7dee05a"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/6 SLS Reconstruction/2Intermediate/OB/2018_12_11_OB_F03/Kinematics_dKEbody.mat",
+      "bytes": 43136,
+      "crc32": "33d7f116",
+      "evidenceClass": "derived-from-measured-kinematics",
+      "matlabVariables": {
+        "BW_dKE_MassSpec": [
+          25,
+          144
+        ],
+        "KinXYZFilt": [
+          25,
+          144,
+          3
+        ]
+      },
+      "sha256": "0531910fd34b071583d74d326264289441dfe9278ea65da69ebe0ab31ebe66bb"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/6 SLS Reconstruction/2Intermediate/OB/2018_12_11_OB_F03/SurfFits.mat",
+      "bytes": 661827847,
+      "crc32": "4152ffb0",
+      "evidenceClass": "measured-and-processed",
+      "sha256": "985700b8904813dbdf62fc8339d5bc034f75a0862414b584313a23778c00f789"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/8 AFP Sono/WithWires/Data/2018_12_11_OB_F03.mat",
+      "bytes": 11750092,
+      "crc32": "04de1d6c",
+      "evidenceClass": "measured-and-processed",
+      "matlabVariables": {
+        "AFP_t": [
+          1,
+          196800
+        ],
+        "BodyWeight": [
+          1,
+          1
+        ],
+        "FxLD": [
+          196800,
+          1
+        ],
+        "FxTO": [
+          196800,
+          1
+        ],
+        "FxWings": [
+          196800,
+          1
+        ],
+        "FzLD": [
+          196800,
+          1
+        ],
+        "FzTO": [
+          196800,
+          1
+        ],
+        "FzWings": [
+          196800,
+          1
+        ],
+        "L_EMG": [
+          128910,
+          1
+        ],
+        "L_Sono_mm": [
+          128910,
+          1
+        ],
+        "L_Sono_mm_Filt": [
+          128910,
+          1
+        ],
+        "MUS_t": [
+          1,
+          128910
+        ],
+        "R_EMG": [
+          128910,
+          1
+        ],
+        "R_Sono_mm": [
+          128910,
+          1
+        ],
+        "RestLen_LR": [
+          1,
+          2
+        ]
+      },
+      "sha256": "c554e3542981a851afed234a2aecef7b54109360ecf04fb101b5a5d8b709c1ca"
+    },
+    {
+      "archivePath": "DoveMuscles_DataCode/9 MuscleModel/2TestRuns/OB/2018_12_11_OB_F03.mat",
+      "bytes": 3415994,
+      "crc32": "77baf729",
+      "evidenceClass": "derived-analysis",
+      "matlabVariables": {
+        "AeroF1S_w": [
+          144,
+          3
+        ],
+        "Aero_Power": [
+          144,
+          1
+        ],
+        "AoA1_R2": [
+          144,
+          1
+        ],
+        "BE0": [
+          1,
+          1
+        ],
+        "BE_AoA1": [
+          144,
+          435
+        ],
+        "BE_LE": [
+          144,
+          435,
+          3
+        ],
+        "BE_QC_w": [
+          144,
+          435,
+          3
+        ],
+        "BE_SurfArea": [
+          144,
+          435
+        ],
+        "BE_TE": [
+          144,
+          435,
+          3
+        ],
+        "BE_Vel1_w": [
+          144,
+          435,
+          3
+        ],
+        "BW_dKE": [
+          144,
+          1
+        ],
+        "BodyPos_w": [
+          144,
+          3
+        ],
+        "BodyVel0_w": [
+          144,
+          3
+        ],
+        "BodyVel_w": [
+          144,
+          3
+        ],
+        "BodyWeight": [
+          1,
+          1
+        ],
+        "DragMag1S": [
+          144,
+          1
+        ],
+        "Grav_Power": [
+          144,
+          1
+        ],
+        "Kin9th_f": [
+          3,
+          144
+        ],
+        "Kin9th_g": [
+          3,
+          144
+        ],
+        "Kin9th_w": [
+          3,
+          144
+        ],
+        "KinSho_f": [
+          3,
+          144
+        ],
+        "KinSho_w": [
+          3,
+          144
+        ],
+        "KinWri_f": [
+          3,
+          144
+        ],
+        "LeverArm": [
+          1,
+          144
+        ],
+        "LiftMag1S": [
+          144,
+          1
+        ],
+        "Mass_ReqPower2": [
+          144,
+          1
+        ],
+        "MuscMass": [
+          1,
+          1
+        ],
+        "MuscMom_Aero_0": [
+          3,
+          144
+        ],
+        "MuscMom_Mass_0": [
+          3,
+          144
+        ],
+        "MuscMom_Tot_0": [
+          3,
+          144
+        ],
+        "MuscVel": [
+          1,
+          144
+        ],
+        "OS_R0": [
+          18,
+          144
+        ],
+        "OS_T0": [
+          18,
+          144
+        ],
+        "PCSA": [
+          1,
+          1
+        ],
+        "PM_MassesB": [
+          1,
+          20
+        ],
+        "PM_vel_w": [
+          144,
+          20,
+          3
+        ],
+        "PM_xyz_w": [
+          144,
+          20,
+          3
+        ],
+        "POW_MOM_Pect_to_Sho2PectAttach_Angle": [
+          1,
+          144
+        ],
+        "POW_MOM_PullDirMag": [
+          3,
+          144
+        ],
+        "POW_MuscForce2f": [
+          144,
+          1
+        ],
+        "POW_Musc_power2": [
+          144,
+          1
+        ],
+        "PectPath0": [
+          144,
+          1
+        ],
+        "PectStrain": [
+          1,
+          144
+        ],
+        "PectStrainRate": [
+          1,
+          144
+        ],
+        "PowerA1S": [
+          144,
+          1
+        ],
+        "RAoA": [
+          3,
+          3
+        ],
+        "Sho2Pect_0": [
+          3,
+          144
+        ],
+        "Sho_0": [
+          3,
+          144
+        ],
+        "StraightAngle": [
+          1,
+          1
+        ],
+        "TotalNeededPullMomMag": [
+          1,
+          144
+        ],
+        "Vel1_R3_w": [
+          144,
+          3
+        ],
+        "WeightsDenom": [
+          144,
+          1
+        ],
+        "WeightsF": [
+          144,
+          1
+        ],
+        "Wing_dKE": [
+          144,
+          1
+        ],
+        "eD1_w": [
+          144,
+          3
+        ],
+        "eL1_w": [
+          144,
+          3
+        ],
+        "rAeroMB_0": [
+          3,
+          144
+        ],
+        "rPM0": [
+          144,
+          1
+        ],
+        "vSho0": [
+          3,
+          144
+        ]
+      },
+      "sha256": "499378e2beebce224fd178732a8ff0ecae920eab9d024d82b8dc3b695cfce1a1"
+    }
+  ],
+  "sourceQualification": {
+    "auditIdentifier": "deetjen-2023-dove-prescribed-force-source-qualification-2026-07-16",
+    "sha256": "fe06ebe52b5c234b9144b940205c6e1066348bc378ee800b392c367ebe5b9cdf"
+  },
+  "surface": {
+    "bodyFrameBoundsMillimeters": {
+      "x": [
+        -34.89699085400962,
+        39.50100299540993
+      ],
+      "y": [
+        -171.6677826360953,
+        -9.099736749989443
+      ],
+      "z": [
+        -91.83259978999143,
+        20.372736716291875
+      ]
+    },
+    "bodyGridShape": [
+      200,
+      200
+    ],
+    "bodyWorldFrameCount": 144,
+    "coordinateFrames": {
+      "f": "body frame",
+      "g": "wing-fitted frame",
+      "n": "reconstruction frame",
+      "w": "world frame"
+    },
+    "matlabVariables": {
+      "BodySurf_f": [
+        1,
+        1
+      ],
+      "BodySurf_n": [
+        1,
+        1
+      ],
+      "BodySurf_w": [
+        1,
+        1
+      ],
+      "Down2Up2": [
+        1,
+        1
+      ],
+      "RefFrame": [
+        1,
+        1
+      ],
+      "TailSurf_Geo": [
+        1,
+        1
+      ],
+      "TailSurf_Tri": [
+        144,
+        1
+      ],
+      "TailSurf_f": [
+        144,
+        1
+      ],
+      "TailSurf_n": [
+        144,
+        1
+      ],
+      "TailSurf_w": [
+        144,
+        1
+      ],
+      "Up1Down2": [
+        1,
+        1
+      ],
+      "Up2Down3": [
+        1,
+        1
+      ],
+      "WingSurf_TouchBodyPts_f": [
+        144,
+        20,
+        3
+      ],
+      "WingSurf_f": [
+        1,
+        1
+      ],
+      "WingSurf_g": [
+        1,
+        1
+      ],
+      "WingSurf_n": [
+        1,
+        1
+      ],
+      "WingSurf_w": [
+        1,
+        1
+      ]
+    },
+    "metersPerSourceUnit": 0.001,
+    "referenceFrameFields": [
+      "R_wn",
+      "T_nw_W",
+      "R_fw",
+      "T_fw_F",
+      "R_gf",
+      "T_fg_F"
+    ],
+    "sourceCoordinateUnits": "millimeters",
+    "strokeTransitionIndicesMatlabOneBased": {
+      "Down2Up2": 90,
+      "Up1Down2": 34,
+      "Up2Down3": 127
+    },
+    "strokeTransitionIndicesZeroBased": {
+      "Down2Up2": 89,
+      "Up1Down2": 33,
+      "Up2Down3": 126
+    },
+    "tailTrianglesPerFrame": {
+      "maximum": 908,
+      "minimum": 664
+    },
+    "tailVerticesPerFrame": {
+      "maximum": 549,
+      "minimum": 428
+    },
+    "wingBodyContactShape": [
+      144,
+      20,
+      3
+    ],
+    "wingFinitePointsPerFrame": {
+      "maximum": 25234,
+      "minimum": 12926,
+      "samples": {
+        "0": 13702,
+        "143": 21765,
+        "72": 25233
+      }
+    },
+    "wingGridShape": [
+      381,
+      436
+    ]
+  },
+  "synchronization": {
+    "firstBufferedSourceFrame": -1943,
+    "firstForceSampleIndexZeroBased": 191878,
+    "forceRateHertzReconstructed": 1999.9999999904503,
+    "forceSamplesPerKinematicsInterval": 2,
+    "highRateForceSampleCount": 287,
+    "kinematicsFrameCount": 144,
+    "kinematicsRateHertz": 1000,
+    "lastBufferedSourceFrame": -1800,
+    "lastForceSampleIndexZeroBased": 192164,
+    "maximumAbsoluteNearestSampleResidualSeconds": 8.881784197001252e-15
+  }
+}

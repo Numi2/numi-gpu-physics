@@ -44,10 +44,21 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
+| Measured dove external-force benchmark | **Ingestion accepted; surface conversion open** | one synchronized 1000 Hz surface/kinematic + 2000 Hz two-axis force flight CRC/SHA-verified; range acquisition reduces 19.3 GB to 671 MB |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
 The most important accepted flapping result is committed as [`flapping-wing-fixed-thickness-acceptance.json`](ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json). The current high-Re open question is committed as [`measured-wing-stationary-wall-recursive-regularization-duration.json`](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json).
+
+The next experimental validation source is now qualified without weakening the
+measured-data contract. Deetjen et al.'s Ringneck-dove deposit provides
+synchronized processed 3D surfaces, kinematics, and measured horizontal and
+vertical aerodynamic-force histories. The selected `OB` flight can be acquired
+as a CRC-locked 15 MB engineering subset or a 671 MB subset including its full
+surface instead of downloading the 19.3 GB archive. See
+[`Docs/DEETJEN_DOVE_BENCHMARK.md`](Docs/DEETJEN_DOVE_BENCHMARK.md). Its inertia
+remains modeled, so it advances prescribed-force validation—not measured
+schema-2 free flight.
 
 ## Latest high-Re result
 
@@ -415,6 +426,7 @@ Start with [`Docs/NUMERICS.md`](Docs/NUMERICS.md) for equations, [`Docs/VALIDATI
 - Fixed-wing comparison: [Taira and Colonius, *Journal of Fluid Mechanics* (2009)](https://authors.library.caltech.edu/records/frnmk-28536).
 - Measured hummingbird right-wing surface: [Maeda et al., *Royal Society Open Science* (2017), DOI 10.1098/rsos.170307](https://doi.org/10.1098/rsos.170307), deposited grid [DOI 10.6084/m9.figshare.5406124.v1](https://doi.org/10.6084/m9.figshare.5406124.v1), CC BY 4.0.
 - Prescribed numerical comparison: [Dong et al., *Insects* (2022), DOI 10.3390/insects13050459](https://doi.org/10.3390/insects13050459).
+- Synchronized dove geometry/kinematics/force candidate: [Deetjen et al., *eLife* (2024), DOI 10.7554/eLife.89968](https://doi.org/10.7554/eLife.89968), deposited data [DOI 10.5061/dryad.wwpzgmsqs](https://doi.org/10.5061/dryad.wwpzgmsqs), CC0 1.0.
 - The checked Song et al. Dryad archive [DOI 10.5061/dryad.8ch1b](https://doi.org/10.5061/dryad.8ch1b) is retained only as reference-curve material; it does not contain a complete reconstructed bird mesh.
 
 [`measured-wing-source-audit.json`](ValidationArtifacts/measured-wing-source-audit.json) locks source filenames, licenses, MD5/SHA-256 digests, coordinate registration, scale reconstruction, surface-area closure, and the fields still missing for complete-bird replay.
@@ -423,6 +435,15 @@ enumerates the complete public Maeda collection and separates potentially
 recoverable author/zoo records from measurements that likely require a new
 campaign. A concise, ready-to-send availability inquiry is in
 [`Docs/SAME_SPECIMEN_DATA_REQUEST.md`](Docs/SAME_SPECIMEN_DATA_REQUEST.md).
+The independent
+[`Deetjen dove source qualification`](ValidationArtifacts/deetjen-dove-source-qualification.json)
+selects one bounded prescribed-force benchmark, locks its remote Zip64 members,
+and separates measured force channels from modeled lateral force and inertia.
+The follow-up
+[`engineering ingestion audit`](ValidationArtifacts/deetjen-dove-engineering-ingestion.json)
+CRC/SHA-verifies the selectively acquired nine-member flight, reconstructs the
+1000/2000 Hz synchronization, and inventories the real body/wing/tail surfaces;
+coordinate/topology conversion remains explicitly open.
 
 ## Reproducibility and citation
 

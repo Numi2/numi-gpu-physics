@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "auditIdentifier": "deetjen-2023-dove-prescribed-force-source-qualification-2026-07-16",
+  "verifiedAt": "2026-07-16",
+  "scope": "Public data and code for the four Ringneck doves used by Deetjen et al.; qualification of one synchronized flight for prescribed-motion external-force validation",
+  "sourceLocks": {
+    "article": {
+      "title": "Small deviations in kinematics and body form dictate muscle performances in the finely tuned avian downstroke",
+      "doi": "10.7554/eLife.89968",
+      "pmcid": "PMC10942624",
+      "license": "CC-BY-4.0"
+    },
+    "dryadDataset": {
+      "doi": "10.5061/dryad.wwpzgmsqs",
+      "publicationDate": "2023-09-25",
+      "curationStatus": "Published",
+      "license": "CC0-1.0",
+      "api": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.wwpzgmsqs"
+    },
+    "zenodoMirror": {
+      "recordId": 8377740,
+      "doi": "10.5061/dryad.wwpzgmsqs",
+      "licenseIdentifier": "cc-zero",
+      "api": "https://zenodo.org/api/records/8377740",
+      "archive": {
+        "file": "DoveMuscles_DataCode.zip",
+        "bytes": 19294077798,
+        "md5": "806ce69a23da6fe3433c99567d68b021"
+      },
+      "readme": {
+        "file": "README.md",
+        "bytes": 6582,
+        "md5": "42946eca7ef347cbab3739361f9c2b77",
+        "sha256": "035eb5f2f21abb254d7370db49320a19a0a4b3d19171728c881cb42ca7c1c627"
+      }
+    }
+  },
+  "remoteArchiveInventory": {
+    "zip64": true,
+    "rangeRequestsSupported": true,
+    "entryCount": 1206,
+    "analysisFlightCount": 20,
+    "birds": ["OG", "OB", "OP", "BB"],
+    "analysisFlightsPerBird": 5,
+    "originalHighSpeedVideoIncluded": false,
+    "originalCameraCalibrationIncluded": false,
+    "originalUnprocessed3DReconstructionsIncluded": false,
+    "processedKinematicsAndSurfaceFitsIncluded": true,
+    "processedAerodynamicForceChannelsIncluded": true
+  },
+  "selectedBenchmark": {
+    "species": "Streptopelia risoria",
+    "commonName": "Ringneck dove",
+    "birdIdentifier": "OB",
+    "flightIdentifier": "2018_12_11_OB_F03",
+    "selectionReason": "smallest compressed SurfFits.mat among the 20 synchronized analysis flights; retains kinematics, processed structured-light surface fits, two measured aerodynamic-force components, and the authors' derived analysis product",
+    "kinematicsSampleRateHertz": 1000,
+    "aerodynamicForceSampleRateHertz": 2000,
+    "analysisFrameStart": -1918,
+    "analysisFrameEnd": -1825,
+    "bufferFramesPerSide": 25,
+    "bufferedKinematicsFrames": 144,
+    "processedForceSamples": 196800,
+    "processedForceTimeStepSeconds": 0.0005,
+    "forcePlatformBodyWeightNewtons": 1.677828069692669,
+    "requiredArchiveMembers": [
+      {
+        "path": "DoveMuscles_DataCode/9 MuscleModel/2TestRuns/BodyWeight.mat",
+        "role": "four-bird final body-mass vector used by the authors",
+        "evidenceClass": "derived-from-measurements",
+        "bytes": 210,
+        "compressedBytes": 169,
+        "crc32": "61f3c098",
+        "includeByDefault": true,
+        "expectedVariables": {"BW": [1, 4]}
+      },
+      {
+        "path": "DoveMuscles_DataCode/2 Dissections/DataProcessing/DissectData.mat",
+        "role": "same-bird dissection measurements used in the paper",
+        "evidenceClass": "measured-and-processed",
+        "bytes": 2417,
+        "compressedBytes": 2405,
+        "crc32": "fdfe2750",
+        "includeByDefault": true
+      },
+      {
+        "path": "DoveMuscles_DataCode/2 Dissections/SurfArea/SurfAreas.mat",
+        "role": "manually measured extended-wing and tail areas",
+        "evidenceClass": "measured-and-processed",
+        "bytes": 3802,
+        "compressedBytes": 3807,
+        "crc32": "b82ca754",
+        "includeByDefault": true
+      },
+      {
+        "path": "DoveMuscles_DataCode/2 Dissections/SurfArea/WingSpan.mat",
+        "role": "manually measured extended-wing lengths",
+        "evidenceClass": "measured-and-processed",
+        "bytes": 301,
+        "compressedBytes": 240,
+        "crc32": "4ceae3c2",
+        "includeByDefault": true
+      },
+      {
+        "path": "DoveMuscles_DataCode/6 SLS Reconstruction/2Intermediate/OB/2018_12_11_OB_F03/Kinematics.mat",
+        "role": "triangulated and smoothed multi-view kinematics",
+        "evidenceClass": "measured-and-processed",
+        "bytes": 282731,
+        "compressedBytes": 281756,
+        "crc32": "5c11cc4d",
+        "includeByDefault": true,
+        "expectedVariables": {
+          "KinPts": [5, 144, 25, 2],
+          "KinXYZFilt": [25, 144, 3],
+          "KinXYZFilt_Wren": [25, 144, 3],
+          "xyReproj": [5, 144, 25, 2]
+        }
+      },
+      {
+        "path": "DoveMuscles_DataCode/6 SLS Reconstruction/2Intermediate/OB/2018_12_11_OB_F03/Kinematics_dKEbody.mat",
+        "role": "body-motion series used for the authors' inertial-power calculation",
+        "evidenceClass": "derived-from-measured-kinematics",
+        "bytes": 43136,
+        "compressedBytes": 43132,
+        "crc32": "33d7f116",
+        "includeByDefault": true,
+        "expectedVariables": {
+          "BW_dKE_MassSpec": [25, 144],
+          "KinXYZFilt": [25, 144, 3]
+        }
+      },
+      {
+        "path": "DoveMuscles_DataCode/6 SLS Reconstruction/2Intermediate/OB/2018_12_11_OB_F03/SurfFits.mat",
+        "role": "processed structured-light surface fits for the selected flight",
+        "evidenceClass": "measured-and-processed",
+        "bytes": 661827847,
+        "compressedBytes": 656428255,
+        "crc32": "4152ffb0",
+        "includeByDefault": false
+      },
+      {
+        "path": "DoveMuscles_DataCode/8 AFP Sono/WithWires/Data/2018_12_11_OB_F03.mat",
+        "role": "processed aerodynamic-force-platform and muscle channels",
+        "evidenceClass": "measured-and-processed",
+        "bytes": 11750092,
+        "compressedBytes": 11300994,
+        "crc32": "04de1d6c",
+        "includeByDefault": true,
+        "measuredForceVariables": ["FxWings", "FzWings"],
+        "expectedVariables": {
+          "AFP_t": [1, 196800],
+          "BodyWeight": [1, 1],
+          "FxWings": [196800, 1],
+          "FzWings": [196800, 1]
+        }
+      },
+      {
+        "path": "DoveMuscles_DataCode/9 MuscleModel/2TestRuns/OB/2018_12_11_OB_F03.mat",
+        "role": "authors' synchronized derived blade-element, force, inertial, and muscle analysis product",
+        "evidenceClass": "derived-analysis",
+        "bytes": 3415994,
+        "compressedBytes": 3402006,
+        "crc32": "77baf729",
+        "includeByDefault": true,
+        "expectedVariables": {
+          "AeroF1S_w": [144, 3],
+          "BE_LE": [144, 435, 3],
+          "BE_TE": [144, 435, 3],
+          "Kin9th_w": [3, 144],
+          "KinSho_w": [3, 144],
+          "PM_MassesB": [1, 20]
+        }
+      }
+    ],
+    "defaultSubsetCompressedBytes": 15034509,
+    "defaultSubsetUncompressedBytes": 15498683,
+    "surfaceSubsetCompressedBytes": 671462764,
+    "surfaceSubsetUncompressedBytes": 677326530
+  },
+  "measurementBoundary": {
+    "directlyUsableExperimentalTargets": [
+      "time-resolved horizontal aerodynamic force FxWings after the authors' force-platform processing",
+      "time-resolved vertical aerodynamic force FzWings after the authors' force-platform processing",
+      "multi-view tracked and triangulated point kinematics",
+      "processed structured-light body, tail, and left-wing surface fits",
+      "same-bird dissection morphometrics"
+    ],
+    "processedOrAssumed": [
+      "force-platform channels are filtered, baseline-corrected, and synchronized by the source code",
+      "tracked points and reconstructed surfaces are smoothed",
+      "the right wing is generated by an explicit bilateral-symmetry assumption",
+      "lateral aerodynamic force is computed rather than measured",
+      "the authors' AeroF1S_w splits total force between wings and includes modeled directions",
+      "the final BodyWeight.mat values average flight-platform and dissection estimates"
+    ],
+    "notMeasuredForSelectedBird": [
+      "bilateral distributed wing mass and inertia",
+      "whole-bird center of mass and principal inertia in the replay frame",
+      "right-wing surface asymmetry",
+      "same-bird CT skeleton",
+      "raw high-speed images, original camera calibration, and original unprocessed 3D reconstructions"
+    ],
+    "massModelProvenance": "The paper models each wing with 20 point masses and scales a distribution assembled from Berg and Rayner 1995 blackbird data plus other bird measurements; it is not a same-specimen measured inertia tensor.",
+    "forceTruthRule": "Only FxWings and FzWings may be presented as measured external-force targets. Lateral force, per-wing force, blade-element load location, inertial power, torque, and muscle force remain derived quantities unless independently re-established."
+  },
+  "validationDisposition": {
+    "sourceQualified": true,
+    "singleFlightSelectiveAcquisitionReady": true,
+    "prescribedMotionExternalForceBenchmarkReady": false,
+    "remainingBeforeFirstCFDComparison": [
+      "selectively acquire and CRC-verify the selected flight",
+      "decode SurfFits.mat and preserve its coordinate transforms without substituting procedural geometry",
+      "independently reconstruct the 1000 Hz kinematics to 2000 Hz force synchronization and sign conventions",
+      "derive the experimental repeatability and force-platform uncertainty from the five OB flights before setting quantitative CFD tolerances",
+      "declare air properties and domain/far-field treatment with source or uncertainty provenance",
+      "run time-step and 8/12/16 spatial refinement before quantitative comparison"
+    ],
+    "eligibleClaimAfterPassing": "prescribed-motion CFD reproduces the measured horizontal and vertical external-force history for a selected real dove flight within predeclared experimental and numerical uncertainty",
+    "quantitativeBiologicalFreeFlightSchema2Ready": false,
+    "schema2Blocker": "same-specimen bilateral wing inertia and registered whole-bird inertia remain unmeasured",
+    "hybridFreeFlightAllowed": true,
+    "hybridRule": "Any constructed inertia must carry source distributions and uncertainty and must be labeled hybrid sensitivity input; it cannot satisfy the measured schema-2 release gate.",
+    "nextAction": "acquire the 15 MB engineering subset, verify variables and synchronization, then acquire only the selected 656 MB compressed SurfFits member and implement its importer"
+  }
+}
