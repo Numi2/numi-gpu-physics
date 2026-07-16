@@ -1,0 +1,46 @@
+{
+  "allChecksPassed": true,
+  "checkCount": 13,
+  "checks": {
+    "binarySurfaceIdentity": true,
+    "claimBoundary": true,
+    "classification": true,
+    "crossGridMetrics": true,
+    "d12IndependentRoots": true,
+    "d12SourceIdentity": true,
+    "d16IndependentRoots": true,
+    "d16SourceIdentity": true,
+    "endpointComponentSwitchMechanism": true,
+    "fixedContract": true,
+    "safetyBoundary": true,
+    "sourceHashes": true,
+    "sourceLocalizationPrecondition": true
+  },
+  "generatedBy": "Scripts/audit-dove-moving-wall-link-ray-root.py",
+  "mechanism": {
+    "classification": "junction-global-root-linearization-bias",
+    "endpointNearestComponentChanges": 15,
+    "globalRootComponentSwitches": 5
+  },
+  "reconstructedMetrics": {
+    "maximumAllGlobalRootMaximumShiftCells": 1.1359158967758445,
+    "maximumAllGlobalRootRMSShiftCells": 0.9434784133523404,
+    "maximumInteriorGlobalRootShiftCells": 0.9216226025006775,
+    "maximumJunctionGlobalRootMaximumShiftCells": 1.1359158967758445,
+    "maximumJunctionGlobalRootRMSShiftCells": 0.9434784133523404,
+    "maximumRootClosureResidualCells": 7.806255641895631e-16,
+    "minimumAllOwnerToGlobalRMSReductionFraction": 0.0,
+    "minimumJunctionOwnerToGlobalRMSReductionFraction": 0.0,
+    "totalEndpointNearestComponentChangeCount": 15,
+    "totalGlobalRootComponentSwitchCount": 5
+  },
+  "schemaVersion": 1,
+  "sourceArtifacts": {
+    "linkIntersectionAudit": "ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-audit.json",
+    "linkIntersectionPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-preregistration.json",
+    "linkIntersectionReport": "ValidationArtifacts/deetjen-dove-moving-wall-link-intersection.json",
+    "linkRayRootPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-preregistration.json",
+    "linkRayRootReport": "ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root.json",
+    "manifest": "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
+  }
+}

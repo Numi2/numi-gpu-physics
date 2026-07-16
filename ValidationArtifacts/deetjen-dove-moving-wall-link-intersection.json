@@ -1,0 +1,862 @@
+{
+  "claimBoundary" : "This gate localizes sparse signed-distance intersection outliers. It does not prove their causal mechanism, authorize a production geometry or velocity change, evolve fluid, allocate D20, establish experimental agreement, or relax any prior gate.",
+  "classification" : "mesh-edge-or-component-junction-associated",
+  "d12" : {
+    "allOutliersArchived" : true,
+    "allValuesFinite" : true,
+    "componentJunctionCandidateOutlierCount" : 7,
+    "deviceName" : "Apple M4",
+    "dominantDirectionIndex" : 14,
+    "dominantDirectionMeasureFraction" : 0.25,
+    "edgeOrJunctionAssociatedMeasureFraction" : 0.875,
+    "edgeOrJunctionAssociatedOutlierCount" : 7,
+    "frozenSourceTimeSeconds" : 0.026499999687075615,
+    "gridX" : 112,
+    "gridY" : 103,
+    "gridZ" : 99,
+    "interiorAssociatedMeasureFraction" : 0.125,
+    "interiorAssociatedOutlierCount" : 1,
+    "maximumOffsetSurfaceResidualCells" : 0.8587386618165247,
+    "meshBoundaryAssociatedOutlierCount" : 0,
+    "outlierCount" : 8,
+    "outlierCountFraction" : 0.00031668118122080597,
+    "outlierLinkMeasureFraction" : 0.00025068939583862247,
+    "outlierLinkMeasureSquareMeters" : 5.9259255508961194e-05,
+    "outliers" : [
+      {
+        "cellCoordinate" : [
+          41,
+          46,
+          42
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "tail",
+        "directionIndex" : 13,
+        "fluidSignedDistanceCells" : 0.05737573653459549,
+        "fluidToIntersectionFraction" : 0.1377118548213476,
+        "intersectionMeters" : [
+          -0.13518522679805756,
+          -0.00923013687133789,
+          -0.05992983654141426
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.9414236258061208,
+        "nearestAlternateComponentName" : "body",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.068297266960144,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.05670273303985596,
+        "nearestAlternatePartIdentifier" : 1,
+        "nearestAlternateTriangleIndex" : 1101,
+        "nearestPointMeters" : [
+          -0.14485345780849457,
+          -0.012452390976250172,
+          -0.051951173692941666
+        ],
+        "nearestTriangleBarycentric" : [
+          0.07118450105190277,
+          0.7580233812332153,
+          0.1707921177148819
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 3828,
+        "nearestTriangleVertexIndices" : [
+          2065,
+          2082,
+          2066
+        ],
+        "neighborCellCoordinate" : [
+          42,
+          46,
+          41
+        ],
+        "offsetSurfaceResidualCells" : 0.8164235996126722,
+        "partIdentifier" : 4,
+        "signedOffsetSurfaceResidualCells" : 0.8164235996126722,
+        "solidSignedDistanceCells" : -0.3592604100704193
+      },
+      {
+        "cellCoordinate" : [
+          43,
+          51,
+          45
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 10,
+        "fluidSignedDistanceCells" : 0.032129231840372086,
+        "fluidToIntersectionFraction" : 0.07112660978989968,
+        "intersectionMeters" : [
+          -0.1337929517030716,
+          0.030295683071017265,
+          -0.03418126702308655
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.878125585641855,
+        "nearestAlternateComponentName" : "tail",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.1925537586212158,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.06755375862121582,
+        "nearestAlternatePartIdentifier" : 4,
+        "nearestAlternateTriangleIndex" : 3785,
+        "nearestPointMeters" : [
+          -0.12746396660804749,
+          0.020816916599869728,
+          -0.03936472907662392
+        ],
+        "nearestTriangleBarycentric" : [
+          0.02456989884376526,
+          0.5667960047721863,
+          0.40863409638404846
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 871,
+        "nearestTriangleVertexIndices" : [
+          447,
+          486,
+          485
+        ],
+        "neighborCellCoordinate" : [
+          42,
+          52,
+          45
+        ],
+        "offsetSurfaceResidualCells" : 0.7531255594484065,
+        "partIdentifier" : 1,
+        "signedOffsetSurfaceResidualCells" : 0.7531255594484065,
+        "solidSignedDistanceCells" : -0.419589638710022
+      },
+      {
+        "cellCoordinate" : [
+          44,
+          49,
+          46
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 9,
+        "fluidSignedDistanceCells" : 0.04063686355948448,
+        "fluidToIntersectionFraction" : 0.09175745495911512,
+        "intersectionMeters" : [
+          -0.11487884819507599,
+          0.004714923910796642,
+          -0.027514606714248657
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.893821677935554,
+        "nearestAlternateComponentName" : "rightWing",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.1569573879241943,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.031957387924194336,
+        "nearestAlternatePartIdentifier" : 3,
+        "nearestAlternateTriangleIndex" : 3327,
+        "nearestPointMeters" : [
+          -0.12296587228775024,
+          0.01361144334077835,
+          -0.023660432547330856
+        ],
+        "nearestTriangleBarycentric" : [
+          0.4331969618797302,
+          0.5668030381202698,
+          0
+        ],
+        "nearestTriangleFeature" : "interior-edge",
+        "nearestTriangleIndex" : 943,
+        "nearestTriangleVertexIndices" : [
+          484,
+          523,
+          522
+        ],
+        "neighborCellCoordinate" : [
+          45,
+          48,
+          46
+        ],
+        "offsetSurfaceResidualCells" : 0.7688216517421053,
+        "partIdentifier" : 1,
+        "signedOffsetSurfaceResidualCells" : 0.7688216517421053,
+        "solidSignedDistanceCells" : -0.402235746383667
+      },
+      {
+        "cellCoordinate" : [
+          50,
+          45,
+          49
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 17,
+        "fluidSignedDistanceCells" : 0.06987497210502625,
+        "fluidToIntersectionFraction" : 0.2146582464091712,
+        "intersectionMeters" : [
+          -0.08093380928039551,
+          -0.010661185719072819,
+          -0.01275020744651556
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.8956439037682036,
+        "nearestAlternateComponentName" : "rightWing",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.0969727039337158,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.02802729606628418,
+        "nearestAlternatePartIdentifier" : 3,
+        "nearestAlternateTriangleIndex" : 3291,
+        "nearestPointMeters" : [
+          -0.08520863205194473,
+          -0.016947051510214806,
+          -0.0026544975116848946
+        ],
+        "nearestTriangleBarycentric" : [
+          0,
+          0.1970084309577942,
+          0.8029915690422058
+        ],
+        "nearestTriangleFeature" : "interior-edge",
+        "nearestTriangleIndex" : 1320,
+        "nearestTriangleVertexIndices" : [
+          677,
+          678,
+          716
+        ],
+        "neighborCellCoordinate" : [
+          50,
+          46,
+          48
+        ],
+        "offsetSurfaceResidualCells" : 0.7706438775747548,
+        "partIdentifier" : 1,
+        "signedOffsetSurfaceResidualCells" : 0.7706438775747548,
+        "solidSignedDistanceCells" : -0.2556423246860504
+      },
+      {
+        "cellCoordinate" : [
+          45,
+          47,
+          50
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 14,
+        "fluidSignedDistanceCells" : 0.0037117863539606333,
+        "fluidToIntersectionFraction" : 0.007157956145276236,
+        "intersectionMeters" : [
+          -0.12088608741760254,
+          -0.0025634467601776123,
+          0.005771010648459196
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.9107712839057602,
+        "nearestAlternateComponentName" : "rightWing",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.1286412477493286,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.0036412477493286133,
+        "nearestAlternatePartIdentifier" : 3,
+        "nearestAlternateTriangleIndex" : 3387,
+        "nearestPointMeters" : [
+          -0.11292929947376251,
+          0.001888941158540547,
+          -0.0031247467268258333
+        ],
+        "nearestTriangleBarycentric" : [
+          0.8976918458938599,
+          0.10230817645788193,
+          0
+        ],
+        "nearestTriangleFeature" : "interior-edge",
+        "nearestTriangleIndex" : 1089,
+        "nearestTriangleVertexIndices" : [
+          559,
+          598,
+          597
+        ],
+        "neighborCellCoordinate" : [
+          44,
+          47,
+          51
+        ],
+        "offsetSurfaceResidualCells" : 0.7857712577123117,
+        "partIdentifier" : 1,
+        "signedOffsetSurfaceResidualCells" : 0.7857712577123117,
+        "solidSignedDistanceCells" : -0.51484215259552
+      },
+      {
+        "cellCoordinate" : [
+          52,
+          47,
+          52
+        ],
+        "componentJunctionCandidate" : false,
+        "componentName" : "rightWing",
+        "directionIndex" : 15,
+        "fluidSignedDistanceCells" : 0.03695560246706009,
+        "fluidToIntersectionFraction" : 0.2642950732845001,
+        "intersectionMeters" : [
+          -0.06760045886039734,
+          0.0023412522859871387,
+          0.017390113323926926
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.9837386880099734,
+        "nearestAlternateComponentName" : "body",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.3916798830032349,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.26667988300323486,
+        "nearestAlternatePartIdentifier" : 1,
+        "nearestAlternateTriangleIndex" : 1082,
+        "nearestPointMeters" : [
+          -0.06698277592658997,
+          -0.00930966529995203,
+          0.011163300834596157
+        ],
+        "nearestTriangleBarycentric" : [
+          0,
+          0.02599853277206421,
+          0.9740014672279358
+        ],
+        "nearestTriangleFeature" : "interior-edge",
+        "nearestTriangleIndex" : 3298,
+        "nearestTriangleVertexIndices" : [
+          1768,
+          1777,
+          1769
+        ],
+        "neighborCellCoordinate" : [
+          52,
+          48,
+          53
+        ],
+        "offsetSurfaceResidualCells" : 0.8587386618165247,
+        "partIdentifier" : 3,
+        "signedOffsetSurfaceResidualCells" : 0.8587386618165247,
+        "solidSignedDistanceCells" : -0.10287145525217056
+      },
+      {
+        "cellCoordinate" : [
+          49,
+          46,
+          53
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 14,
+        "fluidSignedDistanceCells" : 0.028351299464702606,
+        "fluidToIntersectionFraction" : 0.05499969322136287,
+        "intersectionMeters" : [
+          -0.09390047192573547,
+          -0.00923013687133789,
+          0.025452077388763428
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.8750460742760986,
+        "nearestAlternateComponentName" : "rightWing",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.1477001905441284,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.022700190544128418,
+        "nearestAlternatePartIdentifier" : 3,
+        "nearestAlternateTriangleIndex" : 3382,
+        "nearestPointMeters" : [
+          -0.08759105205535889,
+          -0.005422928836196661,
+          0.01535484753549099
+        ],
+        "nearestTriangleBarycentric" : [
+          0.5519517064094543,
+          0.38931766152381897,
+          0.05873066186904907
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 1161,
+        "nearestTriangleVertexIndices" : [
+          596,
+          635,
+          634
+        ],
+        "neighborCellCoordinate" : [
+          48,
+          46,
+          54
+        ],
+        "offsetSurfaceResidualCells" : 0.7500460480826501,
+        "partIdentifier" : 1,
+        "signedOffsetSurfaceResidualCells" : 0.7500460480826501,
+        "solidSignedDistanceCells" : -0.48712974786758423
+      },
+      {
+        "cellCoordinate" : [
+          48,
+          48,
+          55
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 7,
+        "fluidSignedDistanceCells" : 0.04954675957560539,
+        "fluidToIntersectionFraction" : 0.18176472254733475,
+        "intersectionMeters" : [
+          -0.08881223201751709,
+          0.009558115154504776,
+          0.032485395669937134
+        ],
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 1.8902889849843088,
+        "nearestAlternateComponentName" : "leftWing",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.3161938190460205,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.1911938190460205,
+        "nearestAlternatePartIdentifier" : 2,
+        "nearestAlternateTriangleIndex" : 2869,
+        "nearestPointMeters" : [
+          -0.09264089912176132,
+          -0.0021934995893388987,
+          0.030025843530893326
+        ],
+        "nearestTriangleBarycentric" : [
+          0.3722725510597229,
+          0.027220716699957848,
+          0.6005067229270935
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 3381,
+        "nearestTriangleVertexIndices" : [
+          1815,
+          1823,
+          1824
+        ],
+        "neighborCellCoordinate" : [
+          49,
+          49,
+          55
+        ],
+        "offsetSurfaceResidualCells" : 0.7652889587908601,
+        "partIdentifier" : 3,
+        "signedOffsetSurfaceResidualCells" : 0.7652889587908601,
+        "solidSignedDistanceCells" : -0.22304056584835052
+      }
+    ],
+    "referenceLengthCells" : 12,
+    "runtimeSeconds" : 0.15160000324249268,
+    "schemaVersion" : 1,
+    "sourceLinkCountMatched" : true,
+    "sourceMaximumResidualDifferenceCells" : 0,
+    "totalLinkCount" : 25262,
+    "totalLinkMeasureSquareMeters" : 0.23638517022518357
+  },
+  "d16" : {
+    "allOutliersArchived" : true,
+    "allValuesFinite" : true,
+    "componentJunctionCandidateOutlierCount" : 7,
+    "deviceName" : "Apple M4",
+    "dominantDirectionIndex" : 13,
+    "dominantDirectionMeasureFraction" : 0.2857142857142857,
+    "edgeOrJunctionAssociatedMeasureFraction" : 1,
+    "edgeOrJunctionAssociatedOutlierCount" : 7,
+    "frozenSourceTimeSeconds" : 0.026499999687075615,
+    "gridX" : 149,
+    "gridY" : 136,
+    "gridZ" : 131,
+    "interiorAssociatedMeasureFraction" : 0,
+    "interiorAssociatedOutlierCount" : 0,
+    "maximumOffsetSurfaceResidualCells" : 0.8741931253863825,
+    "meshBoundaryAssociatedOutlierCount" : 0,
+    "outlierCount" : 7,
+    "outlierCountFraction" : 0.00015379883112888343,
+    "outlierLinkMeasureFraction" : 0.00012170526462208031,
+    "outlierLinkMeasureSquareMeters" : 2.9166666147163288e-05,
+    "outliers" : [
+      {
+        "cellCoordinate" : [
+          64,
+          61,
+          64
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 16,
+        "fluidSignedDistanceCells" : 0.018852949142456055,
+        "fluidToIntersectionFraction" : 0.05315402239241331,
+        "intersectionMeters" : [
+          -0.09510046243667603,
+          -0.01646433398127556,
+          -0.01974881812930107
+        ],
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 2.3214644340008,
+        "nearestAlternateComponentName" : "body",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.565144658088684,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.06514465808868408,
+        "nearestAlternatePartIdentifier" : 1,
+        "nearestAlternateTriangleIndex" : 1401,
+        "nearestPointMeters" : [
+          -0.09430530667304993,
+          -0.005781358107924461,
+          -0.015279849991202354
+        ],
+        "nearestTriangleBarycentric" : [
+          0,
+          0.1805480718612671,
+          0.8194519281387329
+        ],
+        "nearestTriangleFeature" : "interior-edge",
+        "nearestTriangleIndex" : 3293,
+        "nearestTriangleVertexIndices" : [
+          1765,
+          1773,
+          1774
+        ],
+        "neighborCellCoordinate" : [
+          64,
+          60,
+          63
+        ],
+        "offsetSurfaceResidualCells" : 0.8214644340007998,
+        "partIdentifier" : 3,
+        "signedOffsetSurfaceResidualCells" : 0.8214644340007998,
+        "solidSignedDistanceCells" : -0.3358323276042938
+      },
+      {
+        "cellCoordinate" : [
+          65,
+          61,
+          64
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 16,
+        "fluidSignedDistanceCells" : 0.03522699698805809,
+        "fluidToIntersectionFraction" : 0.0733694126329347,
+        "intersectionMeters" : [
+          -0.09010046720504761,
+          -0.01636325754225254,
+          -0.019647741690278053
+        ],
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 2.3318879827533956,
+        "nearestAlternateComponentName" : "body",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.6083070039749146,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.10830700397491455,
+        "nearestAlternatePartIdentifier" : 1,
+        "nearestAlternateTriangleIndex" : 1402,
+        "nearestPointMeters" : [
+          -0.09176934510469437,
+          -0.0069130961783230305,
+          -0.013025672174990177
+        ],
+        "nearestTriangleBarycentric" : [
+          0,
+          0.6436527967453003,
+          0.3563471734523773
+        ],
+        "nearestTriangleFeature" : "interior-edge",
+        "nearestTriangleIndex" : 3293,
+        "nearestTriangleVertexIndices" : [
+          1765,
+          1773,
+          1774
+        ],
+        "neighborCellCoordinate" : [
+          65,
+          60,
+          63
+        ],
+        "offsetSurfaceResidualCells" : 0.8318879827533956,
+        "partIdentifier" : 3,
+        "signedOffsetSurfaceResidualCells" : 0.8318879827533956,
+        "solidSignedDistanceCells" : -0.4449049234390259
+      },
+      {
+        "cellCoordinate" : [
+          66,
+          68,
+          64
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 13,
+        "fluidSignedDistanceCells" : 0.033115874975919724,
+        "fluidToIntersectionFraction" : 0.05974259742645815,
+        "intersectionMeters" : [
+          -0.08039918541908264,
+          0.0232698917388916,
+          -0.019715875387191772
+        ],
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 2.3007844157692285,
+        "nearestAlternateComponentName" : "body",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.5354665517807007,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.035466551780700684,
+        "nearestAlternatePartIdentifier" : 1,
+        "nearestAlternateTriangleIndex" : 644,
+        "nearestPointMeters" : [
+          -0.0877651572227478,
+          0.022564833983778954,
+          -0.010907609015703201
+        ],
+        "nearestTriangleBarycentric" : [
+          0.46423450112342834,
+          0.1941594034433365,
+          0.34160611033439636
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 2781,
+        "nearestTriangleVertexIndices" : [
+          1468,
+          1477,
+          1476
+        ],
+        "neighborCellCoordinate" : [
+          67,
+          68,
+          63
+        ],
+        "offsetSurfaceResidualCells" : 0.8007844157692287,
+        "partIdentifier" : 2,
+        "signedOffsetSurfaceResidualCells" : 0.8007844157692287,
+        "solidSignedDistanceCells" : -0.5211933851242065
+      },
+      {
+        "cellCoordinate" : [
+          69,
+          68,
+          66
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 17,
+        "fluidSignedDistanceCells" : 0.006055738776922226,
+        "fluidToIntersectionFraction" : 0.04172200790969654,
+        "intersectionMeters" : [
+          -0.07010045647621155,
+          0.028061281889677048,
+          -0.009805988520383835
+        ],
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 2.3439944314359376,
+        "nearestAlternateComponentName" : "body",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.5640922784805298,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.06409227848052979,
+        "nearestAlternatePartIdentifier" : 1,
+        "nearestAlternateTriangleIndex" : 493,
+        "nearestPointMeters" : [
+          -0.07696373760700226,
+          0.022760583087801933,
+          -0.001922099618241191
+        ],
+        "nearestTriangleBarycentric" : [
+          0.5476849675178528,
+          0.4523150324821472,
+          0
+        ],
+        "nearestTriangleFeature" : "interior-edge",
+        "nearestTriangleIndex" : 2763,
+        "nearestTriangleVertexIndices" : [
+          1458,
+          1467,
+          1466
+        ],
+        "neighborCellCoordinate" : [
+          69,
+          69,
+          65
+        ],
+        "offsetSurfaceResidualCells" : 0.8439944314359374,
+        "partIdentifier" : 2,
+        "signedOffsetSurfaceResidualCells" : 0.8439944314359374,
+        "solidSignedDistanceCells" : -0.1390892118215561
+      },
+      {
+        "cellCoordinate" : [
+          68,
+          69,
+          66
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 13,
+        "fluidSignedDistanceCells" : 0.006055738776922226,
+        "fluidToIntersectionFraction" : 0.02426422306340617,
+        "intersectionMeters" : [
+          -0.07022177428007126,
+          0.02826988697052002,
+          -0.009893277660012245
+        ],
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 2.360603079809317,
+        "nearestAlternateComponentName" : "body",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.5275957584381104,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.02759575843811035,
+        "nearestAlternatePartIdentifier" : 1,
+        "nearestAlternateTriangleIndex" : 493,
+        "nearestPointMeters" : [
+          -0.07711132615804672,
+          0.022856703028082848,
+          -0.0019848837982863188
+        ],
+        "nearestTriangleBarycentric" : [
+          0.4248585104942322,
+          0.4059564471244812,
+          0.16918504238128662
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 2763,
+        "nearestTriangleVertexIndices" : [
+          1458,
+          1467,
+          1466
+        ],
+        "neighborCellCoordinate" : [
+          69,
+          69,
+          65
+        ],
+        "offsetSurfaceResidualCells" : 0.8606030798093173,
+        "partIdentifier" : 2,
+        "signedOffsetSurfaceResidualCells" : 0.8606030798093173,
+        "solidSignedDistanceCells" : -0.24351906776428223
+      },
+      {
+        "cellCoordinate" : [
+          55,
+          65,
+          76
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 15,
+        "fluidSignedDistanceCells" : 0.03746785223484039,
+        "fluidToIntersectionFraction" : 0.1578888838514759,
+        "intersectionMeters" : [
+          -0.14010044932365417,
+          0.012480432167649269,
+          0.049195967614650726
+        ],
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 2.3741931253863826,
+        "nearestAlternateComponentName" : "leftWing",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.6271684169769287,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.1271684169769287,
+        "nearestAlternatePartIdentifier" : 2,
+        "nearestAlternateTriangleIndex" : 2986,
+        "nearestPointMeters" : [
+          -0.13999158143997192,
+          0.0015056153060868382,
+          0.04467254504561424
+        ],
+        "nearestTriangleBarycentric" : [
+          0.6771020889282227,
+          0.04951552301645279,
+          0.27338239550590515
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 3498,
+        "nearestTriangleVertexIndices" : [
+          1880,
+          1889,
+          1881
+        ],
+        "neighborCellCoordinate" : [
+          55,
+          66,
+          77
+        ],
+        "offsetSurfaceResidualCells" : 0.8741931253863825,
+        "partIdentifier" : 3,
+        "signedOffsetSurfaceResidualCells" : 0.8741931253863825,
+        "solidSignedDistanceCells" : -0.1998373419046402
+      },
+      {
+        "cellCoordinate" : [
+          53,
+          66,
+          76
+        ],
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 18,
+        "fluidSignedDistanceCells" : 0.05509769544005394,
+        "fluidToIntersectionFraction" : 0.2778926151089836,
+        "intersectionMeters" : [
+          -0.1501004695892334,
+          0.009659335017204285,
+          0.04859595000743866
+        ],
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "meshBoundaryAssociated" : false,
+        "midSurfaceDistanceCells" : 2.2617089136326816,
+        "nearestAlternateComponentName" : "rightWing",
+        "nearestAlternateMidSurfaceDistanceCells" : 1.7245278358459473,
+        "nearestAlternateOffsetSurfaceResidualCells" : 0.22452783584594727,
+        "nearestAlternatePartIdentifier" : 3,
+        "nearestAlternateTriangleIndex" : 3515,
+        "nearestPointMeters" : [
+          -0.1492631584405899,
+          0.020383106544613838,
+          0.04510556161403656
+        ],
+        "nearestTriangleBarycentric" : [
+          0.8889016509056091,
+          0.0579347163438797,
+          0.05316362902522087
+        ],
+        "nearestTriangleFeature" : "face-interior",
+        "nearestTriangleIndex" : 3003,
+        "nearestTriangleVertexIndices" : [
+          1593,
+          1602,
+          1601
+        ],
+        "neighborCellCoordinate" : [
+          53,
+          65,
+          77
+        ],
+        "offsetSurfaceResidualCells" : 0.7617089136326816,
+        "partIdentifier" : 2,
+        "signedOffsetSurfaceResidualCells" : 0.7617089136326816,
+        "solidSignedDistanceCells" : -0.14317204058170319
+      }
+    ],
+    "referenceLengthCells" : 16,
+    "runtimeSeconds" : 0.24896502494812012,
+    "schemaVersion" : 1,
+    "sourceLinkCountMatched" : true,
+    "sourceMaximumResidualDifferenceCells" : 0,
+    "totalLinkCount" : 45514,
+    "totalLinkMeasureSquareMeters" : 0.2396499957313411
+  },
+  "d20DiagnosticAuthorized" : false,
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "directionAssociated" : false,
+  "edgeOrJunctionAssociated" : true,
+  "experimentalAgreementGateApplied" : false,
+  "fluidEvolutionExecuted" : false,
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "interiorAssociated" : false,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "metrics" : {
+    "d12OutlierCount" : 8,
+    "d12OutlierLinkMeasureFraction" : 0.00025068939583862247,
+    "d16OutlierCount" : 7,
+    "d16OutlierLinkMeasureFraction" : 0.00012170526462208031,
+    "maximumOffsetSurfaceResidualCells" : 0.8741931253863825,
+    "maximumSourceMaximumResidualDifferenceCells" : 0,
+    "minimumDominantDirectionMeasureFraction" : 0.25,
+    "minimumEdgeOrJunctionAssociatedMeasureFraction" : 0.875,
+    "minimumInteriorAssociatedMeasureFraction" : 0,
+    "sameDominantDirectionAcrossGrids" : false
+  },
+  "nextAction" : "Compare linear signed-distance q with an exact offset-surface ray root on the 14 archived component-junction candidates plus the one D12 interior outlier, preserving component ownership, before changing the general link formula.",
+  "productionModificationAuthorized" : false,
+  "rawSpatialGateModified" : false,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "The frozen link-intersection localization is mesh-edge-or-component-junction-associated. It records association only; production, the raw spatial rejection, and the D20 block remain unchanged.",
+  "sourceLinkIntersectionPreregistrationSHA256" : "71186ed91522fd29f29f2a07fb03ac75e531974bf36b5171cd78936fd23209d5",
+  "sourceLinkVelocityPreregistrationSHA256" : "d1f98853798601555f009d5073c263172f21f4d86d5d0e64d47d47713c306024",
+  "sourceLinkVelocityReportSHA256" : "caac9cc578b3f4c4600fe0059984c519992ef24e4d49f246a2db520f1b528cf4",
+  "sourceReproductionPassed" : true
+}

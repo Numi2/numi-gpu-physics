@@ -208,6 +208,183 @@ is not enabled in production. Evidence is
 with its
 [`independent audit`](ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab-audit.json).
 
+Candidate A has now passed its controlled D=16 production-ledger experiment.
+On Apple M4 it completed the retained `751`-step failure horizon in `22.81 s`
+on the unchanged `149 x 136 x 131` grid. The minimum population remained
+positive at `1.634e-8`; the near-wing and global relative RMS force/momentum
+residuals were `4.719e-4` and `5.306e-4`, respectively, against the locked
+`0.005` limit. The control surface remained roughly 11 cells outside the swept
+bird, no solid link crossed it, and the opt-in wall candidate used no wall
+positivity limiter. Only two recursive-collision corrections occurred
+(`1.003e-9` of cell-steps). Production still uses the reference-density wall
+law: this result authorizes only a full registered-window D=16 candidate-A
+run. Evidence is
+[`deetjen-dove-d16-moving-wall-ledger.json`](ValidationArtifacts/deetjen-dove-d16-moving-wall-ledger.json)
+with its independently reconstructed
+[`nine-check audit`](ValidationArtifacts/deetjen-dove-d16-moving-wall-ledger-audit.json).
+
+The source-locked full-window promotion also passes. Candidate A completes all
+`7,552` D=16 steps in `293.34 s`, retains a positive `1.025e-8` minimum
+population, and captures all 187 registered force samples. Near-wing and
+global relative RMS residuals are `6.247e-4` and `8.312e-4`, still well below
+`0.005`; only 34 RR3 corrections occur (`1.696e-9` of cell-steps), with no
+wall limiter or production-default change. The descriptive two-component
+force error is `2.1731` normalized RMS: stability and accounting are cleared,
+but the fixed `68.07x` viscosity floor and absent candidate-specific spatial
+refinement prohibit experimental agreement. Evidence is
+[`deetjen-dove-d16-moving-wall-full-window.json`](ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window.json)
+and its independent
+[`11-check audit`](ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window-audit.json).
+
+The preregistered candidate-A spatial discriminator is now complete—and it
+honestly rejects clearance. Full-window D=8 and D=12 runs both pass positivity,
+all 187 registered bins, and the independent near-wing/global ledgers; the
+existing D=16 archive is reused byte-for-byte. Force-history change decreases
+monotonically from `12.705%` (D8→D12) to `6.268%` (D12→D16), while fine-pair
+mean and impulse differences are only `1.058%`. However, `6.268%` exceeds the
+preregistered `5%` force-history limit, so spatial refinement and production
+promotion remain blocked. The green independent audit authenticates this
+locked rejection. Evidence is the
+[`preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-spatial-preregistration.json),
+[`D8 case`](ValidationArtifacts/deetjen-dove-d8-moving-wall-full-window.json),
+[`D12 case`](ValidationArtifacts/deetjen-dove-d12-moving-wall-full-window.json),
+[`discriminator`](ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator.json),
+and [`independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator-audit.json).
+
+The zero-simulation phase localization rejects an immediate D=20 allocation.
+The D12-to-D16 difference is mixed rather than a single event or smooth
+distributed truncation: 27 of 187 bins carry half its squared difference,
+the strongest 5 ms window carries only `16.81%`, yet normalized adjacent-bin
+roughness is `1.351` and `50.27%` of non-DC spectral energy is high-frequency.
+Topology correction explains only `12.62%`; near-wing/global ledger-residual
+differences are only `0.375%/0.749%` of the force difference. Thus neither a
+topology spike nor closure-accounting error explains the miss, but its rough
+inter-grid structure is not evidence for smooth asymptotic convergence. See
+the [`phase-localization artifact`](ValidationArtifacts/deetjen-dove-moving-wall-spatial-localization.json)
+and [`independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-spatial-localization-audit.json).
+
+The source-locked lag/band discriminator then eliminates sub-bin force
+registration as the dominant mechanism. The best global shift is only
+`-0.02` force bins (`-10 us`), and five-fold held-out validation improves the
+D12-to-D16 comparison by just `1.506%`. A nonperiodic 200 Hz low-pass reduces
+the normalized difference from `6.268%` to `4.253%`, but retains only `74.27%`
+of combined force energy against the frozen `99%` requirement. Filtering away
+one quarter of the physical signal cannot be relabeled as convergence.
+Neither broadband estimator noise nor coherent low-band grid bias is therefore
+established; the result remains `mixed-unresolved`, the original `5%` raw gate
+is unchanged, and D=20 remains blocked. The
+[`lag/band artifact`](ValidationArtifacts/deetjen-dove-moving-wall-spatial-lag-band.json)
+and [`11-check independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-spatial-lag-band-audit.json)
+make that negative result reproducible without another fluid simulation.
+
+The follow-up fixed-geometry temporal canonical runs in `10.82 s` and removes
+topology and evolving kinematics entirely. At the most discrepant archived
+phase (`26.5 ms`), both D12 and D16 hold the same measured geometry and wall
+velocity for eight 0.5 ms bins while recording every conservative-force
+substep. Endpoint sampling differs by `19.587%`; sample-centered trapezoidal
+and direct impulse-preserving aggregation reduce this to `9.760%` and
+`9.487%`. Aggregation therefore removes `51.56%` of the endpoint disagreement,
+but the authoritative impulse-preserving history still fails 5%. The complete
+eight-bin impulses differ by only `0.864%`, both momentum ledgers pass below
+`0.036%`, topology correction is exactly zero, and the independent 13-check
+audit passes. Classification remains `mixed-unresolved`; the original raw
+rejection and D20 block are unchanged. Evidence is the locked
+[`preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-preregistration.json),
+[`Metal result`](ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling.json),
+and [`independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-audit.json).
+
+The preregistered 24-bin extension rules out startup relaxation. Its
+independent restart reproduces every original eight-bin vector exactly.
+Impulse-preserving D12/D16 history differences are `9.487%`, `9.929%`, and
+`9.961%` for the 8/16/24-bin prefixes; the three eight-bin blocks are
+`9.487%`, `28.208%`, and `12.379%`. The late block is `30.48%` worse than the
+first, while the full 24-bin cumulative impulse difference reaches `4.716%`.
+Both 576/768-step cases retain positive populations, exact zero topology, and
+sub-`0.069%` ledgers. The locked classification is therefore
+`persistent-fixed-wall-grid-disagreement`: temporal aggregation matters, but
+neither longer duration nor cumulative cancellation clears the force history.
+The [`duration preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json),
+[`24-bin Metal result`](ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json),
+and [`13-check independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-audit.json)
+preserve that negative result. D20 and production promotion remain blocked.
+
+The geometry-only follow-up completes in `4.99 s` on Apple M4 and enumerates
+the exact production solid-to-fluid D3Q19 convention at the same `26.5 ms`
+phase without allocating populations. Metal and the independent CPU raster
+match every occupancy cell and every link count; force-relevant aggregate
+parity is within `0.182%`. D12→D16 total link measure changes only `1.362%`,
+the worst component changes `2.301%`, the 20-bin interpolation-fraction total
+variation is `3.143%`, and the worst grid-to-grid mean wall-velocity change is
+only `0.418%` of triangle-quadrature RMS. Area and interpolation therefore
+clear. The left-wing deposited mean velocity does not: its independent
+thickened-triangle error is `10.742%` at D12 and `10.379%` at D16 against the
+frozen `10%` limit. The locked classification is
+`wall-velocity-deposition-bias`; D20 remains blocked. The version-2 contract
+also records why its pointwise CPU tolerance was corrected to the repository's
+pre-existing geometry-parity envelope while adding a stricter `0.5%` complete
+link-aggregate gate. Evidence is the
+[`preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json),
+[`geometry-only result`](ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json),
+and [`13-check independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-audit.json).
+
+The follow-up velocity-sampling A/B advances no fluid and completes in
+`21.22 s`. It reproduces the archived production moments exactly, then tests
+both endpoint-interpolated velocity and an exact same-component
+triangle-barycentric velocity at every reconstructed link intersection.
+Neither explains the left-wing miss: the exact candidate changes the worst
+mean error from `10.742%` to `10.783%`, while endpoint interpolation worsens
+it to `11.430%`. Instead, the link-location check exposes a maximum
+offset-surface residual of `0.874` cell against the frozen `0.75`-cell limit
+(`0.0696`-cell RMS still passes). The classification is therefore
+`signed-distance-intersection-placement-bias`; no velocity repair or
+production change is authorized. Evidence is the locked
+[`A/B preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-preregistration.json),
+[`direction-resolved result`](ValidationArtifacts/deetjen-dove-moving-wall-link-velocity.json),
+and [`13-check independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-audit.json).
+
+The preregistered outlier localizer then scans all `25,262` D12 and `45,514`
+D16 links in `0.40 s`, again without populations or force evaluation. Only
+`8` and `7` links exceed `0.75` cell—`0.0251%` and `0.0122%` of total link
+measure. None is on a true mesh boundary; `7/8` and `7/7` lie within `0.25`
+cell of another component's physical offset surface. Their dominant D3Q19
+directions differ and contain only `25.0%`/`28.6%` of outlier measure, rejecting
+a common stencil-direction association. The locked result is
+`mesh-edge-or-component-junction-associated`, descriptively narrowed to
+component junctions. It authorizes only an exact offset-surface ray-root A/B
+on these 15 archived links. Evidence is the
+[`localization preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-preregistration.json),
+[`per-link archive`](ValidationArtifacts/deetjen-dove-moving-wall-link-intersection.json),
+and [`binary-mesh 13-check audit`](ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-audit.json).
+
+The exact ray-root A/B resolves those 15 links in `0.072 s`. Every solid/fluid
+endpoint pair selects different nearest components, and every fluid endpoint
+selects the previously recorded alternate component. Linear interpolation is
+therefore blending two different surface-distance functions. Exact global-
+union roots remain far from production: junction RMS shifts are `0.519` cell
+on D12 and `0.943` on D16, with a `1.136`-cell maximum against the unchanged
+`0.10` RMS/`0.75` maximum limits. D16's exact global roots are all the owner
+roots, so its owner-to-union improvement is zero. Numerical roots close below
+`7.0e-7` cell and a separate NumPy reconstruction agrees. The locked result is
+`junction-global-root-linearization-bias`; no production change or fluid run
+is authorized. Evidence is the
+[`ray-root preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-preregistration.json),
+[`15-link A/B`](ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root.json),
+and [`independent 13-check audit`](ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-audit.json).
+
+The follow-on coefficient discriminator evaluates the exact production
+interpolated-bounce-back algebra on those same 15 links in under `0.04 ms`,
+without geometry search or populations. Replacing linear `q` with the exact
+global-union `q` changes the `q=0.5` stencil branch on `3/8` D12 links and all
+`7/7` D16 links. The measure-weighted coefficient-vector L1 change reaches
+`1.723` on D12 and `2.782` on D16, with a `3.189` maximum against frozen
+`0.10` RMS and `0.25` maximum limits. The independently reproduced result is
+`branch-changing-coefficient-sensitive`. This clears only a narrow captured-
+population replay of those links; it does not yet establish a force correction
+or authorize production or D20. Evidence is the
+[`coefficient preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-preregistration.json),
+[`15-link coefficient archive`](ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient.json),
+and [`independent 12-check audit`](ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-audit.json).
+
 ## Latest high-Re result
 
 <p align="center">

@@ -1,0 +1,50 @@
+{
+  "allChecksPassed": true,
+  "checkCount": 13,
+  "checks": {
+    "claimBoundary": true,
+    "classification": true,
+    "crossGridMetrics": true,
+    "d12ComponentAggregation": true,
+    "d12DirectionBins": true,
+    "d12ProductionReproduction": true,
+    "d16ComponentAggregation": true,
+    "d16DirectionBins": true,
+    "d16ProductionReproduction": true,
+    "fixedContract": true,
+    "safetyBoundary": true,
+    "sourceGeometryPrecondition": true,
+    "sourceHashes": true
+  },
+  "generatedBy": "Scripts/audit-dove-moving-wall-link-velocity.py",
+  "placementGate": {
+    "maximumLimitCells": 0.75,
+    "maximumResidualCells": 0.8741931253863825,
+    "rmsLimitCells": 0.1,
+    "rmsResidualCells": 0.06955769182795753
+  },
+  "reconstructedMetrics": {
+    "maximumEndpointD12D16MeanVelocityDifference": 0.012643506380779167,
+    "maximumEndpointMeanVelocityError": 0.11429832556495075,
+    "maximumEndpointRMSSpeedRelativeError": 0.07210276361097764,
+    "maximumExactD12D16MeanVelocityDifference": 0.005110069769010629,
+    "maximumExactMeanVelocityError": 0.1078287562885931,
+    "maximumExactRMSSpeedRelativeError": 0.07727159562769972,
+    "maximumOffsetSurfaceRMSResidualCells": 0.06955769182795753,
+    "maximumOffsetSurfaceResidualCells": 0.8741931253863825,
+    "maximumProductionMeanVelocityError": 0.10742206809817834,
+    "maximumProductionRMSSpeedRelativeError": 0.07722751564974534,
+    "maximumSourceProductionRelativeDifference": 0.0,
+    "minimumEndpointCaptureOfExactImprovementFraction": -9.344728017005913,
+    "minimumLeftWingEndpointImprovementFraction": -0.06401159080728047,
+    "minimumLeftWingExactImprovementFraction": -0.0037858905308272295
+  },
+  "schemaVersion": 1,
+  "sourceArtifacts": {
+    "linkGeometryAudit": "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-audit.json",
+    "linkGeometryPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json",
+    "linkGeometryReport": "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json",
+    "linkVelocityPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-preregistration.json",
+    "linkVelocityReport": "ValidationArtifacts/deetjen-dove-moving-wall-link-velocity.json"
+  }
+}

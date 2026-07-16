@@ -1,0 +1,44 @@
+{
+  "allChecksPassed": true,
+  "checks": {
+    "baselinePrefixReproduction": true,
+    "blockArithmetic": true,
+    "claimBoundary": true,
+    "classification": true,
+    "d12AxesAndBins": true,
+    "d12ImpulseTopologyLedgers": true,
+    "d16AxesAndBins": true,
+    "d16ImpulseTopologyLedgers": true,
+    "durationDecision": true,
+    "fixedThresholds": true,
+    "mechanismDecision": true,
+    "prefixArithmetic": true,
+    "sourceHashes": true
+  },
+  "claimBoundary": "Independent source-hash, 1,344-step force, 48-bin quadrature, baseline reproduction, nested-window, ledger, classification, and allocation audit. A pass authenticates the duration result only.",
+  "durationPreregistrationSHA256": "8a15ee4877ada2b5b20badf70e2de894832afe11bcd6e95384786076541e3a85",
+  "generatedBy": "Scripts/audit-dove-moving-wall-temporal-duration.py",
+  "reconstructed": {
+    "baselinePrefixMaximumRelativeError": 0.0,
+    "blockImpulseHistoryDifferences": [
+      0.09487122347139974,
+      0.2820821774878495,
+      0.12379070962136295
+    ],
+    "classification": "persistent-fixed-wall-grid-disagreement",
+    "d20DiagnosticAuthorized": false,
+    "lateBlockImprovementFraction": -0.3048288521195406,
+    "prefixImpulseHistoryDifferences": [
+      0.09487122347139974,
+      0.09928715635921184,
+      0.09961121613134491
+    ],
+    "prefixTotalImpulseDifferences": [
+      0.008638534121155417,
+      0.029715950994351297,
+      0.047162574232731236
+    ]
+  },
+  "reportSHA256": "1257ddad7d5c78fbaf40876074fd847b9b1d410ac4d2ab04a947e6d0240842ae",
+  "schemaVersion": 1
+}

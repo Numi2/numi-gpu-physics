@@ -241,6 +241,9 @@ struct GPUIndexedBoundaryTerm {
     // x=interpolated population with auxiliary term removed;
     // y/z=production/source wall velocity projected onto the direction.
     float4 alternatives;
+    // x=farther-fluid outgoing, y=previous target incoming,
+    // z=pre-step moving-wall density, w=fluid-endpoint wall projection.
+    float4 captured;
     // x=direction, y=source cell, z=auxiliary cell, w=source part.
     uint4 metadata;
     // x=branch (0 local, 1 fallback, 2 near, 3 far, 4 outside),
@@ -2271,6 +2274,23 @@ kernel void stepFluidTRT(
                 }
             }
             else {
+                // Validation-only candidate A replaces the global reference
+                // density in every moving-wall population correction with
+                // the target cell's complete pre-step population density.
+                // integration.y is zero for every production path, so the
+                // normal solver retains its original arithmetic; the check
+                // is dispatch-uniform and the 19-value sum remains dormant.
+                float movingWallDensity = uniforms.farFieldLattice.w;
+                if (uniforms.integration.y != 0u) {
+                    movingWallDensity = 0.0f;
+                    for (uint densityDirection = 0u;
+                         densityDirection < Q;
+                         ++densityDirection) {
+                        movingWallDensity += populationsIn[
+                            densityDirection * uniforms.grid.w + gid
+                        ];
+                    }
+                }
                 bool interiorDomain = cell.x > 0u
                     && cell.y > 0u
                     && cell.z > 0u
@@ -2365,7 +2385,7 @@ kernel void stepFluidTRT(
                             }
                             float wallCorrection = 2.0f
                                 * W[q]
-                                * uniforms.farFieldLattice.w
+                                * movingWallDensity
                                 * dot(
                                     direction,
                                     wall
@@ -3967,6 +3987,17 @@ kernel void captureExternalFluidSources(
         }
         if (!isSolid) {
             bool persistentTarget = !wasSolid;
+            float movingWallDensity = uniforms.farFieldLattice.w;
+            if (uniforms.integration.y != 0u) {
+                movingWallDensity = 0.0f;
+                for (uint densityDirection = 0u;
+                     densityDirection < Q;
+                     ++densityDirection) {
+                    movingWallDensity += populationsIn[
+                        densityDirection * uniforms.grid.w + gid
+                    ];
+                }
+            }
             bool interiorDomain = cell.x > 0u
                 && cell.y > 0u
                 && cell.z > 0u
@@ -4021,7 +4052,7 @@ kernel void captureExternalFluidSources(
                     float3 direction = float3(C[q]);
                     float wallCorrection = 2.0f
                         * W[q]
-                        * uniforms.farFieldLattice.w
+                        * movingWallDensity
                         * dot(direction, wallVelocity[source].xyz)
                         / CS2;
                     float incoming = reflected + wallCorrection;
@@ -4403,6 +4434,20 @@ kernel void captureIndexedBoundaryTermDecomposition(
     float interpolatedNoAuxiliary = 0.0f;
     float productionWallDirectionProjection = 0.0f;
     float sourceWallDirectionProjection = 0.0f;
+    float fluidWallDirectionProjection = 0.0f;
+    float fartherOutgoingPrimitive = 0.0f;
+    float previousIncomingPrimitive = 0.0f;
+    float movingWallDensity = uniforms.farFieldLattice.w;
+    if (uniforms.integration.y != 0u) {
+        movingWallDensity = 0.0f;
+        for (uint densityDirection = 0u;
+             densityDirection < Q;
+             ++densityDirection) {
+            movingWallDensity += populationsIn[
+                densityDirection * uniforms.grid.w + targetCell
+            ];
+        }
+    }
 
     if (outside && uniforms.flags.w != 0u) {
         sourceCell.x = sourceCell.x < 0
@@ -4435,6 +4480,25 @@ kernel void captureIndexedBoundaryTermDecomposition(
                 OPP[q] * uniforms.grid.w + targetCell
             ];
             float3 direction = float3(C[q]);
+            fluidWallDirectionProjection = dot(
+                direction,
+                wallVelocity[targetCell].xyz
+            );
+            previousIncomingPrimitive = populationsIn[
+                q * uniforms.grid.w + targetCell
+            ];
+            int3 fartherPrimitiveCell = int3(cell) + C[q];
+            if (inside(fartherPrimitiveCell, size)) {
+                uint fartherPrimitive = flatten(
+                    uint3(fartherPrimitiveCell),
+                    size
+                );
+                if (solidCurrent[fartherPrimitive] == 0u) {
+                    fartherOutgoingPrimitive = populationsIn[
+                        OPP[q] * uniforms.grid.w + fartherPrimitive
+                    ];
+                }
+            }
             linkFraction = 0.5f;
             float3 wall = wallVelocity[source].xyz;
             uint farther = 0u;
@@ -4470,7 +4534,7 @@ kernel void captureIndexedBoundaryTermDecomposition(
             );
             wallCorrection = 2.0f
                 * W[q]
-                * uniforms.farFieldLattice.w
+                * movingWallDensity
                 * productionWallDirectionProjection
                 / CS2;
             halfwayWallCorrection = 2.0f
@@ -4545,6 +4609,12 @@ kernel void captureIndexedBoundaryTermDecomposition(
         productionWallDirectionProjection,
         sourceWallDirectionProjection,
         0.0f
+    );
+    term.captured = float4(
+        fartherOutgoingPrimitive,
+        previousIncomingPrimitive,
+        movingWallDensity,
+        fluidWallDirectionProjection
     );
     term.metadata = uint4(q, source, auxiliaryIndex, sourcePart);
     term.branch = uint4(

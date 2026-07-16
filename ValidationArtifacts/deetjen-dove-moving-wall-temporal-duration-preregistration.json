@@ -1,0 +1,34 @@
+{
+  "baselineForceBinCount" : 8,
+  "blockBinCount" : 8,
+  "claimBoundary" : "This duration discriminator is a fixed-wall startup diagnostic. It cannot alter the raw moving-window spatial gate, establish experimental agreement, authorize D20, or modify production.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "experimentalAgreementGateApplied" : false,
+  "extendedForceBinCount" : 24,
+  "fixedInputs" : "The hashed eight-bin preregistration and result; source sample 53 at 26.5 ms; fixed geometry and wall velocity; independent equilibrium restarts; D12\/D16 grids; RR3 collision; candidate-A wall normalization; unchanged thickness, viscosity-floor, far field, sponge, estimator, and momentum ledgers.",
+  "forceBinDurationSeconds" : 0.0005,
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "frozenSourceSampleIndex" : 53,
+  "frozenSourceTimeSeconds" : 0.0265,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedFineGridRelativeDifference" : 0.05,
+  "maximumAllowedPrefixReproductionRelativeError" : 1e-12,
+  "minimumLateBlockImprovementFraction" : 0.2,
+  "movingWallNormalization" : "pre-step-local-density",
+  "nestedPrefixBinCounts" : [
+    8,
+    16,
+    24
+  ],
+  "passed" : true,
+  "referenceLengthCells" : [
+    12,
+    16
+  ],
+  "schemaVersion" : 1,
+  "selectedCollisionOperator" : "positivity-preserving-recursive-regularized-bgk",
+  "selectionRule" : "Independently restart the exact fixed phase and extend D12\/D16 from 8 to 24 force bins. Require the first eight endpoint, sample-trapezoidal, impulse-mean, and direct-impulse vectors to reproduce within 1e-12 relative error. Report 8\/16\/24-bin prefixes and three non-overlapping eight-bin blocks. Duration clears only when the 24-bin impulse-history and cumulative-impulse differences are both at most 5%. Startup relaxation requires the late block at most 5%, at least 20% improvement from the first block, and cumulative 24-bin impulse at most 5%. Persistent bias requires all three block histories above 5% with less than 20% late-block improvement.",
+  "sourceTemporalPreregistrationSHA256" : "57e1f231217bf06395cdd1d4f913e73314209327c0892a0938c5481f0bd61c70",
+  "sourceTemporalSamplingSHA256" : "eb5af26e21ad139363c81185ee227cfcc88dc6fd58ff884aa718329dfd11a7ad"
+}

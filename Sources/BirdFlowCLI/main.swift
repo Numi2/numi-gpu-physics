@@ -1,5 +1,6 @@
 import BirdFlowCore
 import BirdFlowMetal
+import CryptoKit
 import Foundation
 
 private struct Arguments {
@@ -133,7 +134,28 @@ private struct Arguments {
          --collision-momentum-closure | --collision-extended-pilot | \
          --collision-grid-provenance | \
          --collision-grid-boundary-decomposition | \
-         --collision-grid-moving-wall-ab] \
+         --collision-grid-moving-wall-ab | \
+         --collision-grid-moving-wall-ledger | \
+         --collision-grid-moving-wall-full-window | \
+         --collision-grid-moving-wall-spatial-preregister | \
+         --collision-grid-moving-wall-spatial-case | \
+         --collision-grid-moving-wall-spatial-discriminator | \
+         --collision-grid-moving-wall-temporal-preregister | \
+         --collision-grid-moving-wall-temporal-sampling | \
+         --collision-grid-moving-wall-temporal-duration-preregister | \
+         --collision-grid-moving-wall-temporal-duration | \
+         --collision-grid-moving-wall-link-geometry-preregister | \
+         --collision-grid-moving-wall-link-geometry | \
+         --collision-grid-moving-wall-link-velocity-preregister | \
+         --collision-grid-moving-wall-link-velocity | \
+         --collision-grid-moving-wall-link-intersection-preregister | \
+         --collision-grid-moving-wall-link-intersection | \
+         --collision-grid-moving-wall-link-ray-root-preregister | \
+         --collision-grid-moving-wall-link-ray-root | \
+         --collision-grid-moving-wall-link-coefficient-preregister | \
+         --collision-grid-moving-wall-link-coefficient | \
+         --collision-grid-moving-wall-link-population-preregister | \
+         --collision-grid-moving-wall-link-population] \
         [--force-target TARGET.json] \
         [--archive FILE] [--json]
     """
@@ -148,6 +170,30 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var completionPath: String?
     var provenancePath: String?
     var boundaryTermsPath: String?
+    var movingWallABPath: String?
+    var movingWallLedgerPath: String?
+    var movingWallFullWindowPath: String?
+    var spatialPreregistrationPath: String?
+    var spatialD8Path: String?
+    var spatialD12Path: String?
+    var spatialDiscriminatorPath: String?
+    var lagBandPath: String?
+    var temporalPreregistrationPath: String?
+    var temporalSamplingPath: String?
+    var temporalDurationPreregistrationPath: String?
+    var temporalDurationPath: String?
+    var linkGeometryPreregistrationPath: String?
+    var linkGeometryPath: String?
+    var linkVelocityPreregistrationPath: String?
+    var linkVelocityPath: String?
+    var linkIntersectionPreregistrationPath: String?
+    var linkIntersectionPath: String?
+    var linkRayRootPreregistrationPath: String?
+    var linkRayRootPath: String?
+    var linkCoefficientPreregistrationPath: String?
+    var linkCoefficientPath: String?
+    var linkPopulationPreregistrationPath: String?
+    var spatialReferenceLengthCells: Int?
     var cellSizeMeters: Float = 0.01
     var halfThicknessCells: Float = 0.75
     var couplingGate = false
@@ -161,6 +207,27 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var collisionGridProvenance = false
     var collisionGridBoundaryDecomposition = false
     var collisionGridMovingWallAB = false
+    var collisionGridMovingWallLedger = false
+    var collisionGridMovingWallFullWindow = false
+    var collisionGridMovingWallSpatialPreregister = false
+    var collisionGridMovingWallSpatialCase = false
+    var collisionGridMovingWallSpatialDiscriminator = false
+    var collisionGridMovingWallTemporalPreregister = false
+    var collisionGridMovingWallTemporalSampling = false
+    var collisionGridMovingWallTemporalDurationPreregister = false
+    var collisionGridMovingWallTemporalDuration = false
+    var collisionGridMovingWallLinkGeometryPreregister = false
+    var collisionGridMovingWallLinkGeometry = false
+    var collisionGridMovingWallLinkVelocityPreregister = false
+    var collisionGridMovingWallLinkVelocity = false
+    var collisionGridMovingWallLinkIntersectionPreregister = false
+    var collisionGridMovingWallLinkIntersection = false
+    var collisionGridMovingWallLinkRayRootPreregister = false
+    var collisionGridMovingWallLinkRayRoot = false
+    var collisionGridMovingWallLinkCoefficientPreregister = false
+    var collisionGridMovingWallLinkCoefficient = false
+    var collisionGridMovingWallLinkPopulationPreregister = false
+    var collisionGridMovingWallLinkPopulation = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -231,6 +298,200 @@ private struct MeasuredBirdSurfaceReplayArguments {
                     )
                 }
                 boundaryTermsPath = values[index]
+            case "--moving-wall-ab":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--moving-wall-ab requires a passed D=16 A/B report"
+                    )
+                }
+                movingWallABPath = values[index]
+            case "--moving-wall-ledger":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--moving-wall-ledger requires the passed retained-horizon report"
+                    )
+                }
+                movingWallLedgerPath = values[index]
+            case "--moving-wall-full-window":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--moving-wall-full-window requires the passed D=16 full-window report"
+                    )
+                }
+                movingWallFullWindowPath = values[index]
+            case "--spatial-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--spatial-preregistration requires a locked JSON path"
+                    )
+                }
+                spatialPreregistrationPath = values[index]
+            case "--spatial-d8":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--spatial-d8 requires the completed D=8 case report"
+                    )
+                }
+                spatialD8Path = values[index]
+            case "--spatial-d12":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--spatial-d12 requires the completed D=12 case report"
+                    )
+                }
+                spatialD12Path = values[index]
+            case "--spatial-discriminator":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--spatial-discriminator requires the completed spatial report"
+                    )
+                }
+                spatialDiscriminatorPath = values[index]
+            case "--lag-band":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--lag-band requires the completed lag/band artifact"
+                    )
+                }
+                lagBandPath = values[index]
+            case "--temporal-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--temporal-preregistration requires the locked JSON path"
+                    )
+                }
+                temporalPreregistrationPath = values[index]
+            case "--temporal-sampling":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--temporal-sampling requires the completed eight-bin report"
+                    )
+                }
+                temporalSamplingPath = values[index]
+            case "--temporal-duration-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--temporal-duration-preregistration requires the locked JSON path"
+                    )
+                }
+                temporalDurationPreregistrationPath = values[index]
+            case "--temporal-duration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--temporal-duration requires the completed 24-bin report"
+                    )
+                }
+                temporalDurationPath = values[index]
+            case "--link-geometry-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-geometry-preregistration requires a locked JSON path"
+                    )
+                }
+                linkGeometryPreregistrationPath = values[index]
+            case "--link-geometry":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-geometry requires the completed geometry-only report"
+                    )
+                }
+                linkGeometryPath = values[index]
+            case "--link-velocity-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-velocity-preregistration requires a locked JSON path"
+                    )
+                }
+                linkVelocityPreregistrationPath = values[index]
+            case "--link-velocity":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-velocity requires the completed velocity A/B report"
+                    )
+                }
+                linkVelocityPath = values[index]
+            case "--link-intersection-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-intersection-preregistration requires a locked JSON path"
+                    )
+                }
+                linkIntersectionPreregistrationPath = values[index]
+            case "--link-intersection":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-intersection requires the completed outlier report"
+                    )
+                }
+                linkIntersectionPath = values[index]
+            case "--link-ray-root-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-ray-root-preregistration requires a locked JSON path"
+                    )
+                }
+                linkRayRootPreregistrationPath = values[index]
+            case "--link-ray-root":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-ray-root requires the completed exact-root report"
+                    )
+                }
+                linkRayRootPath = values[index]
+            case "--link-coefficient-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-coefficient-preregistration requires a locked JSON path"
+                    )
+                }
+                linkCoefficientPreregistrationPath = values[index]
+            case "--link-coefficient":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-coefficient requires the completed coefficient report"
+                    )
+                }
+                linkCoefficientPath = values[index]
+            case "--link-population-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-population-preregistration requires a locked JSON path"
+                    )
+                }
+                linkPopulationPreregistrationPath = values[index]
+            case "--reference-length-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      [8, 12].contains(value) else {
+                    throw CLIError.invalidArgument(
+                        "--reference-length-cells requires 8 or 12"
+                    )
+                }
+                spatialReferenceLengthCells = value
             case "--cell-size-meters":
                 index += 1
                 guard index < values.count,
@@ -274,6 +535,48 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 collisionGridBoundaryDecomposition = true
             case "--collision-grid-moving-wall-ab":
                 collisionGridMovingWallAB = true
+            case "--collision-grid-moving-wall-ledger":
+                collisionGridMovingWallLedger = true
+            case "--collision-grid-moving-wall-full-window":
+                collisionGridMovingWallFullWindow = true
+            case "--collision-grid-moving-wall-spatial-preregister":
+                collisionGridMovingWallSpatialPreregister = true
+            case "--collision-grid-moving-wall-spatial-case":
+                collisionGridMovingWallSpatialCase = true
+            case "--collision-grid-moving-wall-spatial-discriminator":
+                collisionGridMovingWallSpatialDiscriminator = true
+            case "--collision-grid-moving-wall-temporal-preregister":
+                collisionGridMovingWallTemporalPreregister = true
+            case "--collision-grid-moving-wall-temporal-sampling":
+                collisionGridMovingWallTemporalSampling = true
+            case "--collision-grid-moving-wall-temporal-duration-preregister":
+                collisionGridMovingWallTemporalDurationPreregister = true
+            case "--collision-grid-moving-wall-temporal-duration":
+                collisionGridMovingWallTemporalDuration = true
+            case "--collision-grid-moving-wall-link-geometry-preregister":
+                collisionGridMovingWallLinkGeometryPreregister = true
+            case "--collision-grid-moving-wall-link-geometry":
+                collisionGridMovingWallLinkGeometry = true
+            case "--collision-grid-moving-wall-link-velocity-preregister":
+                collisionGridMovingWallLinkVelocityPreregister = true
+            case "--collision-grid-moving-wall-link-velocity":
+                collisionGridMovingWallLinkVelocity = true
+            case "--collision-grid-moving-wall-link-intersection-preregister":
+                collisionGridMovingWallLinkIntersectionPreregister = true
+            case "--collision-grid-moving-wall-link-intersection":
+                collisionGridMovingWallLinkIntersection = true
+            case "--collision-grid-moving-wall-link-ray-root-preregister":
+                collisionGridMovingWallLinkRayRootPreregister = true
+            case "--collision-grid-moving-wall-link-ray-root":
+                collisionGridMovingWallLinkRayRoot = true
+            case "--collision-grid-moving-wall-link-coefficient-preregister":
+                collisionGridMovingWallLinkCoefficientPreregister = true
+            case "--collision-grid-moving-wall-link-coefficient":
+                collisionGridMovingWallLinkCoefficient = true
+            case "--collision-grid-moving-wall-link-population-preregister":
+                collisionGridMovingWallLinkPopulationPreregister = true
+            case "--collision-grid-moving-wall-link-population":
+                collisionGridMovingWallLinkPopulation = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -296,7 +599,27 @@ private struct MeasuredBirdSurfaceReplayArguments {
             collisionMomentumClosure, collisionExtendedPilot,
             collisionGridPreregister, collisionGridDiscriminator,
             collisionGridCompletion, collisionGridProvenance,
-            collisionGridBoundaryDecomposition, collisionGridMovingWallAB
+            collisionGridBoundaryDecomposition, collisionGridMovingWallAB,
+            collisionGridMovingWallLedger, collisionGridMovingWallFullWindow,
+            collisionGridMovingWallSpatialPreregister,
+            collisionGridMovingWallSpatialCase,
+            collisionGridMovingWallSpatialDiscriminator,
+            collisionGridMovingWallTemporalPreregister,
+            collisionGridMovingWallTemporalSampling,
+            collisionGridMovingWallTemporalDurationPreregister,
+            collisionGridMovingWallTemporalDuration,
+            collisionGridMovingWallLinkGeometryPreregister,
+            collisionGridMovingWallLinkGeometry,
+            collisionGridMovingWallLinkVelocityPreregister,
+            collisionGridMovingWallLinkVelocity,
+            collisionGridMovingWallLinkIntersectionPreregister,
+            collisionGridMovingWallLinkIntersection,
+            collisionGridMovingWallLinkRayRootPreregister,
+            collisionGridMovingWallLinkRayRoot,
+            collisionGridMovingWallLinkCoefficientPreregister,
+            collisionGridMovingWallLinkCoefficient,
+            collisionGridMovingWallLinkPopulationPreregister,
+            collisionGridMovingWallLinkPopulation
         ].filter { $0 }.count
         guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
@@ -308,6 +631,27 @@ private struct MeasuredBirdSurfaceReplayArguments {
             || collisionGridPreregister || collisionGridDiscriminator
             || collisionGridCompletion || collisionGridProvenance
             || collisionGridBoundaryDecomposition || collisionGridMovingWallAB
+            || collisionGridMovingWallLedger
+            || collisionGridMovingWallFullWindow
+            || collisionGridMovingWallSpatialPreregister
+            || collisionGridMovingWallSpatialCase
+            || collisionGridMovingWallSpatialDiscriminator
+            || collisionGridMovingWallTemporalPreregister
+            || collisionGridMovingWallTemporalSampling
+            || collisionGridMovingWallTemporalDurationPreregister
+            || collisionGridMovingWallTemporalDuration
+            || collisionGridMovingWallLinkGeometryPreregister
+            || collisionGridMovingWallLinkGeometry
+            || collisionGridMovingWallLinkVelocityPreregister
+            || collisionGridMovingWallLinkVelocity
+            || collisionGridMovingWallLinkIntersectionPreregister
+            || collisionGridMovingWallLinkIntersection
+            || collisionGridMovingWallLinkRayRootPreregister
+            || collisionGridMovingWallLinkRayRoot
+            || collisionGridMovingWallLinkCoefficientPreregister
+            || collisionGridMovingWallLinkCoefficient
+            || collisionGridMovingWallLinkPopulationPreregister
+            || collisionGridMovingWallLinkPopulation
         guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
                 "the coarse pilot and collision diagnostics require --force-target; other modes reject it"
@@ -335,17 +679,314 @@ private struct MeasuredBirdSurfaceReplayArguments {
                             && discriminatorPath != nil
                             && completionPath != nil && provenancePath != nil
                             && boundaryTermsPath != nil
+                            && movingWallABPath == nil
+                    : collisionGridMovingWallLedger
+                        ? preregistrationPath != nil
+                            && discriminatorPath != nil
+                            && completionPath != nil && provenancePath != nil
+                            && boundaryTermsPath != nil
+                            && movingWallABPath != nil
+                            && movingWallLedgerPath == nil
+                    : collisionGridMovingWallFullWindow
+                        ? preregistrationPath != nil
+                            && discriminatorPath != nil
+                            && completionPath != nil && provenancePath != nil
+                            && boundaryTermsPath != nil
+                            && movingWallABPath != nil
+                            && movingWallLedgerPath != nil
+                    : collisionGridMovingWallSpatialCase
+                        ? preregistrationPath != nil
+                            && discriminatorPath != nil
+                            && completionPath != nil && provenancePath != nil
+                            && boundaryTermsPath != nil
+                            && movingWallABPath != nil
+                            && movingWallLedgerPath != nil
+                    : collisionGridMovingWallSpatialPreregister
+                            || collisionGridMovingWallSpatialDiscriminator
+                        ? preregistrationPath == nil
+                            && discriminatorPath == nil
+                            && completionPath == nil && provenancePath == nil
+                            && boundaryTermsPath == nil
+                            && movingWallABPath == nil
+                            && movingWallLedgerPath == nil
                     : preregistrationPath == nil
                         && discriminatorPath == nil && completionPath == nil
                         && provenancePath == nil && boundaryTermsPath == nil
+                        && movingWallABPath == nil
+                        && movingWallLedgerPath == nil
         guard contractPathsValid else {
             throw CLIError.invalidArgument(
-                "the grid discriminator requires --preregistration; completion requires --discriminator; stage provenance requires --completion; boundary decomposition requires --provenance; moving-wall A/B also requires --boundary-terms"
+                "the grid discriminator requires --preregistration; completion requires --discriminator; stage provenance requires --completion; boundary decomposition requires --provenance; moving-wall A/B also requires --boundary-terms; the candidate-A ledger additionally requires --moving-wall-ab; the full window additionally requires --moving-wall-ledger"
+            )
+        }
+        guard (collisionGridMovingWallLedger
+                || collisionGridMovingWallFullWindow
+                || collisionGridMovingWallSpatialCase)
+                == (movingWallABPath != nil),
+              (collisionGridMovingWallFullWindow
+                || collisionGridMovingWallSpatialCase)
+                == (movingWallLedgerPath != nil) else {
+            throw CLIError.invalidArgument(
+                "moving-wall evidence paths are accepted only by their candidate-A ledger modes"
+            )
+        }
+        let spatialPathsValid = collisionGridMovingWallSpatialPreregister
+            ? movingWallFullWindowPath != nil
+                && spatialPreregistrationPath == nil
+                && spatialD8Path == nil && spatialD12Path == nil
+                && spatialReferenceLengthCells == nil
+            : collisionGridMovingWallSpatialCase
+                ? movingWallFullWindowPath != nil
+                    && spatialPreregistrationPath != nil
+                    && spatialD8Path == nil && spatialD12Path == nil
+                    && spatialReferenceLengthCells != nil
+                : collisionGridMovingWallSpatialDiscriminator
+                    ? movingWallFullWindowPath != nil
+                        && spatialPreregistrationPath != nil
+                        && spatialD8Path != nil && spatialD12Path != nil
+                        && spatialReferenceLengthCells == nil
+                    : movingWallFullWindowPath == nil
+                        && spatialPreregistrationPath == nil
+                        && spatialD8Path == nil && spatialD12Path == nil
+                        && spatialReferenceLengthCells == nil
+        guard spatialPathsValid else {
+            throw CLIError.invalidArgument(
+                "spatial preregistration requires --moving-wall-full-window; a spatial case additionally requires --spatial-preregistration and --reference-length-cells; the discriminator requires --spatial-preregistration, --spatial-d8, and --spatial-d12"
+            )
+        }
+        let temporalPathsValid =
+            collisionGridMovingWallLinkPopulationPreregister
+                || collisionGridMovingWallLinkPopulation
+            ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                && temporalPreregistrationPath == nil
+                && temporalSamplingPath == nil
+                && temporalDurationPreregistrationPath != nil
+                && temporalDurationPath != nil
+                && linkGeometryPreregistrationPath == nil
+                && linkGeometryPath == nil
+                && linkVelocityPreregistrationPath == nil
+                && linkVelocityPath == nil
+                && linkIntersectionPreregistrationPath == nil
+            : collisionGridMovingWallLinkRayRootPreregister
+            ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                && temporalPreregistrationPath == nil
+                && temporalSamplingPath == nil
+                && temporalDurationPreregistrationPath == nil
+                && temporalDurationPath == nil
+                && linkGeometryPreregistrationPath == nil
+                && linkGeometryPath == nil
+                && linkVelocityPreregistrationPath == nil
+                && linkVelocityPath == nil
+                && linkIntersectionPreregistrationPath != nil
+                && linkIntersectionPath != nil
+                && linkRayRootPreregistrationPath == nil
+            : collisionGridMovingWallLinkRayRoot
+                ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                    && temporalPreregistrationPath == nil
+                    && temporalSamplingPath == nil
+                    && temporalDurationPreregistrationPath == nil
+                    && temporalDurationPath == nil
+                    && linkGeometryPreregistrationPath == nil
+                    && linkGeometryPath == nil
+                    && linkVelocityPreregistrationPath == nil
+                    && linkVelocityPath == nil
+                    && linkIntersectionPreregistrationPath != nil
+                    && linkIntersectionPath != nil
+                    && linkRayRootPreregistrationPath != nil
+            : collisionGridMovingWallLinkIntersectionPreregister
+            ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                && temporalPreregistrationPath == nil
+                && temporalSamplingPath == nil
+                && temporalDurationPreregistrationPath == nil
+                && temporalDurationPath == nil
+                && linkGeometryPreregistrationPath == nil
+                && linkGeometryPath == nil
+                && linkVelocityPreregistrationPath != nil
+                && linkVelocityPath != nil
+                && linkIntersectionPreregistrationPath == nil
+            : collisionGridMovingWallLinkIntersection
+                ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                    && temporalPreregistrationPath == nil
+                    && temporalSamplingPath == nil
+                    && temporalDurationPreregistrationPath == nil
+                    && temporalDurationPath == nil
+                    && linkGeometryPreregistrationPath == nil
+                    && linkGeometryPath == nil
+                    && linkVelocityPreregistrationPath != nil
+                    && linkVelocityPath != nil
+                    && linkIntersectionPreregistrationPath != nil
+            : collisionGridMovingWallLinkVelocityPreregister
+            ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                && temporalPreregistrationPath == nil
+                && temporalSamplingPath == nil
+                && temporalDurationPreregistrationPath == nil
+                && temporalDurationPath == nil
+                && linkGeometryPreregistrationPath != nil
+                && linkGeometryPath != nil
+                && linkVelocityPreregistrationPath == nil
+                && linkVelocityPath == nil
+                && linkIntersectionPreregistrationPath == nil
+            : collisionGridMovingWallLinkVelocity
+                ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                    && temporalPreregistrationPath == nil
+                    && temporalSamplingPath == nil
+                    && temporalDurationPreregistrationPath == nil
+                    && temporalDurationPath == nil
+                    && linkGeometryPreregistrationPath != nil
+                    && linkGeometryPath != nil
+                    && linkVelocityPreregistrationPath != nil
+                    && linkVelocityPath == nil
+                    && linkIntersectionPreregistrationPath == nil
+            : collisionGridMovingWallLinkGeometryPreregister
+            ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                && temporalPreregistrationPath == nil
+                && temporalSamplingPath == nil
+                && temporalDurationPreregistrationPath != nil
+                && temporalDurationPath != nil
+                && linkGeometryPreregistrationPath == nil
+                && linkGeometryPath == nil
+                && linkVelocityPreregistrationPath == nil
+                && linkVelocityPath == nil
+                && linkIntersectionPreregistrationPath == nil
+            : collisionGridMovingWallLinkGeometry
+                ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                    && temporalPreregistrationPath == nil
+                    && temporalSamplingPath == nil
+                    && temporalDurationPreregistrationPath != nil
+                    && temporalDurationPath != nil
+                    && linkGeometryPreregistrationPath != nil
+                    && linkGeometryPath == nil
+                    && linkVelocityPreregistrationPath == nil
+                    && linkVelocityPath == nil
+                    && linkIntersectionPreregistrationPath == nil
+            : collisionGridMovingWallTemporalPreregister
+                ? spatialDiscriminatorPath != nil && lagBandPath != nil
+                    && temporalPreregistrationPath == nil
+                    && temporalSamplingPath == nil
+                    && temporalDurationPreregistrationPath == nil
+                    && temporalDurationPath == nil
+                    && linkGeometryPreregistrationPath == nil
+                    && linkGeometryPath == nil
+                    && linkVelocityPreregistrationPath == nil
+                    && linkVelocityPath == nil
+                    && linkIntersectionPreregistrationPath == nil
+                : collisionGridMovingWallTemporalSampling
+                    ? spatialDiscriminatorPath != nil && lagBandPath != nil
+                        && temporalPreregistrationPath != nil
+                        && temporalSamplingPath == nil
+                        && temporalDurationPreregistrationPath == nil
+                        && temporalDurationPath == nil
+                        && linkGeometryPreregistrationPath == nil
+                        && linkGeometryPath == nil
+                        && linkVelocityPreregistrationPath == nil
+                        && linkVelocityPath == nil
+                        && linkIntersectionPreregistrationPath == nil
+                    : collisionGridMovingWallTemporalDurationPreregister
+                        ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                            && temporalPreregistrationPath != nil
+                            && temporalSamplingPath != nil
+                            && temporalDurationPreregistrationPath == nil
+                            && temporalDurationPath == nil
+                            && linkGeometryPreregistrationPath == nil
+                            && linkGeometryPath == nil
+                            && linkVelocityPreregistrationPath == nil
+                            && linkVelocityPath == nil
+                            && linkIntersectionPreregistrationPath == nil
+                        : collisionGridMovingWallTemporalDuration
+                            ? spatialDiscriminatorPath != nil && lagBandPath != nil
+                                && temporalPreregistrationPath != nil
+                                && temporalSamplingPath != nil
+                                && temporalDurationPreregistrationPath != nil
+                                && temporalDurationPath == nil
+                                && linkGeometryPreregistrationPath == nil
+                                && linkGeometryPath == nil
+                                && linkVelocityPreregistrationPath == nil
+                                && linkVelocityPath == nil
+                                && linkIntersectionPreregistrationPath == nil
+                            : spatialDiscriminatorPath == nil && lagBandPath == nil
+                                && temporalPreregistrationPath == nil
+                                && temporalSamplingPath == nil
+                                && temporalDurationPreregistrationPath == nil
+                                && temporalDurationPath == nil
+                                && linkGeometryPreregistrationPath == nil
+                                && linkGeometryPath == nil
+                                && linkVelocityPreregistrationPath == nil
+                                && linkVelocityPath == nil
+                                && linkIntersectionPreregistrationPath == nil
+        guard temporalPathsValid else {
+            throw CLIError.invalidArgument(
+                "temporal and link diagnostic evidence paths do not match the selected mode"
+            )
+        }
+        let rayPathsValid = collisionGridMovingWallLinkRayRootPreregister
+            ? linkIntersectionPath != nil
+                && linkRayRootPreregistrationPath == nil
+                && linkRayRootPath == nil
+                && linkCoefficientPreregistrationPath == nil
+            : collisionGridMovingWallLinkRayRoot
+                ? linkIntersectionPath != nil
+                    && linkRayRootPreregistrationPath != nil
+                    && linkRayRootPath == nil
+                    && linkCoefficientPreregistrationPath == nil
+                : collisionGridMovingWallLinkCoefficientPreregister
+                    ? linkIntersectionPath == nil
+                        && linkRayRootPreregistrationPath != nil
+                        && linkRayRootPath != nil
+                        && linkCoefficientPreregistrationPath == nil
+                : collisionGridMovingWallLinkCoefficient
+                        ? linkIntersectionPath == nil
+                            && linkRayRootPreregistrationPath != nil
+                            && linkRayRootPath != nil
+                            && linkCoefficientPreregistrationPath != nil
+                    : collisionGridMovingWallLinkPopulationPreregister
+                        ? linkIntersectionPath == nil
+                            && linkRayRootPreregistrationPath == nil
+                            && linkRayRootPath == nil
+                            && linkCoefficientPreregistrationPath != nil
+                            && linkCoefficientPath != nil
+                            && linkPopulationPreregistrationPath == nil
+                        : collisionGridMovingWallLinkPopulation
+                            ? linkIntersectionPath == nil
+                                && linkRayRootPreregistrationPath == nil
+                                && linkRayRootPath == nil
+                                && linkCoefficientPreregistrationPath != nil
+                                && linkCoefficientPath != nil
+                                && linkPopulationPreregistrationPath != nil
+                            : linkIntersectionPath == nil
+                                && linkRayRootPreregistrationPath == nil
+                                && linkRayRootPath == nil
+                                && linkCoefficientPreregistrationPath == nil
+                                && linkCoefficientPath == nil
+                                && linkPopulationPreregistrationPath == nil
+        guard rayPathsValid else {
+            throw CLIError.invalidArgument(
+                "ray-root and coefficient evidence paths do not match the selected mode"
             )
         }
         if collisionGridPreregister || collisionGridDiscriminator
             || collisionGridCompletion || collisionGridProvenance
-            || collisionGridBoundaryDecomposition || collisionGridMovingWallAB {
+            || collisionGridBoundaryDecomposition || collisionGridMovingWallAB
+            || collisionGridMovingWallLedger
+            || collisionGridMovingWallFullWindow
+            || collisionGridMovingWallSpatialPreregister
+            || collisionGridMovingWallSpatialCase
+            || collisionGridMovingWallSpatialDiscriminator
+            || collisionGridMovingWallTemporalPreregister
+            || collisionGridMovingWallTemporalSampling
+            || collisionGridMovingWallTemporalDurationPreregister
+            || collisionGridMovingWallTemporalDuration
+            || collisionGridMovingWallLinkGeometryPreregister
+            || collisionGridMovingWallLinkGeometry
+            || collisionGridMovingWallLinkVelocityPreregister
+            || collisionGridMovingWallLinkVelocity
+            || collisionGridMovingWallLinkIntersectionPreregister
+            || collisionGridMovingWallLinkIntersection
+            || collisionGridMovingWallLinkRayRootPreregister
+            || collisionGridMovingWallLinkRayRoot
+            || collisionGridMovingWallLinkCoefficientPreregister
+            || collisionGridMovingWallLinkCoefficient
+            || collisionGridMovingWallLinkPopulationPreregister
+            || collisionGridMovingWallLinkPopulation {
             guard cellSizeMeters == 0.01,
                   halfThicknessCells == 0.75 else {
                 throw CLIError.invalidArgument(
@@ -378,11 +1019,88 @@ private struct MeasuredBirdSurfaceReplayArguments {
                                  Decompose the failed cell's reflected, wall, interpolation, and counterfactual terms
       --collision-grid-moving-wall-ab
                                  Compare local-density normalization with a global positivity-admissible wall scale
+      --collision-grid-moving-wall-ledger
+                                 Run candidate A at D=16 through the retained failure step with near-wing/global ledgers
+      --collision-grid-moving-wall-full-window
+                                 Extend the retained candidate A through all 7,552 registered D=16 steps
+      --collision-grid-moving-wall-spatial-preregister
+                                 Freeze the candidate-A D=8/12 cases and D=16 reuse convergence contract
+      --collision-grid-moving-wall-spatial-case
+                                 Run one locked full-window D=8 or D=12 candidate-A case
+      --collision-grid-moving-wall-spatial-discriminator
+                                 Combine the D=8/12 cases with the hashed D=16 archive
+      --collision-grid-moving-wall-temporal-preregister
+                                 Freeze the fixed-geometry D12/D16 temporal-sampling contract
+      --collision-grid-moving-wall-temporal-sampling
+                                 Run the locked fixed-geometry D12/D16 aggregation discriminator
+      --collision-grid-moving-wall-temporal-duration-preregister
+                                 Freeze the same-phase 24-bin duration extension
+      --collision-grid-moving-wall-temporal-duration
+                                 Run the locked 8/16/24-bin duration discriminator
+      --collision-grid-moving-wall-link-geometry-preregister
+                                 Freeze the same-phase D12/D16 production-link audit
+      --collision-grid-moving-wall-link-geometry
+                                 Run the geometry-only link/q/wall-moment discriminator
+      --collision-grid-moving-wall-link-velocity-preregister
+                                 Freeze the solid-node/link-intersection velocity A/B
+      --collision-grid-moving-wall-link-velocity
+                                 Run the no-fluid link-velocity sampling discriminator
+      --collision-grid-moving-wall-link-intersection-preregister
+                                 Freeze sparse intersection-outlier localization
+      --collision-grid-moving-wall-link-intersection
+                                 Archive and classify every >0.75-cell link outlier
+      --collision-grid-moving-wall-link-ray-root-preregister
+                                 Freeze owner-component versus global-union exact roots
+      --collision-grid-moving-wall-link-ray-root
+                                 Run the archive-only 15-link exact ray-root A/B
+      --collision-grid-moving-wall-link-coefficient-preregister
+                                 Freeze the 15-link q-dependent operator bound
+      --collision-grid-moving-wall-link-coefficient
+                                 Reconstruct linear-q versus exact-q coefficients
+      --collision-grid-moving-wall-link-population-preregister
+                                 Freeze the 576-step D12 production-primitive replay
+      --collision-grid-moving-wall-link-population
+                                 Replay realized production-q versus exact-q loads
       --preregistration FILE     Locked grid preregistration JSON
       --discriminator FILE       Completed D=8/12 discriminator JSON
       --completion FILE          Failed selected-operator D=16 completion JSON
       --provenance FILE          Passed D=16 population-stage provenance JSON
       --boundary-terms FILE      Passed D=16 moving-boundary decomposition JSON
+      --moving-wall-ab FILE      Passed D=16 moving-wall admissibility A/B JSON
+      --moving-wall-ledger FILE  Passed 751-step candidate-A ledger JSON
+      --moving-wall-full-window FILE
+                                 Passed 7,552-step candidate-A D=16 full-window JSON
+      --spatial-preregistration FILE
+                                 Locked candidate-A spatial preregistration JSON
+      --spatial-d8 FILE          Completed candidate-A D=8 full-window case JSON
+      --spatial-d12 FILE         Completed candidate-A D=12 full-window case JSON
+      --spatial-discriminator FILE
+                                 Completed candidate-A D=8/12/16 spatial discriminator JSON
+      --lag-band FILE            Completed source-locked D12/D16 lag/band artifact
+      --temporal-preregistration FILE
+                                 Locked fixed-geometry temporal-sampling preregistration JSON
+      --temporal-sampling FILE   Completed eight-bin fixed-geometry report
+      --temporal-duration-preregistration FILE
+                                 Locked same-phase 24-bin duration preregistration JSON
+      --temporal-duration FILE   Completed same-phase 24-bin duration report
+      --link-geometry-preregistration FILE
+                                 Locked geometry-only link audit preregistration JSON
+      --link-geometry FILE       Completed geometry-only link audit report
+      --link-velocity-preregistration FILE
+                                 Locked link-velocity A/B preregistration JSON
+      --link-velocity FILE       Completed link-velocity A/B report
+      --link-intersection-preregistration FILE
+                                 Locked sparse intersection localization JSON
+      --link-intersection FILE   Completed sparse intersection localization report
+      --link-ray-root-preregistration FILE
+                                 Locked exact ray-root A/B preregistration JSON
+      --link-ray-root FILE       Completed exact ray-root A/B report
+      --link-coefficient-preregistration FILE
+                                 Locked coefficient-sensitivity preregistration JSON
+      --link-coefficient FILE    Completed coefficient-sensitivity report
+      --link-population-preregistration FILE
+                                 Locked realized-population replay preregistration JSON
+      --reference-length-cells N Spatial case grid; exactly 8 or 12
       --force-target FILE        Registered measured two-component force target
       --archive FILE            Atomically archive the parity report as JSON
       --json                    Emit the machine-readable parity report
@@ -1574,6 +2292,12 @@ private func writeJSON<T: Encodable>(_ value: T, to path: String) throws {
     try encoder.encode(value).write(to: destination, options: .atomic)
 }
 
+private func sha256Hex(_ data: Data) -> String {
+    SHA256.hash(data: data)
+        .map { String(format: "%02x", $0) }
+        .joined()
+}
+
 private func runMeasuredBirdReplay(_ values: [String]) throws {
     let arguments = try MeasuredBirdReplayArguments(values)
     let input = URL(fileURLWithPath: arguments.inputPath!)
@@ -1954,6 +2678,736 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
         manifestURL: URL(fileURLWithPath: arguments.inputPath!)
     )
+    func artifactData(_ path: String) throws -> Data {
+        try Data(contentsOf: URL(fileURLWithPath: path))
+    }
+    func decodeArtifact<T: Decodable>(
+        _ type: T.Type,
+        path: String
+    ) throws -> T {
+        try JSONDecoder().decode(type, from: artifactData(path))
+    }
+    if arguments.collisionGridMovingWallLinkPopulationPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let coefficientPreregistrationData = try artifactData(
+            arguments.linkCoefficientPreregistrationPath!
+        )
+        let coefficientData = try artifactData(arguments.linkCoefficientPath!)
+        let durationPreregistrationData = try artifactData(
+            arguments.temporalDurationPreregistrationPath!
+        )
+        let durationData = try artifactData(arguments.temporalDurationPath!)
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkPopulationPreregistration(
+                surface: dataset,
+                target: target,
+                linkCoefficientPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkCoefficientPreregistration.self,
+                    from: coefficientPreregistrationData
+                ),
+                sourceLinkCoefficientPreregistrationSHA256:
+                    sha256Hex(coefficientPreregistrationData),
+                linkCoefficientReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkCoefficientReport.self,
+                    from: coefficientData
+                ),
+                sourceLinkCoefficientReportSHA256:
+                    sha256Hex(coefficientData),
+                temporalDurationPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self,
+                    from: durationPreregistrationData
+                ),
+                sourceTemporalDurationPreregistrationSHA256:
+                    sha256Hex(durationPreregistrationData),
+                temporalDurationReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self,
+                    from: durationData
+                ),
+                sourceTemporalDurationReportSHA256: sha256Hex(durationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print(
+                "capture_steps: \(report.captureStartStep)...\(report.captureEndStep)"
+            )
+            print("expected_link_count: \(report.expectedLinkCount)")
+            print(
+                "minimum_global_force_contribution: "
+                    + String(report
+                        .minimumPotentialGlobalForceRMSContribution)
+            )
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "link-population preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkPopulation {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let coefficientPreregistrationData = try artifactData(
+            arguments.linkCoefficientPreregistrationPath!
+        )
+        let coefficientData = try artifactData(arguments.linkCoefficientPath!)
+        let durationPreregistrationData = try artifactData(
+            arguments.temporalDurationPreregistrationPath!
+        )
+        let durationData = try artifactData(arguments.temporalDurationPath!)
+        let preregistrationData = try artifactData(
+            arguments.linkPopulationPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkPopulation(
+                surface: dataset,
+                target: target,
+                linkCoefficientPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkCoefficientPreregistration.self,
+                    from: coefficientPreregistrationData
+                ),
+                sourceLinkCoefficientPreregistrationSHA256:
+                    sha256Hex(coefficientPreregistrationData),
+                linkCoefficientReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkCoefficientReport.self,
+                    from: coefficientData
+                ),
+                sourceLinkCoefficientReportSHA256:
+                    sha256Hex(coefficientData),
+                temporalDurationPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self,
+                    from: durationPreregistrationData
+                ),
+                sourceTemporalDurationPreregistrationSHA256:
+                    sha256Hex(durationPreregistrationData),
+                temporalDurationReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self,
+                    from: durationData
+                ),
+                sourceTemporalDurationReportSHA256: sha256Hex(durationData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkPopulationPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("runtime_seconds: \(report.runtimeSeconds)")
+            print("captured_samples: \(report.metrics.capturedSampleCount)")
+            print(
+                "population_relative_rms_difference: "
+                    + String(report.metrics.populationRelativeRMSDifference)
+            )
+            print(
+                "outlier_force_relative_rms_difference: "
+                    + String(report.metrics
+                        .outlierForceRelativeRMSDifference)
+            )
+            print(
+                "delta_force_to_global_rms: "
+                    + String(report.metrics
+                        .deltaForceToGlobalAerodynamicForceRMSRatio)
+            )
+            print(
+                "delta_impulse_to_global_impulse: "
+                    + String(report.metrics
+                        .deltaImpulseToGlobalAerodynamicImpulseRatio)
+            )
+            print("classification: \(report.classification)")
+            print(
+                "boundary_ab_authorized: "
+                    + String(report.validationOnlyBoundaryABAuthorized)
+            )
+            print("d16_capture_authorized: \(report.d16CaptureAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkCoefficientPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let rayPreregistrationData = try artifactData(
+            arguments.linkRayRootPreregistrationPath!
+        )
+        let rayRootData = try artifactData(arguments.linkRayRootPath!)
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkCoefficientPreregistration(
+                surface: dataset,
+                target: target,
+                linkRayRootPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkRayRootPreregistration.self,
+                    from: rayPreregistrationData
+                ),
+                sourceLinkRayRootPreregistrationSHA256:
+                    sha256Hex(rayPreregistrationData),
+                linkRayRootReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkRayRootReport.self,
+                    from: rayRootData
+                ),
+                sourceLinkRayRootReportSHA256: sha256Hex(rayRootData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("expected_sample_counts: \(report.expectedSampleCounts)")
+            print("branch_threshold: \(report.branchThreshold)")
+            print(
+                "maximum_allowed_rms_l1_change: "
+                    + String(report
+                        .maximumAllowedWeightedRMSCoefficientL1Difference)
+            )
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "link-coefficient preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkCoefficient {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let rayPreregistrationData = try artifactData(
+            arguments.linkRayRootPreregistrationPath!
+        )
+        let rayRootData = try artifactData(arguments.linkRayRootPath!)
+        let preregistrationData = try artifactData(
+            arguments.linkCoefficientPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkCoefficient(
+                surface: dataset,
+                target: target,
+                linkRayRootPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkRayRootPreregistration.self,
+                    from: rayPreregistrationData
+                ),
+                sourceLinkRayRootPreregistrationSHA256:
+                    sha256Hex(rayPreregistrationData),
+                linkRayRootReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkRayRootReport.self,
+                    from: rayRootData
+                ),
+                sourceLinkRayRootReportSHA256: sha256Hex(rayRootData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkCoefficientPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print(
+                "branch_changes: \(report.metrics.totalBranchChangeCount)"
+            )
+            print(
+                "maximum_rms_coefficient_l1_change: "
+                    + String(report.metrics
+                        .maximumWeightedRMSCoefficientL1Difference)
+            )
+            print(
+                "maximum_coefficient_l1_change: "
+                    + String(report.metrics.maximumCoefficientL1Difference)
+            )
+            print(
+                "maximum_operator_norm_ratio: "
+                    + String(report.metrics
+                        .maximumSymmetricOperatorNormRatio)
+            )
+            print("classification: \(report.classification)")
+            print(
+                "population_replay_authorized: "
+                    + String(report
+                        .validationOnlyPopulationReplayAuthorized)
+            )
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkRayRootPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let intersectionPreregistrationData = try artifactData(
+            arguments.linkIntersectionPreregistrationPath!
+        )
+        let intersectionData = try artifactData(
+            arguments.linkIntersectionPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkRayRootPreregistration(
+                surface: dataset,
+                target: target,
+                linkIntersectionPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkIntersectionPreregistration.self,
+                    from: intersectionPreregistrationData
+                ),
+                sourceLinkIntersectionPreregistrationSHA256:
+                    sha256Hex(intersectionPreregistrationData),
+                linkIntersectionReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkIntersectionReport.self,
+                    from: intersectionData
+                ),
+                sourceLinkIntersectionReportSHA256:
+                    sha256Hex(intersectionData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("source_sample_index: \(report.frozenSourceSampleIndex)")
+            print("source_time_seconds: \(report.frozenSourceTimeSeconds)")
+            print("expected_outlier_counts: \(report.expectedOutlierCounts)")
+            print("reverse_scan_subdivisions: \(report.reverseScanSubdivisions)")
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "link-ray-root preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkRayRoot {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let intersectionPreregistrationData = try artifactData(
+            arguments.linkIntersectionPreregistrationPath!
+        )
+        let intersectionData = try artifactData(
+            arguments.linkIntersectionPath!
+        )
+        let preregistrationData = try artifactData(
+            arguments.linkRayRootPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkRayRoot(
+                surface: dataset,
+                target: target,
+                linkIntersectionPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkIntersectionPreregistration.self,
+                    from: intersectionPreregistrationData
+                ),
+                sourceLinkIntersectionPreregistrationSHA256:
+                    sha256Hex(intersectionPreregistrationData),
+                linkIntersectionReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkIntersectionReport.self,
+                    from: intersectionData
+                ),
+                sourceLinkIntersectionReportSHA256:
+                    sha256Hex(intersectionData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkRayRootPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("d12_runtime_seconds: \(report.d12.runtimeSeconds)")
+            print("d16_runtime_seconds: \(report.d16.runtimeSeconds)")
+            print(
+                "junction_global_root_rms_shift_cells: "
+                    + String(report.metrics
+                        .maximumJunctionGlobalRootRMSShiftCells)
+            )
+            print(
+                "junction_global_root_maximum_shift_cells: "
+                    + String(report.metrics
+                        .maximumJunctionGlobalRootMaximumShiftCells)
+            )
+            print(
+                "owner_to_global_rms_reduction: "
+                    + String(report.metrics
+                        .minimumJunctionOwnerToGlobalRMSReductionFraction)
+            )
+            print(
+                "global_root_component_switches: "
+                    + String(report.metrics
+                        .totalGlobalRootComponentSwitchCount)
+            )
+            print("classification: \(report.classification)")
+            print("d20_authorized: \(report.d20DiagnosticAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkIntersectionPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let velocityPreregistrationData = try artifactData(
+            arguments.linkVelocityPreregistrationPath!
+        )
+        let velocityData = try artifactData(arguments.linkVelocityPath!)
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkIntersectionPreregistration(
+                surface: dataset,
+                target: target,
+                linkVelocityPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkVelocityPreregistration.self,
+                    from: velocityPreregistrationData
+                ),
+                sourceLinkVelocityPreregistrationSHA256:
+                    sha256Hex(velocityPreregistrationData),
+                linkVelocityReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkVelocityReport.self,
+                    from: velocityData
+                ),
+                sourceLinkVelocityReportSHA256: sha256Hex(velocityData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("source_sample_index: \(report.frozenSourceSampleIndex)")
+            print("source_time_seconds: \(report.frozenSourceTimeSeconds)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print(
+                "outlier_residual_threshold_cells: "
+                    + String(report.outlierResidualThresholdCells)
+            )
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "link-intersection preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkIntersection {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let velocityPreregistrationData = try artifactData(
+            arguments.linkVelocityPreregistrationPath!
+        )
+        let velocityData = try artifactData(arguments.linkVelocityPath!)
+        let preregistrationData = try artifactData(
+            arguments.linkIntersectionPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkIntersection(
+                surface: dataset,
+                target: target,
+                linkVelocityPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkVelocityPreregistration.self,
+                    from: velocityPreregistrationData
+                ),
+                sourceLinkVelocityPreregistrationSHA256:
+                    sha256Hex(velocityPreregistrationData),
+                linkVelocityReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkVelocityReport.self,
+                    from: velocityData
+                ),
+                sourceLinkVelocityReportSHA256: sha256Hex(velocityData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkIntersectionPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.d16.deviceName)")
+            print("d12_runtime_seconds: \(report.d12.runtimeSeconds)")
+            print("d16_runtime_seconds: \(report.d16.runtimeSeconds)")
+            print("d12_outlier_count: \(report.d12.outlierCount)")
+            print("d16_outlier_count: \(report.d16.outlierCount)")
+            print(
+                "edge_or_junction_minimum_measure_fraction: "
+                    + String(report.metrics
+                        .minimumEdgeOrJunctionAssociatedMeasureFraction)
+            )
+            print(
+                "dominant_direction_minimum_measure_fraction: "
+                    + String(report.metrics
+                        .minimumDominantDirectionMeasureFraction)
+            )
+            print("classification: \(report.classification)")
+            print("d20_authorized: \(report.d20DiagnosticAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkVelocityPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let geometryPreregistrationData = try artifactData(
+            arguments.linkGeometryPreregistrationPath!
+        )
+        let geometryData = try artifactData(arguments.linkGeometryPath!)
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkVelocityPreregistration(
+                surface: dataset,
+                target: target,
+                linkGeometryPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkGeometryPreregistration.self,
+                    from: geometryPreregistrationData
+                ),
+                sourceLinkGeometryPreregistrationSHA256:
+                    sha256Hex(geometryPreregistrationData),
+                linkGeometryReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkGeometryReport.self,
+                    from: geometryData
+                ),
+                sourceLinkGeometryReportSHA256: sha256Hex(geometryData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("source_sample_index: \(report.frozenSourceSampleIndex)")
+            print("source_time_seconds: \(report.frozenSourceTimeSeconds)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "link-velocity preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkVelocity {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let geometryPreregistrationData = try artifactData(
+            arguments.linkGeometryPreregistrationPath!
+        )
+        let geometryData = try artifactData(arguments.linkGeometryPath!)
+        let preregistrationData = try artifactData(
+            arguments.linkVelocityPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkVelocity(
+                surface: dataset,
+                target: target,
+                linkGeometryPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkGeometryPreregistration.self,
+                    from: geometryPreregistrationData
+                ),
+                sourceLinkGeometryPreregistrationSHA256:
+                    sha256Hex(geometryPreregistrationData),
+                linkGeometryReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkGeometryReport.self,
+                    from: geometryData
+                ),
+                sourceLinkGeometryReportSHA256: sha256Hex(geometryData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkVelocityPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.d16.deviceName)")
+            print("d12_runtime_seconds: \(report.d12.runtimeSeconds)")
+            print("d16_runtime_seconds: \(report.d16.runtimeSeconds)")
+            print(
+                "production_maximum_mean_error: "
+                    + String(report.metrics.maximumProductionMeanVelocityError)
+            )
+            print(
+                "endpoint_maximum_mean_error: "
+                    + String(report.metrics.maximumEndpointMeanVelocityError)
+            )
+            print(
+                "exact_maximum_mean_error: "
+                    + String(report.metrics.maximumExactMeanVelocityError)
+            )
+            print(
+                "left_wing_exact_improvement: "
+                    + String(report.metrics
+                        .minimumLeftWingExactImprovementFraction)
+            )
+            print("classification: \(report.classification)")
+            print(
+                "endpoint_interpolation_qualified: "
+                    + String(report.endpointInterpolationQualified)
+            )
+            print("d20_authorized: \(report.d20DiagnosticAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkGeometryPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let durationPreregistrationData = try artifactData(
+            arguments.temporalDurationPreregistrationPath!
+        )
+        let durationData = try artifactData(arguments.temporalDurationPath!)
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkGeometryPreregistration(
+                surface: dataset,
+                target: target,
+                durationPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self,
+                    from: durationPreregistrationData
+                ),
+                sourceDurationPreregistrationSHA256:
+                    sha256Hex(durationPreregistrationData),
+                durationReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self,
+                    from: durationData
+                ),
+                sourceDurationReportSHA256: sha256Hex(durationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("source_sample_index: \(report.frozenSourceSampleIndex)")
+            print("source_time_seconds: \(report.frozenSourceTimeSeconds)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print(
+                "interpolation_fraction_bins: "
+                    + String(report.interpolationFractionBinCount)
+            )
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "link-geometry preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLinkGeometry {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let durationPreregistrationData = try artifactData(
+            arguments.temporalDurationPreregistrationPath!
+        )
+        let durationData = try artifactData(arguments.temporalDurationPath!)
+        let preregistrationData = try artifactData(
+            arguments.linkGeometryPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLinkGeometry(
+                surface: dataset,
+                target: target,
+                durationPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self,
+                    from: durationPreregistrationData
+                ),
+                sourceDurationPreregistrationSHA256:
+                    sha256Hex(durationPreregistrationData),
+                durationReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self,
+                    from: durationData
+                ),
+                sourceDurationReportSHA256: sha256Hex(durationData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceLinkGeometryPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.d16.deviceName)")
+            print("d12_runtime_seconds: \(report.d12.runtimeSeconds)")
+            print("d16_runtime_seconds: \(report.d16.runtimeSeconds)")
+            print(
+                "total_link_measure_difference: "
+                    + String(report.metrics.totalLinkMeasureRelativeDifference)
+            )
+            print(
+                "maximum_component_link_measure_difference: "
+                    + String(report.metrics
+                        .maximumComponentLinkMeasureRelativeDifference)
+            )
+            print(
+                "interpolation_histogram_tv: "
+                    + String(report.metrics
+                        .interpolationHistogramTotalVariation)
+            )
+            print(
+                "maximum_wall_mean_grid_difference: "
+                    + String(report.metrics
+                        .maximumGridMeanVelocityDifferenceRelativeToQuadratureRMS)
+            )
+            print("classification: \(report.classification)")
+            print("d20_authorized: \(report.d20DiagnosticAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
     if arguments.collisionGridPreregister {
         let target = try MeasuredBirdForceTargetLoader.load(
             targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
@@ -2042,6 +3496,621 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
         guard report.screeningGatePassed else {
             throw MeasuredBirdSurfaceSequenceError.invalidDataset(
                 "collision-grid discriminator did not authorize D=16"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallTemporalPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let spatialData = try artifactData(
+            arguments.spatialDiscriminatorPath!
+        )
+        let lagBandData = try artifactData(arguments.lagBandPath!)
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallTemporalSamplingPreregistration(
+                surface: dataset,
+                target: target,
+                spatialDiscriminator: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallSpatialDiscriminatorReport.self,
+                    from: spatialData
+                ),
+                sourceSpatialDiscriminatorSHA256: sha256Hex(spatialData),
+                sourceLagBandSHA256: sha256Hex(lagBandData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("source_sample_index: \(report.frozenSourceSampleIndex)")
+            print("source_time_seconds: \(report.frozenSourceTimeSeconds)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print("force_bin_count: \(report.forceBinCount)")
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "fixed-geometry temporal-sampling preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallTemporalSampling {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let spatialData = try artifactData(
+            arguments.spatialDiscriminatorPath!
+        )
+        let lagBandData = try artifactData(arguments.lagBandPath!)
+        let temporalData = try artifactData(
+            arguments.temporalPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallTemporalSampling(
+                surface: dataset,
+                target: target,
+                spatialDiscriminator: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallSpatialDiscriminatorReport.self,
+                    from: spatialData
+                ),
+                sourceSpatialDiscriminatorSHA256: sha256Hex(spatialData),
+                sourceLagBandSHA256: sha256Hex(lagBandData),
+                temporalPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalSamplingPreregistration.self,
+                    from: temporalData
+                ),
+                sourceTemporalPreregistrationSHA256:
+                    sha256Hex(temporalData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.d16.deviceName)")
+            print("d12_steps: \(report.d12.ledgerResult.completedSteps)")
+            print("d16_steps: \(report.d16.ledgerResult.completedSteps)")
+            print(
+                "endpoint_pairwise_difference: "
+                    + String(report.metrics
+                        .endpointPairwiseNormalizedRMSDifference)
+            )
+            print(
+                "trapezoidal_pairwise_difference: "
+                    + String(report.metrics
+                        .sampleTrapezoidalPairwiseNormalizedRMSDifference)
+            )
+            print(
+                "impulse_pairwise_difference: "
+                    + String(report.metrics
+                        .impulsePreservingPairwiseNormalizedRMSDifference)
+            )
+            print("classification: \(report.classification)")
+            print("d20_authorized: \(report.d20DiagnosticAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallTemporalDurationPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let temporalPreregistrationData = try artifactData(
+            arguments.temporalPreregistrationPath!
+        )
+        let temporalSamplingData = try artifactData(
+            arguments.temporalSamplingPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallTemporalDurationPreregistration(
+                surface: dataset,
+                target: target,
+                temporalPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalSamplingPreregistration.self,
+                    from: temporalPreregistrationData
+                ),
+                sourceTemporalPreregistrationSHA256:
+                    sha256Hex(temporalPreregistrationData),
+                temporalSampling: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalSamplingReport.self,
+                    from: temporalSamplingData
+                ),
+                sourceTemporalSamplingSHA256:
+                    sha256Hex(temporalSamplingData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("nested_prefix_bins: \(report.nestedPrefixBinCounts)")
+            print("block_bin_count: \(report.blockBinCount)")
+            print("extended_bin_count: \(report.extendedForceBinCount)")
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "fixed-geometry duration preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallTemporalDuration {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let spatialData = try artifactData(
+            arguments.spatialDiscriminatorPath!
+        )
+        let lagBandData = try artifactData(arguments.lagBandPath!)
+        let temporalPreregistrationData = try artifactData(
+            arguments.temporalPreregistrationPath!
+        )
+        let temporalSamplingData = try artifactData(
+            arguments.temporalSamplingPath!
+        )
+        let durationPreregistrationData = try artifactData(
+            arguments.temporalDurationPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallTemporalDuration(
+                surface: dataset,
+                target: target,
+                spatialDiscriminator: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallSpatialDiscriminatorReport.self,
+                    from: spatialData
+                ),
+                sourceSpatialDiscriminatorSHA256: sha256Hex(spatialData),
+                sourceLagBandSHA256: sha256Hex(lagBandData),
+                temporalPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalSamplingPreregistration.self,
+                    from: temporalPreregistrationData
+                ),
+                sourceTemporalPreregistrationSHA256:
+                    sha256Hex(temporalPreregistrationData),
+                temporalSampling: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalSamplingReport.self,
+                    from: temporalSamplingData
+                ),
+                sourceTemporalSamplingSHA256:
+                    sha256Hex(temporalSamplingData),
+                durationPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self,
+                    from: durationPreregistrationData
+                ),
+                sourceDurationPreregistrationSHA256:
+                    sha256Hex(durationPreregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.extendedSampling.d16.deviceName)")
+            print(
+                "prefix_reproduction_error: "
+                    + String(report.baselinePrefixMaximumRelativeError)
+            )
+            for window in report.prefixWindows + report.blockWindows {
+                print(
+                    window.identifier + "_impulse_history_difference: "
+                        + String(window.metrics
+                            .impulsePreservingPairwiseNormalizedRMSDifference)
+                )
+                print(
+                    window.identifier + "_total_impulse_difference: "
+                        + String(window.metrics
+                            .directTotalImpulseRelativeDifference)
+                )
+            }
+            print("classification: \(report.classification)")
+            print("d20_authorized: \(report.d20DiagnosticAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallSpatialPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let d16Data = try artifactData(arguments.movingWallFullWindowPath!)
+        let d16 = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceMovingWallFullWindowReport.self,
+            from: d16Data
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallSpatialPreregistration(
+                surface: dataset,
+                target: target,
+                sourceD16FullWindow: d16,
+                sourceD16FullWindowSHA256: sha256Hex(d16Data)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("source_d16_sha256: \(report.sourceD16FullWindowSHA256)")
+            print("case_grids: \(report.caseReferenceLengthCells)")
+            print(
+                "fine_grid_relative_difference_limit: "
+                    + String(report.maximumAllowedFineGridRelativeDifference)
+            )
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "candidate-A spatial preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallSpatialCase {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let spatialData = try artifactData(
+            arguments.spatialPreregistrationPath!
+        )
+        let spatial = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceMovingWallSpatialPreregistration.self,
+            from: spatialData
+        )
+        let d16Data = try artifactData(arguments.movingWallFullWindowPath!)
+        let d16 = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceMovingWallFullWindowReport.self,
+            from: d16Data
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallSpatialCase(
+                surface: dataset,
+                target: target,
+                preregistration: try decodeArtifact(
+                    MetalIndexedBirdSurfaceCollisionGridPreregistration.self,
+                    path: arguments.preregistrationPath!
+                ),
+                discriminator: try decodeArtifact(
+                    MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self,
+                    path: arguments.discriminatorPath!
+                ),
+                completion: try decodeArtifact(
+                    MetalIndexedBirdSurfaceCollisionGridCompletionReport.self,
+                    path: arguments.completionPath!
+                ),
+                provenance: try decodeArtifact(
+                    MetalIndexedBirdSurfacePopulationStageProvenanceReport.self,
+                    path: arguments.provenancePath!
+                ),
+                boundaryTerms: try decodeArtifact(
+                    MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self,
+                    path: arguments.boundaryTermsPath!
+                ),
+                admissibility: try decodeArtifact(
+                    MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self,
+                    path: arguments.movingWallABPath!
+                ),
+                retainedLedger: try decodeArtifact(
+                    MetalIndexedBirdSurfaceMovingWallLedgerReport.self,
+                    path: arguments.movingWallLedgerPath!
+                ),
+                spatialPreregistration: spatial,
+                sourceSpatialPreregistrationSHA256: sha256Hex(spatialData),
+                sourceD16FullWindow: d16,
+                sourceD16FullWindowSHA256: sha256Hex(d16Data),
+                referenceLengthCells:
+                    arguments.spatialReferenceLengthCells!
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            let full = report.fullWindowReport
+            print("device: \(full.deviceName)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print("completed_steps: \(full.ledgerResult.completedSteps)")
+            print("minimum_population: \(full.ledgerResult.minimumPopulation)")
+            print(
+                "near_wing_relative_rms_residual: "
+                    + String(full.ledgerResult
+                        .relativeRMSRawControlVolumeClosureResidual)
+            )
+            print(
+                "global_relative_rms_residual: "
+                    + String(full.ledgerResult
+                        .relativeRMSGlobalFluidClosureResidual)
+            )
+            print("case_gate_passed: \(report.caseGatePassed)")
+        }
+        guard report.caseGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "candidate-A spatial case failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallSpatialDiscriminator {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let spatialData = try artifactData(
+            arguments.spatialPreregistrationPath!
+        )
+        let d8Data = try artifactData(arguments.spatialD8Path!)
+        let d12Data = try artifactData(arguments.spatialD12Path!)
+        let d16Data = try artifactData(arguments.movingWallFullWindowPath!)
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallSpatialDiscriminator(
+                surface: dataset,
+                target: target,
+                spatialPreregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallSpatialPreregistration.self,
+                    from: spatialData
+                ),
+                sourceSpatialPreregistrationSHA256: sha256Hex(spatialData),
+                d8Case: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallSpatialCaseReport.self,
+                    from: d8Data
+                ),
+                sourceD8CaseSHA256: sha256Hex(d8Data),
+                d12Case: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallSpatialCaseReport.self,
+                    from: d12Data
+                ),
+                sourceD12CaseSHA256: sha256Hex(d12Data),
+                d16FullWindow: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceMovingWallFullWindowReport.self,
+                    from: d16Data
+                ),
+                sourceD16FullWindowSHA256: sha256Hex(d16Data)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print(
+                "d8_to_d12_history_difference: "
+                    + String(report.d8ToD12
+                        .intervalForceNormalizedRMSDifference)
+            )
+            print(
+                "d12_to_d16_history_difference: "
+                    + String(report.d12ToD16
+                        .intervalForceNormalizedRMSDifference)
+            )
+            print(
+                "d12_to_d16_mean_difference: "
+                    + String(report.d12ToD16.meanForceRelativeDifference)
+            )
+            print(
+                "d12_to_d16_impulse_difference: "
+                    + String(report.d12ToD16.impulseRelativeDifference)
+            )
+            print(
+                "monotonic_trend_passed: "
+                    + String(report.monotonicTrendReductionPassed)
+            )
+            print(
+                "fine_grid_convergence_passed: "
+                    + String(report.fineGridForceConvergencePassed)
+            )
+            print(
+                "spatial_refinement_gate_passed: "
+                    + String(report.spatialRefinementGatePassed)
+            )
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.spatialRefinementGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "candidate-A spatial refinement discriminator failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallFullWindow {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistration = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridPreregistration.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.preregistrationPath!
+            ))
+        )
+        let discriminator = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.discriminatorPath!
+            ))
+        )
+        let completion = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridCompletionReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.completionPath!
+            ))
+        )
+        let provenance = try JSONDecoder().decode(
+            MetalIndexedBirdSurfacePopulationStageProvenanceReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.provenancePath!
+            ))
+        )
+        let boundaryTerms = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.boundaryTermsPath!
+            ))
+        )
+        let admissibility = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.movingWallABPath!
+            ))
+        )
+        let retainedLedger = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceMovingWallLedgerReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.movingWallLedgerPath!
+            ))
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallFullWindow(
+                surface: dataset,
+                target: target,
+                preregistration: preregistration,
+                discriminator: discriminator,
+                completion: completion,
+                provenance: provenance,
+                boundaryTerms: boundaryTerms,
+                admissibility: admissibility,
+                retainedLedger: retainedLedger
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("candidate: \(report.sourceCandidateIdentifier)")
+            print("d16_completed_steps: \(report.ledgerResult.completedSteps)")
+            print("minimum_population: \(report.ledgerResult.minimumPopulation)")
+            print(
+                "near_wing_relative_rms_residual: "
+                    + String(
+                        report.ledgerResult
+                            .relativeRMSRawControlVolumeClosureResidual
+                    )
+            )
+            print(
+                "global_relative_rms_residual: "
+                    + String(
+                        report.ledgerResult
+                            .relativeRMSGlobalFluidClosureResidual
+                    )
+            )
+            print(
+                "registered_force_samples: "
+                    + String(report.registeredComparisonSampleCount)
+            )
+            print(
+                "descriptive_normalized_rms_error: "
+                    + (report.normalizedRMSError.map { String($0) }
+                        ?? "unavailable")
+            )
+            print("full_window_gate_passed: \(report.fullWindowGatePassed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.fullWindowGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D=16 candidate-A full registered window failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallLedger {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistration = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridPreregistration.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.preregistrationPath!
+            ))
+        )
+        let discriminator = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.discriminatorPath!
+            ))
+        )
+        let completion = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridCompletionReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.completionPath!
+            ))
+        )
+        let provenance = try JSONDecoder().decode(
+            MetalIndexedBirdSurfacePopulationStageProvenanceReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.provenancePath!
+            ))
+        )
+        let boundaryTerms = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.boundaryTermsPath!
+            ))
+        )
+        let admissibility = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.movingWallABPath!
+            ))
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLedger(
+                surface: dataset,
+                target: target,
+                preregistration: preregistration,
+                discriminator: discriminator,
+                completion: completion,
+                provenance: provenance,
+                boundaryTerms: boundaryTerms,
+                admissibility: admissibility
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("candidate: \(report.sourceAdmissibilityCandidateIdentifier)")
+            print("d16_completed_steps: \(report.result.completedSteps)")
+            print("minimum_population: \(report.result.minimumPopulation)")
+            print(
+                "near_wing_relative_rms_residual: "
+                    + String(
+                        report.result
+                            .relativeRMSRawControlVolumeClosureResidual
+                    )
+            )
+            print(
+                "global_relative_rms_residual: "
+                    + String(
+                        report.result.relativeRMSGlobalFluidClosureResidual
+                    )
+            )
+            print("ledger_gate_passed: \(report.ledgerGatePassed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.ledgerGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D=16 candidate-A force/momentum ledger failed"
             )
         }
         return

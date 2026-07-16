@@ -1442,6 +1442,599 @@ only for a controlled production force/momentum-ledger experiment. No fluid
 simulation was rerun, no boundary or collision law changed, and neither
 candidate is authorized for production, refinement, or an experimental claim.
 
+Run the authorized ledger with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-ledger \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --discriminator ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json \
+  --completion ValidationArtifacts/deetjen-dove-collision-grid-completion.json \
+  --provenance ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json \
+  --boundary-terms ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json \
+  --moving-wall-ab ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json \
+  --archive ValidationArtifacts/deetjen-dove-d16-moving-wall-ledger.json
+
+python3 Scripts/audit-dove-d16-moving-wall-ledger.py
+```
+
+The Apple M4 validation-only replay completed all `751` retained D=16 steps in
+`22.81 s`. Its `149 x 136 x 131` grid, RR3 collision operator, geometry,
+kinematics, time step, viscosity floor, sponge, and force estimator are
+unchanged from the failed completion. Only the moving-wall correction density
+normalization is opt-in: it uses the complete pre-step target-cell population
+density. The minimum population is `1.634e-8`; no wall limiter exists or
+activates. The RR3 collision limiter activates twice, only `1.003e-9` of cell
+steps, below the unchanged `5%` intrusion ceiling.
+
+The near-wing storage-plus-flux ledger closes at `4.719e-4` relative RMS and
+the separately reduced whole-domain fluid/source ledger at `5.306e-4`, both
+below `0.005`. The control surface remains approximately 11 cells outside the
+swept bird and 12 cells from the domain edge, outside the 12-cell sponge, with
+zero solid-crossing links. The independent nine-check audit reconstructs all
+751 vector equations, RMS summaries, extrema, activation fraction, input
+hashes, and gate booleans. Candidate A therefore advances to one full
+registered-window D=16 run. It is not a production default, refinement result,
+experimental-force acceptance, or free-flight validation.
+
+Run the source-locked full window with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-full-window \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --discriminator ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json \
+  --completion ValidationArtifacts/deetjen-dove-collision-grid-completion.json \
+  --provenance ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json \
+  --boundary-terms ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json \
+  --moving-wall-ab ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json \
+  --moving-wall-ledger ValidationArtifacts/deetjen-dove-d16-moving-wall-ledger.json \
+  --archive ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window.json
+
+python3 Scripts/audit-dove-d16-moving-wall-full-window.py
+```
+
+The Apple M4 run completes all `7,552` D=16 steps in `293.34 s` and retains a
+positive `1.025e-8` minimum population. All 187 registered force samples are
+present. The near-wing and global relative RMS force/momentum residuals are
+`6.247e-4` and `8.312e-4`, respectively, under the unchanged `0.005` limit;
+the maximum absolute residuals are `0.01958 N` and `0.01941 N`. No solid link
+crosses the control surface. RR3 correction activates in 34 cell-steps, only
+`1.696e-9` of the total, and the opt-in moving-wall law adds no positivity
+limiter.
+
+The independent audit reconstructs all 7,552 storage, flux, source, force, and
+residual vectors, every summary norm and extremum, the collision-activation
+fraction, all 187 32-step force bins, means, impulses, peaks, and the normalized
+error. Its 11 checks pass. The descriptive measured-versus-computed normalized
+RMS error is `2.17306`; mean measured/computed `(Fx,Fz)` is
+`(0.15597,1.42023) N` versus `(0.00408,1.93581) N`, and peak time is
+`0.0680 s` versus `0.1065 s`. This discrepancy is retained, not accepted or
+tuned away. The condition is still `68.07195x` over-viscous and has no
+candidate-A grid ladder, so the full-window numerical pass authorizes only a
+preregistered candidate-A spatial discriminator. Production, experimental
+agreement, and free flight remain unpromoted.
+
+### Candidate-A full-window spatial discriminator
+
+The spatial rule was archived before either new grid was executed. It freezes
+candidate A, pre-step local-density normalization, the complete registered
+window, the dual `0.005` momentum-ledger limit, the `5%` collision-intrusion
+limit, and a `5%` D12-to-D16 force-history/mean/impulse limit. It additionally
+requires every fine-pair metric to decrease from its D8-to-D12 value. Measured
+force error is explicitly forbidden from selecting or passing the numerical
+model.
+
+Create the source-hashed preregistration with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-spatial-preregister \
+  --moving-wall-full-window ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-spatial-preregistration.json
+```
+
+Run each resumable case by supplying the same promotion chain used by the D16
+full window, plus the locked spatial files. The D=8 command is:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-spatial-case \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --discriminator ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json \
+  --completion ValidationArtifacts/deetjen-dove-collision-grid-completion.json \
+  --provenance ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json \
+  --boundary-terms ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json \
+  --moving-wall-ab ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json \
+  --moving-wall-ledger ValidationArtifacts/deetjen-dove-d16-moving-wall-ledger.json \
+  --moving-wall-full-window ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window.json \
+  --spatial-preregistration ValidationArtifacts/deetjen-dove-moving-wall-spatial-preregistration.json \
+  --reference-length-cells 8 \
+  --archive ValidationArtifacts/deetjen-dove-d8-moving-wall-full-window.json
+```
+
+Repeat with `--reference-length-cells 12` and archive
+`ValidationArtifacts/deetjen-dove-d12-moving-wall-full-window.json`. Combine
+the two cases with the unchanged D16 archive using:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-spatial-discriminator \
+  --moving-wall-full-window ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window.json \
+  --spatial-preregistration ValidationArtifacts/deetjen-dove-moving-wall-spatial-preregistration.json \
+  --spatial-d8 ValidationArtifacts/deetjen-dove-d8-moving-wall-full-window.json \
+  --spatial-d12 ValidationArtifacts/deetjen-dove-d12-moving-wall-full-window.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator.json
+
+python3 Scripts/audit-dove-moving-wall-spatial-refinement.py
+```
+
+Both Apple M4 cases pass their numerical gates. D=8 completes `3,776` steps in
+`27.07 s` on a `75 x 69 x 66` grid with minimum population `1.516e-8` and
+near-wing/global residuals `8.929e-4/1.071e-3`. D=12 completes `5,664` steps
+in `106.09 s` on a `112 x 103 x 99` grid with minimum population `7.330e-4`
+and residuals `4.005e-4/6.287e-4`. Each archive contains all 187 registered
+force bins; D=16 is not rerun.
+
+The locked discriminator fails. Force-history difference falls monotonically
+from `0.127045` at D8-to-D12 to `0.0626834` at D12-to-D16, a `2.027x`
+reduction. D12-to-D16 mean and impulse differences are both `0.010576` and
+pass `0.05`, but the force-history difference exceeds `0.05` by `0.0126834`.
+The CLI therefore archives the report and exits nonzero. The independent audit
+reconstructs every D8/D12 per-step ledger equation, all 374 force bins, source
+hashes, both trend vectors, and the rejected gate; all audit checks pass. This
+is a verified negative result, not spatial convergence. Production,
+experimental agreement, and free flight remain blocked.
+
+The next allocation decision must first use the existing archives to localize
+the phase-resolved D12-to-D16 discrepancy. A D=20 run is justified only if
+that zero-simulation diagnostic shows a smooth distributed truncation trend,
+not a localized topology or force-accounting event.
+
+Run the frozen archive-only localization and its independent reconstruction:
+
+```bash
+python3 Scripts/analyze-dove-moving-wall-spatial-localization.py
+python3 Scripts/audit-dove-moving-wall-spatial-localization.py
+```
+
+The diagnostic uses only computed D12/D16 registered force histories,
+per-step topology-reservoir corrections, and near-wing/global closure
+residuals. Measured-force error is absent from every classification and
+allocation expression. Before evaluating the archives, it fixes three
+concentration classes, adjacent-bin and non-DC spectral smoothness limits,
+topology projection/correlation limits, a maximum `25%` ledger-residual to
+force-difference ratio, and a maximum `1.5x` fine-grid miss ratio for a D20
+allocation.
+
+The result does not authorize D20. The `6.26834%` force-history difference has
+a mixed concentration: 27 of 187 bins produce half its squared norm, the top
+10% of bins produce `42.54%`, and the strongest contiguous 5 ms window
+produces only `16.81%`. It is therefore not one localized phase event, but it
+also fails the distributed effective-bin threshold (`59.55/187 = 31.84%`).
+More importantly, its normalized adjacent-bin roughness is `1.35139` and
+`50.267%` of the non-DC spectral energy lies in the upper half of resolved
+frequencies, failing the frozen `0.5/15%` smoothness limits.
+
+This roughness is not attributed to the already-cleared accounting path. The
+near-wing and global residual-difference RMS values are only `0.375%` and
+`0.749%` of the force-difference RMS. Nor is it a topology spike: least-squares
+topology correction explains `12.62%`, magnitude correlation is `0.209`, and
+top-10% rank overlap is `21.05%`, all below their event thresholds. The
+independent audit reconstructs all 187 bins, source hashes, concentration,
+windows, spectrum, topology projection, accounting ratios, classification,
+and rejected D20 decision; all 11 checks pass.
+
+This narrows the next zero-simulation question to temporal structure. A
+source-locked lag/band discriminator should determine whether the rough
+fine-pair difference is sub-bin phase/registration sensitivity or broadband
+grid-dependent force-estimator noise. It may not retroactively pass the raw
+`5%` spatial gate. D20 remains unjustified until that distinction is made.
+
+Run that frozen discriminator and its independent reconstruction:
+
+```bash
+python3 Scripts/analyze-dove-moving-wall-spatial-lag-band.py
+python3 Scripts/audit-dove-moving-wall-spatial-lag-band.py
+```
+
+The lag search is fixed to `-0.5...+0.5` registered bins in `0.01`-bin
+increments and uses five contiguous held-out folds. A registration mechanism
+requires at least `0.05` bin shift, `20%` cross-validated improvement,
+consistent sign, and at most `0.15`-bin fold standard deviation. The
+nonperiodic DCT-II discriminator evaluates fixed `50/100/200/400/1000 Hz`
+low-pass bands. The 200 Hz decision band may be called broadband estimator
+noise only if it retains at least `99%` of combined D12/D16 force energy while
+meeting the unchanged raw-difference evidence rules. No filtered history can
+replace or retroactively pass the preregistered raw metric.
+
+The best global shift is `-0.02` bin (`-10 us`). Held-out comparison improves
+only from `0.0623413` to `0.0614027`, or `1.506%`, despite stable fold lags
+`[-0.01, -0.02, -0.01, -0.02, -0.02]`. Sub-bin registration sensitivity is
+therefore rejected. At 200 Hz the difference falls to `0.0425302`, but the
+filtered histories retain only `74.2699%` of combined force energy, far below
+the frozen `99%` requirement. That result cannot distinguish discarded
+physical grid response from force-estimator noise. Neither broadband noise nor
+coherent low-band bias is accepted, the classification is `mixed-unresolved`,
+the raw `0.0626834 > 0.05` rejection remains authoritative, and D20 is still
+blocked. The independent audit reconstructs all five folds, five DCT bands,
+187 decision-band vectors, source hashes, classification, and allocation
+decision; all 11 checks pass.
+
+The next diagnostic isolates estimator sampling from evolving flow. Its rules
+are archived before either grid is run:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-temporal-preregister \
+  --spatial-discriminator ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator.json \
+  --lag-band ValidationArtifacts/deetjen-dove-moving-wall-spatial-lag-band.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-temporal-sampling \
+  --spatial-discriminator ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator.json \
+  --lag-band ValidationArtifacts/deetjen-dove-moving-wall-spatial-lag-band.json \
+  --temporal-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling.json
+
+python3 Scripts/audit-dove-moving-wall-temporal-sampling.py
+```
+
+The locked phase is source sample 53 at `26.5 ms`, the largest single-bin
+contributor in the preceding localization. Geometry and deposited wall
+velocity are held constant for eight physical 0.5 ms bins; D12 records 24 and
+D16 records 32 conservative-force substeps per bin. This deliberately
+nonphysical treadmilling-surface test removes topology and changing measured
+kinematics while preserving physical grid, thickness, viscosity-floor, sponge,
+collision operator, moving-wall normalization, and momentum-ledger definitions.
+Temporal aggregation sensitivity requires direct-impulse D12/D16 history at or
+below `5%`, endpoint history above `5%`, and at least `20%` improvement.
+Aggregation-invariant grid disagreement requires all three histories above
+`5%` with no more than `10%` relative estimator spread. Neither result can
+modify the raw moving-window gate or authorize D20.
+
+The two numerical cases complete in `2.84 s` and `7.89 s` (`10.82 s` command
+wall time). Their near-wing/global relative RMS residuals are
+`0.0196%/0.0280%` and `0.0254%/0.0360%`; minimum populations are
+`0.01046/0.01120`. Every topology-reservoir correction is exactly zero, and
+direct-versus-binned impulse identity closes to `8.02e-17` relative error.
+
+Endpoint D12/D16 history differs by `19.5868%`. Sample-centered trapezoidal
+and direct impulse-preserving histories differ by `9.7600%` and `9.4871%`, so
+impulse aggregation removes `51.56%` of the endpoint disagreement but does not
+reach the frozen `5%` criterion. The complete eight-bin impulses differ by
+only `0.8639%`, showing substantial cancellation that a single history metric
+must not hide. The locked classification is therefore `mixed-unresolved`, not
+temporal-aggregation-sensitive or fixed-grid-cleared. The independent audit
+reconstructs source hashes, both per-step ledgers, all 16 bins and three
+quadratures, impulse identity, zero topology, metrics, classification, and
+claim boundary; all 13 checks pass.
+
+The same-phase 24-bin duration extension is frozen and run as follows:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-temporal-duration-preregister \
+  --temporal-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-preregistration.json \
+  --temporal-sampling ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-temporal-duration \
+  --spatial-discriminator ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator.json \
+  --lag-band ValidationArtifacts/deetjen-dove-moving-wall-spatial-lag-band.json \
+  --temporal-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-preregistration.json \
+  --temporal-sampling ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling.json \
+  --temporal-duration-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json
+
+python3 Scripts/audit-dove-moving-wall-temporal-duration.py
+```
+
+The extension independently restarts both grids and must reproduce all first-
+eight-bin endpoint, sample-trapezoidal, impulse-mean, and direct-impulse
+vectors within `1e-12` relative error. It then reports prefixes 8/16/24 and
+non-overlapping blocks 0–8/8–16/16–24. Duration clears only if the 24-bin
+impulse-history and cumulative-impulse differences both pass 5%. Startup
+relaxation requires the late block to pass 5% with at least 20% improvement.
+Persistent bias requires all three blocks to fail and less than 20% late-block
+improvement. These rules and all source hashes precede the extension run.
+
+The baseline prefix reproduces exactly (`0` relative error). The
+impulse-preserving prefix differences are `0.0948712`, `0.0992872`, and
+`0.0996112`; cumulative-impulse differences are `0.00863853`, `0.0297160`,
+and `0.0471626`. The blockwise force-history differences are `0.0948712`,
+`0.282082`, and `0.123791`. Thus the late block remains above 5% and is
+`30.48%` worse than the first rather than improving. The locked classification
+is `persistent-fixed-wall-grid-disagreement`, not startup relaxation or
+duration clearance.
+
+D12 completes 576 steps in `8.45 s`; D16 completes 768 in `24.04 s`. Minimum
+populations are `0.00753/0.01120`, near-wing residuals are
+`0.0286%/0.0427%`, global residuals are `0.0593%/0.0685%`, and topology
+correction remains exactly zero. The independent audit reconstructs all 1,344
+substep forces, 48 bins, every prefix/block quadrature and impulse, exact
+baseline reproduction, both ledgers, the classification, and D20 rejection;
+all 13 checks pass.
+
+The same-phase geometry/link discriminator is frozen and run as follows:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-geometry-preregister \
+  --temporal-duration-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json \
+  --temporal-duration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-geometry \
+  --temporal-duration-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json \
+  --temporal-duration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json \
+  --link-geometry-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json
+
+python3 Scripts/audit-dove-moving-wall-link-geometry.py
+```
+
+This path advances no fluid and allocates no populations. It reconstructs the
+production solid-to-fluid link convention, `q = d_f/(d_f-d_s)`, and
+`6 w_q dx^2` link measure directly from D12/D16 Metal rasters, repeats the
+entire calculation from the CPU raster, and compares per-component wall
+moments with a resolution-independent thickened-triangle D3Q19 quadrature.
+The version-2 contract documents one pre-result correction: its draft `1e-5`
+pointwise wall tolerance was tighter than the already archived `2.1819e-5`
+geometry-parity envelope. The accepted contract uses `5e-5` plus a stronger
+`0.5%` limit on every complete link aggregate; none of the D12/D16 scientific
+limits changed.
+
+The cases complete in `1.93 s` and `3.06 s`. Both have zero occupancy
+mismatches and exact link-count parity; worst aggregate CPU/Metal differences
+are `0.0985%` and `0.1815%`. D12→D16 total and maximum-component physical
+link measures change by `1.362%` and `2.301%`; total and maximum-component
+interpolation-histogram variation are `3.143%` and `6.898%`; mean wall
+velocity changes by at most `0.418%` of quadrature RMS and RMS speed by
+`0.271%`. All of those clear their frozen limits.
+
+The maximum link-to-quadrature mean-velocity error is `10.742%`, however,
+above the frozen `10%` limit. It is the left wing and persists at `10.379%`
+on D16, so the locked result is `wall-velocity-deposition-bias`, not link-area
+or interpolation bias. The independent audit reconstructs source hashes, all
+144 Metal/CPU direction-component bins, link aggregates, the triangle and cap
+quadrature from the binary surface, cross-grid metrics, classification, and
+D20 rejection; all 13 checks pass.
+
+The velocity-deposition A/B is frozen and run without fluid as follows:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-velocity-preregister \
+  --link-geometry-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json \
+  --link-geometry ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-velocity \
+  --link-geometry-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json \
+  --link-geometry ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json \
+  --link-velocity-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-velocity.json
+
+python3 Scripts/audit-dove-moving-wall-link-velocity.py
+```
+
+For each archived production link the gate compares solid-node velocity,
+`q*u_solid + (1-q)*u_fluid`, and the exact same-component triangle-barycentric
+velocity at `x_solid + (1-q)c_q dx`; production `q` is measured from the fluid
+node. The accepted run reconstructs candidate A from the hashed 72 direction-
+component bins exactly, while the new raster independently preserves every
+link count. This avoids treating floating-point replay order as a physics
+difference.
+
+D12/D16 complete in `7.56 s` and `13.66 s`. Exact barycentric sampling does
+not reduce the left-wing discrepancy: the worst production mean error is
+`10.742%`, exact-intersection error is `10.783%`, and endpoint interpolation
+worsens it to `11.430%`. Exact and endpoint D12/D16 mean differences remain
+small (`0.511%` and `1.264%`), so this is not an emerging fine-grid split.
+
+The reconstructed points have only `0.0696`-cell worst-component RMS error
+against the physical 7.5 mm offset surface, below the frozen `0.10` limit, but
+the maximum is `0.8742` cell against `0.75`. The locked classification is
+therefore `signed-distance-intersection-placement-bias`: the contract does not
+allow the velocity-sampling hypothesis to clear while link placement contains
+these outliers. Endpoint interpolation, exact-intersection velocity, any
+production modification, fluid allocation, and D20 all remain unauthorized.
+The independent audit reconstructs all 144 direction-component bins,
+candidate moments, source production identity, cross-grid metrics, placement
+limits, classification, and claim boundary; all 13 checks pass.
+
+The sparse-outlier localization is frozen and run without fluid as follows:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-intersection-preregister \
+  --link-velocity-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-preregistration.json \
+  --link-velocity ValidationArtifacts/deetjen-dove-moving-wall-link-velocity.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-intersection \
+  --link-velocity-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-preregistration.json \
+  --link-velocity ValidationArtifacts/deetjen-dove-moving-wall-link-velocity.json \
+  --link-intersection-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-intersection.json
+
+python3 Scripts/audit-dove-moving-wall-link-intersection.py
+```
+
+The Apple M4 cases complete in `0.152 s` and `0.249 s`. They reproduce all
+`25,262` D12 and `45,514` D16 source links and both source maximum residuals
+exactly. Only eight and seven links exceed `0.75` cell, respectively:
+`0.0251%` and `0.0122%` of total link measure. Every outlier record includes
+component, direction, solid and fluid cells, production `q`, world-space
+intersection, nearest triangle and barycentrics, signed residual, triangle
+feature, true mesh-boundary incidence, and nearest alternate component.
+
+No outlier lies on a true mesh boundary. Seven of eight D12 outliers and all
+seven D16 outliers are within `0.25` cell of another component's physical
+offset surface, producing a minimum `87.5%` edge-or-junction measure
+association against the frozen `80%` rule. This association is specifically a
+component-junction result, not a mesh-edge result. Dominant directions differ
+(`14` on D12, `13` on D16) and contain only `25.0%` and `28.6%` of outlier
+measure, so the frozen stencil-direction rule does not trigger. The locked
+classification is `mesh-edge-or-component-junction-associated`; it is an
+association, not proof of a causal repair.
+
+The independent audit decodes the source float32 position stream and uint16
+topology, reconstructs the `26.5 ms` interpolated mesh, scans nearest triangles
+and alternate components, verifies true edge incidence, checks each lattice
+direction and production `q`, reconstructs both case summaries and the
+cross-grid classification, and validates the source hash chain. All 13 checks
+pass. No production change, fluid evolution, D20 allocation, or experimental
+claim is authorized.
+
+The exact owner-component/global-union ray-root A/B is frozen and run with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-ray-root-preregister \
+  --link-intersection-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-preregistration.json \
+  --link-intersection ValidationArtifacts/deetjen-dove-moving-wall-link-intersection.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-ray-root \
+  --link-intersection-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-preregistration.json \
+  --link-intersection ValidationArtifacts/deetjen-dove-moving-wall-link-intersection.json \
+  --link-ray-root-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root.json
+
+python3 Scripts/audit-dove-moving-wall-link-ray-root.py
+```
+
+The contract reconstructs each solid/fluid segment and production `t=1-q`,
+then scans from fluid toward solid in 256 fixed intervals and bisects the
+fluid-nearest outside-to-inside bracket 48 times. Candidate B uses only the
+solid cell's source component; candidate C uses the production raster's true
+global union over all component triangles. Both solve distance-to-mid-surface
+minus the physical 7.5 mm half-thickness. Roots must close within `1e-5` cell,
+and global-union placement retains the prior `0.10`-cell measure-weighted RMS
+and `0.75`-cell maximum limits. Calling owner-surface diagnosis causal also
+requires at least `80%` RMS reduction.
+
+D12/D16 finish in `0.043 s` and `0.029 s`. Every one of the 15 links changes
+nearest component between its solid and fluid endpoints, and every fluid
+endpoint uses the alternate component recorded by the localization. The
+production formula is therefore linearly interpolating signed distances from
+two distinct surfaces. The exact global-union junction-root RMS shifts are
+`0.5194` cell on D12 and `0.9435` on D16; their maxima are `0.8860` and
+`1.1359` cells. Both RMS values fail `0.10`, and both maxima fail `0.75`.
+D12's global union reduces owner-root RMS by only `38.42%`; D16's global roots
+are all owner-component roots, giving zero reduction. Only five of 15 global
+roots switch away from the source component despite all 15 endpoint component
+changes.
+
+Root closure reaches `6.985e-7` cell, safely below `1e-5`. The independent
+NumPy audit decodes the source binary mesh, implements a separate vectorized
+point-to-triangle distance function, repeats both reverse scans and bisections,
+reconstructs all sample and cross-grid metrics, verifies all 15 endpoint
+component changes, and passes all 13 checks. The locked classification is
+`junction-global-root-linearization-bias`. This rejects the tempting
+interpretation that the prior residual was merely measured against the wrong
+owner surface; production `q`, D20, fluid evolution, and the raw spatial gate
+remain unchanged.
+
+The q-dependent coefficient discriminator is frozen and run with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-coefficient-preregister \
+  --link-ray-root-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-preregistration.json \
+  --link-ray-root ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-coefficient \
+  --link-ray-root-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-preregistration.json \
+  --link-ray-root ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root.json \
+  --link-coefficient-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient.json
+
+python3 Scripts/audit-dove-moving-wall-link-coefficient.py
+```
+
+The frozen five-term coefficient vector maps unit-scaled reflected,
+farther-outgoing, previous-incoming, and fluid/solid endpoint wall-projection
+primitives to the reconstructed population after factoring the common
+moving-wall weight/density scale. For `q<=0.5` it is
+`[2q, 1-2q, 0, 1-q, q]`; for `q>0.5` it is
+`[1/(2q), 0, (2q-1)/(2q), (1-q)/(2q), 1/2]`, exactly matching the production
+Metal branches. A dynamically insignificant result requires zero branch
+changes, at most `0.10` measure-weighted RMS L1 change, at most `0.25` maximum
+L1 change, and no more than a `1.10x` symmetric operator-norm ratio on either
+grid.
+
+The calculation completes in less than `0.04 ms`. Production linear `q` is in
+the near branch for all 15 links, while exact global-union `q` moves `3/8` D12
+and `7/7` D16 links to the far branch. Branch-changing measure is `37.5%` of
+the D12 outlier set and `100%` of D16. The measure-weighted coefficient L1
+change is `1.723/2.782`, the maximum is `2.824/3.189`, and the largest single
+coefficient changes by `0.9515`; all exceed the frozen insensitivity envelope.
+The maximum symmetric operator-norm ratio is `1.294`. A separate Python
+implementation reconstructs all sample coefficients, summaries, cross-grid
+metrics, source hashes, classification, and safety boundary with all 12 checks
+passing.
+
+The locked classification is `branch-changing-coefficient-sensitive`. It
+establishes algebraic capacity for a material population change but not force
+causality, because the actual reflected/auxiliary populations, wall projection,
+and local density were intentionally absent. Production, D20, fluid evolution,
+and the raw spatial rejection remain unchanged. The highest-ROI next step is a
+single frozen-phase D12 capture of those five production primitives on the 15
+links, followed by an offline production-q/exact-q population and momentum-
+exchange replay. Why: it measures realized rather than worst-case sensitivity.
+ROI: one short source-state capture and 30 local evaluations can accept or
+reject a boundary fluid A/B before changing the kernel or paying for a full
+refinement run.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

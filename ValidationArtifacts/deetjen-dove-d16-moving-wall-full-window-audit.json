@@ -1,0 +1,49 @@
+{
+  "allChecksPassed": true,
+  "checks": {
+    "contiguousTimes": true,
+    "controlVolumeClearance": true,
+    "fixedExperiment": true,
+    "forceSummaryArithmetic": true,
+    "gateReconstruction": true,
+    "ledgerSummaryArithmetic": true,
+    "promotionChain": true,
+    "registeredForceBins": true,
+    "sampleArithmetic": true,
+    "sourceHashes": true,
+    "validationIsolation": true
+  },
+  "claimBoundary": "Independent archive arithmetic and registered-force bin audit. Passing confirms the full D=16 engineering window, not spatial refinement, source-viscosity agreement, production promotion, experimental agreement, or free flight.",
+  "generatedBy": "Scripts/audit-dove-d16-moving-wall-full-window.py",
+  "reconstructedForceSummary": {
+    "computedImpulseXNewtonSeconds": 0.0006939305274281736,
+    "computedImpulseZNewtonSeconds": 0.181239575792104,
+    "computedMeanForceXNewtons": 0.004075736315412955,
+    "computedMeanForceZNewtons": 1.9358128948724844,
+    "computedPeakTimeSeconds": 0.1065,
+    "measuredImpulseXNewtonSeconds": 0.014511779299165029,
+    "measuredImpulseZNewtonSeconds": 0.13272799291498957,
+    "measuredMeanForceXNewtons": 0.15597300613155055,
+    "measuredMeanForceZNewtons": 1.420231978407525,
+    "measuredPeakTimeSeconds": 0.068,
+    "normalizedRMSError": 2.1730584377619926,
+    "registeredComparisonSampleCount": 187
+  },
+  "reconstructedLedger": {
+    "RMSAerodynamicForceNewtons": 6.137267718232174,
+    "RMSGlobalFluidBudgetForceNewtons": 6.137126924683097,
+    "RMSGlobalFluidClosureResidualNewtons": 0.005101518148994471,
+    "RMSRawControlVolumeBudgetForceNewtons": 6.13735503376515,
+    "RMSRawControlVolumeClosureResidualNewtons": 0.0038339862069586214,
+    "collisionLimiterActivationFractionOfCellSteps": 1.6959789722486826e-09,
+    "maximumGlobalFluidClosureResidualNewtons": 0.019408547639325598,
+    "maximumRawControlVolumeClosureResidualNewtons": 0.019579881521087743,
+    "maximumSolidControlSurfaceCrossingLinkCount": 0,
+    "minimumPopulation": 1.0249372905946075e-08,
+    "relativeRMSGlobalFluidClosureResidual": 0.0008312360456167214,
+    "relativeRMSRawControlVolumeClosureResidual": 0.0006246968255650258
+  },
+  "reportSHA256": "dfd326dea59fc1c6e87aebb3474e5af6f53e9acb8914a4de4d7a67173820e84c",
+  "schemaVersion": 1,
+  "sourceRetainedLedgerSHA256": "41b6fe6ace35579f67af9df8234c35e23eeed82acc2d9d088c073f9aa81a7a01"
+}

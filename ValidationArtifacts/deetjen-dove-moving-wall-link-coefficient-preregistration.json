@@ -1,0 +1,26 @@
+{
+  "branchThreshold" : 0.5,
+  "claimBoundary" : "This archive-only coefficient bound establishes whether the 15 stored q errors can materially alter the normalized boundary operator. It may authorize only a validation-only population replay with captured production primitives; it does not establish a force correction, authorize production changes or D20, or relax the raw spatial rejection.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "expectedSampleCounts" : [
+    8,
+    7
+  ],
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Hashed ray-root preregistration and D12\/D16 report; all 15 sample identities, link measures, production q, exact global-union q, the q=0.5 branch boundary, and the production Metal coefficient equations. No populations, wall velocities, geometry search, Metal dispatch, force evaluation, fluid evolution, or production mutation.",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedCoefficientL1Difference" : 0.25,
+  "maximumAllowedSymmetricOperatorNormRatio" : 1.1,
+  "maximumAllowedWeightedRMSCoefficientL1Difference" : 0.1,
+  "passed" : true,
+  "referenceLengthCells" : [
+    12,
+    16
+  ],
+  "schemaVersion" : 1,
+  "selectionRule" : "For each of the 15 hashed ray-root samples, evaluate the published interpolated bounce-back equation at production linear q and exact global-union q. q<=0.5 uses [2q,1-2q,0,1-q,q]; q>0.5 uses [1\/(2q),0,(2q-1)\/(2q),(1-q)\/(2q),1\/2]. The five coefficients multiply reflected, farther outgoing, previous incoming, and the fluid\/solid endpoint wall projections after factoring the common moving-wall scale. The bias is coefficient-insensitive only with zero branch changes, <=0.10 measure-weighted RMS L1 change, <=0.25 maximum L1 change, and <=1.10 symmetric operator-L1-norm ratio on both grids.",
+  "sourceLinkRayRootPreregistrationSHA256" : "41cb2f566b01c3686a087103632b4717cc4a4a8d10ad5bd50f07bd41bf08cc81",
+  "sourceLinkRayRootReportSHA256" : "79f823e08498233ca507da6126b8867c7e1ca12f52daa14d3183bdd8acf37985"
+}

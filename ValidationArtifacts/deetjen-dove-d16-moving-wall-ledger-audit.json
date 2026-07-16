@@ -1,0 +1,33 @@
+{
+  "allChecksPassed": true,
+  "checks": {
+    "authorizedCandidate": true,
+    "contiguousTimes": true,
+    "controlVolumeClearance": true,
+    "fixedExperiment": true,
+    "gateReconstruction": true,
+    "sampleArithmetic": true,
+    "sourceHashes": true,
+    "summaryArithmetic": true,
+    "validationIsolation": true
+  },
+  "claimBoundary": "Independent archive arithmetic and provenance audit only; passing confirms the retained 751-step ledger, not the full registered window, refinement, experimental agreement, or free flight.",
+  "generatedBy": "Scripts/audit-dove-d16-moving-wall-ledger.py",
+  "reconstructed": {
+    "RMSAerodynamicForceNewtons": 9.655019867393962,
+    "RMSGlobalFluidBudgetForceNewtons": 9.655514794233785,
+    "RMSGlobalFluidClosureResidualNewtons": 0.005122839192934672,
+    "RMSRawControlVolumeBudgetForceNewtons": 9.655136765089233,
+    "RMSRawControlVolumeClosureResidualNewtons": 0.004556229298067535,
+    "collisionLimiterActivationFractionOfCellSteps": 1.003214004732674e-09,
+    "maximumGlobalFluidClosureResidualNewtons": 0.01833888296184831,
+    "maximumRawControlVolumeClosureResidualNewtons": 0.019579881521087743,
+    "maximumSolidControlSurfaceCrossingLinkCount": 0,
+    "minimumPopulation": 1.634006352446704e-08,
+    "relativeRMSGlobalFluidClosureResidual": 0.0005305609594212419,
+    "relativeRMSRawControlVolumeClosureResidual": 0.0004718969196316119
+  },
+  "reportSHA256": "41b6fe6ace35579f67af9df8234c35e23eeed82acc2d9d088c073f9aa81a7a01",
+  "schemaVersion": 1,
+  "sourceAdmissibilitySHA256": "a53f110740385fed87fd7802d2483eaa9dce46bfcc6951b62eb729725edd08b8"
+}

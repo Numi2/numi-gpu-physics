@@ -1,0 +1,48 @@
+{
+  "allChecksPassed": true,
+  "checkCount": 13,
+  "checks": {
+    "claimBoundary": true,
+    "classification": true,
+    "componentAggregation": true,
+    "contractRevisionAndThresholds": true,
+    "crossGridMetrics": true,
+    "d12CompleteBins": true,
+    "d12MetalCPUParity": true,
+    "d16CompleteBins": true,
+    "d16MetalCPUParity": true,
+    "durationPrecondition": true,
+    "independentTriangleQuadrature": true,
+    "safetyBoundary": true,
+    "sourceHashes": true
+  },
+  "failingVelocityComponent": {
+    "componentName": "leftWing",
+    "d12MeanVelocityErrorRelativeToQuadratureRMS": 0.10742206809817834,
+    "d16MeanVelocityErrorRelativeToQuadratureRMS": 0.10378524417234115,
+    "frozenLimit": 0.1
+  },
+  "generatedBy": "Scripts/audit-dove-moving-wall-link-geometry.py",
+  "reconstructedMetalCPUMaximumAggregateRelativeDifference": {
+    "d12": 0.0009852216748768628,
+    "d16": 0.0018148820326678952
+  },
+  "reconstructedMetrics": {
+    "interpolationHistogramTotalVariation": 0.031429908411285616,
+    "maximumComponentInterpolationHistogramTotalVariation": 0.06898436754793091,
+    "maximumComponentLinkMeasureRelativeDifference": 0.02300934442513354,
+    "maximumGridMeanVelocityDifferenceRelativeToQuadratureRMS": 0.00418352565310534,
+    "maximumGridRMSSpeedRelativeDifference": 0.0027058901580616066,
+    "maximumLinkToQuadratureMeanVelocityError": 0.10742198648421956,
+    "maximumLinkToQuadratureRMSSpeedRelativeError": 0.07722735366532953,
+    "totalLinkMeasureRelativeDifference": 0.013623308251026596
+  },
+  "schemaVersion": 1,
+  "sourceArtifacts": {
+    "durationPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json",
+    "durationReport": "ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json",
+    "linkGeometryPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json",
+    "linkGeometryReport": "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json",
+    "surfaceManifest": "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
+  }
+}

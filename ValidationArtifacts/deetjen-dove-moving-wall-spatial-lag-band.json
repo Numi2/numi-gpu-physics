@@ -1,0 +1,3743 @@
+{
+  "bandDiscriminator": {
+    "bands": [
+      {
+        "actualMaximumRetainedFrequencyHertz": 48.1283422459893,
+        "combinedSignalEnergyRetentionFraction": 0.7066912094889262,
+        "filteredDifferenceRoughness": 0.07057824459904188,
+        "improvementFromRawFraction": 0.3676342877044281,
+        "maximumRetainedDCTMode": 9,
+        "pairwiseNormalizedRMSDifference": 0.03963882537704037,
+        "removedDifferenceEnergyFraction": 0.7174038005044318,
+        "requestedCutoffHertz": 50.0
+      },
+      {
+        "actualMaximumRetainedFrequencyHertz": 96.2566844919786,
+        "combinedSignalEnergyRetentionFraction": 0.7110590114289345,
+        "filteredDifferenceRoughness": 0.09471943855324644,
+        "improvementFromRawFraction": 0.3394225953857083,
+        "maximumRetainedDCTMode": 18,
+        "pairwiseNormalizedRMSDifference": 0.041407229836151575,
+        "removedDifferenceEnergyFraction": 0.6897205068016758,
+        "requestedCutoffHertz": 100.0
+      },
+      {
+        "actualMaximumRetainedFrequencyHertz": 197.86096256684493,
+        "combinedSignalEnergyRetentionFraction": 0.7426990262356294,
+        "filteredDifferenceRoughness": 0.1675535853953851,
+        "improvementFromRawFraction": 0.3215083475968127,
+        "maximumRetainedDCTMode": 37,
+        "pairwiseNormalizedRMSDifference": 0.042530155583164815,
+        "removedDifferenceEnergyFraction": 0.6580978182211004,
+        "requestedCutoffHertz": 200.0
+      },
+      {
+        "actualMaximumRetainedFrequencyHertz": 395.72192513368987,
+        "combinedSignalEnergyRetentionFraction": 0.8590743699189087,
+        "filteredDifferenceRoughness": 0.4448215344143838,
+        "improvementFromRawFraction": 0.2904428887548356,
+        "maximumRetainedDCTMode": 74,
+        "pairwiseNormalizedRMSDifference": 0.044477443796854685,
+        "removedDifferenceEnergyFraction": 0.567480715232821,
+        "requestedCutoffHertz": 400.0
+      },
+      {
+        "actualMaximumRetainedFrequencyHertz": 994.6524064171123,
+        "combinedSignalEnergyRetentionFraction": 0.9999999999999978,
+        "filteredDifferenceRoughness": 1.3513903927982207,
+        "improvementFromRawFraction": 3.774758283725532e-15,
+        "maximumRetainedDCTMode": 186,
+        "pairwiseNormalizedRMSDifference": 0.0626833881191091,
+        "removedDifferenceEnergyFraction": 9.547918011776346e-15,
+        "requestedCutoffHertz": 1000.0
+      }
+    ],
+    "broadbandForceEstimatorNoiseLikely": false,
+    "coherentLowBandGridBiasLikely": false,
+    "decisionBandCutoffHertz": 200.0
+  },
+  "claimBoundary": "This computed-history diagnostic cannot replace or retroactively pass the raw preregistered spatial metric. Low-pass results are mechanism evidence only, never experimental agreement or production promotion.",
+  "classification": "mixed-unresolved",
+  "d20DiagnosticAuthorized": false,
+  "datasetIdentifier": "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "decisionBandBins": [
+    {
+      "d12LowPassForceNewtons": [
+        -1.1880723299480191,
+        -0.7039074611611656,
+        0.1834780843282119
+      ],
+      "d16LowPassForceNewtons": [
+        -1.3250335533889426,
+        -0.7033485665680179,
+        0.28350004921624705
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.13696122344092343,
+        0.0005588945931477296,
+        0.10002196488803516
+      ],
+      "sourceTimeSeconds": 0.025,
+      "targetSampleIndex": 50
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.196706241163401,
+        -0.6766413106809083,
+        0.35263226599565123
+      ],
+      "d16LowPassForceNewtons": [
+        -1.3192759972959094,
+        -0.6771289425657264,
+        0.42549330038155236
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.12256975613250831,
+        -0.00048763188481815156,
+        0.07286103438590114
+      ],
+      "sourceTimeSeconds": 0.0255,
+      "targetSampleIndex": 51
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.1897951413838272,
+        -0.6276144569122472,
+        0.6490554422282164
+      ],
+      "d16LowPassForceNewtons": [
+        -1.287857852998239,
+        -0.6295271746841165,
+        0.6749597149558413
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.09806271161441171,
+        -0.001912717771869299,
+        0.025904272727624855
+      ],
+      "sourceTimeSeconds": 0.026,
+      "targetSampleIndex": 52
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.1330101089722235,
+        -0.566115828183673,
+        1.0005927154920966
+      ],
+      "d16LowPassForceNewtons": [
+        -1.2034470784853126,
+        -0.5688798815054626,
+        0.9722884008554429
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.07043696951308909,
+        -0.002764053321789639,
+        -0.028304314636653727
+      ],
+      "sourceTimeSeconds": 0.0265,
+      "targetSampleIndex": 53
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.0036018107486913,
+        -0.502368325117562,
+        1.3246117054888873
+      ],
+      "d16LowPassForceNewtons": [
+        -1.0504767108841806,
+        -0.5047649347904698,
+        1.2488788987104433
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.04687490013548934,
+        -0.002396609672907779,
+        -0.07573280677844396
+      ],
+      "sourceTimeSeconds": 0.027,
+      "targetSampleIndex": 54
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8097910267969204,
+        -0.4445294448642655,
+        1.5501609079533492
+      ],
+      "d16LowPassForceNewtons": [
+        -0.8419569882697906,
+        -0.44552336674745846,
+        1.445246606086123
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.03216596147287021,
+        -0.000993921883192972,
+        -0.10491430186722606
+      ],
+      "sourceTimeSeconds": 0.0275,
+      "targetSampleIndex": 55
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.5982610258226635,
+        -0.3965564912350309,
+        1.6361028119974346
+      ],
+      "d16LowPassForceNewtons": [
+        -0.6253027846849568,
+        -0.3963114552930875,
+        1.5259783087412244
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.02704175886229332,
+        0.0002450359419434167,
+        -0.11012450325621015
+      ],
+      "sourceTimeSeconds": 0.028,
+      "targetSampleIndex": 56
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.44476427684216996,
+        -0.3576301497183925,
+        1.5801929113476287
+      ],
+      "d16LowPassForceNewtons": [
+        -0.4728114372987095,
+        -0.3582414629729406,
+        1.4874476841393467
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.028047160456539544,
+        -0.000611313254548107,
+        -0.09274522720828204
+      ],
+      "sourceTimeSeconds": 0.0285,
+      "targetSampleIndex": 57
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.4297617689673751,
+        -0.32326902388831347,
+        1.4169195352634012
+      ],
+      "d16LowPassForceNewtons": [
+        -0.4587669499096502,
+        -0.32880277063307367,
+        1.3564554343865225
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.02900518094227511,
+        -0.005533746744760204,
+        -0.0604641008768787
+      ],
+      "sourceTimeSeconds": 0.029,
+      "targetSampleIndex": 58
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.6075140016625735,
+        -0.2876683839352568,
+        1.2053262728620397
+      ],
+      "d16LowPassForceNewtons": [
+        -0.631057645801831,
+        -0.30333913156071446,
+        1.180681690322937
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.02354364413925747,
+        -0.01567074762545767,
+        -0.024644582539102844
+      ],
+      "sourceTimeSeconds": 0.0295,
+      "targetSampleIndex": 59
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.9804849369587862,
+        -0.24637345377092054,
+        1.0109373496197582
+      ],
+      "d16LowPassForceNewtons": [
+        -0.9882381145856949,
+        -0.27703181839613084,
+        1.014180649453244
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.007753177626908636,
+        -0.030658364625210294,
+        0.003243299833485702
+      ],
+      "sourceTimeSeconds": 0.03,
+      "targetSampleIndex": 60
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.4897870031641745,
+        -0.19830058085238197,
+        0.887418739723928
+      ],
+      "d16LowPassForceNewtons": [
+        -1.4717728869764304,
+        -0.24670797682371534,
+        0.902406525780644
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.018014116187744067,
+        -0.04840739597133337,
+        0.014987786056715913
+      ],
+      "sourceTimeSeconds": 0.0305,
+      "targetSampleIndex": 61
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.0269310043330235,
+        -0.14637955150279658,
+        0.8633248678761736
+      ],
+      "d16LowPassForceNewtons": [
+        -1.9780372260441332,
+        -0.21189484182678317,
+        0.8710980158986484
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.0488937782888903,
+        -0.06551529032398659,
+        0.007773148022474863
+      ],
+      "sourceTimeSeconds": 0.031,
+      "targetSampleIndex": 62
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.464304506525764,
+        -0.0966090994517892,
+        0.93737733618247
+      ],
+      "d16LowPassForceNewtons": [
+        -2.3873668854768892,
+        -0.17483008611731807,
+        0.9218871170139414
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.07693762104887458,
+        -0.07822098666552887,
+        -0.015490219168528552
+      ],
+      "sourceTimeSeconds": 0.0315,
+      "targetSampleIndex": 63
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.6945347150166796,
+        -0.055904526190299106,
+        1.0828790127362549
+      ],
+      "d16LowPassForceNewtons": [
+        -2.6007914710379367,
+        -0.13951019790675423,
+        1.0352613230907632
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.0937432439787429,
+        -0.08360567171645512,
+        -0.04761768964549162
+      ],
+      "sourceTimeSeconds": 0.032,
+      "targetSampleIndex": 64
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.6650227729878546,
+        -0.029557411921644614,
+        1.2590307420770552
+      ],
+      "d16LowPassForceNewtons": [
+        -2.571659616044224,
+        -0.11018186646954059,
+        1.1792379522482954
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.09336315694363062,
+        -0.08062445454789598,
+        -0.07979278982875981
+      ],
+      "sourceTimeSeconds": 0.0325,
+      "targetSampleIndex": 65
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.3950753275435286,
+        -0.019263298266914586,
+        1.424983981786864
+      ],
+      "d16LowPassForceNewtons": [
+        -2.3206167395942527,
+        -0.08984694262393658,
+        1.320517802462433
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.07445858794927585,
+        -0.070583644357022,
+        -0.10446617932443081
+      ],
+      "sourceTimeSeconds": 0.033,
+      "targetSampleIndex": 66
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.9689503853744126,
+        -0.02245670006219011,
+        1.5519869147064762
+      ],
+      "d16LowPassForceNewtons": [
+        -1.9280291899620292,
+        -0.07930949305782857,
+        1.43442760027192
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.04092119541238337,
+        -0.05685279299563846,
+        -0.11755931443455614
+      ],
+      "sourceTimeSeconds": 0.0335,
+      "targetSampleIndex": 67
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.5067084448544876,
+        -0.03320527664651257,
+        1.630017596223192
+      ],
+      "d16LowPassForceNewtons": [
+        -1.5059840860709617,
+        -0.07706806571519333,
+        1.510701742139453
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.0007243587835259468,
+        -0.043862789068680755,
+        -0.1193158540837389
+      ],
+      "sourceTimeSeconds": 0.034,
+      "targetSampleIndex": 68
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.122877901108345,
+        -0.04433639572004472,
+        1.6674059255621907
+      ],
+      "d16LowPassForceNewtons": [
+        -1.1594862090414648,
+        -0.0800353137502198,
+        1.5537691751390512
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.036608307933119866,
+        -0.03569891803017508,
+        -0.11363675042313948
+      ],
+      "sourceTimeSeconds": 0.0345,
+      "targetSampleIndex": 69
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8875632048492547,
+        -0.050012229614608036,
+        1.6843655931623216
+      ],
+      "d16LowPassForceNewtons": [
+        -0.9506038292278846,
+        -0.08476887962253056,
+        1.5781152643579213
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.0630406243786299,
+        -0.034756650007922524,
+        -0.10625032880440033
+      ],
+      "sourceTimeSeconds": 0.035,
+      "targetSampleIndex": 70
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8039492826950112,
+        -0.04780161194794587,
+        1.703274121985284
+      ],
+      "d16LowPassForceNewtons": [
+        -0.8784637138545659,
+        -0.08872783730231149,
+        1.6008413669934174
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.0745144311595547,
+        -0.04092622535436562,
+        -0.10243275499186666
+      ],
+      "sourceTimeSeconds": 0.0355,
+      "targetSampleIndex": 71
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8103362684382152,
+        -0.03947989968705644,
+        1.7393597792613174
+      ],
+      "d16LowPassForceNewtons": [
+        -0.8823745742845884,
+        -0.09108423907803781,
+        1.6342660050327873
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.07203830584637327,
+        -0.05160433939098137,
+        -0.10509377422853006
+      ],
+      "sourceTimeSeconds": 0.036,
+      "targetSampleIndex": 72
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8059475549345647,
+        -0.030255438440657197,
+        1.7949879977082617
+      ],
+      "d16LowPassForceNewtons": [
+        -0.8669687621701732,
+        -0.09280725414882747,
+        1.6811279743163658
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.06102120723560844,
+        -0.06255181570817027,
+        -0.11386002339189583
+      ],
+      "sourceTimeSeconds": 0.0365,
+      "targetSampleIndex": 73
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.6910408333913121,
+        -0.026702252478741275,
+        1.859238346704376
+      ],
+      "d16LowPassForceNewtons": [
+        -0.7401627117331712,
+        -0.0960237159562183,
+        1.7338353802595734
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.049121878341859104,
+        -0.06932146347747702,
+        -0.12540296644480264
+      ],
+      "sourceTimeSeconds": 0.037,
+      "targetSampleIndex": 74
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.4065434230071133,
+        -0.03416061266333052,
+        1.9125070485483362
+      ],
+      "d16LowPassForceNewtons": [
+        -0.4499507180484711,
+        -0.10293550360077405,
+        1.7776925015157614
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.04340729504135776,
+        -0.06877489093744353,
+        -0.13481454703257478
+      ],
+      "sourceTimeSeconds": 0.0375,
+      "targetSampleIndex": 75
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.041469997648056256,
+        -0.05457284454693492,
+        1.9341536869011067
+      ],
+      "d16LowPassForceNewtons": [
+        -0.006377706024674357,
+        -0.11473899254914853,
+        1.7966671111467643
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.04784770367273061,
+        -0.06016614800221361,
+        -0.13748657575434242
+      ],
+      "sourceTimeSeconds": 0.038,
+      "targetSampleIndex": 76
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.5816235791908151,
+        -0.08557368925376148,
+        1.9102996361999305
+      ],
+      "d16LowPassForceNewtons": [
+        0.5195839903170734,
+        -0.13098562563413824,
+        1.7794870158222809
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.062039588873741724,
+        -0.04541193638037676,
+        -0.13081262037764962
+      ],
+      "sourceTimeSeconds": 0.0385,
+      "targetSampleIndex": 77
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.1016401274263277,
+        -0.1212036185495872,
+        1.839033392253317
+      ],
+      "d16LowPassForceNewtons": [
+        1.0200476196351274,
+        -0.14964987408173658,
+        1.7238959948792463
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.08159250779120031,
+        -0.028446255532149384,
+        -0.1151373973740708
+      ],
+      "sourceTimeSeconds": 0.039,
+      "targetSampleIndex": 78
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.4884495608867574,
+        -0.1540210126752961,
+        1.731359983194955
+      ],
+      "d16LowPassForceNewtons": [
+        1.3884426912933199,
+        -0.1678969141848306,
+        1.6376843733149697
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10000686959343752,
+        -0.013875901509534494,
+        -0.09367560987998536
+      ],
+      "sourceTimeSeconds": 0.0395,
+      "targetSampleIndex": 79
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.6693047859608634,
+        -0.17786884610363937,
+        1.6078126165870135
+      ],
+      "d16LowPassForceNewtons": [
+        1.557977218778694,
+        -0.1832692052206287,
+        1.5363185089988312
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1113275671821694,
+        -0.005400359116989328,
+        -0.07149410758818231
+      ],
+      "sourceTimeSeconds": 0.04,
+      "targetSampleIndex": 80
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.6387488712661071,
+        -0.19029293152582466,
+        1.4921474435720241
+      ],
+      "d16LowPassForceNewtons": [
+        1.5261708364127473,
+        -0.19483999959570114,
+        1.4381837522303806
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.11257803485335982,
+        -0.004547068069876481,
+        -0.05396369134164347
+      ],
+      "sourceTimeSeconds": 0.0405,
+      "targetSampleIndex": 81
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.4614149163948928,
+        -0.19370861890496743,
+        1.4044546943298748
+      ],
+      "d16LowPassForceNewtons": [
+        1.3563539281589683,
+        -0.20387646301384826,
+        1.359219672735783
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10506098823592458,
+        -0.01016784410888083,
+        -0.04523502159409176
+      ],
+      "sourceTimeSeconds": 0.041,
+      "targetSampleIndex": 82
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.2494891073904166,
+        -0.19484006029004938,
+        1.356065964599489
+      ],
+      "d16LowPassForceNewtons": [
+        1.1554636352802063,
+        -0.21371920215879442,
+        1.3088290567019063
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.09402547211021028,
+        -0.018879141868745036,
+        -0.047236907897582725
+      ],
+      "sourceTimeSeconds": 0.0415,
+      "targetSampleIndex": 83
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.1229662440050747,
+        -0.2025623175151432,
+        1.3478584365676423
+      ],
+      "d16LowPassForceNewtons": [
+        1.036170706858798,
+        -0.22886107228992716,
+        1.288388686104065
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.08679553714627675,
+        -0.026298754774783967,
+        -0.059469750463577276
+      ],
+      "sourceTimeSeconds": 0.042,
+      "targetSampleIndex": 84
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.1671401112539832,
+        -0.2248483399066021,
+        1.372273984410764
+      ],
+      "d16LowPassForceNewtons": [
+        1.0771205598147366,
+        -0.25349823458448034,
+        1.2927090512708126
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.09001955143924656,
+        -0.028649894677878235,
+        -0.0795649331399515
+      ],
+      "sourceTimeSeconds": 0.0425,
+      "targetSampleIndex": 85
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.4027651043158897,
+        -0.2658573777669028,
+        1.4180585334428382
+      ],
+      "d16LowPassForceNewtons": [
+        1.2957366125180405,
+        -0.2900271493157598,
+        1.3137421645987637
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10702849179784923,
+        -0.024169771548856966,
+        -0.10431636884407447
+      ],
+      "sourceTimeSeconds": 0.043,
+      "targetSampleIndex": 86
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.7796372495509796,
+        -0.3241782794270607,
+        1.4758383775121278
+      ],
+      "d16LowPassForceNewtons": [
+        1.6433688370546151,
+        -0.3380002358292486,
+        1.3450827142267454
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.13626841249636445,
+        -0.013821956402187918,
+        -0.13075566328538235
+      ],
+      "sourceTimeSeconds": 0.0435,
+      "targetSampleIndex": 87
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.19571491805025,
+        -0.39286485362850343,
+        1.5424644486638912
+      ],
+      "d16LowPassForceNewtons": [
+        2.024310548924368,
+        -0.3939144571342108,
+        1.3855880221737056
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1714043691258822,
+        -0.001049603505707375,
+        -0.15687642649018563
+      ],
+      "sourceTimeSeconds": 0.044,
+      "targetSampleIndex": 88
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.534532691396211,
+        -0.46129903833307934,
+        1.6225934594575955
+      ],
+      "d16LowPassForceNewtons": [
+        2.331422204382544,
+        -0.4519370491213794,
+        1.440802877603936
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.20311048701366685,
+        0.00936198921169995,
+        -0.18179058185365937
+      ],
+      "sourceTimeSeconds": 0.0445,
+      "targetSampleIndex": 89
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.7070233547793303,
+        -0.518297630736709,
+        1.7270093918398932
+      ],
+      "d16LowPassForceNewtons": [
+        2.4850541684074416,
+        -0.5053625708721327,
+        1.5216660673342424
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.22196918637188867,
+        0.012935059864576326,
+        -0.20534332450565085
+      ],
+      "sourceTimeSeconds": 0.045,
+      "targetSampleIndex": 90
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.6823970112918096,
+        -0.5554529925430882,
+        1.8683398777199527
+      ],
+      "d16LowPassForceNewtons": [
+        2.460887382199481,
+        -0.54835077641946,
+        1.6409128664280326
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.22150962909232863,
+        0.007102216123628269,
+        -0.2274270112919201
+      ],
+      "sourceTimeSeconds": 0.0455,
+      "targetSampleIndex": 91
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.49694648331907,
+        -0.5696132914995335,
+        2.0556961925508004
+      ],
+      "d16LowPassForceNewtons": [
+        2.296588447524656,
+        -0.5773985315079132,
+        1.8083579497887905
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.20035803579441414,
+        -0.007785240008379657,
+        -0.24733824276200989
+      ],
+      "sourceTimeSeconds": 0.046,
+      "targetSampleIndex": 92
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.2379515871053854,
+        -0.5636920435280455,
+        2.2900897047558164
+      ],
+      "d16LowPassForceNewtons": [
+        2.0751825043245717,
+        -0.592083776381271,
+        2.0266064816845706
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1627690827808137,
+        -0.028391732853225493,
+        -0.26348322307124583
+      ],
+      "sourceTimeSeconds": 0.0465,
+      "targetSampleIndex": 93
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.009126197886049,
+        -0.5455524115773799,
+        2.5621808505549497
+      ],
+      "d16LowPassForceNewtons": [
+        1.891773026372809,
+        -0.5948571258829742,
+        2.2886039342981195
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1173531715132401,
+        -0.049304714305594355,
+        -0.2735769162568302
+      ],
+      "sourceTimeSeconds": 0.047,
+      "targetSampleIndex": 94
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.8908311111288285,
+        -0.5253498877839625,
+        2.853137333969244
+      ],
+      "d16LowPassForceNewtons": [
+        1.8164121416028696,
+        -0.5899681336561005,
+        2.577868001741785
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.07441896952595894,
+        -0.06461824587213794,
+        -0.2752693322274591
+      ],
+      "sourceTimeSeconds": 0.0475,
+      "targetSampleIndex": 95
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.9100512325915646,
+        -0.5122227461217351,
+        3.1383995751075884
+      ],
+      "d16LowPassForceNewtons": [
+        1.8672445212925586,
+        -0.5818957648909753,
+        2.871446967930317
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.04280671129900604,
+        -0.06967301876924015,
+        -0.26695260717727143
+      ],
+      "sourceTimeSeconds": 0.048,
+      "targetSampleIndex": 96
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.0312804971962732,
+        -0.511425522960343,
+        3.39329504987482
+      ],
+      "d16LowPassForceNewtons": [
+        2.004037905445461,
+        -0.5738139029132644,
+        3.144870229711699
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.027242591750812117,
+        -0.06238837995292135,
+        -0.24842482016312095
+      ],
+      "sourceTimeSeconds": 0.0485,
+      "targetSampleIndex": 97
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.1714567032123804,
+        -0.5228423907963085,
+        3.5989602840314316
+      ],
+      "d16LowPassForceNewtons": [
+        2.1444047349049358,
+        -0.5666108640674127,
+        3.377821725842431
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.027051968307444607,
+        -0.043768473271104225,
+        -0.22113855818900063
+      ],
+      "sourceTimeSeconds": 0.049,
+      "targetSampleIndex": 98
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.2329729917516827,
+        -0.5413528552105212,
+        3.7470271581422123
+      ],
+      "d16LowPassForceNewtons": [
+        2.1963702805361143,
+        -0.5588014465633484,
+        3.559106028224558
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.03660271121556846,
+        -0.01744859135282717,
+        -0.1879211299176542
+      ],
+      "sourceTimeSeconds": 0.0495,
+      "targetSampleIndex": 99
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.141998894800999,
+        -0.5589101276459018,
+        3.8419550216497074
+      ],
+      "d16LowPassForceNewtons": [
+        2.0947239954736467,
+        -0.547379276282596,
+        3.6896995048281567
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.047274899327352404,
+        0.011530851363305783,
+        -0.1522555168215507
+      ],
+      "sourceTimeSeconds": 0.05,
+      "targetSampleIndex": 100
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.8774196825736162,
+        -0.5676359443032638,
+        3.9005654265208456
+      ],
+      "d16LowPassForceNewtons": [
+        1.8271537377351947,
+        -0.5293484205058783,
+        3.7831875383149915
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.050265944838421506,
+        0.038287523797385536,
+        -0.11737788820585404
+      ],
+      "sourceTimeSeconds": 0.0505,
+      "targetSampleIndex": 101
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.479352799181645,
+        -0.5629137684961638,
+        3.949036926407543
+      ],
+      "d16LowPassForceNewtons": [
+        1.4400517109346473,
+        -0.5034429391490238,
+        3.8635217781284967
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.03930108824699774,
+        0.059470829347139986,
+        -0.08551514827904638
+      ],
+      "sourceTimeSeconds": 0.051,
+      "targetSampleIndex": 102
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.034025388145992,
+        -0.5454724340661622,
+        4.018148894661711
+      ],
+      "d16LowPassForceNewtons": [
+        1.0216278105864964,
+        -0.47146208518836974,
+        3.960619073663095
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.012397577559495554,
+        0.07401034887779245,
+        -0.05752982099861592
+      ],
+      "sourceTimeSeconds": 0.0515,
+      "targetSampleIndex": 103
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.6408259386073384,
+        -0.52178092313811,
+        4.137818435930913
+      ],
+      "d16LowPassForceNewtons": [
+        0.6686403296214292,
+        -0.4387417194175724,
+        4.104736044798768
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.027814391014090778,
+        0.08303920372053758,
+        -0.03308239113214473
+      ],
+      "sourceTimeSeconds": 0.052,
+      "targetSampleIndex": 104
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.3741548719077844,
+        -0.50260726996458,
+        4.331950408364401
+      ],
+      "d16LowPassForceNewtons": [
+        0.44936754747612284,
+        -0.41352154504909966,
+        4.320726654847541
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.07521267556833844,
+        0.08908572491548039,
+        -0.01122375351685978
+      ],
+      "sourceTimeSeconds": 0.0525,
+      "targetSampleIndex": 105
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.25471325811597206,
+        -0.5001563590749668,
+        4.614397108518684
+      ],
+      "d16LowPassForceNewtons": [
+        0.3769913155709803,
+        -0.40528334112055037,
+        4.623229278316513
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.12227805745500825,
+        0.09487301795441644,
+        0.008832169797829081
+      ],
+      "sourceTimeSeconds": 0.053,
+      "targetSampleIndex": 106
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.2413193013043647,
+        -0.524618256386394,
+        4.986516954013268
+      ],
+      "d16LowPassForceNewtons": [
+        0.40373356880709843,
+        -0.42243752848741273,
+        5.013589135922987
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.16241426750273374,
+        0.1021807278989813,
+        0.02707218190971883
+      ],
+      "sourceTimeSeconds": 0.0535,
+      "targetSampleIndex": 107
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.24656490401743095,
+        -0.5811116286650745,
+        5.4365321209630935
+      ],
+      "d16LowPassForceNewtons": [
+        0.43829727583813155,
+        -0.4699400583650541,
+        5.478978708622737
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.1917323718207006,
+        0.1111715703000204,
+        0.0424465876596436
+      ],
+      "sourceTimeSeconds": 0.054,
+      "targetSampleIndex": 108
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.1705549146846701,
+        -0.6678658602567347,
+        5.940667445263027
+      ],
+      "d16LowPassForceNewtons": [
+        0.38033581514396464,
+        -0.5474733425369618,
+        5.993807403624343
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.20978090045929454,
+        0.12039251771977288,
+        0.05313995836131635
+      ],
+      "sourceTimeSeconds": 0.0545,
+      "targetSampleIndex": 109
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.059961797388600524,
+        -0.7761123900201383,
+        6.465906225061958
+      ],
+      "d16LowPassForceNewtons": [
+        0.1591374206171552,
+        -0.6487103462418522,
+        6.523169039649829
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.2190992180057557,
+        0.12740204377828612,
+        0.057262814587871524
+      ],
+      "sourceTimeSeconds": 0.055,
+      "targetSampleIndex": 110
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.46192784851697044,
+        -0.8916767958771287,
+        6.974085548029355
+      ],
+      "d16LowPassForceNewtons": [
+        -0.2380525175255997,
+        -0.7619299670391539,
+        7.027796863334463
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.22387533099137075,
+        0.12974682883797473,
+        0.05371131530510809
+      ],
+      "sourceTimeSeconds": 0.0555,
+      "targetSampleIndex": 111
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.9872007127971021,
+        -0.9978237697843074,
+        7.426932112934338
+      ],
+      "d16LowPassForceNewtons": [
+        -0.7589387005052263,
+        -0.8719278524702685,
+        7.469799364412753
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.22826201229187582,
+        0.12589591731403893,
+        0.04286725147841519
+      ],
+      "sourceTimeSeconds": 0.056,
+      "targetSampleIndex": 112
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.5383138608005174,
+        -1.0786254846553736,
+        7.7914914688981645
+      ],
+      "d16LowPassForceNewtons": [
+        -1.3033501207156823,
+        -0.9628495566691053,
+        7.818345703889102
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.234963740084835,
+        0.11577592798626823,
+        0.026854234990937975
+      ],
+      "sourceTimeSeconds": 0.0565,
+      "targetSampleIndex": 113
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.003224469107982,
+        -1.1220580955850494,
+        8.04525056502502
+      ],
+      "d16LowPassForceNewtons": [
+        -1.7586753052742314,
+        -1.0213387104524172,
+        8.054463160233784
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.2445491638337507,
+        0.10071938513263223,
+        0.00921259520876383
+      ],
+      "sourceTimeSeconds": 0.057,
+      "targetSampleIndex": 114
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.2963146718631293,
+        -1.1221699952630106,
+        8.180150481717256
+      ],
+      "d16LowPassForceNewtons": [
+        -2.040671634565143,
+        -1.0392972918974108,
+        8.174204017794747
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.25564303729798654,
+        0.08287270336559982,
+        -0.005946463922509082
+      ],
+      "sourceTimeSeconds": 0.0575,
+      "targetSampleIndex": 115
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.390449693712786,
+        -1.079942322474194,
+        8.204699606097572
+      ],
+      "d16LowPassForceNewtons": [
+        -2.124624213059376,
+        -1.0156214621266557,
+        8.18963344686405
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.26582548065340994,
+        0.06432086034753826,
+        -0.015066159233521503
+      ],
+      "sourceTimeSeconds": 0.058,
+      "targetSampleIndex": 116
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.3280870024896405,
+        -1.0027845230138461,
+        8.143576348496135
+      ],
+      "d16LowPassForceNewtons": [
+        -2.0552550301735244,
+        -0.9564916230684357,
+        8.127370839815308
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.2728319723161161,
+        0.046292899945410415,
+        -0.016205508680826597
+      ],
+      "sourceTimeSeconds": 0.0585,
+      "targetSampleIndex": 117
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.2070986722824197,
+        -0.9028895424000991,
+        8.03446274923333
+      ],
+      "d16LowPassForceNewtons": [
+        -1.9315193915273179,
+        -0.8741130120685806,
+        8.024759674046239
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.27557928075510185,
+        0.0287765303315185,
+        -0.009703075187090349
+      ],
+      "sourceTimeSeconds": 0.059,
+      "targetSampleIndex": 118
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.146265996303403,
+        -0.7948591863589074,
+        7.922332959802666
+      ],
+      "d16LowPassForceNewtons": [
+        -1.871616243910823,
+        -0.7841534277150024,
+        7.924107522929945
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.27464975239257994,
+        0.010705758643904995,
+        0.001774563127279194
+      ],
+      "sourceTimeSeconds": 0.0595,
+      "targetSampleIndex": 119
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.2428789068359922,
+        -0.6930841987481536,
+        7.851946039272766
+      ],
+      "d16LowPassForceNewtons": [
+        -1.970784210666307,
+        -0.7024285727139999,
+        7.865780748043422
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.2720946961696853,
+        -0.009344373965846309,
+        0.013834708770655624
+      ],
+      "sourceTimeSeconds": 0.06,
+      "targetSampleIndex": 120
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.537758159002485,
+        -0.6093417939192106,
+        7.859748365024512
+      ],
+      "d16LowPassForceNewtons": [
+        -2.2670838735060106,
+        -0.6415714664383823,
+        7.881204644303805
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.27067428549647454,
+        -0.03222967251917164,
+        0.02145627927929361
+      ],
+      "sourceTimeSeconds": 0.0605,
+      "targetSampleIndex": 121
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.000267435839332,
+        -0.5509875997639329,
+        7.9666659285961074
+      ],
+      "d16LowPassForceNewtons": [
+        -2.727425339796128,
+        -0.6084424882529906,
+        7.986956116352191
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.2728420960432043,
+        -0.057454888489057776,
+        0.02029018775608371
+      ],
+      "sourceTimeSeconds": 0.061,
+      "targetSampleIndex": 122
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.5385466218158985,
+        -0.5199995798468474,
+        8.173275865001782
+      ],
+      "d16LowPassForceNewtons": [
+        -3.258701001857847,
+        -0.6028789650181946,
+        8.181095393704133
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.27984561995805146,
+        -0.08287938517134719,
+        0.007819528702350809
+      ],
+      "sourceTimeSeconds": 0.0615,
+      "targetSampleIndex": 123
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -4.031021560716466,
+        -0.5129970659662675,
+        8.458550382263828
+      ],
+      "d16LowPassForceNewtons": [
+        -3.7397809815329923,
+        -0.6180775162667252,
+        8.442634334788384
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.2912405791834738,
+        -0.10508045030045776,
+        -0.015916047475444728
+      ],
+      "sourceTimeSeconds": 0.062,
+      "targetSampleIndex": 124
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -4.367632021178077,
+        -0.522215324526905,
+        8.782782640188419
+      ],
+      "d16LowPassForceNewtons": [
+        -4.062684134741728,
+        -0.6425162476154233,
+        8.734577814809777
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.3049478864363486,
+        -0.12030092308851825,
+        -0.04820482537864201
+      ],
+      "sourceTimeSeconds": 0.0625,
+      "targetSampleIndex": 125
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -4.485952658235669,
+        -0.5372684773314793,
+        9.094511576148173
+      ],
+      "d16LowPassForceNewtons": [
+        -4.168163555099886,
+        -0.6629493593028574,
+        9.010339437601985
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.3177891031357829,
+        -0.12568088197137806,
+        -0.08417213854618844
+      ],
+      "sourceTimeSeconds": 0.063,
+      "targetSampleIndex": 126
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -4.389594705097316,
+        -0.5473917772134125,
+        9.340395470206616
+      ],
+      "d16LowPassForceNewtons": [
+        -4.0633037460777395,
+        -0.6677387773681285,
+        9.222613002032693
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.32629095901957683,
+        -0.120347000154716,
+        -0.1177824681739228
+      ],
+      "sourceTimeSeconds": 0.0635,
+      "targetSampleIndex": 127
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -4.143047133727762,
+        -0.5437421874673652,
+        9.476217350814366
+      ],
+      "d16LowPassForceNewtons": [
+        -3.815550215311956,
+        -0.6496991893538601,
+        9.333117154306189
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.3274969184158065,
+        -0.10595700188649482,
+        -0.1431001965081773
+      ],
+      "sourceTimeSeconds": 0.064,
+      "targetSampleIndex": 128
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.8458405459948883,
+        -0.5212879423327189,
+        9.476728164901983
+      ],
+      "d16LowPassForceNewtons": [
+        -3.526272443275992,
+        -0.6077542438822067,
+        9.32119453572478
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.31956810271889635,
+        -0.08646630154948776,
+        -0.15553362917720293
+      ],
+      "sourceTimeSeconds": 0.0645,
+      "targetSampleIndex": 129
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.596309417260903,
+        -0.4798648556427659,
+        9.342009260465838
+      ],
+      "d16LowPassForceNewtons": [
+        -3.2942455329982328,
+        -0.5470076530969681,
+        9.189203189905179
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.30206388426267017,
+        -0.06714279745420221,
+        -0.15280607056065953
+      ],
+      "sourceTimeSeconds": 0.065,
+      "targetSampleIndex": 130
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.458568385488062,
+        -0.4241321191296176,
+        9.098554295895713
+      ],
+      "d16LowPassForceNewtons": [
+        -3.182656931468259,
+        -0.4772467068483834,
+        8.96309130022103
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.2759114540198029,
+        -0.05311458771876576,
+        -0.13546299567468267
+      ],
+      "sourceTimeSeconds": 0.0655,
+      "targetSampleIndex": 131
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.444468925294709,
+        -0.3624036559268536,
+        8.794304993468677
+      ],
+      "d16LowPassForceNewtons": [
+        -3.2013134324303714,
+        -0.4103071039311114,
+        8.687488102206327
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.24315549286433757,
+        -0.04790344800425783,
+        -0.1068168912623495
+      ],
+      "sourceTimeSeconds": 0.066,
+      "targetSampleIndex": 132
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.516113952684497,
+        -0.30460899421566145,
+        8.488255894218293
+      ],
+      "d16LowPassForceNewtons": [
+        -3.3095140837286063,
+        -0.3570233438885492,
+        8.415921792892279
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.20659986895589055,
+        -0.05241434967288777,
+        -0.07233410132601392
+      ],
+      "sourceTimeSeconds": 0.0665,
+      "targetSampleIndex": 133
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.60645958206968,
+        -0.25987393854088864,
+        8.236669986736938
+      ],
+      "d16LowPassForceNewtons": [
+        -3.437038747474662,
+        -0.3245840497992543,
+        8.198101830585834
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.1694208345950181,
+        -0.06471011125836568,
+        -0.038568156151104205
+      ],
+      "sourceTimeSeconds": 0.067,
+      "targetSampleIndex": 134
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.6487600478348794,
+        -0.2343307967481998,
+        8.079043744557382
+      ],
+      "d16LowPassForceNewtons": [
+        -3.5139823613762164,
+        -0.31497811466558623,
+        8.067212461069818
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.13477768645866295,
+        -0.08064731791738644,
+        -0.011831283487563127
+      ],
+      "sourceTimeSeconds": 0.0675,
+      "targetSampleIndex": 135
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.602688632982635,
+        -0.22972316980745744,
+        8.027370388617365
+      ],
+      "d16LowPassForceNewtons": [
+        -3.4972777180545096,
+        -0.3248934758050249,
+        8.030511414032816
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.10541091492812527,
+        -0.09517030599756748,
+        0.0031410254154504713
+      ],
+      "sourceTimeSeconds": 0.068,
+      "targetSampleIndex": 136
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.4669241261577826,
+        -0.24316206529793793,
+        8.061750760437441
+      ],
+      "d16LowPassForceNewtons": [
+        -3.3836996439723475,
+        -0.3470106154763847,
+        8.066002909968201
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.0832244821854351,
+        -0.10384855017844674,
+        0.004252149530760363
+      ],
+      "sourceTimeSeconds": 0.0685,
+      "targetSampleIndex": 137
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.2739352639828376,
+        -0.26807218463218097,
+        8.133998328081166
+      ],
+      "d16LowPassForceNewtons": [
+        -3.205038904540344,
+        -0.3722419668333859,
+        8.126577928299534
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.06889635944249362,
+        -0.10416978220120493,
+        -0.007420399781631559
+      ],
+      "sourceTimeSeconds": 0.069,
+      "targetSampleIndex": 138
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -3.070179319690985,
+        -0.2960327655761025,
+        8.17885672016963
+      ],
+      "d16LowPassForceNewtons": [
+        -3.008557730707224,
+        -0.39222224899684016,
+        8.151073767215635
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.06162158898376058,
+        -0.09618948342073769,
+        -0.02778295295399502
+      ],
+      "sourceTimeSeconds": 0.0695,
+      "targetSampleIndex": 139
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.890931997826246,
+        -0.3189696508643333,
+        8.130305974888499
+      ],
+      "d16LowPassForceNewtons": [
+        -2.831808499781319,
+        -0.401324620065983,
+        8.079705319073804
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.059123498044927114,
+        -0.0823549692016497,
+        -0.050600655814694306
+      ],
+      "sourceTimeSeconds": 0.07,
+      "targetSampleIndex": 140
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.7410784040836225,
+        -0.3310731456892545,
+        7.93879830594674
+      ],
+      "d16LowPassForceNewtons": [
+        -2.683040895934054,
+        -0.39766711249385966,
+        7.869859036843539
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.05803750814956832,
+        -0.06659396680460516,
+        -0.06893926910320136
+      ],
+      "sourceTimeSeconds": 0.0705,
+      "targetSampleIndex": 141
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.590581993797407,
+        -0.3299261717959246,
+        7.58468505014438
+      ],
+      "d16LowPassForceNewtons": [
+        -2.535910924519884,
+        -0.38291776704216296,
+        7.5078249441460985
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.054671069277522744,
+        -0.052991595246238365,
+        -0.07686010599828119
+      ],
+      "sourceTimeSeconds": 0.071,
+      "targetSampleIndex": 142
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.3870749672012157,
+        -0.31659263496161166,
+        7.083864610388388
+      ],
+      "d16LowPassForceNewtons": [
+        -2.3410748670837034,
+        -0.36109185087374895,
+        7.012913285527425
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.04600010011751232,
+        -0.04449921591213729,
+        -0.070951324860963
+      ],
+      "sourceTimeSeconds": 0.0715,
+      "targetSampleIndex": 143
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -2.0806293341210678,
+        -0.2947483983956896,
+        6.483700053884772
+      ],
+      "d16LowPassForceNewtons": [
+        -2.049997577990409,
+        -0.33683613611685226,
+        6.432421566905656
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.030631756130658605,
+        -0.042087737721162644,
+        -0.051278486979115634
+      ],
+      "sourceTimeSeconds": 0.072,
+      "targetSampleIndex": 144
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.6502991320720906,
+        -0.26922638314176883,
+        5.850022013989877
+      ],
+      "d16LowPassForceNewtons": [
+        -1.6408925168442954,
+        -0.3138188800288244,
+        5.828564628869161
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.009406615227795179,
+        -0.04459249688705558,
+        -0.0214573851207156
+      ],
+      "sourceTimeSeconds": 0.0725,
+      "targetSampleIndex": 145
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.1207664423826382,
+        -0.2444987566659225,
+        5.248753939775806
+      ],
+      "d16LowPassForceNewtons": [
+        -1.1353948220374033,
+        -0.29375624912903003,
+        5.2609800068423525
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.014628379654765045,
+        -0.04925749246310754,
+        0.012226067066546165
+      ],
+      "sourceTimeSeconds": 0.073,
+      "targetSampleIndex": 146
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.5610086625659637,
+        -0.22358744821905158,
+        4.727514089820809
+      ],
+      "d16LowPassForceNewtons": [
+        -0.5979803568158553,
+        -0.2763443185576799,
+        4.769970019450147
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.03697169424989155,
+        -0.0527568703386283,
+        0.04245592962933831
+      ],
+      "sourceTimeSeconds": 0.0735,
+      "targetSampleIndex": 147
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.06401405464762298,
+        -0.20769829609026674,
+        4.30281351778219
+      ],
+      "d16LowPassForceNewtons": [
+        -0.11701248798986515,
+        -0.26002609076545563,
+        4.365671006697028
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.05299843334224216,
+        -0.05232779467518889,
+        0.06285748891483767
+      ],
+      "sourceTimeSeconds": 0.074,
+      "targetSampleIndex": 148
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.2855765646098827,
+        -0.19658988024498764,
+        3.9569778198020025
+      ],
+      "d16LowPassForceNewtons": [
+        0.22607721592376867,
+        -0.24322519665992073,
+        4.026723276866475
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.059499348686114006,
+        -0.0466353164149331,
+        0.06974545706447266
+      ],
+      "sourceTimeSeconds": 0.0745,
+      "targetSampleIndex": 149
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.4436036610306857,
+        -0.18942041950622834,
+        3.646023177641598
+      ],
+      "d16LowPassForceNewtons": [
+        0.3876719579410634,
+        -0.22552469708767087,
+        3.7091538283260213
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.05593170308962231,
+        -0.03610427758144252,
+        0.06313065068442336
+      ],
+      "sourceTimeSeconds": 0.075,
+      "targetSampleIndex": 150
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.4253121273179966,
+        -0.18566067089029603,
+        3.3162532622085
+      ],
+      "d16LowPassForceNewtons": [
+        0.3803882006441689,
+        -0.20831050756834654,
+        3.3629192589770343
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.04492392667382772,
+        -0.02264983667805051,
+        0.046665996768534335
+      ],
+      "sourceTimeSeconds": 0.0755,
+      "targetSampleIndex": 151
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.30260887345338067,
+        -0.18566944361094703,
+        2.924403555116523
+      ],
+      "d16LowPassForceNewtons": [
+        0.27082728955754115,
+        -0.19461464043375407,
+        2.9509275152860104
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.031781583895839516,
+        -0.008945196822807033,
+        0.026523960169487548
+      ],
+      "sourceTimeSeconds": 0.076,
+      "targetSampleIndex": 152
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.1793678350853789,
+        -0.1906911166239672,
+        2.454743013857063
+      ],
+      "d16LowPassForceNewtons": [
+        0.15630874723036917,
+        -0.18820215323360365,
+        2.4642705698703318
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.023059087855009736,
+        0.0024889633903635577,
+        0.009527556013268601
+      ],
+      "sourceTimeSeconds": 0.0765,
+      "targetSampleIndex": 153
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.1532038833908978,
+        -0.20228441821356258,
+        1.9272164548739992
+      ],
+      "d16LowPassForceNewtons": [
+        0.12861701183944302,
+        -0.19223381636161244,
+        1.9283162641703955
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.02458687155145478,
+        0.010050601851950142,
+        0.0010998092963963035
+      ],
+      "sourceTimeSeconds": 0.077,
+      "targetSampleIndex": 154
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.2779484225763452,
+        -0.2214306775677204,
+        1.3933856402944613
+      ],
+      "d16LowPassForceNewtons": [
+        0.23838626039753974,
+        -0.20799941911094724,
+        1.397053556911394
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.03956216217880548,
+        0.013431258456773149,
+        0.003667916616932665
+      ],
+      "sourceTimeSeconds": 0.0775,
+      "targetSampleIndex": 155
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.5415378646261406,
+        -0.24770602818415033,
+        0.9208399972835564
+      ],
+      "d16LowPassForceNewtons": [
+        0.47420060076815607,
+        -0.23419622499592901,
+        0.9368669932946938
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.06733726385798455,
+        0.013509803188221314,
+        0.01602699601113744
+      ],
+      "sourceTimeSeconds": 0.078,
+      "targetSampleIndex": 156
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.8687349901770056,
+        -0.2788846018349196,
+        0.5706712600167078
+      ],
+      "d16LowPassForceNewtons": [
+        0.7653856243937982,
+        -0.26703248235647076,
+        0.604540416059033
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10334936578320741,
+        0.01185211947844883,
+        0.03386915604232521
+      ],
+      "sourceTimeSeconds": 0.0785,
+      "targetSampleIndex": 157
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.1488537558339116,
+        -0.31117706977427406,
+        0.3752288456576138
+      ],
+      "d16LowPassForceNewtons": [
+        1.0085710748659296,
+        -0.3011396618136551,
+        0.42653855692873605
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.14028268096798202,
+        0.010037407960618971,
+        0.05130971127112227
+      ],
+      "sourceTimeSeconds": 0.079,
+      "targetSampleIndex": 158
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.2788895608638224,
+        -0.3400649910221371,
+        0.32373648378302083
+      ],
+      "d16LowPassForceNewtons": [
+        1.1087392214170886,
+        -0.3309883851480746,
+        0.3866522164740206
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.17015033944673386,
+        0.009076605874062504,
+        0.06291573269099976
+      ],
+      "sourceTimeSeconds": 0.0795,
+      "targetSampleIndex": 159
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.2059593892887635,
+        -0.3614608737527793,
+        0.36119681179372176
+      ],
+      "d16LowPassForceNewtons": [
+        1.0192928787436921,
+        -0.3523273924123804,
+        0.42676991132843894
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.18666651054507133,
+        0.009133481340398875,
+        0.06557309953471718
+      ],
+      "sourceTimeSeconds": 0.08,
+      "targetSampleIndex": 160
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.9524100449390748,
+        -0.3727952634287893,
+        0.4019108398182696
+      ],
+      "d16LowPassForceNewtons": [
+        0.7652489050395911,
+        -0.3631655194704853,
+        0.46148793652238573
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.18716113989948369,
+        0.009629743958304016,
+        0.05957709670411615
+      ],
+      "sourceTimeSeconds": 0.0805,
+      "targetSampleIndex": 161
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.612843934030306,
+        -0.3736542797487801,
+        0.35415236046880055
+      ],
+      "d16LowPassForceNewtons": [
+        0.43942609614624534,
+        -0.363991122619638,
+        0.4027384729017404
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.17341783788406068,
+        0.00966315712914212,
+        0.048586112432939865
+      ],
+      "sourceTimeSeconds": 0.081,
+      "targetSampleIndex": 162
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.32265516195761246,
+        -0.3657542781027425,
+        0.14862533929327765
+      ],
+      "d16LowPassForceNewtons": [
+        0.17150198003003986,
+        -0.35720485510143085,
+        0.18708069852647005
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1511531819275726,
+        0.008549423001311673,
+        0.038455359233192404
+      ],
+      "sourceTimeSeconds": 0.0815,
+      "targetSampleIndex": 163
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.2086733132330617,
+        -0.35228099542739905,
+        -0.23834994702098047
+      ],
+      "d16LowPassForceNewtons": [
+        0.08038053394294442,
+        -0.3460240053954384,
+        -0.20300868841998027
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1282927792901173,
+        0.006256990031960619,
+        0.03534125860100021
+      ],
+      "sourceTimeSeconds": 0.082,
+      "targetSampleIndex": 164
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.3399681381344304,
+        -0.3368458220219482,
+        -0.7747485513406239
+      ],
+      "d16LowPassForceNewtons": [
+        0.2273789961861522,
+        -0.33329411393683744,
+        -0.7310387260311184
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.11258914194827818,
+        0.0035517080851107385,
+        0.04370982530950551
+      ],
+      "sourceTimeSeconds": 0.0825,
+      "targetSampleIndex": 165
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.6977462695431754,
+        -0.3224359949634314,
+        -1.3797981571085403
+      ],
+      "d16LowPassForceNewtons": [
+        0.5884099199973185,
+        -0.320651010050616,
+        -1.3148880369895406
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10933634954585691,
+        0.0017849849128153683,
+        0.06491012011899966
+      ],
+      "sourceTimeSeconds": 0.083,
+      "targetSampleIndex": 166
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.17693166212619,
+        -0.31071325790237514,
+        -1.9465588095323922
+      ],
+      "d16LowPassForceNewtons": [
+        1.057036464250439,
+        -0.3083136440707945,
+        -1.849782653297634
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.11989519787575098,
+        0.0023996138315806603,
+        0.09677615623475821
+      ],
+      "sourceTimeSeconds": 0.0835,
+      "targetSampleIndex": 167
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.6205571654718853,
+        -0.3018594957578258,
+        -2.373550300800228
+      ],
+      "d16LowPassForceNewtons": [
+        1.4790919848318882,
+        -0.29552049180522555,
+        -2.2391849337392586
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.14146518063999713,
+        0.006339003952600231,
+        0.13436536706096947
+      ],
+      "sourceTimeSeconds": 0.084,
+      "targetSampleIndex": 168
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.875643416688586,
+        -0.2949432273945576,
+        -2.595636881809504
+      ],
+      "d16LowPassForceNewtons": [
+        1.7075204776287676,
+        -0.28135605516689766,
+        -2.4240846756380523
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.16812293905981845,
+        0.013587172227659927,
+        0.17155220617145162
+      ],
+      "sourceTimeSeconds": 0.0845,
+      "targetSampleIndex": 169
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.8504956337684302,
+        -0.28857928508469316,
+        -2.604244877643257
+      ],
+      "d16LowPassForceNewtons": [
+        1.6577606555358877,
+        -0.2655554310726312,
+        -2.4013371727768673
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1927349782325425,
+        0.023023854012061973,
+        0.20290770486638987
+      ],
+      "sourceTimeSeconds": 0.085,
+      "targetSampleIndex": 170
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.551797904262837,
+        -0.28155690114476306,
+        -2.450103055172031
+      ],
+      "d16LowPassForceNewtons": [
+        1.342711690005296,
+        -0.24888919635849385,
+        -2.224892398139066
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.20908621425754093,
+        0.03266770478626921,
+        0.22521065703296506
+      ],
+      "sourceTimeSeconds": 0.0855,
+      "targetSampleIndex": 171
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.086443998997861,
+        -0.2731569264790743,
+        -2.227151867354257
+      ],
+      "d16LowPassForceNewtons": [
+        0.8729112325043872,
+        -0.23291547577653773,
+        -1.9890688790385485
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.21353276649347375,
+        0.04024145070253657,
+        0.2380829883157085
+      ],
+      "sourceTimeSeconds": 0.086,
+      "targetSampleIndex": 172
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.6256063930535368,
+        -0.2630460541925383,
+        -2.0423489301940214
+      ],
+      "d16LowPassForceNewtons": [
+        0.41991523227676353,
+        -0.21917006675716932,
+        -1.7987811376111447
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.2056911607767733,
+        0.04387598743536897,
+        0.24356779258287675
+      ],
+      "sourceTimeSeconds": 0.0865,
+      "targetSampleIndex": 173
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.34265292058107744,
+        -0.2508523496362834,
+        -1.9808210398469086
+      ],
+      "d16LowPassForceNewtons": [
+        0.15461614698978804,
+        -0.2081351613575407,
+        -1.735964772235867
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1880367735912894,
+        0.042717188278742685,
+        0.2448562676110415
+      ],
+      "sourceTimeSeconds": 0.087,
+      "targetSampleIndex": 174
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.3469450746590198,
+        -0.23569716455085835,
+        -2.0775808000226323
+      ],
+      "d16LowPassForceNewtons": [
+        0.18227681992926825,
+        -0.1984692687143473,
+        -1.8329013855756215
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.16466825472975155,
+        0.03722789583651104,
+        0.2446794144470108
+      ],
+      "sourceTimeSeconds": 0.0875,
+      "targetSampleIndex": 175
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.6382233093479102,
+        -0.216005025468213,
+        -2.3051719126630252
+      ],
+      "d16LowPassForceNewtons": [
+        0.4984595672686942,
+        -0.18692737066453916,
+        -2.0611725551593336
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.13976374207921594,
+        0.029077654803673858,
+        0.24399935750369162
+      ],
+      "sourceTimeSeconds": 0.088,
+      "targetSampleIndex": 176
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.0998571945557478,
+        -0.1898066371320189,
+        -2.581643894781823
+      ],
+      "d16LowPassForceNewtons": [
+        0.9835404498238398,
+        -0.16915752174363025,
+        -2.3401246577646715
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.116316744731908,
+        0.02064911538838865,
+        0.2415192370171515
+      ],
+      "sourceTimeSeconds": 0.0885,
+      "targetSampleIndex": 177
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.5356980592651772,
+        -0.1555265020962101,
+        -2.7967372844305047
+      ],
+      "d16LowPassForceNewtons": [
+        1.440116888311476,
+        -0.14121057965537542,
+        -2.562516754819261
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.09558117095370111,
+        0.014315922440834683,
+        0.23422052961124384
+      ],
+      "sourceTimeSeconds": 0.089,
+      "targetSampleIndex": 178
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.7393266300009147,
+        -0.11299491980995709,
+        -2.848187490612324
+      ],
+      "d16LowPassForceNewtons": [
+        1.6619818486550373,
+        -0.10127466989186233,
+        -2.629443251999658
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.07734478134587741,
+        0.011720249918094755,
+        0.21874423861266612
+      ],
+      "sourceTimeSeconds": 0.0895,
+      "targetSampleIndex": 179
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.571926357627167,
+        -0.06425313396562542,
+        -2.676597520244191
+      ],
+      "d16LowPassForceNewtons": [
+        1.511114366621488,
+        -0.050977337655205,
+        -2.4834965364860486
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.06081199100567902,
+        0.013275796310420418,
+        0.19310098375814233
+      ],
+      "sourceTimeSeconds": 0.09,
+      "targetSampleIndex": 180
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.0206054981112223,
+        -0.013715067283052626,
+        -2.2875650429759045
+      ],
+      "d16LowPassForceNewtons": [
+        0.9749638503877442,
+        0.00433186144304821,
+        -2.1295172733637586
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.04564164772347801,
+        0.018046928726100836,
+        0.15804776961214584
+      ],
+      "sourceTimeSeconds": 0.0905,
+      "targetSampleIndex": 181
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.2146974487386724,
+        0.03256645591374856,
+        -1.753661391110389
+      ],
+      "d16LowPassForceNewtons": [
+        0.18205527768466398,
+        0.05660012508048802,
+        -1.6360972551999169
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.032642171054008406,
+        0.024033669166739463,
+        0.11756413591047221
+      ],
+      "sourceTimeSeconds": 0.091,
+      "targetSampleIndex": 182
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.6082806244885197,
+        0.06845854449150977,
+        -1.1952249175200473
+      ],
+      "d16LowPassForceNewtons": [
+        -0.63206913267184,
+        0.09722474814821559,
+        -1.1170565639540664
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.023788508183320234,
+        0.02876620365670582,
+        0.07816835356598095
+      ],
+      "sourceTimeSeconds": 0.0915,
+      "targetSampleIndex": 183
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.1775494858889792,
+        0.0897144597613541,
+        -0.7457045876477988
+      ],
+      "d16LowPassForceNewtons": [
+        -1.1990751618129099,
+        0.11973653316683236,
+        -0.6984763161112335
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.02152567592393062,
+        0.03002207340547826,
+        0.04722827153656528
+      ],
+      "sourceTimeSeconds": 0.092,
+      "targetSampleIndex": 184
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.2803011641409199,
+        0.09569330880618263,
+        -0.5122734923789146
+      ],
+      "d16LowPassForceNewtons": [
+        -1.307942062052167,
+        0.12214429673214397,
+        -0.48147960329426814
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.02764089791124702,
+        0.026450987925961345,
+        0.030793889084646475
+      ],
+      "sourceTimeSeconds": 0.0925,
+      "targetSampleIndex": 185
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8377926430885518,
+        0.0901607073506854,
+        -0.5439974771568293
+      ],
+      "d16LowPassForceNewtons": [
+        -0.879984545576273,
+        0.10809212717743819,
+        -0.5123230044135133
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.0421919024877212,
+        0.01793141982675278,
+        0.03167447274331603
+      ],
+      "sourceTimeSeconds": 0.093,
+      "targetSampleIndex": 186
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.061048996858952764,
+        0.08073077219658223,
+        -0.8174728247894275
+      ],
+      "d16LowPassForceNewtons": [
+        -0.001937976166520916,
+        0.08630380228327807,
+        -0.7690449530683237
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.06298697302547368,
+        0.005573030086695838,
+        0.048427871721103855
+      ],
+      "sourceTimeSeconds": 0.0935,
+      "targetSampleIndex": 187
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.1818816514196964,
+        0.07693582264949772,
+        -1.2443059015919682
+      ],
+      "d16LowPassForceNewtons": [
+        1.0959678114819864,
+        0.06832373452240835,
+        -1.1686679387460686
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.08591383993770996,
+        -0.00861208812708937,
+        0.07563796284589963
+      ],
+      "sourceTimeSeconds": 0.094,
+      "targetSampleIndex": 188
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.217270595203742,
+        0.0873931233803684,
+        -1.6978986712805972
+      ],
+      "d16LowPassForceNewtons": [
+        2.111188363540868,
+        0.06513971687786581,
+        -1.5924719369850364
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.106082231662874,
+        -0.0222534065025026,
+        0.10542673429556082
+      ],
+      "sourceTimeSeconds": 0.0945,
+      "targetSampleIndex": 189
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.885606218803237,
+        0.11690816682071233,
+        -2.0509692368479455
+      ],
+      "d16LowPassForceNewtons": [
+        2.7661993929556288,
+        0.0836930313001191,
+        -1.9212398612540036
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1194068258476082,
+        -0.03321513552059323,
+        0.12972937559394193
+      ],
+      "sourceTimeSeconds": 0.095,
+      "targetSampleIndex": 190
+    },
+    {
+      "d12LowPassForceNewtons": [
+        3.0232640196144107,
+        0.1644680398694248,
+        -2.212018805230852
+      ],
+      "d16LowPassForceNewtons": [
+        2.899215773450751,
+        0.12439204443925987,
+        -2.0694184493627525
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.12404824616365984,
+        -0.04007599543016492,
+        0.14260035586809927
+      ],
+      "sourceTimeSeconds": 0.0955,
+      "targetSampleIndex": 191
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.6382550914388014,
+        0.22287350713723678,
+        -2.149560621486433
+      ],
+      "d16LowPassForceNewtons": [
+        2.5171160126847165,
+        0.18049051248995854,
+        -2.007752906996466
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.12113907875408492,
+        -0.04238299464727824,
+        0.1418077144899672
+      ],
+      "sourceTimeSeconds": 0.096,
+      "targetSampleIndex": 192
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.9063829824948049,
+        0.2802803579751339,
+        -1.8970961291507749
+      ],
+      "d16LowPassForceNewtons": [
+        1.7919253665589387,
+        0.23963794859013132,
+        -1.7678800918442483
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.11445761593586612,
+        -0.040642409385002576,
+        0.12921603730652653
+      ],
+      "sourceTimeSeconds": 0.0965,
+      "targetSampleIndex": 193
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.1105737460396974,
+        0.32331427622149234,
+        -1.53813913379556
+      ],
+      "d16LowPassForceNewtons": [
+        1.0014790271456178,
+        0.2872275793367961,
+        -1.4282681972858964
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10909471889407962,
+        -0.036086696884696234,
+        0.10987093650966373
+      ],
+      "sourceTimeSeconds": 0.097,
+      "targetSampleIndex": 194
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.5437824850306614,
+        0.34088768425198906,
+        -1.1769507291965677
+      ],
+      "d16LowPassForceNewtons": [
+        0.43423335821642267,
+        0.31057861989758206,
+        -1.086815607336693
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10954912681423873,
+        -0.030309064354407,
+        0.09013512185987471
+      ],
+      "sourceTimeSeconds": 0.0975,
+      "targetSampleIndex": 195
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.4087621349562415,
+        0.32756726697753413,
+        -0.9049816631900935
+      ],
+      "d16LowPassForceNewtons": [
+        0.290827419038139,
+        0.3026913218905447,
+        -0.8294455885921305
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.11793471591810245,
+        -0.024875945086989426,
+        0.07553607459796308
+      ],
+      "sourceTimeSeconds": 0.098,
+      "targetSampleIndex": 196
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.7493863976900013,
+        0.28542443837677195,
+        -0.7739617251264161
+      ],
+      "d16LowPassForceNewtons": [
+        0.6163989763516655,
+        0.2644119830665861,
+        -0.7049002066412923
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.13298742133833574,
+        -0.021012455310185862,
+        0.06906151848512387
+      ],
+      "sourceTimeSeconds": 0.0985,
+      "targetSampleIndex": 197
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.4375119107403371,
+        0.22373632475984384,
+        -0.7839152364884999
+      ],
+      "d16LowPassForceNewtons": [
+        1.287207158316872,
+        0.20431821485353785,
+        -0.713456970095633
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.15030475242346508,
+        -0.01941810990630599,
+        0.0704582663928669
+      ],
+      "sourceTimeSeconds": 0.099,
+      "targetSampleIndex": 198
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.2201668510823938,
+        0.15656103861523893,
+        -0.889103189339818
+      ],
+      "d16LowPassForceNewtons": [
+        2.05634853411841,
+        0.13633543345465135,
+        -0.8123827448481847
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.16381831696398397,
+        -0.02022560516058758,
+        0.07672044449163329
+      ],
+      "sourceTimeSeconds": 0.0995,
+      "targetSampleIndex": 199
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.810810913207048,
+        0.09887874402956745,
+        -1.0188246758651045
+      ],
+      "d16LowPassForceNewtons": [
+        2.6427702808176887,
+        0.07579986002333296,
+        -0.9352963196099315
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.16804063238935907,
+        -0.023078884006234493,
+        0.08352835625517296
+      ],
+      "sourceTimeSeconds": 0.1,
+      "targetSampleIndex": 200
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.9928801253629604,
+        0.06245045929006052,
+        -1.105194852181705
+      ],
+      "d16LowPassForceNewtons": [
+        2.8325705782764485,
+        0.03516396056746595,
+        -1.0181240902557258
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1603095470865119,
+        -0.027286498722594567,
+        0.08707076192597918
+      ],
+      "sourceTimeSeconds": 0.1005,
+      "targetSampleIndex": 201
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.6992880217643807,
+        0.05264534668052244,
+        -1.1080203980639223
+      ],
+      "d16LowPassForceNewtons": [
+        2.557087702178118,
+        0.02064198809697162,
+        -1.0224544882922064
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.14220031958626267,
+        -0.032003358583550814,
+        0.08556590977171585
+      ],
+      "sourceTimeSeconds": 0.101,
+      "targetSampleIndex": 202
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.039665628373977,
+        0.06718773122372673,
+        -1.0282942674935793
+      ],
+      "d16LowPassForceNewtons": [
+        1.9201463011921887,
+        0.030784635241110483,
+        -0.9483664384410473
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.11951932718178848,
+        -0.03640309598261625,
+        0.07992782905253204
+      ],
+      "sourceTimeSeconds": 0.1015,
+      "targetSampleIndex": 203
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.2651309984410983,
+        0.09717212535449413,
+        -0.9060503352635169
+      ],
+      "d16LowPassForceNewtons": [
+        1.1643698967665541,
+        0.05735532375041658,
+        -0.8326982724915812
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10076110167454422,
+        -0.039816801604077544,
+        0.07335206277193562
+      ],
+      "sourceTimeSeconds": 0.102,
+      "targetSampleIndex": 204
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.6820601152635162,
+        0.12998371578393475,
+        -0.8038448402134698
+      ],
+      "d16LowPassForceNewtons": [
+        0.5876145484068707,
+        0.08815832390183173,
+        -0.733847513019641
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.09444556685664551,
+        -0.04182539188210302,
+        0.06999732719382878
+      ],
+      "sourceTimeSeconds": 0.1025,
+      "targetSampleIndex": 205
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.5441623755499713,
+        0.1531742501924258,
+        -0.7820579924520394
+      ],
+      "d16LowPassForceNewtons": [
+        0.4379933161290217,
+        0.1108744724627195,
+        -0.7087881881535429
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.10616905942094956,
+        -0.042299777729706306,
+        0.0732698042984965
+      ],
+      "sourceTimeSeconds": 0.103,
+      "targetSampleIndex": 206
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.9599523956346516,
+        0.15806839237422474,
+        -0.8748862673213089
+      ],
+      "d16LowPassForceNewtons": [
+        0.8236017285541654,
+        0.11668170869325468,
+        -0.7905296601993337
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.13635066708048627,
+        -0.04138668368097005,
+        0.08435660712197524
+      ],
+      "sourceTimeSeconds": 0.1035,
+      "targetSampleIndex": 207
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.8477496565926383,
+        0.14199788470828265,
+        -1.0754817680527067
+      ],
+      "d16LowPassForceNewtons": [
+        1.6682758047485164,
+        0.10255591107268267,
+        -0.9739248490839588
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.1794738518441219,
+        -0.03944197363559998,
+        0.10155691896874786
+      ],
+      "sourceTimeSeconds": 0.104,
+      "targetSampleIndex": 208
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.9543413779383316,
+        0.10853270610341617,
+        -1.3354159992852777
+      ],
+      "d16LowPassForceNewtons": [
+        2.72917717820943,
+        0.07161205847023995,
+        -1.214753101949771
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.22516419972890178,
+        -0.03692064763317622,
+        0.12066289733550661
+      ],
+      "sourceTimeSeconds": 0.1045,
+      "targetSampleIndex": 209
+    },
+    {
+      "d12LowPassForceNewtons": [
+        3.9319273619630626,
+        0.06573795764113534,
+        -1.5786877467957352
+      ],
+      "d16LowPassForceNewtons": [
+        3.671071332254967,
+        0.03149453597589965,
+        -1.4424292139989108
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.2608560297080955,
+        -0.03424342166523569,
+        0.13625853279682443
+      ],
+      "sourceTimeSeconds": 0.105,
+      "targetSampleIndex": 210
+    },
+    {
+      "d12LowPassForceNewtons": [
+        4.4483088582085575,
+        0.023112369268692933,
+        -1.7255744434421656
+      ],
+      "d16LowPassForceNewtons": [
+        4.173030232159085,
+        -0.008558277253133222,
+        -1.5821002906322206
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.27527862604947284,
+        -0.031670646521826155,
+        0.14347415280994502
+      ],
+      "sourceTimeSeconds": 0.1055,
+      "targetSampleIndex": 211
+    },
+    {
+      "d12LowPassForceNewtons": [
+        4.294163721138304,
+        -0.011744344623457352,
+        -1.718393066101981
+      ],
+      "d16LowPassForceNewtons": [
+        4.032451689718804,
+        -0.04096408436682378,
+        -1.5788167651184395
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.26171203141950006,
+        -0.029219739743366425,
+        0.13957630098354157
+      ],
+      "sourceTimeSeconds": 0.106,
+      "targetSampleIndex": 212
+    },
+    {
+      "d12LowPassForceNewtons": [
+        3.45234627226018,
+        -0.03565173271826019,
+        -1.5407199317721079
+      ],
+      "d16LowPassForceNewtons": [
+        3.2323286778630385,
+        -0.06230899601109897,
+        -1.4158783698088355
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.22001759439714164,
+        -0.026657263292838775,
+        0.12484156196327234
+      ],
+      "sourceTimeSeconds": 0.1065,
+      "targetSampleIndex": 213
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.1069212837198803,
+        -0.05078911075665765,
+        -1.223903911048623
+      ],
+      "d16LowPassForceNewtons": [
+        1.9500988991068202,
+        -0.07436865495409738,
+        -1.121474819242042
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.15682238461306008,
+        -0.023579544197439725,
+        0.10242909180658089
+      ],
+      "sourceTimeSeconds": 0.107,
+      "targetSampleIndex": 214
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.5895867244578827,
+        -0.06383840896869716,
+        -0.8389420688381686
+      ],
+      "d16LowPassForceNewtons": [
+        0.5057808708852743,
+        -0.08340790570401449,
+        -0.7616129668031856
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.08380585357260839,
+        -0.019569496735317327,
+        0.077329102034983
+      ],
+      "sourceTimeSeconds": 0.1075,
+      "targetSampleIndex": 215
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.7185752437069692,
+        -0.08370242143815385,
+        -0.4765039294647045
+      ],
+      "d16LowPassForceNewtons": [
+        -0.7331904257776674,
+        -0.09809218913908029,
+        -0.42171501368694886
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.014615182070698118,
+        -0.01438976770092644,
+        0.05478891577775563
+      ],
+      "sourceTimeSeconds": 0.108,
+      "targetSampleIndex": 216
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.4982274795311443,
+        -0.11860740292239885,
+        -0.22152711853041013
+      ],
+      "d16LowPassForceNewtons": [
+        -1.459563986074099,
+        -0.12676066575066391,
+        -0.18274042518794203
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.03866349345704534,
+        -0.008153262828265062,
+        0.03878669334246809
+      ],
+      "sourceTimeSeconds": 0.1085,
+      "targetSampleIndex": 217
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -1.58097327212392,
+        -0.17354478956600441,
+        -0.13023019732739438
+      ],
+      "d16LowPassForceNewtons": [
+        -1.512522582903019,
+        -0.1749545378480195,
+        -0.09915260303402847
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.06845068922090092,
+        -0.0014097482820150942,
+        0.031077594293365915
+      ],
+      "sourceTimeSeconds": 0.109,
+      "targetSampleIndex": 218
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.990205941801611,
+        -0.24883201200079996,
+        -0.21625252804441933
+      ],
+      "d16LowPassForceNewtons": [
+        -0.9169755685917805,
+        -0.24393686888086097,
+        -0.18515206920951516
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.0732303732098305,
+        0.004895143119938994,
+        0.03110045883490417
+      ],
+      "sourceTimeSeconds": 0.1095,
+      "targetSampleIndex": 219
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.07624682350692563,
+        -0.34015575501064454,
+        -0.4494507130928036
+      ],
+      "d16LowPassForceNewtons": [
+        0.1336177066967026,
+        -0.33055782020845864,
+        -0.41275238343682025
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.057370883189776956,
+        0.009597934802185903,
+        0.03669832965598335
+      ],
+      "sourceTimeSeconds": 0.11,
+      "targetSampleIndex": 220
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.3127101785869704,
+        -0.4399579716604907,
+        -0.7668099965096724
+      ],
+      "d16LowPassForceNewtons": [
+        1.3421103474480307,
+        -0.4283575335608411,
+        -0.7215084027032254
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.02940016886106034,
+        0.011600438099649613,
+        0.04530159380644705
+      ],
+      "sourceTimeSeconds": 0.1105,
+      "targetSampleIndex": 221
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.3977377978240897,
+        -0.5396097457094973,
+        -1.0913345940558266
+      ],
+      "d16LowPassForceNewtons": [
+        2.3971038578209294,
+        -0.5294194669680695,
+        -1.0362715892789265
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.0006339400031603049,
+        0.01019027874142775,
+        0.05506300477690007
+      ],
+      "sourceTimeSeconds": 0.111,
+      "targetSampleIndex": 222
+    },
+    {
+      "d12LowPassForceNewtons": [
+        3.0818511317740613,
+        -0.6316227622674183,
+        -1.3527742393914697
+      ],
+      "d16LowPassForceNewtons": [
+        3.0579739010447637,
+        -0.6263101897578219,
+        -1.2872966381659483
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.023877230729297594,
+        0.0053125725095963805,
+        0.06547760122552138
+      ],
+      "sourceTimeSeconds": 0.1115,
+      "targetSampleIndex": 223
+    },
+    {
+      "d12LowPassForceNewtons": [
+        3.2451310061853604,
+        -0.7112196150805322,
+        -1.5041272907152925
+      ],
+      "d16LowPassForceNewtons": [
+        3.2104475946934707,
+        -0.7135076259085025,
+        -1.42687955482026
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.03468341149188969,
+        -0.002288010827970255,
+        0.07724773589503253
+      ],
+      "sourceTimeSeconds": 0.112,
+      "targetSampleIndex": 224
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.9108527056803126,
+        -0.776873763858464,
+        -1.5298063093967944
+      ],
+      "d16LowPassForceNewtons": [
+        2.879396057043895,
+        -0.787980358647614,
+        -1.4383322271817247
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.03145664863641784,
+        -0.011106594789149993,
+        0.0914740822150697
+      ],
+      "sourceTimeSeconds": 0.1125,
+      "targetSampleIndex": 225
+    },
+    {
+      "d12LowPassForceNewtons": [
+        2.2166734891641457,
+        -0.829817309330126,
+        -1.4443416872479498
+      ],
+      "d16LowPassForceNewtons": [
+        2.200410698703131,
+        -0.8489232606465321,
+        -1.3357998658824226
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        -0.016262790461014642,
+        -0.019105951316406133,
+        0.10854182136552715
+      ],
+      "sourceTimeSeconds": 0.113,
+      "targetSampleIndex": 226
+    },
+    {
+      "d12LowPassForceNewtons": [
+        1.3580721136292377,
+        -0.8728557831021905,
+        -1.283453090385729
+      ],
+      "d16LowPassForceNewtons": [
+        1.364542826290196,
+        -0.8969477528682038,
+        -1.1562395762035633
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.006470712660958222,
+        -0.024091969766013355,
+        0.12721351418216575
+      ],
+      "sourceTimeSeconds": 0.1135,
+      "targetSampleIndex": 227
+    },
+    {
+      "d12LowPassForceNewtons": [
+        0.525552616706658,
+        -0.9090092825233272,
+        -1.0912887683159826
+      ],
+      "d16LowPassForceNewtons": [
+        0.5571731206684928,
+        -0.9331670756746848,
+        -0.9469106061550948
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.0316205039618348,
+        -0.024157793151357576,
+        0.14437816216088784
+      ],
+      "sourceTimeSeconds": 0.114,
+      "targetSampleIndex": 228
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.14408816485128326,
+        -0.9404724484783957,
+        -0.9081133016215998
+      ],
+      "d16LowPassForceNewtons": [
+        -0.08925171882497773,
+        -0.9585719836814369,
+        -0.7524538426374715
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.054836446026305524,
+        -0.018099535203041195,
+        0.15565945898412825
+      ],
+      "sourceTimeSeconds": 0.1145,
+      "targetSampleIndex": 229
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.590030785525459,
+        -0.968185676092132,
+        -0.7617783112704809
+      ],
+      "d16LowPassForceNewtons": [
+        -0.5166091497292036,
+        -0.9738979069814844,
+        -0.6050319268104594
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.07342163579625538,
+        -0.005712230889352354,
+        0.15674638446002154
+      ],
+      "sourceTimeSeconds": 0.115,
+      "targetSampleIndex": 230
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8218384411184354,
+        -0.9920310162202461,
+        -0.6644817682998225
+      ],
+      "d16LowPassForceNewtons": [
+        -0.7353372917031586,
+        -0.9799325901087458,
+        -0.5194768242857808
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.08650114941527676,
+        0.01209842611150036,
+        0.14500494401404174
+      ],
+      "sourceTimeSeconds": 0.1155,
+      "targetSampleIndex": 231
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8943430006158185,
+        -1.01142328042162,
+        -0.6143814799825689
+      ],
+      "d16LowPassForceNewtons": [
+        -0.7997250005158317,
+        -0.9780103731749142,
+        -0.4936021023707549
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.09461800009998678,
+        0.03341290724670587,
+        0.12077937761181395
+      ],
+      "sourceTimeSeconds": 0.116,
+      "targetSampleIndex": 232
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.876444899359532,
+        -1.025949713627169,
+        -0.6002673715889645
+      ],
+      "d16LowPassForceNewtons": [
+        -0.7773914309614751,
+        -0.9703650576536198,
+        -0.5124096878446006
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.09905346839805684,
+        0.05558465597354911,
+        0.08785768374436387
+      ],
+      "sourceTimeSeconds": 0.1165,
+      "targetSampleIndex": 233
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.8264110905466632,
+        -1.0357522787732967,
+        -0.6070790262665169
+      ],
+      "d16LowPassForceNewtons": [
+        -0.725226741474243,
+        -0.9600900958144365,
+        -0.5542359185775899
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.10118434907242013,
+        0.07566218295886018,
+        0.05284310768892697
+      ],
+      "sourceTimeSeconds": 0.117,
+      "targetSampleIndex": 234
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.7806397360303265,
+        -1.0415111085759814,
+        -0.6205230932581309
+      ],
+      "d16LowPassForceNewtons": [
+        -0.678558092501766,
+        -0.9506421123675864,
+        -0.5969744774365073
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.10208164352856053,
+        0.09086899620839495,
+        0.023548615821623597
+      ],
+      "sourceTimeSeconds": 0.1175,
+      "targetSampleIndex": 235
+    },
+    {
+      "d12LowPassForceNewtons": [
+        -0.7554275766446804,
+        -1.044094248326294,
+        -0.6300039187568603
+      ],
+      "d16LowPassForceNewtons": [
+        -0.6530371467666038,
+        -0.9450372320569338,
+        -0.6231225491831699
+      ],
+      "d16MinusD12LowPassForceNewtons": [
+        0.10239042987807656,
+        0.09905701626936025,
+        0.0068813695736904545
+      ],
+      "sourceTimeSeconds": 0.118,
+      "targetSampleIndex": 236
+    }
+  ],
+  "experimentalAgreementGateApplied": false,
+  "fixedDecisionThresholds": {
+    "bandCutoffsHertz": [
+      50.0,
+      100.0,
+      200.0,
+      400.0,
+      1000.0
+    ],
+    "decisionBandCutoffHertz": 200.0,
+    "lagCrossValidationFolds": 5,
+    "lagIncrementBins": 0.01,
+    "lagMaximumBins": 0.5,
+    "lagMinimumBins": -0.5,
+    "maximumCoherentLowBandRoughness": 0.5,
+    "maximumDecisionBandPairwiseDifference": 0.05,
+    "maximumFineGridMissRatioForD20": 1.5,
+    "maximumRegistrationLagStandardDeviationBins": 0.15,
+    "minimumBandImprovementFraction": 0.2,
+    "minimumDecisionBandSignalEnergyRetention": 0.99,
+    "minimumRegistrationImprovementFraction": 0.2,
+    "minimumRegistrationLagBins": 0.05,
+    "minimumRegistrationSignConsistency": 0.8,
+    "minimumRemovedDifferenceEnergyFraction": 0.25,
+    "sampleRateHertz": 2000.0
+  },
+  "forceTargetIdentifier": "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "generatedBy": "Scripts/analyze-dove-moving-wall-spatial-lag-band.py",
+  "lagDiscriminator": {
+    "commonSupportBaselinePairwiseDifference": 0.062341309213113795,
+    "commonSupportBinCount": 185,
+    "crossValidatedAlignedPairwiseDifference": 0.06140265941157484,
+    "crossValidatedBaselinePairwiseDifference": 0.0623413092131138,
+    "crossValidatedImprovementFraction": 0.015056626390860472,
+    "foldLagMeanBins": -0.016,
+    "foldLagSignConsistency": 1.0,
+    "foldLagStandardDeviationBins": 0.004898979485566356,
+    "folds": [
+      {
+        "fold": 0,
+        "selectedTrainingLagBins": -0.01,
+        "selectedTrainingLagSeconds": -5e-06,
+        "testAlignedPairwiseDifference": 0.1272872826870093,
+        "testBaselinePairwiseDifference": 0.12890518112147123,
+        "testEndBinOffset": 37,
+        "testEndTimeSeconds": 0.0435,
+        "testImprovementFraction": 0.012551073745727281,
+        "testStartBinOffset": 1,
+        "testStartTimeSeconds": 0.0255,
+        "trainingPairwiseDifference": 0.0555245072236173
+      },
+      {
+        "fold": 1,
+        "selectedTrainingLagBins": -0.02,
+        "selectedTrainingLagSeconds": -1e-05,
+        "testAlignedPairwiseDifference": 0.05521096859116511,
+        "testBaselinePairwiseDifference": 0.05537804192764024,
+        "testEndBinOffset": 74,
+        "testEndTimeSeconds": 0.062,
+        "testImprovementFraction": 0.0030169599837681638,
+        "testStartBinOffset": 38,
+        "testStartTimeSeconds": 0.044,
+        "trainingPairwiseDifference": 0.06342509440286317
+      },
+      {
+        "fold": 2,
+        "selectedTrainingLagBins": -0.01,
+        "selectedTrainingLagSeconds": -5e-06,
+        "testAlignedPairwiseDifference": 0.04067271070727903,
+        "testBaselinePairwiseDifference": 0.04150422544156542,
+        "testEndBinOffset": 111,
+        "testEndTimeSeconds": 0.0805,
+        "testImprovementFraction": 0.020034459755359113,
+        "testStartBinOffset": 75,
+        "testStartTimeSeconds": 0.0625,
+        "trainingPairwiseDifference": 0.0718672329894999
+      },
+      {
+        "fold": 3,
+        "selectedTrainingLagBins": -0.02,
+        "selectedTrainingLagSeconds": -1e-05,
+        "testAlignedPairwiseDifference": 0.0790565177624023,
+        "testBaselinePairwiseDifference": 0.07998250237363938,
+        "testEndBinOffset": 148,
+        "testEndTimeSeconds": 0.099,
+        "testImprovementFraction": 0.011577339840048162,
+        "testStartBinOffset": 112,
+        "testStartTimeSeconds": 0.081,
+        "trainingPairwiseDifference": 0.059332732809548906
+      },
+      {
+        "fold": 4,
+        "selectedTrainingLagBins": -0.02,
+        "selectedTrainingLagSeconds": -1e-05,
+        "testAlignedPairwiseDifference": 0.06958408958024685,
+        "testBaselinePairwiseDifference": 0.07110447697109265,
+        "testEndBinOffset": 185,
+        "testEndTimeSeconds": 0.1175,
+        "testImprovementFraction": 0.021382442507296817,
+        "testStartBinOffset": 149,
+        "testStartTimeSeconds": 0.0995,
+        "trainingPairwiseDifference": 0.059199943731917185
+      }
+    ],
+    "globalAlignedPairwiseDifference": 0.06124802799815053,
+    "globalBestLagBins": -0.02,
+    "globalBestLagSeconds": -1e-05,
+    "globalImprovementFraction": 0.017537026872917916,
+    "subBinRegistrationSensitivityLikely": false
+  },
+  "nextAction": "Keep D=20 blocked and isolate force-estimator sampling at fixed geometry.",
+  "productionPromotionAuthorized": false,
+  "rawLockedGatePassed": false,
+  "rawLockedLimit": 0.05,
+  "rawPairwiseNormalizedRMSDifference": 0.06268338811910934,
+  "rawSpatialGateModified": false,
+  "registeredComparisonBinCount": 187,
+  "schemaVersion": 1,
+  "scientificVerdict": "The raw 6.268% gate remains failed. Keep D=20 blocked and isolate force-estimator sampling at fixed geometry.",
+  "sourceSHA256": {
+    "d12Case": "09975b9619ebfb0b77d3e87a2cca9a907604038320c4579bd41b4ed129d16270",
+    "d16FullWindow": "dfd326dea59fc1c6e87aebb3474e5af6f53e9acb8914a4de4d7a67173820e84c",
+    "spatialDiscriminator": "e81d99c5fe495434e2aab9e3cb0bfc51ea5bc56ba6ff2cb7506c5c98c824c803",
+    "spatialLocalization": "36692b8701309004bb9cde707b6201bd3e4bdf3aef1ad93e622a5dcd567c84ee"
+  }
+}

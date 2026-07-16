@@ -1,0 +1,664 @@
+{
+  "claimBoundary" : "This archive-only coefficient bound establishes whether the 15 stored q errors can materially alter the normalized boundary operator. It may authorize only a validation-only population replay with captured production primitives; it does not establish a force correction, authorize production changes or D20, or relax the raw spatial rejection.",
+  "classification" : "branch-changing-coefficient-sensitive",
+  "coefficientInsensitiveGatePassed" : false,
+  "d12" : {
+    "allValuesFinite" : true,
+    "branchChangeCount" : 3,
+    "branchChangeLinkMeasureFraction" : 0.375,
+    "exactGlobalNearBranchCount" : 5,
+    "farToNearBranchChangeCount" : 0,
+    "maximumAbsoluteCoefficientDifference" : 0.8577467804202006,
+    "maximumCoefficientL1Difference" : 2.824350409991136,
+    "maximumFractionDifference" : 0.6516856345695324,
+    "maximumSymmetricOperatorNormRatio" : 1.2937756888541692,
+    "nearToFarBranchChangeCount" : 3,
+    "productionNearBranchCount" : 8,
+    "referenceLengthCells" : 12,
+    "runtimeSeconds" : 3.1948089599609375e-05,
+    "sampleCount" : 8,
+    "samples" : [
+      {
+        "absoluteFractionDifference" : 0.07159126008143366,
+        "branchChanged" : false,
+        "cellCoordinate" : [
+          41,
+          46,
+          42
+        ],
+        "coefficientL1Difference" : 0.429547560488602,
+        "componentJunctionCandidate" : true,
+        "componentName" : "tail",
+        "directionIndex" : 13,
+        "exactGlobalBranch" : "near-q-le-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0.8677588105201721,
+          "fluidEndpointWallProjection" : 0.9338794052600861,
+          "previousIncoming" : 0,
+          "reflected" : 0.13224118947982788,
+          "solidEndpointWallProjection" : 0.06612059473991394
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.06612059473991394,
+        "exactGlobalOperatorL1Norm" : 2,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.14318252016286737,
+        "partIdentifier" : 4,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.7245762903573048,
+          "fluidEndpointWallProjection" : 0.8622881451786524,
+          "previousIncoming" : 0,
+          "reflected" : 0.2754237096426952,
+          "solidEndpointWallProjection" : 0.1377118548213476
+        },
+        "productionFluidToIntersectionFraction" : 0.1377118548213476,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 0,
+        "symmetricOperatorNormRatio" : 1,
+        "wallProjectionCoefficientL1Difference" : 0.14318252016286734
+      },
+      {
+        "absoluteFractionDifference" : 0.5965282472495519,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          43,
+          51,
+          45
+        ],
+        "coefficientL1Difference" : 2.824350409991136,
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 10,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.2488899312694659,
+          "previousIncoming" : 0.2511100687305341,
+          "reflected" : 0.7488899312694659,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.6676548570394516,
+        "exactGlobalOperatorL1Norm" : 1.748889931269466,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.8577467804202006,
+        "partIdentifier" : 1,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.8577467804202006,
+          "fluidEndpointWallProjection" : 0.9288733902101003,
+          "previousIncoming" : 0,
+          "reflected" : 0.14225321957979936,
+          "solidEndpointWallProjection" : 0.07112660978989968
+        },
+        "productionFluidToIntersectionFraction" : 0.07112660978989968,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 1,
+        "symmetricOperatorNormRatio" : 1.1435825458428142,
+        "wallProjectionCoefficientL1Difference" : 1.1088568491507347
+      },
+      {
+        "absoluteFractionDifference" : 0.3004587804401311,
+        "branchChanged" : false,
+        "cellCoordinate" : [
+          44,
+          49,
+          46
+        ],
+        "coefficientL1Difference" : 1.8027526826407865,
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 9,
+        "exactGlobalBranch" : "near-q-le-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0.21556752920150757,
+          "fluidEndpointWallProjection" : 0.6077837646007538,
+          "previousIncoming" : 0,
+          "reflected" : 0.7844324707984924,
+          "solidEndpointWallProjection" : 0.3922162353992462
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.3922162353992462,
+        "exactGlobalOperatorL1Norm" : 2,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.6009175608802622,
+        "partIdentifier" : 1,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.8164850900817697,
+          "fluidEndpointWallProjection" : 0.9082425450408849,
+          "previousIncoming" : 0,
+          "reflected" : 0.18351490991823025,
+          "solidEndpointWallProjection" : 0.09175745495911512
+        },
+        "productionFluidToIntersectionFraction" : 0.09175745495911512,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 2,
+        "symmetricOperatorNormRatio" : 1,
+        "wallProjectionCoefficientL1Difference" : 0.6009175608802622
+      },
+      {
+        "absoluteFractionDifference" : 0.0757601419799262,
+        "branchChanged" : false,
+        "cellCoordinate" : [
+          50,
+          45,
+          49
+        ],
+        "coefficientL1Difference" : 0.4545608518795572,
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 17,
+        "exactGlobalBranch" : "near-q-le-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0.72220379114151,
+          "fluidEndpointWallProjection" : 0.861101895570755,
+          "previousIncoming" : 0,
+          "reflected" : 0.27779620885849,
+          "solidEndpointWallProjection" : 0.138898104429245
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.138898104429245,
+        "exactGlobalOperatorL1Norm" : 2,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.1515202839598524,
+        "partIdentifier" : 1,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.5706835071816576,
+          "fluidEndpointWallProjection" : 0.7853417535908288,
+          "previousIncoming" : 0,
+          "reflected" : 0.4293164928183424,
+          "solidEndpointWallProjection" : 0.2146582464091712
+        },
+        "productionFluidToIntersectionFraction" : 0.2146582464091712,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 3,
+        "symmetricOperatorNormRatio" : 1,
+        "wallProjectionCoefficientL1Difference" : 0.1515202839598524
+      },
+      {
+        "absoluteFractionDifference" : 0.29458432934475975,
+        "branchChanged" : false,
+        "cellCoordinate" : [
+          45,
+          47,
+          50
+        ],
+        "coefficientL1Difference" : 1.7675059760685587,
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 14,
+        "exactGlobalBranch" : "near-q-le-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0.396515429019928,
+          "fluidEndpointWallProjection" : 0.698257714509964,
+          "previousIncoming" : 0,
+          "reflected" : 0.603484570980072,
+          "solidEndpointWallProjection" : 0.301742285490036
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.301742285490036,
+        "exactGlobalOperatorL1Norm" : 2,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.5891686586895195,
+        "partIdentifier" : 1,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.9856840877094475,
+          "fluidEndpointWallProjection" : 0.9928420438547237,
+          "previousIncoming" : 0,
+          "reflected" : 0.014315912290552473,
+          "solidEndpointWallProjection" : 0.007157956145276236
+        },
+        "productionFluidToIntersectionFraction" : 0.007157956145276236,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 4,
+        "symmetricOperatorNormRatio" : 1,
+        "wallProjectionCoefficientL1Difference" : 0.5891686586895195
+      },
+      {
+        "absoluteFractionDifference" : 0.6516856345695324,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          52,
+          47,
+          52
+        ],
+        "coefficientL1Difference" : 1.8683665353266723,
+        "componentJunctionCandidate" : false,
+        "componentName" : "rightWing",
+        "directionIndex" : 15,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.0458630249663274,
+          "previousIncoming" : 0.4541369750336726,
+          "reflected" : 0.5458630249663274,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.9159807078540325,
+        "exactGlobalOperatorL1Norm" : 1.5458630249663274,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.6898419017491725,
+        "partIdentifier" : 3,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.47140985343099984,
+          "fluidEndpointWallProjection" : 0.7357049267154999,
+          "previousIncoming" : 0,
+          "reflected" : 0.5285901465690002,
+          "solidEndpointWallProjection" : 0.2642950732845001
+        },
+        "productionFluidToIntersectionFraction" : 0.2642950732845001,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 5,
+        "symmetricOperatorNormRatio" : 1.2937756888541692,
+        "wallProjectionCoefficientL1Difference" : 0.9255468284646724
+      },
+      {
+        "absoluteFractionDifference" : 0.08849899571487066,
+        "branchChanged" : false,
+        "cellCoordinate" : [
+          49,
+          46,
+          53
+        ],
+        "coefficientL1Difference" : 0.5309939742892239,
+        "componentJunctionCandidate" : true,
+        "componentName" : "body",
+        "directionIndex" : 14,
+        "exactGlobalBranch" : "near-q-le-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0.713002622127533,
+          "fluidEndpointWallProjection" : 0.8565013110637665,
+          "previousIncoming" : 0,
+          "reflected" : 0.28699737787246704,
+          "solidEndpointWallProjection" : 0.14349868893623352
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.14349868893623352,
+        "exactGlobalOperatorL1Norm" : 2,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.17699799142974132,
+        "partIdentifier" : 1,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.8900006135572742,
+          "fluidEndpointWallProjection" : 0.9450003067786371,
+          "previousIncoming" : 0,
+          "reflected" : 0.10999938644272574,
+          "solidEndpointWallProjection" : 0.05499969322136287
+        },
+        "productionFluidToIntersectionFraction" : 0.05499969322136287,
+        "productionOperatorL1Norm" : 1.9999999999999998,
+        "sourceOutlierIndex" : 6,
+        "symmetricOperatorNormRatio" : 1.0000000000000002,
+        "wallProjectionCoefficientL1Difference" : 0.1769979914297413
+      },
+      {
+        "absoluteFractionDifference" : 0.6264671900059756,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          48,
+          48,
+          55
+        ],
+        "coefficientL1Difference" : 2.2907773442516652,
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 7,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.11863432046432633,
+          "previousIncoming" : 0.3813656795356737,
+          "reflected" : 0.6186343204643263,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.8082319125533104,
+        "exactGlobalOperatorL1Norm" : 1.6186343204643263,
+        "linkMeasureSquareMeters" : 7.407406938620149e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.6996009569883389,
+        "partIdentifier" : 3,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.6364705549053304,
+          "fluidEndpointWallProjection" : 0.8182352774526652,
+          "previousIncoming" : 0,
+          "reflected" : 0.3635294450946695,
+          "solidEndpointWallProjection" : 0.18176472254733475
+        },
+        "productionFluidToIntersectionFraction" : 0.18176472254733475,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 7,
+        "symmetricOperatorNormRatio" : 1.2356095349728369,
+        "wallProjectionCoefficientL1Difference" : 1.0178362344410041
+      }
+    ],
+    "schemaVersion" : 1,
+    "sourceRecordsMatched" : true,
+    "weightedRMSCoefficientL1Difference" : 1.7234592929412222,
+    "weightedRMSFractionDifference" : 0.41363535298910614,
+    "weightedRMSWallProjectionCoefficientL1Difference" : 0.6986773742748212
+  },
+  "d16" : {
+    "allValuesFinite" : true,
+    "branchChangeCount" : 7,
+    "branchChangeLinkMeasureFraction" : 1,
+    "exactGlobalNearBranchCount" : 0,
+    "farToNearBranchChangeCount" : 0,
+    "maximumAbsoluteCoefficientDifference" : 0.9514715538731877,
+    "maximumCoefficientL1Difference" : 3.189330303442532,
+    "maximumFractionDifference" : 0.8032135061231442,
+    "maximumSymmetricOperatorNormRatio" : 1.2775008666758507,
+    "nearToFarBranchChangeCount" : 7,
+    "productionNearBranchCount" : 7,
+    "referenceLengthCells" : 16,
+    "runtimeSeconds" : 2.9802322387695312e-06,
+    "sampleCount" : 7,
+    "samples" : [
+      {
+        "absoluteFractionDifference" : 0.6508595785530594,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          64,
+          61,
+          64
+        ],
+        "coefficientL1Difference" : 2.9708623139065873,
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 16,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.21021355173893297,
+          "previousIncoming" : 0.28978644826106703,
+          "reflected" : 0.710213551738933,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.7040136009454727,
+        "exactGlobalOperatorL1Norm" : 1.710213551738933,
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.8936919552151734,
+        "partIdentifier" : 3,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.8936919552151734,
+          "fluidEndpointWallProjection" : 0.9468459776075867,
+          "previousIncoming" : 0,
+          "reflected" : 0.10630804478482662,
+          "solidEndpointWallProjection" : 0.05315402239241331
+        },
+        "productionFluidToIntersectionFraction" : 0.05315402239241331,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 0,
+        "symmetricOperatorNormRatio" : 1.1694445982879824,
+        "wallProjectionCoefficientL1Difference" : 1.1834784034762404
+      },
+      {
+        "absoluteFractionDifference" : 0.6036017695942,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          65,
+          61,
+          64
+        ],
+        "coefficientL1Difference" : 2.821199647773451,
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 16,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.23858387642894077,
+          "previousIncoming" : 0.26141612357105926,
+          "reflected" : 0.7385838764289407,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.6769711822271347,
+        "exactGlobalOperatorL1Norm" : 1.7385838764289407,
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.8532611747341305,
+        "partIdentifier" : 3,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.8532611747341305,
+          "fluidEndpointWallProjection" : 0.9266305873670653,
+          "previousIncoming" : 0,
+          "reflected" : 0.1467388252658694,
+          "solidEndpointWallProjection" : 0.0733694126329347
+        },
+        "productionFluidToIntersectionFraction" : 0.0733694126329347,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 1,
+        "symmetricOperatorNormRatio" : 1.1503615253283086,
+        "wallProjectionCoefficientL1Difference" : 1.1146772983051898
+      },
+      {
+        "absoluteFractionDifference" : 0.5695576839789908,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          66,
+          68,
+          64
+        ],
+        "coefficientL1Difference" : 2.847011161962762,
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 13,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.294533253478489,
+          "previousIncoming" : 0.205466746521511,
+          "reflected" : 0.794533253478489,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.6293002814054489,
+        "exactGlobalOperatorL1Norm" : 1.794533253478489,
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.8805148051470837,
+        "partIdentifier" : 2,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.8805148051470837,
+          "fluidEndpointWallProjection" : 0.9402574025735418,
+          "previousIncoming" : 0,
+          "reflected" : 0.1194851948529163,
+          "solidEndpointWallProjection" : 0.05974259742645815
+        },
+        "productionFluidToIntersectionFraction" : 0.05974259742645815,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 2,
+        "symmetricOperatorNormRatio" : 1.114495925959153,
+        "wallProjectionCoefficientL1Difference" : 1.0859815516685947
+      },
+      {
+        "absoluteFractionDifference" : 0.8032135061231442,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          69,
+          68,
+          66
+        ],
+        "coefficientL1Difference" : 3.157906816104885,
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 17,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.0917611364369354,
+          "previousIncoming" : 0.4082388635630646,
+          "reflected" : 0.5917611364369354,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.8449355140328407,
+        "exactGlobalOperatorL1Norm" : 1.5917611364369355,
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.9165559841806069,
+        "partIdentifier" : 2,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.9165559841806069,
+          "fluidEndpointWallProjection" : 0.9582779920903035,
+          "previousIncoming" : 0,
+          "reflected" : 0.08344401581939308,
+          "solidEndpointWallProjection" : 0.04172200790969654
+        },
+        "productionFluidToIntersectionFraction" : 0.04172200790969654,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 3,
+        "symmetricOperatorNormRatio" : 1.2564699276908364,
+        "wallProjectionCoefficientL1Difference" : 1.3247948477436715
+      },
+      {
+        "absoluteFractionDifference" : 0.7275201090331705,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          68,
+          69,
+          66
+        ],
+        "coefficientL1Difference" : 3.189330303442532,
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 13,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.1650843581770315,
+          "previousIncoming" : 0.3349156418229685,
+          "reflected" : 0.6650843581770315,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.7517843320965767,
+        "exactGlobalOperatorL1Norm" : 1.6650843581770314,
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.9514715538731877,
+        "partIdentifier" : 2,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.9514715538731877,
+          "fluidEndpointWallProjection" : 0.9757357769365939,
+          "previousIncoming" : 0,
+          "reflected" : 0.04852844612681234,
+          "solidEndpointWallProjection" : 0.02426422306340617
+        },
+        "productionFluidToIntersectionFraction" : 0.02426422306340617,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 4,
+        "symmetricOperatorNormRatio" : 1.2011403447388342,
+        "wallProjectionCoefficientL1Difference" : 1.2863871956961561
+      },
+      {
+        "absoluteFractionDifference" : 0.6791722307577656,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          55,
+          65,
+          76
+        ],
+        "coefficientL1Difference" : 2.45533874643031,
+        "componentJunctionCandidate" : true,
+        "componentName" : "rightWing",
+        "directionIndex" : 15,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.09732795046083462,
+          "previousIncoming" : 0.4026720495391654,
+          "reflected" : 0.5973279504608346,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.8370611146092415,
+        "exactGlobalOperatorL1Norm" : 1.5973279504608346,
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.7447831656876894,
+        "partIdentifier" : 3,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.6842222322970481,
+          "fluidEndpointWallProjection" : 0.8421111161485241,
+          "previousIncoming" : 0,
+          "reflected" : 0.3157777677029518,
+          "solidEndpointWallProjection" : 0.1578888838514759
+        },
+        "productionFluidToIntersectionFraction" : 0.1578888838514759,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 5,
+        "symmetricOperatorNormRatio" : 1.2520910307886324,
+        "wallProjectionCoefficientL1Difference" : 1.0868942818362135
+      },
+      {
+        "absoluteFractionDifference" : 0.6061920901543927,
+        "branchChanged" : true,
+        "cellCoordinate" : [
+          53,
+          66,
+          76
+        ],
+        "coefficientL1Difference" : 1.767087641502777,
+        "componentJunctionCandidate" : true,
+        "componentName" : "leftWing",
+        "directionIndex" : 18,
+        "exactGlobalBranch" : "far-q-gt-half",
+        "exactGlobalCoefficients" : {
+          "fartherOutgoing" : 0,
+          "fluidEndpointWallProjection" : 0.06555666784332143,
+          "previousIncoming" : 0.4344433321566786,
+          "reflected" : 0.5655566678433215,
+          "solidEndpointWallProjection" : 0.5
+        },
+        "exactGlobalFluidToIntersectionFraction" : 0.8840847052633762,
+        "exactGlobalOperatorL1Norm" : 1.5655566678433215,
+        "linkMeasureSquareMeters" : 4.166666592451898e-06,
+        "maximumAbsoluteCoefficientDifference" : 0.656550717047695,
+        "partIdentifier" : 2,
+        "productionBranch" : "near-q-le-half",
+        "productionCoefficients" : {
+          "fartherOutgoing" : 0.4442147697820328,
+          "fluidEndpointWallProjection" : 0.7221073848910164,
+          "previousIncoming" : 0,
+          "reflected" : 0.5557852302179672,
+          "solidEndpointWallProjection" : 0.2778926151089836
+        },
+        "productionFluidToIntersectionFraction" : 0.2778926151089836,
+        "productionOperatorL1Norm" : 2,
+        "sourceOutlierIndex" : 6,
+        "symmetricOperatorNormRatio" : 1.2775008666758507,
+        "wallProjectionCoefficientL1Difference" : 0.8786581019387114
+      }
+    ],
+    "schemaVersion" : 1,
+    "sourceRecordsMatched" : true,
+    "weightedRMSCoefficientL1Difference" : 2.782243525165061,
+    "weightedRMSFractionDifference" : 0.667140000010228,
+    "weightedRMSWallProjectionCoefficientL1Difference" : 1.145533885965476
+  },
+  "d20DiagnosticAuthorized" : false,
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "experimentalAgreementGateApplied" : false,
+  "fluidEvolutionExecuted" : false,
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "metrics" : {
+    "maximumAbsoluteCoefficientDifference" : 0.9514715538731877,
+    "maximumBranchChangeLinkMeasureFraction" : 1,
+    "maximumCoefficientL1Difference" : 3.189330303442532,
+    "maximumFractionDifference" : 0.8032135061231442,
+    "maximumSymmetricOperatorNormRatio" : 1.2937756888541692,
+    "maximumWeightedRMSCoefficientL1Difference" : 2.782243525165061,
+    "maximumWeightedRMSFractionDifference" : 0.667140000010228,
+    "maximumWeightedRMSWallProjectionCoefficientL1Difference" : 1.145533885965476,
+    "totalBranchChangeCount" : 10
+  },
+  "nextAction" : "Capture the production reflected, auxiliary, previous-incoming, wall-projection, and density primitives for these 15 links at the frozen D12 phase, then replay production-q versus exact-global-q populations and link momentum offline before any boundary implementation or full fluid A\/B.",
+  "productionModificationAuthorized" : false,
+  "rawSpatialGateModified" : false,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "The preregistered 15-link coefficient discriminator is branch-changing-coefficient-sensitive. It bounds normalized operator sensitivity only; force causality and production remain unresolved.",
+  "sourceLinkCoefficientPreregistrationSHA256" : "568550ab587a9d9d27fbabdf3a94950143a0c43693364c31b1b230112117d0a2",
+  "sourceLinkRayRootPreregistrationSHA256" : "41cb2f566b01c3686a087103632b4717cc4a4a8d10ad5bd50f07bd41bf08cc81",
+  "sourceLinkRayRootReportSHA256" : "79f823e08498233ca507da6126b8867c7e1ca12f52daa14d3183bdd8acf37985",
+  "sourceReproductionPassed" : true,
+  "validationOnlyPopulationReplayAuthorized" : true
+}

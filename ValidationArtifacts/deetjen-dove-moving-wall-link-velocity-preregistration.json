@@ -1,0 +1,31 @@
+{
+  "claimBoundary" : "This A\/B identifies the velocity sampling mechanism only. It does not authorize a production operator change, fluid allocation, D20, experimental agreement, or relaxation of any prior gate.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Hashed link-geometry preregistration and result; source phase 26.5 ms; D12\/D16 Metal rasters; production signed-distance q, D3Q19 measure and component attribution; source triangle topology and barycentric kinematics; unchanged 7.5 mm physical half-thickness. No populations, collision, streaming, loads, topology evolution, or production mutation.",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "frozenSourceSampleIndex" : 53,
+  "frozenSourceTimeSeconds" : 0.0265,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedD12D16MeanVelocityDifference" : 0.05,
+  "maximumAllowedEndpointMeanVelocityError" : 0.05,
+  "maximumAllowedEndpointRMSSpeedRelativeError" : 0.05,
+  "maximumAllowedExactMeanVelocityError" : 0.05,
+  "maximumAllowedExactRMSSpeedRelativeError" : 0.05,
+  "maximumAllowedOffsetSurfaceMaximumResidualCells" : 0.75,
+  "maximumAllowedOffsetSurfaceRMSResidualCells" : 0.1,
+  "maximumAllowedSourceReproductionRelativeError" : 1e-10,
+  "minimumCausalImprovementFraction" : 0.5,
+  "minimumContributionImprovementFraction" : 0.2,
+  "minimumEndpointCaptureOfExactImprovementFraction" : 0.8,
+  "passed" : true,
+  "referenceLengthCells" : [
+    12,
+    16
+  ],
+  "schemaVersion" : 1,
+  "selectionRule" : "On the exact frozen D12\/D16 production links, reproduce the archived solid-node wall moments within 1e-10. For every link compare (A) the production solid-node velocity, (B) q*u_solid+(1-q)*u_fluid where production q is measured from the fluid node, and (C) the same-component triangle barycentric velocity at x_solid+(1-q)c_q*dx. Verify the intersection is on the physical 7.5 mm offset surface within 0.10-cell RMS and 0.75-cell maximum. Solid-node sampling is causal only if exact intersections reduce the left-wing mean error by at least 50%, clear 5% mean\/RMS and D12\/D16 limits. Endpoint interpolation qualifies only if it also clears 5% and captures at least 80% of the exact improvement.",
+  "sourceLinkGeometryPreregistrationSHA256" : "022ad277bc571bc28f7979d67a66de9c8af8bde2e84429854a4c6b1690295624",
+  "sourceLinkGeometryReportSHA256" : "39237cc559c086e3a4f06d36560f17192fa9d5737d2163bc82c2b1a7785dcacf"
+}

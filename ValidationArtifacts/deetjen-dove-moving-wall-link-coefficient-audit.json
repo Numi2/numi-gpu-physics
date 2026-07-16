@@ -1,0 +1,37 @@
+{
+  "allChecksPassed": true,
+  "auditor": "independent-python-coefficient-reconstruction",
+  "checks": {
+    "classification": true,
+    "crossGridMetrics": true,
+    "d12IndependentCoefficients": true,
+    "d12SourceIdentity": true,
+    "d12Summary": true,
+    "d16IndependentCoefficients": true,
+    "d16SourceIdentity": true,
+    "d16Summary": true,
+    "fixedContract": true,
+    "safetyBoundary": true,
+    "sourceHashes": true,
+    "sourceRayRootPrecondition": true
+  },
+  "classification": "branch-changing-coefficient-sensitive",
+  "independentMetrics": {
+    "maximumAbsoluteCoefficientDifference": 0.9514715538731877,
+    "maximumBranchChangeLinkMeasureFraction": 1.0,
+    "maximumCoefficientL1Difference": 3.189330303442532,
+    "maximumFractionDifference": 0.8032135061231442,
+    "maximumSymmetricOperatorNormRatio": 1.2937756888541692,
+    "maximumWeightedRMSCoefficientL1Difference": 2.782243525165061,
+    "maximumWeightedRMSFractionDifference": 0.667140000010228,
+    "maximumWeightedRMSWallProjectionCoefficientL1Difference": 1.145533885965476,
+    "totalBranchChangeCount": 10
+  },
+  "schemaVersion": 1,
+  "sourceSHA256": {
+    "coefficientPreregistration": "568550ab587a9d9d27fbabdf3a94950143a0c43693364c31b1b230112117d0a2",
+    "coefficientReport": "99e140b648852cd05a082ff3f055572d31bc313270f64cdf8f2e6109cdbc5442",
+    "rayRootPreregistration": "41cb2f566b01c3686a087103632b4717cc4a4a8d10ad5bd50f07bd41bf08cc81",
+    "rayRootReport": "79f823e08498233ca507da6126b8867c7e1ca12f52daa14d3183bdd8acf37985"
+  }
+}

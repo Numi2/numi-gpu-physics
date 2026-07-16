@@ -1,0 +1,27 @@
+{
+  "barycentricFeatureTolerance" : 1e-05,
+  "claimBoundary" : "This gate localizes sparse signed-distance intersection outliers. It does not prove their causal mechanism, authorize a production geometry or velocity change, evolve fluid, allocate D20, establish experimental agreement, or relax any prior gate.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Hashed link-velocity preregistration and placement-bias report; source phase 26.5 ms; D12\/D16 Metal rasters; production signed-distance q and D3Q19 link measure; source component triangle topology; unchanged 7.5 mm physical half-thickness. No populations, collision, streaming, force evaluation, topology evolution, or production mutation.",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "frozenSourceSampleIndex" : 53,
+  "frozenSourceTimeSeconds" : 0.0265,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedSourceMaximumResidualDifferenceCells" : 1e-10,
+  "maximumJunctionAlternateSurfaceResidualCells" : 0.25,
+  "minimumDirectionConcentrationFraction" : 0.5,
+  "minimumEdgeOrJunctionAssociationFraction" : 0.8,
+  "minimumInteriorAssociationFraction" : 0.5,
+  "outlierResidualThresholdCells" : 0.75,
+  "passed" : true,
+  "referenceLengthCells" : [
+    12,
+    16
+  ],
+  "schemaVersion" : 1,
+  "selectionRule" : "Archive every D12\/D16 link whose absolute distance from the physical 7.5 mm offset surface exceeds 0.75 cell. Record component, direction, solid\/fluid cells, q, intersection, nearest triangle and barycentrics, signed residual, true mesh-boundary feature, and nearest alternate component. A junction candidate is within 0.25 cell of another component offset surface. Edge\/junction association requires at least 80% of outlier link measure on both grids. Direction association requires the same direction and at least 50% on both grids. Interior association requires at least 50% on both grids. These are associations, not causal repairs.",
+  "sourceLinkVelocityPreregistrationSHA256" : "d1f98853798601555f009d5073c263172f21f4d86d5d0e64d47d47713c306024",
+  "sourceLinkVelocityReportSHA256" : "caac9cc578b3f4c4600fe0059984c519992ef24e4d49f246a2db520f1b528cf4"
+}

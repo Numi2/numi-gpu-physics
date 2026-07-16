@@ -1,0 +1,65 @@
+{
+  "caseReferenceLengthCells" : [
+    8,
+    12
+  ],
+  "claimBoundary" : "This preregistration freezes the candidate-A engineering spatial test before D=8 or D=12 results are observed. Even a pass cannot establish source-viscosity or experimental agreement, authorize production promotion, or validate free flight.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Recursive regularized BGK; pre-step local-density moving-wall normalization; 0.08 m reference length; 0.0075 m surface half-thickness; 0.12 m padding; 0.06 m sponge width; 2000 Hz registered forces; 16\/24\/32 fluid steps per force sample; fixed density, 68.07195x viscosity-floor condition, geometry, kinematics, far-field, sponge, force estimator, and ledger definitions",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "gridContracts" : [
+    {
+      "cellSizeMeters" : 0.009999999776482582,
+      "fluidStepsPerForceSample" : 16,
+      "halfThicknessCells" : 0.75,
+      "maximumWallMach" : 0.13656363447940487,
+      "paddingCells" : 12,
+      "pilotToSourceViscosityRatio" : 68.07194967379765,
+      "preRollFluidSteps" : 800,
+      "referenceLengthCells" : 8,
+      "spongeWidthCells" : 6,
+      "tauPlus" : 0.5009999871253967,
+      "totalFluidSteps" : 3776
+    },
+    {
+      "cellSizeMeters" : 0.006666666362434626,
+      "fluidStepsPerForceSample" : 24,
+      "halfThicknessCells" : 1.125,
+      "maximumWallMach" : 0.1365636376590249,
+      "paddingCells" : 18,
+      "pilotToSourceViscosityRatio" : 68.07194967379765,
+      "preRollFluidSteps" : 1200,
+      "referenceLengthCells" : 12,
+      "spongeWidthCells" : 9,
+      "tauPlus" : 0.5014999807579434,
+      "totalFluidSteps" : 5664
+    },
+    {
+      "cellSizeMeters" : 0.004999999888241291,
+      "fluidStepsPerForceSample" : 32,
+      "halfThicknessCells" : 1.5,
+      "maximumWallMach" : 0.13656363447940487,
+      "paddingCells" : 24,
+      "pilotToSourceViscosityRatio" : 68.07194967379765,
+      "preRollFluidSteps" : 1600,
+      "referenceLengthCells" : 16,
+      "spongeWidthCells" : 12,
+      "tauPlus" : 0.5019999742507935,
+      "totalFluidSteps" : 7552
+    }
+  ],
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedCollisionCorrectionActivationFraction" : 0.05,
+  "maximumAllowedFineGridRelativeDifference" : 0.05,
+  "maximumAllowedRelativeRMSClosureResidual" : 0.005,
+  "movingWallNormalization" : "pre-step-local-density",
+  "passed" : true,
+  "requireMonotonicTrendReduction" : true,
+  "reusedReferenceLengthCells" : 16,
+  "schemaVersion" : 1,
+  "selectedCollisionOperator" : "positivity-preserving-recursive-regularized-bgk",
+  "selectionRule" : "Run candidate A with pre-step local-density moving-wall normalization through the complete registered D=8 and D=12 windows, then reuse the passed source D=16 archive. Require every case to pass positivity, complete force registration, near-wing\/global 0.5% momentum closure, and the 5% collision-intrusion bound. Require the D12-to-D16 force-history, mean, and impulse differences each to be no larger than both 5% and its corresponding D8-to-D12 difference. Measured-force error is forbidden from selecting or passing the numerical model.",
+  "sourceD16FullWindowSHA256" : "dfd326dea59fc1c6e87aebb3474e5af6f53e9acb8914a4de4d7a67173820e84c"
+}

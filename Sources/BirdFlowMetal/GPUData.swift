@@ -19,6 +19,7 @@ struct GPUUniforms {
         accumulateLoads: Bool = true,
         hasPreviousGeometry: Bool = false,
         periodicBoundaries: Bool = false,
+        usePreStepLocalDensityForMovingWall: Bool = false,
         shearWaveAmplitude: Float = 0,
         caseParameters: SIMD4<Float>? = nil
     ) {
@@ -71,7 +72,7 @@ struct GPUUniforms {
         )
         integration = SIMD4<UInt32>(
             UInt32(configuration.bodySubsteps),
-            0,
+            usePreStepLocalDensityForMovingWall ? 1 : 0,
             0,
             0
         )

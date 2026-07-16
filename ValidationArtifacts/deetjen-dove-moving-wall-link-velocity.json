@@ -1,0 +1,3280 @@
+{
+  "claimBoundary" : "This A\/B identifies the velocity sampling mechanism only. It does not authorize a production operator change, fluid allocation, D20, experimental agreement, or relaxation of any prior gate.",
+  "classification" : "signed-distance-intersection-placement-bias",
+  "d12" : {
+    "allValuesFinite" : true,
+    "bins" : [
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.008852396934455104,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005173180091812951,
+          0.0014561632323196324,
+          -0.0015685573371050576
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.008854831420792535,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005211943210022183,
+          0.001484349891978421,
+          -0.0015741440344140903
+        ],
+        "linkCount" : 250,
+        "linkMeasureSquareMeters" : 0.003703703469310094,
+        "offsetSurfaceMaximumResidualCells" : 0.2499640800508111,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.8999615876187716e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.00851004955654615,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0042182317547512236,
+          0.0013726615098448862,
+          -0.0016209106375971736
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007969371393561337,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00430910856032295,
+          0.0014168789024293492,
+          -0.0016953861210018042
+        ],
+        "linkCount" : 204,
+        "linkMeasureSquareMeters" : 0.0030222220309570314,
+        "offsetSurfaceMaximumResidualCells" : 0.6013980176937793,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.172835384279852e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.013409152200397165,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007393729932194577,
+          0.002302709671272257,
+          -0.002634012696946976
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.013316017012502348,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007408846504611462,
+          0.002282189106444134,
+          -0.002600159629537736
+        ],
+        "linkCount" : 348,
+        "linkMeasureSquareMeters" : 0.005155555229279625,
+        "offsetSurfaceMaximumResidualCells" : 0.34028411998778757,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 9.418151083541467e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.013199506195784505,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006939811589217261,
+          0.0022579757003189163,
+          -0.00278866977735848
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.012549706585942039,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007170711775249893,
+          0.002286440429097969,
+          -0.002661612539374426
+        ],
+        "linkCount" : 352,
+        "linkMeasureSquareMeters" : 0.005214814484788585,
+        "offsetSurfaceMaximumResidualCells" : 0.6116581661358943,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.8362441854156584e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.00992590413477965,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005413843862664245,
+          0.00178669933030481,
+          -0.002005086401459248
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009738051129287823,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005605221232906645,
+          0.001789115110393227,
+          -0.0020815150943678724
+        ],
+        "linkCount" : 278,
+        "linkMeasureSquareMeters" : 0.004118518257872821,
+        "offsetSurfaceMaximumResidualCells" : 0.392870646203553,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.4016883975048059e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.012736541368752846,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0067052075777214995,
+          0.0021209098407519974,
+          -0.002449513320944437
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.012715723305041197,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006785002263142905,
+          0.002123061604271664,
+          -0.0024599925910490637
+        ],
+        "linkCount" : 308,
+        "linkMeasureSquareMeters" : 0.004562962674190023,
+        "offsetSurfaceMaximumResidualCells" : 0.39691253979570645,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.29087759998954e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.008004386656033046,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004477669647467707,
+          0.0013491356907098459,
+          -0.0014704206755483651
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007888410037241644,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004525150534564089,
+          0.00132728021200033,
+          -0.0014492283420516777
+        ],
+        "linkCount" : 428,
+        "linkMeasureSquareMeters" : 0.0031703701697294146,
+        "offsetSurfaceMaximumResidualCells" : 0.7336042457694263,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.1839139886343374e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007538324735926825,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0037644025828425984,
+          0.0012088877708054718,
+          -0.0015796636855231242
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.006978630228603449,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0039004896865549514,
+          0.0012774373495551734,
+          -0.001518827516190803
+        ],
+        "linkCount" : 380,
+        "linkMeasureSquareMeters" : 0.0028148146366756533,
+        "offsetSurfaceMaximumResidualCells" : 0.671663375488953,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.0512722017491608e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007927713607882485,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004159223334027737,
+          0.001334768106549652,
+          -0.0015774556192990276
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007505824985594893,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00437500664962333,
+          0.0013304847120312144,
+          -0.001491558264119572
+        ],
+        "linkCount" : 428,
+        "linkMeasureSquareMeters" : 0.0031703701697294146,
+        "offsetSurfaceMaximumResidualCells" : 0.7688216517421053,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7036420962159266e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007591033527723234,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003911042721104322,
+          0.0012067448594414835,
+          -0.0014474978598474316
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007283925735400424,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003953760935321257,
+          0.0012617998143634702,
+          -0.0014793528267417078
+        ],
+        "linkCount" : 369,
+        "linkMeasureSquareMeters" : 0.002733333160350833,
+        "offsetSurfaceMaximumResidualCells" : 0.7531255594484065,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.7731289351803378e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0043987948429028345,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00267518502387287,
+          0.0007839247792626136,
+          -0.0008503380991109774
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.004393843166537717,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002676607169194923,
+          0.0007848092209438561,
+          -0.0008482971377532788
+        ],
+        "linkCount" : 270,
+        "linkMeasureSquareMeters" : 0.0019999998734274503,
+        "offsetSurfaceMaximumResidualCells" : 0.38164867432861127,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.100642064446316e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.00586027632785625,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002847237647635114,
+          0.0009487643783680142,
+          -0.001170232128818012
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.005548514844649328,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0028698506296297066,
+          0.000936967277392808,
+          -0.0011216779941630407
+        ],
+        "linkCount" : 259,
+        "linkMeasureSquareMeters" : 0.0019185183971026291,
+        "offsetSurfaceMaximumResidualCells" : 0.27564092400149004,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 5.577823470708684e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009356796147705553,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004908370879849575,
+          0.0015225989909089374,
+          -0.0017616824370037011
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009137814673270994,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0050879205803979,
+          0.0015188226745278916,
+          -0.0016891539694551976
+        ],
+        "linkCount" : 471,
+        "linkMeasureSquareMeters" : 0.0034888886680900758,
+        "offsetSurfaceMaximumResidualCells" : 0.7355603026621554,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.752594888708449e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0072434035512410405,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003739526916185113,
+          0.0012704008288072337,
+          -0.0013846247392880142
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.006996336626383585,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003950160604843113,
+          0.0012839767588317512,
+          -0.0015170279793391753
+        ],
+        "linkCount" : 387,
+        "linkMeasureSquareMeters" : 0.0028666664852459935,
+        "offsetSurfaceMaximumResidualCells" : 0.7857712577123117,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.709313925787196e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.00803617272482385,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00443087350072849,
+          0.0013970637889785865,
+          -0.001576760798184891
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007899450498540498,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004496637029761827,
+          0.0013958049947143585,
+          -0.0015943982629692656
+        ],
+        "linkCount" : 434,
+        "linkMeasureSquareMeters" : 0.0032148146113611348,
+        "offsetSurfaceMaximumResidualCells" : 0.7257108674941887,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.225117504816375e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009754260284096395,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004849300678241823,
+          0.0016067829717499708,
+          -0.001999238011506751
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009214678373810667,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005073382422124144,
+          0.0016032662310821089,
+          -0.0018633429890036416
+        ],
+        "linkCount" : 478,
+        "linkMeasureSquareMeters" : 0.003540740516660416,
+        "offsetSurfaceMaximumResidualCells" : 0.46158046239748846,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7009857805297327e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009287432972160229,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0048085736366509525,
+          0.001534639380028668,
+          -0.0017871001753096125
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009067088031457783,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004903867707025698,
+          0.001513476740899047,
+          -0.0017333234059800885
+        ],
+        "linkCount" : 448,
+        "linkMeasureSquareMeters" : 0.003318518308501815,
+        "offsetSurfaceMaximumResidualCells" : 0.7706438775747548,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.9328246683937758e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007665636256083019,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0040030887092084785,
+          0.0013070357951851994,
+          -0.0016301104535496743
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007178072353755648,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004170009833917129,
+          0.0013447197826922843,
+          -0.0015741586378822717
+        ],
+        "linkCount" : 419,
+        "linkMeasureSquareMeters" : 0.0031037035072818344,
+        "offsetSurfaceMaximumResidualCells" : 0.6022582803952096,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.698495283368869e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.021218532902492458,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00133517548546992,
+          0.00012761958358116827,
+          0.0016562709956287995
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.021351174276223104,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0013137898143499712,
+          0.00012848129320306546,
+          0.001645326306604092
+        ],
+        "linkCount" : 89,
+        "linkMeasureSquareMeters" : 0.0013185184350743846,
+        "offsetSurfaceMaximumResidualCells" : 0.15811001206505168,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.692634302189024e-07,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06335570689162481,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0019075178710112838,
+          -0.004407364986463866,
+          0.0059602744037716695
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0636972644915986,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0018599160669698417,
+          -0.004537729279119918,
+          0.005971772241157216
+        ],
+        "linkCount" : 94,
+        "linkMeasureSquareMeters" : 0.001392592504460586,
+        "offsetSurfaceMaximumResidualCells" : 0.10761407229405785,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.961295389087268e-07,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.16631998927077193,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0076829841774141054,
+          -0.011696845266550413,
+          0.018373680867024057
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.16667457938068878,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007492285934174932,
+          -0.012038667889968682,
+          0.01844320890037025
+        ],
+        "linkCount" : 377,
+        "linkMeasureSquareMeters" : 0.005585184831719586,
+        "offsetSurfaceMaximumResidualCells" : 0.43418993826518487,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.035302010094954e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.15210559955439745,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0062846233779661025,
+          -0.00939105787600278,
+          0.015055645942485364
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.15496331141166395,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006158015448768264,
+          -0.010413241838804061,
+          0.015036065547254892
+        ],
+        "linkCount" : 302,
+        "linkMeasureSquareMeters" : 0.004474073790926582,
+        "offsetSurfaceMaximumResidualCells" : 0.3786670915360446,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.5302009566383384e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.053862464097257735,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003737333413843058,
+          -0.0021762867800349797,
+          0.006767134961242116
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05400889720601454,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0037265382262702813,
+          -0.002165853373397075,
+          0.0067471440390849974
+        ],
+        "linkCount" : 138,
+        "linkMeasureSquareMeters" : 0.002044444315059159,
+        "offsetSurfaceMaximumResidualCells" : 0.1051690011781464,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.226896209966785e-07,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.054904783662180726,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017132762549441783,
+          -0.003802357415514438,
+          0.005223690541965489
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05531126675513419,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0016397226056409778,
+          -0.0038532666285376973,
+          0.005241505059959637
+        ],
+        "linkCount" : 123,
+        "linkMeasureSquareMeters" : 0.0018222221069005538,
+        "offsetSurfaceMaximumResidualCells" : 0.5222235346110101,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 5.6314537785209245e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0749521478150976,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0036034908476512773,
+          -0.00504496354679807,
+          0.008187419113394873
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07545685031582335,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0035207182257131556,
+          -0.00508250782118446,
+          0.008198096718648407
+        ],
+        "linkCount" : 358,
+        "linkMeasureSquareMeters" : 0.0026518516840260127,
+        "offsetSurfaceMaximumResidualCells" : 0.6782991888342986,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.646942514837666e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.08945324746941657,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003191482975629701,
+          -0.005896429107980848,
+          0.008726849756449984
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09225599031291111,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0030998571963630696,
+          -0.006683109542971277,
+          0.008701495745725154
+        ],
+        "linkCount" : 295,
+        "linkMeasureSquareMeters" : 0.002185185046892951,
+        "offsetSurfaceMaximumResidualCells" : 0.511554908069028,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 9.323433880566624e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07405055091463188,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0034590724336763545,
+          -0.003929486606317637,
+          0.007308673854304392
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07596518637564562,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0033629225513563234,
+          -0.004419111587345306,
+          0.007285687512462812
+        ],
+        "linkCount" : 347,
+        "linkMeasureSquareMeters" : 0.0025703702077011924,
+        "offsetSurfaceMaximumResidualCells" : 0.6044206718137608,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0006936683000249e-05,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10256401675837883,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004312517078721921,
+          -0.007254549178986263,
+          0.011042011031324567
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10335541833583138,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004223779714220843,
+          -0.0075797133621255544,
+          0.011082486815301457
+        ],
+        "linkCount" : 430,
+        "linkMeasureSquareMeters" : 0.0031851849836066547,
+        "offsetSurfaceMaximumResidualCells" : 0.28279306260576476,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.8351613622371134e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.029054700256633814,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002495263109164209,
+          -0.0005420990050690981,
+          0.00377213781829886
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.029054578502334616,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0024918966120878617,
+          -0.0005241719989824747,
+          0.0037592503097382177
+        ],
+        "linkCount" : 195,
+        "linkMeasureSquareMeters" : 0.0014444443530309335,
+        "offsetSurfaceMaximumResidualCells" : 0.21435726480885034,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.9908796110974967e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05125107744093248,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017567429005383558,
+          -0.003632016960712703,
+          0.005185414461460014
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.051340357133039964,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017113476540524726,
+          -0.0037371458366281993,
+          0.005201892784703792
+        ],
+        "linkCount" : 184,
+        "linkMeasureSquareMeters" : 0.0013629628767061108,
+        "offsetSurfaceMaximumResidualCells" : 0.7136910780992944,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 5.993445911693432e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01915091883703334,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0004278772794606012,
+          -0.0011354461112636058,
+          0.0013793035036053219
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01994198805459067,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00032459912486535765,
+          -0.0011226682372184901,
+          0.0012938373797384097
+        ],
+        "linkCount" : 103,
+        "linkMeasureSquareMeters" : 0.0007629629146778742,
+        "offsetSurfaceMaximumResidualCells" : 0.6373614130827684,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.902286401690614e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04074100735059406,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.001649991077377615,
+          -0.0025879895581369717,
+          0.004300656937836731
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.041034462329453465,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.001643760951916621,
+          -0.0026981494018329315,
+          0.0043026227771487185
+        ],
+        "linkCount" : 126,
+        "linkMeasureSquareMeters" : 0.0009333332742661373,
+        "offsetSurfaceMaximumResidualCells" : 0.1051595715366481,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.024200171703893e-07,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0680126736125648,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0033160266810248022,
+          -0.00452207595089501,
+          0.0076383159000236985
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06834861842323876,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003304742045530695,
+          -0.004541771972367545,
+          0.007653073166526118
+        ],
+        "linkCount" : 316,
+        "linkMeasureSquareMeters" : 0.0023407405926039715,
+        "offsetSurfaceMaximumResidualCells" : 0.17571305726649222,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.413865163105799e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06029233627745774,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017046337098820617,
+          -0.004066704271060804,
+          0.00523324494997773
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0617010695190584,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0016849854117638502,
+          -0.00450200319127419,
+          0.005245548756919412
+        ],
+        "linkCount" : 222,
+        "linkMeasureSquareMeters" : 0.00164444434037368,
+        "offsetSurfaceMaximumResidualCells" : 0.5853244603433633,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 5.232462664097356e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10446065198866526,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004616012008847467,
+          -0.007236745910556871,
+          0.011437773579832392
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10564538076040712,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004454239593047953,
+          -0.007727725174708353,
+          0.011436052753027087
+        ],
+        "linkCount" : 465,
+        "linkMeasureSquareMeters" : 0.0034444442264583556,
+        "offsetSurfaceMaximumResidualCells" : 0.7244555377385777,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.0075006114566976e-05,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09757741421287357,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00490413698718984,
+          -0.005307138709529531,
+          0.010555901215934681
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10022265041188445,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004795597741902958,
+          -0.006174179970528893,
+          0.01052525284494879
+        ],
+        "linkCount" : 416,
+        "linkMeasureSquareMeters" : 0.0030814812864659743,
+        "offsetSurfaceMaximumResidualCells" : 0.6285131962943326,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.872981484532925e-05,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03416482071023778,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017336165543077886,
+          0.0021881766668157775,
+          0.0025320834325998545
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.034841581107711496,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0016399880517086953,
+          0.0021644628845977998,
+          0.002462255611988635
+        ],
+        "linkCount" : 112,
+        "linkMeasureSquareMeters" : 0.0016592591542509108,
+        "offsetSurfaceMaximumResidualCells" : 0.2812236908636623,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.4075245305892684e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09306402923117085,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0029873641455955813,
+          0.00722713246615878,
+          0.007390247504826278
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09397795429763141,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0029928083903049698,
+          0.00731504225050822,
+          0.00738922552933892
+        ],
+        "linkCount" : 121,
+        "linkMeasureSquareMeters" : 0.0017925924791460733,
+        "offsetSurfaceMaximumResidualCells" : 0.07394752802646613,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 9.128188105481123e-07,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.18053174798984029,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007143798150577741,
+          0.013682632638284052,
+          0.014724410736881617
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.1823039427088585,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0070950744910380234,
+          0.014326379835760723,
+          0.014771314381372039
+        ],
+        "linkCount" : 295,
+        "linkMeasureSquareMeters" : 0.004370370093785902,
+        "offsetSurfaceMaximumResidualCells" : 0.5402619498528871,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.275729545328799e-05,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.19320492743489845,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008576941873207424,
+          0.016324457449676463,
+          0.017892200116676225
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.19492402795635425,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00847580366742937,
+          0.01668052963323535,
+          0.017938217053608423
+        ],
+        "linkCount" : 362,
+        "linkMeasureSquareMeters" : 0.005362962623560986,
+        "offsetSurfaceMaximumResidualCells" : 0.26482030560839454,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.945045417510323e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06638225916612922,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003929640728488944,
+          0.00446542101449763,
+          0.007116076760221321
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0661746541867741,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003942008937959464,
+          0.004447736316905002,
+          0.0071205040479067
+        ],
+        "linkCount" : 141,
+        "linkMeasureSquareMeters" : 0.0020888887566908806,
+        "offsetSurfaceMaximumResidualCells" : 0.09592369170883754,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.626689695856049e-07,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06905205824832478,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002221739974073543,
+          0.005963224395467157,
+          0.005533152556133836
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06967851366539138,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002154033722394595,
+          0.005979808539808861,
+          0.005466360096670704
+        ],
+        "linkCount" : 128,
+        "linkMeasureSquareMeters" : 0.0018962961762867552,
+        "offsetSurfaceMaximumResidualCells" : 0.17860334715951606,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.111589026383755e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09669074345113135,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004139589745982395,
+          0.007135130139132025,
+          0.007948578684638734
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.098470996289933,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004110150282863302,
+          0.007586047087279237,
+          0.008003611548524268
+        ],
+        "linkCount" : 376,
+        "linkMeasureSquareMeters" : 0.002785185008921173,
+        "offsetSurfaceMaximumResidualCells" : 0.7652889587908601,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.7474296945285958e-05,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.13189431427853748,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0054811662600587506,
+          0.01090229079482273,
+          0.011903149384560094
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.13353028376761805,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005441380422800766,
+          0.011225077786522965,
+          0.011920517738708987
+        ],
+        "linkCount" : 453,
+        "linkMeasureSquareMeters" : 0.0033555553431949153,
+        "offsetSurfaceMaximumResidualCells" : 0.5494317523410133,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.367023534029877e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07670399445170402,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0035022301114420768,
+          0.006462888963677144,
+          0.007031519824117999
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07712315276542199,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0034388893862617436,
+          0.006469599148562221,
+          0.007007477452665957
+        ],
+        "linkCount" : 313,
+        "linkMeasureSquareMeters" : 0.0023185183717881115,
+        "offsetSurfaceMaximumResidualCells" : 0.25262533442922064,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.704853540602281e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10046547205241807,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003405076835591521,
+          0.007643986695000315,
+          0.007994293693739224
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.1026970096590935,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0034177292953960783,
+          0.008088488984210426,
+          0.008005199925911354
+        ],
+        "linkCount" : 261,
+        "linkMeasureSquareMeters" : 0.0019333332109798696,
+        "offsetSurfaceMaximumResidualCells" : 0.46459641099462673,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.611701295396813e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04533729992622148,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0028714022701188985,
+          0.002912390066926171,
+          0.004774854112855619
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04559743900430155,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002864973096878406,
+          0.0029386194474861817,
+          0.004764045907689485
+        ],
+        "linkCount" : 233,
+        "linkMeasureSquareMeters" : 0.0017259258166985028,
+        "offsetSurfaceMaximumResidualCells" : 0.2010053813916293,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.1671439813965003e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07585250260351467,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0026685486865908148,
+          0.006194442708831405,
+          0.006387414745345698
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07660699376100549,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0026505717497768964,
+          0.006278772383380525,
+          0.006406762508002547
+        ],
+        "linkCount" : 229,
+        "linkMeasureSquareMeters" : 0.0016962961889440218,
+        "offsetSurfaceMaximumResidualCells" : 0.3238923296991029,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.544887694563536e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.018759276542237437,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00030107836352503286,
+          0.0014973753200327533,
+          0.0008605758373053409
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.019308207485616825,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0002374480887538925,
+          0.0014903093157570006,
+          0.0008062734104866214
+        ],
+        "linkCount" : 87,
+        "linkMeasureSquareMeters" : 0.000644444403659952,
+        "offsetSurfaceMaximumResidualCells" : 0.24304984780907868,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.2651814889174456e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04680960385319985,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017679752866793935,
+          0.003228758269091017,
+          0.0040461461980178335
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04703366746283581,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017792213294379562,
+          0.003261455534898538,
+          0.004045349360459447
+        ],
+        "linkCount" : 110,
+        "linkMeasureSquareMeters" : 0.0008148147632482151,
+        "offsetSurfaceMaximumResidualCells" : 0.14356559331967875,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.965752582124358e-07,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.11591103280017426,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0053776759523082845,
+          0.008421907238078237,
+          0.010507466345667424
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.11871602412693408,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005332544549795921,
+          0.009058317095634327,
+          0.010498895905267357
+        ],
+        "linkCount" : 415,
+        "linkMeasureSquareMeters" : 0.0030740738795273542,
+        "offsetSurfaceMaximumResidualCells" : 0.8587386618165247,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.5123231323939763e-05,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.12382048368905263,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0052687022346051505,
+          0.01043977248191883,
+          0.01125864094815395
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.12633866604227037,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0051224501541665265,
+          0.01095548038322623,
+          0.01124873866762935
+        ],
+        "linkCount" : 466,
+        "linkMeasureSquareMeters" : 0.0034518516333969756,
+        "offsetSurfaceMaximumResidualCells" : 0.6307633183034161,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7060114228768703e-05,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07199001786306183,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002105154057534778,
+          0.005617471152472382,
+          0.00506586030054493
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07363993724578696,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00208865300241293,
+          0.005928439910312725,
+          0.005091798985787454
+        ],
+        "linkCount" : 215,
+        "linkMeasureSquareMeters" : 0.0015925924918033384,
+        "offsetSurfaceMaximumResidualCells" : 0.44524608814814903,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.42948460555707e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07684712938305374,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003639830859307319,
+          0.006210508583778039,
+          0.007355358417194337
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07733435307197635,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0036403295797386146,
+          0.006234112992891623,
+          0.007360808130059511
+        ],
+        "linkCount" : 296,
+        "linkMeasureSquareMeters" : 0.002192592453831571,
+        "offsetSurfaceMaximumResidualCells" : 0.17971213330132377,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.378770212960915e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07901561062387659,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.019924512408812083,
+          0.00792020142716897,
+          -0.013564326096655907
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07909461389490453,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.019973380481332723,
+          0.007895244898754754,
+          -0.013599523453651917
+        ],
+        "linkCount" : 572,
+        "linkMeasureSquareMeters" : 0.008474073537781398,
+        "offsetSurfaceMaximumResidualCells" : 0.4214456730064358,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.7972874441871e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09039349156222007,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.021883656487492888,
+          0.008618453128580832,
+          -0.014942723183193946
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09032272942915372,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.021938294272685423,
+          0.008630822824932757,
+          -0.01500593189180791
+        ],
+        "linkCount" : 604,
+        "linkMeasureSquareMeters" : 0.00894814758185308,
+        "offsetSurfaceMaximumResidualCells" : 0.21551110368226103,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.537619582645899e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03267520896644114,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00804033944091797,
+          0.0031187945308929466,
+          -0.005468561662899709
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03271074799077345,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008045264141119335,
+          0.003120513014753629,
+          -0.0054732214722262125
+        ],
+        "linkCount" : 223,
+        "linkMeasureSquareMeters" : 0.0033037034946246007,
+        "offsetSurfaceMaximumResidualCells" : 0.04481091368546222,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.706866909525414e-07,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.031055044785865727,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007848927042899446,
+          0.0031562232218414065,
+          -0.005393427186877744
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.031073573065591647,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007852419538164542,
+          0.0031572656275792735,
+          -0.005396199467674956
+        ],
+        "linkCount" : 227,
+        "linkMeasureSquareMeters" : 0.0033629627501335626,
+        "offsetSurfaceMaximumResidualCells" : 0.07068424342528724,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.382187843381114e-07,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06727673824974394,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.017218477798238877,
+          0.006772140524719714,
+          -0.011644969131927248
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06734960415814924,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.017282856735785317,
+          0.006817411695057156,
+          -0.011714333834861552
+        ],
+        "linkCount" : 502,
+        "linkMeasureSquareMeters" : 0.007437036566374593,
+        "offsetSurfaceMaximumResidualCells" : 0.18687544777700393,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.8624550691532222e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07649953985990336,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.01835895145943199,
+          0.007238181032748774,
+          -0.012603755396780495
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07661948121855426,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018376234202021002,
+          0.007244517387099082,
+          -0.012620538552155875
+        ],
+        "linkCount" : 500,
+        "linkMeasureSquareMeters" : 0.007407406938620113,
+        "offsetSurfaceMaximumResidualCells" : 0.09894676492399675,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7238909787655848e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.053728922502676704,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.01342782752596192,
+          0.0053033070622413615,
+          -0.009131231472494632
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05377038938437413,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.01346298208070444,
+          0.00528812746383837,
+          -0.009158168109823455
+        ],
+        "linkCount" : 762,
+        "linkMeasureSquareMeters" : 0.005644444087228504,
+        "offsetSurfaceMaximumResidualCells" : 0.6330320201987112,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0777922407269852e-05,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05871320036511092,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.014293460981608457,
+          0.005686153431306173,
+          -0.009764254410413566
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05857575592204732,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.01433567509260176,
+          0.0056696622567346195,
+          -0.009818236976052799
+        ],
+        "linkCount" : 796,
+        "linkMeasureSquareMeters" : 0.005896295923141585,
+        "offsetSurfaceMaximumResidualCells" : 0.25016636332324876,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 5.158679086557151e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.02698138132672854,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006909912292051218,
+          0.002761500292810823,
+          -0.004718455259174586
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.027026536033426037,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006916300919597626,
+          0.0027641641072822915,
+          -0.004725221662032685
+        ],
+        "linkCount" : 404,
+        "linkMeasureSquareMeters" : 0.002992592403202534,
+        "offsetSurfaceMaximumResidualCells" : 0.17836739657446968,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.4903681657047128e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03342202545531745,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00798991545840725,
+          0.003111519284180914,
+          -0.005462514546274548
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03344372980082679,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007993159518538335,
+          0.0031126458158482425,
+          -0.005465077117479871
+        ],
+        "linkCount" : 432,
+        "linkMeasureSquareMeters" : 0.0031999997974838947,
+        "offsetSurfaceMaximumResidualCells" : 0.22166691335074487,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.362259553850933e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.011229067118829792,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0031605447008091264,
+          0.001250404156149173,
+          -0.002119442519810478
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01124469458273729,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003175142760135236,
+          0.0012628415324008122,
+          -0.0021277823329000946
+        ],
+        "linkCount" : 204,
+        "linkMeasureSquareMeters" : 0.0015111110154785157,
+        "offsetSurfaceMaximumResidualCells" : 0.16883647374155672,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.4247174127833593e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.021267339309858302,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004641186511459255,
+          0.001819386469898118,
+          -0.0032431151386982915
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.021286602357407584,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004643043430854878,
+          0.0018200717476179865,
+          -0.003244636317058079
+        ],
+        "linkCount" : 230,
+        "linkMeasureSquareMeters" : 0.001703703595882642,
+        "offsetSurfaceMaximumResidualCells" : 0.18471815534978137,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 5.24968046522788e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07363986479924074,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018119726841421574,
+          0.0071962190141738065,
+          -0.012383787986083375
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07374905163462454,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.01817771888328068,
+          0.0071747207277727725,
+          -0.012426822494469842
+        ],
+        "linkCount" : 1015,
+        "linkMeasureSquareMeters" : 0.007518518042699371,
+        "offsetSurfaceMaximumResidualCells" : 0.8164235996126722,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.2119387264090075e-05,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07530436041685647,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018568891198137923,
+          0.007376375939750474,
+          -0.012573181670653823
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07492738388806466,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018675586970235202,
+          0.007353065145908327,
+          -0.012716781363749468
+        ],
+        "linkCount" : 1053,
+        "linkMeasureSquareMeters" : 0.007799999506366932,
+        "offsetSurfaceMaximumResidualCells" : 0.614725942836675,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7373796389154802e-05,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.022318098237111027,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005769478248042644,
+          0.002250881062765755,
+          -0.00388982559569599
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.02232272460938221,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0057704408181477,
+          0.0022511979916874387,
+          -0.003890634902460357
+        ],
+        "linkCount" : 336,
+        "linkMeasureSquareMeters" : 0.002488888731376372,
+        "offsetSurfaceMaximumResidualCells" : 0.1942531294360788,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.918576037942017e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.025995097338998553,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006175697717130136,
+          0.0024651602283458545,
+          -0.004275890872653325
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.026021796555647715,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0061793209412648,
+          0.0024664713609922227,
+          -0.00427927076181446
+        ],
+        "linkCount" : 335,
+        "linkMeasureSquareMeters" : 0.002481481324437752,
+        "offsetSurfaceMaximumResidualCells" : 0.216361447797819,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.9112563491290115e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05184322889587804,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.012481112418420088,
+          0.004919682105283969,
+          -0.008540435800782552
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05188398291115186,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0125131403721631,
+          0.004904859084528548,
+          -0.008563512353331016
+        ],
+        "linkCount" : 683,
+        "linkMeasureSquareMeters" : 0.005059258939077522,
+        "offsetSurfaceMaximumResidualCells" : 0.5178575407481003,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.61399504905237e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.046246324430220774,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.011723501933520758,
+          0.004658676076155543,
+          -0.00796051377607974
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04619106298979233,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.011766534728209621,
+          0.004668432530135246,
+          -0.008010895704220476
+        ],
+        "linkCount" : 680,
+        "linkMeasureSquareMeters" : 0.005037036718261662,
+        "offsetSurfaceMaximumResidualCells" : 0.23587619565234855,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.1224565040931647e-06,
+        "partIdentifier" : 4
+      }
+    ],
+    "components" : [
+      {
+        "componentName" : "body",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.013046381679077687,
+          "meanWallVelocityMetersPerSecond" : [
+            1.3812263038269073,
+            0.4379665765546411,
+            -0.5121504511909273
+          ],
+          "rmsSpeedRelativeError" : 0.022429238378574044,
+          "rmsWallSpeedMetersPerSecond" : 1.6144272108993167
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.009334768696539774,
+          "meanWallVelocityMetersPerSecond" : [
+            1.4148524031322984,
+            0.4411246079489647,
+            -0.506444855742477
+          ],
+          "rmsSpeedRelativeError" : 0.006054902379792101,
+          "rmsWallSpeedMetersPerSecond" : 1.5885719510881202
+        },
+        "linkCount" : 6511,
+        "linkMeasureSquareMeters" : 0.061118514650554845,
+        "offsetSurfaceMaximumResidualCells" : 0.7857712577123117,
+        "offsetSurfaceRMSResidualCells" : 0.06955769182795753,
+        "partIdentifier" : 1,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.009299190977425606,
+          "meanWallVelocityMetersPerSecond" : [
+            1.4148009869853293,
+            0.4411294100508821,
+            -0.5064669749098496
+          ],
+          "rmsSpeedRelativeError" : 0.006014666449995347,
+          "rmsWallSpeedMetersPerSecond" : 1.588508418104632
+        }
+      },
+      {
+        "componentName" : "leftWing",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.11429832556495065,
+          "meanWallVelocityMetersPerSecond" : [
+            1.3752852501832307,
+            -1.9529655074061132,
+            3.262071743822205
+          ],
+          "rmsSpeedRelativeError" : 0.06737454762312246,
+          "rmsWallSpeedMetersPerSecond" : 5.596917861796139
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.10782875628859308,
+          "meanWallVelocityMetersPerSecond" : [
+            1.3447618796103922,
+            -2.0753626308794044,
+            3.2612650063246167
+          ],
+          "rmsSpeedRelativeError" : 0.07420912088411512,
+          "rmsWallSpeedMetersPerSecond" : 5.6327558394276895
+        },
+        "linkCount" : 4580,
+        "linkMeasureSquareMeters" : 0.0422444417709507,
+        "offsetSurfaceMaximumResidualCells" : 0.7244555377385777,
+        "offsetSurfaceRMSResidualCells" : 0.05299398291740554,
+        "partIdentifier" : 2,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.10742206809817834,
+          "meanWallVelocityMetersPerSecond" : [
+            1.3425725400218445,
+            -2.076411859200842,
+            3.260304340208622
+          ],
+          "rmsSpeedRelativeError" : 0.07431265631715554,
+          "rmsWallSpeedMetersPerSecond" : 5.63329874099472
+        }
+      },
+      {
+        "componentName" : "rightWing",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.09697499316066975,
+          "meanWallVelocityMetersPerSecond" : [
+            1.5698904029127079,
+            2.9591002480863198,
+            3.2819603594580586
+          ],
+          "rmsSpeedRelativeError" : 0.05257691260457696,
+          "rmsWallSpeedMetersPerSecond" : 6.150684161603909
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.0924917433246149,
+          "meanWallVelocityMetersPerSecond" : [
+            1.5535773431020001,
+            3.0505670220060277,
+            3.281617168072975
+          ],
+          "rmsSpeedRelativeError" : 0.0593281710818039,
+          "rmsWallSpeedMetersPerSecond" : 6.190134826053713
+        },
+        "linkCount" : 4613,
+        "linkMeasureSquareMeters" : 0.0427555528497155,
+        "offsetSurfaceMaximumResidualCells" : 0.8587386618165247,
+        "offsetSurfaceRMSResidualCells" : 0.05799808985792994,
+        "partIdentifier" : 3,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.09232970429362329,
+          "meanWallVelocityMetersPerSecond" : [
+            1.5519930749584825,
+            3.049983360812935,
+            3.2815694093828105
+          ],
+          "rmsSpeedRelativeError" : 0.05918838099580721,
+          "rmsWallSpeedMetersPerSecond" : 6.18931796919737
+        }
+      },
+      {
+        "componentName" : "tail",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.02416330560444313,
+          "meanWallVelocityMetersPerSecond" : [
+            2.3988493445553676,
+            0.9485590591705276,
+            -1.6360460234855452
+          ],
+          "rmsSpeedRelativeError" : 0.024184065337188636,
+          "rmsWallSpeedMetersPerSecond" : 3.1180691527518816
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.026832622118991973,
+          "meanWallVelocityMetersPerSecond" : [
+            2.404846856996355,
+            0.9483239360822603,
+            -1.6422097283876735
+          ],
+          "rmsSpeedRelativeError" : 0.024189851523402126,
+          "rmsWallSpeedMetersPerSecond" : 3.1180867684611617
+        },
+        "linkCount" : 9558,
+        "linkMeasureSquareMeters" : 0.09026666095402464,
+        "offsetSurfaceMaximumResidualCells" : 0.8164235996126722,
+        "offsetSurfaceRMSResidualCells" : 0.032450381265578,
+        "partIdentifier" : 4,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.026815850168172572,
+          "meanWallVelocityMetersPerSecond" : [
+            2.4048181249358778,
+            0.9483108901926763,
+            -1.6421677243938633
+          ],
+          "rmsSpeedRelativeError" : 0.02416555023108401,
+          "rmsWallSpeedMetersPerSecond" : 3.118012784582176
+        }
+      }
+    ],
+    "deviceName" : "Apple M4",
+    "frozenSourceTimeSeconds" : 0.026499999687075615,
+    "gridX" : 112,
+    "gridY" : 103,
+    "gridZ" : 99,
+    "referenceLengthCells" : 12,
+    "runtimeSeconds" : 7.560141921043396,
+    "schemaVersion" : 1,
+    "sourceProductionMaximumRelativeDifference" : 0,
+    "sourceReproductionPassed" : true
+  },
+  "d16" : {
+    "allValuesFinite" : true,
+    "bins" : [
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009125358385928116,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0053500816482669345,
+          0.0015166541360557009,
+          -0.0016167597949131565
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009106048815380682,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005367847786104841,
+          0.0015223415873496635,
+          -0.0016084209247544548
+        ],
+        "linkCount" : 457,
+        "linkMeasureSquareMeters" : 0.0038083332655010505,
+        "offsetSurfaceMaximumResidualCells" : 0.29775175000172294,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.932228193062616e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.008306106690154367,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004475570781431002,
+          0.0014725606162842735,
+          -0.0017277617151367863
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.008255037267277979,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004492760134186556,
+          0.0014552277489584895,
+          -0.0017228065514173269
+        ],
+        "linkCount" : 377,
+        "linkMeasureSquareMeters" : 0.0031416666107087435,
+        "offsetSurfaceMaximumResidualCells" : 0.5026643276810123,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.3022224745607184e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.013626637710867022,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0074852809456314295,
+          0.0023217934105690505,
+          -0.0026748798412912864
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01350612268836239,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00752363889625023,
+          0.002313436592142587,
+          -0.002632103211241176
+        ],
+        "linkCount" : 628,
+        "linkMeasureSquareMeters" : 0.005233333240119538,
+        "offsetSurfaceMaximumResidualCells" : 0.23778761337222784,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.727437928771498e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.013147314754966059,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0072159512499735375,
+          0.002321626605710273,
+          -0.002790632215765825
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.012802923371349258,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007315302148301314,
+          0.0023260262723218137,
+          -0.002702614237038264
+        ],
+        "linkCount" : 637,
+        "linkMeasureSquareMeters" : 0.005308333238783668,
+        "offsetSurfaceMaximumResidualCells" : 0.5123241919053538,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.1163620590420729e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009746562763985209,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005545659135474312,
+          0.0018270373756381609,
+          -0.0020915672734716437
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009815692216629524,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005618503672144788,
+          0.0018009615378671118,
+          -0.0021029178300701985
+        ],
+        "linkCount" : 494,
+        "linkMeasureSquareMeters" : 0.004116666593342482,
+        "offsetSurfaceMaximumResidualCells" : 0.4986752867402573,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0388391715878485e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.012788692855690635,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006730720239391881,
+          0.0021342003888487663,
+          -0.002517462556733901
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01274985492257029,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0067896567277745176,
+          0.0021323633514517444,
+          -0.002477826370123371
+        ],
+        "linkCount" : 548,
+        "linkMeasureSquareMeters" : 0.004566666585327265,
+        "offsetSurfaceMaximumResidualCells" : 0.4465586605643927,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.024994769648979e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.008058767263866704,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004530756165750071,
+          0.001347580226346613,
+          -0.0014898236525879515
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007966214899758725,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004572863570859014,
+          0.0013402749166829288,
+          -0.001462421186794085
+        ],
+        "linkCount" : 769,
+        "linkMeasureSquareMeters" : 0.003204166609595459,
+        "offsetSurfaceMaximumResidualCells" : 0.28757071765297765,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.545450755587248e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007305962820920652,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003920771948642436,
+          0.0013018030160303717,
+          -0.0015874622360171253
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007081039171412893,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0039647853229568784,
+          0.00129272786572257,
+          -0.00153216026434436
+        ],
+        "linkCount" : 686,
+        "linkMeasureSquareMeters" : 0.0028583332824219676,
+        "offsetSurfaceMaximumResidualCells" : 0.5151550400664294,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.1222829940476998e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.00774558302955712,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004367987501704185,
+          0.0013482711597536173,
+          -0.0015409883850950406
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.00762516348455461,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004450014885477841,
+          0.0013515351445897378,
+          -0.001513480537435676
+        ],
+        "linkCount" : 774,
+        "linkMeasureSquareMeters" : 0.0032249999425577173,
+        "offsetSurfaceMaximumResidualCells" : 0.43377141506459,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0890863959765047e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007524073726478956,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004052095793852749,
+          0.0012975040293524375,
+          -0.0015303260955518336
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0074256187506307955,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004047822755499486,
+          0.0012876346841833122,
+          -0.0015055270599264588
+        ],
+        "linkCount" : 673,
+        "linkMeasureSquareMeters" : 0.0028041666167200954,
+        "offsetSurfaceMaximumResidualCells" : 0.6139923955647438,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.5003758381627791e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.004384575991753703,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002669153829902121,
+          0.0007846862064560665,
+          -0.0008439326496821057
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.004392373837037465,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002674001249229895,
+          0.0007829414528728567,
+          -0.0008453429132384704
+        ],
+        "linkCount" : 479,
+        "linkMeasureSquareMeters" : 0.0019958332977844653,
+        "offsetSurfaceMaximumResidualCells" : 0.35205996450915855,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.261340558439505e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.005616321545495639,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0028503388686460652,
+          0.0009326040334806842,
+          -0.0011361203765365548
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.005498203982394305,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002848371398378998,
+          0.0009270435913189223,
+          -0.0011072770938494471
+        ],
+        "linkCount" : 457,
+        "linkMeasureSquareMeters" : 0.0019041666327505253,
+        "offsetSurfaceMaximumResidualCells" : 0.506971322155848,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.823051730194106e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009382482627369472,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005075733141685031,
+          0.0015578760702155915,
+          -0.0017622096022518541
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009287266801622914,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0051637650046898,
+          0.001544960174261871,
+          -0.0017214956635699867
+        ],
+        "linkCount" : 850,
+        "linkMeasureSquareMeters" : 0.0035416666035840466,
+        "offsetSurfaceMaximumResidualCells" : 0.5665208339658566,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.791306576769689e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007237521042420164,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00396604801255951,
+          0.0013392033208289085,
+          -0.001517157717782777
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007277497604667146,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004083587082507765,
+          0.0013290436131712406,
+          -0.0015726748249703967
+        ],
+        "linkCount" : 708,
+        "linkMeasureSquareMeters" : 0.002949999947455905,
+        "offsetSurfaceMaximumResidualCells" : 0.7176197294358848,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.5992402219732358e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.008000468075652882,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004492296956642998,
+          0.0014330036674852001,
+          -0.0016323556145806531
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007964779262888888,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004520228350116527,
+          0.0014084750009044807,
+          -0.0016139622900010761
+        ],
+        "linkCount" : 775,
+        "linkMeasureSquareMeters" : 0.003229166609150169,
+        "offsetSurfaceMaximumResidualCells" : 0.6242909608250327,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.4230885473106953e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009701328108522428,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004960002243612289,
+          0.0016258568126673327,
+          -0.0019841695241042336
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009281141666654901,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0050958110741115715,
+          0.001616526966806425,
+          -0.00188446412362123
+        ],
+        "linkCount" : 853,
+        "linkMeasureSquareMeters" : 0.0035541666033614017,
+        "offsetSurfaceMaximumResidualCells" : 0.5926123952704458,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.044195874483548e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009340526659429471,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004865506681522608,
+          0.001535915551487724,
+          -0.001812346136783257
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.009133032482748545,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0049472188247222815,
+          0.0015269867612636115,
+          -0.0017484930876270563
+        ],
+        "linkCount" : 805,
+        "linkMeasureSquareMeters" : 0.00335416660692372,
+        "offsetSurfaceMaximumResidualCells" : 0.47780229846691263,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0372737071973812e-05,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007195781046172881,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004120531037919087,
+          0.0013381843866545244,
+          -0.00159040212559332
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.007177145971452822,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004172782490336215,
+          0.0013389626209863183,
+          -0.0015618701226971124
+        ],
+        "linkCount" : 744,
+        "linkMeasureSquareMeters" : 0.0030999999447841662,
+        "offsetSurfaceMaximumResidualCells" : 0.5013342127502162,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.878051496698993e-06,
+        "partIdentifier" : 1
+      },
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.022002734767384142,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0013448398894817695,
+          7.750266658655061e-05,
+          0.0016282931554665893
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.02262426860768293,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0012344241452015043,
+          8.442779240228086e-05,
+          0.001548112000137589
+        ],
+        "linkCount" : 164,
+        "linkMeasureSquareMeters" : 0.0013666666423242262,
+        "offsetSurfaceMaximumResidualCells" : 0.26236987327865974,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.2219313557678934e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0665683941714557,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0018150580582246296,
+          -0.004783886257414471,
+          0.0061488680910395735
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0669798307067931,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017894643964647863,
+          -0.0048463943471629516,
+          0.006145376920081984
+        ],
+        "linkCount" : 174,
+        "linkMeasureSquareMeters" : 0.0014499999741732646,
+        "offsetSurfaceMaximumResidualCells" : 0.06328234590476034,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.516156254200652e-07,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.1677525650727404,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007636140611978017,
+          -0.011819573700248736,
+          0.018461017618697152
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.16848836423213429,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007516100326479645,
+          -0.012050759062679384,
+          0.01847108930662003
+        ],
+        "linkCount" : 668,
+        "linkMeasureSquareMeters" : 0.005566666567515674,
+        "offsetSurfaceMaximumResidualCells" : 0.2601164451267521,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.4730430665035446e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.15790427366860324,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006397564537428935,
+          -0.010327586502412387,
+          0.015446996100460485
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.15873843456389983,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00629990058852304,
+          -0.010716975687960631,
+          0.015441394110155908
+        ],
+        "linkCount" : 551,
+        "linkMeasureSquareMeters" : 0.004591666584881976,
+        "offsetSurfaceMaximumResidualCells" : 0.3801609474456522,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.021396578457104e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.056304026570804584,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003641344373219592,
+          -0.002346655454000096,
+          0.006857632704330303
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0567737504573228,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0035997806147323253,
+          -0.0024118843120268653,
+          0.006829931841474848
+        ],
+        "linkCount" : 249,
+        "linkMeasureSquareMeters" : 0.0020749999630410524,
+        "offsetSurfaceMaximumResidualCells" : 0.05209362250775745,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.6478214979639523e-07,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05464077951169597,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017733655976092321,
+          -0.003690715352067404,
+          0.00515971305374279
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.055524935345102375,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0015939609197267919,
+          -0.0039002385205042264,
+          0.005222829961284724
+        ],
+        "linkCount" : 219,
+        "linkMeasureSquareMeters" : 0.0018249999674939373,
+        "offsetSurfaceMaximumResidualCells" : 0.5784730556265948,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.157434056386201e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0743996656264058,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0036049353400885464,
+          -0.004987945007242017,
+          0.008140836082314386
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07518154608347395,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003485990353896065,
+          -0.005021177471121752,
+          0.008099009257211761
+        ],
+        "linkCount" : 640,
+        "linkMeasureSquareMeters" : 0.0026666666191691893,
+        "offsetSurfaceMaximumResidualCells" : 0.6283615856251475,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.78809558086786e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09137111422188601,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0031926329364587807,
+          -0.006371273655176738,
+          0.008836384358210046
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09268326870813436,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003126787218731079,
+          -0.006780306402230609,
+          0.008808003398245452
+        ],
+        "linkCount" : 538,
+        "linkMeasureSquareMeters" : 0.0022416666267391157,
+        "offsetSurfaceMaximumResidualCells" : 0.4598942688083858,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.780079013266581e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07629199594561224,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0034550190921937857,
+          -0.004228523972346089,
+          0.007355335035264577
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07696601448881824,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003393279319151178,
+          -0.004464744367736947,
+          0.00734614557619669
+        ],
+        "linkCount" : 627,
+        "linkMeasureSquareMeters" : 0.002612499953467317,
+        "offsetSurfaceMaximumResidualCells" : 0.5313606120205062,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 6.7955253810710034e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.103106350355115,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00430377433132374,
+          -0.007274039690557963,
+          0.011076876766723682
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10374911730827437,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004252280844429939,
+          -0.007565433087916507,
+          0.011095454121873342
+        ],
+        "linkCount" : 759,
+        "linkMeasureSquareMeters" : 0.0031624999436709418,
+        "offsetSurfaceMaximumResidualCells" : 0.4900124964865855,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.8081401590898347e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03170642712939373,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0024951522339115412,
+          -0.00069853451217585,
+          0.0039332212043065445
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.031864598307604276,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0024798954649878024,
+          -0.0007030877406740994,
+          0.003931334509231672
+        ],
+        "linkCount" : 353,
+        "linkMeasureSquareMeters" : 0.0014708333071355257,
+        "offsetSurfaceMaximumResidualCells" : 0.16916348045684726,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7626632952038046e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05330983419020783,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0018113516177924232,
+          -0.003784816857266382,
+          0.005402684279432654
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.053838268695998406,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017578288540615282,
+          -0.0039097031702848666,
+          0.005424594245913562
+        ],
+        "linkCount" : 334,
+        "linkMeasureSquareMeters" : 0.0013916666418789393,
+        "offsetSurfaceMaximumResidualCells" : 0.48085536019925834,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.915754959579949e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01911133419859692,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00039147252877444645,
+          -0.0010289121255893823,
+          0.0012266638677723716
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.019753573467987763,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00026546140140672235,
+          -0.0010641515618172476,
+          0.0011689716620309424
+        ],
+        "linkCount" : 190,
+        "linkMeasureSquareMeters" : 0.000791666652565863,
+        "offsetSurfaceMaximumResidualCells" : 0.8606030798093173,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 9.453099657418237e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.042100350063377846,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0016060927443065618,
+          -0.0027455462622295768,
+          0.004324159702735212
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04251857899061385,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00156503928974453,
+          -0.0027901765614945467,
+          0.00430347855557933
+        ],
+        "linkCount" : 232,
+        "linkMeasureSquareMeters" : 0.0009666666494488436,
+        "offsetSurfaceMaximumResidualCells" : 0.2534027268008007,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0002682373560233e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06971439919641638,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0033873268851918824,
+          -0.004585116900107246,
+          0.007798503889971826
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06996508439616607,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003380880186946442,
+          -0.004605507945295418,
+          0.007811629196850587
+        ],
+        "linkCount" : 572,
+        "linkMeasureSquareMeters" : 0.0023833332908824736,
+        "offsetSurfaceMaximumResidualCells" : 0.13700947471729236,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.9951638258273516e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0639441517023828,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0018522086359704902,
+          -0.004422433428621674,
+          0.005518840884772431
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06494328438471478,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017865460035536797,
+          -0.004706591458202441,
+          0.005549124541907873
+        ],
+        "linkCount" : 416,
+        "linkMeasureSquareMeters" : 0.0017333333024599966,
+        "offsetSurfaceMaximumResidualCells" : 0.6598963549709995,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.182504563044687e-06,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10491434974992377,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0046569198864178695,
+          -0.007226070872612321,
+          0.011451509301949636
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10641338720866123,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004468784297957237,
+          -0.0076902157183965855,
+          0.011430443323517147
+        ],
+        "linkCount" : 827,
+        "linkMeasureSquareMeters" : 0.0034458332719576575,
+        "offsetSurfaceMaximumResidualCells" : 0.8439944314359374,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.4929411277292666e-05,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10091645834728798,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00495016005691541,
+          -0.005840864788264947,
+          0.010735072168355944
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10216010986637797,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004828749661178784,
+          -0.006311776089807773,
+          0.01068366316246096
+        ],
+        "linkCount" : 760,
+        "linkMeasureSquareMeters" : 0.0031666666102633935,
+        "offsetSurfaceMaximumResidualCells" : 0.7617089136326816,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.6545278911314957e-05,
+        "partIdentifier" : 2
+      },
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03436807311665808,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017352289972336807,
+          0.002159091940021723,
+          0.002589190563660917
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.034657595348638624,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017107416003775463,
+          0.002153229386750131,
+          0.0025697761127404213
+        ],
+        "linkCount" : 203,
+        "linkMeasureSquareMeters" : 0.001691666636535476,
+        "offsetSurfaceMaximumResidualCells" : 0.2128233249371497,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.05918306398877e-07,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09294905536161678,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0030522055796661225,
+          0.007170504554487335,
+          0.007419912786033494
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09322269003328543,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0030379697014566763,
+          0.007206056022877657,
+          0.007423369905564979
+        ],
+        "linkCount" : 218,
+        "linkMeasureSquareMeters" : 0.0018166666343090335,
+        "offsetSurfaceMaximumResidualCells" : 0.22950480273749238,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0068247985878527e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.18716535955784291,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00733899911153993,
+          0.014401310250243276,
+          0.015399215626193634
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.19145281187529126,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00730320087954676,
+          0.015108283153599201,
+          0.015399766677113838
+        ],
+        "linkCount" : 547,
+        "linkMeasureSquareMeters" : 0.004558333252142362,
+        "offsetSurfaceMaximumResidualCells" : 0.23846692007333606,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.364284050341683e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.19898227462774928,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008658933820868636,
+          0.016847442980144994,
+          0.018146995156836477
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.19962036139692538,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008582823360217883,
+          0.016927632534015608,
+          0.018184629712380097
+        ],
+        "linkCount" : 651,
+        "linkMeasureSquareMeters" : 0.005424999903372316,
+        "offsetSurfaceMaximumResidualCells" : 0.32916600620372605,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.7936272635856914e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06602750777157887,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004060881896039023,
+          0.004312458934274496,
+          0.007147801062930752
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06606366407215014,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004062797523366593,
+          0.004310288174108047,
+          0.00714745471924614
+        ],
+        "linkCount" : 262,
+        "linkMeasureSquareMeters" : 0.0021833332944448023,
+        "offsetSurfaceMaximumResidualCells" : 0.07247338233456126,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.178470505692965e-07,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07212946530484314,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002261414601505805,
+          0.006160662797596089,
+          0.005674912080259498
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07213725506691333,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0022464528156319525,
+          0.00616326509747737,
+          0.005673463044264367
+        ],
+        "linkCount" : 241,
+        "linkMeasureSquareMeters" : 0.0020083332975618217,
+        "offsetSurfaceMaximumResidualCells" : 0.1434992099590423,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 7.266306218284969e-07,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0987890049102689,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00423155718238911,
+          0.007391117277344903,
+          0.008184169699845733
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.1014370230545595,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0041869489956410585,
+          0.007808221928621091,
+          0.008194625902985638
+        ],
+        "linkCount" : 680,
+        "linkMeasureSquareMeters" : 0.0028333332828672573,
+        "offsetSurfaceMaximumResidualCells" : 0.5901902114642459,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 9.94553899400462e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.13433777988718695,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005527432017611926,
+          0.01112357737514793,
+          0.011969634512972312
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.13505845687061102,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005481326530519525,
+          0.011260471934136122,
+          0.011989195610775263
+        ],
+        "linkCount" : 805,
+        "linkMeasureSquareMeters" : 0.00335416660692372,
+        "offsetSurfaceMaximumResidualCells" : 0.34499551009376744,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.2752959548416807e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07671650000762437,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0034985919597483226,
+          0.006417332058467746,
+          0.007010907143593517
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0769391145324514,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003453546528441445,
+          0.006416817151517635,
+          0.006990779017603964
+        ],
+        "linkCount" : 553,
+        "linkMeasureSquareMeters" : 0.0023041666256258912,
+        "offsetSurfaceMaximumResidualCells" : 0.5079635532490213,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.509169079979078e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10128787856972321,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0034598934839554425,
+          0.007830002006775388,
+          0.008081891625087654
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.10351532783928144,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0034632967099526707,
+          0.008213654944127279,
+          0.008097926173718168
+        ],
+        "linkCount" : 473,
+        "linkMeasureSquareMeters" : 0.001970833298229755,
+        "offsetSurfaceMaximumResidualCells" : 0.21873964485689204,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.244240872398459e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.044587077121144666,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002988638726167351,
+          0.0028122338603151368,
+          0.004839769430376702
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04475145888499159,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0029809734676628182,
+          0.002829055972570525,
+          0.004838742201797324
+        ],
+        "linkCount" : 426,
+        "linkMeasureSquareMeters" : 0.0017749999683845158,
+        "offsetSurfaceMaximumResidualCells" : 0.16675517335731924,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.919688785536977e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07642132683417716,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0027525810349688356,
+          0.006216366728343979,
+          0.006461584571742392
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07724252652230382,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002701302403945094,
+          0.006313617006551543,
+          0.006502007322796407
+        ],
+        "linkCount" : 421,
+        "linkMeasureSquareMeters" : 0.0017541666354222562,
+        "offsetSurfaceMaximumResidualCells" : 0.5184573237253127,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.974557900788967e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01928831246397887,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00020219606739777099,
+          0.0015718321766531702,
+          0.0008051917010762733
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.01962809485851414,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00017373481300720476,
+          0.0015744750852896801,
+          0.0007844767702597951
+        ],
+        "linkCount" : 161,
+        "linkMeasureSquareMeters" : 0.0006708333213847574,
+        "offsetSurfaceMaximumResidualCells" : 0.16498724367441037,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0276584007941425e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04559625600138358,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017598719226591107,
+          0.0031371067620086387,
+          0.003957136139714411
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04575662181018058,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0017631208964595368,
+          0.0031503205083932575,
+          0.003958679390967052
+        ],
+        "linkCount" : 197,
+        "linkMeasureSquareMeters" : 0.0008208333187130264,
+        "offsetSurfaceMaximumResidualCells" : 0.1690810584071515,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 5.881593102487793e-07,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.1199016141814556,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005501563005559678,
+          0.008722350568225932,
+          0.010892475423236457
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.12373314576583332,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00549603581460036,
+          0.009428365816113067,
+          0.01091892439947554
+        ],
+        "linkCount" : 757,
+        "linkMeasureSquareMeters" : 0.0031541666104860384,
+        "offsetSurfaceMaximumResidualCells" : 0.8741931253863825,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.4119094415054308e-05,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.1276897603981024,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005345295312591375,
+          0.010878555452644231,
+          0.011455856541615902
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.12955839301877234,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005220148442916563,
+          0.011120672821707984,
+          0.0114616599594048
+        ],
+        "linkCount" : 839,
+        "linkMeasureSquareMeters" : 0.003495833271067078,
+        "offsetSurfaceMaximumResidualCells" : 0.8318879827533956,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.921105600205302e-05,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07570317930927686,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0022521411971195807,
+          0.006054321863045712,
+          0.005432094276826949
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07788996540193104,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.002225876078720625,
+          0.006385438647566818,
+          0.005463718507611698
+        ],
+        "linkCount" : 411,
+        "linkMeasureSquareMeters" : 0.001712499969497737,
+        "offsetSurfaceMaximumResidualCells" : 0.5646658256202748,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.153982163069266e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07917689108296541,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003725768223071661,
+          0.0063278740470118075,
+          0.007509254301408542
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07930924117589741,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003724876853236987,
+          0.0063340947805690506,
+          0.007508557681823606
+        ],
+        "linkCount" : 536,
+        "linkMeasureSquareMeters" : 0.0022333332935542123,
+        "offsetSurfaceMaximumResidualCells" : 0.1366171085078368,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.9163536159915007e-06,
+        "partIdentifier" : 3
+      },
+      {
+        "directionIndex" : 1,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07958155015570897,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.02009186090949142,
+          0.007940860711300821,
+          -0.013676040580501172
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07966013800993613,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.020103635647444013,
+          0.007946352648262564,
+          -0.01369055114640067
+        ],
+        "linkCount" : 1023,
+        "linkMeasureSquareMeters" : 0.008524999848156457,
+        "offsetSurfaceMaximumResidualCells" : 0.4048365258761464,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.839665235025808e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 2,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09094782859951361,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.022025477365049072,
+          0.008697835604634475,
+          -0.01505874224674929
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.09085090677825179,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.022046822693653257,
+          0.008673627283160455,
+          -0.015084863034917038
+        ],
+        "linkCount" : 1078,
+        "linkMeasureSquareMeters" : 0.008983333173326192,
+        "offsetSurfaceMaximumResidualCells" : 0.2502427492344994,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.63082737595342e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 3,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.033226763719509014,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008177088372080175,
+          0.003171988974943904,
+          -0.005558079196788268
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03322675023448393,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008177042775738413,
+          0.003171969453123785,
+          -0.005558032911366428
+        ],
+        "linkCount" : 404,
+        "linkMeasureSquareMeters" : 0.003366666606701147,
+        "offsetSurfaceMaximumResidualCells" : 0.047636219433759584,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7757961169181845e-07,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 4,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.03154140884838032,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007951527903736516,
+          0.0031953946790411964,
+          -0.005463526671666412
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.0315443918100095,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.007951943836037444,
+          0.003195599889957795,
+          -0.005463953778180493
+        ],
+        "linkCount" : 408,
+        "linkMeasureSquareMeters" : 0.0033999999394407625,
+        "offsetSurfaceMaximumResidualCells" : 0.06644753887759608,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.7182893482616097e-07,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 5,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06826692646785436,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.01747247717875698,
+          0.0068814396411366364,
+          -0.011843476505937568
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.06832113777672298,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.017493630942051253,
+          0.006902088114368644,
+          -0.01186422598339928
+        ],
+        "linkCount" : 902,
+        "linkMeasureSquareMeters" : 0.00751666653278307,
+        "offsetSurfaceMaximumResidualCells" : 0.15585003769062544,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0881608979269945e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 6,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07753234339715336,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018582714219356228,
+          0.007327184171900372,
+          -0.012762991765184122
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07759305217802634,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018591783982172715,
+          0.007330689792397633,
+          -0.012772479826205389
+        ],
+        "linkCount" : 899,
+        "linkMeasureSquareMeters" : 0.00749166653322836,
+        "offsetSurfaceMaximumResidualCells" : 0.36300132862481466,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.3581203598447127e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 7,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05395386290529938,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.013519348027476804,
+          0.005317471814216818,
+          -0.009193811923417833
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05402739593867506,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.013538750936840423,
+          0.005319747934111535,
+          -0.009208658926329629
+        ],
+        "linkCount" : 1364,
+        "linkMeasureSquareMeters" : 0.0056833332321044065,
+        "offsetSurfaceMaximumResidualCells" : 0.6733595544105668,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.778491887451792e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 8,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.058929300519414085,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.014385960673625313,
+          0.005726833869779895,
+          -0.00983755897791713
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.058812180330887406,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.014405993058487802,
+          0.005699200708235413,
+          -0.009864896574741088
+        ],
+        "linkCount" : 1424,
+        "linkMeasureSquareMeters" : 0.005933333227651535,
+        "offsetSurfaceMaximumResidualCells" : 0.39447649332455903,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.3271025039488655e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 9,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.027184897293618435,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.00695374813104939,
+          0.0027792864882741435,
+          -0.0047513513953777575
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.02720111019559579,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006956226907448991,
+          0.0027805027665162596,
+          -0.00475433652376754
+        ],
+        "linkCount" : 722,
+        "linkMeasureSquareMeters" : 0.003008333279750229,
+        "offsetSurfaceMaximumResidualCells" : 0.16794586929557925,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.1193175533856453e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 10,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.033598860943920277,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008026365231348115,
+          0.0031268571848380305,
+          -0.005490176403784215
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.033606476245543034,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.008027450909287045,
+          0.003127239317625344,
+          -0.005491043701318197
+        ],
+        "linkCount" : 771,
+        "linkMeasureSquareMeters" : 0.003212499942780362,
+        "offsetSurfaceMaximumResidualCells" : 0.15830267574569604,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.0939304702478834e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 11,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.011153677233577682,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0031687691120162215,
+          0.001259820017760319,
+          -0.0021214022955566435
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.011166979807946774,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.003171731906763547,
+          0.001262462221199718,
+          -0.002124565316147813
+        ],
+        "linkCount" : 364,
+        "linkMeasureSquareMeters" : 0.0015166666396524968,
+        "offsetSurfaceMaximumResidualCells" : 0.26264684861854126,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.9035154138374703e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 12,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.021226407414065514,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.0046407837494125935,
+          0.0018200571239374251,
+          -0.003242552670875009
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.021232387574229645,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.004641321684204091,
+          0.0018202585680915223,
+          -0.003242995079710196
+        ],
+        "linkCount" : 410,
+        "linkMeasureSquareMeters" : 0.001708333302905285,
+        "offsetSurfaceMaximumResidualCells" : 0.13927370621130705,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.2863927715241613e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 13,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07418781482330078,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018299971418325536,
+          0.007243486303035488,
+          -0.012501308766611305
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07431825355610365,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.01833618179484007,
+          0.007239148615255278,
+          -0.012532589853102514
+        ],
+        "linkCount" : 1823,
+        "linkMeasureSquareMeters" : 0.007595833198039937,
+        "offsetSurfaceMaximumResidualCells" : 0.7078129025059842,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 2.0924561312737926e-05,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 14,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07557980399542509,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018738755100777223,
+          0.007437885098784539,
+          -0.012718881674038309
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.07539307585404618,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.018801981793231073,
+          0.007405309872056157,
+          -0.012801868011520806
+        ],
+        "linkCount" : 1887,
+        "linkMeasureSquareMeters" : 0.007862499859956863,
+        "offsetSurfaceMaximumResidualCells" : 0.4921377746493617,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 8.128186363177188e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 15,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.022751633920862605,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005866554962905842,
+          0.00228848309606692,
+          -0.00395828616405395
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.022757020210923663,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.005867469485896923,
+          0.0022890942230395987,
+          -0.0039591453274227745
+        ],
+        "linkCount" : 606,
+        "linkMeasureSquareMeters" : 0.0025249999550258314,
+        "offsetSurfaceMaximumResidualCells" : 0.15361477032932871,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.601858487283045e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 16,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.026409560592217905,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006260330757103537,
+          0.002497625440728796,
+          -0.004337491867115564
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.02642006020837324,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.006261871089763047,
+          0.0024982682418891035,
+          -0.004339033537559195
+        ],
+        "linkCount" : 602,
+        "linkMeasureSquareMeters" : 0.0025083332886560246,
+        "offsetSurfaceMaximumResidualCells" : 0.1541524228636717,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 1.227488199796729e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 17,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.05250810943174749,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.012653581934701962,
+          0.004959214295476839,
+          -0.008656688346842785
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.052571706525412584,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.012662978337165464,
+          0.004963045258337408,
+          -0.008667046254478441
+        ],
+        "linkCount" : 1228,
+        "linkMeasureSquareMeters" : 0.005116666575530916,
+        "offsetSurfaceMaximumResidualCells" : 0.4196954053572283,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 4.099504367519297e-06,
+        "partIdentifier" : 4
+      },
+      {
+        "directionIndex" : 18,
+        "endpointSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04707694361854677,
+        "endpointVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.011945054637051276,
+          0.004764833130135735,
+          -0.008116085260526786
+        ],
+        "exactSpeedSquaredIntegralSquareMeterMetersSquaredPerSecondSquared" : 0.04701313185678388,
+        "exactVelocityIntegralSquareMeterMetersPerSecond" : [
+          0.011971283341307077,
+          0.004749182710646236,
+          -0.008147841260742899
+        ],
+        "linkCount" : 1231,
+        "linkMeasureSquareMeters" : 0.0051291665753082725,
+        "offsetSurfaceMaximumResidualCells" : 0.32002041831658223,
+        "offsetSurfaceResidualSquaredIntegralSquareMeterCellsSquared" : 3.010550888267831e-06,
+        "partIdentifier" : 4
+      }
+    ],
+    "components" : [
+      {
+        "componentName" : "body",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.0016870538568669905,
+          "meanWallVelocityMetersPerSecond" : [
+            1.4003283106253601,
+            0.4432666954299484,
+            -0.5145153779513281
+          ],
+          "rmsSpeedRelativeError" : 0.012591041813703923,
+          "rmsWallSpeedMetersPerSecond" : 1.5988925884097538
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.010172054417329239,
+          "meanWallVelocityMetersPerSecond" : [
+            1.416072103961969,
+            0.44102274578093903,
+            -0.5059445388166286
+          ],
+          "rmsSpeedRelativeError" : 0.006529029504438659,
+          "rmsWallSpeedMetersPerSecond" : 1.5893206031245866
+        },
+        "linkCount" : 11714,
+        "linkMeasureSquareMeters" : 0.06189583223087239,
+        "offsetSurfaceMaximumResidualCells" : 0.7176197294358848,
+        "offsetSurfaceRMSResidualCells" : 0.056432521440541575,
+        "partIdentifier" : 1,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.010102853551114226,
+          "meanWallVelocityMetersPerSecond" : [
+            1.415963158355516,
+            0.4410219509486882,
+            -0.5059688264926056
+          ],
+          "rmsSpeedRelativeError" : 0.00644943832803755,
+          "rmsWallSpeedMetersPerSecond" : 1.589194927766228
+        }
+      },
+      {
+        "componentName" : "leftWing",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.10901396874621896,
+          "meanWallVelocityMetersPerSecond" : [
+            1.3590684108597704,
+            -2.00625350642969,
+            3.2511775665248557
+          ],
+          "rmsSpeedRelativeError" : 0.07210276361097764,
+          "rmsWallSpeedMetersPerSecond" : 5.621710879931888
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.10322570679850188,
+          "meanWallVelocityMetersPerSecond" : [
+            1.3243384323010416,
+            -2.0847861092927737,
+            3.2467023850560177
+          ],
+          "rmsSpeedRelativeError" : 0.07727159562769972,
+          "rmsWallSpeedMetersPerSecond" : 5.648814325768625
+        },
+        "linkCount" : 8273,
+        "linkMeasureSquareMeters" : 0.04290833256906939,
+        "offsetSurfaceMaximumResidualCells" : 0.8606030798093173,
+        "offsetSurfaceRMSResidualCells" : 0.047262490455940685,
+        "partIdentifier" : 2,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.10378524417234115,
+          "meanWallVelocityMetersPerSecond" : [
+            1.3260814005965371,
+            -2.085508298704213,
+            3.249056086061004
+          ],
+          "rmsSpeedRelativeError" : 0.07722751564974534,
+          "rmsWallSpeedMetersPerSecond" : 5.648583186646459
+        }
+      },
+      {
+        "componentName" : "rightWing",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.09420332828259037,
+          "meanWallVelocityMetersPerSecond" : [
+            1.5619124903186452,
+            2.9599347372740668,
+            3.267134994346102
+          ],
+          "rmsSpeedRelativeError" : 0.05115877824430243,
+          "rmsWallSpeedMetersPerSecond" : 6.1423973595238754
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.09088340669011599,
+          "meanWallVelocityMetersPerSecond" : [
+            1.5496183861432657,
+            3.032367056947279,
+            3.2701001007597834
+          ],
+          "rmsSpeedRelativeError" : 0.05777690937702735,
+          "rmsWallSpeedMetersPerSecond" : 6.181070100536922
+        },
+        "linkCount" : 8381,
+        "linkMeasureSquareMeters" : 0.04376249922052205,
+        "offsetSurfaceMaximumResidualCells" : 0.8741931253863825,
+        "offsetSurfaceRMSResidualCells" : 0.04248760868960182,
+        "partIdentifier" : 3,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.09111177449818457,
+          "meanWallVelocityMetersPerSecond" : [
+            1.5497047151020944,
+            3.034728065111311,
+            3.2721301048458242
+          ],
+          "rmsSpeedRelativeError" : 0.05795259805977895,
+          "rmsWallSpeedMetersPerSecond" : 6.182096729171308
+        }
+      },
+      {
+        "componentName" : "tail",
+        "endpointInterpolated" : {
+          "identifier" : "endpoint-interpolated",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.025506066089207132,
+          "meanWallVelocityMetersPerSecond" : [
+            2.40176073464657,
+            0.9489832664471503,
+            -1.6390315319890498
+          ],
+          "rmsSpeedRelativeError" : 0.02424951660675381,
+          "rmsWallSpeedMetersPerSecond" : 3.1182684153566678
+        },
+        "exactLinkIntersection" : {
+          "identifier" : "exact-link-intersection-barycentric",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.026721006750362847,
+          "meanWallVelocityMetersPerSecond" : [
+            2.40448056750089,
+            0.9482941169997293,
+            -1.6421020645344955
+          ],
+          "rmsSpeedRelativeError" : 0.02428332079559358,
+          "rmsWallSpeedMetersPerSecond" : 3.1183713302545093
+        },
+        "linkCount" : 17146,
+        "linkMeasureSquareMeters" : 0.09108333171099817,
+        "offsetSurfaceMaximumResidualCells" : 0.7078129025059842,
+        "offsetSurfaceRMSResidualCells" : 0.02707458110949093,
+        "partIdentifier" : 4,
+        "productionSolidNode" : {
+          "identifier" : "production-solid-node",
+          "meanVelocityErrorRelativeToQuadratureRMS" : 0.026711622638663092,
+          "meanWallVelocityMetersPerSecond" : [
+            2.4044607466769916,
+            0.948287991823559,
+            -1.64208226803781
+          ],
+          "rmsSpeedRelativeError" : 0.02427216477729275,
+          "rmsWallSpeedMetersPerSecond" : 3.118337366402006
+        }
+      }
+    ],
+    "deviceName" : "Apple M4",
+    "frozenSourceTimeSeconds" : 0.026499999687075615,
+    "gridX" : 149,
+    "gridY" : 136,
+    "gridZ" : 131,
+    "referenceLengthCells" : 16,
+    "runtimeSeconds" : 13.659984946250916,
+    "schemaVersion" : 1,
+    "sourceProductionMaximumRelativeDifference" : 0,
+    "sourceReproductionPassed" : true
+  },
+  "d20DiagnosticAuthorized" : false,
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "endpointInterpolationQualified" : false,
+  "exactIntersectionClearsBias" : false,
+  "experimentalAgreementGateApplied" : false,
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "intersectionPlacementPassed" : false,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "metrics" : {
+    "maximumEndpointD12D16MeanVelocityDifference" : 0.01264350638077918,
+    "maximumEndpointMeanVelocityError" : 0.11429832556495065,
+    "maximumEndpointRMSSpeedRelativeError" : 0.07210276361097764,
+    "maximumExactD12D16MeanVelocityDifference" : 0.005110069769010626,
+    "maximumExactMeanVelocityError" : 0.10782875628859308,
+    "maximumExactRMSSpeedRelativeError" : 0.07727159562769972,
+    "maximumOffsetSurfaceRMSResidualCells" : 0.06955769182795753,
+    "maximumOffsetSurfaceResidualCells" : 0.8741931253863825,
+    "maximumProductionMeanVelocityError" : 0.10742206809817834,
+    "maximumProductionRMSSpeedRelativeError" : 0.07722751564974534,
+    "maximumSourceProductionRelativeDifference" : 0,
+    "minimumEndpointCaptureOfExactImprovementFraction" : -9.344728017005913,
+    "minimumLeftWingEndpointImprovementFraction" : -0.06401159080727958,
+    "minimumLeftWingExactImprovementFraction" : -0.0037858905308270074
+  },
+  "nextAction" : "Correct the signed-distance link intersection location before changing wall velocity or running fluid.",
+  "productionModificationAuthorized" : false,
+  "rawSpatialGateModified" : false,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "The frozen link-velocity A\/B is signed-distance-intersection-placement-bias. Production, the raw spatial rejection, and the D20 block remain unchanged.",
+  "solidNodeSamplingCausal" : false,
+  "sourceLinkGeometryPreregistrationSHA256" : "022ad277bc571bc28f7979d67a66de9c8af8bde2e84429854a4c6b1690295624",
+  "sourceLinkGeometryReportSHA256" : "39237cc559c086e3a4f06d36560f17192fa9d5737d2163bc82c2b1a7785dcacf",
+  "sourceLinkVelocityPreregistrationSHA256" : "d1f98853798601555f009d5073c263172f21f4d86d5d0e64d47d47713c306024"
+}

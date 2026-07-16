@@ -47,6 +47,19 @@ exact inventory and disposition are locked in
 corresponding-author availability checklist is
 `Docs/SAME_SPECIMEN_DATA_REQUEST.md`.
 
+Three Bruce Museum American-crow CT volumes posted on 6 July 2026 were also
+screened through their public MorphoSource viewer derivatives. All three
+contain useful complete skeletal anatomy, including bilateral wing bones and
+visible feather shafts, but the preserved birds are tightly folded and the
+feather vanes do not form a separable aerodynamic surface. The viewer volumes
+are secondary-capture derivatives without an accepted quantitative density
+calibration, so they cannot supply measured mass or inertia. The common-raven
+record currently has no populated file or viewer manifest. The exact records,
+preview checksums, rights boundary, and schema disposition are locked in
+`ValidationArtifacts/corvid-public-source-screening.json`; the high-leverage
+request for the unpublished 250 Hz crow/raven landmark arrays and specimen
+lineage is `Docs/CORVID_DATA_REQUEST.md`.
+
 `--require-complete-bird` deliberately exits with status `2` for these sources.
 They do not report the body radii, body-COM wing root, principal inertia, tail
 geometry, measured left wing, or a physical wing thickness required by schema

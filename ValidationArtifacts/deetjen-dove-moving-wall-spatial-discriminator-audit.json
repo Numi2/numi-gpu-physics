@@ -1,0 +1,131 @@
+{
+  "allChecksPassed": true,
+  "checks": {
+    "d12Case": true,
+    "d16IndependentAudit": true,
+    "d8Case": true,
+    "gateReconstruction": true,
+    "honestLockedRejection": true,
+    "preregistrationLocked": true,
+    "sourceHashes": true,
+    "trendArithmetic": true
+  },
+  "claimBoundary": "Independent ledger, registered-bin, source-hash, trend, and gate reconstruction. A green audit authenticates the locked rejection; it does not turn the failed 5% force-history gate into a pass.",
+  "d12Audit": {
+    "checks": {
+      "contiguousTimes": true,
+      "controlVolumeClearance": true,
+      "fixedGrid": true,
+      "forceSummaryArithmetic": true,
+      "gateReconstruction": true,
+      "ledgerSummaryArithmetic": true,
+      "registeredForceBins": true,
+      "sampleArithmetic": true,
+      "validationIsolation": true
+    },
+    "reconstructedForceSummary": {
+      "computedImpulseXNewtonSeconds": 0.0021649652011692475,
+      "computedImpulseZNewtonSeconds": 0.1802556658486526,
+      "computedMeanForceXNewtons": 0.018516265546468427,
+      "computedMeanForceZNewtons": 1.9261379682868989,
+      "computedPeakTimeSeconds": 0.1065,
+      "measuredImpulseXNewtonSeconds": 0.014511779299165029,
+      "measuredImpulseZNewtonSeconds": 0.13272799291498957,
+      "measuredMeanForceXNewtons": 0.15597300613155055,
+      "measuredMeanForceZNewtons": 1.420231978407525,
+      "measuredPeakTimeSeconds": 0.068,
+      "normalizedRMSError": 2.2154524274222633,
+      "registeredComparisonSampleCount": 187
+    },
+    "reconstructedLedger": {
+      "RMSAerodynamicForceNewtons": 6.343724099627461,
+      "RMSGlobalFluidBudgetForceNewtons": 6.343220202953512,
+      "RMSGlobalFluidClosureResidualNewtons": 0.003988010577968934,
+      "RMSRawControlVolumeBudgetForceNewtons": 6.343719493799817,
+      "RMSRawControlVolumeClosureResidualNewtons": 0.0025407186744278673,
+      "collisionLimiterActivationFractionOfCellSteps": 0.0,
+      "maximumGlobalFluidClosureResidualNewtons": 0.021493406950471146,
+      "maximumRawControlVolumeClosureResidualNewtons": 0.009565437349919409,
+      "maximumSolidControlSurfaceCrossingLinkCount": 0,
+      "minimumPopulation": 0.0007329825311899185,
+      "relativeRMSGlobalFluidClosureResidual": 0.0006286544804499194,
+      "relativeRMSRawControlVolumeClosureResidual": 0.0004005090124548564
+    }
+  },
+  "d8Audit": {
+    "checks": {
+      "contiguousTimes": true,
+      "controlVolumeClearance": true,
+      "fixedGrid": true,
+      "forceSummaryArithmetic": true,
+      "gateReconstruction": true,
+      "ledgerSummaryArithmetic": true,
+      "registeredForceBins": true,
+      "sampleArithmetic": true,
+      "validationIsolation": true
+    },
+    "reconstructedForceSummary": {
+      "computedImpulseXNewtonSeconds": 0.003700949665159001,
+      "computedImpulseZNewtonSeconds": 0.17364221732318402,
+      "computedMeanForceXNewtons": 0.03326244518798303,
+      "computedMeanForceZNewtons": 1.8566061027228513,
+      "computedPeakTimeSeconds": 0.1065,
+      "measuredImpulseXNewtonSeconds": 0.014511779299165029,
+      "measuredImpulseZNewtonSeconds": 0.13272799291498957,
+      "measuredMeanForceXNewtons": 0.15597300613155055,
+      "measuredMeanForceZNewtons": 1.420231978407525,
+      "measuredPeakTimeSeconds": 0.068,
+      "normalizedRMSError": 2.2707652118860935,
+      "registeredComparisonSampleCount": 187
+    },
+    "reconstructedLedger": {
+      "RMSAerodynamicForceNewtons": 6.721627149174356,
+      "RMSGlobalFluidBudgetForceNewtons": 6.721064786262838,
+      "RMSGlobalFluidClosureResidualNewtons": 0.007198785267127012,
+      "RMSRawControlVolumeBudgetForceNewtons": 6.721798694677996,
+      "RMSRawControlVolumeClosureResidualNewtons": 0.006002018196215523,
+      "collisionLimiterActivationFractionOfCellSteps": 7.753784467122713e-10,
+      "maximumGlobalFluidClosureResidualNewtons": 0.04995989154431976,
+      "maximumRawControlVolumeClosureResidualNewtons": 0.02443180029731668,
+      "maximumSolidControlSurfaceCrossingLinkCount": 0,
+      "minimumPopulation": 1.5164978606208024e-08,
+      "relativeRMSGlobalFluidClosureResidual": 0.0010709884834970752,
+      "relativeRMSRawControlVolumeClosureResidual": 0.0008929184685295081
+    }
+  },
+  "generatedBy": "Scripts/audit-dove-moving-wall-spatial-refinement.py",
+  "reconstructedD12ToD16": {
+    "coarseReferenceLengthCells": 12,
+    "fineReferenceLengthCells": 16,
+    "gridTrendScore": 0.06268338811910937,
+    "impulseRelativeDifference": 0.010575956096306304,
+    "intervalForceNormalizedRMSDifference": 0.06268338811910937,
+    "meanForceRelativeDifference": 0.010575956096306304,
+    "normalizedPeakTimeDifference": 0.0,
+    "peakTimeDifferenceSeconds": 0.0
+  },
+  "reconstructedD8ToD12": {
+    "coarseReferenceLengthCells": 8,
+    "fineReferenceLengthCells": 12,
+    "gridTrendScore": 0.12704535175170217,
+    "impulseRelativeDifference": 0.03821440936413454,
+    "intervalForceNormalizedRMSDifference": 0.12704535175170217,
+    "meanForceRelativeDifference": 0.03821440936413452,
+    "normalizedPeakTimeDifference": 0.0,
+    "peakTimeDifferenceSeconds": 0.0
+  },
+  "reconstructedGate": {
+    "allCaseGatesPassed": true,
+    "fineGridForceConvergencePassed": false,
+    "monotonicTrendReductionPassed": true,
+    "spatialRefinementGatePassed": false
+  },
+  "schemaVersion": 1,
+  "sourceSHA256": {
+    "d12Case": "09975b9619ebfb0b77d3e87a2cca9a907604038320c4579bd41b4ed129d16270",
+    "d16FullWindow": "dfd326dea59fc1c6e87aebb3474e5af6f53e9acb8914a4de4d7a67173820e84c",
+    "d8Case": "aee0fae01f48e48e0af14bc3eec4dc44d6cb5e6500d93f7f04680dc9804863b5",
+    "discriminator": "e81d99c5fe495434e2aab9e3cb0bfc51ea5bc56ba6ff2cb7506c5c98c824c803",
+    "preregistration": "741d586251f012c59387479be98234af85a62c1d41c5b92c6cf8accba5bd359a"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "allChecksPassed": true,
+  "checks": {
+    "bandArithmetic": true,
+    "claimBoundary": true,
+    "classification": true,
+    "crossValidationFolds": true,
+    "d20Decision": true,
+    "decisionBandBins": true,
+    "fixedThresholds": true,
+    "lagArithmetic": true,
+    "rawArithmetic": true,
+    "registeredAxes": true,
+    "sourceHashes": true
+  },
+  "claimBoundary": "Independent source-hash, raw-history, lag, cross-validation, DCT-band, per-bin, classification, and allocation-decision audit. A pass authenticates the unresolved rejection; it does not establish convergence or permit filtering the preregistered raw metric.",
+  "generatedBy": "Scripts/audit-dove-moving-wall-spatial-lag-band.py",
+  "reconstructed": {
+    "classification": "mixed-unresolved",
+    "crossValidatedImprovementFraction": 0.015056626390860472,
+    "d20DiagnosticAuthorized": false,
+    "decisionBandPairwiseNormalizedRMSDifference": 0.04253015558316489,
+    "decisionBandSignalEnergyRetentionFraction": 0.7426990262356299,
+    "foldLagsBins": [
+      -0.01,
+      -0.02,
+      -0.01,
+      -0.02,
+      -0.02
+    ],
+    "globalBestLagBins": -0.02,
+    "rawPairwiseNormalizedRMSDifference": 0.06268338811910934
+  },
+  "reportSHA256": "f4b7a6db0ff46f1d33c69d1db6d17a0992a164a976557fe29d55bf0694087e6f",
+  "schemaVersion": 1
+}

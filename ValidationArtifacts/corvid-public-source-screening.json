@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "auditIdentifier": "corvid-public-source-screening-2026-07-16",
+  "verifiedAt": "2026-07-16",
+  "scope": "Public American-crow and common-raven geometry and flight-data candidates screened against the BirdFlowMetal measured-bird schema 1 and schema 2 contracts",
+  "morphoSource": {
+    "organization": "Bruce Museum",
+    "uploadedAt": "2026-07-06",
+    "sourceRecordType": "Entire Individual volumetric CT image series",
+    "acquisitionDevice": "General Electric LightSpeed VCT 64-slice CT at Stony Brook University Medical Center",
+    "accessBoundary": "Original ZIP downloads require a MorphoSource login and accepted use statement. This audit acquired only the public multiframe DICOM assets used by the embedded viewer.",
+    "rightsMetadata": {
+      "copyrightStatement": "No Copyright - Non-Commercial Use Only",
+      "creativeCommonsLicense": "Creative Commons Public Domain Mark 1.0",
+      "standardAgreementCommercialUseField": "Commercial Use Permitted",
+      "requiredArchivalOfPublishedDerivatives": "On MorphoSource",
+      "disposition": "The displayed rights fields are not mutually clear. No CT-derived image, mesh, or volume is redistributed in this repository; clarify terms with the data manager before publishing derivatives."
+    },
+    "americanCrowRecords": [
+      {
+        "specimenIdentifier": "BRUCE:2016.01.119:BRUCE2016_01_119",
+        "taxon": "Corvus brachyrhynchos",
+        "mediaIdentifier": "000881943",
+        "ark": "ark:/87602/m4/881943",
+        "recordURL": "https://www.morphosource.org/concern/media/000881943",
+        "manifestURL": "https://www.morphosource.org/manifests/0fdd1d12-fe59-49e3-a437-4aa228bac1c4",
+        "originalArchive": {
+          "fileName": "BRUCE2016_01_119.zip",
+          "bytes": 216704752,
+          "imageCount": 971,
+          "pixelSpacingXYMillimeters": 0.353516,
+          "pixelSpacingZMillimeters": 0.5,
+          "acquired": false
+        },
+        "publicViewerDICOM": {
+          "bytes": 51120324,
+          "sha256": "698bf0532388a8bb4ff4893fae560521f83763dfe6624eac1d2c9bff7be3cbb9",
+          "shapeZYX": [
+            612,
+            323,
+            323
+          ],
+          "spacingZYXMillimeters": [
+            0.7931806451440369,
+            0.5603721114551083,
+            0.5603721114551083
+          ],
+          "physicalExtentZYXMillimeters": [
+            485.42655482815053,
+            181.000192,
+            181.000192
+          ]
+        }
+      },
+      {
+        "specimenIdentifier": "BRUCE:2016.01.125:BRUCE2016_01_125",
+        "taxon": "Corvus brachyrhynchos",
+        "mediaIdentifier": "000881967",
+        "ark": "ark:/87602/m4/881967",
+        "recordURL": "https://www.morphosource.org/concern/media/000881967",
+        "manifestURL": "https://www.morphosource.org/manifests/36843752-0fd8-485c-85fa-2beb683556b7",
+        "originalArchive": {
+          "fileName": "BRUCE2016_01_125.zip",
+          "bytes": 125000719,
+          "imageCount": 551,
+          "pixelSpacingXYMillimeters": 0.353516,
+          "pixelSpacingZMillimeters": 0.5,
+          "acquired": false
+        },
+        "publicViewerDICOM": {
+          "bytes": 52226318,
+          "sha256": "7777f6ad51b687ab0c17d19a6e8c23348e9a10b08009d60535e739a2d7f82c44",
+          "shapeZYX": [
+            420,
+            390,
+            390
+          ],
+          "spacingZYXMillimeters": [
+            0.6558593306057506,
+            0.4641030564102564,
+            0.4641030564102564
+          ],
+          "physicalExtentZYXMillimeters": [
+            275.46091885441524,
+            181.000192,
+            181.000192
+          ]
+        }
+      },
+      {
+        "specimenIdentifier": "BRUCE:2016.01.127:BRUCE2016_01_127",
+        "taxon": "Corvus brachyrhynchos",
+        "mediaIdentifier": "000881975",
+        "ark": "ark:/87602/m4/881975",
+        "recordURL": "https://www.morphosource.org/concern/media/000881975",
+        "manifestURL": "https://www.morphosource.org/manifests/004faee0-ad67-42c2-b4c6-3c2b28ee1d27",
+        "originalArchive": {
+          "fileName": "BRUCE2016_01_127.zip",
+          "bytes": 147748698,
+          "imageCount": 677,
+          "pixelSpacingXYMillimeters": 0.394531,
+          "pixelSpacingZMillimeters": 0.5,
+          "acquired": false
+        },
+        "publicViewerDICOM": {
+          "bytes": 44727970,
+          "sha256": "469d3cb104647cd7067b5b84e676dd251426ad279e09819b1aee58a02c08e38c",
+          "shapeZYX": [
+            481,
+            364,
+            364
+          ],
+          "spacingZYXMillimeters": [
+            0.703636088011088,
+            0.5549447032967033,
+            0.5549447032967033
+          ],
+          "physicalExtentZYXMillimeters": [
+            338.44895833333334,
+            201.999872,
+            201.999872
+          ]
+        }
+      }
+    ],
+    "publicPreviewMethod": {
+      "transferSyntax": "JPEG Lossless, Non-Hierarchical, First-Order Prediction",
+      "sopClass": "Secondary Capture Image Storage",
+      "screeningViews": [
+        "orthogonal soft-tissue windows",
+        "orthogonal bone windows",
+        "maximum-intensity projections",
+        "one-to-99th-percentile projections",
+        "fractional slice series along all three axes"
+      ],
+      "quantitativeIntensityCalibrationAccepted": false,
+      "reasonIntensityCalibrationRejected": "The viewer derivatives are secondary-capture volumes whose unsigned stored values and window metadata do not provide a trustworthy Hounsfield-unit or material-density calibration."
+    },
+    "visualScreening": {
+      "completeCarcassPresent": true,
+      "bilateralSkeletonVisible": true,
+      "shoulderAndWingBonesVisible": true,
+      "featherShaftsVisible": true,
+      "featherVanesFormSeparableAerodynamicSurface": false,
+      "flightPose": false,
+      "specimenPose": "All three crows are tightly folded preserved specimens with wings and tail closed against the body.",
+      "surroundingMediumOrContainerDominatesLowDensitySegmentation": true,
+      "derivedImagesCommittedToRepository": false
+    },
+    "commonRavenRecord": {
+      "specimenIdentifier": "BRUCE:2016.01.247:BRUCE2016_01_247",
+      "taxon": "Corvus corax",
+      "mediaIdentifier": "000882451",
+      "ark": "ark:/87602/m4/882451",
+      "recordURL": "https://www.morphosource.org/concern/media/000882451",
+      "fileName": "BRUCE2016_01_247.zip",
+      "reportedFileBytes": 0,
+      "reportedPixelSpacingXYZMillimeters": [
+        1,
+        1,
+        1
+      ],
+      "reportedImageCount": null,
+      "publicViewerManifestPresent": false,
+      "disposition": "Record exists but ingestion is incomplete and no CT can presently be screened."
+    }
+  },
+  "flightDataCandidates": {
+    "americanCrowAndCommonRavenBurstFlight": {
+      "articleDOI": "10.1242/jeb.046789",
+      "dissertationURL": "https://scholarworks.umt.edu/etd/960/",
+      "subjectsWithQualityImplantSignals": {
+        "AmericanCrow": 3,
+        "CommonRaven": 1
+      },
+      "recorded": [
+        "three internally synchronized 250 Hz high-speed camera views",
+        "calibrated three-dimensional wing and body landmark coordinates",
+        "forceplate takeoff contact",
+        "TTL-synchronized pectoralis sonomicrometry, strain, and EMG",
+        "postmortem pectoralis and humerus measurements"
+      ],
+      "publicSupplement": "One black-billed-magpie movie only",
+      "rawCrowOrRavenArraysFoundInPublicRepository": false,
+      "airborneAerodynamicForceGroundTruth": false,
+      "currentCorrespondingAuthor": {
+        "name": "Brandon E. Jackson",
+        "institution": "Longwood University",
+        "email": "jacksonbe3@longwood.edu",
+        "profile": "https://www.longwood.edu/directory/profile/jacksonbe3longwoodedu/"
+      }
+    },
+    "jackdawGlideWake": {
+      "taxonAsPublished": "Corvus monedula",
+      "glideEnvelopeDOI": "10.1242/jeb.132480",
+      "moultWakeDOI": "10.1098/rsfs.2016.0081",
+      "publicCompiledForceAndPostureData": true,
+      "qualifiedUse": "corvid steady-glide wake/load validation",
+      "doesNotSupply": [
+        "flapping crow or raven kinematics",
+        "complete flight surface",
+        "same-specimen inertia",
+        "free-flight schema 2 input"
+      ]
+    }
+  },
+  "schemaDisposition": {
+    "eligibleUses": [
+      "species-realistic crow skeletal proportions after original-archive segmentation",
+      "shoulder and hinge-axis anatomy",
+      "folded body and bone morphometrics",
+      "explicitly hybrid sensitivity geometry when labeled as cross-specimen"
+    ],
+    "ineligibleUses": [
+      "measured aerodynamic feather surface",
+      "prescribed flapping kinematics",
+      "measured whole-bird center of mass or principal inertia",
+      "measured bilateral wing mass, center of mass, or inertia",
+      "complete-bird schema 1 input",
+      "quantitative free-flight schema 2 input"
+    ],
+    "fullOriginalCrowArchiveAcquisitionPriority": "deferred until a kinematic or specimen-lineage source makes skeletal registration actionable",
+    "antiFabricationRule": "Do not combine a Bruce Museum crow CT with the Jackson and Dial flight subjects and describe the result as same-specimen measured data without an explicit specimen or accession linkage from the source holders."
+  },
+  "decision": {
+    "crowCTIsDirectFlightSurface": false,
+    "crowCTIsUsefulAnatomySource": true,
+    "ravenCTReady": false,
+    "highestROINextAction": "Await Brandon Jackson's response to the low-burden availability checklist sent on 2026-07-16. A response can establish whether the 250 Hz crow/raven landmark arrays, calibration, individual morphometrics, and any preserved-specimen lineage still exist before more geometry or CFD work is funded.",
+    "originalCTDownloadDeferred": true,
+    "reason": "All three public previews already reject the direct aerodynamic-surface hypothesis; downloading larger originals cannot supply the missing flight kinematics, mass, inertia, or same-specimen linkage."
+  },
+  "authorRequest": {
+    "status": "sent-awaiting-reply",
+    "sentDate": "2026-07-16",
+    "recipientName": "Brandon E. Jackson",
+    "recipientEmail": "jacksonbe3@longwood.edu",
+    "subject": "Data availability inquiry for American-crow and common-raven flight records",
+    "senderIdentity": "Numan Thabit, independent researcher",
+    "attachments": [],
+    "repositoryPrivacy": "No Gmail message identifiers or mailbox metadata stored in Git."
+  }
+}

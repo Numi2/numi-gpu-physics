@@ -1,0 +1,49 @@
+{
+  "allChecksPassed": true,
+  "checkCount": 13,
+  "checks": {
+    "binaryMeshIdentity": true,
+    "claimBoundary": true,
+    "classification": true,
+    "componentJunctionLocalization": true,
+    "crossGridMetrics": true,
+    "d12IndependentGeometry": true,
+    "d12RecordContract": true,
+    "d16IndependentGeometry": true,
+    "d16RecordContract": true,
+    "fixedContract": true,
+    "safetyBoundary": true,
+    "sourceHashes": true,
+    "sourceVelocityPrecondition": true
+  },
+  "generatedBy": "Scripts/audit-dove-moving-wall-link-intersection.py",
+  "localization": {
+    "classification": "mesh-edge-or-component-junction-associated",
+    "d12ComponentJunctionCandidates": 7,
+    "d12Outliers": 8,
+    "d16ComponentJunctionCandidates": 7,
+    "d16Outliers": 7,
+    "trueMeshBoundaryOutliers": 0
+  },
+  "reconstructedMetrics": {
+    "d12OutlierCount": 8,
+    "d12OutlierLinkMeasureFraction": 0.0002506893958385565,
+    "d16OutlierCount": 7,
+    "d16OutlierLinkMeasureFraction": 0.00012170526462201895,
+    "maximumOffsetSurfaceResidualCells": 0.8741931253863825,
+    "maximumSourceMaximumResidualDifferenceCells": 0.0,
+    "minimumDominantDirectionMeasureFraction": 0.25,
+    "minimumEdgeOrJunctionAssociatedMeasureFraction": 0.875,
+    "minimumInteriorAssociatedMeasureFraction": 0.0,
+    "sameDominantDirectionAcrossGrids": false
+  },
+  "schemaVersion": 1,
+  "sourceArtifacts": {
+    "linkIntersectionPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-preregistration.json",
+    "linkIntersectionReport": "ValidationArtifacts/deetjen-dove-moving-wall-link-intersection.json",
+    "linkVelocityAudit": "ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-audit.json",
+    "linkVelocityPreregistration": "ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-preregistration.json",
+    "linkVelocityReport": "ValidationArtifacts/deetjen-dove-moving-wall-link-velocity.json",
+    "manifest": "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
+  }
+}

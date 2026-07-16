@@ -1,0 +1,34 @@
+{
+  "bisectionIterations" : 48,
+  "claimBoundary" : "This archive-only A\/B distinguishes owner-surface diagnostic error from global-union linear-root error on 15 links. It does not authorize a production q or ownership change, fluid evolution, D20, experimental agreement, or relaxation of the raw spatial gate.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "expectedJunctionCandidateCounts" : [
+    7,
+    7
+  ],
+  "expectedOutlierCounts" : [
+    8,
+    7
+  ],
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Hashed intersection-localization preregistration and all 15 per-link records; source phase 26.5 ms; D12\/D16 cell sizes, D3Q19 directions, production q, source triangle topology, and 7.5 mm physical half-thickness. The production raster's globally nearest-triangle union semantics are authoritative. No Metal dispatch, populations, collision, streaming, force evaluation, topology evolution, or production mutation.",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "frozenSourceSampleIndex" : 53,
+  "frozenSourceTimeSeconds" : 0.0265,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedGlobalRootMaximumShiftCells" : 0.75,
+  "maximumAllowedGlobalRootRMSShiftCells" : 0.1,
+  "maximumAllowedRootClosureResidualCells" : 1e-05,
+  "minimumRequiredOwnerToGlobalRMSReductionFraction" : 0.8,
+  "passed" : true,
+  "referenceLengthCells" : [
+    12,
+    16
+  ],
+  "reverseScanSubdivisions" : 256,
+  "schemaVersion" : 1,
+  "selectionRule" : "For each of the 15 hashed outlier links, reconstruct the solid and fluid endpoints and production t=1-q. From the fluid endpoint scan 256 uniform intervals toward solid, select the first outside-to-inside bracket, and apply 48 bisection iterations to distance-to-mid-surface minus the physical 7.5 mm half-thickness. Evaluate both the source part alone and the production global union over all components. Roots must close within 1e-5 cell. Global-union placement clears only at <=0.10-cell measure-weighted RMS and <=0.75-cell maximum on both grids. An ownership interpretation requires at least 80% RMS shift reduction relative to owner roots.",
+  "sourceLinkIntersectionPreregistrationSHA256" : "71186ed91522fd29f29f2a07fb03ac75e531974bf36b5171cd78936fd23209d5",
+  "sourceLinkIntersectionReportSHA256" : "7576ab4377864830a58ec41b54d01f489f5a37eaa5e9b44501b43a1890d9300b"
+}

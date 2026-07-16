@@ -1,0 +1,35 @@
+{
+  "allChecksPassed": true,
+  "checks": {
+    "claimBoundary": true,
+    "classification": true,
+    "d12Axes": true,
+    "d12BinArithmetic": true,
+    "d12ImpulseAndTopology": true,
+    "d12LedgerAndDecision": true,
+    "d16Axes": true,
+    "d16BinArithmetic": true,
+    "d16ImpulseAndTopology": true,
+    "d16LedgerAndDecision": true,
+    "fixedThresholds": true,
+    "metricArithmetic": true,
+    "sourceHashes": true
+  },
+  "claimBoundary": "Independent source-hash, preregistration, per-step ledger, per-bin quadrature, impulse, fixed-topology, metric, classification, and allocation audit. A pass authenticates the diagnostic result only.",
+  "generatedBy": "Scripts/audit-dove-moving-wall-temporal-sampling.py",
+  "preregistrationSHA256": "57e1f231217bf06395cdd1d4f913e73314209327c0892a0938c5481f0bd61c70",
+  "reconstructed": {
+    "aggregationRelativeSpreadFraction": 0.5156380615330458,
+    "classification": "mixed-unresolved",
+    "d12MaximumTopologyCorrectionNewtons": 0.0,
+    "d16MaximumTopologyCorrectionNewtons": 0.0,
+    "d20DiagnosticAuthorized": false,
+    "directTotalImpulseRelativeDifference": 0.008638534121155486,
+    "endpointPairwiseNormalizedRMSDifference": 0.19586845277660556,
+    "endpointToImpulseImprovementFraction": 0.5156380615330458,
+    "impulsePreservingPairwiseNormalizedRMSDifference": 0.09487122347139974,
+    "sampleTrapezoidalPairwiseNormalizedRMSDifference": 0.09760043881332175
+  },
+  "reportSHA256": "eb5af26e21ad139363c81185ee227cfcc88dc6fd58ff884aa718329dfd11a7ad",
+  "schemaVersion": 1
+}

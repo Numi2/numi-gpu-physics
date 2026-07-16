@@ -1,0 +1,33 @@
+{
+  "allChecksPassed": true,
+  "checks": {
+    "accountingArithmetic": true,
+    "binArithmetic": true,
+    "claimBoundary": true,
+    "classification": true,
+    "concentrationArithmetic": true,
+    "d20Decision": true,
+    "forceArithmetic": true,
+    "registeredAxes": true,
+    "smoothnessArithmetic": true,
+    "sourceHashes": true,
+    "topologyArithmetic": true
+  },
+  "claimBoundary": "Independent source-hash, bin, concentration, spectral, topology, accounting, classification, and allocation-decision audit. A pass authenticates the D20 rejection; it does not establish convergence.",
+  "generatedBy": "Scripts/audit-dove-moving-wall-spatial-localization.py",
+  "reconstructed": {
+    "binsRequiredFor50Percent": 27,
+    "classification": "mixed",
+    "d20DiagnosticAuthorized": false,
+    "effectiveBinCount": 59.54577802311065,
+    "globalResidualToForceDifferenceRatio": 0.00748568427235012,
+    "highFrequencyEnergyFraction": 0.5026695500600938,
+    "maximumFiveMillisecondContribution": 0.16807306267772645,
+    "nearWingResidualToForceDifferenceRatio": 0.003753530887661298,
+    "normalizedFirstDifferenceRoughness": 1.3513903927982225,
+    "pairwiseNormalizedRMSDifference": 0.06268338811910934,
+    "topologyExplainedFraction": 0.12619410377251694
+  },
+  "reportSHA256": "36692b8701309004bb9cde707b6201bd3e4bdf3aef1ad93e622a5dcd567c84ee",
+  "schemaVersion": 1
+}
