@@ -3,6 +3,7 @@ import BirdFlowCore
 import BirdFlowMetal
 import Metal
 import Testing
+import simd
 
 @testable import BirdFlowVisualization
 
@@ -147,4 +148,48 @@ func measuredDoveShowcaseCaptureClosesLoop() throws {
   #expect(image.pixelsWide == 320)
   #expect(image.pixelsHigh == 180)
   #expect(firstData == lastData)
+
+  let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
+    manifestURL: root.appendingPathComponent(
+      "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
+    )
+  )
+  let loop = MeasuredDovePresentationLoop(dataset: dataset)
+  #expect(abs(loop.measuredDurationSeconds - 0.094) < 1e-6)
+  #expect(abs(loop.periodSeconds - 0.108) < 1e-6)
+  let measuredFrames = (0..<100).compactMap { index in
+    loop.sourceFrameCoordinate(phase: Float(index) / 100)
+  }
+  #expect(measuredFrames.first == 27)
+  #expect(measuredFrames.allSatisfy { $0 >= 27 && $0 <= 121 })
+  #expect(
+    zip(measuredFrames, measuredFrames.dropFirst()).allSatisfy {
+      $0.0 <= $0.1
+    }
+  )
+  #expect(loop.sourceFrameCoordinate(phase: 0.95) == nil)
+  for vertexIndex in [0, 1_443, 1_740, 2_037] {
+    let first = loop.point(phase: 0, vertexIndex: vertexIndex)
+    let wrapped = loop.point(phase: 1, vertexIndex: vertexIndex)
+    #expect(simd_distance(first.position, wrapped.position) < 1e-7)
+    #expect(simd_distance(first.velocity, wrapped.velocity) < 1e-5)
+  }
+  let displayFrameCount = 72
+  let stepRMS = (0..<displayFrameCount).map { frame -> Float in
+    let phase = Float(frame) / Float(displayFrameCount)
+    let nextPhase = Float(frame + 1) / Float(displayFrameCount)
+    var squaredDisplacement: Float = 0
+    for vertexIndex in 0..<dataset.vertexCount {
+      let point = loop.point(phase: phase, vertexIndex: vertexIndex).position
+      let next = loop.point(
+        phase: nextPhase,
+        vertexIndex: vertexIndex
+      ).position
+      squaredDisplacement += simd_distance_squared(point, next)
+    }
+    return sqrt(squaredDisplacement / Float(dataset.vertexCount))
+  }
+  let medianStep = stepRMS.sorted()[displayFrameCount / 2]
+  #expect(stepRMS.last! < 1.5 * medianStep)
+  #expect(stepRMS.last! <= stepRMS.dropLast().max()!)
 }

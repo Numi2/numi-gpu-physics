@@ -19,11 +19,14 @@ mkdir -p "$(dirname "$OUTPUT")"
 cd "$ROOT"
 
 swift build -c release --product birdflow-viewer
+# Capture one endpoint probe beyond the 72 displayed phases. The renderer makes
+# frame 072 identical to frame 000; ffmpeg omits the probe so the GIF has no
+# duplicate-frame pause at its wrap.
 .build/release/birdflow-viewer \
   --capture-readme-frames "$FRAMES" \
   --capture-width 1120 \
   --capture-height 630 \
-  --capture-frames 72 \
+  --capture-frames 73 \
   --capture-dove-manifest \
     "$ROOT/ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json" \
   --capture-dove-pilot \
@@ -35,6 +38,7 @@ ffmpeg -v error -y \
   -filter_complex \
   "[0:v]fps=24,scale=1120:630:flags=lanczos,split[a][b];[a]palettegen=max_colors=192:reserve_transparent=0:stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a[v]" \
   -map "[v]" \
+  -frames:v 72 \
   -gifflags 0 \
   -loop 0 \
   "$OUTPUT"
@@ -52,13 +56,8 @@ FRAME_RATE="$(
     -show_entries stream=r_frame_rate -of default=nw=1:nk=1 "$OUTPUT"
 )"
 BYTES="$(stat -f '%z' "$OUTPUT")"
-SEAM_HASHES="$(
-  ffmpeg -v error -i "$OUTPUT" \
-    -vf "select='eq(n,0)+eq(n,71)'" -vsync 0 -f framemd5 - \
-    | awk -F',' '!/^#/ {gsub(/ /, "", $6); print $6}'
-)"
-FIRST_HASH="$(printf '%s\n' "$SEAM_HASHES" | sed -n '1p')"
-LAST_HASH="$(printf '%s\n' "$SEAM_HASHES" | sed -n '2p')"
+FIRST_HASH="$(shasum -a 256 "$FRAMES/frame-000.png" | awk '{print $1}')"
+LAST_HASH="$(shasum -a 256 "$FRAMES/frame-072.png" | awk '{print $1}')"
 
 if [[ "$DIMENSIONS" != "1120x630" || "$FRAME_COUNT" != "72" \
   || "$FRAME_RATE" != "24/1" ]]; then
@@ -70,7 +69,7 @@ if (( BYTES >= 10000000 )); then
   exit 1
 fi
 if [[ -z "$FIRST_HASH" || "$FIRST_HASH" != "$LAST_HASH" ]]; then
-  echo "README GIF is not pixel-seamless at the loop boundary" >&2
+  echo "README GIF forward-loop endpoint probe is not pixel-seamless" >&2
   exit 1
 fi
 

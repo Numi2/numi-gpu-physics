@@ -5,6 +5,169 @@ import Foundation
 import Metal
 import simd
 
+struct DoveLoopPoint {
+  let position: SIMD3<Float>
+  let velocity: SIMD3<Float>
+}
+
+struct MeasuredDovePresentationLoop {
+  static let startFrame = 27
+  static let endFrame = 121
+  static let closureDurationSeconds: Float = 0.014
+
+  let dataset: MeasuredBirdSurfaceSequence
+  private let bodyCenters: [SIMD3<Float>]
+  private let referenceBodyCenter: SIMD3<Float>
+
+  init(dataset: MeasuredBirdSurfaceSequence) {
+    self.dataset = dataset
+    let body = dataset.components.first { $0.partIdentifier == 1 }!
+    bodyCenters = (0..<dataset.frameCount).map { frame in
+      var center = SIMD3<Float>.zero
+      for index in body.vertexOffset..<(body.vertexOffset + body.vertexCount) {
+        center += dataset.vertex(frame: frame, index: index)
+      }
+      return center / Float(body.vertexCount)
+    }
+    referenceBodyCenter = bodyCenters[Self.startFrame]
+  }
+
+  var measuredDurationSeconds: Float {
+    dataset.frameTimesSeconds[Self.endFrame]
+      - dataset.frameTimesSeconds[Self.startFrame]
+  }
+
+  var periodSeconds: Float {
+    measuredDurationSeconds + Self.closureDurationSeconds
+  }
+
+  func point(phase: Float, vertexIndex: Int) -> DoveLoopPoint {
+    let time = equivalentTime(phase: phase)
+    if time < measuredDurationSeconds {
+      return sourcePoint(
+        timeSeconds: dataset.frameTimesSeconds[Self.startFrame] + time,
+        vertexIndex: vertexIndex
+      )
+    }
+    let closureTime = time - measuredDurationSeconds
+    let blend = closureTime / Self.closureDurationSeconds
+    let startTime = dataset.frameTimesSeconds[Self.startFrame]
+    let endTime = dataset.frameTimesSeconds[Self.endFrame]
+    let halfStep = 0.5 / dataset.sampleRateHertz
+    let start = sourcePoint(timeSeconds: startTime, vertexIndex: vertexIndex)
+    let end = sourcePoint(timeSeconds: endTime, vertexIndex: vertexIndex)
+    let startVelocity = sourcePoint(
+      timeSeconds: startTime + halfStep,
+      vertexIndex: vertexIndex
+    ).velocity
+    let endVelocity = sourcePoint(
+      timeSeconds: endTime - halfStep,
+      vertexIndex: vertexIndex
+    ).velocity
+    let blendSquared = blend * blend
+    let blendCubed = blendSquared * blend
+    let h00 = 2 * blendCubed - 3 * blendSquared + 1
+    let h10 = blendCubed - 2 * blendSquared + blend
+    let h01 = -2 * blendCubed + 3 * blendSquared
+    let h11 = blendCubed - blendSquared
+    let duration = Self.closureDurationSeconds
+    let position = h00 * end.position
+      + h10 * duration * endVelocity
+      + h01 * start.position
+      + h11 * duration * startVelocity
+    let dh00 = 6 * blendSquared - 6 * blend
+    let dh10 = 3 * blendSquared - 4 * blend + 1
+    let dh01 = -6 * blendSquared + 6 * blend
+    let dh11 = 3 * blendSquared - 2 * blend
+    let velocity = (
+      dh00 * end.position
+        + dh10 * duration * endVelocity
+        + dh01 * start.position
+        + dh11 * duration * startVelocity
+    ) / duration
+    return DoveLoopPoint(position: position, velocity: velocity)
+  }
+
+  func sourceTime(phase: Float) -> Float? {
+    let time = equivalentTime(phase: phase)
+    guard time < measuredDurationSeconds else { return nil }
+    return dataset.frameTimesSeconds[Self.startFrame] + time
+  }
+
+  func sourceFrameCoordinate(phase: Float) -> Float? {
+    guard let time = sourceTime(phase: phase) else { return nil }
+    return Float(Self.startFrame)
+      + (time - dataset.frameTimesSeconds[Self.startFrame])
+        * dataset.sampleRateHertz
+  }
+
+  func phase(offsetBy seconds: Float, from phase: Float) -> Float {
+    wrappedPhase(phase + seconds / periodSeconds)
+  }
+
+  private func equivalentTime(phase: Float) -> Float {
+    wrappedPhase(phase) * periodSeconds
+  }
+
+  private func wrappedPhase(_ phase: Float) -> Float {
+    let remainder = phase.truncatingRemainder(dividingBy: 1)
+    return remainder >= 0 ? remainder : remainder + 1
+  }
+
+  private func sourcePoint(
+    timeSeconds: Float,
+    vertexIndex: Int
+  ) -> DoveLoopPoint {
+    let state = dataset.state(
+      timeSeconds: timeSeconds,
+      vertexIndex: vertexIndex
+    )
+    let center = bodyCenter(timeSeconds: timeSeconds)
+    return DoveLoopPoint(
+      position: state.positionMeters - center.position + referenceBodyCenter,
+      velocity: state.velocityMetersPerSecond - center.velocity
+    )
+  }
+
+  private func bodyCenter(timeSeconds: Float) -> DoveLoopPoint {
+    let first = dataset.frameTimesSeconds[0]
+    let lastIndex = dataset.frameCount - 1
+    if timeSeconds <= first {
+      let duration = dataset.frameTimesSeconds[1] - first
+      return DoveLoopPoint(
+        position: bodyCenters[0],
+        velocity: (bodyCenters[1] - bodyCenters[0]) / duration
+      )
+    }
+    if timeSeconds >= dataset.frameTimesSeconds[lastIndex] {
+      let duration = dataset.frameTimesSeconds[lastIndex]
+        - dataset.frameTimesSeconds[lastIndex - 1]
+      return DoveLoopPoint(
+        position: bodyCenters[lastIndex],
+        velocity: (bodyCenters[lastIndex] - bodyCenters[lastIndex - 1]) / duration
+      )
+    }
+    var lower = 0
+    var upper = lastIndex
+    while lower + 1 < upper {
+      let middle = lower + (upper - lower) / 2
+      if timeSeconds < dataset.frameTimesSeconds[middle] {
+        upper = middle
+      } else {
+        lower = middle
+      }
+    }
+    let duration = dataset.frameTimesSeconds[upper]
+      - dataset.frameTimesSeconds[lower]
+    let blend = (timeSeconds - dataset.frameTimesSeconds[lower]) / duration
+    let delta = bodyCenters[upper] - bodyCenters[lower]
+    return DoveLoopPoint(
+      position: bodyCenters[lower] + blend * delta,
+      velocity: delta / duration
+    )
+  }
+}
+
 enum MeasuredDoveShowcaseCapture {
   private struct PilotArtifact: Decodable {
     struct Candidate: Decodable {
@@ -64,6 +227,7 @@ enum MeasuredDoveShowcaseCapture {
       device: device,
       dataset: dataset
     )
+    let loop = MeasuredDovePresentationLoop(dataset: dataset)
     try FileManager.default.createDirectory(
       at: arguments.outputDirectory,
       withIntermediateDirectories: true
@@ -71,18 +235,12 @@ enum MeasuredDoveShowcaseCapture {
 
     for frameIndex in 0..<arguments.frameCount {
       let progress = Float(frameIndex) / Float(arguments.frameCount - 1)
-      let traversal = pow(sin(.pi * progress), 2)
-      let sourceTime = dataset.frameTimesSeconds[0]
-        + traversal
-          * (dataset.frameTimesSeconds[dataset.frameCount - 1]
-            - dataset.frameTimesSeconds[0])
-      let direction: Float = progress < 0.5 ? 1 : -1
-      let bounds = frameBounds(dataset: dataset, timeSeconds: sourceTime)
+      let bounds = frameBounds(loop: loop, phase: progress)
       let center = 0.5 * (bounds.minimum + bounds.maximum)
       var camera = CameraState()
-      camera.distance = 0.56 * (1 + 0.025 * cos(2 * .pi * progress))
-      camera.yaw = -1.02 + 0.13 * sin(2 * .pi * progress)
-      camera.pitch = 0.34 + 0.045 * cos(2 * .pi * progress)
+      camera.distance = 0.56 * (1 + 0.018 * cos(2 * .pi * progress))
+      camera.yaw = -1.02
+      camera.pitch = 0.34
       camera.target = center
       let forward = simd_normalize(center - camera.eye)
       let right = simd_normalize(
@@ -91,9 +249,8 @@ enum MeasuredDoveShowcaseCapture {
       camera.target = center + 0.045 * right + SIMD3<Float>(0, 0, 0.005)
 
       let texture = try renderer.render(
-        timeSeconds: sourceTime,
-        direction: direction,
-        progress: progress,
+        loop: loop,
+        phase: progress,
         camera: camera,
         width: arguments.width,
         height: arguments.height
@@ -107,10 +264,10 @@ enum MeasuredDoveShowcaseCapture {
           graphics: graphics,
           width: arguments.width,
           height: arguments.height,
-          sourceTime: Double(sourceTime),
+          sourceTime: loop.sourceTime(phase: progress).map(Double.init),
           forceHistory: forceHistory,
           artifact: artifact,
-          frameCoordinate: traversal * Float(dataset.frameCount - 1)
+          frameCoordinate: loop.sourceFrameCoordinate(phase: progress)
         )
       }
       let output = arguments.outputDirectory.appendingPathComponent(
@@ -119,8 +276,9 @@ enum MeasuredDoveShowcaseCapture {
       try png.write(to: output, options: .atomic)
       print(
         "captured dove \(frameIndex + 1)/\(arguments.frameCount) "
-          + "source_frame=\(String(format: "%.2f", traversal * Float(dataset.frameCount - 1))) "
-          + "source_time=\(String(format: "%.4f", sourceTime))"
+          + (loop.sourceFrameCoordinate(phase: progress).map {
+            "source_frame=\(String(format: "%.2f", $0))"
+          } ?? "presentation_closure=true")
       )
     }
   }
@@ -174,16 +332,13 @@ enum MeasuredDoveShowcaseCapture {
   }
 
   private static func frameBounds(
-    dataset: MeasuredBirdSurfaceSequence,
-    timeSeconds: Float
+    loop: MeasuredDovePresentationLoop,
+    phase: Float
   ) -> (minimum: SIMD3<Float>, maximum: SIMD3<Float>) {
     var minimum = SIMD3<Float>(repeating: .infinity)
     var maximum = SIMD3<Float>(repeating: -.infinity)
-    for index in 0..<dataset.vertexCount {
-      let point = dataset.state(
-        timeSeconds: timeSeconds,
-        vertexIndex: index
-      ).positionMeters
+    for index in 0..<loop.dataset.vertexCount {
+      let point = loop.point(phase: phase, vertexIndex: index).position
       minimum = simd_min(minimum, point)
       maximum = simd_max(maximum, point)
     }
@@ -194,10 +349,10 @@ enum MeasuredDoveShowcaseCapture {
     graphics: CGContext,
     width: Int,
     height: Int,
-    sourceTime: Double,
+    sourceTime: Double?,
     forceHistory: ForceHistory,
     artifact: PilotArtifact,
-    frameCoordinate: Float
+    frameCoordinate: Float?
   ) {
     graphics.saveGState()
     let scale = CGFloat(width) / 1_120
@@ -221,7 +376,7 @@ enum MeasuredDoveShowcaseCapture {
       context: graphics
     )
     drawText(
-      "DEETJEN OB_F03  •  144 SOURCE-LOCKED FRAMES  •  NATIVE METAL",
+      "OB_F03  •  FORWARD 94 MS WINGBEAT  •  BODY-FOLLOWING  •  METAL",
       font: systemFont(.userFixedPitch, size: 10.5 * scale),
       color: NSColor(
         calibratedRed: 0.61,
@@ -337,7 +492,9 @@ enum MeasuredDoveShowcaseCapture {
       context: graphics
     )
     drawText(
-      "REFINEMENT OPEN  •  68.07× VISCOSITY  •  FRAME \(Int(frameCoordinate.rounded()))",
+      frameCoordinate.map {
+        "REFINEMENT OPEN  •  68.07× VISCOSITY  •  SOURCE t=\(Int($0.rounded())) ms"
+      } ?? "REFINEMENT OPEN  •  68.07× VISCOSITY  •  LOOP CLOSURE",
       font: systemFont(.userFixedPitch, size: 9.5 * scale),
       color: NSColor(
         calibratedRed: 1,
@@ -357,7 +514,7 @@ enum MeasuredDoveShowcaseCapture {
 
   private static func drawForceHistory(
     in rect: NSRect,
-    currentTime: Double,
+    currentTime: Double?,
     history: ForceHistory,
     context: CGContext,
     scale: CGFloat
@@ -426,17 +583,19 @@ enum MeasuredDoveShowcaseCapture {
       color: NSColor(calibratedRed: 0.45, green: 1, blue: 0.72, alpha: 0.92),
       width: 1.15
     )
-    let start = history.times[0]
-    let end = history.times[history.times.count - 1]
-    let marker = min(max((currentTime - start) / (end - start), 0), 1)
-    let markerX = plot.minX + CGFloat(marker) * plot.width
-    context.setStrokeColor(
-      NSColor(calibratedRed: 1, green: 0.63, blue: 0.22, alpha: 0.85).cgColor
-    )
-    context.setLineWidth(1 * scale)
-    context.move(to: CGPoint(x: markerX, y: plot.minY))
-    context.addLine(to: CGPoint(x: markerX, y: plot.maxY))
-    context.strokePath()
+    if let currentTime {
+      let start = history.times[0]
+      let end = history.times[history.times.count - 1]
+      let marker = min(max((currentTime - start) / (end - start), 0), 1)
+      let markerX = plot.minX + CGFloat(marker) * plot.width
+      context.setStrokeColor(
+        NSColor(calibratedRed: 1, green: 0.63, blue: 0.22, alpha: 0.85).cgColor
+      )
+      context.setLineWidth(1 * scale)
+      context.move(to: CGPoint(x: markerX, y: plot.minY))
+      context.addLine(to: CGPoint(x: markerX, y: plot.maxY))
+      context.strokePath()
+    }
 
     drawLegendDot(
       "MEASURED",
@@ -652,25 +811,21 @@ private final class MeasuredDoveShowcaseRenderer {
   }
 
   func render(
-    timeSeconds: Float,
-    direction: Float,
-    progress: Float,
+    loop: MeasuredDovePresentationLoop,
+    phase: Float,
     camera: CameraState,
     width: Int,
     height: Int
   ) throws -> MTLTexture {
-    let motionEnvelope = abs(sin(2 * .pi * progress))
-    let surface = surfaceVertices(timeSeconds: timeSeconds)
+    let surface = surfaceVertices(loop: loop, phase: phase)
     let ghosts = ghostVertices(
-      timeSeconds: timeSeconds,
-      direction: direction,
-      opacityScale: motionEnvelope
+      loop: loop,
+      phase: phase
     )
     let trails = trailVertices(
-      timeSeconds: timeSeconds,
-      direction: direction,
-      camera: camera,
-      opacityScale: motionEnvelope
+      loop: loop,
+      phase: phase,
+      camera: camera
     )
     let surfaceBuffer = try sharedBuffer(surface)
     let ghostBuffer = try sharedBuffer(ghosts)
@@ -711,7 +866,7 @@ private final class MeasuredDoveShowcaseRenderer {
       ribbonWidth: 0.002
     )
     var backgroundOptions = SIMD4<Float>(
-      progress,
+      phase,
       Float(width) / Float(height),
       0,
       0
@@ -796,22 +951,25 @@ private final class MeasuredDoveShowcaseRenderer {
     return color
   }
 
-  private func surfaceVertices(timeSeconds: Float) -> [ColoredVertex] {
+  private func surfaceVertices(
+    loop: MeasuredDovePresentationLoop,
+    phase: Float
+  ) -> [ColoredVertex] {
     let states = (0..<dataset.vertexCount).map {
-      dataset.state(timeSeconds: timeSeconds, vertexIndex: $0)
+      loop.point(phase: phase, vertexIndex: $0)
     }
     var result: [ColoredVertex] = []
     result.reserveCapacity(dataset.triangleCount * 3)
     for triangleIndex in 0..<dataset.triangleCount {
       let triangle = dataset.triangle(triangleIndex)
       let indices = [Int(triangle.x), Int(triangle.y), Int(triangle.z)]
-      let points = indices.map { states[$0].positionMeters }
+      let points = indices.map { states[$0].position }
       let rawNormal = simd_cross(points[1] - points[0], points[2] - points[0])
       let normal = simd_length_squared(rawNormal) > 1e-16
         ? simd_normalize(rawNormal)
         : SIMD3<Float>(0, 0, 1)
       let speed = indices.reduce(Float.zero) {
-        $0 + simd_length(states[$1].velocityMetersPerSecond)
+        $0 + simd_length(states[$1].velocity)
       } / 3
       let color = surfaceColor(
         partIdentifier: dataset.trianglePartIdentifiers[triangleIndex],
@@ -831,27 +989,23 @@ private final class MeasuredDoveShowcaseRenderer {
   }
 
   private func ghostVertices(
-    timeSeconds: Float,
-    direction: Float,
-    opacityScale: Float
+    loop: MeasuredDovePresentationLoop,
+    phase: Float
   ) -> [ColoredVertex] {
     var result: [ColoredVertex] = []
     for ghostIndex in 1...3 {
-      let ghostTime = min(
-        max(
-          timeSeconds - direction * Float(ghostIndex) * 0.006,
-          dataset.frameTimesSeconds[0]
-        ),
-        dataset.frameTimesSeconds[dataset.frameCount - 1]
+      let ghostPhase = loop.phase(
+        offsetBy: -Float(ghostIndex) * 0.006,
+        from: phase
       )
-      let alpha = opacityScale * Float(0.10 / Double(ghostIndex))
+      let alpha = Float(0.10 / Double(ghostIndex))
       for triangleIndex in 0..<dataset.triangleCount {
         let part = dataset.trianglePartIdentifiers[triangleIndex]
         guard part == 2 || part == 3 else { continue }
         let triangle = dataset.triangle(triangleIndex)
         let indices = [Int(triangle.x), Int(triangle.y), Int(triangle.z)]
         let points = indices.map {
-          dataset.state(timeSeconds: ghostTime, vertexIndex: $0).positionMeters
+          loop.point(phase: ghostPhase, vertexIndex: $0).position
         }
         let rawNormal = simd_cross(points[1] - points[0], points[2] - points[0])
         let normal = simd_length_squared(rawNormal) > 1e-16
@@ -875,27 +1029,20 @@ private final class MeasuredDoveShowcaseRenderer {
   }
 
   private func trailVertices(
-    timeSeconds: Float,
-    direction: Float,
-    camera: CameraState,
-    opacityScale: Float
+    loop: MeasuredDovePresentationLoop,
+    phase: Float,
+    camera: CameraState
   ) -> [[ColoredVertex]] {
     wingtipIndices.enumerated().map { trailIndex, vertexIndex in
       let sampleCount = 30
       var points: [SIMD3<Float>] = []
       for sample in stride(from: sampleCount - 1, through: 0, by: -1) {
-        let sampleTime = min(
-          max(
-            timeSeconds - direction * Float(sample) * 0.0018,
-            dataset.frameTimesSeconds[0]
-          ),
-          dataset.frameTimesSeconds[dataset.frameCount - 1]
+        let samplePhase = loop.phase(
+          offsetBy: -Float(sample) * 0.0018,
+          from: phase
         )
         points.append(
-          dataset.state(
-            timeSeconds: sampleTime,
-            vertexIndex: vertexIndex
-          ).positionMeters
+          loop.point(phase: samplePhase, vertexIndex: vertexIndex).position
         )
       }
       let rgb = trailIndex == 0
@@ -916,7 +1063,7 @@ private final class MeasuredDoveShowcaseRenderer {
         let width = 0.00035 + 0.0018 * age
         let color = SIMD4<Float>(
           rgb,
-          opacityScale * 0.68 * age * age
+          0.68 * age * age
         )
         vertices.append(
           ColoredVertex(

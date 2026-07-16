@@ -15,18 +15,26 @@ Regenerate the repository's top-of-README GIF locally with:
 ```
 
 The script invokes the native viewer's deterministic offscreen Metal path and
-GPU-rasterizes the source-locked `2018_12_11_OB_F03` dove surface. It captures
-72 frames at `1120 x 630`, traverses the nonperiodic 144-frame kinematics
-forward and backward for a seamless three-second loop, and uses local `ffmpeg`
-full-frame palette optimization to create
+GPU-rasterizes the source-locked `2018_12_11_OB_F03` dove surface. The display
+advances forward through the closest repeated source poses, zero-based surface
+samples 27 through 121 (`27...121 ms`, a `94 ms` interval), in a body-following
+frame. A velocity-matched cubic Hermite
+transition closes the remaining `14 ms` for presentation only; the overlay
+labels every closure frame and never treats it as measured kinematics or CFD.
+The capture writes 72 unique display frames plus one pixel-identical endpoint
+probe at `1120 x 630`; local `ffmpeg` encodes only the unique frames into a
+continuous three-second loop with no reversed wingbeat. Full-frame palette
+optimization creates
 `Docs/Media/birdflow-metal-native-viewer.gif`. Transient wing ghosts and ribbons
 are explicitly kinematic histories, not CFD streamlines. The embedded force
 chart is decoded from the committed 3,776-step, two-operator extended-pilot
 artifact; it labels the comparison descriptive and preserves the declared
 `68.07x` viscosity boundary. Capture rejects a surface or artifact that no
 longer matches the locked `144 / 2,157 / 3,968` frame, vertex, and triangle
-contract, the 187-sample force window, or the passed numerical gate. Only the
-completed Metal render texture is read back for image encoding.
+contract, the 187-sample force window, or the passed numerical gate. It also
+rejects a wrong image size, display-frame count, frame rate, file budget, or
+nonidentical endpoint probe. Only the completed Metal render texture is read
+back for image encoding.
 
 The New Run sheet uses the CLI defaults: fixed flight, `Re=2000`, an `8 m/s`
 reference speed, `0.04` lattice speed, resolution scale 1, and a 32-step solver

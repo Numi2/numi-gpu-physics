@@ -418,10 +418,19 @@
     "focusedDeetjenDoveCollisionExtendedPilotTestsPassed": 1,
     "focusedDeetjenDoveCollisionExtendedPilotRuntimeSeconds": 57.693,
     "focusedMeasuredDoveShowcaseCaptureTestsPassed": 1,
-    "focusedMeasuredDoveShowcaseCaptureRuntimeSeconds": 0.433,
+    "focusedMeasuredDoveShowcaseCaptureRuntimeSeconds": 1.579,
+    "birdFlowVisualizationTestsPassed": 14,
+    "birdFlowVisualizationTestRuntimeSeconds": 1.579,
     "readmeMeasuredDoveShowcasePassed": true,
     "readmeMeasuredDoveShowcaseFrames": 72,
-    "readmeMeasuredDoveShowcaseBytes": 9540586,
-    "readmeMeasuredDoveShowcasePixelSeamPassed": true
+    "readmeMeasuredDoveShowcaseBytes": 9623954,
+    "readmeMeasuredDoveShowcaseForwardSourceStartFrame": 27,
+    "readmeMeasuredDoveShowcaseForwardSourceEndFrame": 121,
+    "readmeMeasuredDoveShowcaseClosureSeconds": 0.014,
+    "readmeMeasuredDoveShowcaseEndpointProbePassed": true,
+    "readmeMeasuredDoveShowcaseGeometricSeamGatePassed": true,
+    "readmeMeasuredDoveShowcaseEncodedSeamMeanAbsoluteDifference": 1.71052,
+    "readmeMeasuredDoveShowcaseEncodedMedianAdjacentMeanAbsoluteDifference": 2.509661,
+    "readmeMeasuredDoveShowcaseEncodedSeamToMedianRatio": 0.681574
   }
 }
