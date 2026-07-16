@@ -224,6 +224,46 @@ and
 This gate clears the input for one coarse prescribed-motion fluid pilot. It is
 not measured-force agreement, uncertainty quantification, or grid acceptance.
 
+## Coarse viscosity-floor fluid pilot
+
+The bounded production pilot is reproducible with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --coarse-fluid-pilot \
+  --archive ValidationArtifacts/deetjen-dove-coarse-force-pilot.json \
+  --json
+
+python3 Scripts/audit-dove-coarse-force-pilot.py
+```
+
+The target contains a `0.025 s` pre-roll, the authors' inclusive 187-sample
+analysis window from `0.025` through `0.118 s`, and a `0.025 s` post-roll used
+to preserve nonperiodic endpoint kinematics. The pilot advances 16 fluid steps
+per force sample, or 3,776 steps through the comparison endpoint. At the fixed
+`0.01 m` engineering grid, source `rho=1.18 kg/m^3` and
+`mu=1.849e-5 Pa s` imply `tau+=0.50001469`, below BirdFlowMetal's Float TRT
+margin. The pilot therefore declares `tau+=0.501`; its effective viscosity is
+`68.07x` the source convention. `experimentalAgreementGateApplied` is false by
+construction.
+
+The run is a negative integration result, not a force curve. The first sampled
+negative population appears at fluid step 176 (`5.5 ms`) in D3Q19 direction 7,
+cell `[31,35,29]`, `0.0764` cells from the moving surface. The load reduction
+becomes nonfinite at step 331, before the 800-step pre-roll completes, so no
+comparison samples or aggregate force errors are emitted. The independent
+audit passes because it verifies the archive and the negative outcome; the
+pilot integration gate remains false. This distinction prevents an artifact-
+integrity pass from being misreported as physical acceptance.
+
+The highest-ROI next experiment is a controlled near-wall collision-operator
+A/B with geometry, grid, time step, viscosity floor, boundary treatment,
+sponge, and gates fixed. A candidate advances only if it survives at least the
+800-step pre-roll with positive populations and finite loads. Five-flight
+repeatability and measured-force refinement remain deferred until then.
+
 ## Reproducible acquisition
 
 The default command is read-only. It verifies the Dryad/Zenodo identity,
@@ -298,10 +338,11 @@ causes a hard failure.
 Source acquisition, MATLAB decoding, synchronization reconstruction, compact
 topology conversion, BirdFlow frame registration, independent CPU parity,
 indexed Metal geometry, production impulse coupling, and force target
-registration are complete. One coarse prescribed-motion fluid pilot is the
-active boundary. Quantitative experimental acceptance begins only after that
-pilot, the five-flight repeatability envelope, and time/space refinement are
-preregistered and passed from independent evidence.
+registration are complete. The coarse prescribed-motion pilot is executed and
+fails its pre-roll positivity/load gate with a localized near-wall population.
+Quantitative experimental acceptance begins only after a fixed-input collision
+candidate survives that boundary, the five-flight repeatability envelope is
+established, and time/space refinement is preregistered and passed.
 
 ## Claim after a successful ladder
 

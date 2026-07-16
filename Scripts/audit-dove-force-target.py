@@ -90,6 +90,7 @@ def main() -> None:
     rate = synchronization["forceSampleRateHertz"]
     surface_times = surface["frames"]["timesSeconds"]
     matrix = target["coordinateFrame"]["sourceWorldToBirdFlow"]
+    comparison = target["comparisonWindow"]
 
     qualification_code = {
         member["archivePath"]: member["sha256"]
@@ -120,6 +121,17 @@ def main() -> None:
         "sampleArrayLengths": len({len(times), len(coordinates), len(force_x), len(force_z), count}) == 1,
         "forceRate": math.isclose(rate, 2000.0, rel_tol=1.0e-12),
         "sampleCount": count == 287,
+        "comparisonWindow": (
+            comparison["firstSourceFrame"] == -1918
+            and comparison["lastSourceFrame"] == -1825
+            and comparison["firstTargetSampleIndex"] == 50
+            and comparison["lastTargetSampleIndex"] == 236
+            and comparison["sampleCount"] == 187
+            and math.isclose(comparison["firstTimeSeconds"], 0.025)
+            and math.isclose(comparison["lastTimeSeconds"], 0.118)
+            and comparison["firstTimeSeconds"] == times[50]
+            and comparison["lastTimeSeconds"] == times[236]
+        ),
         "contiguousTime": max(abs(a - b) for a, b in zip(times, expected_times)) <= 1.0e-15,
         "surfaceCoordinates": max(
             abs(a - b) for a, b in zip(coordinates, expected_coordinates)
@@ -159,6 +171,9 @@ def main() -> None:
             "durationSeconds": times[-1],
             "storedSurfaceFrames": len(surface_times),
             "interpolatedHalfFrames": count - len(surface_times),
+            "comparisonSamples": comparison["sampleCount"],
+            "preRollSeconds": comparison["preRollSeconds"],
+            "postRollSeconds": comparison["postRollSeconds"],
             "forceXImpulseNewtonSeconds": summarize(force_x, 1.0 / rate)[
                 "trapezoidalImpulseNewtonSeconds"
             ],

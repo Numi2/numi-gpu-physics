@@ -1,0 +1,36 @@
+{
+  "artifactAuditPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-coarse-force-pilot-audit-v1",
+  "checks": {
+    "comparisonNotReached": true,
+    "datasetLocks": true,
+    "fixedPilotGrid": true,
+    "forceCoveragePreserved": true,
+    "forceTargetHash": true,
+    "negativePopulationLocalization": true,
+    "negativePreRollOutcome": true,
+    "populationDiagnosticCadence": true,
+    "scalingReconstruction": true,
+    "schemas": true,
+    "surfaceHash": true,
+    "timeContract": true,
+    "verdictIsNonAcceptance": true,
+    "viscosityClaimBoundary": true
+  },
+  "claimBoundary": "This audit verifies that the committed archive accurately records a negative engineering-pilot outcome. It does not convert that outcome into experimental-force or quantitative-flight acceptance.",
+  "forceTargetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "generatedBy": "Scripts/audit-dove-coarse-force-pilot.py",
+  "metrics": {
+    "completedFluidSteps": 331,
+    "firstNonFiniteLoadStep": 331,
+    "firstSampledNegativePopulationStep": 176,
+    "minimumSampledPopulation": -0.05179429426789284,
+    "pilotToSourceViscosityRatio": 68.07194967379765,
+    "preRollFluidSteps": 800
+  },
+  "outcome": "negative-pre-roll-population-stability-localization",
+  "pilotIntegrationPassed": false,
+  "pilotSHA256": "3a7bc3bba79a62c605dba748ff73ca68fc383f4528794755749e3c3e01e14241",
+  "schemaVersion": 1,
+  "surfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
+}

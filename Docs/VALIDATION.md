@@ -1194,9 +1194,24 @@ target and registration gate are
 `ValidationInputs/deetjen-ob-f03-force-v1.json` and
 `ValidationArtifacts/deetjen-dove-force-registration.json`; the separate
 committed-input audit is
-`ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json`. The next
-admissible step is one coarse prescribed-motion fluid pilot, not the refinement
-ladder.
+`ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json`.
+
+The bounded coarse pilot is now executed with 16 fluid steps per 2 kHz force
+sample. It advances an 800-step pre-roll before the registered 187-sample
+`0.025...0.118 s` comparison window. The `0.01 m` grid cannot represent the
+source viscosity inside the Float TRT margin: it would require
+`tau+=0.50001469`. The pilot therefore declares a `tau+=0.501` viscosity floor,
+`68.07x` the source viscosity, and explicitly disables experimental-agreement
+acceptance. On Apple M4, the first sampled negative population occurs at step
+176 (`5.5 ms`), D3Q19 direction 7, cell `[31,35,29]`, `0.0764` cells from the
+moving surface. The load becomes nonfinite at step 331, before pre-roll ends;
+there are consequently no comparison samples and no zero-filled aggregate
+errors. `ValidationArtifacts/deetjen-dove-coarse-force-pilot.json` records the
+negative integration result, while
+`ValidationArtifacts/deetjen-dove-coarse-force-pilot-audit.json` independently
+passes artifact arithmetic/provenance and retains `pilotIntegrationPassed=false`.
+The next admissible step is a fixed-input near-wall collision-operator A/B, not
+the measured-force refinement ladder.
 
 ## 8. Complete measured bird
 

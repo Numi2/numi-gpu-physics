@@ -1,6 +1,7 @@
 {
   "auditIdentifier": "deetjen-ob-f03-force-registration-v1",
   "checks": {
+    "comparisonWindowInsideTarget": true,
     "derivedVerticalSignAndTiming": true,
     "finiteMeasuredTargets": true,
     "firstForceIndex": true,
@@ -143,7 +144,7 @@
     "surfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
   },
   "target": "ValidationInputs/deetjen-ob-f03-force-v1.json",
-  "targetSHA256": "2f222c1029849ec602bd7474671b4295d1cb97cec8bad74f4ce9e4bf0cd14591",
+  "targetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
   "targetSummary": {
     "bodyWeightNewtons": 1.677828069692669,
     "forceX": {
@@ -163,6 +164,9 @@
   },
   "timing": {
     "cameraZeroIndexZeroBased": 195764,
+    "comparisonFirstTargetSampleIndex": 50,
+    "comparisonLastTargetSampleIndex": 236,
+    "comparisonSampleCount": 187,
     "firstIndexZeroBased": 191878,
     "forceRateHertz": 2000.0,
     "kinematicsRateHertz": 1000.0,

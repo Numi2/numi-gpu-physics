@@ -1,5 +1,18 @@
 {
   "claimBoundary": "This target contains only the deposited, source-processed horizontal and vertical external force on the bird. It does not supply lateral force, torque, per-wing loads, raw sensor uncertainty, or a CFD result.",
+  "comparisonWindow": {
+    "comparisonRule": "advance through pre-roll before scoring; compare only this inclusive window; retain post-roll for nonperiodic endpoint kinematics",
+    "firstSourceFrame": -1918,
+    "firstTargetSampleIndex": 50,
+    "firstTimeSeconds": 0.025,
+    "lastSourceFrame": -1825,
+    "lastTargetSampleIndex": 236,
+    "lastTimeSeconds": 0.118,
+    "postRollSeconds": 0.024999999999999994,
+    "preRollSeconds": 0.025,
+    "sampleCount": 187,
+    "sourceDefinition": "selected flight analysisFrameStart...analysisFrameEnd"
+  },
   "componentCoverage": {
     "measured": [
       "forceXNewtons",

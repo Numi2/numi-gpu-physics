@@ -3,6 +3,7 @@
   "checks": {
     "acceptanceStillOpen": true,
     "codeLocks": true,
+    "comparisonWindow": true,
     "componentCoverage": true,
     "contiguousTime": true,
     "finiteForces": true,
@@ -23,13 +24,16 @@
   "gatePassed": true,
   "generatedBy": "Scripts/audit-dove-force-target.py",
   "metrics": {
+    "comparisonSamples": 187,
     "durationSeconds": 0.143,
     "forceXImpulseNewtonSeconds": 0.020711291957497747,
     "forceZImpulseNewtonSeconds": 0.1627738657110264,
     "interpolatedHalfFrames": 143,
+    "postRollSeconds": 0.024999999999999994,
+    "preRollSeconds": 0.025,
     "sampleCount": 287,
     "storedSurfaceFrames": 144
   },
   "schemaVersion": 1,
-  "targetSHA256": "2f222c1029849ec602bd7474671b4295d1cb97cec8bad74f4ce9e4bf0cd14591"
+  "targetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c"
 }

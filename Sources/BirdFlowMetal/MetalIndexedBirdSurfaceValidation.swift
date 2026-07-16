@@ -109,6 +109,244 @@ public struct MetalIndexedBirdSurfaceCouplingReport: Codable, Sendable {
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfacePilotPlan: Codable, Sendable {
+    public let cellSizeMeters: Double
+    public let halfThicknessCells: Double
+    public let paddingCells: Int
+    public let spongeWidthCells: Int
+    public let spongeStrength: Double
+    public let forceSamplesPerSecond: Double
+    public let fluidStepsPerForceSample: Int
+    public let fluidTimeStepSeconds: Double
+    public let totalFluidSteps: Int
+    public let preRollFluidSteps: Int
+    public let comparisonForceSamples: Int
+    public let maximumSurfaceSpeedMetersPerSecond: Double
+    public let latticeReferenceSpeed: Double
+    public let maximumWallMach: Double
+    public let pilotTauPlus: Double
+    public let pilotReynoldsNumber: Double
+    public let sourceAirDensityKilogramsPerCubicMeter: Double
+    public let sourceDynamicViscosityPascalSeconds: Double
+    public let sourceConditionTauPlusAtPilotGrid: Double
+    public let minimumAllowedTauPlus: Double
+    public let sourceViscosityRepresentableAtPilotGrid: Bool
+    public let maximumCellSizeForSourceViscosityMeters: Double
+    public let pilotDynamicViscosityPascalSeconds: Double
+    public let pilotToSourceViscosityRatio: Double
+    public let experimentalAgreementGateApplied: Bool
+}
+
+public struct MetalIndexedBirdSurfacePilotSample: Codable, Sendable {
+    public let targetSampleIndex: Int
+    public let sourceTimeSeconds: Double
+    public let sourceFrameCoordinate: Double
+    public let measuredForceXNewtons: Double
+    public let measuredForceZNewtons: Double
+    public let endpointComputedForceNewtons: SIMD3<Double>
+    public let intervalMeanComputedForceNewtons: SIMD3<Double>
+    public let endpointResidualXNewtons: Double
+    public let endpointResidualZNewtons: Double
+    public let intervalMeanResidualXNewtons: Double
+    public let intervalMeanResidualZNewtons: Double
+    public let minimumPopulation: Double
+    public let componentSolidCellCounts: [Int]
+}
+
+public struct MetalIndexedBirdSurfacePilotReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let plan: MetalIndexedBirdSurfacePilotPlan
+    public let runtimeSeconds: Double
+    public let completedFluidSteps: Int
+    public let recordedComparisonSamples: Int
+    public let recordedPopulationDiagnosticSamples: Int
+    public let collisionOperator: String
+    public let forceEstimator: String
+    public let periodicBoundaries: Bool
+    public let allComponentsPresentAtComparisonSamples: Bool
+    public let allLoadsFinite: Bool
+    public let allSampledPopulationsFinite: Bool
+    public let sampledPopulationPositivityPassed: Bool
+    public let minimumSampledPopulation: Double
+    public let firstNonFiniteLoadStep: Int?
+    public let firstNonFinitePopulationStep: Int?
+    public let firstNegativePopulationStep: Int?
+    public let firstNegativePopulationTimeSeconds: Double?
+    public let firstNegativePopulationLinearIndex: Int?
+    public let firstNegativePopulationDirection: Int?
+    public let firstNegativePopulationCellCoordinate: SIMD3<Int>?
+    public let firstNegativePopulationDistanceFromSurfaceCells: Double?
+    public let firstNegativePopulationPartIdentifier: Int?
+    public let measuredMeanForceXNewtons: Double?
+    public let measuredMeanForceZNewtons: Double?
+    public let endpointMeanForceXNewtons: Double?
+    public let endpointMeanForceZNewtons: Double?
+    public let intervalMeanForceXNewtons: Double?
+    public let intervalMeanForceZNewtons: Double?
+    public let endpointNormalizedRMSError: Double?
+    public let intervalMeanNormalizedRMSError: Double?
+    public let measuredImpulseXNewtonSeconds: Double?
+    public let measuredImpulseZNewtonSeconds: Double?
+    public let endpointImpulseXNewtonSeconds: Double?
+    public let endpointImpulseZNewtonSeconds: Double?
+    public let intervalMeanImpulseXNewtonSeconds: Double?
+    public let intervalMeanImpulseZNewtonSeconds: Double?
+    public let measuredPeakTimeSeconds: Double?
+    public let endpointPeakTimeSeconds: Double?
+    public let intervalMeanPeakTimeSeconds: Double?
+    public let experimentalAgreementGateApplied: Bool
+    public let integrationGatePassed: Bool
+    public let samples: [MetalIndexedBirdSurfacePilotSample]
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
+public enum MetalIndexedBirdSurfacePilotValidator {
+    public static let sourceAirDensity: Float = 1.18
+    public static let sourceDynamicViscosity: Float = 1.849e-5
+    public static let minimumTauPlus: Float = 0.500_05
+    public static let pilotTauPlus: Float = 0.501
+    public static let paddingCells = 12
+    public static let spongeWidthCells = 6
+    public static let spongeStrength: Float = 0.08
+    public static let fluidStepsPerForceSample = 16
+
+    public static func plan(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75
+    ) throws -> MetalIndexedBirdSurfacePilotPlan {
+        guard cellSizeMeters.isFinite,
+              cellSizeMeters > 0,
+              halfThicknessCells.isFinite,
+              (0.5...2).contains(halfThicknessCells),
+              target.comparisonLastTimeSeconds
+                <= Double(surface.frameTimesSeconds.last!) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "coarse pilot geometry or comparison time is invalid"
+            )
+        }
+        let forceRate = target.forceSampleRateHertz
+        let dt = 1.0 / (
+            forceRate * Double(fluidStepsPerForceSample)
+        )
+        let maximumSpeed = Double(
+            surface.maximumPointSpeedMetersPerSecond
+        )
+        let latticeSpeed = maximumSpeed * dt / Double(cellSizeMeters)
+        let maximumMach = latticeSpeed / Double(D3Q19.soundSpeed)
+        guard maximumMach <= 0.15 else {
+            throw BirdFlowConfigurationError.latticeMachTooHigh(
+                Float(maximumMach)
+            )
+        }
+        let pilotNuLattice = (Double(pilotTauPlus) - 0.5) / 3.0
+        let pilotReynolds = latticeSpeed * 8.0 / pilotNuLattice
+        let sourceNu = Double(sourceDynamicViscosity / sourceAirDensity)
+        let sourceNuLattice = sourceNu * dt
+            / pow(Double(cellSizeMeters), 2)
+        let sourceTau = 0.5 + 3.0 * sourceNuLattice
+        let pilotNuPhysical = pilotNuLattice
+            * pow(Double(cellSizeMeters), 2) / dt
+        let pilotDynamicViscosity = Double(sourceAirDensity)
+            * pilotNuPhysical
+        let maximumSourceCellSize = 3.0 * sourceNu * latticeSpeed
+            / (maximumSpeed * Double(minimumTauPlus - 0.5))
+        let totalSteps = Int(round(
+            target.comparisonLastTimeSeconds / dt
+        ))
+        let preRollSteps = Int(round(
+            target.comparisonFirstTimeSeconds / dt
+        ))
+        guard abs(Double(totalSteps) * dt
+                - target.comparisonLastTimeSeconds) <= 1e-12,
+              abs(Double(preRollSteps) * dt
+                - target.comparisonFirstTimeSeconds) <= 1e-12 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "force timestamps are not integral fluid steps"
+            )
+        }
+        return MetalIndexedBirdSurfacePilotPlan(
+            cellSizeMeters: Double(cellSizeMeters),
+            halfThicknessCells: Double(halfThicknessCells),
+            paddingCells: paddingCells,
+            spongeWidthCells: spongeWidthCells,
+            spongeStrength: Double(spongeStrength),
+            forceSamplesPerSecond: forceRate,
+            fluidStepsPerForceSample: fluidStepsPerForceSample,
+            fluidTimeStepSeconds: dt,
+            totalFluidSteps: totalSteps,
+            preRollFluidSteps: preRollSteps,
+            comparisonForceSamples: target.comparisonSampleCount,
+            maximumSurfaceSpeedMetersPerSecond: maximumSpeed,
+            latticeReferenceSpeed: latticeSpeed,
+            maximumWallMach: maximumMach,
+            pilotTauPlus: Double(pilotTauPlus),
+            pilotReynoldsNumber: pilotReynolds,
+            sourceAirDensityKilogramsPerCubicMeter:
+                Double(sourceAirDensity),
+            sourceDynamicViscosityPascalSeconds:
+                Double(sourceDynamicViscosity),
+            sourceConditionTauPlusAtPilotGrid: sourceTau,
+            minimumAllowedTauPlus: Double(minimumTauPlus),
+            sourceViscosityRepresentableAtPilotGrid:
+                sourceTau >= Double(minimumTauPlus),
+            maximumCellSizeForSourceViscosityMeters:
+                maximumSourceCellSize,
+            pilotDynamicViscosityPascalSeconds:
+                pilotDynamicViscosity,
+            pilotToSourceViscosityRatio:
+                pilotDynamicViscosity
+                    / Double(sourceDynamicViscosity),
+            experimentalAgreementGateApplied: false
+        )
+    }
+
+    public static func audit(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75
+    ) throws -> MetalIndexedBirdSurfacePilotReport {
+        let plan = try plan(
+            surface: surface,
+            target: target,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells
+        )
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        return try replay.runCoarseForcePilot(
+            target: target,
+            plan: plan
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+}
+
 public enum MetalIndexedBirdSurfaceCouplingValidator {
     public static func audit(
         _ dataset: MeasuredBirdSurfaceSequence,
@@ -495,12 +733,24 @@ private final class MetalIndexedBirdSurfaceReplay {
         backend: MetalBackend,
         dataset: MeasuredBirdSurfaceSequence,
         cellSizeMeters: Float,
-        halfThicknessCells: Float
+        halfThicknessCells: Float,
+        paddingCells: Int = 4,
+        physicalAirDensity: Float = 1,
+        targetReynoldsNumber: Float = 1_000,
+        latticeReferenceSpeed: Float = 0.04,
+        spongeWidthCells: Int = 4,
+        spongeStrength: Float = 0
     ) throws {
         self.backend = backend
         self.dataset = dataset
         halfThicknessMeters = halfThicknessCells * cellSizeMeters
-        let paddingCells = 4
+        guard paddingCells >= 4,
+              spongeWidthCells >= 4,
+              paddingCells >= spongeWidthCells else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "indexed surface padding must clear the sponge"
+            )
+        }
         let minimum = dataset.minimumPositionMeters
             - SIMD3<Float>(repeating: Float(paddingCells) * cellSizeMeters)
         let maximum = dataset.maximumPositionMeters
@@ -516,18 +766,18 @@ private final class MetalIndexedBirdSurfaceReplay {
             characteristicLengthMeters: 8 * cellSizeMeters,
             characteristicLengthCells: 8,
             referenceSpeedMetersPerSecond: maximumSpeed,
-            targetReynoldsNumber: 1_000,
-            physicalAirDensity: 1,
-            latticeReferenceSpeed: 0.04
+            targetReynoldsNumber: targetReynoldsNumber,
+            physicalAirDensity: physicalAirDensity,
+            latticeReferenceSpeed: latticeReferenceSpeed
         )
         configuration = try SimulationConfiguration(
             grid: grid,
             domainOriginMeters: minimum,
             scaling: scaling,
-            physicalAirDensity: 1,
+            physicalAirDensity: physicalAirDensity,
             farFieldVelocityMetersPerSecond: .zero,
-            spongeWidthCells: 4,
-            spongeStrength: 0,
+            spongeWidthCells: spongeWidthCells,
+            spongeStrength: spongeStrength,
             freeFlight: false,
             gravityMetersPerSecondSquared: .zero,
             fastMath: false
@@ -825,6 +1075,530 @@ private final class MetalIndexedBirdSurfaceReplay {
         return CPURaster(
             partIdentifiers: mask,
             wallVelocityAndDistance: wall
+        )
+    }
+
+    func runCoarseForcePilot(
+        target: MeasuredBirdForceTarget,
+        plan: MetalIndexedBirdSurfacePilotPlan
+    ) throws -> MetalIndexedBirdSurfacePilotReport {
+        let started = Date()
+        let cellCount = grid.cellCount
+        let populationCount = D3Q19.count * cellCount
+        let populationBytes = populationCount * MemoryLayout<Float>.stride
+        let maskBytes = cellCount * MemoryLayout<UInt8>.stride
+        let densityBytes = cellCount * MemoryLayout<Float>.stride
+        let velocityBytes = cellCount * MemoryLayout<SIMD4<Float>>.stride
+        let partialCount = max(1, (cellCount + 255) / 256)
+        let reductionBytes = partialCount
+            * MemoryLayout<GPUForceTorque>.stride
+        let populationPartialCount = max(1, (populationCount + 255) / 256)
+        let populationMinimumBytes = populationPartialCount
+            * MemoryLayout<GPUIndexedPopulationMinimum>.stride
+        try backend.validateAllocationPlan(bufferLengths: [
+            populationBytes, populationBytes,
+            maskBytes, densityBytes, velocityBytes,
+            reductionBytes, reductionBytes,
+            populationMinimumBytes, maskBytes,
+            MemoryLayout<GPUBirdBodyState>.stride
+        ])
+        let populationsA = try backend.makePrivateBuffer(
+            length: populationBytes
+        )
+        let populationsB = try backend.makePrivateBuffer(
+            length: populationBytes
+        )
+        let solidPrevious = try backend.makePrivateBuffer(length: maskBytes)
+        let densityScratch = try backend.makePrivateBuffer(length: densityBytes)
+        let velocityAndCoveredMomentum = try backend.makePrivateBuffer(
+            length: velocityBytes
+        )
+        let reductionA = try backend.makeSharedBuffer(length: reductionBytes)
+        let reductionB = try backend.makeSharedBuffer(length: reductionBytes)
+        let populationMinimumPartials = try backend.makeSharedBuffer(
+            length: populationMinimumBytes
+        )
+        let currentMaskStaging = try backend.makeSharedBuffer(length: maskBytes)
+        let bodyCenter = 0.5 * (
+            dataset.minimumPositionMeters + dataset.maximumPositionMeters
+        )
+        let bodyState = try backend.makeSharedBuffer(
+            value: GPUBirdBodyState(BirdBodyState(positionMeters: bodyCenter))
+        )
+        let initializePipeline = try backend.pipeline(
+            named: "initializePopulations"
+        )
+        let linkPipeline = try backend.pipeline(
+            named: "buildMeasuredWingSurfaceLinks"
+        )
+        let fluidPipeline = try backend.pipeline(named: "stepFluidTRT")
+        let forceReductionPipeline = try backend.pipeline(
+            named: "reduceForceTorque"
+        )
+        let populationMinimumPipeline = try backend.pipeline(
+            named: "reducePopulationMinimum"
+        )
+
+        let initialTime = dataset.frameTimesSeconds[0]
+        guard abs(initialTime) <= 1e-8,
+              abs(
+                Double(configuration.scaling.timeStepSeconds)
+                    - plan.fluidTimeStepSeconds
+              ) <= 1e-10 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "coarse pilot time scaling does not match the force target"
+            )
+        }
+        updateSurfaceTime(initialTime)
+        var initialUniforms = makePilotUniforms(
+            step: 0,
+            hasPreviousGeometry: false
+        )
+        guard let initialization = backend.queue.makeCommandBuffer() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create coarse-pilot initialization."
+            )
+        }
+        try encodeIndexedPreparation(commandBuffer: initialization)
+        try encodeClear(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        try encodeIndexedRaster(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        try encodeIndexedResolve(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        guard let initialBlit = initialization.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to copy the initial coarse-pilot mask."
+            )
+        }
+        initialBlit.copy(
+            from: partMask,
+            sourceOffset: 0,
+            to: solidPrevious,
+            destinationOffset: 0,
+            size: maskBytes
+        )
+        initialBlit.endEncoding()
+        try encodeCouplingInitialization(
+            commandBuffer: initialization,
+            populations: populationsA,
+            solid: solidPrevious,
+            density: densityScratch,
+            velocity: velocityAndCoveredMomentum,
+            uniforms: &initialUniforms,
+            pipeline: initializePipeline
+        )
+        initialization.commit()
+        initialization.waitUntilCompleted()
+        try check(initialization)
+
+        var populationsIn = populationsA
+        var populationsOut = populationsB
+        var completedSteps = 0
+        var intervalForce = SIMD3<Double>.zero
+        var samples: [MetalIndexedBirdSurfacePilotSample] = []
+        samples.reserveCapacity(plan.comparisonForceSamples)
+        var allComponentsPresent = true
+        var allLoadsFinite = true
+        var allSampledPopulationsFinite = true
+        var populationDiagnosticSamples = 0
+        var minimumSampledPopulation = Double.infinity
+        var firstNonFiniteLoadStep: Int?
+        var firstNonFinitePopulationStep: Int?
+        var firstNegativePopulationStep: Int?
+        var firstNegativePopulationTime: Double?
+        var firstNegativePopulationLinearIndex: Int?
+        var firstNegativePopulationDirection: Int?
+        var firstNegativePopulationCellCoordinate: SIMD3<Int>?
+        var firstNegativePopulationDistance: Double?
+        var firstNegativePopulationPartIdentifier: Int?
+        let dt = configuration.scaling.timeStepSeconds
+
+        for step in 1...plan.totalFluidSteps {
+            let sourceTime = initialTime + Float(step) * dt
+            guard sourceTime <= dataset.frameTimesSeconds.last! + 1e-7 else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "coarse pilot exceeds the nonperiodic surface sequence"
+                )
+            }
+            let forceEndpoint = step % plan.fluidStepsPerForceSample == 0
+            updateSurfaceTime(sourceTime)
+            var uniforms = makePilotUniforms(
+                step: step,
+                hasPreviousGeometry: true
+            )
+            guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to create coarse-pilot fluid step."
+                )
+            }
+            try encodeIndexedPreparation(commandBuffer: commandBuffer)
+            try encodeClear(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms
+            )
+            try encodeIndexedRaster(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms
+            )
+            try encodeFlowResolve(
+                commandBuffer: commandBuffer,
+                solidPrevious: solidPrevious,
+                previousPopulations: populationsIn,
+                coveredFluidMomentum: velocityAndCoveredMomentum,
+                uniforms: &uniforms
+            )
+            try encodeCouplingLinks(
+                commandBuffer: commandBuffer,
+                populations: populationsIn,
+                uniforms: &uniforms,
+                pipeline: linkPipeline
+            )
+            try encodeCouplingFluid(
+                commandBuffer: commandBuffer,
+                populationsIn: populationsIn,
+                populationsOut: populationsOut,
+                solidPrevious: solidPrevious,
+                density: densityScratch,
+                velocity: velocityAndCoveredMomentum,
+                partialLoads: reductionA,
+                bodyState: bodyState,
+                uniforms: &uniforms,
+                pipeline: fluidPipeline
+            )
+            let reducedLoad = try encodeCouplingForceReduction(
+                commandBuffer: commandBuffer,
+                reductionA: reductionA,
+                reductionB: reductionB,
+                partialCount: partialCount,
+                pipeline: forceReductionPipeline
+            )
+            if forceEndpoint {
+                try encodePopulationMinimum(
+                    commandBuffer: commandBuffer,
+                    populations: populationsOut,
+                    partials: populationMinimumPartials,
+                    populationCount: populationCount,
+                    pipeline: populationMinimumPipeline
+                )
+            }
+            guard let stepBlit = commandBuffer.makeBlitCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to advance the coarse-pilot topology."
+                )
+            }
+            if forceEndpoint {
+                stepBlit.copy(
+                    from: partMask,
+                    sourceOffset: 0,
+                    to: currentMaskStaging,
+                    destinationOffset: 0,
+                    size: maskBytes
+                )
+                stepBlit.copy(
+                    from: wallVelocityAndDistance,
+                    sourceOffset: 0,
+                    to: wallStaging,
+                    destinationOffset: 0,
+                    size: wallVelocityAndDistance.length
+                )
+            }
+            stepBlit.copy(
+                from: partMask,
+                sourceOffset: 0,
+                to: solidPrevious,
+                destinationOffset: 0,
+                size: maskBytes
+            )
+            stepBlit.endEncoding()
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+            try check(commandBuffer)
+            completedSteps = step
+
+            let load = reducedLoad.contents()
+                .assumingMemoryBound(to: GPUForceTorque.self)
+                .pointee.coreValue.forceNewtons
+            let endpointForce = SIMD3<Double>(
+                Double(load.x), Double(load.y), Double(load.z)
+            )
+            let loadFinite = endpointForce.x.isFinite
+                && endpointForce.y.isFinite && endpointForce.z.isFinite
+            if !loadFinite {
+                allLoadsFinite = false
+                firstNonFiniteLoadStep = firstNonFiniteLoadStep ?? step
+            } else {
+                intervalForce += endpointForce
+            }
+
+            var populationMinimum: GPUIndexedPopulationMinimum?
+            if forceEndpoint {
+                populationDiagnosticSamples += 1
+                let minimum = readPopulationMinimum(
+                    partials: populationMinimumPartials,
+                    partialCount: populationPartialCount
+                )
+                populationMinimum = minimum
+                if minimum.nonFinite != 0 {
+                    allSampledPopulationsFinite = false
+                    firstNonFinitePopulationStep =
+                        firstNonFinitePopulationStep ?? step
+                } else {
+                    let value = Double(minimum.rawValue)
+                    minimumSampledPopulation = min(
+                        minimumSampledPopulation,
+                        value
+                    )
+                    if value < 0 {
+                        if firstNegativePopulationStep == nil {
+                            let linearIndex = Int(minimum.linearIndex)
+                            let direction = linearIndex / cellCount
+                            let cell = linearIndex % cellCount
+                            let x = cell % grid.x
+                            let yz = cell / grid.x
+                            let y = yz % grid.y
+                            let z = yz / grid.y
+                            let distance = wallStaging.contents()
+                                .assumingMemoryBound(to: SIMD4<Float>.self)[cell]
+                                .w
+                            let partIdentifier = currentMaskStaging.contents()
+                                .assumingMemoryBound(to: UInt8.self)[cell]
+                            firstNegativePopulationStep = step
+                            firstNegativePopulationTime = Double(sourceTime)
+                            firstNegativePopulationLinearIndex = linearIndex
+                            firstNegativePopulationDirection = direction
+                            firstNegativePopulationCellCoordinate = SIMD3(
+                                x, y, z
+                            )
+                            firstNegativePopulationDistance = Double(distance)
+                            firstNegativePopulationPartIdentifier =
+                                Int(partIdentifier)
+                        }
+                    }
+                }
+            }
+
+            if forceEndpoint {
+                let targetIndex = step / plan.fluidStepsPerForceSample
+                let intervalMean = intervalForce
+                    / Double(plan.fluidStepsPerForceSample)
+                intervalForce = .zero
+                if targetIndex >= target.comparisonFirstSampleIndex,
+                   targetIndex <= target.comparisonLastSampleIndex,
+                   loadFinite,
+                   let populationMinimum,
+                   populationMinimum.nonFinite == 0 {
+                    var componentCounts = [Int](
+                        repeating: 0,
+                        count: dataset.components.count
+                    )
+                    let mask = currentMaskStaging.contents()
+                        .assumingMemoryBound(to: UInt8.self)
+                    for cell in 0..<cellCount where mask[cell] != 0 {
+                        let component = Int(mask[cell]) - 1
+                        if componentCounts.indices.contains(component) {
+                            componentCounts[component] += 1
+                        }
+                    }
+                    let componentsPresent = componentCounts.allSatisfy { $0 > 0 }
+                    allComponentsPresent = allComponentsPresent
+                        && componentsPresent
+                    let measuredX = target.forceXNewtons[targetIndex]
+                    let measuredZ = target.forceZNewtons[targetIndex]
+                    samples.append(MetalIndexedBirdSurfacePilotSample(
+                        targetSampleIndex: targetIndex,
+                        sourceTimeSeconds: target.timesSeconds[targetIndex],
+                        sourceFrameCoordinate:
+                            target.surfaceFrameCoordinates[targetIndex],
+                        measuredForceXNewtons: measuredX,
+                        measuredForceZNewtons: measuredZ,
+                        endpointComputedForceNewtons: endpointForce,
+                        intervalMeanComputedForceNewtons: intervalMean,
+                        endpointResidualXNewtons: endpointForce.x - measuredX,
+                        endpointResidualZNewtons: endpointForce.z - measuredZ,
+                        intervalMeanResidualXNewtons: intervalMean.x - measuredX,
+                        intervalMeanResidualZNewtons: intervalMean.z - measuredZ,
+                        minimumPopulation: Double(populationMinimum.rawValue),
+                        componentSolidCellCounts: componentCounts
+                    ))
+                }
+            }
+            swap(&populationsIn, &populationsOut)
+            if !loadFinite || (populationMinimum?.nonFinite ?? 0) != 0 {
+                break
+            }
+        }
+
+        let minimumPopulation = minimumSampledPopulation.isFinite
+            ? minimumSampledPopulation : 0
+        let positivityPassed = allSampledPopulationsFinite
+            && minimumPopulation > 0
+        let comparisonMetricsAvailable = !samples.isEmpty
+        let measuredMeanX = comparisonMetricsAvailable
+            ? pilotMean(samples.map(\.measuredForceXNewtons)) : nil
+        let measuredMeanZ = comparisonMetricsAvailable
+            ? pilotMean(samples.map(\.measuredForceZNewtons)) : nil
+        let endpointMeanX = comparisonMetricsAvailable
+            ? pilotMean(samples.map { $0.endpointComputedForceNewtons.x }) : nil
+        let endpointMeanZ = comparisonMetricsAvailable
+            ? pilotMean(samples.map { $0.endpointComputedForceNewtons.z }) : nil
+        let intervalMeanX = comparisonMetricsAvailable
+            ? pilotMean(samples.map { $0.intervalMeanComputedForceNewtons.x })
+            : nil
+        let intervalMeanZ = comparisonMetricsAvailable
+            ? pilotMean(samples.map { $0.intervalMeanComputedForceNewtons.z })
+            : nil
+        let measuredPairs = samples.map {
+            SIMD2<Double>($0.measuredForceXNewtons, $0.measuredForceZNewtons)
+        }
+        let endpointPairs = samples.map {
+            SIMD2<Double>(
+                $0.endpointComputedForceNewtons.x,
+                $0.endpointComputedForceNewtons.z
+            )
+        }
+        let intervalPairs = samples.map {
+            SIMD2<Double>(
+                $0.intervalMeanComputedForceNewtons.x,
+                $0.intervalMeanComputedForceNewtons.z
+            )
+        }
+        let measuredImpulse = pilotTrapezoidalImpulse(
+            measuredPairs,
+            sampleRateHertz: target.forceSampleRateHertz
+        )
+        let endpointImpulse = pilotTrapezoidalImpulse(
+            endpointPairs,
+            sampleRateHertz: target.forceSampleRateHertz
+        )
+        let intervalImpulse = pilotTrapezoidalImpulse(
+            intervalPairs,
+            sampleRateHertz: target.forceSampleRateHertz
+        )
+        let integrationPassed = completedSteps == plan.totalFluidSteps
+            && samples.count == plan.comparisonForceSamples
+            && allComponentsPresent && comparisonMetricsAvailable
+            && allLoadsFinite
+            && positivityPassed
+            && plan.maximumWallMach <= 0.15
+            && configuration.scaling.tauPlus
+                >= MetalIndexedBirdSurfacePilotValidator.minimumTauPlus
+            && !plan.sourceViscosityRepresentableAtPilotGrid
+            && !plan.experimentalAgreementGateApplied
+        let verdict = integrationPassed
+            ? (
+                "The viscosity-floor coarse pilot completed the phase-locked "
+                    + "measured-motion Metal path with finite positive sampled "
+                    + "populations and all four surface components present."
+            )
+            : (
+                "The viscosity-floor coarse pilot exposed an integration or "
+                    + "population-stability failure before any experimental-"
+                    + "agreement claim."
+            )
+        return MetalIndexedBirdSurfacePilotReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: dataset.datasetIdentifier,
+            manifestSHA256: dataset.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            gridX: grid.x,
+            gridY: grid.y,
+            gridZ: grid.z,
+            plan: plan,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            completedFluidSteps: completedSteps,
+            recordedComparisonSamples: samples.count,
+            recordedPopulationDiagnosticSamples: populationDiagnosticSamples,
+            collisionOperator: "limited-TRT",
+            forceEstimator: "conservative-moving-domain-mode-6",
+            periodicBoundaries: false,
+            allComponentsPresentAtComparisonSamples:
+                allComponentsPresent && comparisonMetricsAvailable,
+            allLoadsFinite: allLoadsFinite,
+            allSampledPopulationsFinite: allSampledPopulationsFinite,
+            sampledPopulationPositivityPassed: positivityPassed,
+            minimumSampledPopulation: minimumPopulation,
+            firstNonFiniteLoadStep: firstNonFiniteLoadStep,
+            firstNonFinitePopulationStep: firstNonFinitePopulationStep,
+            firstNegativePopulationStep: firstNegativePopulationStep,
+            firstNegativePopulationTimeSeconds: firstNegativePopulationTime,
+            firstNegativePopulationLinearIndex:
+                firstNegativePopulationLinearIndex,
+            firstNegativePopulationDirection:
+                firstNegativePopulationDirection,
+            firstNegativePopulationCellCoordinate:
+                firstNegativePopulationCellCoordinate,
+            firstNegativePopulationDistanceFromSurfaceCells:
+                firstNegativePopulationDistance,
+            firstNegativePopulationPartIdentifier:
+                firstNegativePopulationPartIdentifier,
+            measuredMeanForceXNewtons: measuredMeanX,
+            measuredMeanForceZNewtons: measuredMeanZ,
+            endpointMeanForceXNewtons: endpointMeanX,
+            endpointMeanForceZNewtons: endpointMeanZ,
+            intervalMeanForceXNewtons: intervalMeanX,
+            intervalMeanForceZNewtons: intervalMeanZ,
+            endpointNormalizedRMSError: comparisonMetricsAvailable
+                ? pilotNormalizedRMSError(
+                    measured: measuredPairs,
+                    computed: endpointPairs
+                ) : nil,
+            intervalMeanNormalizedRMSError: comparisonMetricsAvailable
+                ? pilotNormalizedRMSError(
+                    measured: measuredPairs,
+                    computed: intervalPairs
+                ) : nil,
+            measuredImpulseXNewtonSeconds:
+                comparisonMetricsAvailable ? measuredImpulse.x : nil,
+            measuredImpulseZNewtonSeconds:
+                comparisonMetricsAvailable ? measuredImpulse.y : nil,
+            endpointImpulseXNewtonSeconds:
+                comparisonMetricsAvailable ? endpointImpulse.x : nil,
+            endpointImpulseZNewtonSeconds:
+                comparisonMetricsAvailable ? endpointImpulse.y : nil,
+            intervalMeanImpulseXNewtonSeconds:
+                comparisonMetricsAvailable ? intervalImpulse.x : nil,
+            intervalMeanImpulseZNewtonSeconds:
+                comparisonMetricsAvailable ? intervalImpulse.y : nil,
+            measuredPeakTimeSeconds: comparisonMetricsAvailable
+                ? pilotPeakTime(samples: samples) {
+                    SIMD2($0.measuredForceXNewtons, $0.measuredForceZNewtons)
+                } : nil,
+            endpointPeakTimeSeconds: comparisonMetricsAvailable
+                ? pilotPeakTime(samples: samples) {
+                    SIMD2(
+                        $0.endpointComputedForceNewtons.x,
+                        $0.endpointComputedForceNewtons.z
+                    )
+                } : nil,
+            intervalMeanPeakTimeSeconds: comparisonMetricsAvailable
+                ? pilotPeakTime(samples: samples) {
+                    SIMD2(
+                        $0.intervalMeanComputedForceNewtons.x,
+                        $0.intervalMeanComputedForceNewtons.z
+                    )
+                } : nil,
+            experimentalAgreementGateApplied: false,
+            integrationGatePassed: integrationPassed,
+            samples: samples,
+            scientificVerdict: verdict,
+            claimBoundary: (
+                "This is a bounded engineering pilot for startup, sign, "
+                    + "phase, moving-boundary force accounting, and sampled "
+                    + "population positivity. Its viscosity is "
+                    + String(format: "%.3g", plan.pilotToSourceViscosityRatio)
+                    + " times the measured source condition, so its force "
+                    + "errors are descriptive only and cannot establish "
+                    + "experimental agreement or quantitative bird flight."
+            )
         )
     }
 
@@ -1385,6 +2159,21 @@ private final class MetalIndexedBirdSurfaceReplay {
         )
     }
 
+    private func makePilotUniforms(
+        step: Int,
+        hasPreviousGeometry: Bool
+    ) -> GPUUniforms {
+        GPUUniforms(
+            configuration: configuration,
+            time: Float(step),
+            captureMacroscopicFields: false,
+            accumulateLoads: true,
+            hasPreviousGeometry: hasPreviousGeometry,
+            periodicBoundaries: false,
+            caseParameters: SIMD4<Float>(0, 6, 0, -1)
+        )
+    }
+
     private func encodeCouplingInitialization(
         commandBuffer: MTLCommandBuffer,
         populations: MTLBuffer,
@@ -1559,6 +2348,57 @@ private final class MetalIndexedBirdSurfaceReplay {
         return input
     }
 
+    private func encodePopulationMinimum(
+        commandBuffer: MTLCommandBuffer,
+        populations: MTLBuffer,
+        partials: MTLBuffer,
+        populationCount: Int,
+        pipeline: MTLComputePipelineState
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode coarse-pilot population minimum."
+            )
+        }
+        var count = UInt32(populationCount)
+        encoder.setBuffer(populations, offset: 0, index: 0)
+        encoder.setBuffer(partials, offset: 0, index: 1)
+        encoder.setBytes(
+            &count,
+            length: MemoryLayout<UInt32>.stride,
+            index: 2
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: pipeline,
+            count: populationCount,
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+    }
+
+    private func readPopulationMinimum(
+        partials: MTLBuffer,
+        partialCount: Int
+    ) -> GPUIndexedPopulationMinimum {
+        let pointer = partials.contents().assumingMemoryBound(
+            to: GPUIndexedPopulationMinimum.self
+        )
+        var selected = pointer[0]
+        if partialCount > 1 {
+            for index in 1..<partialCount {
+                let candidate = pointer[index]
+                if candidate.comparisonValue < selected.comparisonValue
+                    || (candidate.comparisonValue
+                            == selected.comparisonValue
+                        && candidate.linearIndex < selected.linearIndex) {
+                    selected = candidate
+                }
+            }
+        }
+        return selected
+    }
+
     private func copyCouplingMask(
         from source: MTLBuffer,
         to destination: MTLBuffer,
@@ -1593,6 +2433,13 @@ private final class MetalIndexedBirdSurfaceReplay {
     }
 }
 
+private struct GPUIndexedPopulationMinimum {
+    var comparisonValue: Float
+    var rawValue: Float
+    var linearIndex: UInt32
+    var nonFinite: UInt32
+}
+
 private func physicalMomentum(
     _ raw: SIMD4<Float>,
     scale: Double
@@ -1602,6 +2449,53 @@ private func physicalMomentum(
         Double(raw.z) * scale,
         Double(raw.w) * scale
     )
+}
+
+private func pilotMean(_ values: [Double]) -> Double {
+    guard !values.isEmpty else { return 0 }
+    return values.reduce(0, +) / Double(values.count)
+}
+
+private func pilotNormalizedRMSError(
+    measured: [SIMD2<Double>],
+    computed: [SIMD2<Double>]
+) -> Double {
+    guard measured.count == computed.count, !measured.isEmpty else { return 0 }
+    var numerator = 0.0
+    var denominator = 0.0
+    for index in measured.indices {
+        let residual = computed[index] - measured[index]
+        numerator += residual.x * residual.x + residual.y * residual.y
+        denominator += measured[index].x * measured[index].x
+            + measured[index].y * measured[index].y
+    }
+    return sqrt(numerator / max(denominator, 1e-30))
+}
+
+private func pilotTrapezoidalImpulse(
+    _ values: [SIMD2<Double>],
+    sampleRateHertz: Double
+) -> SIMD2<Double> {
+    guard values.count >= 2 else { return .zero }
+    var result = SIMD2<Double>.zero
+    for index in 1..<values.count {
+        result += 0.5 * (values[index - 1] + values[index])
+            / sampleRateHertz
+    }
+    return result
+}
+
+private func pilotPeakTime(
+    samples: [MetalIndexedBirdSurfacePilotSample],
+    value: (MetalIndexedBirdSurfacePilotSample) -> SIMD2<Double>
+) -> Double {
+    guard let peak = samples.max(by: {
+        let lhs = value($0)
+        let rhs = value($1)
+        return lhs.x * lhs.x + lhs.y * lhs.y
+            < rhs.x * rhs.x + rhs.y * rhs.y
+    }) else { return 0 }
+    return peak.sourceTimeSeconds
 }
 
 private func couplingSampleIsFinite(

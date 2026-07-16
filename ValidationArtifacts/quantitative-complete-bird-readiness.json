@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 10,
+  "schemaVersion": 11,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
-  "scientificStatus": "solver contract implemented; indexed experimental geometry, production impulse coupling, and measured force registration accepted; same-specimen biological free-flight input absent",
+  "scientificStatus": "solver contract implemented; indexed experimental geometry, production impulse coupling, and measured force registration accepted; coarse dove pilot localizes a pre-roll population-stability failure; same-specimen biological free-flight input absent",
   "solverCapabilities": {
     "measuredCompleteBirdSchema": "measured-bird-v2",
     "prescribedBilateralKinematics": true,
@@ -151,6 +151,8 @@
     "forceRegistration": "ValidationArtifacts/deetjen-dove-force-registration.json",
     "forceTargetCPUParity": "ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json",
     "forceInputTarget": "ValidationInputs/deetjen-ob-f03-force-v1.json",
+    "coarseFluidPilot": "ValidationArtifacts/deetjen-dove-coarse-force-pilot.json",
+    "coarseFluidPilotAudit": "ValidationArtifacts/deetjen-dove-coarse-force-pilot-audit.json",
     "selectedBird": "OB",
     "selectedFlight": "2018_12_11_OB_F03",
     "measuredTargets": [
@@ -208,7 +210,7 @@
     },
     "forceRegistrationPassed": true,
     "forceRegistrationDetails": {
-      "targetSHA256": "2f222c1029849ec602bd7474671b4295d1cb97cec8bad74f4ce9e4bf0cd14591",
+      "targetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
       "measuredBirdFlowVector": "[-FxWings,unavailable,-FzWings]",
       "lateralComponentZeroFilled": false,
       "sampleCount": 287,
@@ -222,26 +224,62 @@
       "maximumDerivedPerWingVerticalResidualNewtons": 0.0,
       "forceXImpulseNewtonSeconds": 0.02071129195749776,
       "forceZImpulseNewtonSeconds": 0.1627738657110263,
-      "coarsePrescribedMotionPilotReady": true,
+      "comparisonFirstTimeSeconds": 0.025,
+      "comparisonLastTimeSeconds": 0.118,
+      "comparisonSamples": 187,
+      "preRollSeconds": 0.025,
+      "postRollSeconds": 0.025,
+      "coarsePrescribedMotionPilotInputReady": true,
       "experimentalForceCompared": false
+    },
+    "coarseFluidPilotResult": {
+      "device": "Apple M4",
+      "grid": [
+        75,
+        69,
+        66
+      ],
+      "fluidStepsPerForceSample": 16,
+      "preRollFluidSteps": 800,
+      "plannedFluidStepsThroughComparison": 3776,
+      "completedFluidSteps": 331,
+      "recordedPopulationDiagnosticSamples": 20,
+      "recordedComparisonSamples": 0,
+      "sourceViscosityRepresentableAtPilotGrid": false,
+      "pilotToSourceViscosityRatio": 68.07194967379765,
+      "experimentalAgreementGateApplied": false,
+      "firstSampledNegativePopulationStep": 176,
+      "firstSampledNegativePopulationTimeSeconds": 0.005500000435858965,
+      "firstSampledNegativePopulationDirection": 7,
+      "firstSampledNegativePopulationCell": [
+        31,
+        35,
+        29
+      ],
+      "firstSampledNegativePopulationDistanceFromSurfaceCells": 0.07640733569860458,
+      "firstNonFiniteLoadStep": 331,
+      "integrationGatePassed": false,
+      "artifactAuditPassed": true,
+      "pilotSHA256": "3a7bc3bba79a62c605dba748ff73ca68fc383f4528794755749e3c3e01e14241",
+      "auditSHA256": "515958bb818cb2c4c3c2cc224c0e77212077d7fa6915108729e77c17cd21558a"
     },
     "quantitativeFreeFlightSchema2Ready": false,
     "reasonFreeFlightRemainsBlocked": "the source assumes bilateral surface symmetry and models the distributed wing mass; same-specimen bilateral wing and registered whole-bird inertia are not measured",
     "antiFabricationRule": "derived lateral force, per-wing loads, or modeled inertia must not be relabeled as experimental measurements",
-    "nextAction": "run one coarse prescribed-motion pilot against the registered 287-sample force target before any five-flight uncertainty or 8/12/16 measured-force ladder"
+    "nextAction": "run a fixed-input near-wall collision-operator A/B and require positive populations plus finite loads through the 800-step pre-roll before any five-flight uncertainty or measured-force refinement ladder"
   },
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
-    "nextAction": "continue the Maeda availability request for strict schema 2 while running one coarse Deetjen prescribed-motion force pilot with the registered target",
+    "nextAction": "continue the Maeda availability request for strict schema 2 while resolving the localized Deetjen near-wall population instability with a fixed-input collision-operator A/B",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {
     "date": "2026-07-16",
     "device": "Apple M4",
-    "swiftTestsPassed": 88,
-    "swiftTestRuntimeSeconds": 805.564,
-    "swiftTestCommandWallSeconds": 806.24,
+    "swiftTestsPassed": 94,
+    "swiftTestRuntimeSeconds": 404.11,
+    "swiftTestCommandWallSeconds": 404.3,
     "focusedCoupledMomentumReleaseTestsPassed": 1,
     "focusedCoupledMomentumReleaseRuntimeSeconds": 0.062,
     "focusedSchema2PartLoadArchiveTestsPassed": 1,
@@ -264,6 +302,12 @@
     "deetjenDoveForceRegistrationPassed": true,
     "deetjenDoveForceTargetIndependentAuditPassed": true,
     "deetjenDoveForceTargetSamples": 287,
-    "deetjenDoveForceTargetSHA256": "2f222c1029849ec602bd7474671b4295d1cb97cec8bad74f4ce9e4bf0cd14591"
+    "deetjenDoveForceTargetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+    "deetjenDoveCoarseFluidPilotExecuted": true,
+    "deetjenDoveCoarseFluidPilotIntegrationPassed": false,
+    "deetjenDoveCoarseFluidPilotArtifactAuditPassed": true,
+    "deetjenDoveCoarseFluidPilotCompletedSteps": 331,
+    "deetjenDoveCoarseFluidPilotFirstSampledNegativeStep": 176,
+    "deetjenDoveCoarseFluidPilotFirstNonFiniteLoadStep": 331
   }
 }

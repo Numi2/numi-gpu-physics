@@ -261,6 +261,14 @@ def main() -> None:
     surface_coordinates = np.arange(len(high_rate_indices), dtype=np.float64) / samples_per_frame
     target_fx = -fx_stored[high_rate_indices]
     target_fz = -fz_stored[high_rate_indices]
+    analysis_frame_start = int(selected["analysisFrameStart"])
+    analysis_frame_end = int(selected["analysisFrameEnd"])
+    comparison_first = (
+        analysis_frame_start - int(frame_numbers[0])
+    ) * samples_per_frame
+    comparison_last = (
+        analysis_frame_end - int(frame_numbers[0])
+    ) * samples_per_frame
 
     source_world_to_birdflow = np.asarray(
         [[0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
@@ -295,6 +303,11 @@ def main() -> None:
         "firstForceIndex": high_rate_start == 191878,
         "lastForceIndex": high_rate_end == 192164,
         "forceSampleCount": len(high_rate_indices) == 287,
+        "comparisonWindowInsideTarget": (
+            0 < comparison_first < comparison_last < len(high_rate_indices) - 1
+            and comparison_first == 50
+            and comparison_last == 236
+        ),
         "nearestTimingResidual": float(np.max(np.abs(nearest_residual))) <= 1.0e-12,
         "sourceTimeNormalization": float(
             np.max(np.abs(normalized_source_times - target_times))
@@ -366,6 +379,22 @@ def main() -> None:
                 "use the manifest's piecewise-linear interpolation at alpha=0.5"
             ),
         },
+        "comparisonWindow": {
+            "sourceDefinition": "selected flight analysisFrameStart...analysisFrameEnd",
+            "firstSourceFrame": analysis_frame_start,
+            "lastSourceFrame": analysis_frame_end,
+            "firstTargetSampleIndex": int(comparison_first),
+            "lastTargetSampleIndex": int(comparison_last),
+            "sampleCount": int(comparison_last - comparison_first + 1),
+            "firstTimeSeconds": float(target_times[comparison_first]),
+            "lastTimeSeconds": float(target_times[comparison_last]),
+            "preRollSeconds": float(target_times[comparison_first]),
+            "postRollSeconds": float(target_times[-1] - target_times[comparison_last]),
+            "comparisonRule": (
+                "advance through pre-roll before scoring; compare only this inclusive "
+                "window; retain post-roll for nonperiodic endpoint kinematics"
+            ),
+        },
         "samples": {
             "timesSeconds": target_times.tolist(),
             "surfaceFrameCoordinates": surface_coordinates.tolist(),
@@ -413,6 +442,9 @@ def main() -> None:
             "firstIndexZeroBased": high_rate_start,
             "lastIndexZeroBased": high_rate_end,
             "sampleCount": int(len(high_rate_indices)),
+            "comparisonFirstTargetSampleIndex": int(comparison_first),
+            "comparisonLastTargetSampleIndex": int(comparison_last),
+            "comparisonSampleCount": int(comparison_last - comparison_first + 1),
             "maximumNearestSampleResidualSeconds": float(
                 np.max(np.abs(nearest_residual))
             ),

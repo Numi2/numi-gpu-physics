@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **Input and force registration accepted; coarse CFD pilot next** | 287 measured samples are locked to BirdFlow axes/time; production moving-boundary impulse closes at `1.79e-5` relative RMS |
+| Measured dove external-force benchmark | **Input accepted; coarse CFD pilot exposes stability blocker** | target axes/time and production impulse close; first sampled negative population is localized at `5.5 ms`, before the scored window |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -106,6 +106,28 @@ and
 [`deetjen-dove-force-target-cpu-parity.json`](ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json).
 This clears a coarse prescribed-motion pilot, not experimental agreement or
 the refinement ladder.
+
+That pilot is now executed and archived rather than silently tuned. It advances
+the measured motion through nonperiodic far-field TRT at 16 fluid steps per
+2 kHz force sample. The authors' analysis window is scored only from `0.025` to
+`0.118 s` (187 samples), after a locked 800-step pre-roll. At the deliberately
+coarse `0.01 m` grid, the source viscosity would require `tau+=0.50001469`,
+below the single-precision guard, so the run uses a declared `tau+=0.501`
+viscosity floor—`68.07x` the source viscosity—and applies no experimental-
+agreement gate.
+
+The Apple M4 pilot stops before comparison: the first sampled negative D3Q19
+population occurs at step 176 (`5.5 ms`), direction 7, fluid cell
+`[31,35,29]`, only `0.0764` cells from the surface; the load becomes nonfinite
+at step 331. The independent artifact audit passes while the integration gate
+fails. This is a useful negative result: force normalization, target sign, and
+the scored window are not the immediate blocker. Evidence is
+[`deetjen-dove-coarse-force-pilot.json`](ValidationArtifacts/deetjen-dove-coarse-force-pilot.json)
+and
+[`deetjen-dove-coarse-force-pilot-audit.json`](ValidationArtifacts/deetjen-dove-coarse-force-pilot-audit.json).
+The next controlled experiment is a fixed-geometry/resolution near-wall
+collision-operator A/B; no measured-force ladder should run until one candidate
+survives the 800-step pre-roll with positive populations and finite loads.
 
 ## Latest high-Re result
 
@@ -492,7 +514,9 @@ CRC/SHA-verifies the selectively acquired nine-member flight, reconstructs the
 1000/2000 Hz synchronization, and inventories the real body/wing/tail surfaces.
 The follow-up force-registration artifact locks the two deposited processing
 scripts, the exact 287-sample BirdFlow force target, and the explicit
-unavailable lateral component; experimental CFD agreement remains open.
+unavailable lateral component. The coarse pilot then localizes a near-wall
+population-stability failure before the comparison window; experimental CFD
+agreement remains open.
 
 ## Reproducibility and citation
 

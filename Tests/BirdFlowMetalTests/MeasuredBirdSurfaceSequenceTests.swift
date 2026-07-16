@@ -12,6 +12,16 @@ private var measuredBirdSurfaceManifestURL: URL {
         )
 }
 
+private var measuredBirdForceTargetURL: URL {
+    URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .appendingPathComponent(
+            "ValidationInputs/deetjen-ob-f03-force-v1.json"
+        )
+}
+
 @Test
 func measuredBirdSurfaceLoaderLocksIndexedNonperiodicContract() throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -85,6 +95,56 @@ func measuredBirdSurfaceLoaderRejectsBinaryDrift() throws {
             )
         )
     }
+}
+
+@Test
+func measuredBirdForceTargetLocksAxesTimingAndCoreWindow() throws {
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    #expect(target.sampleCount == 287)
+    #expect(target.comparisonSampleCount == 187)
+    #expect(target.comparisonFirstSourceFrame == -1_918)
+    #expect(target.comparisonLastSourceFrame == -1_825)
+    #expect(target.comparisonFirstSampleIndex == 50)
+    #expect(target.comparisonLastSampleIndex == 236)
+    #expect(abs(target.comparisonFirstTimeSeconds - 0.025) <= 1e-12)
+    #expect(abs(target.comparisonLastTimeSeconds - 0.118) <= 1e-12)
+    #expect(target.forceXNewtons.count == target.sampleCount)
+    #expect(target.forceZNewtons.count == target.sampleCount)
+    #expect(
+        target.targetSHA256
+            == "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c"
+    )
+}
+
+@Test
+func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let plan = try MetalIndexedBirdSurfacePilotValidator.plan(
+        surface: surface,
+        target: target
+    )
+    #expect(plan.fluidStepsPerForceSample == 16)
+    #expect(abs(plan.fluidTimeStepSeconds - 0.000_031_25) <= 1e-12)
+    #expect(plan.preRollFluidSteps == 800)
+    #expect(plan.totalFluidSteps == 3_776)
+    #expect(plan.comparisonForceSamples == 187)
+    #expect(plan.maximumWallMach <= 0.15)
+    #expect(!plan.sourceViscosityRepresentableAtPilotGrid)
+    #expect(plan.sourceConditionTauPlusAtPilotGrid < plan.minimumAllowedTauPlus)
+    #expect(plan.pilotToSourceViscosityRatio > 1)
+    #expect(!plan.experimentalAgreementGateApplied)
 }
 
 #if canImport(Metal)
