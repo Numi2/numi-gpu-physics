@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 8,
+  "schemaVersion": 9,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
-  "scientificStatus": "solver contract implemented; indexed experimental geometry replay accepted; same-specimen biological free-flight input absent",
+  "scientificStatus": "solver contract implemented; indexed experimental geometry and production impulse coupling accepted; same-specimen biological free-flight input absent",
   "solverCapabilities": {
     "measuredCompleteBirdSchema": "measured-bird-v2",
     "prescribedBilateralKinematics": true,
@@ -146,6 +146,7 @@
     "surfaceConversion": "ValidationArtifacts/deetjen-dove-surface-conversion.json",
     "surfaceCPUParity": "ValidationArtifacts/deetjen-dove-surface-cpu-parity.json",
     "surfaceMetalGeometryParity": "ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json",
+    "surfaceProductionCoupling": "ValidationArtifacts/deetjen-dove-indexed-production-coupling.json",
     "surfaceInputManifest": "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json",
     "selectedBird": "OB",
     "selectedFlight": "2018_12_11_OB_F03",
@@ -181,15 +182,36 @@
       "fluidCollisionExecuted": false,
       "forceAccumulationExecuted": false
     },
+    "metalIndexedProductionCouplingPassed": true,
+    "metalIndexedProductionCoupling": {
+      "device": "Apple M4",
+      "steps": 8,
+      "runtimeSeconds": 0.241460919380188,
+      "periodicBoundaries": true,
+      "spongeStrength": 0,
+      "maximumWallMach": 0.06928203199767094,
+      "newlyCoveredCellEvents": 39,
+      "newlyUncoveredCellEvents": 53,
+      "persistentBoundaryLinkEvents": 101262,
+      "maximumTopologyCounterMismatchCells": 0,
+      "relativeRMSBoundaryClosureResidual": 1.7888113361091607e-05,
+      "maximumRelativeBoundaryClosureResidual": 3.540182784905217e-05,
+      "maximumAllowedRelativeRMSBoundaryClosureResidual": 0.005,
+      "maximumBoundaryClosureResidualKilogramMetersPerSecond": 3.884584583066332e-08,
+      "allComponentsPresent": true,
+      "allValuesFinite": true,
+      "developedFlowExecuted": false,
+      "experimentalForceCompared": false
+    },
     "quantitativeFreeFlightSchema2Ready": false,
     "reasonFreeFlightRemainsBlocked": "the source assumes bilateral surface symmetry and models the distributed wing mass; same-specimen bilateral wing and registered whole-bird inertia are not measured",
     "antiFabricationRule": "derived lateral force, per-wing loads, or modeled inertia must not be relabeled as experimental measurements",
-    "nextAction": "promote the CPU/Metal-cleared indexed topology into the production moving-boundary link path, then close one short force-free or impulse-level integration gate before spending on a full measured-force run"
+    "nextAction": "independently lock the deposited force-axis/sign transform and measurement-window registration, then run one coarse prescribed-motion pilot before any 8/12/16 measured-force ladder"
   },
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
-    "nextAction": "continue the Maeda availability request for strict schema 2 while advancing the CPU/Metal geometry-cleared Deetjen OB F03 surface through a short production moving-boundary integration gate",
+    "nextAction": "continue the Maeda availability request for strict schema 2 while independently closing Deetjen force-axis/sign registration before a coarse prescribed-motion force pilot",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {
@@ -213,6 +235,9 @@
     "deetjenDoveSurfaceCPUParityPassed": true,
     "deetjenDoveIndexedMetalGeometryPassed": true,
     "deetjenDoveIndexedMetalGeometryFrames": 144,
-    "deetjenDoveIndexedMetalGeometryRuntimeSeconds": 7.018607974052429
+    "deetjenDoveIndexedMetalGeometryRuntimeSeconds": 7.018607974052429,
+    "deetjenDoveIndexedProductionCouplingPassed": true,
+    "deetjenDoveIndexedProductionCouplingRuntimeSeconds": 0.241460919380188,
+    "deetjenDoveIndexedProductionCouplingRelativeRMSResidual": 1.7888113361091607e-05
   }
 }

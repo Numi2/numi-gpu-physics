@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **CPU + Metal geometry accepted; fluid/force open** | all 144 indexed frames preserve four components with exact CPU/GPU occupancy; position error including fractional-time probes is `1.67e-8 m` |
+| Measured dove external-force benchmark | **Geometry + production impulse coupling accepted; experimental force open** | 8-step indexed-surface production gate crosses 92 topology cells and closes direct fluid momentum at `1.79e-5` relative RMS |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -77,6 +77,18 @@ exercise interpolation between stored frames. The archived 7.02-second result is
 [`deetjen-dove-indexed-metal-geometry.json`](ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json).
 It deliberately executes no collision or force kernel, so aerodynamic agreement
 remains open.
+
+The following production integration gate is deliberately short and isolated:
+periodic boundaries and zero sponge leave the moving surface as the only fluid-
+momentum source. In `0.24 s`, eight steps exercise 39 newly covered cells, 53
+newly uncovered cells, and 101,262 persistent boundary links through the
+production interpolated-link, conservative moving-domain force, and TRT fluid
+kernels. Direct before/after fluid momentum closes against the recorded load at
+`1.789e-5` relative RMS, with `3.8846e-8 kg m/s` maximum absolute residual.
+Evidence is
+[`deetjen-dove-indexed-production-coupling.json`](ValidationArtifacts/deetjen-dove-indexed-production-coupling.json).
+This accepts coupling and impulse accounting, not developed flow or agreement
+with the measured force platform.
 
 ## Latest high-Re result
 

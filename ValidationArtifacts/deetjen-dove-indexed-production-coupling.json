@@ -1,0 +1,470 @@
+{
+  "acceptanceDefinition" : "production aerodynamic impulse + independently reduced before\/after fluid momentum change; the diagnostic persistent-link split is reported but is not used for acceptance",
+  "allValuesFinite" : true,
+  "cellSizeMeters" : 0.009999999776482582,
+  "claimBoundary" : "This short periodic, zero-sponge gate closes the accepted indexed surface against the production interpolated link, conservative topology-force, and TRT fluid path. It is an integration\/impulse test, not a developed-flow or experimental-force comparison.",
+  "componentSolidCellCounts" : [
+    467,
+    381,
+    372,
+    589
+  ],
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "deviceName" : "Apple M4",
+  "fluidKernel" : "stepFluidTRT",
+  "forceEstimator" : "conservative-moving-domain-mode-6",
+  "geometryKernels" : [
+    "prepareIndexedBirdSurface",
+    "clearMeasuredWingSurface",
+    "rasterizeIndexedBirdSurface",
+    "resolveIndexedBirdSurfaceForFlow"
+  ],
+  "gridX" : 59,
+  "gridY" : 53,
+  "gridZ" : 50,
+  "linkKernel" : "buildMeasuredWingSurfaceLinks",
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedRelativeRMSBoundaryClosureResidual" : 0.005,
+  "maximumBoundaryClosureResidualKilogramMetersPerSecond" : 3.884584583066332e-08,
+  "maximumRelativeBoundaryClosureResidual" : 3.540182784905217e-05,
+  "maximumTopologyCounterMismatchCells" : 0,
+  "maximumWallMach" : 0.06928203199767094,
+  "maximumWallSpeedLattice" : 0.03999999910593033,
+  "newlyCoveredCellEvents" : 39,
+  "newlyUncoveredCellEvents" : 53,
+  "passed" : true,
+  "periodicBoundaries" : true,
+  "persistentBoundaryLinkEvents" : 101262,
+  "relativeRMSBoundaryClosureResidual" : 1.7888113361091607e-05,
+  "runtimeSeconds" : 0.241460919380188,
+  "samples" : [
+    {
+      "aerodynamicImpulse" : [
+        0.0005203222982677336,
+        -5.262223114683041e-05,
+        0.00036539788539435847
+      ],
+      "boundaryClosureResidual" : [
+        -5.170123301917809e-10,
+        3.9511693941088506e-10,
+        -5.870463101742551e-09
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.00037498782883982747,
+        0.0006236891107524452,
+        -0.000762175188804601
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        -0.0005203228152800638,
+        5.262262626376982e-05,
+        -0.0003654037558574602
+      ],
+      "fluidMomentumAfter" : [
+        -0.0005203228152800638,
+        5.262262626376982e-05,
+        -0.0003654037558574602
+      ],
+      "fluidMomentumBefore" : [
+        0,
+        0,
+        0
+      ],
+      "newlyCoveredCellCount" : 2,
+      "newlyUncoveredCellCount" : 13,
+      "persistentBoundaryLinkCount" : 12644,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        -0.0008953106441198912,
+        -0.0005710664844886754,
+        0.0003967714329471408
+      ],
+      "sourceLedgerTransitionCellCount" : 15,
+      "sourceTimeSeconds" : 1.5853880540817045e-05,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 1
+    },
+    {
+      "aerodynamicImpulse" : [
+        -0.00043643396752247876,
+        -5.614875706369538e-06,
+        0.0007935920007433594
+      ],
+      "boundaryClosureResidual" : [
+        4.017351024326182e-11,
+        1.6613796127132492e-10,
+        -5.567690882987697e-09
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.0006855764439755482,
+        -0.00039598461868164297,
+        -0.0005288835560045667
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        0.000436434007695989,
+        5.615041844330809e-06,
+        -0.0007935975684342424
+      ],
+      "fluidMomentumAfter" : [
+        -8.388880758407473e-05,
+        5.823766810810063e-05,
+        -0.0011590013242917026
+      ],
+      "fluidMomentumBefore" : [
+        -0.0005203228152800638,
+        5.262262626376982e-05,
+        -0.0003654037558574602
+      ],
+      "newlyCoveredCellCount" : 6,
+      "newlyUncoveredCellCount" : 5,
+      "persistentBoundaryLinkCount" : 12661,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        -0.0002491424362795592,
+        0.00040159966052597375,
+        -0.00026471401242967576
+      ],
+      "sourceLedgerTransitionCellCount" : 11,
+      "sourceTimeSeconds" : 3.170776108163409e-05,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 2
+    },
+    {
+      "aerodynamicImpulse" : [
+        -9.329467785232359e-05,
+        6.474899617772006e-07,
+        0.0012008850040512442
+      ],
+      "boundaryClosureResidual" : [
+        -2.6667226914645244e-10,
+        -5.847517685654015e-10,
+        2.010789940500371e-08
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.0004660224799739141,
+        -0.00019535461301790804,
+        -0.0014881713583553002
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        9.329441118005445e-05,
+        -6.48074713545766e-07,
+        -0.0012008648961518392
+      ],
+      "fluidMomentumAfter" : [
+        9.405603595979717e-06,
+        5.758959339455486e-05,
+        -0.002359866220443542
+      ],
+      "fluidMomentumBefore" : [
+        -8.388880758407473e-05,
+        5.823766810810063e-05,
+        -0.0011590013242917026
+      ],
+      "newlyCoveredCellCount" : 5,
+      "newlyUncoveredCellCount" : 7,
+      "persistentBoundaryLinkCount" : 12654,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        -0.0003727280687938596,
+        0.00019470653830436227,
+        0.00028730646220346103
+      ],
+      "sourceLedgerTransitionCellCount" : 12,
+      "sourceTimeSeconds" : 4.756163980346173e-05,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 3
+    },
+    {
+      "aerodynamicImpulse" : [
+        -0.00037465654582433117,
+        -3.7785835911623156e-05,
+        0.0012340481018231486
+      ],
+      "boundaryClosureResidual" : [
+        9.767218728685273e-11,
+        -3.763558428527538e-11,
+        -2.0145793715089372e-08
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.00022452524060227692,
+        4.28363371652537e-05,
+        -0.0019131954313141482
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        0.00037465664349651845,
+        3.778579827603887e-05,
+        -0.0012340682476168637
+      ],
+      "fluidMomentumAfter" : [
+        0.00038406224709249817,
+        9.537539167059373e-05,
+        -0.0035939344680604056
+      ],
+      "fluidMomentumBefore" : [
+        9.405603595979717e-06,
+        5.758959339455486e-05,
+        -0.002359866220443542
+      ],
+      "newlyCoveredCellCount" : 4,
+      "newlyUncoveredCellCount" : 6,
+      "persistentBoundaryLinkCount" : 12667,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        0.00015013140289424153,
+        -5.050538889214828e-06,
+        0.0006791271836972845
+      ],
+      "sourceLedgerTransitionCellCount" : 10,
+      "sourceTimeSeconds" : 6.341552216326818e-05,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 4
+    },
+    {
+      "aerodynamicImpulse" : [
+        -0.0001440939355974863,
+        -2.1634404817443e-06,
+        0.001087740317535335
+      ],
+      "boundaryClosureResidual" : [
+        4.874674330640136e-10,
+        -1.1393080880572806e-09,
+        -3.882607488379236e-08
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.0006432266774440901,
+        -0.00024132264239873138,
+        -0.0015524254505444592
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        0.00014409442306491935,
+        2.1623011736562425e-06,
+        -0.0010877791436102189
+      ],
+      "fluidMomentumAfter" : [
+        0.0005281566701574175,
+        9.753769284424997e-05,
+        -0.004681713611670624
+      ],
+      "fluidMomentumBefore" : [
+        0.00038406224709249817,
+        9.537539167059373e-05,
+        -0.0035939344680604056
+      ],
+      "newlyCoveredCellCount" : 5,
+      "newlyUncoveredCellCount" : 8,
+      "persistentBoundaryLinkCount" : 12643,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        -0.0004991322543791707,
+        0.00024348494357238762,
+        0.0004646463069342404
+      ],
+      "sourceLedgerTransitionCellCount" : 13,
+      "sourceTimeSeconds" : 7.926940452307463e-05,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 5
+    },
+    {
+      "aerodynamicImpulse" : [
+        -0.0002832274857504924,
+        -3.184549160835468e-05,
+        0.0010420829994544079
+      ],
+      "boundaryClosureResidual" : [
+        -8.179294265541273e-10,
+        5.695322510720609e-10,
+        1.5178047794300875e-08
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.0008029156855625323,
+        0.00028844495176709846,
+        -0.0013314533560910581
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        0.00028322666782106584,
+        3.1846061140605755e-05,
+        -0.0010420678214066136
+      ],
+      "fluidMomentumAfter" : [
+        0.0008113833379784834,
+        0.00012938375398485573,
+        -0.005723781433077238
+      ],
+      "fluidMomentumBefore" : [
+        0.0005281566701574175,
+        9.753769284424997e-05,
+        -0.004681713611670624
+      ],
+      "newlyCoveredCellCount" : 4,
+      "newlyUncoveredCellCount" : 4,
+      "persistentBoundaryLinkCount" : 12688,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        -0.0005196890177414664,
+        -0.0002565988906264927,
+        0.0002893855346844446
+      ],
+      "sourceLedgerTransitionCellCount" : 8,
+      "sourceTimeSeconds" : 9.512327960692346e-05,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 6
+    },
+    {
+      "aerodynamicImpulse" : [
+        -0.00013177377026662995,
+        2.871573756123725e-05,
+        0.0008773590131125886
+      ],
+      "boundaryClosureResidual" : [
+        -2.0141700275960045e-10,
+        2.289744262332907e-09,
+        5.765406299942932e-09
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.00018641106730242187,
+        -0.0003243779787742902,
+        -0.001280664134329196
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        0.0001317735688496272,
+        -2.8713447816974916e-05,
+        -0.0008773532477062886
+      ],
+      "fluidMomentumAfter" : [
+        0.0009431569068281105,
+        0.00010067030616788081,
+        -0.006601134680783527
+      ],
+      "fluidMomentumBefore" : [
+        0.0008113833379784834,
+        0.00012938375398485573,
+        -0.005723781433077238
+      ],
+      "newlyCoveredCellCount" : 7,
+      "newlyUncoveredCellCount" : 7,
+      "persistentBoundaryLinkCount" : 12630,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        -5.463749845279468e-05,
+        0.0002956645309573153,
+        0.0004033108866229073
+      ],
+      "sourceLedgerTransitionCellCount" : 14,
+      "sourceTimeSeconds" : 0.00011097716196672991,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 7
+    },
+    {
+      "aerodynamicImpulse" : [
+        -0.00029124840845178024,
+        -7.07985103880291e-06,
+        0.000892678754123466
+      ],
+      "boundaryClosureResidual" : [
+        3.9625359699209384e-10,
+        -2.150687195785002e-09,
+        -4.739420906077485e-09
+      ],
+      "diagnosticPersistentLinkImpulseToFluid" : [
+        0.0008364640201936601,
+        -0.0006050067834965583,
+        -0.00040116459205157944
+      ],
+      "farFieldImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "fluidBoundaryImpulse" : [
+        0.00029124880470537723,
+        7.077700351607125e-06,
+        -0.0008926834935443721
+      ],
+      "fluidMomentumAfter" : [
+        0.0012344057115334878,
+        0.00010774800651948794,
+        -0.007493818174327899
+      ],
+      "fluidMomentumBefore" : [
+        0.0009431569068281105,
+        0.00010067030616788081,
+        -0.006601134680783527
+      ],
+      "newlyCoveredCellCount" : 6,
+      "newlyUncoveredCellCount" : 3,
+      "persistentBoundaryLinkCount" : 12675,
+      "remainingImpulseAfterDiagnosticLinks" : [
+        -0.0005452152154882829,
+        0.0006120844838481654,
+        -0.0004915189014927926
+      ],
+      "sourceLedgerTransitionCellCount" : 9,
+      "sourceTimeSeconds" : 0.00012683104432653636,
+      "spongeImpulseToFluid" : [
+        0,
+        0,
+        0
+      ],
+      "step" : 8
+    }
+  ],
+  "schemaVersion" : 1,
+  "spongeStrength" : 0,
+  "steps" : 8,
+  "timeStepSeconds" : 1.5853880540817045e-05
+}

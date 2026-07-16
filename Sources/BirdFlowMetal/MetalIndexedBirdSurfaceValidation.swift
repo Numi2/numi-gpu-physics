@@ -55,6 +55,99 @@ public struct MetalIndexedBirdSurfaceReplayReport: Codable, Sendable {
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceCouplingSample: Codable, Sendable {
+    public let step: Int
+    public let sourceTimeSeconds: Double
+    public let newlyCoveredCellCount: Int
+    public let newlyUncoveredCellCount: Int
+    public let sourceLedgerTransitionCellCount: Int
+    public let persistentBoundaryLinkCount: Int
+    public let fluidMomentumBefore: SIMD3<Double>
+    public let fluidMomentumAfter: SIMD3<Double>
+    public let aerodynamicImpulse: SIMD3<Double>
+    public let farFieldImpulseToFluid: SIMD3<Double>
+    public let spongeImpulseToFluid: SIMD3<Double>
+    public let diagnosticPersistentLinkImpulseToFluid: SIMD3<Double>
+    public let remainingImpulseAfterDiagnosticLinks: SIMD3<Double>
+    public let fluidBoundaryImpulse: SIMD3<Double>
+    public let boundaryClosureResidual: SIMD3<Double>
+}
+
+public struct MetalIndexedBirdSurfaceCouplingReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let cellSizeMeters: Double
+    public let timeStepSeconds: Double
+    public let steps: Int
+    public let runtimeSeconds: Double
+    public let maximumWallSpeedLattice: Double
+    public let maximumWallMach: Double
+    public let acceptanceDefinition: String
+    public let geometryKernels: [String]
+    public let linkKernel: String
+    public let fluidKernel: String
+    public let forceEstimator: String
+    public let periodicBoundaries: Bool
+    public let spongeStrength: Double
+    public let componentSolidCellCounts: [Int]
+    public let newlyCoveredCellEvents: Int
+    public let newlyUncoveredCellEvents: Int
+    public let persistentBoundaryLinkEvents: Int
+    public let maximumTopologyCounterMismatchCells: Int
+    public let relativeRMSBoundaryClosureResidual: Double
+    public let maximumRelativeBoundaryClosureResidual: Double
+    public let maximumAllowedRelativeRMSBoundaryClosureResidual: Double
+    public let maximumBoundaryClosureResidualKilogramMetersPerSecond: Double
+    public let allValuesFinite: Bool
+    public let samples: [MetalIndexedBirdSurfaceCouplingSample]
+    public let passed: Bool
+    public let claimBoundary: String
+}
+
+public enum MetalIndexedBirdSurfaceCouplingValidator {
+    public static func audit(
+        _ dataset: MeasuredBirdSurfaceSequence,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75,
+        minimumSteps: Int = 8,
+        maximumSteps: Int = 32,
+        minimumTopologyTransitions: Int = 1,
+        maximumRelativeRMSResidual: Double = 0.005
+    ) throws -> MetalIndexedBirdSurfaceCouplingReport {
+        guard minimumSteps > 0,
+              maximumSteps >= minimumSteps,
+              minimumTopologyTransitions > 0,
+              maximumRelativeRMSResidual.isFinite,
+              maximumRelativeRMSResidual > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "indexed coupling audit bounds are invalid"
+            )
+        }
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: dataset,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells
+        )
+        return try replay.auditProductionCoupling(
+            minimumSteps: minimumSteps,
+            maximumSteps: maximumSteps,
+            minimumTopologyTransitions: minimumTopologyTransitions,
+            maximumRelativeRMSResidual: maximumRelativeRMSResidual
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+}
+
 public enum MetalIndexedBirdSurfaceValidator {
     public static func audit(
         _ dataset: MeasuredBirdSurfaceSequence,
@@ -396,6 +489,7 @@ private final class MetalIndexedBirdSurfaceReplay {
     private let clearPipeline: MTLComputePipelineState
     private let rasterPipeline: MTLComputePipelineState
     private let resolvePipeline: MTLComputePipelineState
+    private let flowResolvePipeline: MTLComputePipelineState
 
     init(
         backend: MetalBackend,
@@ -534,18 +628,16 @@ private final class MetalIndexedBirdSurfaceReplay {
         clearPipeline = try backend.pipeline(named: "clearMeasuredWingSurface")
         rasterPipeline = try backend.pipeline(named: "rasterizeIndexedBirdSurface")
         resolvePipeline = try backend.pipeline(named: "resolveIndexedBirdSurface")
+        flowResolvePipeline = try backend.pipeline(
+            named: "resolveIndexedBirdSurfaceForFlow"
+        )
     }
 
     func snapshot(
         timeSeconds: Float,
         includeWallField: Bool
     ) throws -> Snapshot {
-        let interval = dataset.interpolationInterval(timeSeconds: timeSeconds)
-        let surface = parameters.contents().assumingMemoryBound(
-            to: GPUIndexedBirdSurfaceParameters.self
-        )
-        surface.pointee.counts.w = UInt32(interval.first)
-        surface.pointee.queryTimeAndThickness.x = timeSeconds
+        updateSurfaceTime(timeSeconds)
         var uniforms = GPUUniforms(
             configuration: configuration,
             time: 0,
@@ -618,6 +710,15 @@ private final class MetalIndexedBirdSurfaceReplay {
             partIdentifiers: maskValues,
             wallVelocityAndDistance: wallValues
         )
+    }
+
+    private func updateSurfaceTime(_ timeSeconds: Float) {
+        let interval = dataset.interpolationInterval(timeSeconds: timeSeconds)
+        let surface = parameters.contents().assumingMemoryBound(
+            to: GPUIndexedBirdSurfaceParameters.self
+        )
+        surface.pointee.counts.w = UInt32(interval.first)
+        surface.pointee.queryTimeAndThickness.x = timeSeconds
     }
 
     func cpuRaster(timeSeconds: Float) -> CPURaster {
@@ -724,6 +825,428 @@ private final class MetalIndexedBirdSurfaceReplay {
         return CPURaster(
             partIdentifiers: mask,
             wallVelocityAndDistance: wall
+        )
+    }
+
+    func auditProductionCoupling(
+        minimumSteps: Int,
+        maximumSteps: Int,
+        minimumTopologyTransitions: Int,
+        maximumRelativeRMSResidual: Double
+    ) throws -> MetalIndexedBirdSurfaceCouplingReport {
+        let started = Date()
+        let cellCount = grid.cellCount
+        let populationBytes = D3Q19.count * cellCount
+            * MemoryLayout<Float>.stride
+        let maskBytes = cellCount * MemoryLayout<UInt8>.stride
+        let densityBytes = cellCount * MemoryLayout<Float>.stride
+        let velocityBytes = cellCount * MemoryLayout<SIMD4<Float>>.stride
+        let partialCount = max(1, (cellCount + 255) / 256)
+        let reductionBytes = partialCount
+            * MemoryLayout<GPUForceTorque>.stride
+        try backend.validateAllocationPlan(bufferLengths: [
+            populationBytes, populationBytes,
+            maskBytes, densityBytes, velocityBytes,
+            reductionBytes, reductionBytes,
+            maskBytes, maskBytes,
+            MemoryLayout<GPUBirdBodyState>.stride,
+        ])
+        let populationsA = try backend.makePrivateBuffer(
+            length: populationBytes
+        )
+        let populationsB = try backend.makePrivateBuffer(
+            length: populationBytes
+        )
+        let solidPrevious = try backend.makePrivateBuffer(length: maskBytes)
+        let densityScratch = try backend.makePrivateBuffer(length: densityBytes)
+        let velocityAndCoveredMomentum = try backend.makePrivateBuffer(
+            length: velocityBytes
+        )
+        let reductionA = try backend.makeSharedBuffer(length: reductionBytes)
+        let reductionB = try backend.makeSharedBuffer(length: reductionBytes)
+        let previousMaskStaging = try backend.makeSharedBuffer(length: maskBytes)
+        let currentMaskStaging = try backend.makeSharedBuffer(length: maskBytes)
+        let bodyCenter = 0.5 * (
+            dataset.minimumPositionMeters + dataset.maximumPositionMeters
+        )
+        let bodyState = try backend.makeSharedBuffer(
+            value: GPUBirdBodyState(BirdBodyState(positionMeters: bodyCenter))
+        )
+        let initializePipeline = try backend.pipeline(
+            named: "initializePopulations"
+        )
+        let linkPipeline = try backend.pipeline(
+            named: "buildMeasuredWingSurfaceLinks"
+        )
+        let fluidPipeline = try backend.pipeline(named: "stepFluidTRT")
+        let forceReductionPipeline = try backend.pipeline(
+            named: "reduceForceTorque"
+        )
+        let diagnostics = try CoupledMomentumDiagnosticResources(
+            backend: backend,
+            cellCount: cellCount
+        )
+
+        let initialTime = dataset.frameTimesSeconds[0]
+        updateSurfaceTime(initialTime)
+        var initialUniforms = makeCouplingUniforms(
+            step: 0,
+            hasPreviousGeometry: false
+        )
+        guard let initialization = backend.queue.makeCommandBuffer() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to create indexed coupling initialization."
+            )
+        }
+        try encodeIndexedPreparation(commandBuffer: initialization)
+        try encodeClear(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        try encodeIndexedRaster(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        try encodeIndexedResolve(
+            commandBuffer: initialization,
+            uniforms: &initialUniforms
+        )
+        guard let initialBlit = initialization.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to copy the initial indexed coupling mask."
+            )
+        }
+        initialBlit.copy(
+            from: partMask,
+            sourceOffset: 0,
+            to: solidPrevious,
+            destinationOffset: 0,
+            size: maskBytes
+        )
+        initialBlit.endEncoding()
+        try encodeCouplingInitialization(
+            commandBuffer: initialization,
+            populations: populationsA,
+            solid: solidPrevious,
+            density: densityScratch,
+            velocity: velocityAndCoveredMomentum,
+            uniforms: &initialUniforms,
+            pipeline: initializePipeline
+        )
+        initialization.commit()
+        initialization.waitUntilCompleted()
+        try check(initialization)
+
+        var populationsIn = populationsA
+        var populationsOut = populationsB
+        var samples: [MetalIndexedBirdSurfaceCouplingSample] = []
+        samples.reserveCapacity(maximumSteps)
+        var totalCovered = 0
+        var totalUncovered = 0
+        var totalPersistentLinks = 0
+        var maximumTopologyCounterMismatch = 0
+        var finalComponentCounts = [Int](
+            repeating: 0,
+            count: dataset.components.count
+        )
+        var allFinite = true
+        let dt = configuration.scaling.timeStepSeconds
+        let momentumScale = Double(configuration.scaling.forceToPhysical)
+            * Double(dt)
+
+        for step in 1...maximumSteps {
+            let sourceTime = initialTime + Float(step) * dt
+            guard sourceTime <= dataset.frameTimesSeconds.last! else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "coupling audit exceeds the nonperiodic surface sequence"
+                )
+            }
+            var beforeUniforms = makeCouplingUniforms(
+                step: step - 1,
+                hasPreviousGeometry: true
+            )
+            let fluidBeforeRaw = try diagnostics.measureFluid(
+                populations: populationsIn,
+                solid: solidPrevious,
+                uniforms: &beforeUniforms
+            )
+
+            updateSurfaceTime(sourceTime)
+            var uniforms = makeCouplingUniforms(
+                step: step,
+                hasPreviousGeometry: true
+            )
+            guard let commandBuffer = backend.queue.makeCommandBuffer() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to create indexed coupling step."
+                )
+            }
+            try encodeIndexedPreparation(commandBuffer: commandBuffer)
+            try encodeClear(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms
+            )
+            try encodeIndexedRaster(
+                commandBuffer: commandBuffer,
+                uniforms: &uniforms
+            )
+            try encodeFlowResolve(
+                commandBuffer: commandBuffer,
+                solidPrevious: solidPrevious,
+                previousPopulations: populationsIn,
+                coveredFluidMomentum: velocityAndCoveredMomentum,
+                uniforms: &uniforms
+            )
+            try encodeCouplingLinks(
+                commandBuffer: commandBuffer,
+                populations: populationsIn,
+                uniforms: &uniforms,
+                pipeline: linkPipeline
+            )
+            try encodeCouplingFluid(
+                commandBuffer: commandBuffer,
+                populationsIn: populationsIn,
+                populationsOut: populationsOut,
+                solidPrevious: solidPrevious,
+                density: densityScratch,
+                velocity: velocityAndCoveredMomentum,
+                partialLoads: reductionA,
+                bodyState: bodyState,
+                uniforms: &uniforms,
+                pipeline: fluidPipeline
+            )
+            let reducedLoad = try encodeCouplingForceReduction(
+                commandBuffer: commandBuffer,
+                reductionA: reductionA,
+                reductionB: reductionB,
+                partialCount: partialCount,
+                pipeline: forceReductionPipeline
+            )
+            guard let maskBlit = commandBuffer.makeBlitCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to audit indexed topology transitions."
+                )
+            }
+            maskBlit.copy(
+                from: solidPrevious,
+                sourceOffset: 0,
+                to: previousMaskStaging,
+                destinationOffset: 0,
+                size: maskBytes
+            )
+            maskBlit.copy(
+                from: partMask,
+                sourceOffset: 0,
+                to: currentMaskStaging,
+                destinationOffset: 0,
+                size: maskBytes
+            )
+            maskBlit.endEncoding()
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+            try check(commandBuffer)
+
+            var newlyCovered = 0
+            var newlyUncovered = 0
+            var componentCounts = [Int](
+                repeating: 0,
+                count: dataset.components.count
+            )
+            let oldMask = previousMaskStaging.contents()
+                .assumingMemoryBound(to: UInt8.self)
+            let newMask = currentMaskStaging.contents()
+                .assumingMemoryBound(to: UInt8.self)
+            for cell in 0..<cellCount {
+                let oldSolid = oldMask[cell] != 0
+                let newIdentifier = newMask[cell]
+                let newSolid = newIdentifier != 0
+                if !oldSolid && newSolid { newlyCovered += 1 }
+                if oldSolid && !newSolid { newlyUncovered += 1 }
+                if newSolid {
+                    let index = Int(newIdentifier) - 1
+                    if componentCounts.indices.contains(index) {
+                        componentCounts[index] += 1
+                    } else {
+                        allFinite = false
+                    }
+                }
+            }
+            finalComponentCounts = componentCounts
+
+            let fluidAfterRaw = try diagnostics.measureFluid(
+                populations: populationsOut,
+                solid: partMask,
+                uniforms: &uniforms
+            )
+            let sources = try diagnostics.captureSources(
+                populationsIn: populationsIn,
+                populationsOut: populationsOut,
+                solidPrevious: solidPrevious,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                uniforms: &uniforms
+            )
+            let load = reducedLoad.contents()
+                .assumingMemoryBound(to: GPUForceTorque.self)
+                .pointee.coreValue
+            let fluidBefore = physicalMomentum(
+                fluidBeforeRaw,
+                scale: momentumScale
+            )
+            let fluidAfter = physicalMomentum(
+                fluidAfterRaw,
+                scale: momentumScale
+            )
+            let aerodynamicImpulse = SIMD3<Double>(
+                Double(load.forceNewtons.x) * Double(dt),
+                Double(load.forceNewtons.y) * Double(dt),
+                Double(load.forceNewtons.z) * Double(dt)
+            )
+            let farFieldImpulse = physicalMomentum(
+                sources.farField,
+                scale: momentumScale
+            )
+            let spongeImpulse = physicalMomentum(
+                sources.sponge,
+                scale: momentumScale
+            )
+            let persistentImpulse = physicalMomentum(
+                sources.persistentLinkExchange,
+                scale: momentumScale
+            )
+            let fluidBoundaryImpulse = fluidAfter - fluidBefore
+                - farFieldImpulse - spongeImpulse
+            let remainingImpulse = fluidBoundaryImpulse - persistentImpulse
+            let residual = aerodynamicImpulse + fluidBoundaryImpulse
+            let sourceTransitions = Int(sources.counts.w)
+            maximumTopologyCounterMismatch = max(
+                maximumTopologyCounterMismatch,
+                abs(sourceTransitions - newlyCovered - newlyUncovered)
+            )
+            totalCovered += newlyCovered
+            totalUncovered += newlyUncovered
+            totalPersistentLinks += Int(sources.counts.z)
+            let sample = MetalIndexedBirdSurfaceCouplingSample(
+                step: step,
+                sourceTimeSeconds: Double(sourceTime),
+                newlyCoveredCellCount: newlyCovered,
+                newlyUncoveredCellCount: newlyUncovered,
+                sourceLedgerTransitionCellCount: sourceTransitions,
+                persistentBoundaryLinkCount: Int(sources.counts.z),
+                fluidMomentumBefore: fluidBefore,
+                fluidMomentumAfter: fluidAfter,
+                aerodynamicImpulse: aerodynamicImpulse,
+                farFieldImpulseToFluid: farFieldImpulse,
+                spongeImpulseToFluid: spongeImpulse,
+                diagnosticPersistentLinkImpulseToFluid: persistentImpulse,
+                remainingImpulseAfterDiagnosticLinks: remainingImpulse,
+                fluidBoundaryImpulse: fluidBoundaryImpulse,
+                boundaryClosureResidual: residual
+            )
+            samples.append(sample)
+            allFinite = allFinite
+                && fluidBeforeRaw.x.isFinite && fluidAfterRaw.x.isFinite
+                && couplingSampleIsFinite(sample)
+
+            if samples.count >= minimumSteps,
+               totalCovered + totalUncovered >= minimumTopologyTransitions {
+                break
+            }
+            try copyCouplingMask(
+                from: partMask,
+                to: solidPrevious,
+                byteCount: maskBytes
+            )
+            swap(&populationsIn, &populationsOut)
+        }
+
+        let aerodynamicRMS = vectorRMS(samples.map(\.aerodynamicImpulse))
+        let boundaryRMS = vectorRMS(samples.map(\.fluidBoundaryImpulse))
+        let residualRMS = vectorRMS(samples.map(\.boundaryClosureResidual))
+        let relativeRMS = residualRMS
+            / max(aerodynamicRMS, boundaryRMS, 1.0e-30)
+        let maximumRelative = samples.map { sample in
+            vectorMagnitude(sample.boundaryClosureResidual)
+                / max(
+                    vectorMagnitude(sample.aerodynamicImpulse),
+                    vectorMagnitude(sample.fluidBoundaryImpulse),
+                    1.0e-30
+                )
+        }.max() ?? .infinity
+        let maximumResidual = samples.map {
+            vectorMagnitude($0.boundaryClosureResidual)
+        }.max() ?? .infinity
+        let maximumWallSpeed = Double(
+            dataset.maximumPointSpeedMetersPerSecond * velocityToLattice
+        )
+        let maximumMach = maximumWallSpeed / Double(D3Q19.soundSpeed)
+        let passed = samples.count >= minimumSteps
+            && totalCovered + totalUncovered >= minimumTopologyTransitions
+            && totalPersistentLinks > 0
+            && maximumTopologyCounterMismatch == 0
+            && samples.allSatisfy {
+                $0.farFieldImpulseToFluid == .zero
+                    && $0.spongeImpulseToFluid == .zero
+            }
+            && finalComponentCounts.allSatisfy { $0 > 0 }
+            && maximumMach <= 0.15
+            && relativeRMS <= maximumRelativeRMSResidual
+            && allFinite
+            && dataset.completeBirdSurfaceReady
+            && !dataset.quantitativeForceAcceptanceReady
+        return MetalIndexedBirdSurfaceCouplingReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: dataset.datasetIdentifier,
+            manifestSHA256: dataset.manifestSHA256,
+            gridX: grid.x,
+            gridY: grid.y,
+            gridZ: grid.z,
+            cellSizeMeters: Double(configuration.scaling.cellSizeMeters),
+            timeStepSeconds: Double(dt),
+            steps: samples.count,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            maximumWallSpeedLattice: maximumWallSpeed,
+            maximumWallMach: maximumMach,
+            acceptanceDefinition: (
+                "production aerodynamic impulse + independently reduced "
+                    + "before/after fluid momentum change; the diagnostic "
+                    + "persistent-link split is reported but is not used for "
+                    + "acceptance"
+            ),
+            geometryKernels: [
+                "prepareIndexedBirdSurface",
+                "clearMeasuredWingSurface",
+                "rasterizeIndexedBirdSurface",
+                "resolveIndexedBirdSurfaceForFlow",
+            ],
+            linkKernel: "buildMeasuredWingSurfaceLinks",
+            fluidKernel: "stepFluidTRT",
+            forceEstimator: "conservative-moving-domain-mode-6",
+            periodicBoundaries: true,
+            spongeStrength: 0,
+            componentSolidCellCounts: finalComponentCounts,
+            newlyCoveredCellEvents: totalCovered,
+            newlyUncoveredCellEvents: totalUncovered,
+            persistentBoundaryLinkEvents: totalPersistentLinks,
+            maximumTopologyCounterMismatchCells:
+                maximumTopologyCounterMismatch,
+            relativeRMSBoundaryClosureResidual: relativeRMS,
+            maximumRelativeBoundaryClosureResidual: maximumRelative,
+            maximumAllowedRelativeRMSBoundaryClosureResidual:
+                maximumRelativeRMSResidual,
+            maximumBoundaryClosureResidualKilogramMetersPerSecond:
+                maximumResidual,
+            allValuesFinite: allFinite,
+            samples: samples,
+            passed: passed,
+            claimBoundary: (
+                "This short periodic, zero-sponge gate closes the accepted "
+                    + "indexed surface against the production interpolated "
+                    + "link, conservative topology-force, and TRT fluid path. "
+                    + "It is an integration/impulse test, not a developed-flow "
+                    + "or experimental-force comparison."
+            )
         )
     }
 
@@ -847,6 +1370,219 @@ private final class MetalIndexedBirdSurfaceReplay {
         encoder.endEncoding()
     }
 
+    private func makeCouplingUniforms(
+        step: Int,
+        hasPreviousGeometry: Bool
+    ) -> GPUUniforms {
+        GPUUniforms(
+            configuration: configuration,
+            time: Float(step),
+            captureMacroscopicFields: false,
+            accumulateLoads: true,
+            hasPreviousGeometry: hasPreviousGeometry,
+            periodicBoundaries: true,
+            caseParameters: SIMD4<Float>(0, 6, 0, -1)
+        )
+    }
+
+    private func encodeCouplingInitialization(
+        commandBuffer: MTLCommandBuffer,
+        populations: MTLBuffer,
+        solid: MTLBuffer,
+        density: MTLBuffer,
+        velocity: MTLBuffer,
+        uniforms: inout GPUUniforms,
+        pipeline: MTLComputePipelineState
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to initialize indexed coupling populations."
+            )
+        }
+        encoder.setBuffer(populations, offset: 0, index: 0)
+        encoder.setBuffer(solid, offset: 0, index: 1)
+        encoder.setBuffer(wallVelocityAndDistance, offset: 0, index: 2)
+        encoder.setBuffer(density, offset: 0, index: 3)
+        encoder.setBuffer(velocity, offset: 0, index: 4)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 5
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: pipeline,
+            count: grid.cellCount
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeFlowResolve(
+        commandBuffer: MTLCommandBuffer,
+        solidPrevious: MTLBuffer,
+        previousPopulations: MTLBuffer,
+        coveredFluidMomentum: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to resolve indexed flow geometry."
+            )
+        }
+        encoder.setBuffer(partMask, offset: 0, index: 0)
+        encoder.setBuffer(wallVelocityAndDistance, offset: 0, index: 1)
+        encoder.setBuffer(solidPrevious, offset: 0, index: 2)
+        encoder.setBuffer(prepared, offset: 0, index: 3)
+        encoder.setBuffer(triangleIndices, offset: 0, index: 4)
+        encoder.setBuffer(trianglePartIdentifiers, offset: 0, index: 5)
+        encoder.setBuffer(distanceKeys, offset: 0, index: 6)
+        encoder.setBuffer(parameters, offset: 0, index: 7)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 8
+        )
+        encoder.setBuffer(previousPopulations, offset: 0, index: 9)
+        encoder.setBuffer(coveredFluidMomentum, offset: 0, index: 10)
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: flowResolvePipeline,
+            count: grid.cellCount
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeCouplingLinks(
+        commandBuffer: MTLCommandBuffer,
+        populations: MTLBuffer,
+        uniforms: inout GPUUniforms,
+        pipeline: MTLComputePipelineState
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to build indexed coupling links."
+            )
+        }
+        encoder.setBuffer(partMask, offset: 0, index: 0)
+        encoder.setBuffer(wallVelocityAndDistance, offset: 0, index: 1)
+        encoder.setBuffer(populations, offset: 0, index: 2)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 3
+        )
+        backend.dispatch3D(
+            encoder: encoder,
+            pipeline: pipeline,
+            width: grid.x,
+            height: grid.y,
+            depth: grid.z
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeCouplingFluid(
+        commandBuffer: MTLCommandBuffer,
+        populationsIn: MTLBuffer,
+        populationsOut: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        density: MTLBuffer,
+        velocity: MTLBuffer,
+        partialLoads: MTLBuffer,
+        bodyState: MTLBuffer,
+        uniforms: inout GPUUniforms,
+        pipeline: MTLComputePipelineState
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to advance indexed coupling fluid."
+            )
+        }
+        encoder.setBuffer(populationsIn, offset: 0, index: 0)
+        encoder.setBuffer(populationsOut, offset: 0, index: 1)
+        encoder.setBuffer(solidPrevious, offset: 0, index: 2)
+        encoder.setBuffer(partMask, offset: 0, index: 3)
+        encoder.setBuffer(wallVelocityAndDistance, offset: 0, index: 4)
+        encoder.setBuffer(density, offset: 0, index: 5)
+        encoder.setBuffer(velocity, offset: 0, index: 6)
+        encoder.setBuffer(partialLoads, offset: 0, index: 7)
+        encoder.setBuffer(bodyState, offset: 0, index: 8)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 9
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: pipeline,
+            count: grid.cellCount,
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+    }
+
+    private func encodeCouplingForceReduction(
+        commandBuffer: MTLCommandBuffer,
+        reductionA: MTLBuffer,
+        reductionB: MTLBuffer,
+        partialCount: Int,
+        pipeline: MTLComputePipelineState
+    ) throws -> MTLBuffer {
+        var input = reductionA
+        var output = reductionB
+        var count = partialCount
+        while count > 1 {
+            let outputCount = (count + 255) / 256
+            var count32 = UInt32(count)
+            guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to reduce indexed coupling load."
+                )
+            }
+            encoder.setBuffer(input, offset: 0, index: 0)
+            encoder.setBuffer(output, offset: 0, index: 1)
+            encoder.setBytes(
+                &count32,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: pipeline,
+                count: outputCount
+            )
+            encoder.endEncoding()
+            count = outputCount
+            input = output
+            output = output === reductionA ? reductionB : reductionA
+        }
+        return input
+    }
+
+    private func copyCouplingMask(
+        from source: MTLBuffer,
+        to destination: MTLBuffer,
+        byteCount: Int
+    ) throws {
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let blit = commandBuffer.makeBlitCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to advance indexed coupling topology."
+            )
+        }
+        blit.copy(
+            from: source,
+            sourceOffset: 0,
+            to: destination,
+            destinationOffset: 0,
+            size: byteCount
+        )
+        blit.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer)
+    }
+
     private func check(_ commandBuffer: MTLCommandBuffer) throws {
         if commandBuffer.status == .error {
             throw BirdFlowError.commandBufferFailed(
@@ -855,6 +1591,48 @@ private final class MetalIndexedBirdSurfaceReplay {
             )
         }
     }
+}
+
+private func physicalMomentum(
+    _ raw: SIMD4<Float>,
+    scale: Double
+) -> SIMD3<Double> {
+    SIMD3<Double>(
+        Double(raw.y) * scale,
+        Double(raw.z) * scale,
+        Double(raw.w) * scale
+    )
+}
+
+private func couplingSampleIsFinite(
+    _ sample: MetalIndexedBirdSurfaceCouplingSample
+) -> Bool {
+    [
+        sample.fluidMomentumBefore,
+        sample.fluidMomentumAfter,
+        sample.aerodynamicImpulse,
+        sample.farFieldImpulseToFluid,
+        sample.spongeImpulseToFluid,
+        sample.diagnosticPersistentLinkImpulseToFluid,
+        sample.remainingImpulseAfterDiagnosticLinks,
+        sample.fluidBoundaryImpulse,
+        sample.boundaryClosureResidual,
+    ].allSatisfy { vector in
+        vector.x.isFinite && vector.y.isFinite && vector.z.isFinite
+    }
+}
+
+private func vectorMagnitude(_ vector: SIMD3<Double>) -> Double {
+    sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+}
+
+private func vectorRMS(_ vectors: [SIMD3<Double>]) -> Double {
+    guard !vectors.isEmpty else { return .infinity }
+    return sqrt(
+        vectors.reduce(0.0) {
+            $0 + $1.x * $1.x + $1.y * $1.y + $1.z * $1.z
+        } / Double(vectors.count)
+    )
 }
 
 private struct TriangleClosestPoint {

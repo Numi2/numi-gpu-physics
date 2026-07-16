@@ -112,6 +112,35 @@ func indexedBirdSurfaceMetalGeometryClosesAllFramesAndCPUMilestones() throws {
             && $0.componentSolidCellCounts.allSatisfy { $0 > 0 }
     })
 }
+
+@Test
+func indexedBirdSurfaceClosesProductionMovingBoundaryImpulse() throws {
+    let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let report = try MetalIndexedBirdSurfaceCouplingValidator.audit(dataset)
+    #expect(report.passed)
+    #expect(report.steps >= 8)
+    #expect(report.newlyCoveredCellEvents > 0)
+    #expect(report.newlyUncoveredCellEvents > 0)
+    #expect(report.persistentBoundaryLinkEvents > 0)
+    #expect(report.maximumTopologyCounterMismatchCells == 0)
+    #expect(report.componentSolidCellCounts.count == 4)
+    #expect(report.componentSolidCellCounts.allSatisfy { $0 > 0 })
+    #expect(report.periodicBoundaries)
+    #expect(report.spongeStrength == 0)
+    #expect(report.maximumWallMach <= 0.15)
+    #expect(report.relativeRMSBoundaryClosureResidual <= 0.005)
+    #expect(report.allValuesFinite)
+    #expect(report.fluidKernel == "stepFluidTRT")
+    #expect(report.forceEstimator == "conservative-moving-domain-mode-6")
+    #expect(report.samples.allSatisfy {
+        $0.sourceLedgerTransitionCellCount
+            == $0.newlyCoveredCellCount + $0.newlyUncoveredCellCount
+            && $0.farFieldImpulseToFluid == .zero
+            && $0.spongeImpulseToFluid == .zero
+    })
+}
 #endif
 
 private func vectorError(

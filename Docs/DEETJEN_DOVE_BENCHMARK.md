@@ -158,6 +158,32 @@ populations and dispatches neither collision nor force accumulation. Fluid
 loads, force-axis/sign closure, repeatability across five flights, and numerical
 refinement remain open.
 
+## Production moving-boundary integration gate
+
+The next gate connects the accepted indexed surface to the existing production
+fluid path without paying for developed flow:
+
+```bash
+swift run birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --coupling-gate \
+  --archive ValidationArtifacts/deetjen-dove-indexed-production-coupling.json
+```
+
+Periodic boundaries and zero sponge isolate the moving surface as the only
+fluid-momentum source. Eight Apple M4 steps take `0.24 s`, exercise 39 cover and
+53 uncover events plus 101,262 persistent boundary-link events, and retain all
+four component identifiers. The independent event counter matches exactly.
+Maximum wall Mach is `0.0693`. Directly reduced fluid momentum closes against
+the production conservative moving-domain load with `1.789e-5` relative RMS and
+`3.8846e-8 kg m/s` maximum absolute residual under the unchanged `0.005` gate.
+
+The diagnostic persistent-link source split is archived but is not used for
+acceptance because it reconstructs the halfway source while the production step
+uses interpolated links. Acceptance uses only the production load and direct
+before/after population momentum. This is an impulse-level integration result,
+not developed-flow or measured-force agreement.
+
 ## Reproducible acquisition
 
 The default command is read-only. It verifies the Dryad/Zenodo identity,

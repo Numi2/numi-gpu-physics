@@ -25,7 +25,7 @@ private final class ObservationSlot {
     }
 }
 
-private struct ExternalFluidSourceCapture {
+struct ExternalFluidSourceCapture {
     var farField: SIMD4<Float>
     var sponge: SIMD4<Float>
     var persistentLinkExchange: SIMD4<Float>
@@ -34,7 +34,7 @@ private struct ExternalFluidSourceCapture {
 
 /// Lazily allocated so normal solver/viewer runs pay neither memory nor
 /// dispatch overhead for publication diagnostics.
-private final class CoupledMomentumDiagnosticResources {
+final class CoupledMomentumDiagnosticResources {
     private let backend: MetalBackend
     private let partialCount: Int
     private let measurePipeline: MTLComputePipelineState
@@ -209,6 +209,57 @@ private final class CoupledMomentumDiagnosticResources {
                 persistentLinkExchange: raw.persistentLinkExchange,
                 counts: raw.counts
             )
+        )
+    }
+
+    func captureSources(
+        populationsIn: MTLBuffer,
+        populationsOut: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws -> ExternalFluidSourceCapture {
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode external fluid sources."
+            )
+        }
+        encoder.label = "Far-field, sponge, and persistent links"
+        encoder.setBuffer(populationsIn, offset: 0, index: 0)
+        encoder.setBuffer(populationsOut, offset: 0, index: 1)
+        encoder.setBuffer(solidPrevious, offset: 0, index: 2)
+        encoder.setBuffer(solidCurrent, offset: 0, index: 3)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 4)
+        encoder.setBuffer(sourceA, offset: 0, index: 5)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 6
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: sourcePipeline,
+            count: Int(uniforms.grid.w),
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+        let total = try encodeSourceReduction(
+            commandBuffer: commandBuffer,
+            initial: sourceA
+        )
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        try check(commandBuffer, operation: "external source capture")
+        let raw = total.contents()
+            .assumingMemoryBound(to: GPUExternalFluidSourceLedger.self)
+            .pointee
+        return ExternalFluidSourceCapture(
+            farField: raw.farField,
+            sponge: raw.sponge,
+            persistentLinkExchange: raw.persistentLinkExchange,
+            counts: raw.counts
         )
     }
 

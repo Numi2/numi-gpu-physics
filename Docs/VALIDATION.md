@@ -1140,6 +1140,10 @@ Before the fluid comparison, acceptance requires:
   masks and wall velocity against an independent CPU raster without executing
   fluid or force kernels (**passed** for all 144 frames, with exact occupancy at
   five milestones);
+- the accepted indexed surface closes direct before/after fluid momentum against
+  the production interpolated-link, conservative moving-domain, and TRT path in
+  a periodic zero-sponge topology-changing gate (**passed** at `1.789e-5`
+  relative RMS);
 - the source force sign and axes close independently against the registered
   BirdFlow frame;
 - the five flights for bird `OB` establish a measurement/biological
@@ -1164,13 +1168,21 @@ stored frames plus five fractional-time interpolation probes. All four
 components remain present, the five CPU milestones have zero occupancy
 mismatches, and maximum position/wall-velocity/signed-distance differences are
 `1.669e-8 m`, `2.182e-5` lattice, and `1.574e-5` cells. Fluid collision, force
-accumulation, and every experimental-force comparison remain open. Evidence is in
+accumulation, and every experimental-force comparison remain open in that
+geometry-only artifact. A separate eight-step production integration gate then
+exercises 39 cover, 53 uncover, and 101,262 persistent-link events with periodic
+boundaries and zero sponge. Direct population momentum closes against the
+production load at `1.789e-5` relative RMS and `3.8846e-8 kg m/s` maximum
+absolute residual. Developed flow and every experimental-force comparison remain
+open. Evidence is in
 `ValidationArtifacts/deetjen-dove-source-qualification.json` and
 `ValidationArtifacts/deetjen-dove-engineering-ingestion.json`, plus
 `ValidationArtifacts/deetjen-dove-surface-conversion.json` and
 `ValidationArtifacts/deetjen-dove-surface-cpu-parity.json`, with the complete
 144-frame GPU audit in
-`ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json`.
+`ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json` and the short
+production ledger in
+`ValidationArtifacts/deetjen-dove-indexed-production-coupling.json`.
 
 ## 8. Complete measured bird
 

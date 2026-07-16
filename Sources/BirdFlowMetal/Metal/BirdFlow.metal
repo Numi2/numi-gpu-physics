@@ -1367,27 +1367,32 @@ kernel void rasterizeIndexedBirdSurface(
 
 /// Resolves indexed occupancy to canonical part identifiers 1...4 and the
 /// barycentrically matching lattice wall velocity.
-kernel void resolveIndexedBirdSurface(
-    device uchar* partIdentifiers [[buffer(0)]],
-    device float4* wallVelocity [[buffer(1)]],
-    device const GPUPreparedMeasuredWingPoint* prepared [[buffer(2)]],
-    device const ushort* triangleIndices [[buffer(3)]],
-    device const uchar* trianglePartIdentifiers [[buffer(4)]],
-    device const atomic_uint* distanceKeys [[buffer(5)]],
-    constant GPUIndexedBirdSurfaceParameters& surface [[buffer(6)]],
-    constant GPUUniforms& uniforms [[buffer(7)]],
-    uint gid [[thread_position_in_grid]]
+struct IndexedBirdSurfaceCellResolution {
+    bool valid;
+    bool isSolid;
+    uchar partIdentifier;
+    float4 wallVelocity;
+};
+
+inline IndexedBirdSurfaceCellResolution resolveIndexedBirdSurfaceCell(
+    device const GPUPreparedMeasuredWingPoint* prepared,
+    device const ushort* triangleIndices,
+    device const uchar* trianglePartIdentifiers,
+    device const atomic_uint* distanceKeys,
+    constant GPUIndexedBirdSurfaceParameters& surface,
+    constant GPUUniforms& uniforms,
+    uint gid
 ) {
     if (gid >= uniforms.grid.w) {
-        return;
+        return { false, false, uchar(0), float4(0) };
     }
     uint key = atomic_load_explicit(&distanceKeys[gid], memory_order_relaxed);
     if (key == UINT_MAX) {
-        return;
+        return { false, false, uchar(0), float4(0) };
     }
     uint triangle = key & 0xFFFu;
     if (triangle >= surface.counts.y) {
-        return;
+        return { false, false, uchar(0), float4(0) };
     }
     uint3 indices = indexedBirdTriangle(triangleIndices, triangle);
     uint3 cell = unflatten(gid, uniforms.grid.xyz);
@@ -1403,13 +1408,88 @@ kernel void resolveIndexedBirdSurface(
         + closest.barycentric.z * prepared[indices.z].velocity.xyz;
     float signedDistance = length(world - closest.position)
         - surface.queryTimeAndThickness.y;
-    partIdentifiers[gid] = signedDistance <= 0.0f
-        ? trianglePartIdentifiers[triangle]
-        : uchar(0);
-    wallVelocity[gid] = float4(
-        velocity,
-        signedDistance / uniforms.originAndCellSize.w
+    bool isSolid = signedDistance <= 0.0f;
+    return {
+        true,
+        isSolid,
+        isSolid ? trianglePartIdentifiers[triangle] : uchar(0),
+        float4(velocity, signedDistance / uniforms.originAndCellSize.w)
+    };
+}
+
+kernel void resolveIndexedBirdSurface(
+    device uchar* partIdentifiers [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device const GPUPreparedMeasuredWingPoint* prepared [[buffer(2)]],
+    device const ushort* triangleIndices [[buffer(3)]],
+    device const uchar* trianglePartIdentifiers [[buffer(4)]],
+    device const atomic_uint* distanceKeys [[buffer(5)]],
+    constant GPUIndexedBirdSurfaceParameters& surface [[buffer(6)]],
+    constant GPUUniforms& uniforms [[buffer(7)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    IndexedBirdSurfaceCellResolution resolved = resolveIndexedBirdSurfaceCell(
+        prepared,
+        triangleIndices,
+        trianglePartIdentifiers,
+        distanceKeys,
+        surface,
+        uniforms,
+        gid
     );
+    if (!resolved.valid) {
+        return;
+    }
+    partIdentifiers[gid] = resolved.partIdentifier;
+    wallVelocity[gid] = resolved.wallVelocity;
+}
+
+/// Production-flow variant of the accepted indexed resolver. In addition to
+/// occupancy and wall velocity, newly covered cells preserve their previous
+/// fluid density and momentum before the link table reuses solid-population
+/// slots. This is the topology-transfer contract consumed by stepFluidTRT.
+kernel void resolveIndexedBirdSurfaceForFlow(
+    device uchar* partIdentifiers [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device const uchar* solidPrevious [[buffer(2)]],
+    device const GPUPreparedMeasuredWingPoint* prepared [[buffer(3)]],
+    device const ushort* triangleIndices [[buffer(4)]],
+    device const uchar* trianglePartIdentifiers [[buffer(5)]],
+    device const atomic_uint* distanceKeys [[buffer(6)]],
+    constant GPUIndexedBirdSurfaceParameters& surface [[buffer(7)]],
+    constant GPUUniforms& uniforms [[buffer(8)]],
+    device const float* previousPopulations [[buffer(9)]],
+    device float4* coveredFluidMomentum [[buffer(10)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    IndexedBirdSurfaceCellResolution resolved = resolveIndexedBirdSurfaceCell(
+        prepared,
+        triangleIndices,
+        trianglePartIdentifiers,
+        distanceKeys,
+        surface,
+        uniforms,
+        gid
+    );
+    if (!resolved.valid) {
+        return;
+    }
+    bool wasSolid = uniforms.flags.z != 0u && solidPrevious[gid] != 0;
+    partIdentifiers[gid] = resolved.partIdentifier;
+    wallVelocity[gid] = resolved.wallVelocity;
+    if (resolved.isSolid && uniforms.flags.z != 0u && !wasSolid) {
+        float previousDensity = 0.0f;
+        float3 previousMomentum = float3(0);
+        for (uint q = 0u; q < Q; ++q) {
+            float previous = previousPopulations[q * uniforms.grid.w + gid];
+            previousDensity += previous;
+            previousMomentum += previous * float3(C[q]);
+        }
+        coveredFluidMomentum[gid] = float4(
+            previousMomentum,
+            previousDensity
+        );
+    }
 }
 
 inline void considerMeasuredTriangle(

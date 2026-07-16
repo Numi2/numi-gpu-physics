@@ -128,7 +128,7 @@ private struct Arguments {
     Measured prescribed replay:
       birdflow replay measured-bird --input DATASET.json [--audit-only] [--json]
       birdflow replay measured-wing --input SURFACE.json [--fluid-cycle] [--json]
-      birdflow replay measured-bird-surface --input MANIFEST.json [--archive FILE] [--json]
+      birdflow replay measured-bird-surface --input MANIFEST.json [--coupling-gate] [--archive FILE] [--json]
     """
 }
 
@@ -137,6 +137,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var archivePath: String?
     var cellSizeMeters: Float = 0.01
     var halfThicknessCells: Float = 0.75
+    var couplingGate = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -180,6 +181,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
                     )
                 }
                 halfThicknessCells = value
+            case "--coupling-gate":
+                couplingGate = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -204,6 +207,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
 
       --cell-size-meters V      Geometry-audit cell size (default: 0.01)
       --half-thickness-cells V  Sheet half-thickness (default: 0.75)
+      --coupling-gate            Run the short production fluid/impulse gate
       --archive FILE            Atomically archive the parity report as JSON
       --json                    Emit the machine-readable parity report
     """
@@ -1774,6 +1778,41 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
         manifestURL: URL(fileURLWithPath: arguments.inputPath!)
     )
+    if arguments.couplingGate {
+        let report = try MetalIndexedBirdSurfaceCouplingValidator.audit(
+            dataset,
+            cellSizeMeters: arguments.cellSizeMeters,
+            halfThicknessCells: arguments.halfThicknessCells
+        )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("device: \(report.deviceName)")
+            print("steps: \(report.steps)")
+            print("runtime_s: \(report.runtimeSeconds)")
+            print("covered_cells: \(report.newlyCoveredCellEvents)")
+            print("uncovered_cells: \(report.newlyUncoveredCellEvents)")
+            print(
+                "persistent_boundary_links: "
+                    + String(report.persistentBoundaryLinkEvents)
+            )
+            print(
+                "relative_rms_boundary_residual: "
+                    + String(report.relativeRMSBoundaryClosureResidual)
+            )
+            print("passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "indexed Metal production coupling gate failed"
+            )
+        }
+        return
+    }
     let report = try MetalIndexedBirdSurfaceValidator.audit(
         dataset,
         cellSizeMeters: arguments.cellSizeMeters,
