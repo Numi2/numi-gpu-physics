@@ -493,6 +493,84 @@ public struct MetalIndexedBirdSurfaceCollisionGridCompletionReport:
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfacePopulationStageSample:
+    Codable, Sendable
+{
+    public let step: Int
+    public let sourceTimeSeconds: Double
+    public let cellCoordinate: SIMD3<Int>
+    public let cellLinearIndex: Int
+    public let direction: Int
+    public let topologyBranch: String
+    public let wasSolid: Bool
+    public let isSolid: Bool
+    public let selectedSourcePartIdentifier: Int
+    public let preStepPopulation: Double
+    public let reconstructedDirectionPopulation: Double
+    public let reconstructedPopulations: [Double]
+    public let minimumReconstructedPopulation: Double
+    public let farFieldDirections: [Int]
+    public let movingBoundaryDirections: [Int]
+    public let localFluidDirections: [Int]
+    public let nonFiniteReconstructionDirections: [Int]
+    public let reconstructedDensity: Double
+    public let reconstructedVelocityLattice: SIMD3<Double>
+    public let reconstructedSpeedLattice: Double
+    public let reconstructedLatticeMach: Double
+    public let restEquilibriumPositivitySpeedLimit: Double
+    public let equilibriumDirectionPopulation: Double
+    public let regularizedNonequilibriumDirectionPopulation: Double
+    public let unboundedPostCollisionDirectionPopulation: Double
+    public let positivityScale: Double
+    public let populationFloor: Double
+    public let postCollisionDirectionPopulation: Double
+    public let spongeFactor: Double
+    public let predictedPostSpongeDirectionPopulation: Double
+    public let actualOutputDirectionPopulation: Double
+    public let predictionAbsoluteError: Double
+}
+
+public struct MetalIndexedBirdSurfacePopulationStageProvenanceReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let targetCellCoordinate: SIMD3<Int>
+    public let targetCellLinearIndex: Int
+    public let targetDirection: Int
+    public let capturedSteps: [Int]
+    public let diagnosticKernelSequence: [String]
+    public let productionStateModifiedByDiagnostic: Bool
+    public let maximumAllowedPredictionAbsoluteError: Double
+    public let maximumPredictionAbsoluteError: Double
+    public let replayFirstNegativePopulationStep: Int?
+    public let replayFirstNegativePopulationDirection: Int?
+    public let replayFirstNegativePopulationCellCoordinate: SIMD3<Int>?
+    public let firstNegativeCapturedStage: String?
+    public let firstNegativeCapturedStep: Int?
+    public let selectedDirectionRemainedPositiveThroughReconstructionAtFailure:
+        Bool
+    public let negativeReconstructedDirectionsAtFailure: [Int]
+    public let negativeMovingBoundaryReconstructedDirectionsAtFailure: [Int]
+    public let upstreamMovingBoundaryReconstructionPresentAtFailure: Bool
+    public let targetDirectionMovingBoundaryReconstructedAtFailure: Bool
+    public let topologyRefillAtFailure: Bool
+    public let farFieldUsedAtFailure: Bool
+    public let spongeUsedAtFailure: Bool
+    public let equilibriumReferencePositiveAtFailure: Bool
+    public let provenanceGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let samples: [MetalIndexedBirdSurfacePopulationStageSample]
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -993,6 +1071,331 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                     + "ladder. Experimental comparison remains disabled at "
                     + "the declared 68.07x viscosity floor, regardless of "
                     + "the spatial trend."
+            )
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionGridPopulationStageProvenance(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration:
+            MetalIndexedBirdSurfaceCollisionGridPreregistration,
+        discriminator:
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport,
+        completion:
+            MetalIndexedBirdSurfaceCollisionGridCompletionReport
+    ) throws -> MetalIndexedBirdSurfacePopulationStageProvenanceReport {
+        let expected = try collisionGridPreregistration(
+            surface: surface,
+            target: target
+        )
+        guard preregistration == expected,
+              discriminator.preregistration == preregistration,
+              discriminator.screeningGatePassed,
+              discriminator.d16CompletionAuthorized,
+              let selected = discriminator.selectedCollisionOperator,
+              selected == completion.selectedCollisionOperator,
+              selected == MetalIndexedBirdSurfaceCollisionOperator
+                .positivityPreservingRecursiveRegularizedBGK.rawValue,
+              completion.completionReferenceLengthCells
+                == preregistration.completionReferenceLengthCells,
+              !completion.completionGatePassed,
+              completion.d16Case.collisionOperator == selected,
+              let failureStep = completion.d16Case.report
+                .firstNegativePopulationStep,
+              let failureDirection = completion.d16Case.report
+                .firstNegativePopulationDirection,
+              let failureCoordinate = completion.d16Case.report
+                .firstNegativePopulationCellCoordinate,
+              failureStep == completion.d16Case.report.completedFluidSteps,
+              failureStep > 4,
+              (0..<D3Q19.count).contains(failureDirection) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "population provenance requires the locked failed RR3 D=16 completion"
+            )
+        }
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let referenceLengthCells = preregistration
+            .completionReferenceLengthCells
+        let plan = try refinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: referenceLengthCells
+        )
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        guard failureCoordinate.x >= 0,
+              failureCoordinate.y >= 0,
+              failureCoordinate.z >= 0,
+              failureCoordinate.x < replay.grid.x,
+              failureCoordinate.y < replay.grid.y,
+              failureCoordinate.z < replay.grid.z else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "failed D=16 population coordinate is outside the replay grid"
+            )
+        }
+        let targetCell = failureCoordinate.x
+            + replay.grid.x * (
+                failureCoordinate.y + replay.grid.y * failureCoordinate.z
+            )
+        guard targetCell == completion.d16Case.report
+            .firstNegativePopulationLinearIndex.map({
+                $0 % replay.grid.cellCount
+            }) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "failed D=16 population coordinate and linear index disagree"
+            )
+        }
+        let capturedSteps = Array((failureStep - 4)...failureStep)
+        let capture = try MetalIndexedPopulationStageCapture(
+            backend: backend,
+            capturedSteps: capturedSteps,
+            targetCellLinearIndex: targetCell,
+            targetDirection: failureDirection
+        )
+        let replayReport = try replay.runCoarseForcePilot(
+            target: target,
+            plan: plan,
+            collisionOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            maximumFluidSteps: failureStep,
+            populationDiagnosticStride: 1,
+            stopAtFirstNegativePopulation: true,
+            populationStageCapture: capture
+        )
+        let rawRecords = capture.readRecords()
+        let topologyBranches = [
+            "persistent-fluid-reconstruction",
+            "newly-uncovered-equilibrium-refill",
+            "solid-equilibrium-write",
+        ]
+        func directions(_ mask: UInt32) -> [Int] {
+            (0..<D3Q19.count).filter {
+                mask & (UInt32(1) << UInt32($0)) != 0
+            }
+        }
+        func reconstructed(_ raw: GPUIndexedPopulationStageProvenance)
+            -> [Double]
+        {
+            let packed = [
+                raw.reconstructed0, raw.reconstructed1,
+                raw.reconstructed2, raw.reconstructed3,
+                raw.reconstructed4,
+            ]
+            return packed.flatMap { value in
+                [value.x, value.y, value.z, value.w].map(Double.init)
+            }.prefix(D3Q19.count).map { $0 }
+        }
+        let soundSpeed = sqrt(1.0 / 3.0)
+        let restPositivitySpeedLimit = sqrt(2.0 / 3.0)
+        let samples = rawRecords.map { raw in
+            let step = Int(raw.metadata.x)
+            let branchIndex = Int(raw.metadata.w)
+            let actual = Double(raw.extrema.w)
+            let predicted = Double(raw.output.w)
+            return MetalIndexedBirdSurfacePopulationStageSample(
+                step: step,
+                sourceTimeSeconds: Double(surface.frameTimesSeconds[0])
+                    + Double(step) * plan.fluidTimeStepSeconds,
+                cellCoordinate: failureCoordinate,
+                cellLinearIndex: Int(raw.metadata.y),
+                direction: Int(raw.metadata.z),
+                topologyBranch: topologyBranches.indices.contains(branchIndex)
+                    ? topologyBranches[branchIndex] : "unknown",
+                wasSolid: raw.state.x != 0,
+                isSolid: raw.state.y != 0,
+                selectedSourcePartIdentifier: Int(raw.state.z),
+                preStepPopulation: Double(raw.preReconstruction.x),
+                reconstructedDirectionPopulation:
+                    Double(raw.preReconstruction.y),
+                reconstructedPopulations: reconstructed(raw),
+                minimumReconstructedPopulation: Double(raw.extrema.x),
+                farFieldDirections: directions(raw.sourceMasks.x),
+                movingBoundaryDirections: directions(raw.sourceMasks.y),
+                localFluidDirections: directions(raw.sourceMasks.z),
+                nonFiniteReconstructionDirections:
+                    directions(raw.sourceMasks.w),
+                reconstructedDensity: Double(raw.preReconstruction.z),
+                reconstructedVelocityLattice: SIMD3<Double>(
+                    Double(raw.macroscopic.x),
+                    Double(raw.macroscopic.y),
+                    Double(raw.macroscopic.z)
+                ),
+                reconstructedSpeedLattice: Double(raw.preReconstruction.w),
+                reconstructedLatticeMach:
+                    Double(raw.preReconstruction.w) / soundSpeed,
+                restEquilibriumPositivitySpeedLimit:
+                    restPositivitySpeedLimit,
+                equilibriumDirectionPopulation: Double(raw.collision.x),
+                regularizedNonequilibriumDirectionPopulation:
+                    Double(raw.collision.y),
+                unboundedPostCollisionDirectionPopulation:
+                    Double(raw.collision.z),
+                positivityScale: Double(raw.collision.w),
+                populationFloor: Double(raw.output.x),
+                postCollisionDirectionPopulation: Double(raw.output.y),
+                spongeFactor: Double(raw.output.z),
+                predictedPostSpongeDirectionPopulation: predicted,
+                actualOutputDirectionPopulation: actual,
+                predictionAbsoluteError: abs(predicted - actual)
+            )
+        }
+        let predictionTolerance = 1.0e-7
+        let maximumPredictionError = samples.map(
+            \.predictionAbsoluteError
+        ).max() ?? .infinity
+        let failureSample = samples.first {
+            $0.actualOutputDirectionPopulation < 0
+        }
+        let negativeStage: String? = failureSample.map { sample in
+            if sample.reconstructedDirectionPopulation < 0 {
+                return "reconstruction"
+            }
+            if sample.postCollisionDirectionPopulation < 0 {
+                return "post-collision"
+            }
+            if sample.predictedPostSpongeDirectionPopulation < 0 {
+                return "post-sponge"
+            }
+            return "production-output-unexplained"
+        }
+        let replayMatchesCompletion = replayReport.completedFluidSteps
+                == failureStep
+            && replayReport.firstNegativePopulationStep == failureStep
+            && replayReport.firstNegativePopulationDirection
+                == failureDirection
+            && replayReport.firstNegativePopulationCellCoordinate
+                == failureCoordinate
+        let recordsComplete = samples.map(\.step) == capturedSteps
+            && samples.allSatisfy {
+                $0.cellLinearIndex == targetCell
+                    && $0.direction == failureDirection
+                    && $0.nonFiniteReconstructionDirections.isEmpty
+                    && $0.predictionAbsoluteError <= predictionTolerance
+            }
+        let priorCapturedOutputsPositive = samples.dropLast().allSatisfy {
+            $0.actualOutputDirectionPopulation > 0
+        }
+        let gatePassed = replayMatchesCompletion
+            && recordsComplete
+            && priorCapturedOutputsPositive
+            && failureSample?.step == failureStep
+            && negativeStage != nil
+        let upstreamBoundary = failureSample.map {
+            !$0.movingBoundaryDirections.isEmpty
+        } ?? false
+        let negativeReconstructedDirections = failureSample.map { sample in
+            sample.reconstructedPopulations.enumerated().compactMap {
+                $0.element < 0 ? $0.offset : nil
+            }
+        } ?? []
+        let negativeBoundaryDirections = failureSample.map { sample in
+            negativeReconstructedDirections.filter {
+                sample.movingBoundaryDirections.contains($0)
+            }
+        } ?? []
+        let targetBoundary = failureSample.map {
+            $0.movingBoundaryDirections.contains(failureDirection)
+        } ?? false
+        let topologyRefill = failureSample?.topologyBranch
+            == "newly-uncovered-equilibrium-refill"
+        let farFieldUsed = failureSample.map {
+            !$0.farFieldDirections.isEmpty
+        } ?? false
+        let spongeUsed = (failureSample?.spongeFactor ?? 0) > 0
+        let equilibriumPositive = (
+            failureSample?.equilibriumDirectionPopulation ?? -.infinity
+        ) > 0
+        let verdict: String
+        if negativeStage == "post-collision" && !equilibriumPositive {
+            verdict = (
+                "Moving-boundary reconstruction already produces negative "
+                    + "incoming directions "
+                    + String(describing: negativeBoundaryDirections)
+                    + ", while selected direction 0 remains positive. RR3 "
+                    + "then first writes direction 0 negative at "
+                    + "collision because the reconstructed local speed makes "
+                    + "the direction-0 equilibrium itself negative. A zero "
+                    + "positivity scale returns that inadmissible equilibrium; "
+                    + "topology refill, far field, and sponge are not the "
+                    + "target-direction writer."
+            )
+        } else {
+            verdict = (
+                "The sparse production-parity capture classified the first "
+                    + "negative selected population at stage "
+                    + (negativeStage ?? "unresolved") + "."
+            )
+        }
+        return MetalIndexedBirdSurfacePopulationStageProvenanceReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            selectedCollisionOperator: selected,
+            referenceLengthCells: referenceLengthCells,
+            targetCellCoordinate: failureCoordinate,
+            targetCellLinearIndex: targetCell,
+            targetDirection: failureDirection,
+            capturedSteps: capturedSteps,
+            diagnosticKernelSequence: [
+                "captureIndexedPopulationStageProvenanceBeforeStep",
+                "stepFluidTRT (production, unmodified)",
+                "captureIndexedPopulationStageProvenanceAfterStep",
+            ],
+            productionStateModifiedByDiagnostic: false,
+            maximumAllowedPredictionAbsoluteError: predictionTolerance,
+            maximumPredictionAbsoluteError: maximumPredictionError,
+            replayFirstNegativePopulationStep:
+                replayReport.firstNegativePopulationStep,
+            replayFirstNegativePopulationDirection:
+                replayReport.firstNegativePopulationDirection,
+            replayFirstNegativePopulationCellCoordinate:
+                replayReport.firstNegativePopulationCellCoordinate,
+            firstNegativeCapturedStage: negativeStage,
+            firstNegativeCapturedStep: failureSample?.step,
+            selectedDirectionRemainedPositiveThroughReconstructionAtFailure:
+                (failureSample?.reconstructedDirectionPopulation ?? -.infinity)
+                    > 0,
+            negativeReconstructedDirectionsAtFailure:
+                negativeReconstructedDirections,
+            negativeMovingBoundaryReconstructedDirectionsAtFailure:
+                negativeBoundaryDirections,
+            upstreamMovingBoundaryReconstructionPresentAtFailure:
+                upstreamBoundary,
+            targetDirectionMovingBoundaryReconstructedAtFailure:
+                targetBoundary,
+            topologyRefillAtFailure: topologyRefill,
+            farFieldUsedAtFailure: farFieldUsed,
+            spongeUsedAtFailure: spongeUsed,
+            equilibriumReferencePositiveAtFailure: equilibriumPositive,
+            provenanceGatePassed: gatePassed,
+            experimentalAgreementGateApplied: false,
+            samples: samples,
+            scientificVerdict: verdict,
+            claimBoundary: (
+                "This diagnostic identifies the first writer of the retained "
+                    + "D=16 numerical failure. It does not prove that upstream "
+                    + "moving-boundary inputs are physically correct, repair "
+                    + "the operator, authorize another refinement run, or "
+                    + "establish experimental agreement."
             )
         )
 #else
@@ -2087,6 +2490,137 @@ private final class IndexedControlVolumeDiagnosticResources {
     }
 }
 
+private final class MetalIndexedPopulationStageCapture {
+    let capturedSteps: [Int]
+    let targetCellLinearIndex: Int
+    let targetDirection: Int
+
+    private let backend: MetalBackend
+    private let stepIndices: [Int: Int]
+    private let records: MTLBuffer
+    private let beforePipeline: MTLComputePipelineState
+    private let afterPipeline: MTLComputePipelineState
+
+    init(
+        backend: MetalBackend,
+        capturedSteps: [Int],
+        targetCellLinearIndex: Int,
+        targetDirection: Int
+    ) throws {
+        guard !capturedSteps.isEmpty,
+              Set(capturedSteps).count == capturedSteps.count,
+              capturedSteps.allSatisfy({ $0 > 0 }),
+              targetCellLinearIndex >= 0,
+              (0..<D3Q19.count).contains(targetDirection) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "population-stage capture request is invalid"
+            )
+        }
+        self.backend = backend
+        self.capturedSteps = capturedSteps.sorted()
+        self.targetCellLinearIndex = targetCellLinearIndex
+        self.targetDirection = targetDirection
+        stepIndices = Dictionary(uniqueKeysWithValues:
+            self.capturedSteps.enumerated().map { ($0.element, $0.offset) }
+        )
+        let byteCount = self.capturedSteps.count
+            * MemoryLayout<GPUIndexedPopulationStageProvenance>.stride
+        try backend.validateAllocationPlan(bufferLengths: [byteCount])
+        records = try backend.makeSharedBuffer(length: byteCount)
+        records.label = "Indexed population stage provenance"
+        memset(records.contents(), 0, byteCount)
+        beforePipeline = try backend.pipeline(
+            named: "captureIndexedPopulationStageProvenanceBeforeStep"
+        )
+        afterPipeline = try backend.pipeline(
+            named: "captureIndexedPopulationStageProvenanceAfterStep"
+        )
+    }
+
+    func encodeBefore(
+        commandBuffer: MTLCommandBuffer,
+        step: Int,
+        populationsIn: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let sampleIndex = stepIndices[step] else { return }
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode indexed population stage provenance."
+            )
+        }
+        var target = SIMD4<UInt32>(
+            UInt32(targetCellLinearIndex),
+            UInt32(targetDirection),
+            UInt32(step),
+            UInt32(sampleIndex)
+        )
+        encoder.label = "Indexed population provenance before fluid step"
+        encoder.setBuffer(populationsIn, offset: 0, index: 0)
+        encoder.setBuffer(solidPrevious, offset: 0, index: 1)
+        encoder.setBuffer(solidCurrent, offset: 0, index: 2)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 3)
+        encoder.setBuffer(records, offset: 0, index: 4)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 5
+        )
+        encoder.setBytes(
+            &target,
+            length: MemoryLayout<SIMD4<UInt32>>.stride,
+            index: 6
+        )
+        backend.dispatch1D(encoder: encoder, pipeline: beforePipeline, count: 1)
+        encoder.endEncoding()
+    }
+
+    func encodeAfter(
+        commandBuffer: MTLCommandBuffer,
+        step: Int,
+        populationsOut: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let sampleIndex = stepIndices[step] else { return }
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode indexed population output provenance."
+            )
+        }
+        var target = SIMD4<UInt32>(
+            UInt32(targetCellLinearIndex),
+            UInt32(targetDirection),
+            UInt32(step),
+            UInt32(sampleIndex)
+        )
+        encoder.label = "Indexed population provenance after fluid step"
+        encoder.setBuffer(populationsOut, offset: 0, index: 0)
+        encoder.setBuffer(records, offset: 0, index: 1)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 2
+        )
+        encoder.setBytes(
+            &target,
+            length: MemoryLayout<SIMD4<UInt32>>.stride,
+            index: 3
+        )
+        backend.dispatch1D(encoder: encoder, pipeline: afterPipeline, count: 1)
+        encoder.endEncoding()
+    }
+
+    func readRecords() -> [GPUIndexedPopulationStageProvenance] {
+        let pointer = records.contents().assumingMemoryBound(
+            to: GPUIndexedPopulationStageProvenance.self
+        )
+        return capturedSteps.indices.map { pointer[$0] }
+    }
+}
+
 private final class MetalIndexedBirdSurfaceReplay {
     struct Snapshot {
         let prepared: [GPUPreparedMeasuredWingPoint]
@@ -2968,7 +3502,8 @@ private final class MetalIndexedBirdSurfaceReplay {
             .productionTRT,
         maximumFluidSteps: Int? = nil,
         populationDiagnosticStride: Int = 16,
-        stopAtFirstNegativePopulation: Bool = false
+        stopAtFirstNegativePopulation: Bool = false,
+        populationStageCapture: MetalIndexedPopulationStageCapture? = nil
     ) throws -> MetalIndexedBirdSurfacePilotReport {
         let started = Date()
         let requestedFluidSteps = maximumFluidSteps ?? plan.totalFluidSteps
@@ -3164,6 +3699,15 @@ private final class MetalIndexedBirdSurfaceReplay {
                 uniforms: &uniforms,
                 pipeline: linkPipeline
             )
+            try populationStageCapture?.encodeBefore(
+                commandBuffer: commandBuffer,
+                step: step,
+                populationsIn: populationsIn,
+                solidPrevious: solidPrevious,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                uniforms: &uniforms
+            )
             try encodeCouplingFluid(
                 commandBuffer: commandBuffer,
                 populationsIn: populationsIn,
@@ -3175,6 +3719,12 @@ private final class MetalIndexedBirdSurfaceReplay {
                 bodyState: bodyState,
                 uniforms: &uniforms,
                 pipeline: fluidPipeline
+            )
+            try populationStageCapture?.encodeAfter(
+                commandBuffer: commandBuffer,
+                step: step,
+                populationsOut: populationsOut,
+                uniforms: &uniforms
             )
             let reducedLoad = try encodeCouplingForceReduction(
                 commandBuffer: commandBuffer,
@@ -4360,6 +4910,22 @@ private final class MetalIndexedBirdSurfaceReplay {
             )
         }
     }
+}
+
+private struct GPUIndexedPopulationStageProvenance {
+    var preReconstruction: SIMD4<Float>
+    var macroscopic: SIMD4<Float>
+    var collision: SIMD4<Float>
+    var output: SIMD4<Float>
+    var extrema: SIMD4<Float>
+    var reconstructed0: SIMD4<Float>
+    var reconstructed1: SIMD4<Float>
+    var reconstructed2: SIMD4<Float>
+    var reconstructed3: SIMD4<Float>
+    var reconstructed4: SIMD4<Float>
+    var metadata: SIMD4<UInt32>
+    var sourceMasks: SIMD4<UInt32>
+    var state: SIMD4<UInt32>
 }
 
 private struct GPUIndexedPopulationMinimum {

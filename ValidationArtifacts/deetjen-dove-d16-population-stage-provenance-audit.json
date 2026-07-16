@@ -1,0 +1,46 @@
+{
+  "auditPassed": true,
+  "checks": {
+    "captureWindow": true,
+    "claimBoundary": true,
+    "diagnosticDoesNotModifyProduction": true,
+    "failureMatchesCompletion": true,
+    "inadmissibleEquilibriumReference": true,
+    "independentRR3Reconstruction": true,
+    "lockedFailureTarget": true,
+    "otherWritersExcludedForDirectionZero": true,
+    "priorCapturedOutputsPositive": true,
+    "productionPredictionClosure": true,
+    "schema": true,
+    "selectedDirectionFirstWrittenNegativeByCollision": true,
+    "upstreamBoundaryNegativity": true
+  },
+  "claimBoundary": "This audit independently reconstructs moments, equilibrium, RR3 regularization, positivity scaling, and the selected population. It identifies the retained numerical failure but does not repair or validate the upstream moving-boundary reconstruction.",
+  "completionSHA256": "aecea776e484241c4dd4d13156a2618477fdee8886de5a3bff46a7657cff0bbb",
+  "failureReconstruction": {
+    "actualDirectionZero": -0.003425966016948223,
+    "density": 0.019671823785756715,
+    "equilibriumDirectionZero": -0.0034259662130195273,
+    "latticeMach": 1.7449743810743439,
+    "positivityScale": 0.0,
+    "postCollisionDirectionZero": -0.0034259662130195273,
+    "restEquilibriumPositivitySpeedLimit": 0.816496580927726,
+    "speedLattice": 1.0074614998906002,
+    "velocityLattice": [
+      0.6436475645555007,
+      0.5072650173986859,
+      0.5859852289325229
+    ]
+  },
+  "failureStep": 751,
+  "negativeMovingBoundaryReconstructedDirections": [
+    2,
+    8,
+    12,
+    13,
+    16
+  ],
+  "provenanceSHA256": "732ff3056dc66acda3a0244eab66322008a182fd00f3b366f083f3d03e68380a",
+  "schemaVersion": 1,
+  "selectedDirectionFirstNegativeStage": "post-collision"
+}

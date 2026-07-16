@@ -348,6 +348,20 @@ cell `[64,63,68]`, `0.2151` cells from the surface, before any force-comparison
 sample. The independent audit preserves this negative result and confirms that
 no D12-to-D16 force metric is available.
 
+A sparse stage-provenance replay then reproduces the same D=16 failure while
+capturing only cell `[64,63,68]`, direction 0, at steps `747...751`. The
+diagnostic prediction matches the production output exactly. At step 751 the
+selected population is positive before and after reconstruction, while five
+moving-boundary-reconstructed directions (`2, 8, 12, 13, 16`) are already
+negative. They produce reconstructed lattice speed `1.007461`, above the
+direction-0 equilibrium positivity limit `0.816497`. The RR3 limiter scale
+therefore reaches zero but returns a negative equilibrium, so collision first
+writes direction 0 as `-0.003425966`. Persistent-fluid topology, zero sponge,
+and no far-field use exclude the other fused stages for the selected write.
+The independent audit reconstructs the entire RR3 chain from the archived 19
+incoming populations. This identifies the numerical failure path; it does not
+yet validate or repair the upstream moving-boundary terms.
+
 ## Reproducible acquisition
 
 The default command is read-only. It verifies the Dryad/Zenodo identity,

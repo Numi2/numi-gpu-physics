@@ -66,6 +66,8 @@ REQUIRED_KERNELS = {
     "storeForceTorqueSample",
     "storeRunSample",
     "gatherFloatValues",
+    "captureIndexedPopulationStageProvenanceBeforeStep",
+    "captureIndexedPopulationStageProvenanceAfterStep",
     "reducePopulationMinimum",
     "captureTRTCollisionDecomposition",
     "captureSymmetricLimiterLedger",
@@ -411,6 +413,8 @@ def main() -> int:
         "private func encodeRuntimeSafetyMonitor(": 5,
         "private func encodeRunSample(": 6,
         "private func encodeExtractedMacroscopicFields(": 4,
+        "func encodeBefore(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 7,
+        "func encodeAfter(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 4,
     }
     for declaration, count in expected_swift_bindings.items():
         body = extract_braced_body(swift, declaration)
@@ -470,6 +474,8 @@ def main() -> int:
         "storeForceTorqueSample": 3,
         "storeRunSample": 6,
         "gatherFloatValues": 4,
+        "captureIndexedPopulationStageProvenanceBeforeStep": 7,
+        "captureIndexedPopulationStageProvenanceAfterStep": 4,
         "reducePopulationMinimum": 3,
         "captureTRTCollisionDecomposition": 8,
         "captureSymmetricLimiterLedger": 7,
@@ -597,6 +603,16 @@ def main() -> int:
             "private func encodeFluidStep(",
             ["currentPopulations", "nextPopulations", "currentSolidMask", "nextSolidMask", "wallVelocity", "density", "velocity", "reductionA", "bodyStateBuffer", "uniforms"],
             ["populationsIn", "populationsOut", "solidPrevious", "solidCurrent", "wallVelocity", "density", "velocity", "partialLoads", "body", "uniforms"],
+        ),
+        "captureIndexedPopulationStageProvenanceBeforeStep": (
+            "func encodeBefore(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,",
+            ["populationsIn", "solidPrevious", "solidCurrent", "wallVelocity", "records", "uniforms", "target"],
+            ["populationsIn", "solidPrevious", "solidCurrent", "wallVelocity", "records", "uniforms", "target"],
+        ),
+        "captureIndexedPopulationStageProvenanceAfterStep": (
+            "func encodeAfter(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,",
+            ["populationsOut", "records", "uniforms", "target"],
+            ["populationsOut", "records", "uniforms", "target"],
         ),
         "captureTRTCollisionDecomposition": (
             "private func encodeTRTCollisionDecomposition(",

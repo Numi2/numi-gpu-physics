@@ -130,7 +130,8 @@ private struct Arguments {
       birdflow replay measured-wing --input SURFACE.json [--fluid-cycle] [--json]
       birdflow replay measured-bird-surface --input MANIFEST.json \
         [--coupling-gate | --coarse-fluid-pilot | --collision-pre-roll-ab | \
-         --collision-momentum-closure | --collision-extended-pilot] \
+         --collision-momentum-closure | --collision-extended-pilot | \
+         --collision-grid-provenance] \
         [--force-target TARGET.json] \
         [--archive FILE] [--json]
     """
@@ -142,6 +143,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var archivePath: String?
     var preregistrationPath: String?
     var discriminatorPath: String?
+    var completionPath: String?
     var cellSizeMeters: Float = 0.01
     var halfThicknessCells: Float = 0.75
     var couplingGate = false
@@ -152,6 +154,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var collisionGridPreregister = false
     var collisionGridDiscriminator = false
     var collisionGridCompletion = false
+    var collisionGridProvenance = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -198,6 +201,14 @@ private struct MeasuredBirdSurfaceReplayArguments {
                     )
                 }
                 discriminatorPath = values[index]
+            case "--completion":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--completion requires a failed D=16 JSON path"
+                    )
+                }
+                completionPath = values[index]
             case "--cell-size-meters":
                 index += 1
                 guard index < values.count,
@@ -235,6 +246,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 collisionGridDiscriminator = true
             case "--collision-grid-completion":
                 collisionGridCompletion = true
+            case "--collision-grid-provenance":
+                collisionGridProvenance = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -256,7 +269,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
             couplingGate, coarseFluidPilot, collisionPreRollAB,
             collisionMomentumClosure, collisionExtendedPilot,
             collisionGridPreregister, collisionGridDiscriminator,
-            collisionGridCompletion
+            collisionGridCompletion, collisionGridProvenance
         ].filter { $0 }.count
         guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
@@ -266,28 +279,30 @@ private struct MeasuredBirdSurfaceReplayArguments {
         let needsForceTarget = coarseFluidPilot || collisionPreRollAB
             || collisionMomentumClosure || collisionExtendedPilot
             || collisionGridPreregister || collisionGridDiscriminator
-            || collisionGridCompletion
+            || collisionGridCompletion || collisionGridProvenance
         guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
                 "the coarse pilot and collision diagnostics require --force-target; other modes reject it"
             )
         }
-        guard collisionGridDiscriminator
-                == (preregistrationPath != nil
-                    && discriminatorPath == nil)
-                || (!collisionGridDiscriminator
-                    && !collisionGridCompletion
-                    && preregistrationPath == nil
-                    && discriminatorPath == nil)
-                || (collisionGridCompletion
-                    && preregistrationPath != nil
-                    && discriminatorPath != nil) else {
+        let contractPathsValid = collisionGridDiscriminator
+            ? preregistrationPath != nil
+                && discriminatorPath == nil && completionPath == nil
+            : collisionGridCompletion
+                ? preregistrationPath != nil
+                    && discriminatorPath != nil && completionPath == nil
+                : collisionGridProvenance
+                    ? preregistrationPath != nil
+                        && discriminatorPath != nil && completionPath != nil
+                    : preregistrationPath == nil
+                        && discriminatorPath == nil && completionPath == nil
+        guard contractPathsValid else {
             throw CLIError.invalidArgument(
-                "the grid discriminator requires --preregistration; completion requires both --preregistration and --discriminator"
+                "the grid discriminator requires --preregistration; completion requires --preregistration and --discriminator; provenance also requires --completion"
             )
         }
         if collisionGridPreregister || collisionGridDiscriminator
-            || collisionGridCompletion {
+            || collisionGridCompletion || collisionGridProvenance {
             guard cellSizeMeters == 0.01,
                   halfThicknessCells == 0.75 else {
                 throw CLIError.invalidArgument(
@@ -314,8 +329,11 @@ private struct MeasuredBirdSurfaceReplayArguments {
                                  Run both candidates at D=8/12 under --preregistration
       --collision-grid-completion
                                  Run only the authorized winner at D=16
+      --collision-grid-provenance
+                                 Replay the failed D=16 winner with sparse stage-resolved population capture
       --preregistration FILE     Locked grid preregistration JSON
       --discriminator FILE       Completed D=8/12 discriminator JSON
+      --completion FILE          Failed selected-operator D=16 completion JSON
       --force-target FILE        Registered measured two-component force target
       --archive FILE            Atomically archive the parity report as JSON
       --json                    Emit the machine-readable parity report
@@ -1975,6 +1993,74 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
         guard report.screeningGatePassed else {
             throw MeasuredBirdSurfaceSequenceError.invalidDataset(
                 "collision-grid discriminator did not authorize D=16"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridProvenance {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistration = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridPreregistration.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.preregistrationPath!
+            ))
+        )
+        let discriminator = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.discriminatorPath!
+            ))
+        )
+        let completion = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridCompletionReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.completionPath!
+            ))
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridPopulationStageProvenance(
+                surface: dataset,
+                target: target,
+                preregistration: preregistration,
+                discriminator: discriminator,
+                completion: completion
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print(
+                "target: cell=\(report.targetCellCoordinate) direction="
+                    + String(report.targetDirection)
+            )
+            print(
+                "first_negative_stage: "
+                    + (report.firstNegativeCapturedStage ?? "unresolved")
+            )
+            print(
+                "first_negative_step: "
+                    + (report.firstNegativeCapturedStep.map(String.init)
+                        ?? "unresolved")
+            )
+            print(
+                "maximum_prediction_error: "
+                    + String(report.maximumPredictionAbsoluteError)
+            )
+            print(
+                "provenance_gate_passed: "
+                    + String(report.provenanceGatePassed)
+            )
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.provenanceGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D=16 population-stage provenance did not close"
             )
         }
         return

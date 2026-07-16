@@ -168,6 +168,20 @@ negative direction-0 population `0.215` cells from the surface while loads
 remained finite. The negative result is independently audited; no second D=16
 operator or unavailable force-convergence value was substituted.
 
+The follow-up sparse provenance replay captures steps `747...751` at that cell
+without modifying production state. Its duplicate stage algebra predicts every
+actual RR3 direction-0 write bit-for-bit. At step 751, direction 0 is still
+positive after reconstruction (`0.005964`), but moving-boundary reconstruction
+has already made directions `2, 8, 12, 13, 16` negative. The resulting local
+speed is `1.00746` lattice units (Mach `1.74497`), beyond the direction-0
+equilibrium positivity limit `0.816497`. RR3's positivity scale collapses to
+zero and collision writes the negative equilibrium `-0.00342597`; topology
+refill, far field, and sponge are excluded. The archived capture and independent
+RR3 reconstruction are
+[`deetjen-dove-d16-population-stage-provenance.json`](ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json)
+and
+[`deetjen-dove-d16-population-stage-provenance-audit.json`](ValidationArtifacts/deetjen-dove-d16-population-stage-provenance-audit.json).
+
 ## Latest high-Re result
 
 <p align="center">

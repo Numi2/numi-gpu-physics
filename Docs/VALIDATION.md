@@ -1328,6 +1328,45 @@ arithmetic, single D=16 allocation, and absent convergence values. This rejects
 the measured-dove D=16 completion; it does not authorize regularized BGK at
 D=16 or experimental force comparison.
 
+Localize that retained failure without changing production populations:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-provenance \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --discriminator ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json \
+  --completion ValidationArtifacts/deetjen-dove-collision-grid-completion.json \
+  --archive ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json
+
+python3 Scripts/audit-dove-d16-population-provenance.py
+```
+
+The opt-in one-cell kernels run immediately before and after the unmodified
+production `stepFluidTRT` kernel at steps `747...751`. Their predicted
+direction-0 outputs equal the production outputs exactly at all five steps.
+At step 751, the pre-step and reconstructed direction-0 population remains
+positive at `0.00596387`, but moving-boundary reconstruction has already made
+directions `2, 8, 12, 13, 16` negative. The reconstructed velocity is
+`[0.643648, 0.507265, 0.585985]` lattice units, speed `1.007461` and lattice
+Mach `1.744974`. That exceeds the rest-population equilibrium positivity limit
+`sqrt(2/3) = 0.816497`; the direction-0 equilibrium is consequently
+`-0.003425966`. RR3's global positivity scale becomes zero, so collision
+returns that inadmissible equilibrium and writes the first negative retained
+population. The target direction uses local-fluid reconstruction and the cell
+is persistent fluid; far field, topology refill, and sponge are absent.
+
+The independent audit reconstructs density, velocity, all equilibrium values,
+the second- and recursive-third-order regularized moments, the global
+positivity scale, and the final selected population from the archived 19
+incoming values. All 13 checks pass. This locates the retained direction-0
+write at collision while preserving the important upstream fact that the
+moving-boundary reconstruction already contains negative incoming directions.
+It does not yet determine whether those negatives originate in the reflected
+population, wall correction, or interpolation residual, and it does not
+authorize a collision patch or another refinement run.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

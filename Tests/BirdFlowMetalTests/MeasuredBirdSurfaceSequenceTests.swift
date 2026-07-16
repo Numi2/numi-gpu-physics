@@ -270,7 +270,95 @@ func measuredBirdCollisionGridArtifactsRetainAuthorizedD16Failure() throws {
     #expect(!completion.experimentalAgreementGateApplied)
 }
 
+@Test
+func measuredBirdD16PopulationProvenanceRetainsFirstWriter() throws {
+    let report = try JSONDecoder().decode(
+        MetalIndexedBirdSurfacePopulationStageProvenanceReport.self,
+        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+            "ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json"
+        ))
+    )
+    #expect(report.selectedCollisionOperator
+        == "positivity-preserving-recursive-regularized-bgk")
+    #expect(report.referenceLengthCells == 16)
+    #expect(report.targetCellCoordinate == SIMD3(64, 63, 68))
+    #expect(report.targetDirection == 0)
+    #expect(report.capturedSteps == [747, 748, 749, 750, 751])
+    #expect(!report.productionStateModifiedByDiagnostic)
+    #expect(report.maximumPredictionAbsoluteError == 0)
+    #expect(report.firstNegativeCapturedStage == "post-collision")
+    #expect(report.firstNegativeCapturedStep == 751)
+    #expect(
+        report.selectedDirectionRemainedPositiveThroughReconstructionAtFailure
+    )
+    #expect(report.negativeReconstructedDirectionsAtFailure
+        == [2, 8, 12, 13, 16])
+    #expect(report.negativeMovingBoundaryReconstructedDirectionsAtFailure
+        == [2, 8, 12, 13, 16])
+    #expect(report.upstreamMovingBoundaryReconstructionPresentAtFailure)
+    #expect(!report.targetDirectionMovingBoundaryReconstructedAtFailure)
+    #expect(!report.topologyRefillAtFailure)
+    #expect(!report.farFieldUsedAtFailure)
+    #expect(!report.spongeUsedAtFailure)
+    #expect(!report.equilibriumReferencePositiveAtFailure)
+    #expect(report.provenanceGatePassed)
+    #expect(!report.experimentalAgreementGateApplied)
+    #expect(report.samples.count == 5)
+    let failure = try #require(report.samples.last)
+    #expect(failure.preStepPopulation > 0)
+    #expect(failure.reconstructedDirectionPopulation > 0)
+    #expect(failure.reconstructedSpeedLattice
+        > failure.restEquilibriumPositivitySpeedLimit)
+    #expect(failure.equilibriumDirectionPopulation < 0)
+    #expect(failure.positivityScale == 0)
+    #expect(failure.postCollisionDirectionPopulation < 0)
+    #expect(failure.actualOutputDirectionPopulation
+        == failure.postCollisionDirectionPopulation)
+    #expect(failure.predictionAbsoluteError == 0)
+}
+
 #if canImport(Metal)
+@Test
+func productionMetalD16PopulationProvenanceCloses() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridPopulationStageProvenance(
+            surface: surface,
+            target: target,
+            preregistration: try decode(
+                "deetjen-dove-collision-grid-preregistration.json",
+                as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+            ),
+            discriminator: try decode(
+                "deetjen-dove-collision-grid-discriminator.json",
+                as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+            ),
+            completion: try decode(
+                "deetjen-dove-collision-grid-completion.json",
+                as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+            )
+        )
+    #expect(report.provenanceGatePassed)
+    #expect(report.maximumPredictionAbsoluteError == 0)
+    #expect(report.firstNegativeCapturedStage == "post-collision")
+    #expect(report.negativeMovingBoundaryReconstructedDirectionsAtFailure
+        == [2, 8, 12, 13, 16])
+}
+
 @Test
 func measuredBirdCollisionCandidatesCloseIndependentMomentumBudgets() throws {
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(

@@ -193,6 +193,40 @@ struct GPUPopulationMinimum {
     uint nonFinite;
 };
 
+/// Sparse, opt-in provenance for one direction at one indexed-bird cell.
+/// The diagnostic replays the fused reconstruction/collision/sponge algebra
+/// without modifying solver state, then a second kernel records the actual
+/// production output. Float4/uint4-only packing mirrors the Swift readback.
+struct GPUIndexedPopulationStageProvenance {
+    // x=pre-step selected population, y=reconstructed selected population,
+    // z=reconstructed density, w=reconstructed speed.
+    float4 preReconstruction;
+    // xyz=reconstructed velocity; w=squared speed.
+    float4 macroscopic;
+    // x=selected equilibrium, y=selected regularized nonequilibrium,
+    // z=unbounded selected collision output, w=global positivity scale.
+    float4 collision;
+    // x=selected population floor, y=post-collision selected population,
+    // z=sponge factor, w=predicted post-sponge selected population.
+    float4 output;
+    // x=min reconstructed, y=min equilibrium, z=min unbounded collision,
+    // w=actual production output populated after stepFluidTRT.
+    float4 extrema;
+    float4 reconstructed0;
+    float4 reconstructed1;
+    float4 reconstructed2;
+    float4 reconstructed3;
+    float4 reconstructed4;
+    // x=step, y=cell linear index, z=direction, w=branch:
+    // 0 persistent fluid, 1 newly uncovered refill, 2 solid write.
+    uint4 metadata;
+    // Bit masks for far field, interpolated moving boundary, local fluid,
+    // and non-finite reconstruction directions respectively.
+    uint4 sourceMasks;
+    // x=was solid, y=is solid, z=selected source part, w=RR3 selected.
+    uint4 state;
+};
+
 /// One direction of a diagnostic-only TRT collision decomposition. Float4 and
 /// uint4 fields keep the layout identical to the Swift readback structure.
 struct GPUTRTCollisionTerm {
@@ -4304,6 +4338,362 @@ kernel void gatherFloatValues(
 ) {
     if (gid < count) {
         gathered[gid] = values[indices[gid]];
+    }
+}
+
+/// Diagnostic-only replay of the exact indexed-bird population path for one
+/// cell. It is dispatched only by the D=16 provenance command and never writes
+/// either population buffer or geometry state.
+kernel void captureIndexedPopulationStageProvenanceBeforeStep(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidPrevious [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device GPUIndexedPopulationStageProvenance* records [[buffer(4)]],
+    constant GPUUniforms& uniforms [[buffer(5)]],
+    constant uint4& target [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid != 0u || target.x >= uniforms.grid.w || target.y >= Q) {
+        return;
+    }
+
+    uint selectedCell = target.x;
+    uint selectedDirection = target.y;
+    uint3 size = uniforms.grid.xyz;
+    uint3 cell = unflatten(selectedCell, size);
+    bool wasSolid = solidPrevious[selectedCell] != 0;
+    bool isSolid = solidCurrent[selectedCell] != 0;
+    float f[19];
+    uint farFieldMask = 0u;
+    uint movingBoundaryMask = 0u;
+    uint localFluidMask = 0u;
+    uint nonFiniteMask = 0u;
+    uint selectedSourcePart = 0u;
+    uint branch = isSolid ? 2u : (wasSolid ? 1u : 0u);
+
+    if (isSolid || wasSolid) {
+        float3 localWall = wallVelocity[selectedCell].xyz;
+        for (uint q = 0u; q < Q; ++q) {
+            f[q] = equilibrium(q, 1.0f, localWall);
+            localFluidMask |= 1u << q;
+            if (!isfinite(f[q])) {
+                nonFiniteMask |= 1u << q;
+            }
+        }
+    }
+    else {
+        bool interiorDomain = cell.x > 0u
+            && cell.y > 0u
+            && cell.z > 0u
+            && cell.x + 1u < size.x
+            && cell.y + 1u < size.y
+            && cell.z + 1u < size.z;
+        for (uint q = 0u; q < Q; ++q) {
+            int3 sourceCell = int3(cell) - C[q];
+            float value;
+            bool useFarField = false;
+            if (!interiorDomain && !inside(sourceCell, size)) {
+                if (uniforms.flags.w != 0u) {
+                    sourceCell.x = sourceCell.x < 0
+                        ? int(size.x) - 1
+                        : (sourceCell.x >= int(size.x)
+                            ? 0 : sourceCell.x);
+                    sourceCell.y = sourceCell.y < 0
+                        ? int(size.y) - 1
+                        : (sourceCell.y >= int(size.y)
+                            ? 0 : sourceCell.y);
+                    sourceCell.z = sourceCell.z < 0
+                        ? int(size.z) - 1
+                        : (sourceCell.z >= int(size.z)
+                            ? 0 : sourceCell.z);
+                }
+                else {
+                    useFarField = true;
+                }
+            }
+
+            if (useFarField) {
+                value = equilibrium(
+                    q,
+                    uniforms.farFieldLattice.w,
+                    uniforms.farFieldLattice.xyz
+                );
+                farFieldMask |= 1u << q;
+            }
+            else {
+                uint source = flatten(uint3(sourceCell), size);
+                uchar sourcePart = solidCurrent[source];
+                if (q == selectedDirection) {
+                    selectedSourcePart = uint(sourcePart);
+                }
+                if (sourcePart != 0) {
+                    float reflected = populationsIn[
+                        OPP[q] * uniforms.grid.w + selectedCell
+                    ];
+                    float3 direction = float3(C[q]);
+                    float linkFraction = 0.5f;
+                    float3 wall = wallVelocity[source].xyz;
+                    uint farther = 0u;
+                    bool interpolatedBoundary =
+                        uniforms.caseParameters.w < -0.5f;
+                    if (interpolatedBoundary) {
+                        linkFraction = clamp(
+                            populationsIn[q * uniforms.grid.w + source],
+                            1.0e-4f,
+                            1.0f
+                        );
+                        wall = mix(
+                            wallVelocity[selectedCell].xyz,
+                            wallVelocity[source].xyz,
+                            linkFraction
+                        );
+                        if (linkFraction <= 0.5f) {
+                            int3 fartherCell = int3(cell) + C[q];
+                            if (inside(fartherCell, size)) {
+                                farther = flatten(uint3(fartherCell), size);
+                            }
+                            if (!inside(fartherCell, size)
+                                || solidCurrent[farther] != 0) {
+                                interpolatedBoundary = false;
+                                linkFraction = 0.5f;
+                                wall = wallVelocity[source].xyz;
+                            }
+                        }
+                    }
+                    float wallCorrection = 2.0f
+                        * W[q]
+                        * uniforms.farFieldLattice.w
+                        * dot(direction, wall)
+                        / CS2;
+                    value = reflected + wallCorrection;
+                    if (interpolatedBoundary) {
+                        if (linkFraction <= 0.5f) {
+                            float fartherOutgoing = populationsIn[
+                                OPP[q] * uniforms.grid.w + farther
+                            ];
+                            value = 2.0f * linkFraction * reflected
+                                + (1.0f - 2.0f * linkFraction)
+                                    * fartherOutgoing
+                                + wallCorrection;
+                        }
+                        else {
+                            float previousIncoming = populationsIn[
+                                q * uniforms.grid.w + selectedCell
+                            ];
+                            value = (reflected + wallCorrection)
+                                    / (2.0f * linkFraction)
+                                + (2.0f * linkFraction - 1.0f)
+                                    * previousIncoming
+                                    / (2.0f * linkFraction);
+                        }
+                    }
+                    movingBoundaryMask |= 1u << q;
+                }
+                else {
+                    value = populationsIn[q * uniforms.grid.w + source];
+                    localFluidMask |= 1u << q;
+                }
+            }
+            f[q] = value;
+            if (!isfinite(value)) {
+                nonFiniteMask |= 1u << q;
+            }
+        }
+    }
+
+    float rho = 0.0f;
+    float3 momentum = float3(0);
+    float minimumReconstructed = as_type<float>(0x7f800000u);
+    for (uint q = 0u; q < Q; ++q) {
+        rho += f[q];
+        momentum += f[q] * float3(C[q]);
+        minimumReconstructed = min(minimumReconstructed, f[q]);
+    }
+    rho = max(rho, 1.0e-8f);
+    float3 macroscopicVelocity = momentum / rho;
+    float speedSquared = dot(macroscopicVelocity, macroscopicVelocity);
+
+    float feq[19];
+    float minimumEquilibrium = as_type<float>(0x7f800000u);
+    for (uint q = 0u; q < Q; ++q) {
+        feq[q] = equilibrium(q, rho, macroscopicVelocity);
+        minimumEquilibrium = min(minimumEquilibrium, feq[q]);
+    }
+
+    float3 diagonalStress = float3(0);
+    float3 offDiagonalStress = float3(0);
+    for (uint q = 0u; q < Q; ++q) {
+        float3 direction = float3(C[q]);
+        float nonequilibrium = f[q] - feq[q];
+        diagonalStress += nonequilibrium * float3(
+            direction.x * direction.x - CS2,
+            direction.y * direction.y - CS2,
+            direction.z * direction.z - CS2
+        );
+        offDiagonalStress += nonequilibrium * float3(
+            direction.x * direction.y,
+            direction.x * direction.z,
+            direction.y * direction.z
+        );
+    }
+
+    float aXxy = 2.0f * macroscopicVelocity.x * offDiagonalStress.x
+        + macroscopicVelocity.y * diagonalStress.x;
+    float aXxz = 2.0f * macroscopicVelocity.x * offDiagonalStress.y
+        + macroscopicVelocity.z * diagonalStress.x;
+    float aXyy = macroscopicVelocity.x * diagonalStress.y
+        + 2.0f * macroscopicVelocity.y * offDiagonalStress.x;
+    float aXzz = macroscopicVelocity.x * diagonalStress.z
+        + 2.0f * macroscopicVelocity.z * offDiagonalStress.y;
+    float aYyz = 2.0f * macroscopicVelocity.y * offDiagonalStress.z
+        + macroscopicVelocity.z * diagonalStress.y;
+    float aYzz = macroscopicVelocity.y * diagonalStress.z
+        + 2.0f * macroscopicVelocity.z * offDiagonalStress.z;
+
+    float omegaPlus = uniforms.latticeAndSponge.x;
+    float unboundedPost[19];
+    float regularizedNonequilibrium[19];
+    float positivityScale = 1.0f;
+    float minimumUnbounded = as_type<float>(0x7f800000u);
+    constexpr float inverseTwoCS4 = 4.5f;
+    constexpr float inverseTwoCS6 = 13.5f;
+    for (uint q = 0u; q < Q; ++q) {
+        float3 direction = float3(C[q]);
+        float contraction = dot(
+            float3(
+                direction.x * direction.x - CS2,
+                direction.y * direction.y - CS2,
+                direction.z * direction.z - CS2
+            ),
+            diagonalStress
+        ) + 2.0f * dot(
+            float3(
+                direction.x * direction.y,
+                direction.x * direction.z,
+                direction.y * direction.z
+            ),
+            offDiagonalStress
+        );
+        float recursiveThirdOrder =
+            direction.y * (direction.x * direction.x - CS2) * aXxy
+            + direction.z * (direction.x * direction.x - CS2) * aXxz
+            + direction.x * (direction.y * direction.y - CS2) * aXyy
+            + direction.x * (direction.z * direction.z - CS2) * aXzz
+            + direction.z * (direction.y * direction.y - CS2) * aYyz
+            + direction.y * (direction.z * direction.z - CS2) * aYzz;
+        float regularized = W[q] * inverseTwoCS4 * contraction
+            + W[q] * inverseTwoCS6 * recursiveThirdOrder;
+        regularizedNonequilibrium[q] = regularized;
+        float candidate = feq[q]
+            + (1.0f - omegaPlus) * regularized;
+        unboundedPost[q] = candidate;
+        minimumUnbounded = min(minimumUnbounded, candidate);
+        float populationFloor = max(
+            1.0e-12f,
+            1.0e-6f * max(feq[q], 0.0f)
+        );
+        if (candidate < populationFloor) {
+            float admissible = clamp(
+                (feq[q] - populationFloor)
+                    / max(feq[q] - candidate, 1.0e-30f),
+                0.0f,
+                1.0f
+            );
+            positivityScale = min(positivityScale, admissible);
+        }
+    }
+
+    float selectedFloor = max(
+        1.0e-12f,
+        1.0e-6f * max(feq[selectedDirection], 0.0f)
+    );
+    float postCollision = feq[selectedDirection]
+        + positivityScale
+            * (unboundedPost[selectedDirection] - feq[selectedDirection]);
+    float sponge = spongeFactor(
+        cell,
+        size,
+        uniforms.latticeAndSponge.w,
+        uniforms.latticeAndSponge.z
+    );
+    float postSponge = postCollision;
+    if (sponge > 0.0f) {
+        float far = equilibrium(
+            selectedDirection,
+            uniforms.farFieldLattice.w,
+            uniforms.farFieldLattice.xyz
+        );
+        postSponge = mix(postSponge, far, sponge);
+    }
+    if (isSolid) {
+        positivityScale = 1.0f;
+        postCollision = f[selectedDirection];
+        sponge = 0.0f;
+        postSponge = postCollision;
+        unboundedPost[selectedDirection] = postCollision;
+        regularizedNonequilibrium[selectedDirection] = 0.0f;
+    }
+
+    GPUIndexedPopulationStageProvenance record;
+    record.preReconstruction = float4(
+        populationsIn[selectedDirection * uniforms.grid.w + selectedCell],
+        f[selectedDirection],
+        rho,
+        sqrt(max(speedSquared, 0.0f))
+    );
+    record.macroscopic = float4(macroscopicVelocity, speedSquared);
+    record.collision = float4(
+        feq[selectedDirection],
+        regularizedNonequilibrium[selectedDirection],
+        unboundedPost[selectedDirection],
+        positivityScale
+    );
+    record.output = float4(
+        selectedFloor,
+        postCollision,
+        sponge,
+        postSponge
+    );
+    record.extrema = float4(
+        minimumReconstructed,
+        minimumEquilibrium,
+        minimumUnbounded,
+        as_type<float>(0x7fc00000u)
+    );
+    record.reconstructed0 = float4(f[0], f[1], f[2], f[3]);
+    record.reconstructed1 = float4(f[4], f[5], f[6], f[7]);
+    record.reconstructed2 = float4(f[8], f[9], f[10], f[11]);
+    record.reconstructed3 = float4(f[12], f[13], f[14], f[15]);
+    record.reconstructed4 = float4(f[16], f[17], f[18], 0.0f);
+    record.metadata = uint4(target.z, selectedCell, selectedDirection, branch);
+    record.sourceMasks = uint4(
+        farFieldMask,
+        movingBoundaryMask,
+        localFluidMask,
+        nonFiniteMask
+    );
+    record.state = uint4(
+        wasSolid ? 1u : 0u,
+        isSolid ? 1u : 0u,
+        selectedSourcePart,
+        uniforms.caseParameters.w < -3.5f ? 1u : 0u
+    );
+    records[target.w] = record;
+}
+
+/// Completes the sparse provenance record with the actual production write.
+kernel void captureIndexedPopulationStageProvenanceAfterStep(
+    device const float* populationsOut [[buffer(0)]],
+    device GPUIndexedPopulationStageProvenance* records [[buffer(1)]],
+    constant GPUUniforms& uniforms [[buffer(2)]],
+    constant uint4& target [[buffer(3)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid == 0u && target.x < uniforms.grid.w && target.y < Q) {
+        records[target.w].extrema.w = populationsOut[
+            target.y * uniforms.grid.w + target.x
+        ];
     }
 }
 
