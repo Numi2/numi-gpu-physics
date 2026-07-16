@@ -1,0 +1,177 @@
+{
+  "auditIdentifier": "deetjen-ob-f03-force-registration-v1",
+  "checks": {
+    "derivedVerticalSignAndTiming": true,
+    "finiteMeasuredTargets": true,
+    "firstForceIndex": true,
+    "forceRate": true,
+    "forceSampleCount": true,
+    "lastForceIndex": true,
+    "nearestAndArithmeticIndicesAgree": true,
+    "nearestTimingResidual": true,
+    "qualifiedCodeLocks": true,
+    "qualifiedDataLocks": true,
+    "rightHandedFrameTransform": true,
+    "samplesPerKinematicsInterval": true,
+    "sourceEvidenceLocated": true,
+    "sourceTimeNormalization": true,
+    "surfaceHalfStepRegistration": true,
+    "trajectoryEstablishesPositiveWorldYAsForward": true
+  },
+  "claimBoundary": "This target contains only the deposited, source-processed horizontal and vertical external force on the bird. It does not supply lateral force, torque, per-wing loads, raw sensor uncertainty, or a CFD result.",
+  "gatePassed": true,
+  "generatedBy": "Scripts/register-dove-force-window.py",
+  "independentCrossChecks": {
+    "bodyTrajectorySourceWorldDisplacementMillimeters": [
+      -28.270992271014336,
+      188.99123781013907,
+      -29.79770097781858
+    ],
+    "maximumDerivedPerWingVerticalResidualNewtons": 0.0,
+    "positiveWorldYFractionOfTrajectoryDisplacement": 0.9771871987385256
+  },
+  "readiness": {
+    "coarsePrescribedMotionPilotReady": true,
+    "experimentalForceAcceptanceReady": false,
+    "remainingBeforeAcceptance": [
+      "one coarse prescribed-motion fluid pilot",
+      "five-flight OB repeatability and force-platform uncertainty",
+      "time-step refinement",
+      "8/12/16 spatial refinement"
+    ]
+  },
+  "registration": {
+    "birdFlowMeasuredVector": "[-FxWings,unmeasured,-FzWings]",
+    "determinant": 1.0,
+    "externalSourceWorldVector": "[unmeasured,-FxWings,-FzWings]",
+    "sourceWorldToBirdFlow": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "storedPlatformVector": "[FxWings,FzWings]"
+  },
+  "schemaVersion": 1,
+  "sourceCodeEvidence": {
+    "cameraFrameTimeEquation": {
+      "line": 199,
+      "text": "% ----------------- NOW WE HAVE AFP, MUS, SLS ALL SYNCED ------------ AFP_t, MUS_t, SLS_t=(frame#)/1000"
+    },
+    "cameraFrameZero": {
+      "line": 2,
+      "text": "% Camera frame 0 corresponds to time = 0s"
+    },
+    "cameraTimeEquation": {
+      "line": 166,
+      "text": "AFP_t = (0:AFP_dt:AFP_dt*(AFP_n-1)) - AFP_dt*(AFP_StopIdx-1); % Time for AFP"
+    },
+    "externalHorizontalSign": {
+      "line": 326,
+      "text": "HorzImpulseAero(f)  = trapz(-FxWings(TOend:LDstart))                * AFP_dt/BW / (length(TOend:LDstart)*AFP_dt);"
+    },
+    "externalVerticalAnalysisSign": {
+      "line": 1019,
+      "text": "AeroF1_w(f2,3) = -AeroFz(f2); % In case of singularity - otherwise these are always the same anyway"
+    },
+    "externalVerticalSign": {
+      "line": 322,
+      "text": "VertImpulseAero(f)  = trapz(-FzWings(TOend:LDstart)           - BW) * AFP_dt/BW / (length(TOend:LDstart)*AFP_dt);"
+    },
+    "forceRate": {
+      "line": 89,
+      "text": "AFP_Hz = 2000;          % force sensor sampling frequency"
+    },
+    "horizontalChannelToWorldY": {
+      "line": 962,
+      "text": "AeroFy = FxWings(AeroF2)/2;"
+    },
+    "kinematicsRate": {
+      "line": 91,
+      "text": "SLS_Hz = 1000;             % high speed video frame rate"
+    },
+    "nearestFrameEquation": {
+      "line": 956,
+      "text": "AeroF2(f2) = find(abs(AFP_t-(StartFrame+f2-1)/FPS)==min(abs(AFP_t-(StartFrame+f2-1)/FPS)),1);"
+    },
+    "verticalChannelToWorldZ": {
+      "line": 963,
+      "text": "AeroFz = FzWings(AeroF2)/2;"
+    }
+  },
+  "sourceLocks": {
+    "code": {
+      "force-platform processing, sign convention, and camera-time synchronization source": {
+        "archivePath": "DoveMuscles_DataCode/8 AFP Sono/WithWires/AeroSonoEMG.m",
+        "bytes": 30985,
+        "crc32": "0b9429f7",
+        "sha256": "dc7ad9a78cbb1ee9f74c93e1af1361c0c57c2232b454c8a9428db082970d0c03"
+      },
+      "mapping from platform horizontal force into the reconstructed world frame": {
+        "archivePath": "DoveMuscles_DataCode/9 MuscleModel/MuscleModel.m",
+        "bytes": 95312,
+        "crc32": "a9f7930e",
+        "sha256": "8d3ea0557a28ffbea6a1d45b20b0c04c83f5220bce6bcd15e40c771d4a9f8834"
+      }
+    },
+    "data": {
+      "derivedAnalysis": {
+        "archivePath": "DoveMuscles_DataCode/9 MuscleModel/2TestRuns/OB/2018_12_11_OB_F03.mat",
+        "bytes": 3415994,
+        "crc32": "77baf729",
+        "sha256": "499378e2beebce224fd178732a8ff0ecae920eab9d024d82b8dc3b695cfce1a1"
+      },
+      "forceChannels": {
+        "archivePath": "DoveMuscles_DataCode/8 AFP Sono/WithWires/Data/2018_12_11_OB_F03.mat",
+        "bytes": 11750092,
+        "crc32": "04de1d6c",
+        "sha256": "c554e3542981a851afed234a2aecef7b54109360ecf04fb101b5a5d8b709c1ca"
+      }
+    },
+    "qualificationSHA256": "731ac5d2f2aa4256553ca380201ed8d1bcc7176d044ee61bb6d39da46aa251a4",
+    "surfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
+  },
+  "target": "ValidationInputs/deetjen-ob-f03-force-v1.json",
+  "targetSHA256": "2f222c1029849ec602bd7474671b4295d1cb97cec8bad74f4ce9e4bf0cd14591",
+  "targetSummary": {
+    "bodyWeightNewtons": 1.677828069692669,
+    "forceX": {
+      "maximumNewtons": 0.5968427096144293,
+      "meanNewtons": 0.1440677816610199,
+      "minimumNewtons": -0.24936539824213255,
+      "rmsNewtons": 0.24459800493300174,
+      "trapezoidalImpulseNewtonSeconds": 0.02071129195749776
+    },
+    "forceZ": {
+      "maximumNewtons": 3.431139952061078,
+      "meanNewtons": 1.1395946929728984,
+      "minimumNewtons": 0.01933037111031668,
+      "rmsNewtons": 1.6070497411270233,
+      "trapezoidalImpulseNewtonSeconds": 0.1627738657110263
+    }
+  },
+  "timing": {
+    "cameraZeroIndexZeroBased": 195764,
+    "firstIndexZeroBased": 191878,
+    "forceRateHertz": 2000.0,
+    "kinematicsRateHertz": 1000.0,
+    "lastIndexZeroBased": 192164,
+    "maximumNearestSampleResidualSeconds": 8.881784197001252e-15,
+    "maximumNormalizedSourceTimeResidualSeconds": 1.1032841307212493e-14,
+    "maximumSurfaceHalfStepResidualSeconds": 0.0,
+    "nearestArithmeticIndexMismatchCount": 0,
+    "sampleCount": 287,
+    "sourceForceRateHertzReconstructed": 1999.9999999904503
+  }
+}

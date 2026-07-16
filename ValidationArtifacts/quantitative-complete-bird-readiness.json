@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 9,
+  "schemaVersion": 10,
   "auditIdentifier": "quantitative-complete-bird-free-flight-readiness-2026-07-16",
-  "scientificStatus": "solver contract implemented; indexed experimental geometry and production impulse coupling accepted; same-specimen biological free-flight input absent",
+  "scientificStatus": "solver contract implemented; indexed experimental geometry, production impulse coupling, and measured force registration accepted; same-specimen biological free-flight input absent",
   "solverCapabilities": {
     "measuredCompleteBirdSchema": "measured-bird-v2",
     "prescribedBilateralKinematics": true,
@@ -148,6 +148,9 @@
     "surfaceMetalGeometryParity": "ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json",
     "surfaceProductionCoupling": "ValidationArtifacts/deetjen-dove-indexed-production-coupling.json",
     "surfaceInputManifest": "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json",
+    "forceRegistration": "ValidationArtifacts/deetjen-dove-force-registration.json",
+    "forceTargetCPUParity": "ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json",
+    "forceInputTarget": "ValidationInputs/deetjen-ob-f03-force-v1.json",
     "selectedBird": "OB",
     "selectedFlight": "2018_12_11_OB_F03",
     "measuredTargets": [
@@ -203,15 +206,34 @@
       "developedFlowExecuted": false,
       "experimentalForceCompared": false
     },
+    "forceRegistrationPassed": true,
+    "forceRegistrationDetails": {
+      "targetSHA256": "2f222c1029849ec602bd7474671b4295d1cb97cec8bad74f4ce9e4bf0cd14591",
+      "measuredBirdFlowVector": "[-FxWings,unavailable,-FzWings]",
+      "lateralComponentZeroFilled": false,
+      "sampleCount": 287,
+      "durationSeconds": 0.143,
+      "storedSurfaceFrameSamples": 144,
+      "interpolatedHalfFrameSamples": 143,
+      "firstForceIndexZeroBased": 191878,
+      "lastForceIndexZeroBased": 192164,
+      "maximumNearestSampleResidualSeconds": 8.881784197001252e-15,
+      "maximumSurfaceHalfStepResidualSeconds": 0.0,
+      "maximumDerivedPerWingVerticalResidualNewtons": 0.0,
+      "forceXImpulseNewtonSeconds": 0.02071129195749776,
+      "forceZImpulseNewtonSeconds": 0.1627738657110263,
+      "coarsePrescribedMotionPilotReady": true,
+      "experimentalForceCompared": false
+    },
     "quantitativeFreeFlightSchema2Ready": false,
     "reasonFreeFlightRemainsBlocked": "the source assumes bilateral surface symmetry and models the distributed wing mass; same-specimen bilateral wing and registered whole-bird inertia are not measured",
     "antiFabricationRule": "derived lateral force, per-wing loads, or modeled inertia must not be relabeled as experimental measurements",
-    "nextAction": "independently lock the deposited force-axis/sign transform and measurement-window registration, then run one coarse prescribed-motion pilot before any 8/12/16 measured-force ladder"
+    "nextAction": "run one coarse prescribed-motion pilot against the registered 287-sample force target before any five-flight uncertainty or 8/12/16 measured-force ladder"
   },
   "releaseDecision": {
     "quantitativeCompleteBirdFreeFlightPassed": false,
     "blockingCondition": "provide one schema-2 dataset whose complete geometry, bilateral kinematics, whole-bird inertia, and bilateral wing mass properties all identify the same specimen",
-    "nextAction": "continue the Maeda availability request for strict schema 2 while independently closing Deetjen force-axis/sign registration before a coarse prescribed-motion force pilot",
+    "nextAction": "continue the Maeda availability request for strict schema 2 while running one coarse Deetjen prescribed-motion force pilot with the registered target",
     "antiFabricationRule": "do not substitute another specimen's body, mass, inertia, tail, or contralateral wing and call the result measured"
   },
   "localVerification": {
@@ -238,6 +260,10 @@
     "deetjenDoveIndexedMetalGeometryRuntimeSeconds": 7.018607974052429,
     "deetjenDoveIndexedProductionCouplingPassed": true,
     "deetjenDoveIndexedProductionCouplingRuntimeSeconds": 0.241460919380188,
-    "deetjenDoveIndexedProductionCouplingRelativeRMSResidual": 1.7888113361091607e-05
+    "deetjenDoveIndexedProductionCouplingRelativeRMSResidual": 1.7888113361091607e-05,
+    "deetjenDoveForceRegistrationPassed": true,
+    "deetjenDoveForceTargetIndependentAuditPassed": true,
+    "deetjenDoveForceTargetSamples": 287,
+    "deetjenDoveForceTargetSHA256": "2f222c1029849ec602bd7474671b4295d1cb97cec8bad74f4ce9e4bf0cd14591"
   }
 }

@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **Geometry + production impulse coupling accepted; experimental force open** | 8-step indexed-surface production gate crosses 92 topology cells and closes direct fluid momentum at `1.79e-5` relative RMS |
+| Measured dove external-force benchmark | **Input and force registration accepted; coarse CFD pilot next** | 287 measured samples are locked to BirdFlow axes/time; production moving-boundary impulse closes at `1.79e-5` relative RMS |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -89,6 +89,23 @@ Evidence is
 [`deetjen-dove-indexed-production-coupling.json`](ValidationArtifacts/deetjen-dove-indexed-production-coupling.json).
 This accepts coupling and impulse accounting, not developed flow or agreement
 with the measured force platform.
+
+The deposited force-processing and muscle-model scripts now close the last
+input-side ambiguity independently. They establish that platform `FxWings`
+maps to source world-forward `y`, both stored platform channels must be negated
+to obtain force on the bird, and source world `[y,z]` maps to BirdFlow `[x,z]`.
+The resulting measured target is therefore
+`[-FxWings, unavailable, -FzWings]`; lateral force is deliberately absent, not
+zero-filled. Nearest-sample registration and integer camera arithmetic agree
+at all 144 surface frames, with 143 explicit half-frame interpolation samples
+between them. The 287-sample target, source-code registration, and independent
+committed-input audit are
+[`deetjen-ob-f03-force-v1.json`](ValidationInputs/deetjen-ob-f03-force-v1.json),
+[`deetjen-dove-force-registration.json`](ValidationArtifacts/deetjen-dove-force-registration.json),
+and
+[`deetjen-dove-force-target-cpu-parity.json`](ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json).
+This clears a coarse prescribed-motion pilot, not experimental agreement or
+the refinement ladder.
 
 ## Latest high-Re result
 
@@ -472,8 +489,10 @@ and separates measured force channels from modeled lateral force and inertia.
 The follow-up
 [`engineering ingestion audit`](ValidationArtifacts/deetjen-dove-engineering-ingestion.json)
 CRC/SHA-verifies the selectively acquired nine-member flight, reconstructs the
-1000/2000 Hz synchronization, and inventories the real body/wing/tail surfaces;
-coordinate/topology conversion remains explicitly open.
+1000/2000 Hz synchronization, and inventories the real body/wing/tail surfaces.
+The follow-up force-registration artifact locks the two deposited processing
+scripts, the exact 287-sample BirdFlow force target, and the explicit
+unavailable lateral component; experimental CFD agreement remains open.
 
 ## Reproducibility and citation
 

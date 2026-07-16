@@ -122,6 +122,34 @@ def validate_internal_audit(audit: dict) -> list[dict]:
     if None in paths or len(paths) != len(set(paths)):
         fail("required archive member paths are missing or duplicated")
 
+    code_members = audit.get("selectedBenchmark", {}).get(
+        "forceRegistrationCodeMembers", []
+    )
+    if len(code_members) != 2:
+        fail("force registration must lock exactly two deposited code members")
+    code_paths = [member.get("path") for member in code_members]
+    if (
+        None in code_paths
+        or len(code_paths) != len(set(code_paths))
+        or set(paths).intersection(code_paths)
+    ):
+        fail("force-registration code paths are missing or duplicated")
+    for member in code_members:
+        if not all(
+            member.get(key)
+            for key in (
+                "role",
+                "evidenceClass",
+                "bytes",
+                "compressedBytes",
+                "crc32",
+                "sha256",
+            )
+        ):
+            fail(f"incomplete force-registration code lock: {member.get('path')}")
+        if len(member["sha256"]) != 64:
+            fail(f"invalid code SHA-256 lock: {member['path']}")
+
     default_members = [member for member in members if member.get("includeByDefault")]
     expected_totals = {
         "defaultSubsetCompressedBytes": sum(
@@ -369,6 +397,14 @@ def main() -> None:
         action="store_true",
         help="also extract the approximately 656 MB compressed SurfFits member",
     )
+    parser.add_argument(
+        "--include-force-code",
+        action="store_true",
+        help=(
+            "also extract the two small deposited scripts that establish "
+            "force sign, axes, and timing"
+        ),
+    )
     parser.add_argument("--output", type=Path)
     parser.add_argument("--json", action="store_true")
     arguments = parser.parse_args()
@@ -376,19 +412,24 @@ def main() -> None:
         fail("--download requires --output")
     if arguments.include_surface and not arguments.download:
         fail("--include-surface requires --download")
+    if arguments.include_force_code and not arguments.download:
+        fail("--include-force-code requires --download")
     if arguments.offline and arguments.download:
         fail("--offline cannot be combined with --download")
 
     audit = json.loads(arguments.audit.read_bytes())
     members = validate_internal_audit(audit)
+    code_members = audit["selectedBenchmark"]["forceRegistrationCodeMembers"]
     archive_url = None
     infos = None
     if not arguments.offline:
-        archive_url, infos = verify_remote(audit, members)
+        archive_url, infos = verify_remote(audit, members + code_members)
 
     chosen = [member for member in members if member["includeByDefault"]]
     if arguments.include_surface:
         chosen = members
+    if arguments.include_force_code:
+        chosen += code_members
     downloaded = []
     reused = []
     if arguments.download:
@@ -422,6 +463,7 @@ def main() -> None:
         "selectedCompressedBytes": sum(member["compressedBytes"] for member in chosen),
         "selectedUncompressedBytes": sum(member["bytes"] for member in chosen),
         "surfaceIncluded": arguments.include_surface,
+        "forceRegistrationCodeIncluded": arguments.include_force_code,
         "downloaded": downloaded,
         "reused": reused,
         "measuredForceTargets": ["FxWings", "FzWings"],

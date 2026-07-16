@@ -1117,16 +1117,17 @@ Selectively acquire and inspect the qualified `2018_12_11_OB_F03` flight:
 
 ```bash
 python3 Scripts/acquire-dove-benchmark.py \
-  --download --include-surface \
+  --download --include-surface --include-force-code \
   --output /path/to/deetjen-ob-f03 --json
 
 python3 Scripts/inspect-dove-benchmark.py \
   --input /path/to/deetjen-ob-f03 --include-surface
 ```
 
-The source and engineering-ingestion artifacts lock all nine members, the
-`1000/2000 Hz` synchronization, body/wing/tail topology inventory, source
-coordinate scale, processed force window, and measured-versus-modeled boundary.
+The source and engineering-ingestion chain locks all nine data members plus the
+two force-registration scripts, the `1000/2000 Hz` synchronization,
+body/wing/tail topology inventory, source coordinate scale, processed force
+window, and measured-versus-modeled boundary.
 The source's right wing is a symmetry assumption, lateral/per-wing forces are
 derived, and its 20-point wing mass distribution is cross-source scaled. Only
 `FxWings` and `FzWings` may enter the experimental-force verdict.
@@ -1145,7 +1146,8 @@ Before the fluid comparison, acceptance requires:
   a periodic zero-sponge topology-changing gate (**passed** at `1.789e-5`
   relative RMS);
 - the source force sign and axes close independently against the registered
-  BirdFlow frame;
+  BirdFlow frame (**passed**: `[-FxWings, unavailable, -FzWings]`, with no
+  lateral zero-fill);
 - the five flights for bird `OB` establish a measurement/biological
   repeatability envelope before CFD error thresholds are frozen;
 - time-step and `8/12/16` spatial refinement pass without modifying measured
@@ -1174,7 +1176,12 @@ exercises 39 cover, 53 uncover, and 101,262 persistent-link events with periodic
 boundaries and zero sponge. Direct population momentum closes against the
 production load at `1.789e-5` relative RMS and `3.8846e-8 kg m/s` maximum
 absolute residual. Developed flow and every experimental-force comparison remain
-open. Evidence is in
+open. The separate source-code registration selects the same `191878...192164`
+force window by nearest lookup and exact camera arithmetic, gives zero residual
+at all 144 stored-frame timestamps, inserts 143 exact half-frame samples, and
+matches the deposited derived vertical series with zero residual. Its canonical
+287-sample target has `0.0207113 N s` forward and `0.162774 N s` upward impulse;
+lateral force remains unavailable. Evidence is in
 `ValidationArtifacts/deetjen-dove-source-qualification.json` and
 `ValidationArtifacts/deetjen-dove-engineering-ingestion.json`, plus
 `ValidationArtifacts/deetjen-dove-surface-conversion.json` and
@@ -1182,7 +1189,14 @@ open. Evidence is in
 144-frame GPU audit in
 `ValidationArtifacts/deetjen-dove-indexed-metal-geometry.json` and the short
 production ledger in
-`ValidationArtifacts/deetjen-dove-indexed-production-coupling.json`.
+`ValidationArtifacts/deetjen-dove-indexed-production-coupling.json`. The force
+target and registration gate are
+`ValidationInputs/deetjen-ob-f03-force-v1.json` and
+`ValidationArtifacts/deetjen-dove-force-registration.json`; the separate
+committed-input audit is
+`ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json`. The next
+admissible step is one coarse prescribed-motion fluid pilot, not the refinement
+ladder.
 
 ## 8. Complete measured bird
 

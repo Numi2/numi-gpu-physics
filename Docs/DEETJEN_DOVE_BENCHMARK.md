@@ -155,8 +155,7 @@ cell units. Body, both wings, and tail remain present in every frame and probe.
 This closes conversion plus indexed Metal interpolation, component masks,
 rasterization, and occupied-cell wall velocity. The gate allocates no fluid
 populations and dispatches neither collision nor force accumulation. Fluid
-loads, force-axis/sign closure, repeatability across five flights, and numerical
-refinement remain open.
+loads, repeatability across five flights, and numerical refinement remain open.
 
 ## Production moving-boundary integration gate
 
@@ -183,6 +182,47 @@ acceptance because it reconstructs the halfway source while the production step
 uses interpolated links. Acceptance uses only the production load and direct
 before/after population momentum. This is an impulse-level integration result,
 not developed-flow or measured-force agreement.
+
+## Force-axis, sign, and window registration gate
+
+Two additional source-code members are selectively acquired and locked by
+size, CRC-32, and SHA-256. `AeroSonoEMG.m` establishes camera frame zero, the
+2000/1000 Hz force/kinematics clocks, and the source's use of `-FxWings` and
+`-FzWings` for external impulse. `MuscleModel.m` independently maps the
+platform horizontal channel into source world `y` and samples it at
+`(StartFrame + frame - 1) / FPS`. Combined with the accepted surface mapping,
+the measured BirdFlow target is:
+
+```text
+BirdFlow force = [-FxWings, unavailable, -FzWings]
+```
+
+The lateral component is unavailable and is never represented as zero. The
+source-world to BirdFlow transform has determinant `+1`. Nearest-sample lookup
+and exact camera-zero arithmetic both select source indices `191878...192164`.
+They agree at every stored surface frame with `8.89e-15 s` maximum source-time
+residual. The canonical target contains 287 samples over `0.143 s`: 144 samples
+coincide with stored surfaces and 143 lie at the exact half-frame interpolation
+points. The source's derived per-wing vertical series independently matches
+`-FzWings/2` with zero maximum residual. The measured impulses in BirdFlow
+coordinates are `0.0207113 N s` forward and `0.162774 N s` upward.
+
+Reproduce the conversion and its separate committed-input audit with:
+
+```bash
+python3 Scripts/register-dove-force-window.py \
+  --input /path/to/deetjen-ob-f03
+
+python3 Scripts/audit-dove-force-target.py
+```
+
+The outputs are
+[`deetjen-ob-f03-force-v1.json`](../ValidationInputs/deetjen-ob-f03-force-v1.json),
+[`deetjen-dove-force-registration.json`](../ValidationArtifacts/deetjen-dove-force-registration.json),
+and
+[`deetjen-dove-force-target-cpu-parity.json`](../ValidationArtifacts/deetjen-dove-force-target-cpu-parity.json).
+This gate clears the input for one coarse prescribed-motion fluid pilot. It is
+not measured-force agreement, uncertainty quantification, or grid acceptance.
 
 ## Reproducible acquisition
 
@@ -220,9 +260,13 @@ Add the selected flight's approximately 656 MB compressed surface member:
 
 ```bash
 python3 Scripts/acquire-dove-benchmark.py \
-  --download --include-surface \
+  --download --include-surface --include-force-code \
   --output /path/to/deetjen-ob-f03 --json
 ```
+
+`--include-force-code` adds only `28,994` compressed bytes and is required to
+regenerate the force-registration evidence. The deposited scripts are not
+committed into this repository.
 
 Extraction streams one byte range per member, writes through a temporary file,
 and promotes the file only after its uncompressed byte count and CRC match the
@@ -252,11 +296,12 @@ causes a hard failure.
    spatial refinement without changing geometry or kinematics.
 
 Source acquisition, MATLAB decoding, synchronization reconstruction, compact
-topology conversion, BirdFlow frame registration, and independent CPU parity
-are complete. Generic indexed-surface Metal replay is the active boundary. The
-first single-flight replay is an engineering integration gate. Quantitative
-experimental acceptance begins only after the repeatability envelope and
-numerical refinement thresholds are preregistered from independent evidence.
+topology conversion, BirdFlow frame registration, independent CPU parity,
+indexed Metal geometry, production impulse coupling, and force target
+registration are complete. One coarse prescribed-motion fluid pilot is the
+active boundary. Quantitative experimental acceptance begins only after that
+pilot, the five-flight repeatability envelope, and time/space refinement are
+preregistered and passed from independent evidence.
 
 ## Claim after a successful ladder
 

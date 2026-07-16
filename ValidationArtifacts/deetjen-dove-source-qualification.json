@@ -172,6 +172,26 @@
         }
       }
     ],
+    "forceRegistrationCodeMembers": [
+      {
+        "path": "DoveMuscles_DataCode/8 AFP Sono/WithWires/AeroSonoEMG.m",
+        "role": "force-platform processing, sign convention, and camera-time synchronization source",
+        "evidenceClass": "deposited-processing-code",
+        "bytes": 30985,
+        "compressedBytes": 7425,
+        "crc32": "0b9429f7",
+        "sha256": "dc7ad9a78cbb1ee9f74c93e1af1361c0c57c2232b454c8a9428db082970d0c03"
+      },
+      {
+        "path": "DoveMuscles_DataCode/9 MuscleModel/MuscleModel.m",
+        "role": "mapping from platform horizontal force into the reconstructed world frame",
+        "evidenceClass": "deposited-analysis-code",
+        "bytes": 95312,
+        "compressedBytes": 21569,
+        "crc32": "a9f7930e",
+        "sha256": "8d3ea0557a28ffbea6a1d45b20b0c04c83f5220bce6bcd15e40c771d4a9f8834"
+      }
+    ],
     "defaultSubsetCompressedBytes": 15034509,
     "defaultSubsetUncompressedBytes": 15498683,
     "surfaceSubsetCompressedBytes": 671462764,

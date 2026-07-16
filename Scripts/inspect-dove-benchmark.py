@@ -113,6 +113,11 @@ def main() -> None:
         action="store_true",
         help="require and summarize the large SurfFits member",
     )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="also write the inspection artifact atomically",
+    )
     arguments = parser.parse_args()
 
     audit_bytes = arguments.audit.read_bytes()
@@ -380,7 +385,13 @@ def main() -> None:
             "nextAction": "convert the 144 processed body, tail, and left-wing surface frames into a compact provenance-locked BirdFlow surface sequence and close its coordinates, topology, and wall velocity against this audit",
         },
     }
-    print(json.dumps(result, indent=2, sort_keys=True))
+    rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
+    if arguments.output is not None:
+        arguments.output.parent.mkdir(parents=True, exist_ok=True)
+        temporary = arguments.output.with_name(arguments.output.name + ".tmp")
+        temporary.write_text(rendered)
+        temporary.replace(arguments.output)
+    print(rendered, end="")
 
 
 if __name__ == "__main__":
