@@ -1,0 +1,87 @@
+{
+  "auditPassed": true,
+  "checks": {
+    "boundaryDirectionCoverage": true,
+    "captureWindow": true,
+    "claimBoundary": true,
+    "contributionClosure": true,
+    "diagnosticIsolation": true,
+    "independentBoundaryAlgebra": true,
+    "lockedInputs": true,
+    "movingWallCorrectionDiscriminator": true,
+    "negativeDirectionTransition": true,
+    "reportedCounterfactualSets": true,
+    "schema": true,
+    "stageArtifactReconstructionParity": true
+  },
+  "claimBoundary": "This audit independently reconstructs the boundary branches, wall corrections, contribution sums, and four counterfactuals. It identifies the first repair surface but does not promote a counterfactual law or modify production physics.",
+  "completionSHA256": "aecea776e484241c4dd4d13156a2618477fdee8886de5a3bff46a7657cff0bbb",
+  "decompositionSHA256": "530bf9eefd276a3c5df773874fcfc23cf784b33ed97f3cf085be92261f96df48",
+  "dominantRepairTarget": "moving-wall-correction",
+  "failureDirections": [
+    {
+      "auxiliaryContribution": 0,
+      "branch": "halfway-fallback",
+      "direction": 2,
+      "halfwayMovingWallPopulation": -0.0021714908070862293,
+      "interpolatedZeroWallPopulation": 0.003836309537291527,
+      "productionPopulation": -0.0021714908070862293,
+      "reflectedPopulation": 0.003836309537291527,
+      "wallCorrectionContribution": -0.006007800344377756
+    },
+    {
+      "auxiliaryContribution": 0,
+      "branch": "halfway-fallback",
+      "direction": 8,
+      "halfwayMovingWallPopulation": -0.003571187611669302,
+      "interpolatedZeroWallPopulation": 0.00046428677160292864,
+      "productionPopulation": -0.003571187611669302,
+      "reflectedPopulation": 0.00046428677160292864,
+      "wallCorrectionContribution": -0.004035474266856909
+    },
+    {
+      "auxiliaryContribution": 0.000171126433997415,
+      "branch": "interpolated-far-wall",
+      "direction": 12,
+      "halfwayMovingWallPopulation": -0.005517817568033934,
+      "interpolatedZeroWallPopulation": 0.0015438345726579428,
+      "productionPopulation": -0.0024458023253828287,
+      "reflectedPopulation": 0.002288296353071928,
+      "wallCorrectionContribution": -0.0039896368980407715
+    },
+    {
+      "auxiliaryContribution": 0,
+      "branch": "halfway-fallback",
+      "direction": 13,
+      "halfwayMovingWallPopulation": -4.013709258288145e-07,
+      "interpolatedZeroWallPopulation": 0.000379665638320148,
+      "productionPopulation": -4.013709258288145e-07,
+      "reflectedPopulation": 0.000379665638320148,
+      "wallCorrectionContribution": -0.0003800670092459768
+    },
+    {
+      "auxiliaryContribution": 0,
+      "branch": "halfway-fallback",
+      "direction": 16,
+      "halfwayMovingWallPopulation": -0.0004612331395037472,
+      "interpolatedZeroWallPopulation": 0.0002813794417306781,
+      "productionPopulation": -0.0004612331395037472,
+      "reflectedPopulation": 0.0002813794417306781,
+      "wallCorrectionContribution": -0.0007426125812344253
+    }
+  ],
+  "failureNegativeMovingBoundaryDirections": [
+    2,
+    8,
+    12,
+    13,
+    16
+  ],
+  "previousNegativeMovingBoundaryDirections": [
+    2,
+    3,
+    10
+  ],
+  "provenanceSHA256": "732ff3056dc66acda3a0244eab66322008a182fd00f3b366f083f3d03e68380a",
+  "schemaVersion": 1
+}

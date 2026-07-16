@@ -68,6 +68,7 @@ REQUIRED_KERNELS = {
     "gatherFloatValues",
     "captureIndexedPopulationStageProvenanceBeforeStep",
     "captureIndexedPopulationStageProvenanceAfterStep",
+    "captureIndexedBoundaryTermDecomposition",
     "reducePopulationMinimum",
     "captureTRTCollisionDecomposition",
     "captureSymmetricLimiterLedger",
@@ -415,6 +416,7 @@ def main() -> int:
         "private func encodeExtractedMacroscopicFields(": 4,
         "func encodeBefore(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 7,
         "func encodeAfter(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 4,
+        "func encodeBoundaryTerms(": 6,
     }
     for declaration, count in expected_swift_bindings.items():
         body = extract_braced_body(swift, declaration)
@@ -476,6 +478,7 @@ def main() -> int:
         "gatherFloatValues": 4,
         "captureIndexedPopulationStageProvenanceBeforeStep": 7,
         "captureIndexedPopulationStageProvenanceAfterStep": 4,
+        "captureIndexedBoundaryTermDecomposition": 6,
         "reducePopulationMinimum": 3,
         "captureTRTCollisionDecomposition": 8,
         "captureSymmetricLimiterLedger": 7,
@@ -613,6 +616,11 @@ def main() -> int:
             "func encodeAfter(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,",
             ["populationsOut", "records", "uniforms", "target"],
             ["populationsOut", "records", "uniforms", "target"],
+        ),
+        "captureIndexedBoundaryTermDecomposition": (
+            "func encodeBoundaryTerms(",
+            ["populationsIn", "solidCurrent", "wallVelocity", "records", "uniforms", "target"],
+            ["populationsIn", "solidCurrent", "wallVelocity", "terms", "uniforms", "target"],
         ),
         "captureTRTCollisionDecomposition": (
             "private func encodeTRTCollisionDecomposition(",

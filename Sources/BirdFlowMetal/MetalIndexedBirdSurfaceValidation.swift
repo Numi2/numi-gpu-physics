@@ -571,6 +571,74 @@ public struct MetalIndexedBirdSurfacePopulationStageProvenanceReport:
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceBoundaryTermSample:
+    Codable, Sendable
+{
+    public let step: Int
+    public let sourceTimeSeconds: Double
+    public let targetCellCoordinate: SIMD3<Int>
+    public let direction: Int
+    public let sourceCellCoordinate: SIMD3<Int>?
+    public let sourcePartIdentifier: Int
+    public let branch: String
+    public let linkFraction: Double
+    public let reflectedPopulation: Double
+    public let auxiliaryPopulation: Double
+    public let auxiliaryCellCoordinate: SIMD3<Int>?
+    public let auxiliaryRole: String
+    public let rawWallCorrection: Double
+    public let halfwayWallCorrection: Double
+    public let productionWallDirectionProjectionLattice: Double
+    public let sourceWallDirectionProjectionLattice: Double
+    public let reflectedContribution: Double
+    public let auxiliaryContribution: Double
+    public let wallCorrectionContribution: Double
+    public let productionReconstructedPopulation: Double
+    public let contributionClosureResidual: Double
+    public let halfwayMovingWallPopulation: Double
+    public let interpolatedZeroWallPopulation: Double
+    public let halfwayZeroWallPopulation: Double
+    public let interpolatedNoAuxiliaryPopulation: Double
+    public let productionPopulationNegative: Bool
+    public let dominantNegativeContribution: String
+}
+
+public struct MetalIndexedBirdSurfaceBoundaryTermDecompositionReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let targetCellCoordinate: SIMD3<Int>
+    public let capturedSteps: [Int]
+    public let diagnosticKernel: String
+    public let productionStateModifiedByDiagnostic: Bool
+    public let maximumAllowedAbsoluteResidual: Double
+    public let maximumContributionClosureResidual: Double
+    public let maximumReconstructionDifferenceFromStageArtifact: Double
+    public let negativeMovingBoundaryDirectionsPreviousStep: [Int]
+    public let negativeMovingBoundaryDirectionsAtFailure: [Int]
+    public let directionsWithNegativeReflectedPopulation: [Int]
+    public let directionsWithNegativeAuxiliaryContribution: [Int]
+    public let directionsWithNegativeWallContribution: [Int]
+    public let directionsMadeNonnegativeByHalfwayMovingWall: [Int]
+    public let directionsMadeNonnegativeByInterpolatedZeroWall: [Int]
+    public let directionsMadeNonnegativeByHalfwayZeroWall: [Int]
+    public let directionsMadeNonnegativeByRemovingAuxiliary: [Int]
+    public let directionsRemainingNegativeUnderHalfwayZeroWall: [Int]
+    public let dominantRepairTarget: String
+    public let boundaryTermGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let samples: [MetalIndexedBirdSurfaceBoundaryTermSample]
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -1396,6 +1464,347 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                     + "moving-boundary inputs are physically correct, repair "
                     + "the operator, authorize another refinement run, or "
                     + "establish experimental agreement."
+            )
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionGridBoundaryTermDecomposition(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration:
+            MetalIndexedBirdSurfaceCollisionGridPreregistration,
+        discriminator:
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport,
+        completion:
+            MetalIndexedBirdSurfaceCollisionGridCompletionReport,
+        provenance:
+            MetalIndexedBirdSurfacePopulationStageProvenanceReport
+    ) throws -> MetalIndexedBirdSurfaceBoundaryTermDecompositionReport {
+        let expected = try collisionGridPreregistration(
+            surface: surface,
+            target: target
+        )
+        guard preregistration == expected,
+              discriminator.preregistration == preregistration,
+              discriminator.screeningGatePassed,
+              discriminator.d16CompletionAuthorized,
+              let selected = discriminator.selectedCollisionOperator,
+              selected == completion.selectedCollisionOperator,
+              selected == provenance.selectedCollisionOperator,
+              selected == MetalIndexedBirdSurfaceCollisionOperator
+                .positivityPreservingRecursiveRegularizedBGK.rawValue,
+              !completion.completionGatePassed,
+              provenance.provenanceGatePassed,
+              !provenance.productionStateModifiedByDiagnostic,
+              provenance.referenceLengthCells
+                == preregistration.completionReferenceLengthCells,
+              let failureStep = completion.d16Case.report
+                .firstNegativePopulationStep,
+              provenance.firstNegativeCapturedStep == failureStep,
+              provenance.firstNegativeCapturedStage == "post-collision",
+              provenance.targetCellCoordinate
+                == completion.d16Case.report
+                    .firstNegativePopulationCellCoordinate,
+              provenance.targetDirection == 0,
+              failureStep > 1 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "boundary decomposition requires the locked D=16 provenance"
+            )
+        }
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let referenceLengthCells = preregistration
+            .completionReferenceLengthCells
+        let plan = try refinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: referenceLengthCells
+        )
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let targetCoordinate = provenance.targetCellCoordinate
+        guard targetCoordinate.x >= 0,
+              targetCoordinate.y >= 0,
+              targetCoordinate.z >= 0,
+              targetCoordinate.x < replay.grid.x,
+              targetCoordinate.y < replay.grid.y,
+              targetCoordinate.z < replay.grid.z else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "boundary decomposition target lies outside D=16"
+            )
+        }
+        let targetCell = targetCoordinate.x
+            + replay.grid.x * (
+                targetCoordinate.y + replay.grid.y * targetCoordinate.z
+            )
+        let capturedSteps = [failureStep - 1, failureStep]
+        guard capturedSteps.allSatisfy({ step in
+            provenance.samples.contains { $0.step == step }
+        }) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "boundary decomposition steps are absent from provenance"
+            )
+        }
+        let capture = try MetalIndexedBoundaryTermCapture(
+            backend: backend,
+            capturedSteps: capturedSteps,
+            targetCellLinearIndex: targetCell
+        )
+        let replayReport = try replay.runCoarseForcePilot(
+            target: target,
+            plan: plan,
+            collisionOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            maximumFluidSteps: failureStep,
+            populationDiagnosticStride: 1,
+            stopAtFirstNegativePopulation: true,
+            boundaryTermCapture: capture
+        )
+        let rawRecords = capture.readRecords()
+        func coordinate(_ index: UInt32) -> SIMD3<Int>? {
+            guard index != UInt32.max else { return nil }
+            let value = Int(index)
+            guard value >= 0, value < replay.grid.cellCount else { return nil }
+            return SIMD3<Int>(
+                value % replay.grid.x,
+                (value / replay.grid.x) % replay.grid.y,
+                value / (replay.grid.x * replay.grid.y)
+            )
+        }
+        let stageByStep = Dictionary(uniqueKeysWithValues:
+            provenance.samples.map { ($0.step, $0) }
+        )
+        var maximumReconstructionDifference = 0.0
+        var maximumClosureResidual = 0.0
+        var samples: [MetalIndexedBirdSurfaceBoundaryTermSample] = []
+        for (sampleIndex, step) in capturedSteps.enumerated() {
+            guard let stage = stageByStep[step] else { continue }
+            for direction in 0..<D3Q19.count {
+                let raw = rawRecords[sampleIndex][direction]
+                let reconstructed = Double(raw.contributions.w)
+                maximumReconstructionDifference = max(
+                    maximumReconstructionDifference,
+                    abs(reconstructed
+                        - stage.reconstructedPopulations[direction])
+                )
+                guard raw.branch.z != 0 else { continue }
+                let branchCode = Int(raw.branch.x)
+                let branch: String
+                let auxiliaryRole: String
+                switch branchCode {
+                case 1:
+                    branch = "halfway-fallback"
+                    auxiliaryRole = "none"
+                case 2:
+                    branch = "interpolated-near-wall"
+                    auxiliaryRole = "farther-fluid-outgoing"
+                case 3:
+                    branch = "interpolated-far-wall"
+                    auxiliaryRole = "previous-target-incoming"
+                default:
+                    branch = "unknown-boundary-branch"
+                    auxiliaryRole = "unknown"
+                }
+                let contributionSum = Double(raw.contributions.x)
+                    + Double(raw.contributions.y)
+                    + Double(raw.contributions.z)
+                let closure = reconstructed - contributionSum
+                maximumClosureResidual = max(
+                    maximumClosureResidual,
+                    abs(closure)
+                )
+                let contributions = [
+                    ("reflected", Double(raw.contributions.x)),
+                    ("auxiliary", Double(raw.contributions.y)),
+                    ("wall-correction", Double(raw.contributions.z)),
+                ]
+                let dominantNegative = contributions.min {
+                    $0.1 < $1.1
+                }.map { $0.1 < 0 ? $0.0 : "none" } ?? "none"
+                samples.append(MetalIndexedBirdSurfaceBoundaryTermSample(
+                    step: step,
+                    sourceTimeSeconds:
+                        Double(surface.frameTimesSeconds[0])
+                            + Double(step) * plan.fluidTimeStepSeconds,
+                    targetCellCoordinate: targetCoordinate,
+                    direction: direction,
+                    sourceCellCoordinate: coordinate(raw.metadata.y),
+                    sourcePartIdentifier: Int(raw.metadata.w),
+                    branch: branch,
+                    linkFraction: Double(raw.primitive.y),
+                    reflectedPopulation: Double(raw.primitive.x),
+                    auxiliaryPopulation: Double(raw.primitive.z),
+                    auxiliaryCellCoordinate: coordinate(raw.metadata.z),
+                    auxiliaryRole: auxiliaryRole,
+                    rawWallCorrection: Double(raw.primitive.w),
+                    halfwayWallCorrection:
+                        Double(raw.counterfactuals.x),
+                    productionWallDirectionProjectionLattice:
+                        Double(raw.alternatives.y),
+                    sourceWallDirectionProjectionLattice:
+                        Double(raw.alternatives.z),
+                    reflectedContribution:
+                        Double(raw.contributions.x),
+                    auxiliaryContribution:
+                        Double(raw.contributions.y),
+                    wallCorrectionContribution:
+                        Double(raw.contributions.z),
+                    productionReconstructedPopulation: reconstructed,
+                    contributionClosureResidual: closure,
+                    halfwayMovingWallPopulation:
+                        Double(raw.counterfactuals.y),
+                    interpolatedZeroWallPopulation:
+                        Double(raw.counterfactuals.z),
+                    halfwayZeroWallPopulation:
+                        Double(raw.counterfactuals.w),
+                    interpolatedNoAuxiliaryPopulation:
+                        Double(raw.alternatives.x),
+                    productionPopulationNegative: reconstructed < 0,
+                    dominantNegativeContribution: dominantNegative
+                ))
+            }
+        }
+        let failureSamples = samples.filter { $0.step == failureStep }
+        let previousNegativeDirections = samples.filter {
+            $0.step == capturedSteps[0] && $0.productionPopulationNegative
+        }.map(\.direction).sorted()
+        let negative = failureSamples.filter(\.productionPopulationNegative)
+        let negativeDirections = negative.map(\.direction).sorted()
+        func directions(where predicate:
+            (MetalIndexedBirdSurfaceBoundaryTermSample) -> Bool
+        ) -> [Int] {
+            negative.filter(predicate).map(\.direction).sorted()
+        }
+        let negativeReflected = directions { $0.reflectedPopulation < 0 }
+        let negativeAuxiliary = directions { $0.auxiliaryContribution < 0 }
+        let negativeWall = directions { $0.wallCorrectionContribution < 0 }
+        let halfwayMoving = directions {
+            $0.halfwayMovingWallPopulation >= 0
+        }
+        let zeroWall = directions {
+            $0.interpolatedZeroWallPopulation >= 0
+        }
+        let halfwayZero = directions {
+            $0.halfwayZeroWallPopulation >= 0
+        }
+        let noAuxiliary = directions {
+            $0.interpolatedNoAuxiliaryPopulation >= 0
+        }
+        let remainingHalfwayZero = directions {
+            $0.halfwayZeroWallPopulation < 0
+        }
+        let dominantRepairTarget: String
+        if !remainingHalfwayZero.isEmpty {
+            dominantRepairTarget = "inherited-reflected-population"
+        } else if Set(halfwayMoving) == Set(negativeDirections) {
+            dominantRepairTarget = "interpolated-boundary-branch"
+        } else if Set(zeroWall) == Set(negativeDirections) {
+            dominantRepairTarget = "moving-wall-correction"
+        } else if Set(noAuxiliary) == Set(negativeDirections) {
+            dominantRepairTarget = "interpolation-auxiliary-term"
+        } else {
+            dominantRepairTarget = "mixed-boundary-terms"
+        }
+        let tolerance = 1.0e-7
+        let replayMatches = replayReport.completedFluidSteps == failureStep
+            && replayReport.firstNegativePopulationStep == failureStep
+            && replayReport.firstNegativePopulationDirection == 0
+            && replayReport.firstNegativePopulationCellCoordinate
+                == targetCoordinate
+        let allFinite = samples.allSatisfy { sample in
+            [
+                sample.linkFraction,
+                sample.reflectedPopulation,
+                sample.auxiliaryPopulation,
+                sample.rawWallCorrection,
+                sample.halfwayWallCorrection,
+                sample.productionWallDirectionProjectionLattice,
+                sample.sourceWallDirectionProjectionLattice,
+                sample.reflectedContribution,
+                sample.auxiliaryContribution,
+                sample.wallCorrectionContribution,
+                sample.productionReconstructedPopulation,
+                sample.contributionClosureResidual,
+                sample.halfwayMovingWallPopulation,
+                sample.interpolatedZeroWallPopulation,
+                sample.halfwayZeroWallPopulation,
+                sample.interpolatedNoAuxiliaryPopulation,
+            ].allSatisfy(\.isFinite)
+        }
+        let passed = replayMatches
+            && maximumReconstructionDifference <= tolerance
+            && maximumClosureResidual <= tolerance
+            && negativeDirections
+                == provenance
+                    .negativeMovingBoundaryReconstructedDirectionsAtFailure
+            && !negativeDirections.isEmpty
+            && allFinite
+            && samples.filter({ $0.step == capturedSteps[0] }).count
+                == failureSamples.count
+        return MetalIndexedBirdSurfaceBoundaryTermDecompositionReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            selectedCollisionOperator: selected,
+            referenceLengthCells: referenceLengthCells,
+            targetCellCoordinate: targetCoordinate,
+            capturedSteps: capturedSteps,
+            diagnosticKernel: "captureIndexedBoundaryTermDecomposition",
+            productionStateModifiedByDiagnostic: false,
+            maximumAllowedAbsoluteResidual: tolerance,
+            maximumContributionClosureResidual: maximumClosureResidual,
+            maximumReconstructionDifferenceFromStageArtifact:
+                maximumReconstructionDifference,
+            negativeMovingBoundaryDirectionsPreviousStep:
+                previousNegativeDirections,
+            negativeMovingBoundaryDirectionsAtFailure: negativeDirections,
+            directionsWithNegativeReflectedPopulation: negativeReflected,
+            directionsWithNegativeAuxiliaryContribution: negativeAuxiliary,
+            directionsWithNegativeWallContribution: negativeWall,
+            directionsMadeNonnegativeByHalfwayMovingWall: halfwayMoving,
+            directionsMadeNonnegativeByInterpolatedZeroWall: zeroWall,
+            directionsMadeNonnegativeByHalfwayZeroWall: halfwayZero,
+            directionsMadeNonnegativeByRemovingAuxiliary: noAuxiliary,
+            directionsRemainingNegativeUnderHalfwayZeroWall:
+                remainingHalfwayZero,
+            dominantRepairTarget: dominantRepairTarget,
+            boundaryTermGatePassed: passed,
+            experimentalAgreementGateApplied: false,
+            samples: samples,
+            scientificVerdict: (
+                "The negative moving-boundary direction set changes from "
+                    + String(describing: previousNegativeDirections)
+                    + " to " + String(describing: negativeDirections)
+                    + " at the retained failure. All terms close with "
+                    + "production parity. The locked counterfactuals "
+                    + "identify " + dominantRepairTarget
+                    + " as the first repair surface; no counterfactual is "
+                    + "enabled in production."
+            ),
+            claimBoundary: (
+                "This sparse diagnostic attributes algebraic contributions "
+                    + "at one retained failure cell. It does not prove a "
+                    + "counterfactual boundary law is physically correct, "
+                    + "modify collision or boundary production state, "
+                    + "authorize refinement, or establish experimental "
+                    + "agreement."
             )
         )
 #else
@@ -2490,6 +2899,99 @@ private final class IndexedControlVolumeDiagnosticResources {
     }
 }
 
+private final class MetalIndexedBoundaryTermCapture {
+    let capturedSteps: [Int]
+    let targetCellLinearIndex: Int
+
+    private let backend: MetalBackend
+    private let stepIndices: [Int: Int]
+    private let records: MTLBuffer
+    private let pipeline: MTLComputePipelineState
+
+    init(
+        backend: MetalBackend,
+        capturedSteps: [Int],
+        targetCellLinearIndex: Int
+    ) throws {
+        guard !capturedSteps.isEmpty,
+              Set(capturedSteps).count == capturedSteps.count,
+              capturedSteps.allSatisfy({ $0 > 0 }),
+              targetCellLinearIndex >= 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "boundary-term capture request is invalid"
+            )
+        }
+        self.backend = backend
+        self.capturedSteps = capturedSteps.sorted()
+        self.targetCellLinearIndex = targetCellLinearIndex
+        stepIndices = Dictionary(uniqueKeysWithValues:
+            self.capturedSteps.enumerated().map { ($0.element, $0.offset) }
+        )
+        let byteCount = self.capturedSteps.count * D3Q19.count
+            * MemoryLayout<GPUIndexedBoundaryTerm>.stride
+        try backend.validateAllocationPlan(bufferLengths: [byteCount])
+        records = try backend.makeSharedBuffer(length: byteCount)
+        records.label = "Indexed moving-boundary term decomposition"
+        memset(records.contents(), 0, byteCount)
+        pipeline = try backend.pipeline(
+            named: "captureIndexedBoundaryTermDecomposition"
+        )
+    }
+
+    func encodeBoundaryTerms(
+        commandBuffer: MTLCommandBuffer,
+        step: Int,
+        populationsIn: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let sampleIndex = stepIndices[step] else { return }
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode indexed moving-boundary terms."
+            )
+        }
+        var target = SIMD4<UInt32>(
+            UInt32(targetCellLinearIndex),
+            UInt32(step),
+            UInt32(sampleIndex),
+            0
+        )
+        encoder.label = "Indexed moving-boundary term decomposition"
+        encoder.setBuffer(populationsIn, offset: 0, index: 0)
+        encoder.setBuffer(solidCurrent, offset: 0, index: 1)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 2)
+        encoder.setBuffer(records, offset: 0, index: 3)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 4
+        )
+        encoder.setBytes(
+            &target,
+            length: MemoryLayout<SIMD4<UInt32>>.stride,
+            index: 5
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: pipeline,
+            count: D3Q19.count
+        )
+        encoder.endEncoding()
+    }
+
+    func readRecords() -> [[GPUIndexedBoundaryTerm]] {
+        let pointer = records.contents().assumingMemoryBound(
+            to: GPUIndexedBoundaryTerm.self
+        )
+        return capturedSteps.indices.map { sampleIndex in
+            let start = sampleIndex * D3Q19.count
+            return (0..<D3Q19.count).map { pointer[start + $0] }
+        }
+    }
+}
+
 private final class MetalIndexedPopulationStageCapture {
     let capturedSteps: [Int]
     let targetCellLinearIndex: Int
@@ -3503,7 +4005,8 @@ private final class MetalIndexedBirdSurfaceReplay {
         maximumFluidSteps: Int? = nil,
         populationDiagnosticStride: Int = 16,
         stopAtFirstNegativePopulation: Bool = false,
-        populationStageCapture: MetalIndexedPopulationStageCapture? = nil
+        populationStageCapture: MetalIndexedPopulationStageCapture? = nil,
+        boundaryTermCapture: MetalIndexedBoundaryTermCapture? = nil
     ) throws -> MetalIndexedBirdSurfacePilotReport {
         let started = Date()
         let requestedFluidSteps = maximumFluidSteps ?? plan.totalFluidSteps
@@ -3698,6 +4201,14 @@ private final class MetalIndexedBirdSurfaceReplay {
                 populations: populationsIn,
                 uniforms: &uniforms,
                 pipeline: linkPipeline
+            )
+            try boundaryTermCapture?.encodeBoundaryTerms(
+                commandBuffer: commandBuffer,
+                step: step,
+                populationsIn: populationsIn,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                uniforms: &uniforms
             )
             try populationStageCapture?.encodeBefore(
                 commandBuffer: commandBuffer,
@@ -4926,6 +5437,15 @@ private struct GPUIndexedPopulationStageProvenance {
     var metadata: SIMD4<UInt32>
     var sourceMasks: SIMD4<UInt32>
     var state: SIMD4<UInt32>
+}
+
+private struct GPUIndexedBoundaryTerm {
+    var primitive: SIMD4<Float>
+    var contributions: SIMD4<Float>
+    var counterfactuals: SIMD4<Float>
+    var alternatives: SIMD4<Float>
+    var metadata: SIMD4<UInt32>
+    var branch: SIMD4<UInt32>
 }
 
 private struct GPUIndexedPopulationMinimum {

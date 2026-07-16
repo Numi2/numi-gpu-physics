@@ -362,6 +362,19 @@ The independent audit reconstructs the entire RR3 chain from the archived 19
 incoming populations. This identifies the numerical failure path; it does not
 yet validate or repair the upstream moving-boundary terms.
 
+The following two-step boundary decomposition distinguishes those terms. Its
+17-direction reconstruction matches the prior stage archive within
+`1.892e-10`, and every contribution sum closes within `1.747e-10`. The negative
+direction set changes from `[2,3,10]` at step 750 to `[2,8,12,13,16]` at step
+751. At failure, all reflected populations and auxiliary contributions are
+nonnegative, whereas all five wall corrections are negative. Four failing
+links already use halfway fallback; moving-wall halfway fixes none and makes
+the lone far-wall link more negative. Zero-wall counterfactuals make all five
+positive, while removing only the interpolation auxiliary term fixes none.
+The independent audit therefore isolates moving-wall-correction admissibility,
+not interpolation branch selection or inherited negative reflection, as the
+first repair surface. No counterfactual is enabled in production.
+
 ## Reproducible acquisition
 
 The default command is read-only. It verifies the Dryad/Zenodo identity,

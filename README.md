@@ -182,6 +182,19 @@ RR3 reconstruction are
 and
 [`deetjen-dove-d16-population-stage-provenance-audit.json`](ValidationArtifacts/deetjen-dove-d16-population-stage-provenance-audit.json).
 
+The next sparse replay decomposes all 17 moving-boundary directions at steps
+750 and 751. It matches the stage archive within `1.892e-10` and closes every
+reflected + auxiliary + wall sum within `1.747e-10`. The negative direction set
+changes from `2, 3, 10` to `2, 8, 12, 13, 16`; at failure, all reflected
+populations and auxiliary contributions are nonnegative, while the wall
+correction is negative in all five. Four links are already halfway fallbacks,
+and moving-wall halfway fixes none; removing the wall term makes all five
+positive. This clears interpolation and inherited reflection as the primary
+repair surface and isolates moving-wall correction admissibility. Evidence is
+[`deetjen-dove-d16-boundary-term-decomposition.json`](ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json)
+with its
+[`independent audit`](ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition-audit.json).
+
 ## Latest high-Re result
 
 <p align="center">

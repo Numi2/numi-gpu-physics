@@ -317,6 +317,59 @@ func measuredBirdD16PopulationProvenanceRetainsFirstWriter() throws {
     #expect(failure.predictionAbsoluteError == 0)
 }
 
+@Test
+func measuredBirdD16BoundaryTermsRetainWallCorrectionDiscriminator() throws {
+    let report = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self,
+        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+            "ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json"
+        ))
+    )
+    let failureDirections = [2, 8, 12, 13, 16]
+    #expect(report.selectedCollisionOperator
+        == "positivity-preserving-recursive-regularized-bgk")
+    #expect(report.referenceLengthCells == 16)
+    #expect(report.targetCellCoordinate == SIMD3(64, 63, 68))
+    #expect(report.capturedSteps == [750, 751])
+    #expect(!report.productionStateModifiedByDiagnostic)
+    #expect(report.maximumContributionClosureResidual < 1e-9)
+    #expect(report.maximumReconstructionDifferenceFromStageArtifact < 1e-9)
+    #expect(report.negativeMovingBoundaryDirectionsPreviousStep == [2, 3, 10])
+    #expect(report.negativeMovingBoundaryDirectionsAtFailure
+        == failureDirections)
+    #expect(report.directionsWithNegativeReflectedPopulation.isEmpty)
+    #expect(report.directionsWithNegativeAuxiliaryContribution.isEmpty)
+    #expect(report.directionsWithNegativeWallContribution
+        == failureDirections)
+    #expect(report.directionsMadeNonnegativeByHalfwayMovingWall.isEmpty)
+    #expect(report.directionsMadeNonnegativeByInterpolatedZeroWall
+        == failureDirections)
+    #expect(report.directionsMadeNonnegativeByHalfwayZeroWall
+        == failureDirections)
+    #expect(report.directionsMadeNonnegativeByRemovingAuxiliary.isEmpty)
+    #expect(report.directionsRemainingNegativeUnderHalfwayZeroWall.isEmpty)
+    #expect(report.dominantRepairTarget == "moving-wall-correction")
+    #expect(report.boundaryTermGatePassed)
+    #expect(!report.experimentalAgreementGateApplied)
+    let failure = report.samples.filter {
+        $0.step == 751 && $0.productionPopulationNegative
+    }
+    #expect(failure.map(\.direction) == failureDirections)
+    #expect(failure.allSatisfy {
+        $0.reflectedPopulation > 0
+            && $0.auxiliaryContribution >= 0
+            && $0.wallCorrectionContribution < 0
+            && $0.productionReconstructedPopulation < 0
+            && $0.interpolatedZeroWallPopulation > 0
+            && $0.halfwayZeroWallPopulation > 0
+            && $0.halfwayMovingWallPopulation < 0
+            && $0.dominantNegativeContribution == "wall-correction"
+    })
+    #expect(failure.filter { $0.branch == "halfway-fallback" }.count == 4)
+    #expect(failure.filter { $0.branch == "interpolated-far-wall" }
+        .map(\.direction) == [12])
+}
+
 #if canImport(Metal)
 @Test
 func productionMetalD16PopulationProvenanceCloses() throws {
@@ -357,6 +410,52 @@ func productionMetalD16PopulationProvenanceCloses() throws {
     #expect(report.firstNegativeCapturedStage == "post-collision")
     #expect(report.negativeMovingBoundaryReconstructedDirectionsAtFailure
         == [2, 8, 12, 13, 16])
+}
+
+@Test
+func productionMetalD16BoundaryTermDecompositionCloses() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridBoundaryTermDecomposition(
+            surface: surface,
+            target: target,
+            preregistration: try decode(
+                "deetjen-dove-collision-grid-preregistration.json",
+                as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+            ),
+            discriminator: try decode(
+                "deetjen-dove-collision-grid-discriminator.json",
+                as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+            ),
+            completion: try decode(
+                "deetjen-dove-collision-grid-completion.json",
+                as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+            ),
+            provenance: try decode(
+                "deetjen-dove-d16-population-stage-provenance.json",
+                as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
+            )
+        )
+    #expect(report.boundaryTermGatePassed)
+    #expect(report.maximumContributionClosureResidual < 1e-9)
+    #expect(report.maximumReconstructionDifferenceFromStageArtifact < 1e-9)
+    #expect(report.negativeMovingBoundaryDirectionsAtFailure
+        == [2, 8, 12, 13, 16])
+    #expect(report.dominantRepairTarget == "moving-wall-correction")
 }
 
 @Test

@@ -1367,6 +1367,46 @@ It does not yet determine whether those negatives originate in the reflected
 population, wall correction, or interpolation residual, and it does not
 authorize a collision patch or another refinement run.
 
+Decompose the upstream boundary inputs and evaluate non-mutating
+counterfactuals with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-boundary-decomposition \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --discriminator ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json \
+  --completion ValidationArtifacts/deetjen-dove-collision-grid-completion.json \
+  --provenance ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json \
+  --archive ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json
+
+python3 Scripts/audit-dove-d16-boundary-terms.py
+```
+
+The diagnostic captures every moving-boundary direction at steps 750 and 751
+without writing a population or geometry buffer. Its reconstructed values
+match the prior stage artifact within `1.892e-10`; reflected, auxiliary, and
+wall contributions close within `1.747e-10`. Negative boundary directions
+change from `[2,3,10]` to `[2,8,12,13,16]`. At the failure step, all five
+reflected populations are positive and the single far-wall auxiliary
+contribution is also positive. Every wall-correction contribution is negative
+and dominates its reconstructed population.
+
+Four failing directions already use the halfway fallback. Direction 12 uses
+the interpolated far-wall branch, but moving-wall halfway makes it more
+negative (`-0.005518` versus `-0.002446`). Thus switching interpolation branch
+does not make any failing input nonnegative. Removing only the auxiliary term
+also fixes none. Both interpolated zero-wall and halfway zero-wall
+counterfactuals make all five directions positive, while no reflected
+population remains negative under halfway zero-wall. The independently
+reconstructed 12-check audit therefore identifies
+`moving-wall-correction` as the first repair surface. These counterfactuals are
+diagnostics only; zero wall is not promoted as a physical boundary condition.
+The next admissible experiment is a one-cell density-normalization and
+admissibility A/B for the moving-wall correction, followed by the existing
+momentum ledger before any production change or refinement run.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

@@ -227,6 +227,27 @@ struct GPUIndexedPopulationStageProvenance {
     uint4 state;
 };
 
+/// One direction of an opt-in indexed moving-boundary reconstruction audit.
+/// Counterfactuals are diagnostic only and never enter the production field.
+struct GPUIndexedBoundaryTerm {
+    // x=reflected population, y=link fraction, z=auxiliary population,
+    // w=raw wall correction at the production boundary location.
+    float4 primitive;
+    // x=reflected, y=auxiliary, z=wall contribution, w=production sum.
+    float4 contributions;
+    // x=halfway wall correction, y=halfway moving-wall population,
+    // z=interpolated zero-wall population, w=halfway zero-wall population.
+    float4 counterfactuals;
+    // x=interpolated population with auxiliary term removed;
+    // y/z=production/source wall velocity projected onto the direction.
+    float4 alternatives;
+    // x=direction, y=source cell, z=auxiliary cell, w=source part.
+    uint4 metadata;
+    // x=branch (0 local, 1 fallback, 2 near, 3 far, 4 outside),
+    // y=interpolated, z=solid source, w=outside source.
+    uint4 branch;
+};
+
 /// One direction of a diagnostic-only TRT collision decomposition. Float4 and
 /// uint4 fields keep the layout identical to the Swift readback structure.
 struct GPUTRTCollisionTerm {
@@ -4339,6 +4360,200 @@ kernel void gatherFloatValues(
     if (gid < count) {
         gathered[gid] = values[indices[gid]];
     }
+}
+
+/// Diagnostic-only decomposition of every pull direction at one indexed-bird
+/// cell. The counterfactuals are evaluated from the same pre-step populations
+/// and geometry but are never written to the solver state.
+kernel void captureIndexedBoundaryTermDecomposition(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidCurrent [[buffer(1)]],
+    device const float4* wallVelocity [[buffer(2)]],
+    device GPUIndexedBoundaryTerm* terms [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    constant uint4& target [[buffer(5)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= Q || target.x >= uniforms.grid.w) {
+        return;
+    }
+    uint q = gid;
+    uint targetCell = target.x;
+    uint3 size = uniforms.grid.xyz;
+    uint3 cell = unflatten(targetCell, size);
+    int3 sourceCell = int3(cell) - C[q];
+    bool outside = !inside(sourceCell, size);
+    uint source = 0xffffffffu;
+    uint sourcePart = 0u;
+    uint auxiliaryIndex = 0xffffffffu;
+    uint branch = 0u;
+    bool interpolatedBoundary = false;
+    float reflected = 0.0f;
+    float linkFraction = 0.0f;
+    float auxiliaryPopulation = 0.0f;
+    float wallCorrection = 0.0f;
+    float reflectedContribution = 0.0f;
+    float auxiliaryContribution = 0.0f;
+    float wallContribution = 0.0f;
+    float productionValue;
+    float halfwayWallCorrection = 0.0f;
+    float halfwayMovingWall = 0.0f;
+    float interpolatedZeroWall = 0.0f;
+    float halfwayZeroWall = 0.0f;
+    float interpolatedNoAuxiliary = 0.0f;
+    float productionWallDirectionProjection = 0.0f;
+    float sourceWallDirectionProjection = 0.0f;
+
+    if (outside && uniforms.flags.w != 0u) {
+        sourceCell.x = sourceCell.x < 0
+            ? int(size.x) - 1
+            : (sourceCell.x >= int(size.x) ? 0 : sourceCell.x);
+        sourceCell.y = sourceCell.y < 0
+            ? int(size.y) - 1
+            : (sourceCell.y >= int(size.y) ? 0 : sourceCell.y);
+        sourceCell.z = sourceCell.z < 0
+            ? int(size.z) - 1
+            : (sourceCell.z >= int(size.z) ? 0 : sourceCell.z);
+        outside = false;
+    }
+    if (outside) {
+        productionValue = equilibrium(
+            q,
+            uniforms.farFieldLattice.w,
+            uniforms.farFieldLattice.xyz
+        );
+        branch = 4u;
+    }
+    else {
+        source = flatten(uint3(sourceCell), size);
+        sourcePart = uint(solidCurrent[source]);
+        if (sourcePart == 0u) {
+            productionValue = populationsIn[q * uniforms.grid.w + source];
+        }
+        else {
+            reflected = populationsIn[
+                OPP[q] * uniforms.grid.w + targetCell
+            ];
+            float3 direction = float3(C[q]);
+            linkFraction = 0.5f;
+            float3 wall = wallVelocity[source].xyz;
+            uint farther = 0u;
+            interpolatedBoundary = uniforms.caseParameters.w < -0.5f;
+            if (interpolatedBoundary) {
+                linkFraction = clamp(
+                    populationsIn[q * uniforms.grid.w + source],
+                    1.0e-4f,
+                    1.0f
+                );
+                wall = mix(
+                    wallVelocity[targetCell].xyz,
+                    wallVelocity[source].xyz,
+                    linkFraction
+                );
+                if (linkFraction <= 0.5f) {
+                    int3 fartherCell = int3(cell) + C[q];
+                    if (inside(fartherCell, size)) {
+                        farther = flatten(uint3(fartherCell), size);
+                    }
+                    if (!inside(fartherCell, size)
+                        || solidCurrent[farther] != 0) {
+                        interpolatedBoundary = false;
+                        linkFraction = 0.5f;
+                        wall = wallVelocity[source].xyz;
+                    }
+                }
+            }
+            productionWallDirectionProjection = dot(direction, wall);
+            sourceWallDirectionProjection = dot(
+                direction,
+                wallVelocity[source].xyz
+            );
+            wallCorrection = 2.0f
+                * W[q]
+                * uniforms.farFieldLattice.w
+                * productionWallDirectionProjection
+                / CS2;
+            halfwayWallCorrection = 2.0f
+                * W[q]
+                * uniforms.farFieldLattice.w
+                * sourceWallDirectionProjection
+                / CS2;
+            productionValue = reflected + wallCorrection;
+            reflectedContribution = reflected;
+            wallContribution = wallCorrection;
+            branch = 1u;
+            if (interpolatedBoundary) {
+                if (linkFraction <= 0.5f) {
+                    auxiliaryPopulation = populationsIn[
+                        OPP[q] * uniforms.grid.w + farther
+                    ];
+                    reflectedContribution = 2.0f
+                        * linkFraction * reflected;
+                    auxiliaryContribution = (1.0f
+                        - 2.0f * linkFraction) * auxiliaryPopulation;
+                    wallContribution = wallCorrection;
+                    auxiliaryIndex = farther;
+                    branch = 2u;
+                }
+                else {
+                    auxiliaryPopulation = populationsIn[
+                        q * uniforms.grid.w + targetCell
+                    ];
+                    reflectedContribution = reflected
+                        / (2.0f * linkFraction);
+                    auxiliaryContribution = (2.0f * linkFraction - 1.0f)
+                        * auxiliaryPopulation
+                        / (2.0f * linkFraction);
+                    wallContribution = wallCorrection
+                        / (2.0f * linkFraction);
+                    auxiliaryIndex = targetCell;
+                    branch = 3u;
+                }
+                productionValue = reflectedContribution
+                    + auxiliaryContribution + wallContribution;
+            }
+            halfwayMovingWall = reflected + halfwayWallCorrection;
+            interpolatedZeroWall = reflectedContribution
+                + auxiliaryContribution;
+            halfwayZeroWall = reflected;
+            interpolatedNoAuxiliary = reflectedContribution
+                + wallContribution;
+        }
+    }
+
+    GPUIndexedBoundaryTerm term;
+    term.primitive = float4(
+        reflected,
+        linkFraction,
+        auxiliaryPopulation,
+        wallCorrection
+    );
+    term.contributions = float4(
+        reflectedContribution,
+        auxiliaryContribution,
+        wallContribution,
+        productionValue
+    );
+    term.counterfactuals = float4(
+        halfwayWallCorrection,
+        halfwayMovingWall,
+        interpolatedZeroWall,
+        halfwayZeroWall
+    );
+    term.alternatives = float4(
+        interpolatedNoAuxiliary,
+        productionWallDirectionProjection,
+        sourceWallDirectionProjection,
+        0.0f
+    );
+    term.metadata = uint4(q, source, auxiliaryIndex, sourcePart);
+    term.branch = uint4(
+        branch,
+        interpolatedBoundary ? 1u : 0u,
+        sourcePart != 0u ? 1u : 0u,
+        outside ? 1u : 0u
+    );
+    terms[target.z * Q + q] = term;
 }
 
 /// Diagnostic-only replay of the exact indexed-bird population path for one
