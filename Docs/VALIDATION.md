@@ -1275,8 +1275,58 @@ This is a numerical full-window gate. The endpoint measured-force errors
 `5.665/5.676` and interval-mean errors `2.274/2.264` are descriptive because
 the pilot viscosity is `68.07x` the source value. They cannot select an
 operator or establish experimental agreement. The next admissible allocation
-is a preregistered two-operator 8/12-grid discriminator; only its selected
-candidate advances to the 16-cell completion run.
+was the preregistered two-operator 8/12-grid discriminator; only its selected
+candidate could advance to the 16-cell completion run.
+
+Freeze, run, complete, and independently audit that workflow with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-preregister \
+  --archive ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-discriminator \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-completion \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --discriminator ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json \
+  --archive ValidationArtifacts/deetjen-dove-collision-grid-completion.json
+
+python3 Scripts/audit-dove-collision-grid-workflow.py
+```
+
+The preregistration fixes a `0.08 m` reference length, `0.0075 m` physical
+half-thickness, `0.12 m` padding, `0.06 m` sponge, and the `68.07195x`
+viscosity floor. D=8/12/16 use `16/24/32` fluid steps per force sample,
+`12/18/24` padding cells, and `6/9/12` sponge cells. Thus physical timing,
+domain, geometry regularization, viscosity, and maximum Mach `0.136564` remain
+fixed while resolution changes. Both operators complete D=8 and D=12 with
+positive finite populations and negligible correction activation. Their
+D8-to-D12 trend scores are `0.125454` regularized BGK and `0.125081` RR3;
+operator disagreement decreases from `0.008824` to `0.008164`. Both are inside
+the locked 10% trend-penalty envelope, so the stationary-wall correction gate
+breaks the tie: regularized BGK previously missed its 1% L2 limit at `1.0968%`,
+while RR3 passed at `0.3528%`. RR3 alone is selected.
+
+The only authorized D=16 run stops at step `751/7,552`, before the comparison
+window, on a negative direction-0 population at cell `[64,63,68]`, `0.2151`
+cells from the surface. Loads and sampled values are still finite, and
+correction activation is only `1.435e-7`, but positivity and completion fail.
+The completion command therefore writes the negative archive and exits
+nonzero. The independent audit verifies the four-case discriminator, selection
+arithmetic, single D=16 allocation, and absent convergence values. This rejects
+the measured-dove D=16 completion; it does not authorize regularized BGK at
+D=16 or experimental force comparison.
 
 ## 8. Complete measured bird
 

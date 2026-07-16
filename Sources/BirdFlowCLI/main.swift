@@ -140,6 +140,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var inputPath: String?
     var forceTargetPath: String?
     var archivePath: String?
+    var preregistrationPath: String?
+    var discriminatorPath: String?
     var cellSizeMeters: Float = 0.01
     var halfThicknessCells: Float = 0.75
     var couplingGate = false
@@ -147,6 +149,9 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var collisionPreRollAB = false
     var collisionMomentumClosure = false
     var collisionExtendedPilot = false
+    var collisionGridPreregister = false
+    var collisionGridDiscriminator = false
+    var collisionGridCompletion = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -177,6 +182,22 @@ private struct MeasuredBirdSurfaceReplayArguments {
                     )
                 }
                 forceTargetPath = values[index]
+            case "--preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--preregistration requires a locked JSON path"
+                    )
+                }
+                preregistrationPath = values[index]
+            case "--discriminator":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--discriminator requires a completed JSON path"
+                    )
+                }
+                discriminatorPath = values[index]
             case "--cell-size-meters":
                 index += 1
                 guard index < values.count,
@@ -208,6 +229,12 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 collisionMomentumClosure = true
             case "--collision-extended-pilot":
                 collisionExtendedPilot = true
+            case "--collision-grid-preregister":
+                collisionGridPreregister = true
+            case "--collision-grid-discriminator":
+                collisionGridDiscriminator = true
+            case "--collision-grid-completion":
+                collisionGridCompletion = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -227,7 +254,9 @@ private struct MeasuredBirdSurfaceReplayArguments {
         }
         let selectedModes = [
             couplingGate, coarseFluidPilot, collisionPreRollAB,
-            collisionMomentumClosure, collisionExtendedPilot
+            collisionMomentumClosure, collisionExtendedPilot,
+            collisionGridPreregister, collisionGridDiscriminator,
+            collisionGridCompletion
         ].filter { $0 }.count
         guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
@@ -236,10 +265,35 @@ private struct MeasuredBirdSurfaceReplayArguments {
         }
         let needsForceTarget = coarseFluidPilot || collisionPreRollAB
             || collisionMomentumClosure || collisionExtendedPilot
+            || collisionGridPreregister || collisionGridDiscriminator
+            || collisionGridCompletion
         guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
                 "the coarse pilot and collision diagnostics require --force-target; other modes reject it"
             )
+        }
+        guard collisionGridDiscriminator
+                == (preregistrationPath != nil
+                    && discriminatorPath == nil)
+                || (!collisionGridDiscriminator
+                    && !collisionGridCompletion
+                    && preregistrationPath == nil
+                    && discriminatorPath == nil)
+                || (collisionGridCompletion
+                    && preregistrationPath != nil
+                    && discriminatorPath != nil) else {
+            throw CLIError.invalidArgument(
+                "the grid discriminator requires --preregistration; completion requires both --preregistration and --discriminator"
+            )
+        }
+        if collisionGridPreregister || collisionGridDiscriminator
+            || collisionGridCompletion {
+            guard cellSizeMeters == 0.01,
+                  halfThicknessCells == 0.75 else {
+                throw CLIError.invalidArgument(
+                    "grid workflow resolution and thickness are preregistered and reject manual overrides"
+                )
+            }
         }
     }
 
@@ -254,6 +308,14 @@ private struct MeasuredBirdSurfaceReplayArguments {
       --collision-momentum-closure
                                  Close both surviving candidates against near-wing and global momentum
       --collision-extended-pilot Run both momentum-closed candidates through all 3,776 fixed steps
+      --collision-grid-preregister
+                                 Freeze the fixed-physics D=8/12 discriminator and single-winner D=16 contract
+      --collision-grid-discriminator
+                                 Run both candidates at D=8/12 under --preregistration
+      --collision-grid-completion
+                                 Run only the authorized winner at D=16
+      --preregistration FILE     Locked grid preregistration JSON
+      --discriminator FILE       Completed D=8/12 discriminator JSON
       --force-target FILE        Registered measured two-component force target
       --archive FILE            Atomically archive the parity report as JSON
       --json                    Emit the machine-readable parity report
@@ -1825,6 +1887,158 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
         manifestURL: URL(fileURLWithPath: arguments.inputPath!)
     )
+    if arguments.collisionGridPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridPreregistration(
+                surface: dataset,
+                target: target
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            for grid in report.gridContracts {
+                print(
+                    "D=\(grid.referenceLengthCells): dx="
+                        + String(grid.cellSizeMeters)
+                        + " steps_per_sample="
+                        + String(grid.fluidStepsPerForceSample)
+                        + " tau_plus=" + String(grid.tauPlus)
+                        + " viscosity_ratio="
+                        + String(grid.pilotToSourceViscosityRatio)
+                )
+            }
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "collision-grid preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridDiscriminator {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistration = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridPreregistration.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.preregistrationPath!
+            ))
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridDiscriminator(
+                surface: dataset,
+                target: target,
+                preregistration: preregistration
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            for assessment in report.assessments {
+                print(
+                    assessment.collisionOperator
+                        + ": trend_score="
+                        + String(assessment.gridTrendScore)
+                        + " cross_canonical="
+                        + String(assessment.crossCanonicalGatePassed)
+                        + " penalty="
+                        + String(assessment.crossCanonicalTrendPenalty)
+                        + " selectable="
+                        + String(assessment.selectionEligible)
+                )
+            }
+            print(
+                "selected_collision_operator: "
+                    + (report.selectedCollisionOperator ?? "none")
+            )
+            print(
+                "d16_completion_authorized: "
+                    + String(report.d16CompletionAuthorized)
+            )
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.screeningGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "collision-grid discriminator did not authorize D=16"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridCompletion {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistration = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridPreregistration.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.preregistrationPath!
+            ))
+        )
+        let discriminator = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.discriminatorPath!
+            ))
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridCompletion(
+                surface: dataset,
+                target: target,
+                preregistration: preregistration,
+                discriminator: discriminator
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print(
+                "selected_collision_operator: "
+                    + report.selectedCollisionOperator
+            )
+            print(
+                "d16_completed_steps: "
+                    + String(report.d16Case.report.completedFluidSteps)
+            )
+            print(
+                "d12_to_d16_interval_force_difference: "
+                    + (
+                        report
+                            .d12ToD16IntervalForceNormalizedRMSDifference
+                            .map { String($0) } ?? "unavailable"
+                    )
+            )
+            print(
+                "fine_grid_force_convergence_passed: "
+                    + String(report.fineGridForceConvergencePassed)
+            )
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.completionGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "authorized D=16 collision completion failed"
+            )
+        }
+        return
+    }
     if arguments.collisionExtendedPilot {
         let target = try MeasuredBirdForceTargetLoader.load(
             targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),

@@ -2,21 +2,22 @@
 import Foundation
 import Testing
 
-private var measuredBirdSurfaceManifestURL: URL {
+private var repositoryRootURL: URL {
     URL(fileURLWithPath: #filePath)
         .deletingLastPathComponent()
         .deletingLastPathComponent()
         .deletingLastPathComponent()
+}
+
+private var measuredBirdSurfaceManifestURL: URL {
+    repositoryRootURL
         .appendingPathComponent(
             "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
         )
 }
 
 private var measuredBirdForceTargetURL: URL {
-    URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent()
-        .deletingLastPathComponent()
-        .deletingLastPathComponent()
+    repositoryRootURL
         .appendingPathComponent(
             "ValidationInputs/deetjen-ob-f03-force-v1.json"
         )
@@ -176,6 +177,97 @@ func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
                 "positivity-preserving-recursive-regularized-bgk"
             ]
     )
+
+    let refinement = try [8, 12, 16].map {
+        try MetalIndexedBirdSurfacePilotValidator.refinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: $0
+        )
+    }
+    #expect(refinement.map(\.fluidStepsPerForceSample) == [16, 24, 32])
+    #expect(refinement.map(\.preRollFluidSteps) == [800, 1_200, 1_600])
+    #expect(refinement.map(\.totalFluidSteps) == [3_776, 5_664, 7_552])
+    #expect(refinement.map(\.paddingCells) == [12, 18, 24])
+    #expect(refinement.map(\.spongeWidthCells) == [6, 9, 12])
+    #expect(abs(refinement[0].halfThicknessCells - 0.75) < 1e-6)
+    #expect(abs(refinement[1].halfThicknessCells - 1.125) < 1e-6)
+    #expect(abs(refinement[2].halfThicknessCells - 1.5) < 1e-6)
+    #expect(abs(refinement[0].pilotTauPlus - 0.501) < 1e-6)
+    #expect(abs(refinement[1].pilotTauPlus - 0.5015) < 1e-6)
+    #expect(abs(refinement[2].pilotTauPlus - 0.502) < 1e-6)
+    #expect(
+        refinement.allSatisfy {
+            abs($0.maximumWallMach - refinement[0].maximumWallMach) < 1e-6
+                && abs($0.pilotToSourceViscosityRatio
+                    - refinement[0].pilotToSourceViscosityRatio) < 1e-4
+                && !$0.experimentalAgreementGateApplied
+        }
+    )
+    let preregistration = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridPreregistration(surface: surface, target: target)
+    #expect(preregistration.passed)
+    #expect(preregistration.discriminatorReferenceLengthCells == [8, 12])
+    #expect(preregistration.completionReferenceLengthCells == 16)
+    #expect(
+        preregistration.crossCanonicalEvidence.map(
+            \.crossCanonicalGatePassed
+        ) == [false, true]
+    )
+    #expect(!preregistration.experimentalAgreementGateApplied)
+}
+
+@Test
+func measuredBirdCollisionGridArtifactsRetainAuthorizedD16Failure() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let preregistration = try decode(
+        "deetjen-dove-collision-grid-preregistration.json",
+        as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+    )
+    let discriminator = try decode(
+        "deetjen-dove-collision-grid-discriminator.json",
+        as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+    )
+    let completion = try decode(
+        "deetjen-dove-collision-grid-completion.json",
+        as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+    )
+    let recursive = "positivity-preserving-recursive-regularized-bgk"
+    #expect(preregistration.passed)
+    #expect(discriminator.preregistration == preregistration)
+    #expect(discriminator.cases.count == 4)
+    #expect(Set(discriminator.cases.map(\.referenceLengthCells)) == [8, 12])
+    #expect(discriminator.cases.allSatisfy { $0.eligibleForSelection })
+    #expect(discriminator.selectedCollisionOperator == recursive)
+    #expect(discriminator.d16CompletionAuthorized)
+    #expect(discriminator.screeningGatePassed)
+    #expect(
+        discriminator.d12OperatorPairwiseNormalizedRMSDifference!
+            < discriminator.d8OperatorPairwiseNormalizedRMSDifference!
+    )
+    #expect(completion.selectedCollisionOperator == recursive)
+    #expect(completion.d16Case.collisionOperator == recursive)
+    #expect(completion.d16Case.referenceLengthCells == 16)
+    #expect(completion.d16Case.report.plan.totalFluidSteps == 7_552)
+    #expect(completion.d16Case.report.completedFluidSteps == 751)
+    #expect(completion.d16Case.report.firstNegativePopulationStep == 751)
+    #expect(completion.d16Case.report.firstNegativePopulationDirection == 0)
+    #expect(completion.d16Case.report.allLoadsFinite)
+    #expect(completion.d16Case.report.allSampledPopulationsFinite)
+    #expect(!completion.d16Case.report.sampledPopulationPositivityPassed)
+    #expect(!completion.d16Case.completionAndPositivityGatePassed)
+    #expect(completion.d16Case.correctionIntrusionGatePassed)
+    #expect(!completion.completionGatePassed)
+    #expect(!completion.fineGridForceConvergencePassed)
+    #expect(completion.d12ToD16IntervalForceNormalizedRMSDifference == nil)
+    #expect(!completion.experimentalAgreementGateApplied)
 }
 
 #if canImport(Metal)

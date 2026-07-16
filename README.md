@@ -158,10 +158,15 @@ and
 [`deetjen-dove-collision-extended-pilot-audit.json`](ValidationArtifacts/deetjen-dove-collision-extended-pilot-audit.json).
 The endpoint measured-force errors (`5.665`/`5.676`) and interval errors
 (`2.274`/`2.264`) are recorded but not acceptance gates because this grid uses
-`68.07x` source viscosity. Neither operator is yet the measured-bird production
-default. The next economical discriminator is a preregistered two-operator
-8/12-grid comparison; only its winner should incur the full 16-cell completion
-run.
+`68.07x` source viscosity. The subsequent fixed-physics D=8/D=12 discriminator
+held physical domain, thickness, viscosity, Mach, geometry, timing, and gates
+constant. Both operators cleared both grids; their trend scores were nearly
+tied (`0.12545`/`0.12508`) and disagreement decreased from `0.882%` to
+`0.816%`. The preregistered cross-canonical rule therefore selected RR3 and
+authorized only its D=16 run. That completion stopped at step `751/7,552` on a
+negative direction-0 population `0.215` cells from the surface while loads
+remained finite. The negative result is independently audited; no second D=16
+operator or unavailable force-convergence value was substituted.
 
 ## Latest high-Re result
 

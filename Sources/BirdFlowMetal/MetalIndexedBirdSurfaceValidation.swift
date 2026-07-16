@@ -377,6 +377,122 @@ public struct MetalIndexedBirdSurfaceExtendedPilotReport: Codable, Sendable {
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceRefinementGridContract:
+    Codable, Sendable, Equatable
+{
+    public let referenceLengthCells: Int
+    public let cellSizeMeters: Double
+    public let halfThicknessCells: Double
+    public let paddingCells: Int
+    public let spongeWidthCells: Int
+    public let fluidStepsPerForceSample: Int
+    public let preRollFluidSteps: Int
+    public let totalFluidSteps: Int
+    public let tauPlus: Double
+    public let maximumWallMach: Double
+    public let pilotToSourceViscosityRatio: Double
+}
+
+public struct MetalIndexedBirdSurfaceCrossCanonicalEvidence:
+    Codable, Sendable, Equatable
+{
+    public let collisionOperator: String
+    public let artifactPath: String
+    public let relativeCorrectionL2: Double
+    public let maximumAllowedRelativeCorrectionL2: Double
+    public let crossCanonicalGatePassed: Bool
+}
+
+public struct MetalIndexedBirdSurfaceCollisionGridPreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let candidateOperators: [String]
+    public let discriminatorReferenceLengthCells: [Int]
+    public let completionReferenceLengthCells: Int
+    public let gridContracts: [MetalIndexedBirdSurfaceRefinementGridContract]
+    public let maximumCorrectionActivationFraction: Double
+    public let maximumCrossCanonicalTrendPenalty: Double
+    public let crossCanonicalEvidence:
+        [MetalIndexedBirdSurfaceCrossCanonicalEvidence]
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let experimentalAgreementGateApplied: Bool
+    public let passed: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceCollisionGridCase:
+    Codable, Sendable
+{
+    public let collisionOperator: String
+    public let referenceLengthCells: Int
+    public let completionAndPositivityGatePassed: Bool
+    public let correctionIntrusionGatePassed: Bool
+    public let eligibleForSelection: Bool
+    public let report: MetalIndexedBirdSurfacePilotReport
+}
+
+public struct MetalIndexedBirdSurfaceCollisionGridAssessment:
+    Codable, Sendable
+{
+    public let collisionOperator: String
+    public let d8ToD12IntervalForceNormalizedRMSDifference: Double
+    public let d8ToD12MeanForceRelativeDifference: Double
+    public let d8ToD12ImpulseRelativeDifference: Double
+    public let d8ToD12PeakTimeDifferenceSeconds: Double
+    public let gridTrendScore: Double
+    public let crossCanonicalGatePassed: Bool
+    public let crossCanonicalTrendPenalty: Double
+    public let eligibleAtBothGrids: Bool
+    public let selectionEligible: Bool
+}
+
+public struct MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let preregistration:
+        MetalIndexedBirdSurfaceCollisionGridPreregistration
+    public let cases: [MetalIndexedBirdSurfaceCollisionGridCase]
+    public let assessments: [MetalIndexedBirdSurfaceCollisionGridAssessment]
+    public let d8OperatorPairwiseNormalizedRMSDifference: Double?
+    public let d12OperatorPairwiseNormalizedRMSDifference: Double?
+    public let selectedCollisionOperator: String?
+    public let d16CompletionAuthorized: Bool
+    public let allDiscriminatorRunsCompleted: Bool
+    public let screeningGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceCollisionGridCompletionReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let selectedCollisionOperator: String
+    public let discriminatorReferenceLengthCells: [Int]
+    public let completionReferenceLengthCells: Int
+    public let d16Case: MetalIndexedBirdSurfaceCollisionGridCase
+    public let d12ToD16IntervalForceNormalizedRMSDifference: Double?
+    public let d12ToD16MeanForceRelativeDifference: Double?
+    public let d12ToD16ImpulseRelativeDifference: Double?
+    public let d12ToD16PeakTimeDifferenceSeconds: Double?
+    public let maximumAllowedFineGridRelativeDifference: Double
+    public let fineGridForceConvergencePassed: Bool
+    public let completionGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -390,6 +506,11 @@ public enum MetalIndexedBirdSurfacePilotValidator {
     public static let collisionPreRollMaximumActivationFraction = 0.05
     public static let collisionMomentumMaximumRelativeRMSResidual = 0.005
     public static let collisionExtendedPilotPopulationDiagnosticStride = 1
+    public static let refinementReferenceLengthMeters: Float = 0.08
+    public static let refinementBaseCellSizeMeters: Float = 0.01
+    public static let refinementBaseHalfThicknessMeters: Float = 0.0075
+    public static let refinementBasePaddingMeters: Float = 0.12
+    public static let refinementBaseSpongeWidthMeters: Float = 0.06
     public static let collisionMomentumCandidateOperators:
         [MetalIndexedBirdSurfaceCollisionOperator] = [
             .positivityPreservingRegularizedBGK,
@@ -406,12 +527,21 @@ public enum MetalIndexedBirdSurfacePilotValidator {
         surface: MeasuredBirdSurfaceSequence,
         target: MeasuredBirdForceTarget,
         cellSizeMeters: Float = 0.01,
-        halfThicknessCells: Float = 0.75
+        halfThicknessCells: Float = 0.75,
+        referenceLengthCells: Int = 8,
+        stepsPerForceSample: Int = fluidStepsPerForceSample,
+        paddingCellCount: Int = paddingCells,
+        spongeWidthCellCount: Int = spongeWidthCells
     ) throws -> MetalIndexedBirdSurfacePilotPlan {
         guard cellSizeMeters.isFinite,
               cellSizeMeters > 0,
               halfThicknessCells.isFinite,
               (0.5...2).contains(halfThicknessCells),
+              referenceLengthCells >= 8,
+              stepsPerForceSample >= fluidStepsPerForceSample,
+              paddingCellCount >= 4,
+              spongeWidthCellCount >= 4,
+              paddingCellCount >= spongeWidthCellCount,
               target.comparisonLastTimeSeconds
                 <= Double(surface.frameTimesSeconds.last!) else {
             throw MeasuredBirdSurfaceSequenceError.invalidDataset(
@@ -420,7 +550,7 @@ public enum MetalIndexedBirdSurfacePilotValidator {
         }
         let forceRate = target.forceSampleRateHertz
         let dt = 1.0 / (
-            forceRate * Double(fluidStepsPerForceSample)
+            forceRate * Double(stepsPerForceSample)
         )
         let maximumSpeed = Double(
             surface.maximumPointSpeedMetersPerSecond
@@ -432,14 +562,27 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                 Float(maximumMach)
             )
         }
-        let pilotNuLattice = (Double(pilotTauPlus) - 0.5) / 3.0
-        let pilotReynolds = latticeSpeed * 8.0 / pilotNuLattice
+        let baselineDT = 1.0 / (
+            forceRate * Double(fluidStepsPerForceSample)
+        )
+        let baselineNuLattice = (Double(pilotTauPlus) - 0.5) / 3.0
+        let pilotNuPhysical = baselineNuLattice
+            * pow(Double(refinementBaseCellSizeMeters), 2) / baselineDT
+        let pilotNuLattice = pilotNuPhysical * dt
+            / pow(Double(cellSizeMeters), 2)
+        let localPilotTauPlus = 0.5 + 3.0 * pilotNuLattice
+        guard localPilotTauPlus >= Double(minimumTauPlus) else {
+            throw BirdFlowConfigurationError.relaxationTooCloseToLimit(
+                Float(localPilotTauPlus)
+            )
+        }
+        let pilotReynolds = maximumSpeed
+            * Double(cellSizeMeters) * Double(referenceLengthCells)
+            / pilotNuPhysical
         let sourceNu = Double(sourceDynamicViscosity / sourceAirDensity)
         let sourceNuLattice = sourceNu * dt
             / pow(Double(cellSizeMeters), 2)
         let sourceTau = 0.5 + 3.0 * sourceNuLattice
-        let pilotNuPhysical = pilotNuLattice
-            * pow(Double(cellSizeMeters), 2) / dt
         let pilotDynamicViscosity = Double(sourceAirDensity)
             * pilotNuPhysical
         let maximumSourceCellSize = 3.0 * sourceNu * latticeSpeed
@@ -461,11 +604,11 @@ public enum MetalIndexedBirdSurfacePilotValidator {
         return MetalIndexedBirdSurfacePilotPlan(
             cellSizeMeters: Double(cellSizeMeters),
             halfThicknessCells: Double(halfThicknessCells),
-            paddingCells: paddingCells,
-            spongeWidthCells: spongeWidthCells,
+            paddingCells: paddingCellCount,
+            spongeWidthCells: spongeWidthCellCount,
             spongeStrength: Double(spongeStrength),
             forceSamplesPerSecond: forceRate,
-            fluidStepsPerForceSample: fluidStepsPerForceSample,
+            fluidStepsPerForceSample: stepsPerForceSample,
             fluidTimeStepSeconds: dt,
             totalFluidSteps: totalSteps,
             preRollFluidSteps: preRollSteps,
@@ -473,7 +616,7 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             maximumSurfaceSpeedMetersPerSecond: maximumSpeed,
             latticeReferenceSpeed: latticeSpeed,
             maximumWallMach: maximumMach,
-            pilotTauPlus: Double(pilotTauPlus),
+            pilotTauPlus: localPilotTauPlus,
             pilotReynoldsNumber: pilotReynolds,
             sourceAirDensityKilogramsPerCubicMeter:
                 Double(sourceAirDensity),
@@ -491,6 +634,528 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                 pilotDynamicViscosity
                     / Double(sourceDynamicViscosity),
             experimentalAgreementGateApplied: false
+        )
+    }
+
+    public static func refinementPlan(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        referenceLengthCells: Int
+    ) throws -> MetalIndexedBirdSurfacePilotPlan {
+        guard [8, 12, 16].contains(referenceLengthCells) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "dove collision refinement supports only D=8, D=12, or D=16"
+            )
+        }
+        return try plan(
+            surface: surface,
+            target: target,
+            cellSizeMeters:
+                refinementReferenceLengthMeters / Float(referenceLengthCells),
+            halfThicknessCells:
+                refinementBaseHalfThicknessMeters
+                    / (refinementReferenceLengthMeters
+                        / Float(referenceLengthCells)),
+            referenceLengthCells: referenceLengthCells,
+            stepsPerForceSample: fluidStepsPerForceSample
+                * referenceLengthCells / 8,
+            paddingCellCount: Int(round(
+                refinementBasePaddingMeters
+                    / (refinementReferenceLengthMeters
+                        / Float(referenceLengthCells))
+            )),
+            spongeWidthCellCount: Int(round(
+                refinementBaseSpongeWidthMeters
+                    / (refinementReferenceLengthMeters
+                        / Float(referenceLengthCells))
+            ))
+        )
+    }
+
+    public static func collisionGridPreregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget
+    ) throws -> MetalIndexedBirdSurfaceCollisionGridPreregistration {
+        let grids = try [8, 12, 16].map { cells in
+            let plan = try refinementPlan(
+                surface: surface,
+                target: target,
+                referenceLengthCells: cells
+            )
+            return MetalIndexedBirdSurfaceRefinementGridContract(
+                referenceLengthCells: cells,
+                cellSizeMeters: plan.cellSizeMeters,
+                halfThicknessCells: plan.halfThicknessCells,
+                paddingCells: plan.paddingCells,
+                spongeWidthCells: plan.spongeWidthCells,
+                fluidStepsPerForceSample: plan.fluidStepsPerForceSample,
+                preRollFluidSteps: plan.preRollFluidSteps,
+                totalFluidSteps: plan.totalFluidSteps,
+                tauPlus: plan.pilotTauPlus,
+                maximumWallMach: plan.maximumWallMach,
+                pilotToSourceViscosityRatio:
+                    plan.pilotToSourceViscosityRatio
+            )
+        }
+        let regularized = MetalIndexedBirdSurfaceCrossCanonicalEvidence(
+            collisionOperator:
+                MetalIndexedBirdSurfaceCollisionOperator
+                    .positivityPreservingRegularizedBGK.rawValue,
+            artifactPath: (
+                "ValidationArtifacts/measured-wing-stationary-wall-c16-"
+                    + "bulk-collision-operator-ab.json"
+            ),
+            relativeCorrectionL2: 0.010_968_289_256_290_249,
+            maximumAllowedRelativeCorrectionL2: 0.01,
+            crossCanonicalGatePassed: false
+        )
+        let recursive = MetalIndexedBirdSurfaceCrossCanonicalEvidence(
+            collisionOperator:
+                MetalIndexedBirdSurfaceCollisionOperator
+                    .positivityPreservingRecursiveRegularizedBGK.rawValue,
+            artifactPath: (
+                "ValidationArtifacts/measured-wing-stationary-wall-c16-"
+                    + "recursive-regularization-ab.json"
+            ),
+            relativeCorrectionL2: 0.003_527_852_471_536_101_6,
+            maximumAllowedRelativeCorrectionL2: 0.01,
+            crossCanonicalGatePassed: true
+        )
+        return MetalIndexedBirdSurfaceCollisionGridPreregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            candidateOperators:
+                collisionMomentumCandidateOperators.map(\.rawValue),
+            discriminatorReferenceLengthCells: [8, 12],
+            completionReferenceLengthCells: 16,
+            gridContracts: grids,
+            maximumCorrectionActivationFraction:
+                collisionPreRollMaximumActivationFraction,
+            maximumCrossCanonicalTrendPenalty: 0.10,
+            crossCanonicalEvidence: [regularized, recursive],
+            selectionRule: (
+                "Run both candidates at D=8 and D=12. Require completion, "
+                    + "positive finite populations and loads, all four "
+                    + "surface components, and correction activation at or "
+                    + "below 5%. Select exactly one candidate only if it "
+                    + "passes the locked stationary-wall cross-canonical "
+                    + "correction gate and its normalized D8-to-D12 trend "
+                    + "score is no more than 10% worse than the best eligible "
+                    + "candidate. Otherwise authorize no D=16 run."
+            ),
+            fixedInputs: (
+                "0.08 m reference length; 0.0075 m surface half-thickness; "
+                    + "0.12 m padding; 0.06 m sponge width; 2000 Hz force "
+                    + "registration; 16/24/32 fluid steps per force sample; "
+                    + "fixed physical viscosity floor, density, geometry, "
+                    + "kinematics, far-field treatment, moving-boundary "
+                    + "operator, force estimator, and numerical gates"
+            ),
+            experimentalAgreementGateApplied: false,
+            passed: grids.map(\.referenceLengthCells) == [8, 12, 16]
+                && grids.allSatisfy {
+                    $0.maximumWallMach <= 0.15
+                        && abs($0.pilotToSourceViscosityRatio
+                            - grids[0].pilotToSourceViscosityRatio) <= 1e-4
+                },
+            claimBoundary: (
+                "This preregistration freezes allocation and selection before "
+                    + "any D=12 or D=16 measured-dove result is observed. "
+                    + "The 68.07x viscosity-floor force error cannot select "
+                    + "an operator or establish experimental agreement."
+            )
+        )
+    }
+
+    public static func collisionGridDiscriminator(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration:
+            MetalIndexedBirdSurfaceCollisionGridPreregistration
+    ) throws -> MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport {
+        let expected = try collisionGridPreregistration(
+            surface: surface,
+            target: target
+        )
+        guard preregistration == expected, preregistration.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "collision-grid preregistration does not match locked inputs"
+            )
+        }
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        var cases: [MetalIndexedBirdSurfaceCollisionGridCase] = []
+        for cells in preregistration.discriminatorReferenceLengthCells {
+            for collisionOperator in collisionMomentumCandidateOperators {
+                cases.append(try runCollisionGridCase(
+                    backend: backend,
+                    surface: surface,
+                    target: target,
+                    collisionOperator: collisionOperator,
+                    referenceLengthCells: cells
+                ))
+            }
+        }
+        let rawAssessments = try collisionMomentumCandidateOperators.map {
+            collisionOperator -> (
+                MetalIndexedBirdSurfaceCollisionOperator,
+                CollisionGridTrendMetrics,
+                Bool,
+                Bool
+            ) in
+            guard let d8 = cases.first(where: {
+                $0.referenceLengthCells == 8
+                    && $0.collisionOperator == collisionOperator.rawValue
+            }), let d12 = cases.first(where: {
+                $0.referenceLengthCells == 12
+                    && $0.collisionOperator == collisionOperator.rawValue
+            }), let evidence = preregistration.crossCanonicalEvidence.first(
+                where: { $0.collisionOperator == collisionOperator.rawValue }
+            ) else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "collision-grid discriminator case matrix is incomplete"
+                )
+            }
+            return (
+                collisionOperator,
+                try collisionGridTrend(
+                    coarse: d8.report,
+                    fine: d12.report
+                ),
+                evidence.crossCanonicalGatePassed,
+                d8.eligibleForSelection && d12.eligibleForSelection
+            )
+        }
+        let bestScore = rawAssessments.filter { $0.3 }
+            .map { $0.1.score }.min() ?? .infinity
+        let assessments = rawAssessments.map { raw in
+            let penalty = bestScore.isFinite && bestScore > 1e-30
+                ? max(0, raw.1.score / bestScore - 1)
+                : 0
+            let selectionEligible = raw.3 && raw.2
+                && penalty
+                    <= preregistration.maximumCrossCanonicalTrendPenalty
+            return MetalIndexedBirdSurfaceCollisionGridAssessment(
+                collisionOperator: raw.0.rawValue,
+                d8ToD12IntervalForceNormalizedRMSDifference:
+                    raw.1.intervalForceNormalizedRMSDifference,
+                d8ToD12MeanForceRelativeDifference:
+                    raw.1.meanForceRelativeDifference,
+                d8ToD12ImpulseRelativeDifference:
+                    raw.1.impulseRelativeDifference,
+                d8ToD12PeakTimeDifferenceSeconds:
+                    raw.1.peakTimeDifferenceSeconds,
+                gridTrendScore: raw.1.score,
+                crossCanonicalGatePassed: raw.2,
+                crossCanonicalTrendPenalty: penalty,
+                eligibleAtBothGrids: raw.3,
+                selectionEligible: selectionEligible
+            )
+        }
+        let selectable = assessments.filter(\.selectionEligible)
+        let selected = selectable.count == 1
+            ? selectable[0].collisionOperator : nil
+        let allCompleted = cases.count == 4 && cases.allSatisfy {
+            $0.report.completedFluidSteps == $0.report.plan.totalFluidSteps
+        }
+        let d8Difference = operatorDifference(cases: cases, cells: 8)
+        let d12Difference = operatorDifference(cases: cases, cells: 12)
+        let passed = allCompleted && selected != nil
+        return MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            preregistration: preregistration,
+            cases: cases,
+            assessments: assessments,
+            d8OperatorPairwiseNormalizedRMSDifference: d8Difference,
+            d12OperatorPairwiseNormalizedRMSDifference: d12Difference,
+            selectedCollisionOperator: selected,
+            d16CompletionAuthorized: passed,
+            allDiscriminatorRunsCompleted: allCompleted,
+            screeningGatePassed: passed,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: passed
+                ? (
+                    "The preregistered D=8/D=12 discriminator selected "
+                        + selected! + " and authorizes exactly one D=16 "
+                        + "completion run."
+                )
+                : (
+                    "The preregistered D=8/D=12 discriminator did not "
+                        + "produce exactly one cross-canonically consistent "
+                        + "candidate inside the locked trend penalty. No "
+                        + "D=16 run is authorized."
+                ),
+            claimBoundary: (
+                "This gate selects collision physics for one D=16 engineering "
+                    + "completion allocation only. It does not use measured-"
+                    + "force error, establish spatial convergence, or claim "
+                    + "experimental agreement."
+            )
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionGridCompletion(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration:
+            MetalIndexedBirdSurfaceCollisionGridPreregistration,
+        discriminator:
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport
+    ) throws -> MetalIndexedBirdSurfaceCollisionGridCompletionReport {
+        let expected = try collisionGridPreregistration(
+            surface: surface,
+            target: target
+        )
+        guard preregistration == expected,
+              discriminator.preregistration == preregistration,
+              discriminator.screeningGatePassed,
+              discriminator.d16CompletionAuthorized,
+              let selected = discriminator.selectedCollisionOperator,
+              let collisionOperator =
+                MetalIndexedBirdSurfaceCollisionOperator(rawValue: selected),
+              collisionOperator != .productionTRT,
+              let d12 = discriminator.cases.first(where: {
+                $0.referenceLengthCells == 12
+                    && $0.collisionOperator == selected
+              }) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D=16 completion is not authorized by the locked discriminator"
+            )
+        }
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let d16 = try runCollisionGridCase(
+            backend: backend,
+            surface: surface,
+            target: target,
+            collisionOperator: collisionOperator,
+            referenceLengthCells:
+                preregistration.completionReferenceLengthCells
+        )
+        let trend = try? collisionGridTrend(
+            coarse: d12.report,
+            fine: d16.report
+        )
+        let fineLimit = 0.05
+        let convergencePassed = trend.map {
+            $0.intervalForceNormalizedRMSDifference <= fineLimit
+                && $0.meanForceRelativeDifference <= fineLimit
+                && $0.impulseRelativeDifference <= fineLimit
+        } ?? false
+        let completed = d16.eligibleForSelection
+        return MetalIndexedBirdSurfaceCollisionGridCompletionReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            selectedCollisionOperator: selected,
+            discriminatorReferenceLengthCells:
+                preregistration.discriminatorReferenceLengthCells,
+            completionReferenceLengthCells:
+                preregistration.completionReferenceLengthCells,
+            d16Case: d16,
+            d12ToD16IntervalForceNormalizedRMSDifference:
+                trend?.intervalForceNormalizedRMSDifference,
+            d12ToD16MeanForceRelativeDifference:
+                trend?.meanForceRelativeDifference,
+            d12ToD16ImpulseRelativeDifference:
+                trend?.impulseRelativeDifference,
+            d12ToD16PeakTimeDifferenceSeconds:
+                trend?.peakTimeDifferenceSeconds,
+            maximumAllowedFineGridRelativeDifference: fineLimit,
+            fineGridForceConvergencePassed: convergencePassed,
+            completionGatePassed: completed,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: completed
+                ? (convergencePassed
+                    ? (
+                        "The selected operator completed D=16 and the locked "
+                            + "D12-to-D16 five-percent force-history, mean, "
+                            + "and impulse gates pass."
+                    )
+                    : (
+                        "The selected operator completed D=16 with positive "
+                            + "finite populations, but at least one locked "
+                            + "D12-to-D16 five-percent force convergence gate "
+                            + "fails."
+                    ))
+                : (
+                    "The selected operator did not complete the authorized "
+                        + "D=16 numerical gate."
+                ),
+            claimBoundary: (
+                "This completes only the selected viscosity-floor engineering "
+                    + "ladder. Experimental comparison remains disabled at "
+                    + "the declared 68.07x viscosity floor, regardless of "
+                    + "the spatial trend."
+            )
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    private struct CollisionGridTrendMetrics {
+        let intervalForceNormalizedRMSDifference: Double
+        let meanForceRelativeDifference: Double
+        let impulseRelativeDifference: Double
+        let peakTimeDifferenceSeconds: Double
+        let score: Double
+    }
+
+#if canImport(Metal)
+    private static func runCollisionGridCase(
+        backend: MetalBackend,
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        collisionOperator: MetalIndexedBirdSurfaceCollisionOperator,
+        referenceLengthCells: Int
+    ) throws -> MetalIndexedBirdSurfaceCollisionGridCase {
+        let plan = try refinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: referenceLengthCells
+        )
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let report = try replay.runCoarseForcePilot(
+            target: target,
+            plan: plan,
+            collisionOperator: collisionOperator,
+            maximumFluidSteps: plan.totalFluidSteps,
+            populationDiagnosticStride:
+                collisionExtendedPilotPopulationDiagnosticStride,
+            stopAtFirstNegativePopulation: true
+        )
+        let completionPassed = report.completedFluidSteps
+                == plan.totalFluidSteps
+            && report.recordedComparisonSamples
+                == plan.comparisonForceSamples
+            && report.recordedPopulationDiagnosticSamples
+                == plan.totalFluidSteps
+            && report.allComponentsPresentAtComparisonSamples
+            && report.allLoadsFinite
+            && report.allSampledPopulationsFinite
+            && report.sampledPopulationPositivityPassed
+            && report.firstNonFiniteLoadStep == nil
+            && report.firstNonFinitePopulationStep == nil
+            && report.firstNegativePopulationStep == nil
+            && report.integrationGatePassed
+        let correctionPassed = report
+                .collisionLimiterActivationFractionOfCellSteps
+                <= collisionPreRollMaximumActivationFraction
+            && report.maximumCollisionRestriction.isFinite
+        return MetalIndexedBirdSurfaceCollisionGridCase(
+            collisionOperator: collisionOperator.rawValue,
+            referenceLengthCells: referenceLengthCells,
+            completionAndPositivityGatePassed: completionPassed,
+            correctionIntrusionGatePassed: correctionPassed,
+            eligibleForSelection: completionPassed && correctionPassed,
+            report: report
+        )
+    }
+#endif
+
+    private static func collisionGridTrend(
+        coarse: MetalIndexedBirdSurfacePilotReport,
+        fine: MetalIndexedBirdSurfacePilotReport
+    ) throws -> CollisionGridTrendMetrics {
+        let coarseForces = coarse.samples.map(
+            \.intervalMeanComputedForceNewtons
+        )
+        let fineForces = fine.samples.map(
+            \.intervalMeanComputedForceNewtons
+        )
+        guard coarseForces.count == fineForces.count,
+              !coarseForces.isEmpty,
+              let historyDifference = pilotPairwiseNormalizedRMSDifference(
+                first: coarseForces,
+                second: fineForces
+              ),
+              let coarsePeak = coarse.intervalMeanPeakTimeSeconds,
+              let finePeak = fine.intervalMeanPeakTimeSeconds else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "collision-grid force histories are incomplete"
+            )
+        }
+        func mean(_ values: [SIMD3<Double>]) -> SIMD3<Double> {
+            values.reduce(SIMD3<Double>.zero, +) / Double(values.count)
+        }
+        func impulse(
+            _ values: [SIMD3<Double>],
+            forceRate: Double
+        ) -> SIMD3<Double> {
+            values.reduce(SIMD3<Double>.zero, +) / forceRate
+        }
+        func relativeDifference(
+            _ first: SIMD3<Double>,
+            _ second: SIMD3<Double>
+        ) -> Double {
+            vectorMagnitude(first - second)
+                / max(vectorMagnitude(first), vectorMagnitude(second), 1e-30)
+        }
+        let meanDifference = relativeDifference(
+            mean(coarseForces),
+            mean(fineForces)
+        )
+        let impulseDifference = relativeDifference(
+            impulse(
+                coarseForces,
+                forceRate: coarse.plan.forceSamplesPerSecond
+            ),
+            impulse(
+                fineForces,
+                forceRate: fine.plan.forceSamplesPerSecond
+            )
+        )
+        let peakDifference = abs(coarsePeak - finePeak)
+        let firstTime = coarse.samples.first!.sourceTimeSeconds
+        let lastTime = coarse.samples.last!.sourceTimeSeconds
+        let normalizedPeakDifference = peakDifference
+            / max(lastTime - firstTime, 1e-30)
+        return CollisionGridTrendMetrics(
+            intervalForceNormalizedRMSDifference: historyDifference,
+            meanForceRelativeDifference: meanDifference,
+            impulseRelativeDifference: impulseDifference,
+            peakTimeDifferenceSeconds: peakDifference,
+            score: max(
+                historyDifference,
+                meanDifference,
+                impulseDifference,
+                normalizedPeakDifference
+            )
+        )
+    }
+
+    private static func operatorDifference(
+        cases: [MetalIndexedBirdSurfaceCollisionGridCase],
+        cells: Int
+    ) -> Double? {
+        let matching = cases.filter { $0.referenceLengthCells == cells }
+        guard matching.count == 2 else { return nil }
+        return pilotPairwiseNormalizedRMSDifference(
+            first: matching[0].report.samples.map(
+                \.intervalMeanComputedForceNewtons
+            ),
+            second: matching[1].report.samples.map(
+                \.intervalMeanComputedForceNewtons
+            )
         )
     }
 
@@ -1464,6 +2129,7 @@ private final class MetalIndexedBirdSurfaceReplay {
         dataset: MeasuredBirdSurfaceSequence,
         cellSizeMeters: Float,
         halfThicknessCells: Float,
+        referenceLengthCells: Int = 8,
         paddingCells: Int = 4,
         physicalAirDensity: Float = 1,
         targetReynoldsNumber: Float = 1_000,
@@ -1493,8 +2159,9 @@ private final class MetalIndexedBirdSurfaceReplay {
         )
         let maximumSpeed = dataset.maximumPointSpeedMetersPerSecond
         let scaling = try LatticeScaling(
-            characteristicLengthMeters: 8 * cellSizeMeters,
-            characteristicLengthCells: 8,
+            characteristicLengthMeters:
+                Float(referenceLengthCells) * cellSizeMeters,
+            characteristicLengthCells: referenceLengthCells,
             referenceSpeedMetersPerSecond: maximumSpeed,
             targetReynoldsNumber: targetReynoldsNumber,
             physicalAirDensity: physicalAirDensity,

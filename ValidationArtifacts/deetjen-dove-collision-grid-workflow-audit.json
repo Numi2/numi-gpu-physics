@@ -1,0 +1,64 @@
+{
+  "artifactSHA256": {
+    "completion": "aecea776e484241c4dd4d13156a2618477fdee8886de5a3bff46a7657cff0bbb",
+    "discriminator": "9ede07973b9df990af27ff5492d2d37424b0bf12d3ffb8096ae37e5e4cbe4ead",
+    "preregistration": "67a1dbc9efca0e724a692ef7d9bfebb708e80ae18030c3b935d451fe506e5030"
+  },
+  "auditPassed": true,
+  "checks": {
+    "allDiscriminatorNumericalGates": true,
+    "allocationOrder": true,
+    "assessmentArithmetic": true,
+    "candidateOrder": true,
+    "completionExperimentalGateDisabled": true,
+    "constantMach": true,
+    "constantViscosityFloor": true,
+    "crossCanonicalEvidence": true,
+    "discriminatorMatrix": true,
+    "embeddedPreregistrationExact": true,
+    "experimentalGateDisabled": true,
+    "fixedPhysicalGridContract": true,
+    "negativeD16Retained": true,
+    "operatorDifferenceD12": true,
+    "operatorDifferenceD8": true,
+    "preregistrationSchema": true,
+    "selectionRule": true,
+    "singleAuthorizedD16Allocation": true
+  },
+  "claimBoundary": "This audit reconstructs the preregistered D8/D12 selection and verifies that only RR3 reached D16. It retains the D16 positivity failure without inventing unavailable force convergence or experimental-agreement values.",
+  "d12OperatorPairwiseNormalizedRMSDifference": 0.008163919944810754,
+  "d16Outcome": {
+    "completedSteps": 751,
+    "completionGatePassed": false,
+    "fineGridForceConvergencePassed": false,
+    "firstNegativePopulationCellCoordinate": [
+      64,
+      63,
+      68
+    ],
+    "firstNegativePopulationDirection": 0,
+    "firstNegativePopulationDistanceFromSurfaceCells": 0.21506260335445404,
+    "firstNegativePopulationStep": 751,
+    "loadsFiniteAtStop": true,
+    "requestedSteps": 7552
+  },
+  "d8OperatorPairwiseNormalizedRMSDifference": 0.008823724456705272,
+  "discriminatorMetrics": {
+    "positivity-preserving-recursive-regularized-bgk": {
+      "impulseRelativeDifference": 0.03819367256001712,
+      "intervalForceNormalizedRMSDifference": 0.1250809574949161,
+      "meanForceRelativeDifference": 0.03819367256001711,
+      "peakTimeDifferenceSeconds": 0.0,
+      "score": 0.1250809574949161
+    },
+    "positivity-preserving-regularized-bgk": {
+      "impulseRelativeDifference": 0.03314548476944775,
+      "intervalForceNormalizedRMSDifference": 0.12545417251980026,
+      "meanForceRelativeDifference": 0.033145484769447786,
+      "peakTimeDifferenceSeconds": 0.0,
+      "score": 0.12545417251980026
+    }
+  },
+  "schemaVersion": 1,
+  "selectedCollisionOperator": "positivity-preserving-recursive-regularized-bgk"
+}

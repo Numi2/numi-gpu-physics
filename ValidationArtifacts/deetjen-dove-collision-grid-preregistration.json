@@ -1,0 +1,80 @@
+{
+  "candidateOperators" : [
+    "positivity-preserving-regularized-bgk",
+    "positivity-preserving-recursive-regularized-bgk"
+  ],
+  "claimBoundary" : "This preregistration freezes allocation and selection before any D=12 or D=16 measured-dove result is observed. The 68.07x viscosity-floor force error cannot select an operator or establish experimental agreement.",
+  "completionReferenceLengthCells" : 16,
+  "crossCanonicalEvidence" : [
+    {
+      "artifactPath" : "ValidationArtifacts\/measured-wing-stationary-wall-c16-bulk-collision-operator-ab.json",
+      "collisionOperator" : "positivity-preserving-regularized-bgk",
+      "crossCanonicalGatePassed" : false,
+      "maximumAllowedRelativeCorrectionL2" : 0.01,
+      "relativeCorrectionL2" : 0.010968289256290249
+    },
+    {
+      "artifactPath" : "ValidationArtifacts\/measured-wing-stationary-wall-c16-recursive-regularization-ab.json",
+      "collisionOperator" : "positivity-preserving-recursive-regularized-bgk",
+      "crossCanonicalGatePassed" : true,
+      "maximumAllowedRelativeCorrectionL2" : 0.01,
+      "relativeCorrectionL2" : 0.0035278524715361016
+    }
+  ],
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "discriminatorReferenceLengthCells" : [
+    8,
+    12
+  ],
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "0.08 m reference length; 0.0075 m surface half-thickness; 0.12 m padding; 0.06 m sponge width; 2000 Hz force registration; 16\/24\/32 fluid steps per force sample; fixed physical viscosity floor, density, geometry, kinematics, far-field treatment, moving-boundary operator, force estimator, and numerical gates",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "gridContracts" : [
+    {
+      "cellSizeMeters" : 0.009999999776482582,
+      "fluidStepsPerForceSample" : 16,
+      "halfThicknessCells" : 0.75,
+      "maximumWallMach" : 0.13656363447940487,
+      "paddingCells" : 12,
+      "pilotToSourceViscosityRatio" : 68.07194967379765,
+      "preRollFluidSteps" : 800,
+      "referenceLengthCells" : 8,
+      "spongeWidthCells" : 6,
+      "tauPlus" : 0.5009999871253967,
+      "totalFluidSteps" : 3776
+    },
+    {
+      "cellSizeMeters" : 0.006666666362434626,
+      "fluidStepsPerForceSample" : 24,
+      "halfThicknessCells" : 1.125,
+      "maximumWallMach" : 0.1365636376590249,
+      "paddingCells" : 18,
+      "pilotToSourceViscosityRatio" : 68.07194967379765,
+      "preRollFluidSteps" : 1200,
+      "referenceLengthCells" : 12,
+      "spongeWidthCells" : 9,
+      "tauPlus" : 0.5014999807579434,
+      "totalFluidSteps" : 5664
+    },
+    {
+      "cellSizeMeters" : 0.004999999888241291,
+      "fluidStepsPerForceSample" : 32,
+      "halfThicknessCells" : 1.5,
+      "maximumWallMach" : 0.13656363447940487,
+      "paddingCells" : 24,
+      "pilotToSourceViscosityRatio" : 68.07194967379765,
+      "preRollFluidSteps" : 1600,
+      "referenceLengthCells" : 16,
+      "spongeWidthCells" : 12,
+      "tauPlus" : 0.5019999742507935,
+      "totalFluidSteps" : 7552
+    }
+  ],
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumCorrectionActivationFraction" : 0.05,
+  "maximumCrossCanonicalTrendPenalty" : 0.1,
+  "passed" : true,
+  "schemaVersion" : 1,
+  "selectionRule" : "Run both candidates at D=8 and D=12. Require completion, positive finite populations and loads, all four surface components, and correction activation at or below 5%. Select exactly one candidate only if it passes the locked stationary-wall cross-canonical correction gate and its normalized D8-to-D12 trend score is no more than 10% worse than the best eligible candidate. Otherwise authorize no D=16 run."
+}

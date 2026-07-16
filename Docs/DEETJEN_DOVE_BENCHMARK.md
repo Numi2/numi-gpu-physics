@@ -337,9 +337,16 @@ force statistics and pairwise differences from the archived samples.
 The reported endpoint measured-force errors (`5.665` and `5.676`) and interval-
 mean errors (`2.274` and `2.264`) are descriptive only. The pilot remains
 `68.07x` over-viscous, so these values cannot select a collision operator or
-support experimental agreement. A preregistered two-operator 8/12-grid
-discriminator is the next allocation; only its winner should advance to the
-16-cell completion run.
+support experimental agreement. The following preregistered D=8/D=12
+discriminator instead fixes physical domain, thickness, timing, Mach, and
+viscosity. Both operators pass both grids. Their D8-to-D12 trend scores are
+`0.125454` and `0.125081`, and their disagreement decreases from `0.882%` to
+`0.816%`. With neither operator more than 10% worse in grid trend, the locked
+stationary-wall correction gate selects RR3 and authorizes no other D=16 run.
+RR3 then fails that completion at step `751/7,552`: direction 0 is negative at
+cell `[64,63,68]`, `0.2151` cells from the surface, before any force-comparison
+sample. The independent audit preserves this negative result and confirms that
+no D12-to-D16 force metric is available.
 
 ## Reproducible acquisition
 
@@ -418,10 +425,12 @@ indexed Metal geometry, production impulse coupling, and force target
 registration are complete. The coarse production-TRT pilot fails its pre-roll
 positivity/load gate with a localized near-wall population. Two positivity-
 preserving alternatives pass the fixed pre-roll, independent momentum closure,
-and the full 3,776-step registered-window extension. Quantitative experimental
-acceptance still requires a preregistered operator/refinement decision, the
-five-flight repeatability envelope, source-condition time/space refinement,
-and measured-force acceptance without the current viscosity distortion.
+and the full 3,776-step registered-window extension. The preregistered D=8/D=12
+decision selects RR3, but its sole authorized D=16 run fails positivity before
+the comparison window. Quantitative experimental acceptance therefore remains
+blocked by that fine-grid numerical failure, the five-flight repeatability
+envelope, source-condition time/space refinement, and measured-force acceptance
+without the current viscosity distortion.
 
 ## Claim after a successful ladder
 
