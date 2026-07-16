@@ -1,0 +1,371 @@
+{
+  "admissibilityABGatePassed" : true,
+  "baseDensityWithoutWallCorrection" : 0.035446891095489264,
+  "candidateA" : {
+    "correctionScaleRelativeToReferenceDensity" : 0.030192742627509622,
+    "equilibriumGatePassed" : true,
+    "identifier" : "pre-step-local-density-normalization",
+    "minimumEquilibriumPopulation" : 0.000339761959292645,
+    "minimumPopulation" : 5.579560179214906e-05,
+    "negativePopulationDirections" : [
+
+    ],
+    "populationFloorViolationDirections" : [
+
+    ],
+    "populationGatePassed" : true,
+    "positivityInterventionActive" : false,
+    "reconstructedDensity" : 0.03497059854827486,
+    "reconstructedLatticeMach" : 0.5481659749739873,
+    "reconstructedMomentum" : [
+      -0.0035033122220795567,
+      0.010431527983841015,
+      0.001184225472240715
+    ],
+    "reconstructedSpeed" : 0.3164837675315012,
+    "reconstructedVelocity" : [
+      -0.10017878925473464,
+      0.29829423621219703,
+      0.0338634602037469
+    ],
+    "wallMassContribution" : -0.00047629254721439545,
+    "wallMomentumContribution" : [
+      0.0005032615482321049,
+      -1.4093783007473721e-05,
+      0.00032201115085371426
+    ]
+  },
+  "candidateAuthorizedForProductionLedger" : "pre-step-local-density-normalization",
+  "candidateB" : {
+    "correctionScaleRelativeToReferenceDensity" : 0.11505132321144092,
+    "equilibriumGatePassed" : true,
+    "identifier" : "reference-density-global-positivity-scale",
+    "minimumEquilibriumPopulation" : 0.0003285013984512688,
+    "minimumPopulation" : 9.999999960041972e-13,
+    "negativePopulationDirections" : [
+
+    ],
+    "populationFloorViolationDirections" : [
+
+    ],
+    "populationGatePassed" : true,
+    "positivityInterventionActive" : true,
+    "reconstructedDensity" : 0.033631948727755,
+    "reconstructedLatticeMach" : 0.5563931396406674,
+    "reconstructedMomentum" : [
+      -0.002088864347227102,
+      0.010391916530326275,
+      0.002089257834843881
+    ],
+    "reconstructedSpeed" : 0.321233723181223,
+    "reconstructedVelocity" : [
+      -0.062109524611140124,
+      0.30898942593089396,
+      0.0621212244272871
+    ],
+    "wallMassContribution" : -0.0018149423677342753,
+    "wallMomentumContribution" : [
+      0.0019177094230845597,
+      -5.37052365222152e-05,
+      0.0012270435134568807
+    ]
+  },
+  "claimBoundary" : "This archive-only one-cell discriminator does not mutate the production boundary law, rerun fluid dynamics, prove momentum consistency, authorize refinement, or establish experimental agreement. The selected candidate must close the force and fluid-momentum ledgers before any production promotion.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "deviceName" : "Apple M4",
+  "directionSamples" : [
+    {
+      "basePopulationWithoutWallCorrection" : 0.005963866598904133,
+      "direction" : 0,
+      "positivityAdmissiblePopulation" : 0.005963866598904133,
+      "preStepLocalDensityPopulation" : 0.005963866598904133,
+      "referenceDensityPopulation" : 0.005963866598904133,
+      "referenceDensityWallContribution" : 0,
+      "selfConsistentLocalDensityPopulation" : 0.005963866598904133
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0002900207182392478,
+      "direction" : 1,
+      "positivityAdmissiblePopulation" : 0.00034582325824501433,
+      "preStepLocalDensityPopulation" : 0.0003046648933893157,
+      "referenceDensityPopulation" : 0.0007750437362119555,
+      "referenceDensityWallContribution" : 0.00048502301797270775,
+      "selfConsistentLocalDensityPopulation" : 0.0003069462745461361
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.003836309537291527,
+      "direction" : 2,
+      "positivityAdmissiblePopulation" : 0.0031451041580807153,
+      "preStepLocalDensityPopulation" : 0.0036549175677362657,
+      "referenceDensityPopulation" : -0.0021714908070862293,
+      "referenceDensityWallContribution" : -0.006007800344377756,
+      "selfConsistentLocalDensityPopulation" : 0.00362665894496638
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.003598343930207193,
+      "direction" : 3,
+      "positivityAdmissiblePopulation" : 0.0034256596734517555,
+      "preStepLocalDensityPopulation" : 0.0035530266650553805,
+      "referenceDensityPopulation" : 0.002097411546856165,
+      "referenceDensityWallContribution" : -0.001500932383351028,
+      "selfConsistentLocalDensityPopulation" : 0.003545966796285954
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0004244531155563891,
+      "direction" : 4,
+      "positivityAdmissiblePopulation" : 0.0003972092486635401,
+      "preStepLocalDensityPopulation" : 0.00041730354927315555,
+      "referenceDensityPopulation" : 0.00018765560525935143,
+      "referenceDensityWallContribution" : -0.00023679751029703766,
+      "selfConsistentLocalDensityPopulation" : 0.0004161897353757623
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 2.3283064365386963e-10,
+      "direction" : 5,
+      "positivityAdmissiblePopulation" : 0.00021261195569688266,
+      "preStepLocalDensityPopulation" : 5.579560179214906e-05,
+      "referenceDensityPopulation" : 0.0018479730933904648,
+      "referenceDensityWallContribution" : 0.0018479728605598211,
+      "selfConsistentLocalDensityPopulation" : 6.448782938996129e-05
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0019151204032823443,
+      "direction" : 6,
+      "positivityAdmissiblePopulation" : 0.00177160012446207,
+      "preStepLocalDensityPopulation" : 0.0018774565962152558,
+      "referenceDensityPopulation" : 0.0006676746997982264,
+      "referenceDensityWallContribution" : -0.001247445703484118,
+      "selfConsistentLocalDensityPopulation" : 0.0018715890414464523
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.00028718175599351525,
+      "direction" : 7,
+      "positivityAdmissiblePopulation" : 0.00032848882387467794,
+      "preStepLocalDensityPopulation" : 0.00029802190658388233,
+      "referenceDensityPopulation" : 0.0006462134188041091,
+      "referenceDensityWallContribution" : 0.00035903166281059384,
+      "selfConsistentLocalDensityPopulation" : 0.00029971066781765135
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0004642866551876068,
+      "direction" : 8,
+      "positivityAdmissiblePopulation" : 9.999999960041972e-13,
+      "preStepLocalDensityPopulation" : 0.0003424446192684581,
+      "referenceDensityPopulation" : -0.003571187611669302,
+      "referenceDensityWallContribution" : -0.004035474266856909,
+      "selfConsistentLocalDensityPopulation" : 0.0003234631387817758
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0004111172602279112,
+      "direction" : 9,
+      "positivityAdmissiblePopulation" : 0.00042612756917942136,
+      "preStepLocalDensityPopulation" : 0.00041505639262797453,
+      "referenceDensityPopulation" : 0.0005415834602899849,
+      "referenceDensityWallContribution" : 0.00013046620006207377,
+      "selfConsistentLocalDensityPopulation" : 0.00041567006067958097
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0049985856749117374,
+      "direction" : 10,
+      "positivityAdmissiblePopulation" : 0.004780363690716954,
+      "preStepLocalDensityPopulation" : 0.004941318013658083,
+      "referenceDensityPopulation" : 0.0031018496956676245,
+      "referenceDensityWallContribution" : -0.001896735979244113,
+      "selfConsistentLocalDensityPopulation" : 0.004932396421151819
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.006426300387829542,
+      "direction" : 11,
+      "positivityAdmissiblePopulation" : 0.006426300387829542,
+      "preStepLocalDensityPopulation" : 0.006426300387829542,
+      "referenceDensityPopulation" : 0.006426300387829542,
+      "referenceDensityWallContribution" : 0,
+      "selfConsistentLocalDensityPopulation" : 0.006426300387829542
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0015438345726579428,
+      "direction" : 12,
+      "positivityAdmissiblePopulation" : 0.0010848215684051634,
+      "preStepLocalDensityPopulation" : 0.001423376492618182,
+      "referenceDensityPopulation" : -0.0024458023253828287,
+      "referenceDensityWallContribution" : -0.0039896368980407715,
+      "selfConsistentLocalDensityPopulation" : 0.0014046106153206687
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.000379665638320148,
+      "direction" : 13,
+      "positivityAdmissiblePopulation" : 0.0003359384259973834,
+      "preStepLocalDensityPopulation" : 0.0003681903729287769,
+      "referenceDensityPopulation" : -4.013709258288145e-07,
+      "referenceDensityWallContribution" : -0.0003800670092459768,
+      "selfConsistentLocalDensityPopulation" : 0.00036640266867332314
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0009578430908732116,
+      "direction" : 14,
+      "positivityAdmissiblePopulation" : 0.0009412533941503076,
+      "preStepLocalDensityPopulation" : 0.0009534894821580598,
+      "referenceDensityPopulation" : 0.0008136492106132209,
+      "referenceDensityWallContribution" : -0.0001441938802599907,
+      "selfConsistentLocalDensityPopulation" : 0.0009528112438288173
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.00037040877214167267,
+      "direction" : 15,
+      "positivityAdmissiblePopulation" : 0.0003870375702050005,
+      "preStepLocalDensityPopulation" : 0.0003747726421617348,
+      "referenceDensityPopulation" : 0.0005149425123818219,
+      "referenceDensityWallContribution" : 0.0001445337402401492,
+      "selfConsistentLocalDensityPopulation" : 0.0003754524790752217
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0002813794417306781,
+      "direction" : 16,
+      "positivityAdmissiblePopulation" : 0.00019594088162619379,
+      "preStepLocalDensityPopulation" : 0.0002589579311935165,
+      "referenceDensityPopulation" : -0.0004612331395037472,
+      "referenceDensityWallContribution" : -0.0007426125812344253,
+      "selfConsistentLocalDensityPopulation" : 0.00025546493748627503
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0030352557078003883,
+      "direction" : 17,
+      "positivityAdmissiblePopulation" : 0.0029767229349066376,
+      "preStepLocalDensityPopulation" : 0.0030198950418130217,
+      "referenceDensityPopulation" : 0.002526502124965191,
+      "referenceDensityWallContribution" : -0.0005087535828351974,
+      "selfConsistentLocalDensityPopulation" : 0.003017502040255701
+    },
+    {
+      "basePopulationWithoutWallCorrection" : 0.0002629176015034318,
+      "direction" : 18,
+      "positivityAdmissiblePopulation" : 0.0004870784623595958,
+      "preStepLocalDensityPopulation" : 0.0003217437930679816,
+      "referenceDensityPopulation" : 0.0022112729493528605,
+      "referenceDensityWallContribution" : 0.0019483553478494287,
+      "selfConsistentLocalDensityPopulation" : 0.0003309081852981745
+    }
+  ],
+  "experimentalAgreementGateApplied" : false,
+  "failureStep" : 751,
+  "fluidSimulationRerun" : false,
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "globalPositivityAdmissibilityScale" : 0.11505132321144092,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "populationFloor" : 9.999999960041972e-13,
+  "preStepLocalDensity" : 0.030192742627509622,
+  "preStepPopulationCoverageDirections" : [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "productionStateModifiedByDiagnostic" : false,
+  "referenceDensity" : 1,
+  "referenceDensityBaseline" : {
+    "correctionScaleRelativeToReferenceDensity" : 1,
+    "equilibriumGatePassed" : false,
+    "identifier" : "reference-density-production-baseline",
+    "minimumEquilibriumPopulation" : -0.003425966315121277,
+    "minimumPopulation" : -0.003571187611669302,
+    "negativePopulationDirections" : [
+      2,
+      8,
+      12,
+      13,
+      16
+    ],
+    "populationFloorViolationDirections" : [
+      2,
+      8,
+      12,
+      13,
+      16
+    ],
+    "populationGatePassed" : false,
+    "positivityInterventionActive" : false,
+    "reconstructedDensity" : 0.019671823785756715,
+    "reconstructedLatticeMach" : 1.7449745357992734,
+    "reconstructedMomentum" : [
+      0.012661721470067278,
+      0.009978828034945764,
+      0.011527398164616898
+    ],
+    "reconstructedSpeed" : 1.0074614998906002,
+    "reconstructedVelocity" : [
+      0.6436475645555007,
+      0.5072650173986859,
+      0.5859852289325229
+    ],
+    "wallMassContribution" : -0.01577506730973255,
+    "wallMomentumContribution" : [
+      0.01666829524037894,
+      -0.000466793731902726,
+      0.010665183843229897
+    ]
+  },
+  "referenceLengthCells" : 16,
+  "restEquilibriumPositivitySpeedLimit" : 0.816496580927726,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "Candidate A applies the pre-step local density as one uniform wall-correction scale and restores both population and equilibrium admissibility without a positivity limiter. Candidate B also restores admissibility but requires a worst-link global positivity intervention. Candidate A advances only to a controlled production ledger experiment.",
+  "selectedCollisionOperator" : "positivity-preserving-recursive-regularized-bgk",
+  "selfConsistentDensityCrosscheck" : {
+    "correctionScaleRelativeToReferenceDensity" : 0.03489639806711333,
+    "equilibriumGatePassed" : true,
+    "identifier" : "self-consistent-local-density-crosscheck",
+    "minimumEquilibriumPopulation" : 0.0003389769908240182,
+    "minimumPopulation" : 6.448782938996129e-05,
+    "negativePopulationDirections" : [
+
+    ],
+    "populationFloorViolationDirections" : [
+
+    ],
+    "populationGatePassed" : true,
+    "positivityInterventionActive" : false,
+    "reconstructedDensity" : 0.034896398067113324,
+    "reconstructedLatticeMach" : 0.5482819076504929,
+    "reconstructedMomentum" : [
+      -0.0034249103045032266,
+      0.01042933234696478,
+      0.0012343908222392978
+    ],
+    "reconstructedSpeed" : 0.31655070129228824,
+    "reconstructedVelocity" : [
+      -0.09814509503004817,
+      0.2988655828291194,
+      0.03537301528556894
+    ],
+    "wallMassContribution" : -0.0005504930283759336,
+    "wallMomentumContribution" : [
+      0.0005816634658084339,
+      -1.6289419883710896e-05,
+      0.0003721765008522961
+    ]
+  },
+  "selfConsistentDensityDenominator" : 1.0157750673097325,
+  "selfConsistentLocalDensity" : 0.03489639806711333,
+  "sourceBoundaryTermGatePassed" : true,
+  "sourcePopulationProvenanceGatePassed" : true,
+  "targetCellCoordinate" : [
+    64,
+    63,
+    68
+  ]
+}

@@ -370,6 +370,103 @@ func measuredBirdD16BoundaryTermsRetainWallCorrectionDiscriminator() throws {
         .map(\.direction) == [12])
 }
 
+@Test
+func measuredBirdD16MovingWallAdmissibilityRetainsLedgerBoundary() throws {
+    let report = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self,
+        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+            "ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json"
+        ))
+    )
+    let failureDirections = [2, 8, 12, 13, 16]
+    #expect(report.referenceLengthCells == 16)
+    #expect(report.targetCellCoordinate == SIMD3(64, 63, 68))
+    #expect(report.failureStep == 751)
+    #expect(report.sourceBoundaryTermGatePassed)
+    #expect(report.sourcePopulationProvenanceGatePassed)
+    #expect(!report.productionStateModifiedByDiagnostic)
+    #expect(!report.fluidSimulationRerun)
+    #expect(report.preStepPopulationCoverageDirections == Array(0..<19))
+    #expect(abs(report.preStepLocalDensity - 0.030_192_742_6) < 1e-10)
+    #expect(abs(report.selfConsistentLocalDensity - 0.034_896_398_1) < 1e-10)
+    #expect(report.referenceDensityBaseline.negativePopulationDirections
+        == failureDirections)
+    #expect(!report.referenceDensityBaseline.populationGatePassed)
+    #expect(!report.referenceDensityBaseline.equilibriumGatePassed)
+    #expect(report.candidateA.identifier
+        == "pre-step-local-density-normalization")
+    #expect(report.candidateA.correctionScaleRelativeToReferenceDensity
+        == report.preStepLocalDensity)
+    #expect(!report.candidateA.positivityInterventionActive)
+    #expect(report.candidateA.negativePopulationDirections.isEmpty)
+    #expect(report.candidateA.populationFloorViolationDirections.isEmpty)
+    #expect(report.candidateA.minimumPopulation > 5.5e-5)
+    #expect(report.candidateA.populationGatePassed)
+    #expect(report.candidateA.equilibriumGatePassed)
+    #expect(report.candidateB.positivityInterventionActive)
+    #expect(report.candidateB.populationGatePassed)
+    #expect(report.candidateB.equilibriumGatePassed)
+    #expect(report.candidateA.correctionScaleRelativeToReferenceDensity
+        < report.globalPositivityAdmissibilityScale)
+    #expect(report.selfConsistentDensityCrosscheck.populationGatePassed)
+    #expect(report.selfConsistentDensityCrosscheck.equilibriumGatePassed)
+    #expect(report.candidateAuthorizedForProductionLedger
+        == report.candidateA.identifier)
+    #expect(report.admissibilityABGatePassed)
+    #expect(!report.experimentalAgreementGateApplied)
+}
+
+@Test
+func measuredBirdD16MovingWallAdmissibilityReconstructsFromArchives() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridMovingWallAdmissibilityAB(
+            surface: surface,
+            target: target,
+            preregistration: try decode(
+                "deetjen-dove-collision-grid-preregistration.json",
+                as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+            ),
+            discriminator: try decode(
+                "deetjen-dove-collision-grid-discriminator.json",
+                as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+            ),
+            completion: try decode(
+                "deetjen-dove-collision-grid-completion.json",
+                as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+            ),
+            provenance: try decode(
+                "deetjen-dove-d16-population-stage-provenance.json",
+                as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
+            ),
+            boundaryTerms: try decode(
+                "deetjen-dove-d16-boundary-term-decomposition.json",
+                as: MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self
+            )
+        )
+    #expect(report.admissibilityABGatePassed)
+    #expect(report.referenceDensityBaseline.negativePopulationDirections
+        == [2, 8, 12, 13, 16])
+    #expect(report.candidateA.negativePopulationDirections.isEmpty)
+    #expect(report.candidateB.negativePopulationDirections.isEmpty)
+    #expect(report.candidateAuthorizedForProductionLedger
+        == "pre-step-local-density-normalization")
+}
+
 #if canImport(Metal)
 @Test
 func productionMetalD16PopulationProvenanceCloses() throws {

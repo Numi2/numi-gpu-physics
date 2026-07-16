@@ -1407,6 +1407,41 @@ The next admissible experiment is a one-cell density-normalization and
 admissibility A/B for the moving-wall correction, followed by the existing
 momentum ledger before any production change or refinement run.
 
+Run that archive-only discriminator with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-ab \
+  --preregistration ValidationArtifacts/deetjen-dove-collision-grid-preregistration.json \
+  --discriminator ValidationArtifacts/deetjen-dove-collision-grid-discriminator.json \
+  --completion ValidationArtifacts/deetjen-dove-collision-grid-completion.json \
+  --provenance ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json \
+  --boundary-terms ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json \
+  --archive ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json
+
+python3 Scripts/audit-dove-d16-moving-wall-admissibility.py
+```
+
+All 19 pre-step target populations are reconstructed from the locked rest
+population, reflected populations, and the far-wall previous-target auxiliary
+population. Candidate A scales every wall contribution uniformly by the
+pre-step local density `0.0301927`; candidate B keeps the reference-density
+form but applies the largest global scale (`0.115051`) allowed by the worst
+link. Candidate A makes every population positive with minimum `5.580e-5`,
+restores a positive equilibrium with lattice Mach `0.548166`, and needs no
+positivity intervention. The self-consistent density cross-check (`0.0348964`)
+also passes. Candidate B passes algebraic admissibility but explicitly
+activates its limiter and places the worst population at the floor.
+
+The independent 13-check audit reconstructs both candidates, the
+self-consistent density solution, all D3Q19 moments and equilibria, the global
+admissibility scale, and every direction sample. Candidate A is authorized
+only for a controlled production force/momentum-ledger experiment. No fluid
+simulation was rerun, no boundary or collision law changed, and neither
+candidate is authorized for production, refinement, or an experimental claim.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

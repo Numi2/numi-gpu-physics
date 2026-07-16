@@ -1,0 +1,33 @@
+{
+  "boundaryTermSHA256": "530bf9eefd276a3c5df773874fcfc23cf784b33ed97f3cf085be92261f96df48",
+  "candidateAuthorizedForProductionLedger": "pre-step-local-density-normalization",
+  "checks": {
+    "candidateA": true,
+    "candidateB": true,
+    "derivedScalars": true,
+    "diagnosticIsolation": true,
+    "directionSamples": true,
+    "discriminator": true,
+    "lockedInputs": true,
+    "preStepDensity": true,
+    "preStepPopulationCoverage": true,
+    "promotionBoundary": true,
+    "referenceParity": true,
+    "schema": true,
+    "selfConsistentCrosscheck": true
+  },
+  "claimBoundary": "Independent archive algebra only. Passing authorizes candidate A for a controlled force and momentum ledger, not production use.",
+  "completionSHA256": "aecea776e484241c4dd4d13156a2618477fdee8886de5a3bff46a7657cff0bbb",
+  "passed": true,
+  "populationProvenanceSHA256": "732ff3056dc66acda3a0244eab66322008a182fd00f3b366f083f3d03e68380a",
+  "reconstructed": {
+    "baseDensityWithoutWallCorrection": 0.035446891095489264,
+    "candidateAMinimumPopulation": 5.579560179214906e-05,
+    "candidateBMinimumPopulation": 9.999999960041972e-13,
+    "globalPositivityAdmissibilityScale": 0.11505132321144092,
+    "preStepLocalDensity": 0.030192742627509622,
+    "selfConsistentLocalDensity": 0.03489639806711333
+  },
+  "reportSHA256": "a53f110740385fed87fd7802d2483eaa9dce46bfcc6951b62eb729725edd08b8",
+  "schemaVersion": 1
+}

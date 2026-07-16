@@ -375,6 +375,14 @@ The independent audit therefore isolates moving-wall-correction admissibility,
 not interpolation branch selection or inherited negative reflection, as the
 first repair surface. No counterfactual is enabled in production.
 
+The follow-on archive-only admissibility A/B reconstructs every pre-step
+population at the failure cell. Pre-step local-density normalization removes
+all negative populations without a limiter (minimum `5.580e-5`, lattice Mach
+`0.5482`); the reference-density positivity alternative requires an active
+global scale of `0.11505`. The independently audited result advances the local
+density candidate only to a controlled force/momentum-ledger experiment. It
+does not change the production boundary law or reopen the refinement ladder.
+
 ## Reproducible acquisition
 
 The default command is read-only. It verifies the Dryad/Zenodo identity,

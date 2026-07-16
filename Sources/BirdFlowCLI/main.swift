@@ -132,7 +132,8 @@ private struct Arguments {
         [--coupling-gate | --coarse-fluid-pilot | --collision-pre-roll-ab | \
          --collision-momentum-closure | --collision-extended-pilot | \
          --collision-grid-provenance | \
-         --collision-grid-boundary-decomposition] \
+         --collision-grid-boundary-decomposition | \
+         --collision-grid-moving-wall-ab] \
         [--force-target TARGET.json] \
         [--archive FILE] [--json]
     """
@@ -146,6 +147,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var discriminatorPath: String?
     var completionPath: String?
     var provenancePath: String?
+    var boundaryTermsPath: String?
     var cellSizeMeters: Float = 0.01
     var halfThicknessCells: Float = 0.75
     var couplingGate = false
@@ -158,6 +160,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var collisionGridCompletion = false
     var collisionGridProvenance = false
     var collisionGridBoundaryDecomposition = false
+    var collisionGridMovingWallAB = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -220,6 +223,14 @@ private struct MeasuredBirdSurfaceReplayArguments {
                     )
                 }
                 provenancePath = values[index]
+            case "--boundary-terms":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--boundary-terms requires a D=16 boundary report"
+                    )
+                }
+                boundaryTermsPath = values[index]
             case "--cell-size-meters":
                 index += 1
                 guard index < values.count,
@@ -261,6 +272,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 collisionGridProvenance = true
             case "--collision-grid-boundary-decomposition":
                 collisionGridBoundaryDecomposition = true
+            case "--collision-grid-moving-wall-ab":
+                collisionGridMovingWallAB = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -283,7 +296,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
             collisionMomentumClosure, collisionExtendedPilot,
             collisionGridPreregister, collisionGridDiscriminator,
             collisionGridCompletion, collisionGridProvenance,
-            collisionGridBoundaryDecomposition
+            collisionGridBoundaryDecomposition, collisionGridMovingWallAB
         ].filter { $0 }.count
         guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
@@ -294,7 +307,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
             || collisionMomentumClosure || collisionExtendedPilot
             || collisionGridPreregister || collisionGridDiscriminator
             || collisionGridCompletion || collisionGridProvenance
-            || collisionGridBoundaryDecomposition
+            || collisionGridBoundaryDecomposition || collisionGridMovingWallAB
         guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
                 "the coarse pilot and collision diagnostics require --force-target; other modes reject it"
@@ -303,30 +316,36 @@ private struct MeasuredBirdSurfaceReplayArguments {
         let contractPathsValid = collisionGridDiscriminator
             ? preregistrationPath != nil
                 && discriminatorPath == nil && completionPath == nil
-                && provenancePath == nil
+                && provenancePath == nil && boundaryTermsPath == nil
             : collisionGridCompletion
                 ? preregistrationPath != nil
                     && discriminatorPath != nil && completionPath == nil
-                    && provenancePath == nil
+                    && provenancePath == nil && boundaryTermsPath == nil
                 : collisionGridProvenance
                     ? preregistrationPath != nil
                         && discriminatorPath != nil && completionPath != nil
-                        && provenancePath == nil
+                        && provenancePath == nil && boundaryTermsPath == nil
                     : collisionGridBoundaryDecomposition
                         ? preregistrationPath != nil
                             && discriminatorPath != nil
                             && completionPath != nil && provenancePath != nil
+                            && boundaryTermsPath == nil
+                    : collisionGridMovingWallAB
+                        ? preregistrationPath != nil
+                            && discriminatorPath != nil
+                            && completionPath != nil && provenancePath != nil
+                            && boundaryTermsPath != nil
                     : preregistrationPath == nil
                         && discriminatorPath == nil && completionPath == nil
-                        && provenancePath == nil
+                        && provenancePath == nil && boundaryTermsPath == nil
         guard contractPathsValid else {
             throw CLIError.invalidArgument(
-                "the grid discriminator requires --preregistration; completion requires --preregistration and --discriminator; stage provenance also requires --completion; boundary decomposition also requires --provenance"
+                "the grid discriminator requires --preregistration; completion requires --discriminator; stage provenance requires --completion; boundary decomposition requires --provenance; moving-wall A/B also requires --boundary-terms"
             )
         }
         if collisionGridPreregister || collisionGridDiscriminator
             || collisionGridCompletion || collisionGridProvenance
-            || collisionGridBoundaryDecomposition {
+            || collisionGridBoundaryDecomposition || collisionGridMovingWallAB {
             guard cellSizeMeters == 0.01,
                   halfThicknessCells == 0.75 else {
                 throw CLIError.invalidArgument(
@@ -357,10 +376,13 @@ private struct MeasuredBirdSurfaceReplayArguments {
                                  Replay the failed D=16 winner with sparse stage-resolved population capture
       --collision-grid-boundary-decomposition
                                  Decompose the failed cell's reflected, wall, interpolation, and counterfactual terms
+      --collision-grid-moving-wall-ab
+                                 Compare local-density normalization with a global positivity-admissible wall scale
       --preregistration FILE     Locked grid preregistration JSON
       --discriminator FILE       Completed D=8/12 discriminator JSON
       --completion FILE          Failed selected-operator D=16 completion JSON
       --provenance FILE          Passed D=16 population-stage provenance JSON
+      --boundary-terms FILE      Passed D=16 moving-boundary decomposition JSON
       --force-target FILE        Registered measured two-component force target
       --archive FILE            Atomically archive the parity report as JSON
       --json                    Emit the machine-readable parity report
@@ -2020,6 +2042,88 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
         guard report.screeningGatePassed else {
             throw MeasuredBirdSurfaceSequenceError.invalidDataset(
                 "collision-grid discriminator did not authorize D=16"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallAB {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistration = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridPreregistration.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.preregistrationPath!
+            ))
+        )
+        let discriminator = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.discriminatorPath!
+            ))
+        )
+        let completion = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceCollisionGridCompletionReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.completionPath!
+            ))
+        )
+        let provenance = try JSONDecoder().decode(
+            MetalIndexedBirdSurfacePopulationStageProvenanceReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.provenancePath!
+            ))
+        )
+        let boundaryTerms = try JSONDecoder().decode(
+            MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self,
+            from: Data(contentsOf: URL(
+                fileURLWithPath: arguments.boundaryTermsPath!
+            ))
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallAdmissibilityAB(
+                surface: dataset,
+                target: target,
+                preregistration: preregistration,
+                discriminator: discriminator,
+                completion: completion,
+                provenance: provenance,
+                boundaryTerms: boundaryTerms
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print(
+                "pre_step_local_density: "
+                    + String(report.preStepLocalDensity)
+            )
+            print(
+                "candidate_a_min_population: "
+                    + String(report.candidateA.minimumPopulation)
+            )
+            print(
+                "candidate_b_global_scale: "
+                    + String(report.globalPositivityAdmissibilityScale)
+            )
+            print(
+                "authorized_for_ledger: "
+                    + (report.candidateAuthorizedForProductionLedger
+                        ?? "none")
+            )
+            print(
+                "admissibility_ab_gate_passed: "
+                    + String(report.admissibilityABGatePassed)
+            )
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.admissibilityABGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D=16 moving-wall admissibility A/B did not close"
             )
         }
         return

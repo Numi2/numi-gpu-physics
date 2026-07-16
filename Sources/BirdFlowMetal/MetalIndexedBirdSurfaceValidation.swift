@@ -639,6 +639,82 @@ public struct MetalIndexedBirdSurfaceBoundaryTermDecompositionReport:
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceMovingWallCandidateSummary:
+    Codable, Sendable
+{
+    public let identifier: String
+    public let correctionScaleRelativeToReferenceDensity: Double
+    public let positivityInterventionActive: Bool
+    public let reconstructedDensity: Double
+    public let reconstructedMomentum: SIMD3<Double>
+    public let reconstructedVelocity: SIMD3<Double>
+    public let reconstructedSpeed: Double
+    public let reconstructedLatticeMach: Double
+    public let minimumPopulation: Double
+    public let minimumEquilibriumPopulation: Double
+    public let negativePopulationDirections: [Int]
+    public let populationFloorViolationDirections: [Int]
+    public let wallMassContribution: Double
+    public let wallMomentumContribution: SIMD3<Double>
+    public let populationGatePassed: Bool
+    public let equilibriumGatePassed: Bool
+}
+
+public struct MetalIndexedBirdSurfaceMovingWallDirectionABSample:
+    Codable, Sendable
+{
+    public let direction: Int
+    public let basePopulationWithoutWallCorrection: Double
+    public let referenceDensityPopulation: Double
+    public let preStepLocalDensityPopulation: Double
+    public let selfConsistentLocalDensityPopulation: Double
+    public let positivityAdmissiblePopulation: Double
+    public let referenceDensityWallContribution: Double
+}
+
+public struct MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let targetCellCoordinate: SIMD3<Int>
+    public let failureStep: Int
+    public let sourceBoundaryTermGatePassed: Bool
+    public let sourcePopulationProvenanceGatePassed: Bool
+    public let productionStateModifiedByDiagnostic: Bool
+    public let fluidSimulationRerun: Bool
+    public let referenceDensity: Double
+    public let populationFloor: Double
+    public let preStepPopulationCoverageDirections: [Int]
+    public let preStepLocalDensity: Double
+    public let baseDensityWithoutWallCorrection: Double
+    public let selfConsistentLocalDensity: Double
+    public let selfConsistentDensityDenominator: Double
+    public let globalPositivityAdmissibilityScale: Double
+    public let restEquilibriumPositivitySpeedLimit: Double
+    public let referenceDensityBaseline:
+        MetalIndexedBirdSurfaceMovingWallCandidateSummary
+    public let candidateA:
+        MetalIndexedBirdSurfaceMovingWallCandidateSummary
+    public let candidateB:
+        MetalIndexedBirdSurfaceMovingWallCandidateSummary
+    public let selfConsistentDensityCrosscheck:
+        MetalIndexedBirdSurfaceMovingWallCandidateSummary
+    public let directionSamples:
+        [MetalIndexedBirdSurfaceMovingWallDirectionABSample]
+    public let candidateAuthorizedForProductionLedger: String?
+    public let admissibilityABGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -1810,6 +1886,347 @@ public enum MetalIndexedBirdSurfacePilotValidator {
 #else
         throw BirdFlowError.metalUnavailable
 #endif
+    }
+
+    public static func collisionGridMovingWallAdmissibilityAB(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration:
+            MetalIndexedBirdSurfaceCollisionGridPreregistration,
+        discriminator:
+            MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport,
+        completion:
+            MetalIndexedBirdSurfaceCollisionGridCompletionReport,
+        provenance:
+            MetalIndexedBirdSurfacePopulationStageProvenanceReport,
+        boundaryTerms:
+            MetalIndexedBirdSurfaceBoundaryTermDecompositionReport
+    ) throws -> MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport {
+        let expected = try collisionGridPreregistration(
+            surface: surface,
+            target: target
+        )
+        guard preregistration == expected,
+              discriminator.preregistration == preregistration,
+              discriminator.screeningGatePassed,
+              discriminator.d16CompletionAuthorized,
+              let selected = discriminator.selectedCollisionOperator,
+              selected == completion.selectedCollisionOperator,
+              selected == provenance.selectedCollisionOperator,
+              selected == boundaryTerms.selectedCollisionOperator,
+              selected == MetalIndexedBirdSurfaceCollisionOperator
+                .positivityPreservingRecursiveRegularizedBGK.rawValue,
+              !completion.completionGatePassed,
+              provenance.provenanceGatePassed,
+              boundaryTerms.boundaryTermGatePassed,
+              boundaryTerms.dominantRepairTarget == "moving-wall-correction",
+              !provenance.productionStateModifiedByDiagnostic,
+              !boundaryTerms.productionStateModifiedByDiagnostic,
+              boundaryTerms.referenceLengthCells
+                == preregistration.completionReferenceLengthCells,
+              provenance.referenceLengthCells
+                == boundaryTerms.referenceLengthCells,
+              provenance.targetCellCoordinate
+                == boundaryTerms.targetCellCoordinate,
+              let failureStep = completion.d16Case.report
+                .firstNegativePopulationStep,
+              provenance.firstNegativeCapturedStep == failureStep,
+              boundaryTerms.capturedSteps.last == failureStep,
+              let stage = provenance.samples.first(where: {
+                  $0.step == failureStep
+              }),
+              stage.reconstructedPopulations.count == D3Q19.count else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "moving-wall A/B requires the locked D=16 boundary evidence"
+            )
+        }
+        let boundarySamples = boundaryTerms.samples.filter {
+            $0.step == failureStep
+        }
+        guard !boundarySamples.isEmpty,
+              Set(boundarySamples.map(\.direction)).count
+                == boundarySamples.count,
+              boundarySamples.map(\.direction).sorted()
+                == stage.movingBoundaryDirections.sorted() else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "moving-wall A/B boundary direction coverage is incomplete"
+            )
+        }
+
+        var preStepPopulations = Array<Double?>(
+            repeating: nil,
+            count: D3Q19.count
+        )
+        preStepPopulations[provenance.targetDirection] = stage.preStepPopulation
+        for sample in boundarySamples {
+            preStepPopulations[D3Q19.opposite[sample.direction]] =
+                sample.reflectedPopulation
+            if sample.auxiliaryRole == "previous-target-incoming" {
+                preStepPopulations[sample.direction] =
+                    sample.auxiliaryPopulation
+            }
+        }
+        let coverage = preStepPopulations.indices.filter {
+            preStepPopulations[$0] != nil
+        }
+        guard coverage.count == D3Q19.count else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "moving-wall A/B cannot reconstruct all pre-step populations"
+            )
+        }
+        let preStep = preStepPopulations.map { $0! }
+        let preStepDensity = preStep.reduce(0, +)
+
+        var wallContributions = Array(
+            repeating: 0.0,
+            count: D3Q19.count
+        )
+        for sample in boundarySamples {
+            wallContributions[sample.direction] =
+                sample.wallCorrectionContribution
+        }
+        let referencePopulations = stage.reconstructedPopulations
+        let basePopulations = referencePopulations.indices.map {
+            referencePopulations[$0] - wallContributions[$0]
+        }
+        let referenceDensity = 1.0
+        let populationFloor = stage.populationFloor
+        let baseDensity = basePopulations.reduce(0, +)
+        let referenceWallMass = wallContributions.reduce(0, +)
+        let selfConsistentDenominator = 1.0
+            - referenceWallMass / referenceDensity
+        guard referenceDensity > 0,
+              populationFloor >= 0,
+              preStepDensity > 0,
+              baseDensity > 0,
+              selfConsistentDenominator > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "moving-wall A/B densities are not admissible"
+            )
+        }
+        let selfConsistentDensity = baseDensity
+            / selfConsistentDenominator
+        let localDensityScale = preStepDensity / referenceDensity
+        let selfConsistentScale = selfConsistentDensity / referenceDensity
+        var positivityScale = 1.0
+        for direction in 0..<D3Q19.count
+        where wallContributions[direction] < 0 {
+            positivityScale = min(
+                positivityScale,
+                (basePopulations[direction] - populationFloor)
+                    / -wallContributions[direction]
+            )
+        }
+        positivityScale = max(0, min(1, positivityScale))
+
+        func populations(scale: Double) -> [Double] {
+            basePopulations.indices.map {
+                basePopulations[$0] + scale * wallContributions[$0]
+            }
+        }
+        let localDensityPopulations = populations(scale: localDensityScale)
+        let selfConsistentPopulations = populations(
+            scale: selfConsistentScale
+        )
+        let positivityPopulations = populations(scale: positivityScale)
+        let tolerance = 1.0e-12
+
+        func summary(
+            identifier: String,
+            scale: Double,
+            values: [Double],
+            positivityInterventionActive: Bool
+        ) -> MetalIndexedBirdSurfaceMovingWallCandidateSummary {
+            let density = values.reduce(0, +)
+            var momentum = SIMD3<Double>.zero
+            for direction in 0..<D3Q19.count {
+                let raw = D3Q19.directions[direction]
+                momentum += SIMD3<Double>(
+                    Double(raw.x),
+                    Double(raw.y),
+                    Double(raw.z)
+                ) * values[direction]
+            }
+            let velocity = density > 0 ? momentum / density : .zero
+            let speed = sqrt(
+                velocity.x * velocity.x
+                    + velocity.y * velocity.y
+                    + velocity.z * velocity.z
+            )
+            let mach = speed / Double(D3Q19.soundSpeed)
+            var equilibrium = [Double]()
+            equilibrium.reserveCapacity(D3Q19.count)
+            let speedSquared = speed * speed
+            for direction in 0..<D3Q19.count {
+                let raw = D3Q19.directions[direction]
+                let lattice = SIMD3<Double>(
+                    Double(raw.x),
+                    Double(raw.y),
+                    Double(raw.z)
+                )
+                let projection = lattice.x * velocity.x
+                    + lattice.y * velocity.y
+                    + lattice.z * velocity.z
+                equilibrium.append(
+                    Double(D3Q19.weights[direction]) * density
+                        * (1.0 + 3.0 * projection
+                            + 4.5 * projection * projection
+                            - 1.5 * speedSquared)
+                )
+            }
+            var wallMomentum = SIMD3<Double>.zero
+            for direction in 0..<D3Q19.count {
+                let raw = D3Q19.directions[direction]
+                wallMomentum += SIMD3<Double>(
+                    Double(raw.x),
+                    Double(raw.y),
+                    Double(raw.z)
+                ) * (scale * wallContributions[direction])
+            }
+            let negative = values.indices.filter { values[$0] < 0 }
+            let floorViolations = values.indices.filter {
+                values[$0] < populationFloor - tolerance
+            }
+            let allFinite = values.allSatisfy(\.isFinite)
+                && equilibrium.allSatisfy(\.isFinite)
+                && density.isFinite && speed.isFinite
+            let minimumPopulation = values.min() ?? -.infinity
+            let minimumEquilibrium = equilibrium.min() ?? -.infinity
+            return MetalIndexedBirdSurfaceMovingWallCandidateSummary(
+                identifier: identifier,
+                correctionScaleRelativeToReferenceDensity: scale,
+                positivityInterventionActive: positivityInterventionActive,
+                reconstructedDensity: density,
+                reconstructedMomentum: momentum,
+                reconstructedVelocity: velocity,
+                reconstructedSpeed: speed,
+                reconstructedLatticeMach: mach,
+                minimumPopulation: minimumPopulation,
+                minimumEquilibriumPopulation: minimumEquilibrium,
+                negativePopulationDirections: negative,
+                populationFloorViolationDirections: floorViolations,
+                wallMassContribution: scale * referenceWallMass,
+                wallMomentumContribution: wallMomentum,
+                populationGatePassed: allFinite
+                    && floorViolations.isEmpty,
+                equilibriumGatePassed: allFinite
+                    && minimumEquilibrium >= -tolerance
+                    && speed <= stage.restEquilibriumPositivitySpeedLimit
+            )
+        }
+
+        let reference = summary(
+            identifier: "reference-density-production-baseline",
+            scale: 1,
+            values: referencePopulations,
+            positivityInterventionActive: false
+        )
+        let candidateA = summary(
+            identifier: "pre-step-local-density-normalization",
+            scale: localDensityScale,
+            values: localDensityPopulations,
+            positivityInterventionActive: false
+        )
+        let candidateB = summary(
+            identifier: "reference-density-global-positivity-scale",
+            scale: positivityScale,
+            values: positivityPopulations,
+            positivityInterventionActive: positivityScale < 1
+        )
+        let selfConsistent = summary(
+            identifier: "self-consistent-local-density-crosscheck",
+            scale: selfConsistentScale,
+            values: selfConsistentPopulations,
+            positivityInterventionActive: false
+        )
+        let directionSamples = (0..<D3Q19.count).map { direction in
+            MetalIndexedBirdSurfaceMovingWallDirectionABSample(
+                direction: direction,
+                basePopulationWithoutWallCorrection:
+                    basePopulations[direction],
+                referenceDensityPopulation:
+                    referencePopulations[direction],
+                preStepLocalDensityPopulation:
+                    localDensityPopulations[direction],
+                selfConsistentLocalDensityPopulation:
+                    selfConsistentPopulations[direction],
+                positivityAdmissiblePopulation:
+                    positivityPopulations[direction],
+                referenceDensityWallContribution:
+                    wallContributions[direction]
+            )
+        }
+        let inputParity = abs(
+            reference.reconstructedDensity - stage.reconstructedDensity
+        ) <= 1.0e-9
+            && reference.negativePopulationDirections
+                == provenance.negativeReconstructedDirectionsAtFailure
+        let passed = inputParity
+            && coverage == Array(0..<D3Q19.count)
+            && !reference.populationGatePassed
+            && !reference.equilibriumGatePassed
+            && candidateA.populationGatePassed
+            && candidateA.equilibriumGatePassed
+            && candidateB.populationGatePassed
+            && candidateB.equilibriumGatePassed
+            && selfConsistent.populationGatePassed
+            && selfConsistent.equilibriumGatePassed
+            && localDensityScale <= positivityScale
+            && positivityScale < 1
+        let authorized = passed ? candidateA.identifier : nil
+        return MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport(
+            schemaVersion: 1,
+            deviceName: boundaryTerms.deviceName,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            selectedCollisionOperator: selected,
+            referenceLengthCells: boundaryTerms.referenceLengthCells,
+            targetCellCoordinate: boundaryTerms.targetCellCoordinate,
+            failureStep: failureStep,
+            sourceBoundaryTermGatePassed:
+                boundaryTerms.boundaryTermGatePassed,
+            sourcePopulationProvenanceGatePassed:
+                provenance.provenanceGatePassed,
+            productionStateModifiedByDiagnostic: false,
+            fluidSimulationRerun: false,
+            referenceDensity: referenceDensity,
+            populationFloor: populationFloor,
+            preStepPopulationCoverageDirections: coverage,
+            preStepLocalDensity: preStepDensity,
+            baseDensityWithoutWallCorrection: baseDensity,
+            selfConsistentLocalDensity: selfConsistentDensity,
+            selfConsistentDensityDenominator: selfConsistentDenominator,
+            globalPositivityAdmissibilityScale: positivityScale,
+            restEquilibriumPositivitySpeedLimit:
+                stage.restEquilibriumPositivitySpeedLimit,
+            referenceDensityBaseline: reference,
+            candidateA: candidateA,
+            candidateB: candidateB,
+            selfConsistentDensityCrosscheck: selfConsistent,
+            directionSamples: directionSamples,
+            candidateAuthorizedForProductionLedger: authorized,
+            admissibilityABGatePassed: passed,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: (
+                "Candidate A applies the pre-step local density as one "
+                    + "uniform wall-correction scale and restores both "
+                    + "population and equilibrium admissibility without a "
+                    + "positivity limiter. Candidate B also restores "
+                    + "admissibility but requires a worst-link global "
+                    + "positivity intervention. Candidate A advances only "
+                    + "to a controlled production ledger experiment."
+            ),
+            claimBoundary: (
+                "This archive-only one-cell discriminator does not mutate "
+                    + "the production boundary law, rerun fluid dynamics, "
+                    + "prove momentum consistency, authorize refinement, "
+                    + "or establish experimental agreement. The selected "
+                    + "candidate must close the force and fluid-momentum "
+                    + "ledgers before any production promotion."
+            )
+        )
     }
 
     private struct CollisionGridTrendMetrics {

@@ -195,6 +195,19 @@ repair surface and isolates moving-wall correction admissibility. Evidence is
 with its
 [`independent audit`](ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition-audit.json).
 
+The locked one-cell moving-wall discriminator then reuses those archives
+without rerunning the fluid simulation. Scaling the wall correction by the
+pre-step local density (`0.030193`, candidate A) removes all five negative
+populations, leaves a `5.580e-5` minimum, and restores equilibrium
+admissibility at lattice Mach `0.5482` without a positivity limiter. A
+reference-density correction with a worst-link positivity scale (candidate B)
+also survives, but requires an active global scale of `0.11505`. Candidate A
+therefore advances only to a controlled force/momentum-ledger experiment; it
+is not enabled in production. Evidence is
+[`deetjen-dove-d16-moving-wall-admissibility-ab.json`](ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json)
+with its
+[`independent audit`](ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab-audit.json).
+
 ## Latest high-Re result
 
 <p align="center">
