@@ -585,6 +585,55 @@ fragment float4 litFragment(RasterVertex in [[stage_in]]) {
     return float4(in.color.rgb*light,in.color.a);
 }
 
+fragment float4 showcaseDoveFragment(
+    RasterVertex in [[stage_in]],
+    constant CameraUniforms& camera [[buffer(0)]]) {
+    float3 normal=normalize(in.normal);
+    float3 view=normalize(camera.eyeAndWidth.xyz-in.world);
+    float3 key=normalize(float3(0.35f,-0.55f,0.78f));
+    float3 fill=normalize(float3(-0.65f,0.18f,0.52f));
+    float diffuse=0.32f+0.58f*abs(dot(normal,key))+0.18f*abs(dot(normal,fill));
+    float rim=pow(1.0f-abs(dot(normal,view)),2.1f);
+    float3 halfVector=normalize(key+view);
+    float specular=pow(abs(dot(normal,halfVector)),30.0f);
+    float3 color=in.color.rgb*diffuse+rim*float3(0.12f,0.48f,0.72f)+0.30f*specular;
+    return float4(color,in.color.a);
+}
+
+fragment float4 showcaseWireFragment(RasterVertex in [[stage_in]]) {
+    float intensity=0.10f+0.12f*clamp(in.color.g+in.color.b,0.0f,1.0f);
+    return float4(0.40f,0.86f,1.0f,intensity);
+}
+
+vertex RasterVertex showcaseBackgroundVertex(uint vid [[vertex_id]]) {
+    float2 positions[3]={float2(-1,-1),float2(3,-1),float2(-1,3)};
+    RasterVertex out;
+    out.position=float4(positions[vid],0.999f,1);
+    out.world=float3(0);out.normal=float3(0,0,1);out.color=float4(1);
+    out.uv=0.5f*(positions[vid]+1.0f);
+    return out;
+}
+
+fragment float4 showcaseBackgroundFragment(
+    RasterVertex in [[stage_in]],
+    constant float4& options [[buffer(0)]]) {
+    float2 uv=in.uv;
+    float2 centered=uv-0.5f;
+    centered.x*=options.y;
+    float radial=length(centered);
+    float glow=exp(-3.8f*radial*radial);
+    float horizon=exp(-55.0f*(uv.y-0.44f)*(uv.y-0.44f));
+    float sweep=0.5f+0.5f*sin(6.2831853f*(options.x+0.15f*uv.x));
+    float gridX=smoothstep(0.985f,1.0f,cos(90.0f*centered.x));
+    float gridY=smoothstep(0.985f,1.0f,cos(90.0f*(uv.y-0.42f)));
+    float grid=(gridX+gridY)*horizon*0.045f;
+    float3 base=mix(float3(0.004f,0.009f,0.025f),float3(0.018f,0.052f,0.095f),uv.y);
+    base+=glow*float3(0.020f,0.075f,0.115f);
+    base+=horizon*(0.018f+0.012f*sweep)*float3(0.12f,0.52f,0.72f);
+    base+=grid*float3(0.18f,0.62f,0.82f);
+    return float4(base,1);
+}
+
 vertex RasterVertex sliceVertex(
     constant VisualizationUniforms& u [[buffer(0)]],
     constant CameraUniforms& camera [[buffer(1)]],

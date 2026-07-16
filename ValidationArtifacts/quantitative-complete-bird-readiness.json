@@ -367,9 +367,9 @@
   "localVerification": {
     "date": "2026-07-16",
     "device": "Apple M4",
-    "swiftTestsPassed": 96,
-    "swiftTestRuntimeSeconds": 538.942,
-    "swiftTestCommandWallSeconds": 542.0,
+    "swiftTestsPassed": 97,
+    "swiftTestRuntimeSeconds": 722.141,
+    "swiftTestCommandWallSeconds": 725.0,
     "focusedCoupledMomentumReleaseTestsPassed": 1,
     "focusedCoupledMomentumReleaseRuntimeSeconds": 0.062,
     "focusedSchema2PartLoadArchiveTestsPassed": 1,
@@ -416,6 +416,12 @@
     "deetjenDoveCollisionExtendedPilotEligibleCandidates": 2,
     "deetjenDoveCollisionExtendedPilotComparisonSamplesPerCandidate": 187,
     "focusedDeetjenDoveCollisionExtendedPilotTestsPassed": 1,
-    "focusedDeetjenDoveCollisionExtendedPilotRuntimeSeconds": 57.693
+    "focusedDeetjenDoveCollisionExtendedPilotRuntimeSeconds": 57.693,
+    "focusedMeasuredDoveShowcaseCaptureTestsPassed": 1,
+    "focusedMeasuredDoveShowcaseCaptureRuntimeSeconds": 0.433,
+    "readmeMeasuredDoveShowcasePassed": true,
+    "readmeMeasuredDoveShowcaseFrames": 72,
+    "readmeMeasuredDoveShowcaseBytes": 9540586,
+    "readmeMeasuredDoveShowcasePixelSeamPassed": true
   }
 }

@@ -1,3 +1,4 @@
+import AppKit
 import BirdFlowCore
 import BirdFlowMetal
 import Metal
@@ -103,4 +104,47 @@ func offscreenViewerProducesPixels() throws {
   #expect(diagnostics.maximumAbsolutePressure.isFinite)
   #expect(diagnostics.maximumQCriterion.isFinite)
   #expect(!diagnostics.qSurfaceOverflow)
+}
+
+@Test("measured dove README capture is artifact-locked and seamless")
+func measuredDoveShowcaseCaptureClosesLoop() throws {
+  guard MTLCreateSystemDefaultDevice() != nil else { return }
+  let testFile = URL(fileURLWithPath: #filePath)
+  let root = testFile.deletingLastPathComponent()
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+  let output = FileManager.default.temporaryDirectory.appendingPathComponent(
+    "birdflow-dove-showcase-\(UUID().uuidString)",
+    isDirectory: true
+  )
+  defer { try? FileManager.default.removeItem(at: output) }
+  let arguments = try ReadmeShowcaseCapture.Arguments(commandLine: [
+    "birdflow-viewer",
+    "--capture-readme-frames", output.path,
+    "--capture-width", "320",
+    "--capture-height", "180",
+    "--capture-frames", "2",
+    "--capture-dove-manifest",
+    root.appendingPathComponent(
+      "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
+    ).path,
+    "--capture-dove-pilot",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-collision-extended-pilot.json"
+    ).path
+  ])
+  try ReadmeShowcaseCapture.run(arguments)
+  let firstData = try Data(
+    contentsOf: output.appendingPathComponent("frame-000.png")
+  )
+  let lastData = try Data(
+    contentsOf: output.appendingPathComponent("frame-001.png")
+  )
+  guard let image = NSBitmapImageRep(data: firstData) else {
+    Issue.record("captured measured-dove frame is not a decodable PNG")
+    return
+  }
+  #expect(image.pixelsWide == 320)
+  #expect(image.pixelsHigh == 180)
+  #expect(firstData == lastData)
 }

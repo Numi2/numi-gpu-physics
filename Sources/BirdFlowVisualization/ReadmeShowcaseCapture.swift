@@ -12,6 +12,8 @@ public enum ReadmeShowcaseCapture {
     let height: Int
     let frameCount: Int
     let preRollSteps: Int
+    let doveManifestURL: URL?
+    let dovePilotArtifactURL: URL?
 
     public init(commandLine: [String]) throws {
       guard let captureIndex = commandLine.firstIndex(
@@ -44,6 +46,20 @@ public enum ReadmeShowcaseCapture {
       height = try integer(after: "--capture-height", default: 504)
       frameCount = try integer(after: "--capture-frames", default: 40)
       preRollSteps = try integer(after: "--capture-pre-roll", default: 384)
+      func fileURL(after flag: String) throws -> URL? {
+        guard let index = commandLine.firstIndex(of: flag) else { return nil }
+        guard index + 1 < commandLine.count else {
+          throw CaptureError.invalidArguments("\(flag) requires a file path")
+        }
+        return URL(fileURLWithPath: commandLine[index + 1])
+      }
+      doveManifestURL = try fileURL(after: "--capture-dove-manifest")
+      dovePilotArtifactURL = try fileURL(after: "--capture-dove-pilot")
+      guard (doveManifestURL == nil) == (dovePilotArtifactURL == nil) else {
+        throw CaptureError.invalidArguments(
+          "dove capture requires both --capture-dove-manifest and --capture-dove-pilot"
+        )
+      }
       guard width >= 320, height >= 180, frameCount >= 2 else {
         throw CaptureError.invalidArguments(
           "capture requires at least 320x180 pixels and two frames"
@@ -69,6 +85,15 @@ public enum ReadmeShowcaseCapture {
   }
 
   public static func run(_ arguments: Arguments) throws {
+    if let manifestURL = arguments.doveManifestURL,
+      let pilotURL = arguments.dovePilotArtifactURL {
+      try MeasuredDoveShowcaseCapture.run(
+        arguments: arguments,
+        manifestURL: manifestURL,
+        pilotArtifactURL: pilotURL
+      )
+      return
+    }
     let bird = BirdParameters.demonstration
     let grid = try GridSize(x: 80, y: 96, z: 80)
     let scaling = try LatticeScaling(
@@ -212,12 +237,29 @@ public enum ReadmeShowcaseCapture {
     return remainder >= 0 ? remainder : remainder + 1
   }
 
-  private static func pngData(
+  static func pngData(
     texture: MTLTexture,
     width: Int,
     height: Int,
     step: UInt64,
     phase: Float
+  ) throws -> Data {
+    try pngData(texture: texture, width: width, height: height) { graphics in
+      drawPresentationOverlay(
+        graphics: graphics,
+        width: width,
+        height: height,
+        step: step,
+        phase: phase
+      )
+    }
+  }
+
+  static func pngData(
+    texture: MTLTexture,
+    width: Int,
+    height: Int,
+    overlay: (CGContext) -> Void
   ) throws -> Data {
     var bgra = [UInt8](repeating: 0, count: width * height * 4)
     texture.getBytes(
@@ -267,13 +309,7 @@ public enum ReadmeShowcaseCapture {
       baseImage,
       in: CGRect(x: 0, y: 0, width: width, height: height)
     )
-    drawPresentationOverlay(
-      graphics: graphics,
-      width: width,
-      height: height,
-      step: step,
-      phase: phase
-    )
+    overlay(graphics)
     guard let image = graphics.makeImage(),
       let encoded = NSBitmapImageRep(cgImage: image).representation(
         using: .png,

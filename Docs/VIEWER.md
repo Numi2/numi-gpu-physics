@@ -14,16 +14,19 @@ Regenerate the repository's top-of-README GIF locally with:
 ./Scripts/capture-readme-gif.sh
 ```
 
-The script invokes the native viewer's deterministic offscreen Metal path,
-captures 40 frames over one articulated wing cycle, and uses local `ffmpeg`
-palette optimization to create
-`Docs/Media/birdflow-metal-native-viewer.gif`. The locked presentation case is
-an explicitly labeled finite `Re=100` development visualization. Its separate
-validation-progress panel records the accepted c16 source-aware canonical and
-does not relabel the displayed development flow as that case. Capture exits
-nonzero if pressure or Q diagnostics become non-finite or if the Q surface
-exceeds its triangle capacity. No solver volume is read back to produce the
-scene; only the completed render texture is encoded as an image.
+The script invokes the native viewer's deterministic offscreen Metal path and
+GPU-rasterizes the source-locked `2018_12_11_OB_F03` dove surface. It captures
+72 frames at `1120 x 630`, traverses the nonperiodic 144-frame kinematics
+forward and backward for a seamless three-second loop, and uses local `ffmpeg`
+full-frame palette optimization to create
+`Docs/Media/birdflow-metal-native-viewer.gif`. Transient wing ghosts and ribbons
+are explicitly kinematic histories, not CFD streamlines. The embedded force
+chart is decoded from the committed 3,776-step, two-operator extended-pilot
+artifact; it labels the comparison descriptive and preserves the declared
+`68.07x` viscosity boundary. Capture rejects a surface or artifact that no
+longer matches the locked `144 / 2,157 / 3,968` frame, vertex, and triangle
+contract, the 187-sample force window, or the passed numerical gate. Only the
+completed Metal render texture is read back for image encoding.
 
 The New Run sheet uses the CLI defaults: fixed flight, `Re=2000`, an `8 m/s`
 reference speed, `0.04` lattice speed, resolution scale 1, and a 32-step solver

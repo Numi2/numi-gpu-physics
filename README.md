@@ -12,9 +12,9 @@
   <img alt="BSD 3-Clause" src="https://img.shields.io/badge/License-BSD--3--Clause-blue">
 </p>
 
-![BirdFlowMetal native Metal viewer showing an articulated flapping bird with pressure, vorticity, GPU pathlines, and positive-Q structures](Docs/Media/birdflow-metal-native-viewer.gif)
+![BirdFlowMetal native Metal viewer showing the reconstructed Deetjen dove, source-locked wing kinematics, full-window force history, and audited numerical gates](Docs/Media/birdflow-metal-native-viewer.gif)
 
-<p align="center"><em>Deterministic offscreen capture from the native Metal viewer. This is a finite Re=100 development visualization, not a quantitative bird-flight result.</em></p>
+<p align="center"><em>Native Metal rendering of the source-locked 144-frame dove surface and audited 3,776-step pilot. Trails show surface kinematics, not CFD streamlines; the full-window numerical gate passes while experimental refinement remains open at the declared 68.07× viscosity floor.</em></p>
 
 BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulated moving boundaries, exchanges momentum with those boundaries, reduces aerodynamic force and torque, and can integrate a six-degree-of-freedom rigid body—all in one Swift/Metal package. It also includes a native scientific viewer, exact-input measured-motion replay, independent reference algebra, archived validation reports, and deliberately strict scientific acceptance gates.
 
