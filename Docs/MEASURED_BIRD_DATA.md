@@ -148,6 +148,28 @@ pitch and speed do not provide an independent hover control; a future hover
 search requires a physically declared control such as stroke-plane or
 amplitude authority rather than altering measured kinematics silently.
 
+## Bounded free-flight confirmation
+
+Run `--free-flight-confirmation` on the trim archive's byte-exact
+`best-candidate-input.json`. The command independently restarts a five-cycle
+free-flight trajectory with four body substeps, a one-cycle `1/2/4` body-step
+refinement ladder, and a one-cycle coupled momentum/per-part-load audit. The
+default minimum durations can only be increased with the three
+`--confirmation-*-cycles` options.
+
+The main trajectory passes only when maximum displacement is at most `0.10`
+root chord, speed is at most `0.05` of reference speed, attitude change is at
+most `5 deg`, and angular speed is at most `0.05` of `2 pi f`. Runtime Mach,
+clearance, and finite-state checks must also pass. The independent runs retain
+the existing `1%`/`0.5 deg` body-refinement and `0.5%` momentum/part-load
+closure thresholds. These locked dimensionless limits detect an unbounded or
+time-step-sensitive nominal trim; they do not define biological stability.
+
+The atomic archive retains `input.json` byte-for-byte, the main trajectory CSV,
+the combined report, and separate body-refinement, coupled-momentum, and
+per-part-load JSON reports. A passing archive inherits the specimen provenance
+of its input and cannot convert a synthetic or hybrid model into measured data.
+
 Free flight is deliberately unavailable to schema 1 measured inputs:
 
 ```bash

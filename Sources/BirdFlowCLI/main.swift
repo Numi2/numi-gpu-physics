@@ -259,10 +259,17 @@ private struct MeasuredBirdReplayArguments {
     var trimIterations = 2
     var trimScreeningCycles: Float = 2
     var trimConfirmationCycles: Float = 5
+    var freeFlightConfirmation = false
+    var confirmationMainCycles: Float = 5
+    var confirmationLedgerCycles: Float = 1
+    var confirmationRefinementCycles: Float = 1
     var momentumLedger = false
     var partLoads = false
     var expectBilateralSymmetry = false
     var json = false
+    var cyclesCustomized = false
+    var trimOptionsCustomized = false
+    var confirmationOptionsCustomized = false
 
     init(_ values: [String]) throws {
         var index = 3
@@ -296,6 +303,7 @@ private struct MeasuredBirdReplayArguments {
                     )
                 }
                 cycles = value
+                cyclesCustomized = true
             case "--steps":
                 index += 1
                 guard index < values.count,
@@ -346,6 +354,7 @@ private struct MeasuredBirdReplayArguments {
             case "--trim-search":
                 trimSearch = true
             case "--trim-iterations":
+                trimOptionsCustomized = true
                 index += 1
                 guard index < values.count,
                       let value = Int(values[index]),
@@ -356,6 +365,7 @@ private struct MeasuredBirdReplayArguments {
                 }
                 trimIterations = value
             case "--trim-screening-cycles":
+                trimOptionsCustomized = true
                 index += 1
                 guard index < values.count,
                       let value = Float(values[index]),
@@ -366,6 +376,7 @@ private struct MeasuredBirdReplayArguments {
                 }
                 trimScreeningCycles = value
             case "--trim-confirmation-cycles":
+                trimOptionsCustomized = true
                 index += 1
                 guard index < values.count,
                       let value = Float(values[index]),
@@ -375,6 +386,41 @@ private struct MeasuredBirdReplayArguments {
                     )
                 }
                 trimConfirmationCycles = value
+            case "--free-flight-confirmation":
+                freeFlightConfirmation = true
+            case "--confirmation-main-cycles":
+                confirmationOptionsCustomized = true
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value >= 5 else {
+                    throw CLIError.invalidArgument(
+                        "--confirmation-main-cycles requires a value of at least 5"
+                    )
+                }
+                confirmationMainCycles = value
+            case "--confirmation-ledger-cycles":
+                confirmationOptionsCustomized = true
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value >= 1 else {
+                    throw CLIError.invalidArgument(
+                        "--confirmation-ledger-cycles requires a value of at least 1"
+                    )
+                }
+                confirmationLedgerCycles = value
+            case "--confirmation-refinement-cycles":
+                confirmationOptionsCustomized = true
+                index += 1
+                guard index < values.count,
+                      let value = Float(values[index]),
+                      value >= 1 else {
+                    throw CLIError.invalidArgument(
+                        "--confirmation-refinement-cycles requires a value of at least 1"
+                    )
+                }
+                confirmationRefinementCycles = value
             case "--momentum-ledger":
                 momentumLedger = true
                 freeFlight = true
@@ -420,11 +466,28 @@ private struct MeasuredBirdReplayArguments {
             )
         }
         if trimSearch
-            && (freeFlight || bodyRefinement || loadRefinement
+            && (freeFlight || freeFlightConfirmation || bodyRefinement
+                || loadRefinement
                 || momentumLedger || steps != nil || bodySubsteps != 1
                 || cycles != 1) {
             throw CLIError.invalidArgument(
                 "--trim-search controls its own duration and is incompatible with --cycles, --steps, --body-substeps, free-flight, refinement, or momentum-ledger modes"
+            )
+        }
+        if confirmationOptionsCustomized && !freeFlightConfirmation {
+            throw CLIError.invalidArgument(
+                "--confirmation-*-cycles options require --free-flight-confirmation"
+            )
+        }
+        if freeFlightConfirmation
+            && (auditOnly || freeFlight || bodyRefinement || loadRefinement
+                || trimSearch || trimOptionsCustomized || momentumLedger
+                || partLoads || expectBilateralSymmetry || steps != nil
+                || bodySubsteps != 1 || cyclesCustomized) {
+            throw CLIError.invalidArgument(
+                "--free-flight-confirmation controls its own independent "
+                    + "main, refinement, and ledger runs and cannot be "
+                    + "combined with another execution mode or duration"
             )
         }
         if momentumLedger && (bodyRefinement || loadRefinement) {
@@ -465,6 +528,15 @@ private struct MeasuredBirdReplayArguments {
                          Cycles per trim candidate (default/minimum: 2)
       --trim-confirmation-cycles VALUE
                          Cycles for the selected candidate (default/minimum: 5)
+      --free-flight-confirmation
+                         Run independent bounded-flight, 1/2/4 body-step,
+                         and coupled momentum/load closure gates
+      --confirmation-main-cycles VALUE
+                         Bounded free-flight cycles (default/minimum: 5)
+      --confirmation-ledger-cycles VALUE
+                         Coupled momentum/load audit cycles (default/minimum: 1)
+      --confirmation-refinement-cycles VALUE
+                         Body-step refinement cycles (default/minimum: 1)
       --momentum-ledger  Record direct fluid/body/wing external impulse closure; implies --free-flight
       --part-loads       Record conservative body/wing/tail loads and wing actuator effort; implies --momentum-ledger
       --expect-bilateral-symmetry
@@ -1127,10 +1199,12 @@ private struct FlappingWingArguments {
 
 private enum CLIError: Error, CustomStringConvertible {
     case invalidArgument(String)
+    case acceptanceFailed(String)
 
     var description: String {
         switch self {
         case .invalidArgument(let message): return message
+        case .acceptanceFailed(let message): return message
         }
     }
 }
@@ -1269,6 +1343,70 @@ private func runMeasuredBirdReplay(_ values: [String]) throws {
             )
             print("passed: \(audit.passed)")
             print("scientific_verdict: \(audit.scientificVerdict)")
+        }
+        return
+    }
+    if arguments.freeFlightConfirmation {
+        let report = try MeasuredBirdReplay.runFreeFlightConfirmation(
+            loaded,
+            chordCells: arguments.chordCells,
+            cycles: arguments.confirmationMainCycles,
+            ledgerCycles: arguments.confirmationLedgerCycles,
+            bodyRefinementCycles:
+                arguments.confirmationRefinementCycles,
+            batchSize: arguments.batchSize,
+            archiveDirectory: arguments.archivePath.map {
+                URL(fileURLWithPath: $0, isDirectory: true)
+            }
+        )
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("dataset: \(report.datasetIdentifier)")
+            print("specimen: \(report.specimenIdentifier)")
+            print("input_sha256: \(report.inputSHA256)")
+            print("device: \(report.deviceName)")
+            print("main_cycles: \(report.mainCycles)")
+            print(
+                "maximum_position_drift_chord_fraction: "
+                    + String(
+                        report.maximumPositionDriftChordFraction
+                    )
+            )
+            print(
+                "maximum_speed_reference_fraction: "
+                    + String(report.maximumSpeedReferenceFraction)
+            )
+            print(
+                "maximum_attitude_deviation_degrees: "
+                    + String(report.maximumAttitudeDeviationDegrees)
+            )
+            print(
+                "maximum_angular_velocity_cycle_fraction: "
+                    + String(
+                        report.maximumAngularVelocityCycleFraction
+                    )
+            )
+            print(
+                "body_refinement_passed: "
+                    + String(report.bodyRefinement.passed)
+            )
+            print(
+                "momentum_ledger_passed: "
+                    + String(report.coupledMomentumLedger.passed)
+            )
+            print(
+                "part_load_closure_passed: "
+                    + String(report.aerodynamicPartLoads.passed)
+            )
+            print("passed: \(report.passed)")
+            print("scientific_verdict: \(report.scientificVerdict)")
+        }
+        guard report.passed else {
+            throw CLIError.acceptanceFailed(
+                "bounded free-flight confirmation failed; inspect the "
+                    + "archived report before making a quantitative claim"
+            )
         }
         return
     }

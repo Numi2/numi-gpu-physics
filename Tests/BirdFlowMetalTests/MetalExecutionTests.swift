@@ -117,6 +117,54 @@ func measuredBirdLoaderRejectsUnknownKeys() throws {
 }
 
 @Test
+func freeFlightBoundednessUsesDimensionlessPhysicalScales() throws {
+    let initial = BirdBodyState(positionMeters: SIMD3<Float>(1, 2, 3))
+    let sample = MeasuredBirdReplayPhaseSample(
+        step: 7,
+        timeSeconds: 0.2,
+        cyclePhase: 0.4,
+        aerodynamicLoad: ForceTorque(),
+        body: BirdBodyState(
+            positionMeters: initial.positionMeters
+                + SIMD3<Float>(0.02, 0, 0),
+            orientationBodyToWorld: .axisAngle(
+                axis: SIMD3<Float>(0, 1, 0),
+                angle: radians(4)
+            ),
+            linearVelocityMetersPerSecond: SIMD3<Float>(0, 0.4, 0),
+            angularVelocityBodyRadiansPerSecond:
+                SIMD3<Float>(0, 0, 0.03 * 2 * .pi * 5)
+        ),
+        wingHingeReactionLoads: nil
+    )
+    let metrics = try makeFreeFlightBoundednessMetrics(
+        initial: initial,
+        samples: [sample],
+        chordMeters: 0.1,
+        referenceSpeedMetersPerSecond: 8,
+        frequencyHz: 5
+    )
+    #expect(
+        abs(metrics.maximumPositionDriftChordFraction - 0.2) < 1.0e-5
+    )
+    #expect(abs(metrics.maximumSpeedReferenceFraction - 0.05) < 1.0e-6)
+    #expect(
+        abs(metrics.maximumAttitudeDeviationDegrees - 4) < 1.0e-4
+    )
+    #expect(
+        abs(metrics.maximumAngularVelocityCycleFraction - 0.03) < 1.0e-6
+    )
+}
+
+@Test
+func freeFlightConfirmationRejectsSchemaOneBeforeStartingMetal() throws {
+    let loaded = try MeasuredBirdDatasetLoader.load(from: measuredFixtureURL)
+    #expect(throws: MeasuredBirdReplayError.self) {
+        _ = try MeasuredBirdReplay.runFreeFlightConfirmation(loaded)
+    }
+}
+
+@Test
 func measuredBirdTrimOptimizerRecoversBoundedLinearBalance() throws {
     let targetPitch = Double(radians(3))
     let targetLogSpeed = log(1.04)

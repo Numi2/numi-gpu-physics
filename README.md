@@ -192,7 +192,7 @@ python3 Scripts/static-audit.py
 > [!NOTE]
 > Validation is local-only. There are intentionally no GitHub Actions workflows, so pushes and pull requests do not consume hosted macOS CI minutes.
 
-Latest recorded local run on Apple M4 (2026-07-15): **84 tests passed in 494.99 seconds**, followed by a successful release build/smoke, the independent physical-condition verifier, static Swift/MSL layout audit, Python lint, and offline compilation of both Metal libraries.
+Latest recorded local run on Apple M4 (2026-07-16): **88 tests passed in 805.564 seconds**, followed by a successful release build, the independent physical-condition verifier, static Swift/MSL layout audit, and offline compilation of both Metal libraries.
 
 ## Run the solver
 
@@ -334,6 +334,25 @@ never tuned. A passing prescribed trim search is still not free-flight
 boundedness or grid/body-step acceptance. Hover trim is rejected until the
 input declares a physical aerodynamic control variable.
 
+Use that archive's exact selected input for the combined confirmation gate:
+
+```bash
+.build/release/birdflow replay measured-bird \
+  --input /path/to/trim-search/best-candidate-input.json \
+  --chord-cells 8 --free-flight-confirmation \
+  --archive /path/to/free-flight-confirmation --json
+```
+
+The command starts three independent experiments from the same input: a
+minimum five-cycle, four-body-substep free-flight trajectory; a one-cycle
+`1/2/4` body-step ladder; and a one-cycle coupled momentum/per-part load audit.
+The trajectory must remain within `0.10` chord position drift, `0.05` reference
+speed, `5 deg` attitude change, and `0.05` cycle-scaled angular velocity while
+also passing runtime, refinement, `0.5%` momentum, and `0.5%` part-sum gates.
+Its atomic archive includes the byte-identical input, trajectory CSV, and every
+nested report. These are solver boundedness thresholds, not a universal claim
+about biological maneuver amplitude or passive stability.
+
 The diagnostic is opt-in and lazily allocates only compact reduction buffers;
 normal batched solver/viewer throughput is unchanged. The current missing-data decision is retained in
 [`ValidationArtifacts/quantitative-complete-bird-readiness.json`](ValidationArtifacts/quantitative-complete-bird-readiness.json).
@@ -348,14 +367,13 @@ Quantitative complete-bird claims still require:
 - a surface representation appropriate to the measured feather/wing geometry;
 - passing the five-cycle `8/12/16` measured-bird load ladder;
 - a passing five-cycle-confirmed prescribed trim search at the declared flight
-  condition, followed by bounded free-flight confirmation;
+  condition, followed by the archived `--free-flight-confirmation` gate;
 - a passing archived per-part load/actuator report on that specimen, with the
   bilateral symmetry gate enabled only when its input is intentionally
   symmetric;
-- an archived free-flight run that stays inside the implemented per-step Mach
-  and sponge/domain abort bounds;
-- a passing archived `--momentum-ledger` run and the implemented `1/2/4`
-  rigid-body substep ladder on the real specimen;
+- a confirmation trajectory that stays inside the declared boundedness and
+  per-step Mach/sponge/domain abort bounds, plus its independently restarted
+  coupled-momentum/per-part and `1/2/4` rigid-body substep runs;
 - same-specimen schema-2 wing inertia and a passing archived hinge-reaction
   treatment (or a separately justified massless-wing scientific model);
 - forced channel-flow coverage and any turbulence/flexibility model required by the target regime.

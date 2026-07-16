@@ -165,14 +165,15 @@ Results:
   boundary and `5.0808e-5` total-system relative RMS closure against a locked
   `0.005` limit. Lazy compact reductions leave normal batched production and
   viewer execution unchanged.
-- The complete local Apple-M4 suite passed all `86` tests in `767.717 s`
-  (`768.27 s` command wall time). The
+- The complete local Apple-M4 suite passed all `88` tests in `805.564 s`
+  (`806.24 s` command wall time). The
   new exact-first-event Mach monitor, schema-2 strict loader, CPU/Metal wing
   reaction reference, four-substep parity, and 256-step torque-free and
   constant-torque rotational canonicals all passed, along with the new
   per-part archive, bilateral actuator gate, bounded trim optimizer, and
-  byte-exact trim archive round trip. The release products and both standalone
-  Metal libraries compiled; a four-substep free-flight release smoke completed.
+  byte-exact trim archive round trip, plus the bounded-free-flight dimensionless
+  excursion and schema rejection contracts. The release products and both
+  standalone Metal libraries compiled.
 - The coupled momentum and per-part canonical also passed a focused
   release-mode run in `0.062 s`; both standalone Metal libraries compiled after the new kernels
   were added, and the static Swift/Metal binding audit passed. No hosted CI
@@ -196,6 +197,13 @@ Results:
   release mode (`0.005 s` focused test). The release CLI exposes separate
   screening/confirmation durations and rejects ambiguous duration, free-flight,
   refinement, and momentum-ledger option combinations.
+- A combined `--free-flight-confirmation` release gate now restarts the exact
+  selected trim input for a minimum five-cycle bounded trajectory, one-cycle
+  `1/2/4` body refinement, and one-cycle direct momentum/per-part load closure.
+  It archives the byte-identical input, trajectory, runtime safety, and each
+  nested report atomically. Fast tests independently verify the dimensionless
+  excursion algebra and reject schema-1 input before Metal allocation; no real
+  specimen result is claimed.
 
 ## Verification boundary
 

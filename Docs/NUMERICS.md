@@ -208,6 +208,16 @@ least-squares residual. Candidate screening is at least two cycles; the
 selected point is independently rerun for at least five cycles and must keep
 net force, aerodynamic torque, and final-cycle stationarity below `5%`.
 
+Bounded free-flight confirmation consumes the exact selected trim input and
+uses three fresh simulations, preventing a warmed-up flow or accumulated body
+state from coupling otherwise independent acceptance questions. The main
+five-cycle run uses four rigid-body substeps and gates maximum dimensionless
+position, speed, attitude, and angular-speed excursion at `0.10`, `0.05`,
+`5 deg`, and `0.05`, respectively. Separate one-cycle restarts perform the
+`1/2/4` body-step ladder and direct fluid/body/wing momentum plus per-part load
+closure. This decomposition is intentional: a result must demonstrate both
+bounded dynamics and estimator-independent conservation.
+
 ## Derived pressure
 
 For reference lattice density one, physical gauge pressure is:

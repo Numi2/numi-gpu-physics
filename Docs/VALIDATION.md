@@ -1193,10 +1193,18 @@ Required harness work before these criteria are measurable:
   and confirms the selected point for at least five cycles against unchanged
   `5%` force, moment, and stationarity gates. Hover is rejected without a
   declared physical control variable.
+- `--free-flight-confirmation` consumes that exact selected input and launches
+  independent minimum-duration runs: five cycles of four-substep free flight,
+  one cycle of `1/2/4` body refinement, and one cycle of coupled momentum plus
+  per-part load closure. It atomically archives the exact input and all three
+  evidence streams. Maximum trajectory excursion is locked at `0.10` chord,
+  `0.05` reference speed, `5 deg`, and `0.05` cycle-scaled angular velocity;
+  all existing runtime, refinement, and `0.5%` closure gates also apply.
 
 Status: solver-side runtime bounds, body-step refinement, rigid prescribed
 wing inertia/hinge treatment, the external linear-momentum ledger, per-part
-actuator effort, and the forward-flight trim-search harness are implemented.
+actuator effort, forward-flight trim search, and independently restarted
+bounded free-flight confirmation harness are implemented.
 Quantitative free-flight remains blocked by the absent same-specimen schema-2
 dataset and therefore has no executed real-specimen trim, load refinement,
 body refinement, or bounded free-flight result. See
