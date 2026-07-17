@@ -1,0 +1,46 @@
+{
+  "claimBoundary" : "This validation-only decomposition attributes the retained fixed-phase D12\/D16 grid disagreement. It does not prove a replacement boundary law, modify production, authorize D20, relax the raw spatial gate, or establish experimental force agreement.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "expectedLinkCounts" : [
+    25262,
+    45514
+  ],
+  "expectedStepCounts" : [
+    576,
+    768
+  ],
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Hashed link-geometry, temporal-duration, and fallback-aware population artifacts; source phase 26.5 ms; RR3 collision; pre-step local-density wall normalization; D12\/D16 grids; 24 physical-time bins; 20 effective-q bins; four measured components; all 18 non-rest D3Q19 directions; production mode-6 force scaling. The capture is read-only.",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "forceTerms" : [
+    "base-reflection",
+    "moving-wall",
+    "interpolation-residual"
+  ],
+  "frozenSourceTimeSeconds" : 0.0265,
+  "interpolationFractionBinCount" : 20,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedAbsoluteTermClosureNewtons" : 1e-06,
+  "maximumAllowedDurationBinRelativeDifference" : 0.0001,
+  "maximumAllowedMetadataMismatchCount" : 0,
+  "maximumAllowedRelativeRMSSourceForceClosure" : 0.0001,
+  "minimumDominantAxisAbsoluteContributionFraction" : 0.6,
+  "minimumDominantTermAlignmentFraction" : 0.6,
+  "passed" : true,
+  "referenceLengthCells" : [
+    12,
+    16
+  ],
+  "schemaVersion" : 1,
+  "selectionRule" : "Independently restart the locked 24-bin topology-free D12 and D16 fixed-phase cases. Capture every production boundary link before collision and decompose conventional mode-6 exchange into algebraically closed base-reflection, moving-wall, and interpolation-residual forces. Require all 25,262\/45,514 link identities, static component\/direction\/q-bin classifications, production-force RMS closure, and archived 24-bin histories to reproduce. A term is dominant only if its signed alignment with the D12\/D16 total-delta history is at least 60% over the full window and it remains the >=60% winner in all three non-overlapping eight-bin blocks. Spatial axes are named dominant only above 60% of absolute aligned contribution.",
+  "sourceLinkGeometryPreregistrationSHA256" : "022ad277bc571bc28f7979d67a66de9c8af8bde2e84429854a4c6b1690295624",
+  "sourceLinkGeometryReportSHA256" : "39237cc559c086e3a4f06d36560f17192fa9d5737d2163bc82c2b1a7785dcacf",
+  "sourceLinkPopulationAuditSHA256" : "033ab8a966d95d8e97a32df2434efd5f498533ed4e7e17804b9c767dd3d4f95d",
+  "sourceLinkPopulationPreregistrationSHA256" : "5c86f4445349f83aec032c23df1e9fe1900b0f4106c20b30465ec33af477a016",
+  "sourceLinkPopulationReportSHA256" : "2313f6dd15766584abe4fb3b4b23854df08c38d0c1890d31f5655fac80802ef4",
+  "sourceTemporalDurationPreregistrationSHA256" : "8a15ee4877ada2b5b20badf70e2de894832afe11bcd6e95384786076541e3a85",
+  "sourceTemporalDurationReportSHA256" : "1257ddad7d5c78fbaf40876074fd847b9b1d410ac4d2ab04a947e6d0240842ae",
+  "targetJointBinAbsoluteContributionFraction" : 0.8,
+  "temporalBinCount" : 24
+}

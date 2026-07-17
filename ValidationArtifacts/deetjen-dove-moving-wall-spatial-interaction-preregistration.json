@@ -1,0 +1,27 @@
+{
+  "claimBoundary" : "This archive-only allocation localizes the robust reflection-moving-wall mean cancellation. It does not establish a defective primitive, authorize production or D20, relax the raw spatial gate, or claim experimental agreement.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "dominantPairIdentifier" : "base-reflection+moving-wall",
+  "expectedSpatialBinCounts" : [
+    1438,
+    1440
+  ],
+  "expectedUnionSpatialBinCount" : 1440,
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Hashed distributed-force spatial bins and robust mean-offset covariance artifacts; D12\/D16; four measured components; 18 non-rest directions; 20 q bins; reflection and moving-wall terms only. No fluid, Metal, filtering, pairwise cross-bin truncation, or post-result threshold changes.",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedRelativeInteractionClosureError" : 1e-05,
+  "maximumAllowedTermMeanReconstructionErrorNewtons" : 5e-06,
+  "maximumJointBinFractionForTargetedCapture" : 0.2,
+  "minimumDominantAxisAbsoluteContributionFraction" : 0.6,
+  "passed" : true,
+  "schemaVersion" : 1,
+  "selectionRule" : "For every union component\/direction\/q bin, subtract D12 from D16 separately for base reflection and moving wall. Allocate the complete symmetric mean interaction with c_i = r_i dot W_total + w_i dot R_total, so all within- and cross-bin interactions are retained and sum exactly to 2 R_total dot W_total. Group c_i independently by component, D3Q19 direction, and q bin. Name an axis only at >=60% of absolute contribution. Authorize a targeted primitive capture only if at least two axes clear 60% and no more than 20% of active joint bins provide 80% of absolute interaction.",
+  "sourceDistributedForceReportSHA256" : "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f",
+  "sourceForceCovarianceAuditSHA256" : "ac10134edd1c5f1326cd18f0f39000b9b1ea8e5a5b68721687d251696fe630a2",
+  "sourceForceCovariancePreregistrationSHA256" : "6e1a58f25fa722996367bc818db32187987a67532ddae099971ae8aa172376fe",
+  "sourceForceCovarianceReportSHA256" : "20ef161771c1cb6146c8b65a70dae9e2d11d1d822b8c43b836c8ebcb8ee59145",
+  "targetJointBinAbsoluteContributionFraction" : 0.8
+}

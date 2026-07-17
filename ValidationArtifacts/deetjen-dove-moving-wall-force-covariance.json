@@ -1,0 +1,147 @@
+{
+  "claimBoundary" : "This archive-only covariance test identifies robust coherent or canceling term pairs in the retained fixed-phase grid difference. It does not establish causality, authorize a boundary change or D20, relax the raw spatial gate, or claim experimental force or free-flight agreement.",
+  "classification" : "robust-canceling-mean-offset-dominated-pair-covariance",
+  "d20DiagnosticAuthorized" : false,
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "experimentalAgreementGateApplied" : false,
+  "fluidEvolutionExecuted" : false,
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "metrics" : {
+    "centeredEnergyClosureRelativeError" : 1.505961408177387e-07,
+    "dominantPairConsistentAcrossBlocks" : true,
+    "dominantPairGatePassed" : true,
+    "dominantPairIdentifier" : "base-reflection+moving-wall",
+    "dominantPairMechanism" : "mean-offset-dominated",
+    "dominantPairSign" : "canceling",
+    "maximumTermDeltaReconstructionErrorNewtons" : 1.1626882411721943e-06,
+    "meanEnergyClosureRelativeError" : 1.5410369860018718e-06,
+    "pairs" : [
+      {
+        "blockRawInteractionEnergyFractions" : [
+          -3.732301634274365,
+          -32.4404076535503,
+          -163.20663115357794
+        ],
+        "blockSigns" : [
+          "canceling",
+          "canceling",
+          "canceling"
+        ],
+        "centeredCovarianceTraceNewtonsSquared" : 0.05221106076677032,
+        "centeredInteractionEnergyFraction" : 0.1630037786863806,
+        "centeredShareOfAbsoluteDecomposition" : 0.016758957685203222,
+        "firstTermIdentifier" : "base-reflection",
+        "maximumAbsoluteInteractionDecompositionErrorNewtonsSquared" : 8.881784197001252e-16,
+        "meanDotNewtonsSquared" : -3.063201111487139,
+        "meanInteractionEnergyFraction" : -9.563363561586787,
+        "meanShareOfAbsoluteDecomposition" : 0.9832410423147967,
+        "pairIdentifier" : "base-reflection+moving-wall",
+        "rawDotMeanNewtonsSquared" : -3.0109900507203693,
+        "rawInteractionEnergyFraction" : -9.400359782900408,
+        "secondTermIdentifier" : "moving-wall",
+        "signConsistentAcrossBlocks" : true
+      },
+      {
+        "blockRawInteractionEnergyFractions" : [
+          -1.5443320261312155,
+          -3.806430616374753,
+          -16.625107269440775
+        ],
+        "blockSigns" : [
+          "canceling",
+          "canceling",
+          "canceling"
+        ],
+        "centeredCovarianceTraceNewtonsSquared" : -0.24040463299513035,
+        "centeredInteractionEnergyFraction" : -0.7505471640763757,
+        "centeredShareOfAbsoluteDecomposition" : 0.3685022504701514,
+        "firstTermIdentifier" : "base-reflection",
+        "maximumAbsoluteInteractionDecompositionErrorNewtonsSquared" : 0,
+        "meanDotNewtonsSquared" : -0.41197844658826843,
+        "meanInteractionEnergyFraction" : -1.2862033933999883,
+        "meanShareOfAbsoluteDecomposition" : 0.6314977495298485,
+        "pairIdentifier" : "base-reflection+interpolation-residual",
+        "rawDotMeanNewtonsSquared" : -0.6523830795833988,
+        "rawInteractionEnergyFraction" : -2.0367505574763642,
+        "secondTermIdentifier" : "interpolation-residual",
+        "signConsistentAcrossBlocks" : true
+      },
+      {
+        "blockRawInteractionEnergyFractions" : [
+          0.4449090930377402,
+          3.0492558542933326,
+          12.984928605432916
+        ],
+        "blockSigns" : [
+          "coherent",
+          "coherent",
+          "coherent"
+        ],
+        "centeredCovarianceTraceNewtonsSquared" : -0.013010355113494148,
+        "centeredInteractionEnergyFraction" : -0.04061853971947955,
+        "centeredShareOfAbsoluteDecomposition" : 0.040406548496479386,
+        "firstTermIdentifier" : "moving-wall",
+        "maximumAbsoluteInteractionDecompositionErrorNewtonsSquared" : 5.551115123125783e-17,
+        "meanDotNewtonsSquared" : 0.30897594655312155,
+        "meanInteractionEnergyFraction" : 0.9646279173744401,
+        "meanShareOfAbsoluteDecomposition" : 0.9595934515035207,
+        "pairIdentifier" : "moving-wall+interpolation-residual",
+        "rawDotMeanNewtonsSquared" : 0.29596559143962736,
+        "rawInteractionEnergyFraction" : 0.9240093776549605,
+        "secondTermIdentifier" : "interpolation-residual",
+        "signConsistentAcrossBlocks" : true
+      }
+    ],
+    "rawEnergyClosureRelativeError" : 1.7767740722348822e-07,
+    "terms" : [
+      {
+        "centeredDeltaRMSNewtons" : 0.9494979627022453,
+        "deltaRMSNewtons" : 2.058950860557745,
+        "meanDeltaForceNewtons" : [
+          1.3996088753790754,
+          0.9462020317732852,
+          0.6953624781680349
+        ],
+        "rawSelfEnergyFraction" : 6.617548351684639,
+        "termIdentifier" : "base-reflection"
+      },
+      {
+        "centeredDeltaRMSNewtons" : 0.06718260116950867,
+        "deltaRMSNewtons" : 1.7046380768497904,
+        "meanDeltaForceNewtons" : [
+          -1.4017118913945865,
+          -0.896877967104628,
+          -0.3634434712462606
+        ],
+        "rawSelfEnergyFraction" : 4.535963277926301,
+        "termIdentifier" : "moving-wall"
+      },
+      {
+        "centeredDeltaRMSNewtons" : 0.35282105228509336,
+        "deltaRMSNewtons" : 0.47995545006691986,
+        "meanDeltaForceNewtons" : [
+          -0.10535569298598513,
+          -0.05726831861130652,
+          -0.30248149819824643
+        ],
+        "rawSelfEnergyFraction" : 0.3595895107882794,
+        "termIdentifier" : "interpolation-residual"
+      }
+    ],
+    "totalDeltaMeanSquaredNewtonsSquared" : 0.6406116617360685,
+    "totalDeltaVarianceNewtonsSquared" : 0.6281346287328167,
+    "totalMeanDeltaSquaredNewtonsSquared" : 0.01247703300325174
+  },
+  "nextAction" : "Use the archived joint spatial bins to decompose the dominant pair's mean interaction by component, direction, and q before any new fluid run.",
+  "productionModificationAuthorized" : false,
+  "rawSpatialGateModified" : false,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "The archive-only D12\/D16 force-term covariance result is robust-canceling-mean-offset-dominated-pair-covariance. It evaluates interaction energy, not a replacement boundary law or experimental force fit.",
+  "sourceDistributedForceAuditSHA256" : "c13bed0a6e59963c748b4ecf38cd6a5b657e5870c619ef601115b694f64ea4dd",
+  "sourceDistributedForcePreregistrationSHA256" : "d3f6a70c9bd40992c56ab7fc041206d94a553fd9d86bbac7b232761541e871b5",
+  "sourceDistributedForceReportSHA256" : "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f",
+  "sourcePreregistrationSHA256" : "6e1a58f25fa722996367bc818db32187987a67532ddae099971ae8aa172376fe",
+  "sourceReproductionPassed" : true
+}

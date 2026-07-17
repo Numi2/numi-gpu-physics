@@ -1,0 +1,53 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-source-viscosity-d28-audit-v1",
+  "checkCount": 17,
+  "checks": {
+    "classification": true,
+    "d16EvidenceHashes": true,
+    "deterministicOperatorSelection": true,
+    "fixedD28Contract": true,
+    "independentCorrectionGate": true,
+    "independentGlobalMomentumClosure": true,
+    "independentNearWingMomentumClosure": true,
+    "independentPerStepCompletionAndPositivity": true,
+    "parentVerdict": true,
+    "preregistrationHash": true,
+    "primaryInputHashes": true,
+    "productionTauMargin": true,
+    "runtimeGrid": true,
+    "safetyBoundary": true,
+    "sourceReynoldsReconstruction": true,
+    "sourceTauReconstruction": true,
+    "workingSetPreflight": true
+  },
+  "claimBoundary": "This audit independently reconstructs the D28 source-viscosity pre-roll and authorizes only a preregistered RR3 full-window run. It does not establish force agreement, grid convergence, a published Reynolds number, or a production change.",
+  "d28FullWindowRunGatePassed": true,
+  "generatedBy": "Scripts/audit-dove-source-viscosity-d28.py",
+  "independentReconstruction": {
+    "case": {
+      "actualTauPlus": 0.5000514388084412,
+      "collisionLimiterActivationCount": 5697.0,
+      "collisionLimiterActivationFractionOfCellSteps": 1.441371679423232e-07,
+      "completedSteps": 2800,
+      "eligibleForD28Planning": true,
+      "executionFloorPassed": true,
+      "minimumPopulation": 4.83835815856537e-09,
+      "operator": "positivity-preserving-recursive-regularized-bgk",
+      "productionMarginPassed": true,
+      "relativeRMSGlobalFluidClosureResidual": 0.0019460715610624597,
+      "relativeRMSRawControlVolumeClosureResidual": 0.0011814016023088802
+    },
+    "conservativeWorkingSetEstimateBytes": 3613700608,
+    "expectedCellCount": 14116018,
+    "selectedD16Operator": "positivity-preserving-recursive-regularized-bgk",
+    "sourcePropertyReynoldsNumber": 128812.93718204941,
+    "sourceTauPlus": 0.5000514155201692
+  },
+  "preregistrationSHA256": "db1fab64676057a95011da998e9410d33f1ee7c56a6801d75662cba6d00cadef",
+  "reportSHA256": "668974a899acb7d39d6585239fabf2be2dbdd252de7c05313fe6d29e1d50599b",
+  "schemaVersion": 1,
+  "sourceD16AuditSHA256": "26d67328744ff6c1ee70ae7aa4d02e42cbaa3b1a1f78421556351f5eb785e42a",
+  "sourceD16PreregistrationSHA256": "86bca3736cb94ec1e468a1c54fe930eb46e61ea1664569f1419ce4171bba0629",
+  "sourceD16ReportSHA256": "bef30ff6fd8b5ac95fd2244ad7d49ffb8296ea53820b44b6a6cea8321af87eb3"
+}

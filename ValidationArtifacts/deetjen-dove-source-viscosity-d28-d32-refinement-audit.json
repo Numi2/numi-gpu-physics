@@ -1,0 +1,39 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-source-viscosity-d28-d32-refinement-audit-v1",
+  "checkCount": 12,
+  "checks": {
+    "alignedSamples": true,
+    "classification": true,
+    "convergenceBoundary": true,
+    "experimentalBoundary": true,
+    "frozenLimit": true,
+    "independentMetrics": true,
+    "independentScore": true,
+    "preregistrationHash": true,
+    "productionBoundary": true,
+    "sourceAudits": true,
+    "sourceHashes": true,
+    "verdict": true
+  },
+  "claimBoundary": "The independently reconstructed D28/D32 history misses the frozen 5% fine-pair limit. This rejects force-history stabilization and does not authorize D36, grid convergence, experimental agreement, production promotion, or free flight.",
+  "d36RunAuthorized": false,
+  "generatedBy": "Scripts/audit-dove-source-viscosity-d28-d32-refinement.py",
+  "independentReconstruction": {
+    "finePairStabilizationPassed": false,
+    "gridTrendScore": 0.056321598232749036,
+    "maximumFinePairDifference": 0.05,
+    "metrics": {
+      "horizontalForceNormalizedRMSDifference": 0.07375656515534901,
+      "impulseRelativeDifference": 0.0072590973586094155,
+      "intervalForceNormalizedRMSDifference": 0.056321598232749036,
+      "meanForceRelativeDifference": 0.0075984509954662004,
+      "normalizedPeakTimeDifference": 0.0,
+      "peakTimeDifferenceSeconds": 0.0,
+      "verticalForceNormalizedRMSDifference": 0.046610471350922715
+    }
+  },
+  "preregistrationSHA256": "8b0ecf2fea55247d44db060c3bb510830e37f6e6b929c9a846f08d8f1876428c",
+  "reportSHA256": "d1d5abb89837983bdbea9e69b30a50829806341159c33cad9d93c985990c9cae",
+  "schemaVersion": 1
+}

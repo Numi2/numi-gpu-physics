@@ -1,0 +1,53 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-source-viscosity-d32-audit-v1",
+  "checkCount": 18,
+  "checks": {
+    "classification": true,
+    "d28ParentHashChain": true,
+    "d28ParentVerdict": true,
+    "fixedD32Contract": true,
+    "fixedOperator": true,
+    "independentCorrectionGate": true,
+    "independentGlobalMomentumClosure": true,
+    "independentNearWingMomentumClosure": true,
+    "independentPerStepCompletionAndPositivity": true,
+    "parentVerdict": true,
+    "preregistrationHash": true,
+    "primaryInputHashes": true,
+    "productionTauMargin": true,
+    "runtimeGrid": true,
+    "safetyBoundary": true,
+    "sourceReynoldsReconstruction": true,
+    "sourceTauReconstruction": true,
+    "workingSetPreflight": true
+  },
+  "claimBoundary": "This audit independently reconstructs the D32 source-viscosity pre-roll and authorizes only a separately preregistered RR3 D32 full-window run. It does not establish D28/D32 convergence, experimental agreement, production promotion, or free flight.",
+  "d32FullWindowRunGatePassed": true,
+  "generatedBy": "Scripts/audit-dove-source-viscosity-d32.py",
+  "independentReconstruction": {
+    "case": {
+      "actualTauPlus": 0.5000587701797485,
+      "collisionLimiterActivationCount": 15941.0,
+      "collisionLimiterActivationFractionOfCellSteps": 2.3793814650634856e-07,
+      "completedSteps": 3200,
+      "eligibleForD28Planning": true,
+      "executionFloorPassed": true,
+      "minimumPopulation": 4.685106524959792e-09,
+      "operator": "positivity-preserving-recursive-regularized-bgk",
+      "productionMarginPassed": true,
+      "relativeRMSGlobalFluidClosureResidual": 0.0010209214476542352,
+      "relativeRMSRawControlVolumeClosureResidual": 0.0015805644948237258
+    },
+    "conservativeWorkingSetEstimateBytes": 5359712256,
+    "expectedCellCount": 20936376,
+    "sourcePropertyReynoldsNumber": 128812.93718204941,
+    "sourceTauPlus": 0.5000587605958472
+  },
+  "preregistrationSHA256": "8b9b00f6bc9d3340ca1401e3775f62799f77dfe83162f8957f5f57a1e94c86c7",
+  "reportSHA256": "bd4e4a654f11ce20d7bc86c501f92714c769126af7e53b1d5d3480018ea2d376",
+  "schemaVersion": 1,
+  "sourceD28FullWindowAuditSHA256": "8d80288432fec231caba377fc3d1437b6874bfc4a970b74556ec32a169d055ab",
+  "sourceD28FullWindowPreregistrationSHA256": "65a60560363dac6f21ba5783e794a4da3bd05b50a864c283059888b16ac9febd",
+  "sourceD28FullWindowReportSHA256": "5d5168aee5298a2d783e39d53c9017e386577e593057aa32300cbb1ae987278e"
+}

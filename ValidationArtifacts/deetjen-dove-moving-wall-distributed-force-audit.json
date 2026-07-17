@@ -1,0 +1,51 @@
+{
+  "allChecksPassed": true,
+  "auditor": "independent Python reconstruction from archived temporal and spatial aggregates",
+  "checks": {
+    "archivedDurationHistoriesReproduce": true,
+    "caseContractsAndNumericalGatesPass": true,
+    "classificationAndSafetyBoundaryReproduce": true,
+    "dominanceGateReproduces": true,
+    "jointBinConcentrationReproduces": true,
+    "preregisteredContractMatches": true,
+    "sourceEvidencePassed": true,
+    "sourceHashesMatch": true,
+    "spatialAxisMetricsReproduce": true,
+    "spatialDominanceGateReproduces": true,
+    "spatialKeysAreUnique": true,
+    "temporalAndSpatialTermAlgebraCloses": true,
+    "termMetricsReproduce": true,
+    "totalForceMetricsReproduce": true
+  },
+  "claimBoundary": "This audit independently reconstructs archived aggregate algebra, source locks, cross-grid attribution, spatial concentration, classification, and safety gates. It does not recreate unarchived per-link GPU values or authorize production changes.",
+  "classification": "mixed-term-distributed-grid-bias",
+  "independentMetrics": {
+    "activeJointBinCount": 1440,
+    "aggregateTermClosures": {
+      "d12": {
+        "maximumSpatialBinClosureNewtons": 2.602718403354722e-08,
+        "maximumTemporalBinClosureNewtons": 1.1521662651142345e-06
+      },
+      "d16": {
+        "maximumSpatialBinClosureNewtons": 2.3361423277791426e-08,
+        "maximumTemporalBinClosureNewtons": 7.415904837522756e-07
+      }
+    },
+    "blockWinners": [
+      "base-reflection",
+      "moving-wall",
+      "moving-wall"
+    ],
+    "dominantTerm": "base-reflection",
+    "dominantTermAlignmentFraction": 0.8989930301693962,
+    "dominantTermGatePassed": false,
+    "minimumJointBinsFor80Percent": 518,
+    "totalDeltaRMSNewtons": 0.8003821972883134,
+    "totalForcePairwiseNormalizedRMSDifference": 0.0996112761193736
+  },
+  "schemaVersion": 1,
+  "sourceSHA256": {
+    "preregistration": "d3f6a70c9bd40992c56ab7fc041206d94a553fd9d86bbac7b232761541e871b5",
+    "report": "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f"
+  }
+}

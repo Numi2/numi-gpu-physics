@@ -1,0 +1,65 @@
+{
+  "allChecksPassed": true,
+  "checkCount": 10,
+  "checks": {
+    "articleEvidence": true,
+    "atmosphericInferenceBoundary": true,
+    "authorCodeConstants": true,
+    "classificationAndSafety": true,
+    "gridByGridViscosityAndTau": true,
+    "minimumEligibleGrid": true,
+    "morphologyAndVelocity": true,
+    "primarySourceHashes": true,
+    "reynoldsReconstruction": true,
+    "schemasAndPreregistration": true
+  },
+  "claimBoundary": "This independent source/data/equation reconstruction confirms the report mechanics. It does not supply missing same-flight atmospheric measurements or authorize a simulation or force claim.",
+  "generatedBy": "Scripts/audit-dove-source-scaling.py",
+  "independentReconstruction": {
+    "airDensityKilogramsPerCubicMeter": 1.18,
+    "authorDataBladeSpeedMeanChordReynoldsNumber": 102416.82132660571,
+    "depositedMaximumBladeElementSpeedMetersPerSecond": 21.36866978299887,
+    "dynamicViscosityPascalSeconds": 1.849e-05,
+    "grid": [
+      {
+        "effectiveDynamicViscosityPascalSeconds": 0.0012586504055666226,
+        "effectiveToSourceViscosityRatio": 68.07195270776758,
+        "referenceLengthCells": 8,
+        "registeredEffectiveReynoldsNumber": 1892.3055980932772,
+        "sourceTauMarginAboveHalf": 1.4690148961826743e-05,
+        "sourceTauPlus": 0.5000146901489618
+      },
+      {
+        "effectiveDynamicViscosityPascalSeconds": 0.0012586504055666658,
+        "effectiveToSourceViscosityRatio": 68.07195270776991,
+        "referenceLengthCells": 12,
+        "registeredEffectiveReynoldsNumber": 1892.3055980932122,
+        "sourceTauMarginAboveHalf": 2.2035224468752723e-05,
+        "sourceTauPlus": 0.5000220352244688
+      },
+      {
+        "effectiveDynamicViscosityPascalSeconds": 0.0012586504055666226,
+        "effectiveToSourceViscosityRatio": 68.07195270776758,
+        "referenceLengthCells": 16,
+        "registeredEffectiveReynoldsNumber": 1892.3055980932772,
+        "sourceTauMarginAboveHalf": 2.9380297923542464e-05,
+        "sourceTauPlus": 0.5000293802979235
+      }
+    ],
+    "kinematicViscositySquareMetersPerSecond": 1.566949152542373e-05,
+    "meanChordMeters": 0.07510151685318733,
+    "minimumIntegerReferenceLengthCellsForSourceViscosityMargin": 28,
+    "registeredSourcePropertyReynoldsNumber": 128812.93718204941,
+    "relativeReynoldsConventionDifference": 0.25773223102938214,
+    "selectedFlightMeanBodySpeedMetersPerSecond": 1.5435847578854291
+  },
+  "preregistrationSHA256": "c4d2bceb50bdd38769f214cf1a2f2b12bf8ff9744b742d774cec58dc2f679c0d",
+  "reportSHA256": "8f0381ec4c8899cf63f74ff37e1591b1634b7376a72726d889843b108d2c2a59",
+  "schemaVersion": 1,
+  "sourceSHA256": {
+    "derivedAnalysis": "499378e2beebce224fd178732a8ff0ecae920eab9d024d82b8dc3b695cfce1a1",
+    "muscleModel": "8d3ea0557a28ffbea6a1d45b20b0c04c83f5220bce6bcd15e40c771d4a9f8834",
+    "wingArea": "f710a7c8c476e330d89dbe3587e35da93d6789103e19f992cb7059ea73f4ee00",
+    "wingSpan": "19864fdbd0727f0588089e9fb95c1856722060e3ecb584f3e7ac9b24fd8a7370"
+  }
+}

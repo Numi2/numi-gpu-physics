@@ -251,6 +251,23 @@ struct GPUIndexedBoundaryTerm {
     uint4 branch;
 };
 
+/// Compact, validation-only description of one fixed-geometry boundary link.
+/// x/y/z/w are target fluid cell, direction, expected part, and source cell.
+struct GPUIndexedBoundaryLink {
+    uint4 metadata;
+};
+
+/// Production-parity force decomposition for one compact boundary link.
+/// xyz values are physical force. The w lanes retain the scalar primitive.
+struct GPUIndexedBoundaryLinkForceTerm {
+    float4 reflected;
+    float4 wall;
+    float4 interpolation;
+    float4 total;
+    // x=target, y=direction, z=source part, w=branch.
+    uint4 metadata;
+};
+
 /// One direction of a diagnostic-only TRT collision decomposition. Float4 and
 /// uint4 fields keep the layout identical to the Swift readback structure.
 struct GPUTRTCollisionTerm {
@@ -4624,6 +4641,142 @@ kernel void captureIndexedBoundaryTermDecomposition(
         outside ? 1u : 0u
     );
     terms[target.z * Q + q] = term;
+}
+
+/// Captures every compact fixed-geometry link from the exact pre-step state.
+/// This diagnostic duplicates the production reconstruction algebra but never
+/// writes a population, mask, velocity, or production load.
+kernel void captureIndexedBoundaryLinkForceTerms(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidCurrent [[buffer(1)]],
+    device const float4* wallVelocity [[buffer(2)]],
+    device const GPUIndexedBoundaryLink* links [[buffer(3)]],
+    device GPUIndexedBoundaryLinkForceTerm* terms [[buffer(4)]],
+    constant GPUUniforms& uniforms [[buffer(5)]],
+    constant uint& linkCount [[buffer(6)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= linkCount) {
+        return;
+    }
+    GPUIndexedBoundaryLink link = links[gid];
+    uint target = link.metadata.x;
+    uint q = link.metadata.y;
+    uint expectedPart = link.metadata.z;
+    uint expectedSource = link.metadata.w;
+    GPUIndexedBoundaryLinkForceTerm term;
+    term.reflected = float4(0);
+    term.wall = float4(0);
+    term.interpolation = float4(0);
+    term.total = float4(0);
+    term.metadata = uint4(target, q, 0u, 0u);
+    if (target >= uniforms.grid.w || q == 0u || q >= Q) {
+        terms[gid] = term;
+        return;
+    }
+    uint3 size = uniforms.grid.xyz;
+    uint3 cell = unflatten(target, size);
+    int3 sourceCell = int3(cell) - C[q];
+    if (!inside(sourceCell, size)) {
+        terms[gid] = term;
+        return;
+    }
+    uint source = flatten(uint3(sourceCell), size);
+    uint sourcePart = uint(solidCurrent[source]);
+    if (source != expectedSource || sourcePart != expectedPart
+        || sourcePart == 0u || solidCurrent[target] != 0u) {
+        term.metadata.z = sourcePart;
+        terms[gid] = term;
+        return;
+    }
+
+    float3 direction = float3(C[q]);
+    float reflected = populationsIn[OPP[q] * uniforms.grid.w + target];
+    float movingWallDensity = uniforms.farFieldLattice.w;
+    if (uniforms.integration.y != 0u) {
+        movingWallDensity = 0.0f;
+        for (uint densityDirection = 0u;
+             densityDirection < Q;
+             ++densityDirection) {
+            movingWallDensity += populationsIn[
+                densityDirection * uniforms.grid.w + target
+            ];
+        }
+    }
+    float linkFraction = 0.5f;
+    float3 wall = wallVelocity[source].xyz;
+    uint farther = 0u;
+    bool interpolatedBoundary = uniforms.caseParameters.w < -0.5f;
+    if (interpolatedBoundary) {
+        linkFraction = clamp(
+            populationsIn[q * uniforms.grid.w + source],
+            1.0e-4f,
+            1.0f
+        );
+        wall = mix(
+            wallVelocity[target].xyz,
+            wallVelocity[source].xyz,
+            linkFraction
+        );
+        if (linkFraction <= 0.5f) {
+            int3 fartherCell = int3(cell) + C[q];
+            if (inside(fartherCell, size)) {
+                farther = flatten(uint3(fartherCell), size);
+            }
+            if (!inside(fartherCell, size) || solidCurrent[farther] != 0u) {
+                interpolatedBoundary = false;
+                linkFraction = 0.5f;
+                wall = wallVelocity[source].xyz;
+            }
+        }
+    }
+    float wallCorrection = 2.0f
+        * W[q]
+        * movingWallDensity
+        * dot(direction, wall)
+        / CS2;
+    float value = reflected + wallCorrection;
+    uint branch = 1u;
+    if (interpolatedBoundary) {
+        if (linkFraction <= 0.5f) {
+            float fartherOutgoing = populationsIn[
+                OPP[q] * uniforms.grid.w + farther
+            ];
+            value = 2.0f * linkFraction * reflected
+                + (1.0f - 2.0f * linkFraction) * fartherOutgoing
+                + wallCorrection;
+            branch = 2u;
+        }
+        else {
+            float previousIncoming = populationsIn[
+                q * uniforms.grid.w + target
+            ];
+            value = (reflected + wallCorrection)
+                    / (2.0f * linkFraction)
+                + (2.0f * linkFraction - 1.0f)
+                    * previousIncoming
+                    / (2.0f * linkFraction);
+            branch = 3u;
+        }
+    }
+    float interpolationResidual = value - reflected - wallCorrection;
+    float forceScale = uniforms.timeStepAndScales.w;
+    float3 reflectedForce = -2.0f * reflected * direction * forceScale;
+    float3 wallForce = -wallCorrection * direction * forceScale;
+    float3 interpolationForce = -interpolationResidual
+        * direction * forceScale;
+    term.reflected = float4(reflectedForce, reflected);
+    term.wall = float4(wallForce, wallCorrection);
+    term.interpolation = float4(
+        interpolationForce,
+        interpolationResidual
+    );
+    term.total = float4(
+        reflectedForce + wallForce + interpolationForce,
+        linkFraction
+    );
+    term.metadata = uint4(target, q, sourcePart, branch);
+    terms[gid] = term;
 }
 
 /// Diagnostic-only replay of the exact indexed-bird population path for one

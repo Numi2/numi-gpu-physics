@@ -1,0 +1,61 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-source-viscosity-d32-full-window-audit-v1",
+  "checkCount": 17,
+  "checks": {
+    "classification": true,
+    "fixedGrid": true,
+    "fixedOperator": true,
+    "fixedTiming": true,
+    "forceAggregates": true,
+    "forceSamples": true,
+    "independentCompletionAndPositivity": true,
+    "independentCorrectionGate": true,
+    "independentGlobalMomentumClosure": true,
+    "independentNearWingMomentumClosure": true,
+    "parentVerdict": true,
+    "preregistrationHash": true,
+    "primaryInputHashes": true,
+    "safetyBoundary": true,
+    "sourceEvidenceHashes": true,
+    "sourceTau": true,
+    "workingSet": true
+  },
+  "claimBoundary": "This audit accepts the D32 force history only as the fine member of a separately evaluated same-source-viscosity D28/D32 pair. It does not itself establish grid convergence, experimental agreement, production promotion, or free flight.",
+  "d32ForceHistoryAcceptedAsRefinementInput": true,
+  "generatedBy": "Scripts/audit-dove-source-viscosity-d32-full-window.py",
+  "independentReconstruction": {
+    "case": {
+      "actualTauPlus": 0.5000587701797485,
+      "collisionLimiterActivationCount": 4561722.0,
+      "collisionLimiterActivationFractionOfCellSteps": 1.442564793424207e-05,
+      "completedSteps": 15104,
+      "eligibleForD28Planning": true,
+      "executionFloorPassed": true,
+      "minimumPopulation": 4.685106524959792e-09,
+      "operator": "positivity-preserving-recursive-regularized-bgk",
+      "productionMarginPassed": true,
+      "relativeRMSGlobalFluidClosureResidual": 0.0009643691558988774,
+      "relativeRMSRawControlVolumeClosureResidual": 0.001612813043489665
+    },
+    "expectedWorkingSetBytes": 5359712256,
+    "forceAggregates": {
+      "computedImpulseXNewtonSeconds": 0.005143585938029023,
+      "computedImpulseZNewtonSeconds": 0.1843506077808562,
+      "computedMeanForceXNewtons": 0.05429156715757547,
+      "computedMeanForceZNewtons": 1.9701758888998333,
+      "computedPeakTimeSeconds": 0.1065,
+      "measuredImpulseXNewtonSeconds": 0.014511779299165029,
+      "measuredImpulseZNewtonSeconds": 0.13272799291498957,
+      "measuredMeanForceXNewtons": 0.15597300613155055,
+      "measuredMeanForceZNewtons": 1.420231978407525,
+      "measuredPeakTimeSeconds": 0.068,
+      "normalizedRMSError": 2.1168598012635407
+    },
+    "registeredForceSampleCount": 187,
+    "sourceTauPlus": 0.5000587605932203
+  },
+  "preregistrationSHA256": "ca84061054e6dde60e40a5d0553bd206f85309e12e789412dc8ede00ee2e0c01",
+  "reportSHA256": "5e1a1774840019c9b1a58df108a7e63f91ada2a0671510f4b24c4d0a612db20f",
+  "schemaVersion": 1
+}

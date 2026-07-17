@@ -1,0 +1,45 @@
+{
+  "allChecksPassed": true,
+  "auditor": "independent Python reconstruction from archived D12/D16 term histories",
+  "checks": {
+    "classificationAndSafetyBoundaryReproduce": true,
+    "closureGatesPass": true,
+    "dominantPairGateReproduces": true,
+    "energyIdentitiesReproduce": true,
+    "pairMetricsReproduce": true,
+    "preregisteredContractMatches": true,
+    "sourceEvidencePassed": true,
+    "sourceHashesMatch": true,
+    "termMetricsReproduce": true
+  },
+  "claimBoundary": "This audit independently reconstructs aggregate covariance and energy identities. It does not establish causal boundary physics or authorize production changes.",
+  "classification": "robust-canceling-mean-offset-dominated-pair-covariance",
+  "independentMetrics": {
+    "blockInteractionEnergyFractions": [
+      -3.732301634274365,
+      -32.4404076535503,
+      -163.20663115357794
+    ],
+    "blockWinners": [
+      "base-reflection+moving-wall",
+      "base-reflection+moving-wall",
+      "base-reflection+moving-wall"
+    ],
+    "dominantPairGatePassed": true,
+    "dominantPairIdentifier": "base-reflection+moving-wall",
+    "dominantPairInteractionEnergyFraction": -9.400359782900408,
+    "dominantPairMechanism": "mean-offset-dominated",
+    "dominantPairSign": "canceling",
+    "maximumTermDeltaReconstructionErrorNewtons": 1.1626882411721943e-06,
+    "meanShareOfAbsoluteDecomposition": 0.9832410423147967,
+    "rawEnergyClosureRelativeError": 1.7767740722348822e-07
+  },
+  "schemaVersion": 1,
+  "sourceSHA256": {
+    "covariancePreregistration": "6e1a58f25fa722996367bc818db32187987a67532ddae099971ae8aa172376fe",
+    "covarianceReport": "20ef161771c1cb6146c8b65a70dae9e2d11d1d822b8c43b836c8ebcb8ee59145",
+    "distributedForceAudit": "c13bed0a6e59963c748b4ecf38cd6a5b657e5870c619ef601115b694f64ea4dd",
+    "distributedForcePreregistration": "d3f6a70c9bd40992c56ab7fc041206d94a553fd9d86bbac7b232761541e871b5",
+    "distributedForceReport": "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f"
+  }
+}

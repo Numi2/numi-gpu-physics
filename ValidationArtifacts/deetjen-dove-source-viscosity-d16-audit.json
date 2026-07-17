@@ -1,0 +1,66 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-source-viscosity-d16-audit-v1",
+  "checkCount": 15,
+  "checks": {
+    "candidateOrder": true,
+    "classification": true,
+    "fixedD16Contract": true,
+    "independentCorrectionGate": true,
+    "independentGlobalMomentumClosure": true,
+    "independentNearWingMomentumClosure": true,
+    "parentVerdict": true,
+    "perStepPositivityAndCompletion": true,
+    "preregistrationHash": true,
+    "primaryInputHashes": true,
+    "runtimeGrid": true,
+    "safetyBoundary": true,
+    "sourceEvidenceHashes": true,
+    "sourceReynoldsReconstruction": true,
+    "sourceTauReconstruction": true
+  },
+  "claimBoundary": "This audit independently reconstructs all per-step D16 source-viscosity positivity and momentum arithmetic. It authorizes D28 planning only; it does not authorize D20, D28 execution, a production change, or experimental-force agreement.",
+  "d28PlanningGatePassed": true,
+  "eligibleCollisionOperators": [
+    "positivity-preserving-regularized-bgk",
+    "positivity-preserving-recursive-regularized-bgk"
+  ],
+  "generatedBy": "Scripts/audit-dove-source-viscosity-d16.py",
+  "independentReconstruction": {
+    "cases": [
+      {
+        "actualTauPlus": 0.5000293850898743,
+        "collisionLimiterActivationCount": 46.0,
+        "collisionLimiterActivationFractionOfCellSteps": 1.0830322189842174e-08,
+        "completedSteps": 1600,
+        "eligibleForD28Planning": true,
+        "executionFloorPassed": true,
+        "minimumPopulation": 9.344033990998923e-09,
+        "operator": "positivity-preserving-regularized-bgk",
+        "productionMarginPassed": false,
+        "relativeRMSGlobalFluidClosureResidual": 0.0006860234654895973,
+        "relativeRMSRawControlVolumeClosureResidual": 0.0005519579511588425
+      },
+      {
+        "actualTauPlus": 0.5000293850898743,
+        "collisionLimiterActivationCount": 7.0,
+        "collisionLimiterActivationFractionOfCellSteps": 1.6480925071498961e-09,
+        "completedSteps": 1600,
+        "eligibleForD28Planning": true,
+        "executionFloorPassed": true,
+        "minimumPopulation": 1.049332176705775e-08,
+        "operator": "positivity-preserving-recursive-regularized-bgk",
+        "productionMarginPassed": false,
+        "relativeRMSGlobalFluidClosureResidual": 0.0006583725252354835,
+        "relativeRMSRawControlVolumeClosureResidual": 0.0005620525442699783
+      }
+    ],
+    "sourcePropertyReynoldsNumber": 128812.93718204941,
+    "sourceTauPlus": 0.5000293802979235
+  },
+  "preregistrationSHA256": "86bca3736cb94ec1e468a1c54fe930eb46e61ea1664569f1419ce4171bba0629",
+  "reportSHA256": "bef30ff6fd8b5ac95fd2244ad7d49ffb8296ea53820b44b6a6cea8321af87eb3",
+  "schemaVersion": 1,
+  "sourceScalingAuditSHA256": "51b8c7cd805b5ea9dc52a0dd35befdb0ee11e7a753c37d8be27699f6735e0d51",
+  "sourceScalingReportSHA256": "8f0381ec4c8899cf63f74ff37e1591b1634b7376a72726d889843b108d2c2a59"
+}

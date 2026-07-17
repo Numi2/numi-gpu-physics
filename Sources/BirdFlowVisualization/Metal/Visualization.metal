@@ -590,19 +590,24 @@ fragment float4 showcaseDoveFragment(
     constant CameraUniforms& camera [[buffer(0)]]) {
     float3 normal=normalize(in.normal);
     float3 view=normalize(camera.eyeAndWidth.xyz-in.world);
-    float3 key=normalize(float3(0.35f,-0.55f,0.78f));
-    float3 fill=normalize(float3(-0.65f,0.18f,0.52f));
-    float diffuse=0.32f+0.58f*abs(dot(normal,key))+0.18f*abs(dot(normal,fill));
-    float rim=pow(1.0f-abs(dot(normal,view)),2.1f);
+    float3 key=normalize(float3(0.38f,-0.48f,0.80f));
+    float3 fill=normalize(float3(-0.72f,0.22f,0.46f));
+    float keyLight=abs(dot(normal,key));
+    float fillLight=abs(dot(normal,fill));
+    float diffuse=0.25f+0.64f*keyLight+0.13f*fillLight;
+    float rim=pow(1.0f-abs(dot(normal,view)),2.35f);
     float3 halfVector=normalize(key+view);
-    float specular=pow(abs(dot(normal,halfVector)),30.0f);
-    float3 color=in.color.rgb*diffuse+rim*float3(0.12f,0.48f,0.72f)+0.30f*specular;
+    float specular=pow(abs(dot(normal,halfVector)),38.0f);
+    float3 color=in.color.rgb*diffuse;
+    color+=rim*mix(float3(0.05f,0.28f,0.48f),in.color.rgb,0.38f);
+    color+=0.22f*specular*float3(0.72f,0.90f,1.0f);
+    color=1.0f-exp(-1.08f*color);
     return float4(color,in.color.a);
 }
 
 fragment float4 showcaseWireFragment(RasterVertex in [[stage_in]]) {
-    float intensity=0.10f+0.12f*clamp(in.color.g+in.color.b,0.0f,1.0f);
-    return float4(0.40f,0.86f,1.0f,intensity);
+    float intensity=0.025f+0.055f*clamp(in.color.g+in.color.b,0.0f,1.0f);
+    return float4(0.48f,0.88f,1.0f,intensity);
 }
 
 vertex RasterVertex showcaseBackgroundVertex(uint vid [[vertex_id]]) {
@@ -621,16 +626,18 @@ fragment float4 showcaseBackgroundFragment(
     float2 centered=uv-0.5f;
     centered.x*=options.y;
     float radial=length(centered);
-    float glow=exp(-3.8f*radial*radial);
-    float horizon=exp(-55.0f*(uv.y-0.44f)*(uv.y-0.44f));
-    float sweep=0.5f+0.5f*sin(6.2831853f*(options.x+0.15f*uv.x));
-    float gridX=smoothstep(0.985f,1.0f,cos(90.0f*centered.x));
-    float gridY=smoothstep(0.985f,1.0f,cos(90.0f*(uv.y-0.42f)));
-    float grid=(gridX+gridY)*horizon*0.045f;
-    float3 base=mix(float3(0.004f,0.009f,0.025f),float3(0.018f,0.052f,0.095f),uv.y);
-    base+=glow*float3(0.020f,0.075f,0.115f);
-    base+=horizon*(0.018f+0.012f*sweep)*float3(0.12f,0.52f,0.72f);
-    base+=grid*float3(0.18f,0.62f,0.82f);
+    float glow=exp(-4.8f*dot(centered-float2(-0.12f,0.02f),centered-float2(-0.12f,0.02f)));
+    float horizon=exp(-68.0f*(uv.y-0.43f)*(uv.y-0.43f));
+    float pulse=0.5f+0.5f*cos(6.2831853f*options.x);
+    float gridX=smoothstep(0.990f,1.0f,cos(94.0f*centered.x));
+    float gridY=smoothstep(0.990f,1.0f,cos(94.0f*(uv.y-0.43f)));
+    float grid=(gridX+gridY)*horizon*0.032f;
+    float vignette=1.0f-smoothstep(0.20f,0.92f,radial);
+    float3 base=mix(float3(0.002f,0.007f,0.019f),float3(0.014f,0.048f,0.088f),uv.y);
+    base+=glow*float3(0.018f,0.070f,0.105f);
+    base+=horizon*(0.014f+0.004f*pulse)*float3(0.10f,0.46f,0.70f);
+    base+=grid*float3(0.16f,0.58f,0.82f);
+    base*=0.72f+0.28f*vignette;
     return float4(base,1);
 }
 

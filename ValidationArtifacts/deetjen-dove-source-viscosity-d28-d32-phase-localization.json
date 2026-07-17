@@ -1,0 +1,320 @@
+{
+  "analysisIdentifier": "deetjen-ob-f03-source-viscosity-d28-d32-phase-localization-v1",
+  "claimBoundary": "This is an exploratory post-hoc analysis of two archived, audited force histories. It executes no fluid steps, applies no acceptance gate, and does not establish causality, grid convergence, experimental agreement, production readiness, or free flight.",
+  "classification": "early-window-phase-localized-two-component-grid-sensitivity",
+  "componentEnergyFractions": {
+    "horizontal": 0.524634499656044,
+    "vertical": 0.4753655003439571
+  },
+  "dominantPhaseBand": {
+    "bandIndex": 0,
+    "endTimeSeconds": 0.036,
+    "firstSampleIndex": 0,
+    "horizontalDifferenceRMSNewtons": 0.34810372587052674,
+    "horizontalSquaredDifferenceFraction": 0.34850772184615214,
+    "lastSampleIndex": 22,
+    "sampleCount": 23,
+    "startTimeSeconds": 0.025,
+    "vectorDifferenceRMSNewtons": 0.5317691565681582,
+    "vectorSquaredDifferenceFraction": 0.4266759811529953,
+    "verticalDifferenceRMSNewtons": 0.40199780087988984,
+    "verticalSquaredDifferenceFraction": 0.5129459472753917
+  },
+  "exploratoryPostHocAnalysis": true,
+  "fluidEvolutionExecuted": false,
+  "generatedBy": "Scripts/analyze-dove-source-viscosity-d28-d32-phase.py",
+  "horizontalConcentration": {
+    "fixedWindowDurationSeconds": 0.005,
+    "fixedWindowSampleCount": 11,
+    "maximumEnergyWindowEndIndex": 10,
+    "maximumEnergyWindowEndTimeSeconds": 0.03,
+    "maximumEnergyWindowFraction": 0.28935691663406776,
+    "maximumEnergyWindowStartIndex": 0,
+    "maximumEnergyWindowStartTimeSeconds": 0.025,
+    "shortestHalfEnergyWindowEndIndex": 87,
+    "shortestHalfEnergyWindowEndTimeSeconds": 0.0685,
+    "shortestHalfEnergyWindowFraction": 0.5012780217124575,
+    "shortestHalfEnergyWindowSampleCount": 88,
+    "shortestHalfEnergyWindowStartIndex": 0,
+    "shortestHalfEnergyWindowStartTimeSeconds": 0.025
+  },
+  "horizontalDifferenceTransientCorrelation": 0.013142207593372089,
+  "horizontalLagScan": {
+    "bestLag": {
+      "correlation": 0.997386682939524,
+      "lagSamples": 0,
+      "lagSeconds": 0.0,
+      "normalizedRMSDifference": 0.07375656515534902,
+      "overlapSamples": 187
+    },
+    "maximumAbsoluteLagSamples": 8,
+    "scores": [
+      {
+        "correlation": 0.4409230244814099,
+        "lagSamples": -8,
+        "lagSeconds": -0.004,
+        "normalizedRMSDifference": 1.0571315420943224,
+        "overlapSamples": 179
+      },
+      {
+        "correlation": 0.20255682062810804,
+        "lagSamples": -7,
+        "lagSeconds": -0.0035,
+        "normalizedRMSDifference": 1.2623624320632674,
+        "overlapSamples": 180
+      },
+      {
+        "correlation": 0.40138054242871674,
+        "lagSamples": -6,
+        "lagSeconds": -0.003,
+        "normalizedRMSDifference": 1.0938078374954736,
+        "overlapSamples": 181
+      },
+      {
+        "correlation": 0.12401763973586484,
+        "lagSamples": -5,
+        "lagSeconds": -0.0025,
+        "normalizedRMSDifference": 1.3231847636471925,
+        "overlapSamples": 182
+      },
+      {
+        "correlation": -0.0647169140782475,
+        "lagSamples": -4,
+        "lagSeconds": -0.002,
+        "normalizedRMSDifference": 1.4588419156142645,
+        "overlapSamples": 183
+      },
+      {
+        "correlation": 0.09614926540564464,
+        "lagSamples": -3,
+        "lagSeconds": -0.0015,
+        "normalizedRMSDifference": 1.3441969455650955,
+        "overlapSamples": 184
+      },
+      {
+        "correlation": 0.3269218068147158,
+        "lagSamples": -2,
+        "lagSeconds": -0.001,
+        "normalizedRMSDifference": 1.160036453127939,
+        "overlapSamples": 185
+      },
+      {
+        "correlation": 0.2784109597877506,
+        "lagSamples": -1,
+        "lagSeconds": -0.0005,
+        "normalizedRMSDifference": 1.2011715531981755,
+        "overlapSamples": 186
+      },
+      {
+        "correlation": 0.997386682939524,
+        "lagSamples": 0,
+        "lagSeconds": 0.0,
+        "normalizedRMSDifference": 0.07375656515534902,
+        "overlapSamples": 187
+      },
+      {
+        "correlation": 0.27090047074879026,
+        "lagSamples": 1,
+        "lagSeconds": 0.0005,
+        "normalizedRMSDifference": 1.2074111644412588,
+        "overlapSamples": 186
+      },
+      {
+        "correlation": 0.32636319411661086,
+        "lagSamples": 2,
+        "lagSeconds": 0.001,
+        "normalizedRMSDifference": 1.160536252475191,
+        "overlapSamples": 185
+      },
+      {
+        "correlation": 0.08883115773865491,
+        "lagSamples": 3,
+        "lagSeconds": 0.0015,
+        "normalizedRMSDifference": 1.3496581754588375,
+        "overlapSamples": 184
+      },
+      {
+        "correlation": -0.060589224667135455,
+        "lagSamples": 4,
+        "lagSeconds": 0.002,
+        "normalizedRMSDifference": 1.4560156551176264,
+        "overlapSamples": 183
+      },
+      {
+        "correlation": 0.14103521736083457,
+        "lagSamples": 5,
+        "lagSeconds": 0.0025,
+        "normalizedRMSDifference": 1.310298190415584,
+        "overlapSamples": 182
+      },
+      {
+        "correlation": 0.40483427154771595,
+        "lagSamples": 6,
+        "lagSeconds": 0.003,
+        "normalizedRMSDifference": 1.0906780658353536,
+        "overlapSamples": 181
+      },
+      {
+        "correlation": 0.2123286206387788,
+        "lagSamples": 7,
+        "lagSeconds": 0.0035,
+        "normalizedRMSDifference": 1.254641013536095,
+        "overlapSamples": 180
+      },
+      {
+        "correlation": 0.45501749166363137,
+        "lagSamples": 8,
+        "lagSeconds": 0.004,
+        "normalizedRMSDifference": 1.0438044642122482,
+        "overlapSamples": 179
+      }
+    ],
+    "simpleLagExplainsDifference": false,
+    "zeroLagNormalizedRMSDifference": 0.07375656515534902
+  },
+  "normalizedDifferenceDominantComponent": "horizontal",
+  "peakDifferences": {
+    "horizontal": {
+      "absoluteDifferenceNewtons": 0.7479108693743393,
+      "differenceD32MinusD28Newtons": 0.7479108693743393,
+      "sampleIndex": 7,
+      "sourceTimeSeconds": 0.0285
+    },
+    "vertical": {
+      "absoluteDifferenceNewtons": 0.8983212778610841,
+      "differenceD32MinusD28Newtons": -0.8983212778610841,
+      "sampleIndex": 1,
+      "sourceTimeSeconds": 0.0255
+    }
+  },
+  "phaseBands": [
+    {
+      "bandIndex": 0,
+      "endTimeSeconds": 0.036,
+      "firstSampleIndex": 0,
+      "horizontalDifferenceRMSNewtons": 0.34810372587052674,
+      "horizontalSquaredDifferenceFraction": 0.34850772184615214,
+      "lastSampleIndex": 22,
+      "sampleCount": 23,
+      "startTimeSeconds": 0.025,
+      "vectorDifferenceRMSNewtons": 0.5317691565681582,
+      "vectorSquaredDifferenceFraction": 0.4266759811529953,
+      "verticalDifferenceRMSNewtons": 0.40199780087988984,
+      "verticalSquaredDifferenceFraction": 0.5129459472753917
+    },
+    {
+      "bandIndex": 1,
+      "endTimeSeconds": 0.0475,
+      "firstSampleIndex": 23,
+      "horizontalDifferenceRMSNewtons": 0.1054880550861188,
+      "horizontalSquaredDifferenceFraction": 0.03200380621874136,
+      "lastSampleIndex": 45,
+      "sampleCount": 23,
+      "startTimeSeconds": 0.0365,
+      "vectorDifferenceRMSNewtons": 0.13755186723653612,
+      "vectorSquaredDifferenceFraction": 0.02854860477634877,
+      "verticalDifferenceRMSNewtons": 0.08827676033025694,
+      "verticalSquaredDifferenceFraction": 0.024735290855525952
+    },
+    {
+      "bandIndex": 2,
+      "endTimeSeconds": 0.0595,
+      "firstSampleIndex": 46,
+      "horizontalDifferenceRMSNewtons": 0.15955619024395118,
+      "horizontalSquaredDifferenceFraction": 0.07640218578893614,
+      "lastSampleIndex": 69,
+      "sampleCount": 24,
+      "startTimeSeconds": 0.048,
+      "vectorDifferenceRMSNewtons": 0.2259098273099429,
+      "vectorSquaredDifferenceFraction": 0.08035364106827232,
+      "verticalDifferenceRMSNewtons": 0.15992833466913953,
+      "verticalSquaredDifferenceFraction": 0.08471464278566172
+    },
+    {
+      "bandIndex": 3,
+      "endTimeSeconds": 0.071,
+      "firstSampleIndex": 70,
+      "horizontalDifferenceRMSNewtons": 0.1298543273997903,
+      "horizontalSquaredDifferenceFraction": 0.048496222984848625,
+      "lastSampleIndex": 92,
+      "sampleCount": 23,
+      "startTimeSeconds": 0.06,
+      "vectorDifferenceRMSNewtons": 0.15641991093470273,
+      "vectorSquaredDifferenceFraction": 0.03691781391540149,
+      "verticalDifferenceRMSNewtons": 0.08720689303242264,
+      "verticalSquaredDifferenceFraction": 0.02413936692131541
+    },
+    {
+      "bandIndex": 4,
+      "endTimeSeconds": 0.0825,
+      "firstSampleIndex": 93,
+      "horizontalDifferenceRMSNewtons": 0.09970458223041057,
+      "horizontalSquaredDifferenceFraction": 0.028590733536563426,
+      "lastSampleIndex": 115,
+      "sampleCount": 23,
+      "startTimeSeconds": 0.0715,
+      "vectorDifferenceRMSNewtons": 0.15735136697403154,
+      "vectorSquaredDifferenceFraction": 0.03735880261147383,
+      "verticalDifferenceRMSNewtons": 0.12173105179392661,
+      "verticalSquaredDifferenceFraction": 0.04703563344740282
+    },
+    {
+      "bandIndex": 5,
+      "endTimeSeconds": 0.0945,
+      "firstSampleIndex": 116,
+      "horizontalDifferenceRMSNewtons": 0.1786468709978566,
+      "horizontalSquaredDifferenceFraction": 0.09577877877834223,
+      "lastSampleIndex": 139,
+      "sampleCount": 24,
+      "startTimeSeconds": 0.083,
+      "vectorDifferenceRMSNewtons": 0.2250554681009789,
+      "vectorSquaredDifferenceFraction": 0.07974701797391179,
+      "verticalDifferenceRMSNewtons": 0.13687680301945218,
+      "verticalSquaredDifferenceFraction": 0.062053654021012226
+    },
+    {
+      "bandIndex": 6,
+      "endTimeSeconds": 0.106,
+      "firstSampleIndex": 140,
+      "horizontalDifferenceRMSNewtons": 0.14674889215175443,
+      "horizontalSquaredDifferenceFraction": 0.06193622396075262,
+      "lastSampleIndex": 162,
+      "sampleCount": 23,
+      "startTimeSeconds": 0.095,
+      "vectorDifferenceRMSNewtons": 0.20448814463730683,
+      "vectorSquaredDifferenceFraction": 0.06309401677127814,
+      "verticalDifferenceRMSNewtons": 0.1424084405835583,
+      "verticalSquaredDifferenceFraction": 0.0643718083893401
+    },
+    {
+      "bandIndex": 7,
+      "endTimeSeconds": 0.118,
+      "firstSampleIndex": 163,
+      "horizontalDifferenceRMSNewtons": 0.32050623992755817,
+      "horizontalSquaredDifferenceFraction": 0.3082843268856633,
+      "lastSampleIndex": 186,
+      "sampleCount": 24,
+      "startTimeSeconds": 0.1065,
+      "vectorDifferenceRMSNewtons": 0.39632185368651174,
+      "vectorSquaredDifferenceFraction": 0.24730412173031932,
+      "verticalDifferenceRMSNewtons": 0.23312391957285575,
+      "verticalSquaredDifferenceFraction": 0.18000365630435014
+    }
+  ],
+  "registeredForceSampleCount": 187,
+  "sampleRateHertz": 2000.0,
+  "schemaVersion": 1,
+  "scientificVerdict": "The horizontal component has the larger normalized fine-pair difference, while absolute difference energy is split nearly evenly between horizontal and vertical force. The difference is concentrated early in the registered window and is not explained by a simple time lag or ordinary force-transient magnitude. This post-hoc localization identifies the highest-information time region for a targeted replay, but does not change the failed stabilization verdict.",
+  "sourceD28ReportSHA256": "5d5168aee5298a2d783e39d53c9017e386577e593057aa32300cbb1ae987278e",
+  "sourceD32ReportSHA256": "5e1a1774840019c9b1a58df108a7e63f91ada2a0671510f4b24c4d0a612db20f",
+  "sourceRefinementAuditSHA256": "63ae86ab78e4b0eca208d88aba1833b74af55e097f8a0a3e98b3c2d1508e5254",
+  "sourceRefinementReportSHA256": "d1d5abb89837983bdbea9e69b30a50829806341159c33cad9d93c985990c9cae",
+  "targetedReplayRecommendation": {
+    "d36RunAuthorized": false,
+    "endTimeSeconds": 0.03,
+    "reason": "This archived 5 ms interval contains the largest fraction of horizontal D28/D32 squared difference. Instrumenting it at the existing grids has higher information per GPU-second than D36.",
+    "startTimeSeconds": 0.025
+  },
+  "windowEndTimeSeconds": 0.118,
+  "windowStartTimeSeconds": 0.025
+}

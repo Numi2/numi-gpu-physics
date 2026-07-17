@@ -1951,10 +1951,965 @@ public struct MetalIndexedBirdSurfaceLinkPopulationReport:
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceDistributedForcePreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceLinkGeometryPreregistrationSHA256: String
+    public let sourceLinkGeometryReportSHA256: String
+    public let sourceTemporalDurationPreregistrationSHA256: String
+    public let sourceTemporalDurationReportSHA256: String
+    public let sourceLinkPopulationPreregistrationSHA256: String
+    public let sourceLinkPopulationReportSHA256: String
+    public let sourceLinkPopulationAuditSHA256: String
+    public let referenceLengthCells: [Int]
+    public let expectedLinkCounts: [Int]
+    public let frozenSourceTimeSeconds: Double
+    public let temporalBinCount: Int
+    public let expectedStepCounts: [Int]
+    public let interpolationFractionBinCount: Int
+    public let forceTerms: [String]
+    public let maximumAllowedAbsoluteTermClosureNewtons: Double
+    public let maximumAllowedRelativeRMSSourceForceClosure: Double
+    public let maximumAllowedDurationBinRelativeDifference: Double
+    public let maximumAllowedMetadataMismatchCount: Int
+    public let minimumDominantTermAlignmentFraction: Double
+    public let minimumDominantAxisAbsoluteContributionFraction: Double
+    public let targetJointBinAbsoluteContributionFraction: Double
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceDistributedForceTemporalBin:
+    Codable, Sendable
+{
+    public let binIndex: Int
+    public let reflectedMeanForceNewtons: SIMD3<Double>
+    public let movingWallMeanForceNewtons: SIMD3<Double>
+    public let interpolationResidualMeanForceNewtons: SIMD3<Double>
+    public let reconstructedTotalMeanForceNewtons: SIMD3<Double>
+    public let sourceAerodynamicMeanForceNewtons: SIMD3<Double>
+}
+
+public struct MetalIndexedBirdSurfaceDistributedForceSpatialBin:
+    Codable, Sendable
+{
+    public let partIdentifier: Int
+    public let componentName: String
+    public let directionIndex: Int
+    public let interpolationFractionBinIndex: Int
+    public let interpolationFractionLowerBound: Double
+    public let interpolationFractionUpperBound: Double
+    public let linkCount: Int
+    public let fallbackLinkCount: Int
+    public let reflectedMeanForceNewtons: SIMD3<Double>
+    public let movingWallMeanForceNewtons: SIMD3<Double>
+    public let interpolationResidualMeanForceNewtons: SIMD3<Double>
+    public let reconstructedTotalMeanForceNewtons: SIMD3<Double>
+}
+
+public struct MetalIndexedBirdSurfaceDistributedForceCaseReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let referenceLengthCells: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let frozenSourceTimeSeconds: Double
+    public let temporalBinCount: Int
+    public let fluidStepsPerTemporalBin: Int
+    public let requestedSteps: Int
+    public let completedSteps: Int
+    public let runtimeSeconds: Double
+    public let expectedLinkCount: Int
+    public let capturedLinkCount: Int
+    public let fallbackLinkCount: Int
+    public let metadataMismatchCount: Int
+    public let maximumLinkClassificationMismatchCountPerStep: Int
+    public let maximumAbsoluteTermClosureNewtons: Double
+    public let relativeRMSSourceForceClosure: Double
+    public let maximumAbsoluteSourceForceClosureNewtons: Double
+    public let maximumDurationBinRelativeDifference: Double
+    public let minimumPopulation: Double
+    public let collisionLimiterActivationFractionOfCellSteps: Double
+    public let relativeRMSRawControlVolumeClosureResidual: Double
+    public let relativeRMSGlobalFluidClosureResidual: Double
+    public let momentumClosurePassed: Bool
+    public let sampledPopulationPositivityPassed: Bool
+    public let allValuesFinite: Bool
+    public let sourceReproductionPassed: Bool
+    public let temporalBins:
+        [MetalIndexedBirdSurfaceDistributedForceTemporalBin]
+    public let spatialBins:
+        [MetalIndexedBirdSurfaceDistributedForceSpatialBin]
+}
+
+public struct MetalIndexedBirdSurfaceDistributedForceTermAssessment:
+    Codable, Sendable
+{
+    public let termIdentifier: String
+    public let crossGridNormalizedRMSDifference: Double
+    public let deltaRMSNewtons: Double
+    public let deltaToTotalDeltaRMSRatio: Double
+    public let alignmentContributionFraction: Double
+    public let blockAlignmentContributionFractions: [Double]
+}
+
+public struct MetalIndexedBirdSurfaceDistributedForceAxisAssessment:
+    Codable, Sendable
+{
+    public let identifier: String
+    public let deltaMeanForceNewtons: SIMD3<Double>
+    public let signedAlignmentContributionFraction: Double
+    public let absoluteAlignedContributionFraction: Double
+}
+
+public struct MetalIndexedBirdSurfaceDistributedForceMetrics:
+    Codable, Sendable
+{
+    public let totalForcePairwiseNormalizedRMSDifference: Double
+    public let totalDeltaRMSNewtons: Double
+    public let termAssessments:
+        [MetalIndexedBirdSurfaceDistributedForceTermAssessment]
+    public let dominantTerm: String?
+    public let dominantTermConsistentAcrossBlocks: Bool
+    public let dominantTermGatePassed: Bool
+    public let componentAssessments:
+        [MetalIndexedBirdSurfaceDistributedForceAxisAssessment]
+    public let directionAssessments:
+        [MetalIndexedBirdSurfaceDistributedForceAxisAssessment]
+    public let interpolationFractionAssessments:
+        [MetalIndexedBirdSurfaceDistributedForceAxisAssessment]
+    public let dominantComponent: String?
+    public let dominantDirection: String?
+    public let dominantInterpolationFractionBin: String?
+    public let minimumJointBinsForTargetAbsoluteAlignedContribution: Int
+    public let activeJointBinCount: Int
+    public let achievedJointBinAbsoluteAlignedContributionFraction: Double
+}
+
+public struct MetalIndexedBirdSurfaceDistributedForceReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let sourceLinkGeometryPreregistrationSHA256: String
+    public let sourceLinkGeometryReportSHA256: String
+    public let sourceTemporalDurationPreregistrationSHA256: String
+    public let sourceTemporalDurationReportSHA256: String
+    public let sourceLinkPopulationPreregistrationSHA256: String
+    public let sourceLinkPopulationReportSHA256: String
+    public let sourceLinkPopulationAuditSHA256: String
+    public let d12: MetalIndexedBirdSurfaceDistributedForceCaseReport
+    public let d16: MetalIndexedBirdSurfaceDistributedForceCaseReport
+    public let metrics: MetalIndexedBirdSurfaceDistributedForceMetrics
+    public let sourceReproductionPassed: Bool
+    public let classification: String
+    public let d20DiagnosticAuthorized: Bool
+    public let productionModificationAuthorized: Bool
+    public let rawSpatialGateModified: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceForceCovariancePreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceDistributedForcePreregistrationSHA256: String
+    public let sourceDistributedForceReportSHA256: String
+    public let sourceDistributedForceAuditSHA256: String
+    public let temporalBinCount: Int
+    public let blockCount: Int
+    public let binsPerBlock: Int
+    public let termIdentifiers: [String]
+    public let maximumAllowedTermDeltaReconstructionErrorNewtons: Double
+    public let maximumAllowedRelativeEnergyClosureError: Double
+    public let minimumDominantPairFullEnergyFraction: Double
+    public let minimumDominantPairBlockEnergyFraction: Double
+    public let minimumMechanismDecompositionFraction: Double
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceForceCovarianceTerm:
+    Codable, Sendable
+{
+    public let termIdentifier: String
+    public let meanDeltaForceNewtons: SIMD3<Double>
+    public let deltaRMSNewtons: Double
+    public let centeredDeltaRMSNewtons: Double
+    public let rawSelfEnergyFraction: Double
+}
+
+public struct MetalIndexedBirdSurfaceForceCovariancePair:
+    Codable, Sendable
+{
+    public let pairIdentifier: String
+    public let firstTermIdentifier: String
+    public let secondTermIdentifier: String
+    public let rawDotMeanNewtonsSquared: Double
+    public let rawInteractionEnergyFraction: Double
+    public let centeredCovarianceTraceNewtonsSquared: Double
+    public let centeredInteractionEnergyFraction: Double
+    public let meanDotNewtonsSquared: Double
+    public let meanInteractionEnergyFraction: Double
+    public let maximumAbsoluteInteractionDecompositionErrorNewtonsSquared:
+        Double
+    public let blockRawInteractionEnergyFractions: [Double]
+    public let blockSigns: [String]
+    public let signConsistentAcrossBlocks: Bool
+    public let centeredShareOfAbsoluteDecomposition: Double
+    public let meanShareOfAbsoluteDecomposition: Double
+}
+
+public struct MetalIndexedBirdSurfaceForceCovarianceMetrics:
+    Codable, Sendable
+{
+    public let totalDeltaMeanSquaredNewtonsSquared: Double
+    public let totalDeltaVarianceNewtonsSquared: Double
+    public let totalMeanDeltaSquaredNewtonsSquared: Double
+    public let maximumTermDeltaReconstructionErrorNewtons: Double
+    public let rawEnergyClosureRelativeError: Double
+    public let centeredEnergyClosureRelativeError: Double
+    public let meanEnergyClosureRelativeError: Double
+    public let terms: [MetalIndexedBirdSurfaceForceCovarianceTerm]
+    public let pairs: [MetalIndexedBirdSurfaceForceCovariancePair]
+    public let dominantPairIdentifier: String
+    public let dominantPairSign: String
+    public let dominantPairConsistentAcrossBlocks: Bool
+    public let dominantPairGatePassed: Bool
+    public let dominantPairMechanism: String
+}
+
+public struct MetalIndexedBirdSurfaceForceCovarianceReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let sourceDistributedForcePreregistrationSHA256: String
+    public let sourceDistributedForceReportSHA256: String
+    public let sourceDistributedForceAuditSHA256: String
+    public let metrics: MetalIndexedBirdSurfaceForceCovarianceMetrics
+    public let sourceReproductionPassed: Bool
+    public let classification: String
+    public let d20DiagnosticAuthorized: Bool
+    public let productionModificationAuthorized: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let rawSpatialGateModified: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSpatialInteractionPreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceDistributedForceReportSHA256: String
+    public let sourceForceCovariancePreregistrationSHA256: String
+    public let sourceForceCovarianceReportSHA256: String
+    public let sourceForceCovarianceAuditSHA256: String
+    public let dominantPairIdentifier: String
+    public let expectedSpatialBinCounts: [Int]
+    public let expectedUnionSpatialBinCount: Int
+    public let maximumAllowedTermMeanReconstructionErrorNewtons: Double
+    public let maximumAllowedRelativeInteractionClosureError: Double
+    public let minimumDominantAxisAbsoluteContributionFraction: Double
+    public let targetJointBinAbsoluteContributionFraction: Double
+    public let maximumJointBinFractionForTargetedCapture: Double
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSpatialInteractionAxis:
+    Codable, Sendable
+{
+    public let identifier: String
+    public let interactionNewtonsSquared: Double
+    public let signedInteractionFraction: Double
+    public let absoluteInteractionContributionFraction: Double
+}
+
+public struct MetalIndexedBirdSurfaceSpatialInteractionJointBin:
+    Codable, Sendable
+{
+    public let partIdentifier: Int
+    public let componentName: String
+    public let directionIndex: Int
+    public let interpolationFractionBinIndex: Int
+    public let reflectionMeanDeltaForceNewtons: SIMD3<Double>
+    public let movingWallMeanDeltaForceNewtons: SIMD3<Double>
+    public let symmetricInteractionNewtonsSquared: Double
+    public let signedInteractionFraction: Double
+    public let absoluteInteractionContributionFraction: Double
+    public let supportsDominantCancellation: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSpatialInteractionMetrics:
+    Codable, Sendable
+{
+    public let reflectionMeanDeltaForceNewtons: SIMD3<Double>
+    public let movingWallMeanDeltaForceNewtons: SIMD3<Double>
+    public let maximumTermMeanReconstructionErrorNewtons: Double
+    public let symmetricInteractionNewtonsSquared: Double
+    public let sourcePairMeanInteractionNewtonsSquared: Double
+    public let relativeInteractionClosureError: Double
+    public let componentAssessments:
+        [MetalIndexedBirdSurfaceSpatialInteractionAxis]
+    public let directionAssessments:
+        [MetalIndexedBirdSurfaceSpatialInteractionAxis]
+    public let interpolationFractionAssessments:
+        [MetalIndexedBirdSurfaceSpatialInteractionAxis]
+    public let dominantComponent: String?
+    public let dominantDirection: String?
+    public let dominantInterpolationFractionBin: String?
+    public let jointBins: [MetalIndexedBirdSurfaceSpatialInteractionJointBin]
+    public let minimumJointBinsForTargetAbsoluteContribution: Int
+    public let activeJointBinCount: Int
+    public let achievedJointBinAbsoluteContributionFraction: Double
+    public let cancellationSupportingJointBinCount: Int
+    public let cancellationOpposingJointBinCount: Int
+    public let cancellationSupportingAbsoluteContributionFraction: Double
+}
+
+public struct MetalIndexedBirdSurfaceSpatialInteractionReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let sourceDistributedForceReportSHA256: String
+    public let sourceForceCovariancePreregistrationSHA256: String
+    public let sourceForceCovarianceReportSHA256: String
+    public let sourceForceCovarianceAuditSHA256: String
+    public let metrics: MetalIndexedBirdSurfaceSpatialInteractionMetrics
+    public let sourceReproductionPassed: Bool
+    public let classification: String
+    public let targetedPrimitiveCaptureAuthorized: Bool
+    public let d20DiagnosticAuthorized: Bool
+    public let productionModificationAuthorized: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let rawSpatialGateModified: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceScalingGridEvidence:
+    Codable, Sendable, Equatable
+{
+    public let referenceLengthCells: Int
+    public let cellSizeMeters: Double
+    public let fluidTimeStepSeconds: Double
+    public let sourceTauPlus: Double
+    public let sourceViscosityMeetsFloatMargin: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSourceFluidPropertiesEvidence:
+    Codable, Sendable, Equatable
+{
+    public let airDensityKilogramsPerCubicMeter: Double
+    public let dynamicViscosityPascalSeconds: Double
+    public let kinematicViscositySquareMetersPerSecond: Double
+    public let provenanceClass: String
+    public let sameFlightAtmosphericMeasurement: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSourceReynoldsEvidence:
+    Codable, Sendable, Equatable
+{
+    public let convertedMaximumSurfaceSpeedMetersPerSecond: Double
+    public let registeredReferenceLengthMeters: Double
+    public let registeredSourcePropertyReynoldsNumber: Double
+}
+
+public struct MetalIndexedBirdSurfaceSourceScalingEvidence:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let sourceFluidProperties:
+        MetalIndexedBirdSurfaceSourceFluidPropertiesEvidence
+    public let reynoldsDefinitions:
+        MetalIndexedBirdSurfaceSourceReynoldsEvidence
+    public let gridReconstruction:
+        [MetalIndexedBirdSurfaceSourceScalingGridEvidence]
+    public let minimumIntegerReferenceLengthCellsForSourceViscosityMargin: Int
+    public let sourceCodeFluidPropertyConventionConfirmed: Bool
+    public let engineeringReynoldsProxyConfirmed: Bool
+    public let sourceViscosityRunAuthorized: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let productionModificationAuthorized: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let classification: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceScalingAuditEvidence:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationSHA256: String
+    public let reportSHA256: String
+    public let checkCount: Int
+    public let allChecksPassed: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityPreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceScalingPreregistrationSHA256: String
+    public let sourceScalingReportSHA256: String
+    public let sourceScalingAuditSHA256: String
+    public let referenceLengthCells: Int
+    public let requestedSteps: Int
+    public let sourcePropertyReynoldsNumber: Double
+    public let sourceTauPlus: Double
+    public let executionMinimumTauPlus: Double
+    public let productionMinimumTauPlus: Double
+    public let candidateOperators: [String]
+    public let movingWallNormalization: String
+    public let maximumRelativeRMSClosureResidual: Double
+    public let maximumCorrectionActivationFraction: Double
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityCase:
+    Codable, Sendable
+{
+    public let collisionOperator: String
+    public let actualTauPlus: Double
+    public let executionFloorPassed: Bool
+    public let productionMarginPassed: Bool
+    public let completionAndPositivityPassed: Bool
+    public let momentumLedgerPassed: Bool
+    public let correctionIntrusionPassed: Bool
+    public let eligibleForD28Planning: Bool
+    public let report: MetalIndexedBirdSurfaceMomentumClosureCase
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let sourceScalingReportSHA256: String
+    public let sourceScalingAuditSHA256: String
+    public let referenceLengthCells: Int
+    public let requestedSteps: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let cases: [MetalIndexedBirdSurfaceSourceViscosityCase]
+    public let eligibleCollisionOperators: [String]
+    public let allCandidateRunsCompleted: Bool
+    public let screeningGatePassed: Bool
+    public let d20RunAuthorized: Bool
+    public let d28PlanningAuthorized: Bool
+    public let d28RunAuthorized: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let productionModificationAuthorized: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityAuditEvidence:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationSHA256: String
+    public let reportSHA256: String
+    public let checkCount: Int
+    public let allChecksPassed: Bool
+    public let eligibleCollisionOperators: [String]
+    public let d28PlanningGatePassed: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD28Preregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceD16PreregistrationSHA256: String
+    public let sourceD16ReportSHA256: String
+    public let sourceD16AuditSHA256: String
+    public let selectedCollisionOperator: String
+    public let selectionWorstRelativeRMSMomentumResidual: Double
+    public let selectionCorrectionActivationFraction: Double
+    public let selectionMinimumPopulation: Double
+    public let referenceLengthCells: Int
+    public let cellSizeMeters: Double
+    public let fluidTimeStepSeconds: Double
+    public let requestedPreRollSteps: Int
+    public let sourcePropertyReynoldsNumber: Double
+    public let expectedTauPlus: Double
+    public let productionMinimumTauPlus: Double
+    public let expectedGridX: Int
+    public let expectedGridY: Int
+    public let expectedGridZ: Int
+    public let expectedCellCount: Int
+    public let conservativeWorkingSetEstimateBytes: Int64
+    public let maximumRelativeRMSClosureResidual: Double
+    public let maximumCorrectionActivationFraction: Double
+    public let movingWallNormalization: String
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD28Report:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let recommendedMaximumWorkingSetBytes: UInt64
+    public let sourcePreregistrationSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let actualTauPlus: Double
+    public let productionTauMarginPassed: Bool
+    public let workingSetPreflightPassed: Bool
+    public let completionAndPositivityPassed: Bool
+    public let momentumLedgerPassed: Bool
+    public let correctionIntrusionPassed: Bool
+    public let preRollGatePassed: Bool
+    public let d20RunAuthorized: Bool
+    public let d28FullWindowRunAuthorized: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let productionModificationAuthorized: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let caseReport: MetalIndexedBirdSurfaceMomentumClosureCase
+    public let classification: String
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD28AuditEvidence:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationSHA256: String
+    public let reportSHA256: String
+    public let checkCount: Int
+    public let allChecksPassed: Bool
+    public let d28FullWindowRunGatePassed: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceD28PreregistrationSHA256: String
+    public let sourceD28PreRollSHA256: String
+    public let sourceD28AuditSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let expectedGridX: Int
+    public let expectedGridY: Int
+    public let expectedGridZ: Int
+    public let expectedTauPlus: Double
+    public let productionMinimumTauPlus: Double
+    public let requestedFullWindowSteps: Int
+    public let fluidStepsPerForceSample: Int
+    public let requestedComparisonSamples: Int
+    public let conservativeWorkingSetEstimateBytes: Int64
+    public let maximumRelativeRMSClosureResidual: Double
+    public let maximumCorrectionActivationFraction: Double
+    public let movingWallNormalization: String
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let selectedCollisionOperator: String
+    public let movingWallNormalization: String
+    public let referenceLengthCells: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let actualTauPlus: Double
+    public let recommendedMaximumWorkingSetBytes: UInt64
+    public let requestedSteps: Int
+    public let requestedComparisonSamples: Int
+    public let plan: MetalIndexedBirdSurfacePilotPlan
+    public let ledgerResult: MetalIndexedBirdSurfaceMomentumClosureCase
+    public let registeredForceSamples:
+        [MetalIndexedBirdSurfaceMovingWallFullWindowForceSample]
+    public let registeredComparisonSampleCount: Int
+    public let measuredMeanForceXNewtons: Double?
+    public let measuredMeanForceZNewtons: Double?
+    public let computedMeanForceXNewtons: Double?
+    public let computedMeanForceZNewtons: Double?
+    public let normalizedRMSError: Double?
+    public let measuredImpulseXNewtonSeconds: Double?
+    public let measuredImpulseZNewtonSeconds: Double?
+    public let computedImpulseXNewtonSeconds: Double?
+    public let computedImpulseZNewtonSeconds: Double?
+    public let measuredPeakTimeSeconds: Double?
+    public let computedPeakTimeSeconds: Double?
+    public let productionTauMarginPassed: Bool
+    public let workingSetPreflightPassed: Bool
+    public let allStepsCompleted: Bool
+    public let populationPositivityPassed: Bool
+    public let forceAndMomentumAccountingPassed: Bool
+    public let collisionCorrectionIntrusionPassed: Bool
+    public let registeredWindowComplete: Bool
+    public let fullWindowGatePassed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let productionModificationAuthorized: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD28FullWindowAuditEvidence:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationSHA256: String
+    public let reportSHA256: String
+    public let checkCount: Int
+    public let allChecksPassed: Bool
+    public let d28ForceHistoryAcceptedAsRefinementInput: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD32Preregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceD28FullWindowPreregistrationSHA256: String
+    public let sourceD28FullWindowReportSHA256: String
+    public let sourceD28FullWindowAuditSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let cellSizeMeters: Double
+    public let fluidTimeStepSeconds: Double
+    public let requestedPreRollSteps: Int
+    public let sourcePropertyReynoldsNumber: Double
+    public let expectedTauPlus: Double
+    public let productionMinimumTauPlus: Double
+    public let expectedGridX: Int
+    public let expectedGridY: Int
+    public let expectedGridZ: Int
+    public let expectedCellCount: Int
+    public let conservativeWorkingSetEstimateBytes: Int64
+    public let maximumRelativeRMSClosureResidual: Double
+    public let maximumCorrectionActivationFraction: Double
+    public let movingWallNormalization: String
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD32Report:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let recommendedMaximumWorkingSetBytes: UInt64
+    public let sourcePreregistrationSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let actualTauPlus: Double
+    public let productionTauMarginPassed: Bool
+    public let workingSetPreflightPassed: Bool
+    public let completionAndPositivityPassed: Bool
+    public let momentumLedgerPassed: Bool
+    public let correctionIntrusionPassed: Bool
+    public let preRollGatePassed: Bool
+    public let d32FullWindowRunAuthorized: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let productionModificationAuthorized: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let caseReport: MetalIndexedBirdSurfaceMomentumClosureCase
+    public let classification: String
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD32AuditEvidence:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationSHA256: String
+    public let reportSHA256: String
+    public let checkCount: Int
+    public let allChecksPassed: Bool
+    public let d32FullWindowRunGatePassed: Bool
+}
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD32FullWindowPreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceD32PreregistrationSHA256: String
+    public let sourceD32PreRollSHA256: String
+    public let sourceD32AuditSHA256: String
+    public let selectedCollisionOperator: String
+    public let referenceLengthCells: Int
+    public let expectedGridX: Int
+    public let expectedGridY: Int
+    public let expectedGridZ: Int
+    public let expectedTauPlus: Double
+    public let productionMinimumTauPlus: Double
+    public let requestedFullWindowSteps: Int
+    public let fluidStepsPerForceSample: Int
+    public let requestedComparisonSamples: Int
+    public let conservativeWorkingSetEstimateBytes: Int64
+    public let maximumRelativeRMSClosureResidual: Double
+    public let maximumCorrectionActivationFraction: Double
+    public let movingWallNormalization: String
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public typealias MetalIndexedBirdSurfaceSourceViscosityD32FullWindowReport =
+    MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport
+
+public struct MetalIndexedBirdSurfaceSourceViscosityD32FullWindowAuditEvidence:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationSHA256: String
+    public let reportSHA256: String
+    public let checkCount: Int
+    public let allChecksPassed: Bool
+    public let d32ForceHistoryAcceptedAsRefinementInput: Bool
+}
+
+public struct MetalIndexedBirdSurfaceTargetedBoundaryPreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationIdentifier: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceD28PreregistrationSHA256: String
+    public let sourceD32PreregistrationSHA256: String
+    public let sourceD28FullWindowReportSHA256: String
+    public let sourceD28FullWindowAuditSHA256: String
+    public let sourceD32FullWindowReportSHA256: String
+    public let sourceD32FullWindowAuditSHA256: String
+    public let sourceRefinementPreregistrationSHA256: String
+    public let sourceRefinementReportSHA256: String
+    public let sourceRefinementAuditSHA256: String
+    public let sourcePhaseLocalizationReportSHA256: String
+    public let sourcePhaseLocalizationAuditSHA256: String
+    public let selectedCollisionOperator: String
+    public let movingWallNormalization: String
+    public let sourcePropertyReynoldsNumber: Double
+    public let expectedD28TauPlus: Double
+    public let expectedD32TauPlus: Double
+    public let coarseReferenceLengthCells: Int
+    public let fineReferenceLengthCells: Int
+    public let firstTargetSampleIndex: Int
+    public let lastTargetSampleIndex: Int
+    public let targetStartTimeSeconds: Double
+    public let targetEndTimeSeconds: Double
+    public let d28FluidStepsPerForceSample: Int
+    public let d32FluidStepsPerForceSample: Int
+    public let d28RequestedSteps: Int
+    public let d32RequestedSteps: Int
+    public let maximumRelativeRMSClosureResidual: Double
+    public let maximumCorrectionActivationFraction: Double
+    public let maximumComponentReconstructionRelativeRMS: Double
+    public let maximumArchivedForceReproductionRelativeRMS: Double
+    public let minimumDominantContributionFraction: Double
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceBoundaryForceComponentStep:
+    Codable, Sendable
+{
+    public let step: Int
+    public let sourceTimeSeconds: Double
+    public let reflectedPopulationForceNewtons: SIMD3<Double>
+    public let movingWallForceNewtons: SIMD3<Double>
+    public let interpolationResidualForceNewtons: SIMD3<Double>
+    public let topologyImpulseForceNewtons: SIMD3<Double>
+    public let reconstructedForceNewtons: SIMD3<Double>
+    public let productionForceNewtons: SIMD3<Double>
+    public let reconstructionResidualNewtons: SIMD3<Double>
+}
+
+public struct MetalIndexedBirdSurfaceBoundaryForceComponentBin:
+    Codable, Sendable
+{
+    public let targetSampleIndex: Int
+    public let sourceTimeSeconds: Double
+    public let reflectedPopulationMeanForceNewtons: SIMD3<Double>
+    public let movingWallMeanForceNewtons: SIMD3<Double>
+    public let interpolationResidualMeanForceNewtons: SIMD3<Double>
+    public let topologyImpulseMeanForceNewtons: SIMD3<Double>
+    public let reconstructedMeanForceNewtons: SIMD3<Double>
+    public let productionMeanForceNewtons: SIMD3<Double>
+    public let archivedMeanForceNewtons: SIMD3<Double>
+    public let reconstructionResidualNewtons: SIMD3<Double>
+    public let archivedReproductionResidualNewtons: SIMD3<Double>
+}
+
+public struct MetalIndexedBirdSurfaceTargetedBoundaryCaseReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let analysisIdentifier: String
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let sourceFullWindowReportSHA256: String
+    public let selectedCollisionOperator: String
+    public let movingWallNormalization: String
+    public let referenceLengthCells: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let actualTauPlus: Double
+    public let requestedSteps: Int
+    public let firstCapturedStep: Int
+    public let lastCapturedStep: Int
+    public let capturedStepCount: Int
+    public let componentSteps:
+        [MetalIndexedBirdSurfaceBoundaryForceComponentStep]
+    public let componentBins:
+        [MetalIndexedBirdSurfaceBoundaryForceComponentBin]
+    public let componentReconstructionRelativeRMS: Double
+    public let maximumComponentReconstructionResidualNewtons: Double
+    public let archivedForceReproductionRelativeRMS: Double
+    public let numericalLedgerPassed: Bool
+    public let componentReconstructionPassed: Bool
+    public let archivedForceReproductionPassed: Bool
+    public let targetedCasePassed: Bool
+    public let ledgerResult: MetalIndexedBirdSurfaceMomentumClosureCase
+    public let fluidEvolutionExecuted: Bool
+    public let productionModificationAuthorized: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
     public static let minimumTauPlus: Float = 0.500_05
+    public static let sourceViscosityDiagnosticMinimumTauPlus: Float = 0.500_02
     public static let pilotTauPlus: Float = 0.501
     public static let paddingCells = 12
     public static let spongeWidthCells = 6
@@ -1991,10 +2946,16 @@ public enum MetalIndexedBirdSurfacePilotValidator {
         paddingCellCount: Int = paddingCells,
         spongeWidthCellCount: Int = spongeWidthCells
     ) throws -> MetalIndexedBirdSurfacePilotPlan {
+        let lockedFineGridPhysicalThickness = referenceLengthCells >= 28
+            && abs(
+                halfThicknessCells * cellSizeMeters
+                    - refinementBaseHalfThicknessMeters
+            ) <= 1e-7
         guard cellSizeMeters.isFinite,
               cellSizeMeters > 0,
               halfThicknessCells.isFinite,
-              (0.5...2).contains(halfThicknessCells),
+              ((0.5...2).contains(halfThicknessCells)
+                || lockedFineGridPhysicalThickness),
               referenceLengthCells >= 8,
               stepsPerForceSample >= fluidStepsPerForceSample,
               paddingCellCount >= 4,
@@ -2105,6 +3066,24 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                 "dove collision refinement supports only D=8, D=12, or D=16"
             )
         }
+        return try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: referenceLengthCells
+        )
+    }
+
+    private static func scaledRefinementPlan(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        referenceLengthCells: Int
+    ) throws -> MetalIndexedBirdSurfacePilotPlan {
+        guard referenceLengthCells >= 8,
+              referenceLengthCells % 4 == 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "scaled dove refinement requires a positive multiple-of-four grid"
+            )
+        }
         return try plan(
             surface: surface,
             target: target,
@@ -2128,6 +3107,2157 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                         / Float(referenceLengthCells))
             ))
         )
+    }
+
+    public static func sourceViscosityD16Preregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        sourceScaling: MetalIndexedBirdSurfaceSourceScalingEvidence,
+        sourceScalingReportSHA256: String,
+        sourceScalingAudit:
+            MetalIndexedBirdSurfaceSourceScalingAuditEvidence,
+        sourceScalingAuditSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSourceViscosityPreregistration {
+        let reportSHA = sourceScalingReportSHA256.lowercased()
+        let auditSHA = sourceScalingAuditSHA256.lowercased()
+        let sourcePreregistrationSHA = sourceScaling
+            .sourcePreregistrationSHA256.lowercased()
+        let hashes = [reportSHA, auditSHA, sourcePreregistrationSHA]
+        let plan = try refinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: 16
+        )
+        guard let d16 = sourceScaling.gridReconstruction.first(where: {
+            $0.referenceLengthCells == 16
+        }),
+        hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        sourceScaling.schemaVersion == 1,
+        sourceScaling.datasetIdentifier == surface.datasetIdentifier,
+        sourceScaling.manifestSHA256 == surface.manifestSHA256,
+        sourceScaling.sourceCodeFluidPropertyConventionConfirmed,
+        sourceScaling.engineeringReynoldsProxyConfirmed,
+        !sourceScaling.sourceViscosityRunAuthorized,
+        !sourceScaling.fluidEvolutionExecuted,
+        !sourceScaling.productionModificationAuthorized,
+        !sourceScaling.experimentalAgreementGateApplied,
+        sourceScaling.classification
+            == "source-fluid-properties-confirmed-engineering-reynolds-not-published",
+        sourceScaling.minimumIntegerReferenceLengthCellsForSourceViscosityMargin
+            == 28,
+        abs(sourceScaling.sourceFluidProperties
+            .airDensityKilogramsPerCubicMeter - Double(sourceAirDensity))
+            <= 1e-7,
+        abs(sourceScaling.sourceFluidProperties
+            .dynamicViscosityPascalSeconds - Double(sourceDynamicViscosity))
+            <= 1e-10,
+        abs(sourceScaling.sourceFluidProperties
+            .kinematicViscositySquareMetersPerSecond
+            - Double(sourceDynamicViscosity / sourceAirDensity)) <= 1e-10,
+        sourceScaling.sourceFluidProperties.provenanceClass
+            == "deposited-author-code-convention",
+        !sourceScaling.sourceFluidProperties.sameFlightAtmosphericMeasurement,
+        abs(sourceScaling.reynoldsDefinitions
+            .convertedMaximumSurfaceSpeedMetersPerSecond
+            - plan.maximumSurfaceSpeedMetersPerSecond) <= 1e-5,
+        abs(sourceScaling.reynoldsDefinitions
+            .registeredReferenceLengthMeters
+            - Double(refinementReferenceLengthMeters)) <= 1e-7,
+        sourceScaling.reynoldsDefinitions
+            .registeredSourcePropertyReynoldsNumber > 0,
+        abs(d16.cellSizeMeters - plan.cellSizeMeters) <= 1e-10,
+        abs(d16.fluidTimeStepSeconds - plan.fluidTimeStepSeconds) <= 1e-12,
+        abs(d16.sourceTauPlus - plan.sourceConditionTauPlusAtPilotGrid)
+            <= 2e-7,
+        !d16.sourceViscosityMeetsFloatMargin,
+        d16.sourceTauPlus >= Double(sourceViscosityDiagnosticMinimumTauPlus),
+        d16.sourceTauPlus < Double(minimumTauPlus),
+        sourceScalingAudit.schemaVersion == 1,
+        sourceScalingAudit.allChecksPassed,
+        sourceScalingAudit.checkCount >= 10,
+        sourceScalingAudit.reportSHA256.lowercased() == reportSHA,
+        sourceScalingAudit.preregistrationSHA256.lowercased()
+            == sourcePreregistrationSHA else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D16 source-viscosity preregistration requires the passed SHA-locked source-scaling reconstruction"
+            )
+        }
+        return MetalIndexedBirdSurfaceSourceViscosityPreregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceScalingPreregistrationSHA256: sourcePreregistrationSHA,
+            sourceScalingReportSHA256: reportSHA,
+            sourceScalingAuditSHA256: auditSHA,
+            referenceLengthCells: 16,
+            requestedSteps: plan.preRollFluidSteps,
+            sourcePropertyReynoldsNumber: sourceScaling.reynoldsDefinitions
+                .registeredSourcePropertyReynoldsNumber,
+            sourceTauPlus: d16.sourceTauPlus,
+            executionMinimumTauPlus:
+                Double(sourceViscosityDiagnosticMinimumTauPlus),
+            productionMinimumTauPlus: Double(minimumTauPlus),
+            candidateOperators: collisionMomentumCandidateOperators
+                .map(\.rawValue),
+            movingWallNormalization:
+                MetalIndexedBirdSurfaceMovingWallNormalization
+                    .preStepLocalDensity.rawValue,
+            maximumRelativeRMSClosureResidual:
+                collisionMomentumMaximumRelativeRMSResidual,
+            maximumCorrectionActivationFraction:
+                collisionPreRollMaximumActivationFraction,
+            selectionRule: (
+                "Run regularized BGK and recursive regularized BGK for every "
+                    + "one of the 1600 D16 pre-roll steps at the reconstructed "
+                    + "source-property Reynolds number. Require positive "
+                    + "finite populations, finite loads, zero control-surface "
+                    + "solid crossings, <=0.5% near-wing and global relative "
+                    + "RMS momentum residuals, and <=5% collision correction "
+                    + "activation. D28 planning requires at least one passing "
+                    + "candidate; this diagnostic cannot authorize D20, D28 "
+                    + "execution, production changes, or force agreement."
+            ),
+            fixedInputs: (
+                "SHA-locked measured dove surface, measured-force timing, "
+                    + "author-code rho/mu, engineering Re, D16 geometry, "
+                    + "0.08 m reference length, fixed Courant scaling, 1600 "
+                    + "steps, pre-step local-density moving-wall normalization, "
+                    + "boundary operator, force estimator, far field, sponge, "
+                    + "per-step positivity, momentum, and correction gates"
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            claimBoundary: (
+                "This preregistered sub-margin run is a collision survival "
+                    + "and momentum-consistency diagnostic. The unchanged "
+                    + "production tau>=0.50005 guard still rejects D16 and "
+                    + "D20 source viscosity; no outcome establishes published "
+                    + "Reynolds equivalence or experimental force agreement."
+            )
+        )
+    }
+
+    public static func sourceViscosityD16Discriminator(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        sourceScaling: MetalIndexedBirdSurfaceSourceScalingEvidence,
+        sourceScalingReportSHA256: String,
+        sourceScalingAudit:
+            MetalIndexedBirdSurfaceSourceScalingAuditEvidence,
+        sourceScalingAuditSHA256: String,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityPreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSourceViscosityReport {
+        let expected = try sourceViscosityD16Preregistration(
+            surface: surface,
+            target: target,
+            sourceScaling: sourceScaling,
+            sourceScalingReportSHA256: sourceScalingReportSHA256,
+            sourceScalingAudit: sourceScalingAudit,
+            sourceScalingAuditSHA256: sourceScalingAuditSHA256
+        )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D16 source-viscosity run does not match its locked preregistration"
+            )
+        }
+#if canImport(Metal)
+        let plan = try refinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: preregistration.referenceLengthCells
+        )
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: preregistration.referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber:
+                Float(preregistration.sourcePropertyReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength),
+            diagnosticMinimumTauPlus:
+                sourceViscosityDiagnosticMinimumTauPlus
+        )
+        let actualTau = Double(replay.tauPlus)
+        guard actualTau >= preregistration.executionMinimumTauPlus,
+              actualTau < preregistration.productionMinimumTauPlus,
+              abs(actualTau - preregistration.sourceTauPlus) <= 2e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D16 source-viscosity runtime tau changed from preregistration"
+            )
+        }
+        let cases = try collisionMomentumCandidateOperators.map { collision in
+            let result = try replay.runCollisionMomentumClosure(
+                plan: plan,
+                collisionOperator: collision,
+                maximumRelativeRMSResidual:
+                    preregistration.maximumRelativeRMSClosureResidual,
+                maximumCorrectionActivationFraction:
+                    preregistration.maximumCorrectionActivationFraction,
+                requestedSteps: preregistration.requestedSteps,
+                movingWallNormalization: .preStepLocalDensity
+            )
+            let completion = result.completedSteps
+                    == preregistration.requestedSteps
+                && result.samples.count == preregistration.requestedSteps
+                && result.allValuesFinite
+                && result.sampledPopulationPositivityPassed
+                && result.minimumPopulation > 0
+                && result.maximumSolidControlSurfaceCrossingLinkCount == 0
+            let ledger = result.relativeRMSRawControlVolumeClosureResidual
+                    <= preregistration.maximumRelativeRMSClosureResidual
+                && result.relativeRMSGlobalFluidClosureResidual
+                    <= preregistration.maximumRelativeRMSClosureResidual
+            let correction = result
+                    .collisionLimiterActivationFractionOfCellSteps
+                    <= preregistration.maximumCorrectionActivationFraction
+                && result.maximumCollisionRestriction.isFinite
+            let eligible = completion && ledger && correction
+                && result.momentumClosurePassed
+            return MetalIndexedBirdSurfaceSourceViscosityCase(
+                collisionOperator: collision.rawValue,
+                actualTauPlus: actualTau,
+                executionFloorPassed: actualTau
+                    >= preregistration.executionMinimumTauPlus,
+                productionMarginPassed: actualTau
+                    >= preregistration.productionMinimumTauPlus,
+                completionAndPositivityPassed: completion,
+                momentumLedgerPassed: ledger,
+                correctionIntrusionPassed: correction,
+                eligibleForD28Planning: eligible,
+                report: result
+            )
+        }
+        let eligible = cases.filter(\.eligibleForD28Planning)
+            .map(\.collisionOperator)
+        let allCompleted = cases.count
+                == collisionMomentumCandidateOperators.count
+            && cases.allSatisfy {
+                $0.report.completedSteps == preregistration.requestedSteps
+            }
+        let passed = allCompleted && !eligible.isEmpty
+        let classification: String
+        if eligible.count == cases.count {
+            classification = "both-source-viscosity-operators-survive-and-close-at-d16"
+        } else if let operatorName = eligible.first {
+            classification = operatorName
+                + "-alone-survives-and-closes-source-viscosity-at-d16"
+        } else {
+            classification = "no-source-viscosity-operator-survives-and-closes-at-d16"
+        }
+        return MetalIndexedBirdSurfaceSourceViscosityReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            sourceScalingReportSHA256:
+                preregistration.sourceScalingReportSHA256,
+            sourceScalingAuditSHA256:
+                preregistration.sourceScalingAuditSHA256,
+            referenceLengthCells: preregistration.referenceLengthCells,
+            requestedSteps: preregistration.requestedSteps,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            cases: cases,
+            eligibleCollisionOperators: eligible,
+            allCandidateRunsCompleted: allCompleted,
+            screeningGatePassed: passed,
+            d20RunAuthorized: false,
+            d28PlanningAuthorized: passed,
+            d28RunAuthorized: false,
+            fluidEvolutionExecuted: true,
+            productionModificationAuthorized: false,
+            experimentalAgreementGateApplied: false,
+            classification: classification,
+            scientificVerdict: passed
+                ? (
+                    "At least one regularized collision operator preserved "
+                        + "positive finite populations and closed both locked "
+                        + "momentum ledgers through all 1600 D16 source-"
+                        + "viscosity steps without excessive correction. D28 "
+                        + "feasibility planning is now evidence-authorized."
+                )
+                : (
+                    "Neither regularized collision operator completed the "
+                        + "locked 1600-step D16 source-viscosity diagnostic "
+                        + "while satisfying positivity, both momentum ledgers, "
+                        + "and correction intrusion. D28 is not authorized."
+                ),
+            nextAction: passed
+                ? (
+                    "Preregister D28 allocation, runtime, operator selection, "
+                        + "and force/refinement gates using only eligible "
+                        + "operators before starting the expensive run."
+                )
+                : (
+                    "Localize the first failed positivity, momentum, or "
+                        + "correction condition at D16; do not spend on D28."
+                ),
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func sourceViscosityD28Preregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d16Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityPreregistration,
+        sourceD16PreregistrationSHA256: String,
+        d16Report: MetalIndexedBirdSurfaceSourceViscosityReport,
+        sourceD16ReportSHA256: String,
+        d16Audit: MetalIndexedBirdSurfaceSourceViscosityAuditEvidence,
+        sourceD16AuditSHA256: String
+    ) throws ->
+        MetalIndexedBirdSurfaceSourceViscosityD28Preregistration
+    {
+        let preregistrationSHA = sourceD16PreregistrationSHA256.lowercased()
+        let reportSHA = sourceD16ReportSHA256.lowercased()
+        let auditSHA = sourceD16AuditSHA256.lowercased()
+        let hashes = [preregistrationSHA, reportSHA, auditSHA]
+        guard hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        d16Preregistration.datasetIdentifier == surface.datasetIdentifier,
+        d16Preregistration.manifestSHA256 == surface.manifestSHA256,
+        d16Preregistration.forceTargetIdentifier == target.datasetIdentifier,
+        d16Preregistration.forceTargetSHA256 == target.targetSHA256,
+        d16Preregistration.passed,
+        d16Report.datasetIdentifier == surface.datasetIdentifier,
+        d16Report.manifestSHA256 == surface.manifestSHA256,
+        d16Report.forceTargetIdentifier == target.datasetIdentifier,
+        d16Report.forceTargetSHA256 == target.targetSHA256,
+        d16Report.sourcePreregistrationSHA256 == preregistrationSHA,
+        d16Report.screeningGatePassed,
+        d16Report.d28PlanningAuthorized,
+        !d16Report.d28RunAuthorized,
+        !d16Report.productionModificationAuthorized,
+        !d16Report.experimentalAgreementGateApplied,
+        d16Audit.schemaVersion == 1,
+        d16Audit.preregistrationSHA256.lowercased() == preregistrationSHA,
+        d16Audit.reportSHA256.lowercased() == reportSHA,
+        d16Audit.checkCount >= 15,
+        d16Audit.allChecksPassed,
+        d16Audit.d28PlanningGatePassed,
+        d16Audit.eligibleCollisionOperators
+            == d16Report.eligibleCollisionOperators else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 preregistration requires the passed, independently audited D16 source-viscosity A/B"
+            )
+        }
+        let eligibleCases = d16Report.cases.filter {
+            $0.eligibleForD28Planning
+                && d16Audit.eligibleCollisionOperators.contains(
+                    $0.collisionOperator
+                )
+        }
+        guard eligibleCases.count == d16Audit.eligibleCollisionOperators.count,
+              let selected = eligibleCases.min(by: { lhs, rhs in
+                  let lhsWorst = max(
+                      lhs.report.relativeRMSRawControlVolumeClosureResidual,
+                      lhs.report.relativeRMSGlobalFluidClosureResidual
+                  )
+                  let rhsWorst = max(
+                      rhs.report.relativeRMSRawControlVolumeClosureResidual,
+                      rhs.report.relativeRMSGlobalFluidClosureResidual
+                  )
+                  if lhsWorst != rhsWorst { return lhsWorst < rhsWorst }
+                  let lhsCorrection = lhs.report
+                      .collisionLimiterActivationFractionOfCellSteps
+                  let rhsCorrection = rhs.report
+                      .collisionLimiterActivationFractionOfCellSteps
+                  if lhsCorrection != rhsCorrection {
+                      return lhsCorrection < rhsCorrection
+                  }
+                  if lhs.report.minimumPopulation
+                        != rhs.report.minimumPopulation {
+                      return lhs.report.minimumPopulation
+                          > rhs.report.minimumPopulation
+                  }
+                  return lhs.collisionOperator < rhs.collisionOperator
+              }),
+              selected.collisionOperator
+                == MetalIndexedBirdSurfaceCollisionOperator
+                    .positivityPreservingRecursiveRegularizedBGK.rawValue else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 deterministic D16 evidence selection did not choose RR3"
+            )
+        }
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: 28
+        )
+        let cellSize = Float(plan.cellSizeMeters)
+        let padding = Float(plan.paddingCells) * cellSize
+        let extent = surface.maximumPositionMeters
+            - surface.minimumPositionMeters
+            + SIMD3<Float>(repeating: 2 * padding)
+        let grid = try GridSize(
+            x: max(16, Int(ceil(extent.x / cellSize)) + 1),
+            y: max(16, Int(ceil(extent.y / cellSize)) + 1),
+            z: max(16, Int(ceil(extent.z / cellSize)) + 1)
+        )
+        let workingSetEstimate = Int64(grid.cellCount) * 256
+        let selectedWorst = max(
+            selected.report.relativeRMSRawControlVolumeClosureResidual,
+            selected.report.relativeRMSGlobalFluidClosureResidual
+        )
+        let expectedTau = plan.sourceConditionTauPlusAtPilotGrid
+        guard plan.preRollFluidSteps == 2_800,
+              expectedTau >= Double(minimumTauPlus),
+              plan.sourceViscosityRepresentableAtPilotGrid,
+              workingSetEstimate > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 no longer satisfies the source-viscosity production-margin contract"
+            )
+        }
+        return MetalIndexedBirdSurfaceSourceViscosityD28Preregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceD16PreregistrationSHA256: preregistrationSHA,
+            sourceD16ReportSHA256: reportSHA,
+            sourceD16AuditSHA256: auditSHA,
+            selectedCollisionOperator: selected.collisionOperator,
+            selectionWorstRelativeRMSMomentumResidual: selectedWorst,
+            selectionCorrectionActivationFraction: selected.report
+                .collisionLimiterActivationFractionOfCellSteps,
+            selectionMinimumPopulation: selected.report.minimumPopulation,
+            referenceLengthCells: 28,
+            cellSizeMeters: plan.cellSizeMeters,
+            fluidTimeStepSeconds: plan.fluidTimeStepSeconds,
+            requestedPreRollSteps: plan.preRollFluidSteps,
+            sourcePropertyReynoldsNumber:
+                d16Preregistration.sourcePropertyReynoldsNumber,
+            expectedTauPlus: expectedTau,
+            productionMinimumTauPlus: Double(minimumTauPlus),
+            expectedGridX: grid.x,
+            expectedGridY: grid.y,
+            expectedGridZ: grid.z,
+            expectedCellCount: grid.cellCount,
+            conservativeWorkingSetEstimateBytes: workingSetEstimate,
+            maximumRelativeRMSClosureResidual:
+                d16Preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                d16Preregistration.maximumCorrectionActivationFraction,
+            movingWallNormalization:
+                d16Preregistration.movingWallNormalization,
+            selectionRule: (
+                "Among independently audited D16-eligible operators, choose "
+                    + "the lowest worst near-wing/global relative RMS momentum "
+                    + "residual; break ties by lower correction activation, "
+                    + "then higher minimum population, then identifier. Run "
+                    + "only that operator for all 2800 D28 pre-roll steps. "
+                    + "Require the normal tau>=0.50005 constructor, allocation "
+                    + "preflight, positive finite populations, both <=0.5% "
+                    + "momentum ledgers, zero solid crossings, and <=5% "
+                    + "correction activation before authorizing a full window."
+            ),
+            fixedInputs: (
+                "SHA-locked D16 source-viscosity preregistration/report/audit; "
+                    + "RR3; D28; source rho/mu engineering Reynolds; measured "
+                    + "geometry and kinematics; 0.08 m reference length; fixed "
+                    + "Courant scaling; pre-step local-density moving wall; "
+                    + "unchanged boundary, force, far-field, sponge, positivity, "
+                    + "momentum, correction, and production tau gates"
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            claimBoundary: (
+                "This freezes the first production-margin source-viscosity "
+                    + "pre-roll before observing D28 fluid results. A pass can "
+                    + "authorize only the D28 full-window run; it cannot "
+                    + "establish grid convergence, experimental agreement, a "
+                    + "published Reynolds number, or a production change."
+            )
+        )
+    }
+
+    public static func sourceViscosityD28PreRoll(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d16Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityPreregistration,
+        sourceD16PreregistrationSHA256: String,
+        d16Report: MetalIndexedBirdSurfaceSourceViscosityReport,
+        sourceD16ReportSHA256: String,
+        d16Audit: MetalIndexedBirdSurfaceSourceViscosityAuditEvidence,
+        sourceD16AuditSHA256: String,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28Preregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSourceViscosityD28Report {
+        let expected = try sourceViscosityD28Preregistration(
+            surface: surface,
+            target: target,
+            d16Preregistration: d16Preregistration,
+            sourceD16PreregistrationSHA256:
+                sourceD16PreregistrationSHA256,
+            d16Report: d16Report,
+            sourceD16ReportSHA256: sourceD16ReportSHA256,
+            d16Audit: d16Audit,
+            sourceD16AuditSHA256: sourceD16AuditSHA256
+        )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit),
+              let collision = MetalIndexedBirdSurfaceCollisionOperator(
+                  rawValue: preregistration.selectedCollisionOperator
+              ),
+              collision
+                == .positivityPreservingRecursiveRegularizedBGK else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 source-viscosity pre-roll does not match its locked preregistration"
+            )
+        }
+#if canImport(Metal)
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: preregistration.referenceLengthCells
+        )
+        let backend = try MetalBackend(fastMath: false)
+        let recommended = backend.device.recommendedMaxWorkingSetSize
+        let workingSetPassed = recommended == 0
+            || UInt64(preregistration.conservativeWorkingSetEstimateBytes)
+                <= recommended
+        guard workingSetPassed else {
+            throw BirdFlowError.workingSetExceedsRecommendation(
+                bytes: Int(preregistration.conservativeWorkingSetEstimateBytes),
+                recommended: recommended > UInt64(Int.max)
+                    ? Int.max : Int(recommended)
+            )
+        }
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: preregistration.referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber:
+                Float(preregistration.sourcePropertyReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let actualTau = Double(replay.tauPlus)
+        guard replay.grid.x == preregistration.expectedGridX,
+              replay.grid.y == preregistration.expectedGridY,
+              replay.grid.z == preregistration.expectedGridZ,
+              abs(actualTau - preregistration.expectedTauPlus) <= 2e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 runtime allocation or tau changed from preregistration"
+            )
+        }
+        let result = try replay.runCollisionMomentumClosure(
+            plan: plan,
+            collisionOperator: collision,
+            maximumRelativeRMSResidual:
+                preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                preregistration.maximumCorrectionActivationFraction,
+            requestedSteps: preregistration.requestedPreRollSteps,
+            movingWallNormalization: .preStepLocalDensity
+        )
+        let completion = result.completedSteps
+                == preregistration.requestedPreRollSteps
+            && result.samples.count == preregistration.requestedPreRollSteps
+            && result.allValuesFinite
+            && result.sampledPopulationPositivityPassed
+            && result.minimumPopulation > 0
+            && result.maximumSolidControlSurfaceCrossingLinkCount == 0
+        let ledger = result.relativeRMSRawControlVolumeClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.relativeRMSGlobalFluidClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+        let correction = result
+                .collisionLimiterActivationFractionOfCellSteps
+                <= preregistration.maximumCorrectionActivationFraction
+            && result.maximumCollisionRestriction.isFinite
+        let tauPassed = actualTau
+            >= preregistration.productionMinimumTauPlus
+        let passed = workingSetPassed && tauPassed && completion
+            && ledger && correction && result.momentumClosurePassed
+        return MetalIndexedBirdSurfaceSourceViscosityD28Report(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            recommendedMaximumWorkingSetBytes: recommended,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            selectedCollisionOperator: collision.rawValue,
+            referenceLengthCells: preregistration.referenceLengthCells,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            actualTauPlus: actualTau,
+            productionTauMarginPassed: tauPassed,
+            workingSetPreflightPassed: workingSetPassed,
+            completionAndPositivityPassed: completion,
+            momentumLedgerPassed: ledger,
+            correctionIntrusionPassed: correction,
+            preRollGatePassed: passed,
+            d20RunAuthorized: false,
+            d28FullWindowRunAuthorized: passed,
+            fluidEvolutionExecuted: true,
+            productionModificationAuthorized: false,
+            experimentalAgreementGateApplied: false,
+            caseReport: result,
+            classification: passed
+                ? "rr3-source-viscosity-production-margin-pre-roll-passed-at-d28"
+                : "rr3-source-viscosity-production-margin-pre-roll-failed-at-d28",
+            scientificVerdict: passed
+                ? (
+                    "The D16-selected RR3 operator completed the first normal-"
+                        + "guard source-viscosity grid with positive finite "
+                        + "populations, both locked momentum ledgers closed, "
+                        + "and negligible correction intrusion."
+                )
+                : (
+                    "The D16-selected RR3 operator did not clear every locked "
+                        + "D28 production-margin pre-roll gate."
+                ),
+            nextAction: passed
+                ? (
+                    "Preregister and run the single RR3 D28 full measured-force "
+                        + "window, then evaluate force history without changing "
+                        + "normalization or numerical gates."
+                )
+                : (
+                    "Localize the first failed D28 pre-roll condition; do not "
+                        + "run the full measured-force window."
+                ),
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func sourceViscosityD28FullWindowPreregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d28Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28Preregistration,
+        sourceD28PreregistrationSHA256: String,
+        d28PreRoll: MetalIndexedBirdSurfaceSourceViscosityD28Report,
+        sourceD28PreRollSHA256: String,
+        d28Audit: MetalIndexedBirdSurfaceSourceViscosityD28AuditEvidence,
+        sourceD28AuditSHA256: String
+    ) throws ->
+        MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration
+    {
+        let preregistrationSHA = sourceD28PreregistrationSHA256.lowercased()
+        let preRollSHA = sourceD28PreRollSHA256.lowercased()
+        let auditSHA = sourceD28AuditSHA256.lowercased()
+        let hashes = [preregistrationSHA, preRollSHA, auditSHA]
+        let expectedOperator = MetalIndexedBirdSurfaceCollisionOperator
+            .positivityPreservingRecursiveRegularizedBGK.rawValue
+        guard hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        d28Preregistration.datasetIdentifier == surface.datasetIdentifier,
+        d28Preregistration.manifestSHA256 == surface.manifestSHA256,
+        d28Preregistration.forceTargetIdentifier == target.datasetIdentifier,
+        d28Preregistration.forceTargetSHA256 == target.targetSHA256,
+        d28Preregistration.passed,
+        d28Preregistration.selectedCollisionOperator == expectedOperator,
+        !d28Preregistration.experimentalAgreementGateApplied,
+        d28PreRoll.sourcePreregistrationSHA256 == preregistrationSHA,
+        d28PreRoll.selectedCollisionOperator == expectedOperator,
+        d28PreRoll.preRollGatePassed,
+        d28PreRoll.d28FullWindowRunAuthorized,
+        d28PreRoll.productionTauMarginPassed,
+        d28PreRoll.workingSetPreflightPassed,
+        d28PreRoll.completionAndPositivityPassed,
+        d28PreRoll.momentumLedgerPassed,
+        d28PreRoll.correctionIntrusionPassed,
+        !d28PreRoll.experimentalAgreementGateApplied,
+        !d28PreRoll.productionModificationAuthorized,
+        d28Audit.schemaVersion == 1,
+        d28Audit.preregistrationSHA256 == preregistrationSHA,
+        d28Audit.reportSHA256 == preRollSHA,
+        d28Audit.checkCount >= 17,
+        d28Audit.allChecksPassed,
+        d28Audit.d28FullWindowRunGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 full-window preregistration requires the passed, independently audited production-margin pre-roll"
+            )
+        }
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: d28Preregistration.referenceLengthCells
+        )
+        let workingSetEstimate = Int64(d28Preregistration.expectedCellCount)
+            * 256
+        guard d28Preregistration.referenceLengthCells == 28,
+              d28PreRoll.referenceLengthCells == 28,
+              d28PreRoll.gridX == d28Preregistration.expectedGridX,
+              d28PreRoll.gridY == d28Preregistration.expectedGridY,
+              d28PreRoll.gridZ == d28Preregistration.expectedGridZ,
+              abs(d28PreRoll.actualTauPlus
+                - d28Preregistration.expectedTauPlus) <= 2e-7,
+              plan.totalFluidSteps == 13_216,
+              plan.fluidStepsPerForceSample == 56,
+              plan.comparisonForceSamples == 187,
+              workingSetEstimate
+                == d28Preregistration.conservativeWorkingSetEstimateBytes else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 full-window dimensions or registered force timing changed after the pre-roll"
+            )
+        }
+        return MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceD28PreregistrationSHA256: preregistrationSHA,
+            sourceD28PreRollSHA256: preRollSHA,
+            sourceD28AuditSHA256: auditSHA,
+            selectedCollisionOperator: expectedOperator,
+            referenceLengthCells: 28,
+            expectedGridX: d28Preregistration.expectedGridX,
+            expectedGridY: d28Preregistration.expectedGridY,
+            expectedGridZ: d28Preregistration.expectedGridZ,
+            expectedTauPlus: d28Preregistration.expectedTauPlus,
+            productionMinimumTauPlus:
+                d28Preregistration.productionMinimumTauPlus,
+            requestedFullWindowSteps: plan.totalFluidSteps,
+            fluidStepsPerForceSample: plan.fluidStepsPerForceSample,
+            requestedComparisonSamples: plan.comparisonForceSamples,
+            conservativeWorkingSetEstimateBytes: workingSetEstimate,
+            maximumRelativeRMSClosureResidual:
+                d28Preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                d28Preregistration.maximumCorrectionActivationFraction,
+            movingWallNormalization:
+                MetalIndexedBirdSurfaceMovingWallNormalization
+                    .preStepLocalDensity.rawValue,
+            selectionRule: (
+                "Run only the D16-selected, D28-pre-roll-cleared RR3 operator "
+                    + "for all 13,216 steps. Require the production tau guard, "
+                    + "working-set preflight, positive finite populations, "
+                    + "all 187 registered force bins, zero solid control-"
+                    + "surface crossings, both <=0.5% momentum ledgers, and "
+                    + "<=5% correction activation. Report force history, "
+                    + "means, impulses, peak timing, and normalized RMS error "
+                    + "without applying an experimental-agreement gate."
+            ),
+            fixedInputs: (
+                "SHA-locked D28 preregistration/pre-roll/audit; RR3; D28; "
+                    + "source rho/mu engineering Reynolds; measured geometry, "
+                    + "kinematics, and force window; 0.08 m reference length; "
+                    + "fixed Courant scaling; pre-step local-density moving "
+                    + "wall; unchanged boundary, force, far-field, sponge, "
+                    + "positivity, momentum, correction, and tau gates"
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            gridConvergenceGateApplied: false,
+            claimBoundary: (
+                "This freezes the first source-viscosity D28 full force window "
+                    + "before observing its result. The measured comparison is "
+                    + "descriptive because the deposit supplies no force "
+                    + "uncertainty and no same-physics refinement pair exists. "
+                    + "A pass establishes numerical survival and a reusable "
+                    + "D28 force history, not grid convergence, experimental "
+                    + "agreement, production promotion, or free flight."
+            )
+        )
+    }
+
+    public static func sourceViscosityD28FullWindow(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d28Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28Preregistration,
+        sourceD28PreregistrationSHA256: String,
+        d28PreRoll: MetalIndexedBirdSurfaceSourceViscosityD28Report,
+        sourceD28PreRollSHA256: String,
+        d28Audit: MetalIndexedBirdSurfaceSourceViscosityD28AuditEvidence,
+        sourceD28AuditSHA256: String,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport {
+        let expected = try sourceViscosityD28FullWindowPreregistration(
+            surface: surface,
+            target: target,
+            d28Preregistration: d28Preregistration,
+            sourceD28PreregistrationSHA256:
+                sourceD28PreregistrationSHA256,
+            d28PreRoll: d28PreRoll,
+            sourceD28PreRollSHA256: sourceD28PreRollSHA256,
+            d28Audit: d28Audit,
+            sourceD28AuditSHA256: sourceD28AuditSHA256
+        )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit),
+              let collision = MetalIndexedBirdSurfaceCollisionOperator(
+                rawValue: preregistration.selectedCollisionOperator
+              ),
+              collision
+                == .positivityPreservingRecursiveRegularizedBGK else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 full window does not match its locked preregistration"
+            )
+        }
+#if canImport(Metal)
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: preregistration.referenceLengthCells
+        )
+        let backend = try MetalBackend(fastMath: false)
+        let recommended = backend.device.recommendedMaxWorkingSetSize
+        let workingSetPassed = recommended == 0
+            || UInt64(preregistration.conservativeWorkingSetEstimateBytes)
+                <= recommended
+        guard workingSetPassed else {
+            throw BirdFlowError.workingSetExceedsRecommendation(
+                bytes: Int(preregistration.conservativeWorkingSetEstimateBytes),
+                recommended: recommended > UInt64(Int.max)
+                    ? Int.max : Int(recommended)
+            )
+        }
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: preregistration.referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber:
+                Float(d28Preregistration.sourcePropertyReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let actualTau = Double(replay.tauPlus)
+        guard replay.grid.x == preregistration.expectedGridX,
+              replay.grid.y == preregistration.expectedGridY,
+              replay.grid.z == preregistration.expectedGridZ,
+              abs(actualTau - preregistration.expectedTauPlus) <= 2e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 full-window runtime allocation or tau changed from preregistration"
+            )
+        }
+        let result = try replay.runCollisionMomentumClosure(
+            plan: plan,
+            collisionOperator: collision,
+            maximumRelativeRMSResidual:
+                preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                preregistration.maximumCorrectionActivationFraction,
+            requestedSteps: preregistration.requestedFullWindowSteps,
+            movingWallNormalization: .preStepLocalDensity
+        )
+        var forceSamples =
+            [MetalIndexedBirdSurfaceMovingWallFullWindowForceSample]()
+        forceSamples.reserveCapacity(target.comparisonSampleCount)
+        if result.samples.count >= plan.fluidStepsPerForceSample {
+            for targetIndex in
+                target.comparisonFirstSampleIndex...target.comparisonLastSampleIndex
+            {
+                let endStep = targetIndex * plan.fluidStepsPerForceSample
+                let startIndex = endStep - plan.fluidStepsPerForceSample
+                guard endStep <= result.samples.count,
+                      startIndex >= 0 else { continue }
+                let interval = result.samples[startIndex..<endStep]
+                let sum = interval.reduce(SIMD3<Double>.zero) {
+                    $0 + $1.aerodynamicForceNewtons
+                }
+                let mean = sum / Double(plan.fluidStepsPerForceSample)
+                let measuredX = target.forceXNewtons[targetIndex]
+                let measuredZ = target.forceZNewtons[targetIndex]
+                forceSamples.append(
+                    MetalIndexedBirdSurfaceMovingWallFullWindowForceSample(
+                        targetSampleIndex: targetIndex,
+                        sourceTimeSeconds: target.timesSeconds[targetIndex],
+                        measuredForceXNewtons: measuredX,
+                        measuredForceZNewtons: measuredZ,
+                        intervalMeanComputedForceNewtons: mean,
+                        residualXNewtons: mean.x - measuredX,
+                        residualZNewtons: mean.z - measuredZ
+                    )
+                )
+            }
+        }
+        let windowComplete = forceSamples.count
+            == preregistration.requestedComparisonSamples
+        let measuredPairs = forceSamples.map {
+            SIMD2<Double>($0.measuredForceXNewtons, $0.measuredForceZNewtons)
+        }
+        let computedPairs = forceSamples.map {
+            SIMD2<Double>(
+                $0.intervalMeanComputedForceNewtons.x,
+                $0.intervalMeanComputedForceNewtons.z
+            )
+        }
+        let comparisonAvailable = windowComplete && !forceSamples.isEmpty
+        let measuredImpulse = comparisonAvailable
+            ? pilotTrapezoidalImpulse(
+                measuredPairs,
+                sampleRateHertz: target.forceSampleRateHertz
+            ) : nil
+        let computedImpulse = comparisonAvailable
+            ? pilotTrapezoidalImpulse(
+                computedPairs,
+                sampleRateHertz: target.forceSampleRateHertz
+            ) : nil
+        let measuredPeak = comparisonAvailable
+            ? forceSamples.max(by: {
+                let lhs = $0.measuredForceXNewtons * $0.measuredForceXNewtons
+                    + $0.measuredForceZNewtons * $0.measuredForceZNewtons
+                let rhs = $1.measuredForceXNewtons * $1.measuredForceXNewtons
+                    + $1.measuredForceZNewtons * $1.measuredForceZNewtons
+                return lhs < rhs
+            })?.sourceTimeSeconds : nil
+        let computedPeak = comparisonAvailable
+            ? forceSamples.max(by: {
+                let lhs = $0.intervalMeanComputedForceNewtons
+                let rhs = $1.intervalMeanComputedForceNewtons
+                return lhs.x * lhs.x + lhs.z * lhs.z
+                    < rhs.x * rhs.x + rhs.z * rhs.z
+            })?.sourceTimeSeconds : nil
+        let allStepsCompleted = result.completedSteps
+                == preregistration.requestedFullWindowSteps
+            && result.samples.count == preregistration.requestedFullWindowSteps
+        let populationPassed = result.allValuesFinite
+            && result.sampledPopulationPositivityPassed
+            && result.minimumPopulation > 0
+        let accountingPassed =
+            result.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && result.relativeRMSRawControlVolumeClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.relativeRMSGlobalFluidClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.momentumClosurePassed
+        let correctionPassed = result
+                .collisionLimiterActivationFractionOfCellSteps
+                <= preregistration.maximumCorrectionActivationFraction
+            && result.maximumCollisionRestriction.isFinite
+        let tauPassed = actualTau >= preregistration.productionMinimumTauPlus
+        let passed = workingSetPassed && tauPassed && allStepsCompleted
+            && populationPassed && accountingPassed && correctionPassed
+            && windowComplete
+        return MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            selectedCollisionOperator: collision.rawValue,
+            movingWallNormalization: preregistration.movingWallNormalization,
+            referenceLengthCells: preregistration.referenceLengthCells,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            actualTauPlus: actualTau,
+            recommendedMaximumWorkingSetBytes: recommended,
+            requestedSteps: preregistration.requestedFullWindowSteps,
+            requestedComparisonSamples:
+                preregistration.requestedComparisonSamples,
+            plan: plan,
+            ledgerResult: result,
+            registeredForceSamples: forceSamples,
+            registeredComparisonSampleCount: forceSamples.count,
+            measuredMeanForceXNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map(\.measuredForceXNewtons)) : nil,
+            measuredMeanForceZNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map(\.measuredForceZNewtons)) : nil,
+            computedMeanForceXNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map {
+                    $0.intervalMeanComputedForceNewtons.x
+                }) : nil,
+            computedMeanForceZNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map {
+                    $0.intervalMeanComputedForceNewtons.z
+                }) : nil,
+            normalizedRMSError: comparisonAvailable
+                ? pilotNormalizedRMSError(
+                    measured: measuredPairs,
+                    computed: computedPairs
+                ) : nil,
+            measuredImpulseXNewtonSeconds: measuredImpulse?.x,
+            measuredImpulseZNewtonSeconds: measuredImpulse?.y,
+            computedImpulseXNewtonSeconds: computedImpulse?.x,
+            computedImpulseZNewtonSeconds: computedImpulse?.y,
+            measuredPeakTimeSeconds: measuredPeak,
+            computedPeakTimeSeconds: computedPeak,
+            productionTauMarginPassed: tauPassed,
+            workingSetPreflightPassed: workingSetPassed,
+            allStepsCompleted: allStepsCompleted,
+            populationPositivityPassed: populationPassed,
+            forceAndMomentumAccountingPassed: accountingPassed,
+            collisionCorrectionIntrusionPassed: correctionPassed,
+            registeredWindowComplete: windowComplete,
+            fullWindowGatePassed: passed,
+            experimentalAgreementGateApplied: false,
+            gridConvergenceGateApplied: false,
+            productionModificationAuthorized: false,
+            classification: passed
+                ? "rr3-source-viscosity-d28-full-window-numerically-passed"
+                : "rr3-source-viscosity-d28-full-window-failed",
+            scientificVerdict: passed
+                ? (
+                    "RR3 completed the first source-viscosity D28 registered "
+                        + "force window with positive finite populations, all "
+                        + "187 force bins, and both momentum ledgers closed."
+                )
+                : (
+                    "RR3 failed at least one preregistered D28 full-window "
+                        + "positivity, force-sampling, momentum, tau, working-"
+                        + "set, or correction-intrusion gate."
+                ),
+            nextAction: passed
+                ? (
+                    "Use this D28 history as the coarse member of a "
+                        + "preregistered same-source-viscosity D28/D32 "
+                        + "refinement discriminator; require a D32 pre-roll "
+                        + "before any D32 full-window allocation."
+                )
+                : (
+                    "Localize the first failed D28 full-window condition; do "
+                        + "not allocate D32."
+                ),
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func sourceViscosityD32Preregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d28Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28Preregistration,
+        sourceD28PreregistrationSHA256: String,
+        d28FullWindowPreregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration,
+        sourceD28FullWindowPreregistrationSHA256: String,
+        d28FullWindowReport:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport,
+        sourceD28FullWindowReportSHA256: String,
+        d28FullWindowAudit:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowAuditEvidence,
+        sourceD28FullWindowAuditSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSourceViscosityD32Preregistration {
+        let d28SHA = sourceD28PreregistrationSHA256.lowercased()
+        let fullPreregistrationSHA =
+            sourceD28FullWindowPreregistrationSHA256.lowercased()
+        let fullReportSHA = sourceD28FullWindowReportSHA256.lowercased()
+        let fullAuditSHA = sourceD28FullWindowAuditSHA256.lowercased()
+        let hashes = [
+            d28SHA, fullPreregistrationSHA, fullReportSHA, fullAuditSHA
+        ]
+        let expectedOperator = MetalIndexedBirdSurfaceCollisionOperator
+            .positivityPreservingRecursiveRegularizedBGK.rawValue
+        guard hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        d28Preregistration.datasetIdentifier == surface.datasetIdentifier,
+        d28Preregistration.manifestSHA256 == surface.manifestSHA256,
+        d28Preregistration.forceTargetIdentifier == target.datasetIdentifier,
+        d28Preregistration.forceTargetSHA256 == target.targetSHA256,
+        d28Preregistration.referenceLengthCells == 28,
+        d28Preregistration.passed,
+        d28Preregistration.selectedCollisionOperator == expectedOperator,
+        d28FullWindowPreregistration.datasetIdentifier
+            == surface.datasetIdentifier,
+        d28FullWindowPreregistration.manifestSHA256
+            == surface.manifestSHA256,
+        d28FullWindowPreregistration.forceTargetIdentifier
+            == target.datasetIdentifier,
+        d28FullWindowPreregistration.forceTargetSHA256
+            == target.targetSHA256,
+        d28FullWindowPreregistration.sourceD28PreregistrationSHA256
+            == d28SHA,
+        d28FullWindowPreregistration.selectedCollisionOperator
+            == expectedOperator,
+        d28FullWindowPreregistration.referenceLengthCells == 28,
+        d28FullWindowPreregistration.passed,
+        !d28FullWindowPreregistration.experimentalAgreementGateApplied,
+        !d28FullWindowPreregistration.gridConvergenceGateApplied,
+        d28FullWindowReport.sourcePreregistrationSHA256
+            == fullPreregistrationSHA,
+        d28FullWindowReport.selectedCollisionOperator == expectedOperator,
+        d28FullWindowReport.referenceLengthCells == 28,
+        d28FullWindowReport.fullWindowGatePassed,
+        d28FullWindowReport.allStepsCompleted,
+        d28FullWindowReport.populationPositivityPassed,
+        d28FullWindowReport.forceAndMomentumAccountingPassed,
+        d28FullWindowReport.collisionCorrectionIntrusionPassed,
+        d28FullWindowReport.registeredWindowComplete,
+        d28FullWindowReport.registeredComparisonSampleCount == 187,
+        !d28FullWindowReport.experimentalAgreementGateApplied,
+        !d28FullWindowReport.gridConvergenceGateApplied,
+        !d28FullWindowReport.productionModificationAuthorized,
+        d28FullWindowAudit.schemaVersion == 1,
+        d28FullWindowAudit.preregistrationSHA256
+            == fullPreregistrationSHA,
+        d28FullWindowAudit.reportSHA256 == fullReportSHA,
+        d28FullWindowAudit.checkCount >= 17,
+        d28FullWindowAudit.allChecksPassed,
+        d28FullWindowAudit.d28ForceHistoryAcceptedAsRefinementInput else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 preregistration requires the passed, independently audited D28 source-viscosity full window"
+            )
+        }
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: 32
+        )
+        let cellSize = Float(plan.cellSizeMeters)
+        let padding = Float(plan.paddingCells) * cellSize
+        let extent = surface.maximumPositionMeters
+            - surface.minimumPositionMeters
+            + SIMD3<Float>(repeating: 2 * padding)
+        let grid = try GridSize(
+            x: max(16, Int(ceil(extent.x / cellSize)) + 1),
+            y: max(16, Int(ceil(extent.y / cellSize)) + 1),
+            z: max(16, Int(ceil(extent.z / cellSize)) + 1)
+        )
+        let workingSetEstimate = Int64(grid.cellCount) * 256
+        let expectedTau = plan.sourceConditionTauPlusAtPilotGrid
+        guard plan.preRollFluidSteps == 3_200,
+              plan.fluidStepsPerForceSample == 64,
+              expectedTau >= Double(minimumTauPlus),
+              plan.sourceViscosityRepresentableAtPilotGrid,
+              workingSetEstimate >
+                d28FullWindowPreregistration
+                    .conservativeWorkingSetEstimateBytes else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 no longer satisfies the frozen source-viscosity refinement contract"
+            )
+        }
+        return MetalIndexedBirdSurfaceSourceViscosityD32Preregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceD28FullWindowPreregistrationSHA256:
+                fullPreregistrationSHA,
+            sourceD28FullWindowReportSHA256: fullReportSHA,
+            sourceD28FullWindowAuditSHA256: fullAuditSHA,
+            selectedCollisionOperator: expectedOperator,
+            referenceLengthCells: 32,
+            cellSizeMeters: plan.cellSizeMeters,
+            fluidTimeStepSeconds: plan.fluidTimeStepSeconds,
+            requestedPreRollSteps: plan.preRollFluidSteps,
+            sourcePropertyReynoldsNumber:
+                d28Preregistration.sourcePropertyReynoldsNumber,
+            expectedTauPlus: expectedTau,
+            productionMinimumTauPlus: Double(minimumTauPlus),
+            expectedGridX: grid.x,
+            expectedGridY: grid.y,
+            expectedGridZ: grid.z,
+            expectedCellCount: grid.cellCount,
+            conservativeWorkingSetEstimateBytes: workingSetEstimate,
+            maximumRelativeRMSClosureResidual:
+                d28FullWindowPreregistration
+                    .maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                d28FullWindowPreregistration
+                    .maximumCorrectionActivationFraction,
+            movingWallNormalization:
+                MetalIndexedBirdSurfaceMovingWallNormalization
+                    .preStepLocalDensity.rawValue,
+            selectionRule: (
+                "Run only RR3 for the 3,200-step D32 pre-roll. Require the "
+                    + "production tau guard, working-set preflight, positive "
+                    + "finite populations, zero solid control-surface "
+                    + "crossings, both <=0.5% momentum ledgers, and <=5% "
+                    + "correction activation before preregistering any D32 "
+                    + "full-window allocation."
+            ),
+            fixedInputs: (
+                "SHA-locked D28 source-viscosity full-window contract, report, "
+                    + "and independent audit; RR3; D32; source rho/mu "
+                    + "engineering Reynolds; measured geometry and "
+                    + "kinematics; fixed Courant scaling; pre-step local-"
+                    + "density moving wall; unchanged boundary, force, far-"
+                    + "field, sponge, positivity, momentum, correction, and "
+                    + "tau gates"
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            gridConvergenceGateApplied: false,
+            claimBoundary: (
+                "This freezes one D32 RR3 pre-roll before observing any D32 "
+                    + "fluid result. A pass authorizes only a separately "
+                    + "preregistered D32 full force window. It does not "
+                    + "establish D28/D32 grid convergence, experimental "
+                    + "agreement, production promotion, or free flight."
+            )
+        )
+    }
+
+    public static func sourceViscosityD32PreRoll(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d28Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28Preregistration,
+        sourceD28PreregistrationSHA256: String,
+        d28FullWindowPreregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration,
+        sourceD28FullWindowPreregistrationSHA256: String,
+        d28FullWindowReport:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport,
+        sourceD28FullWindowReportSHA256: String,
+        d28FullWindowAudit:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowAuditEvidence,
+        sourceD28FullWindowAuditSHA256: String,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD32Preregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSourceViscosityD32Report {
+        let expected = try sourceViscosityD32Preregistration(
+            surface: surface,
+            target: target,
+            d28Preregistration: d28Preregistration,
+            sourceD28PreregistrationSHA256:
+                sourceD28PreregistrationSHA256,
+            d28FullWindowPreregistration: d28FullWindowPreregistration,
+            sourceD28FullWindowPreregistrationSHA256:
+                sourceD28FullWindowPreregistrationSHA256,
+            d28FullWindowReport: d28FullWindowReport,
+            sourceD28FullWindowReportSHA256:
+                sourceD28FullWindowReportSHA256,
+            d28FullWindowAudit: d28FullWindowAudit,
+            sourceD28FullWindowAuditSHA256:
+                sourceD28FullWindowAuditSHA256
+        )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit),
+              let collision = MetalIndexedBirdSurfaceCollisionOperator(
+                  rawValue: preregistration.selectedCollisionOperator
+              ),
+              collision
+                == .positivityPreservingRecursiveRegularizedBGK else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 source-viscosity pre-roll does not match its locked preregistration"
+            )
+        }
+#if canImport(Metal)
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: preregistration.referenceLengthCells
+        )
+        let backend = try MetalBackend(fastMath: false)
+        let recommended = backend.device.recommendedMaxWorkingSetSize
+        let workingSetPassed = recommended == 0
+            || UInt64(preregistration.conservativeWorkingSetEstimateBytes)
+                <= recommended
+        guard workingSetPassed else {
+            throw BirdFlowError.workingSetExceedsRecommendation(
+                bytes: Int(preregistration.conservativeWorkingSetEstimateBytes),
+                recommended: recommended > UInt64(Int.max)
+                    ? Int.max : Int(recommended)
+            )
+        }
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: preregistration.referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber:
+                Float(preregistration.sourcePropertyReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let actualTau = Double(replay.tauPlus)
+        guard replay.grid.x == preregistration.expectedGridX,
+              replay.grid.y == preregistration.expectedGridY,
+              replay.grid.z == preregistration.expectedGridZ,
+              abs(actualTau - preregistration.expectedTauPlus) <= 2e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 runtime allocation or tau changed from preregistration"
+            )
+        }
+        let result = try replay.runCollisionMomentumClosure(
+            plan: plan,
+            collisionOperator: collision,
+            maximumRelativeRMSResidual:
+                preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                preregistration.maximumCorrectionActivationFraction,
+            requestedSteps: preregistration.requestedPreRollSteps,
+            movingWallNormalization: .preStepLocalDensity
+        )
+        let completion = result.completedSteps
+                == preregistration.requestedPreRollSteps
+            && result.samples.count == preregistration.requestedPreRollSteps
+            && result.allValuesFinite
+            && result.sampledPopulationPositivityPassed
+            && result.minimumPopulation > 0
+            && result.maximumSolidControlSurfaceCrossingLinkCount == 0
+        let ledger = result.relativeRMSRawControlVolumeClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.relativeRMSGlobalFluidClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+        let correction = result
+                .collisionLimiterActivationFractionOfCellSteps
+                <= preregistration.maximumCorrectionActivationFraction
+            && result.maximumCollisionRestriction.isFinite
+        let tauPassed = actualTau
+            >= preregistration.productionMinimumTauPlus
+        let passed = workingSetPassed && tauPassed && completion
+            && ledger && correction && result.momentumClosurePassed
+        return MetalIndexedBirdSurfaceSourceViscosityD32Report(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            recommendedMaximumWorkingSetBytes: recommended,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            selectedCollisionOperator: collision.rawValue,
+            referenceLengthCells: preregistration.referenceLengthCells,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            actualTauPlus: actualTau,
+            productionTauMarginPassed: tauPassed,
+            workingSetPreflightPassed: workingSetPassed,
+            completionAndPositivityPassed: completion,
+            momentumLedgerPassed: ledger,
+            correctionIntrusionPassed: correction,
+            preRollGatePassed: passed,
+            d32FullWindowRunAuthorized: passed,
+            fluidEvolutionExecuted: true,
+            productionModificationAuthorized: false,
+            experimentalAgreementGateApplied: false,
+            gridConvergenceGateApplied: false,
+            caseReport: result,
+            classification: passed
+                ? "rr3-source-viscosity-pre-roll-passed-at-d32"
+                : "rr3-source-viscosity-pre-roll-failed-at-d32",
+            scientificVerdict: passed
+                ? (
+                    "RR3 completed the preregistered D32 source-viscosity "
+                        + "pre-roll with positive finite populations, both "
+                        + "momentum ledgers closed, and bounded correction."
+                )
+                : (
+                    "RR3 did not clear every preregistered D32 positivity, "
+                        + "momentum, tau, memory, or correction gate."
+                ),
+            nextAction: passed
+                ? (
+                    "Preregister one RR3 D32 full measured-force window; do "
+                        + "not run it until the independent pre-roll audit "
+                        + "reconstructs every numerical gate."
+                )
+                : (
+                    "Localize the first failed D32 pre-roll condition; do not "
+                        + "allocate the D32 full measured-force window."
+                ),
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func sourceViscosityD32FullWindowPreregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d32Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD32Preregistration,
+        sourceD32PreregistrationSHA256: String,
+        d32PreRoll: MetalIndexedBirdSurfaceSourceViscosityD32Report,
+        sourceD32PreRollSHA256: String,
+        d32Audit: MetalIndexedBirdSurfaceSourceViscosityD32AuditEvidence,
+        sourceD32AuditSHA256: String
+    ) throws ->
+        MetalIndexedBirdSurfaceSourceViscosityD32FullWindowPreregistration
+    {
+        let preregistrationSHA = sourceD32PreregistrationSHA256.lowercased()
+        let preRollSHA = sourceD32PreRollSHA256.lowercased()
+        let auditSHA = sourceD32AuditSHA256.lowercased()
+        let hashes = [preregistrationSHA, preRollSHA, auditSHA]
+        let expectedOperator = MetalIndexedBirdSurfaceCollisionOperator
+            .positivityPreservingRecursiveRegularizedBGK.rawValue
+        guard hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        d32Preregistration.datasetIdentifier == surface.datasetIdentifier,
+        d32Preregistration.manifestSHA256 == surface.manifestSHA256,
+        d32Preregistration.forceTargetIdentifier == target.datasetIdentifier,
+        d32Preregistration.forceTargetSHA256 == target.targetSHA256,
+        d32Preregistration.passed,
+        d32Preregistration.selectedCollisionOperator == expectedOperator,
+        !d32Preregistration.experimentalAgreementGateApplied,
+        !d32Preregistration.gridConvergenceGateApplied,
+        d32PreRoll.sourcePreregistrationSHA256 == preregistrationSHA,
+        d32PreRoll.selectedCollisionOperator == expectedOperator,
+        d32PreRoll.preRollGatePassed,
+        d32PreRoll.d32FullWindowRunAuthorized,
+        d32PreRoll.productionTauMarginPassed,
+        d32PreRoll.workingSetPreflightPassed,
+        d32PreRoll.completionAndPositivityPassed,
+        d32PreRoll.momentumLedgerPassed,
+        d32PreRoll.correctionIntrusionPassed,
+        !d32PreRoll.experimentalAgreementGateApplied,
+        !d32PreRoll.gridConvergenceGateApplied,
+        !d32PreRoll.productionModificationAuthorized,
+        d32Audit.schemaVersion == 1,
+        d32Audit.preregistrationSHA256 == preregistrationSHA,
+        d32Audit.reportSHA256 == preRollSHA,
+        d32Audit.checkCount >= 18,
+        d32Audit.allChecksPassed,
+        d32Audit.d32FullWindowRunGatePassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 full-window preregistration requires the passed, independently audited D32 pre-roll"
+            )
+        }
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: d32Preregistration.referenceLengthCells
+        )
+        let workingSetEstimate = Int64(d32Preregistration.expectedCellCount)
+            * 256
+        guard d32Preregistration.referenceLengthCells == 32,
+              d32PreRoll.referenceLengthCells == 32,
+              d32PreRoll.gridX == d32Preregistration.expectedGridX,
+              d32PreRoll.gridY == d32Preregistration.expectedGridY,
+              d32PreRoll.gridZ == d32Preregistration.expectedGridZ,
+              abs(d32PreRoll.actualTauPlus
+                - d32Preregistration.expectedTauPlus) <= 2e-7,
+              plan.totalFluidSteps == 15_104,
+              plan.fluidStepsPerForceSample == 64,
+              plan.comparisonForceSamples == 187,
+              workingSetEstimate
+                == d32Preregistration.conservativeWorkingSetEstimateBytes else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 full-window dimensions or force timing changed after the pre-roll"
+            )
+        }
+        return MetalIndexedBirdSurfaceSourceViscosityD32FullWindowPreregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceD32PreregistrationSHA256: preregistrationSHA,
+            sourceD32PreRollSHA256: preRollSHA,
+            sourceD32AuditSHA256: auditSHA,
+            selectedCollisionOperator: expectedOperator,
+            referenceLengthCells: 32,
+            expectedGridX: d32Preregistration.expectedGridX,
+            expectedGridY: d32Preregistration.expectedGridY,
+            expectedGridZ: d32Preregistration.expectedGridZ,
+            expectedTauPlus: d32Preregistration.expectedTauPlus,
+            productionMinimumTauPlus:
+                d32Preregistration.productionMinimumTauPlus,
+            requestedFullWindowSteps: plan.totalFluidSteps,
+            fluidStepsPerForceSample: plan.fluidStepsPerForceSample,
+            requestedComparisonSamples: plan.comparisonForceSamples,
+            conservativeWorkingSetEstimateBytes: workingSetEstimate,
+            maximumRelativeRMSClosureResidual:
+                d32Preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                d32Preregistration.maximumCorrectionActivationFraction,
+            movingWallNormalization:
+                MetalIndexedBirdSurfaceMovingWallNormalization
+                    .preStepLocalDensity.rawValue,
+            selectionRule: (
+                "Run only the pre-roll-cleared RR3 operator for all 15,104 "
+                    + "D32 steps. Require the production tau guard, working-"
+                    + "set preflight, positive finite populations, all 187 "
+                    + "registered force bins, zero solid control-surface "
+                    + "crossings, both <=0.5% momentum ledgers, and <=5% "
+                    + "correction activation. Audit the result independently "
+                    + "before any D28/D32 refinement verdict."
+            ),
+            fixedInputs: (
+                "SHA-locked D32 preregistration/pre-roll/audit; RR3; D32; "
+                    + "source rho/mu engineering Reynolds; measured geometry, "
+                    + "kinematics, and force window; 0.08 m reference length; "
+                    + "fixed Courant scaling; pre-step local-density moving "
+                    + "wall; unchanged boundary, force, far-field, sponge, "
+                    + "positivity, momentum, correction, and tau gates"
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            gridConvergenceGateApplied: false,
+            claimBoundary: (
+                "This freezes the single D32 source-viscosity full force "
+                    + "window before observing its result. A numerical pass "
+                    + "provides the fine member of a D28/D32 same-physics "
+                    + "pair, but does not itself establish grid convergence, "
+                    + "experimental agreement, production promotion, or free "
+                    + "flight."
+            )
+        )
+    }
+
+    public static func sourceViscosityD32FullWindow(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        d32Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD32Preregistration,
+        sourceD32PreregistrationSHA256: String,
+        d32PreRoll: MetalIndexedBirdSurfaceSourceViscosityD32Report,
+        sourceD32PreRollSHA256: String,
+        d32Audit: MetalIndexedBirdSurfaceSourceViscosityD32AuditEvidence,
+        sourceD32AuditSHA256: String,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD32FullWindowPreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSourceViscosityD32FullWindowReport {
+        let expected = try sourceViscosityD32FullWindowPreregistration(
+            surface: surface,
+            target: target,
+            d32Preregistration: d32Preregistration,
+            sourceD32PreregistrationSHA256:
+                sourceD32PreregistrationSHA256,
+            d32PreRoll: d32PreRoll,
+            sourceD32PreRollSHA256: sourceD32PreRollSHA256,
+            d32Audit: d32Audit,
+            sourceD32AuditSHA256: sourceD32AuditSHA256
+        )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit),
+              let collision = MetalIndexedBirdSurfaceCollisionOperator(
+                  rawValue: preregistration.selectedCollisionOperator
+              ),
+              collision
+                == .positivityPreservingRecursiveRegularizedBGK else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 full window does not match its locked preregistration"
+            )
+        }
+#if canImport(Metal)
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: preregistration.referenceLengthCells
+        )
+        let backend = try MetalBackend(fastMath: false)
+        let recommended = backend.device.recommendedMaxWorkingSetSize
+        let workingSetPassed = recommended == 0
+            || UInt64(preregistration.conservativeWorkingSetEstimateBytes)
+                <= recommended
+        guard workingSetPassed else {
+            throw BirdFlowError.workingSetExceedsRecommendation(
+                bytes: Int(preregistration.conservativeWorkingSetEstimateBytes),
+                recommended: recommended > UInt64(Int.max)
+                    ? Int.max : Int(recommended)
+            )
+        }
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: preregistration.referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber:
+                Float(d32Preregistration.sourcePropertyReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let actualTau = Double(replay.tauPlus)
+        guard replay.grid.x == preregistration.expectedGridX,
+              replay.grid.y == preregistration.expectedGridY,
+              replay.grid.z == preregistration.expectedGridZ,
+              abs(actualTau - preregistration.expectedTauPlus) <= 2e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 full-window allocation or tau changed from preregistration"
+            )
+        }
+        let result = try replay.runCollisionMomentumClosure(
+            plan: plan,
+            collisionOperator: collision,
+            maximumRelativeRMSResidual:
+                preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                preregistration.maximumCorrectionActivationFraction,
+            requestedSteps: preregistration.requestedFullWindowSteps,
+            movingWallNormalization: .preStepLocalDensity
+        )
+        var forceSamples =
+            [MetalIndexedBirdSurfaceMovingWallFullWindowForceSample]()
+        forceSamples.reserveCapacity(target.comparisonSampleCount)
+        if result.samples.count >= plan.fluidStepsPerForceSample {
+            for targetIndex in
+                target.comparisonFirstSampleIndex...target.comparisonLastSampleIndex
+            {
+                let endStep = targetIndex * plan.fluidStepsPerForceSample
+                let startIndex = endStep - plan.fluidStepsPerForceSample
+                guard endStep <= result.samples.count,
+                      startIndex >= 0 else { continue }
+                let interval = result.samples[startIndex..<endStep]
+                let sum = interval.reduce(SIMD3<Double>.zero) {
+                    $0 + $1.aerodynamicForceNewtons
+                }
+                let mean = sum / Double(plan.fluidStepsPerForceSample)
+                let measuredX = target.forceXNewtons[targetIndex]
+                let measuredZ = target.forceZNewtons[targetIndex]
+                forceSamples.append(
+                    MetalIndexedBirdSurfaceMovingWallFullWindowForceSample(
+                        targetSampleIndex: targetIndex,
+                        sourceTimeSeconds: target.timesSeconds[targetIndex],
+                        measuredForceXNewtons: measuredX,
+                        measuredForceZNewtons: measuredZ,
+                        intervalMeanComputedForceNewtons: mean,
+                        residualXNewtons: mean.x - measuredX,
+                        residualZNewtons: mean.z - measuredZ
+                    )
+                )
+            }
+        }
+        let windowComplete = forceSamples.count
+            == preregistration.requestedComparisonSamples
+        let measuredPairs = forceSamples.map {
+            SIMD2<Double>($0.measuredForceXNewtons, $0.measuredForceZNewtons)
+        }
+        let computedPairs = forceSamples.map {
+            SIMD2<Double>(
+                $0.intervalMeanComputedForceNewtons.x,
+                $0.intervalMeanComputedForceNewtons.z
+            )
+        }
+        let comparisonAvailable = windowComplete && !forceSamples.isEmpty
+        let measuredImpulse = comparisonAvailable
+            ? pilotTrapezoidalImpulse(
+                measuredPairs,
+                sampleRateHertz: target.forceSampleRateHertz
+            ) : nil
+        let computedImpulse = comparisonAvailable
+            ? pilotTrapezoidalImpulse(
+                computedPairs,
+                sampleRateHertz: target.forceSampleRateHertz
+            ) : nil
+        let measuredPeak = comparisonAvailable
+            ? forceSamples.max(by: {
+                let lhs = $0.measuredForceXNewtons * $0.measuredForceXNewtons
+                    + $0.measuredForceZNewtons * $0.measuredForceZNewtons
+                let rhs = $1.measuredForceXNewtons * $1.measuredForceXNewtons
+                    + $1.measuredForceZNewtons * $1.measuredForceZNewtons
+                return lhs < rhs
+            })?.sourceTimeSeconds : nil
+        let computedPeak = comparisonAvailable
+            ? forceSamples.max(by: {
+                let lhs = $0.intervalMeanComputedForceNewtons
+                let rhs = $1.intervalMeanComputedForceNewtons
+                return lhs.x * lhs.x + lhs.z * lhs.z
+                    < rhs.x * rhs.x + rhs.z * rhs.z
+            })?.sourceTimeSeconds : nil
+        let allStepsCompleted = result.completedSteps
+                == preregistration.requestedFullWindowSteps
+            && result.samples.count == preregistration.requestedFullWindowSteps
+        let populationPassed = result.allValuesFinite
+            && result.sampledPopulationPositivityPassed
+            && result.minimumPopulation > 0
+        let accountingPassed =
+            result.maximumSolidControlSurfaceCrossingLinkCount == 0
+            && result.relativeRMSRawControlVolumeClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.relativeRMSGlobalFluidClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.momentumClosurePassed
+        let correctionPassed = result
+                .collisionLimiterActivationFractionOfCellSteps
+                <= preregistration.maximumCorrectionActivationFraction
+            && result.maximumCollisionRestriction.isFinite
+        let tauPassed = actualTau >= preregistration.productionMinimumTauPlus
+        let passed = workingSetPassed && tauPassed && allStepsCompleted
+            && populationPassed && accountingPassed && correctionPassed
+            && windowComplete
+        return MetalIndexedBirdSurfaceSourceViscosityD32FullWindowReport(
+            schemaVersion: 1,
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            selectedCollisionOperator: collision.rawValue,
+            movingWallNormalization: preregistration.movingWallNormalization,
+            referenceLengthCells: preregistration.referenceLengthCells,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            actualTauPlus: actualTau,
+            recommendedMaximumWorkingSetBytes: recommended,
+            requestedSteps: preregistration.requestedFullWindowSteps,
+            requestedComparisonSamples:
+                preregistration.requestedComparisonSamples,
+            plan: plan,
+            ledgerResult: result,
+            registeredForceSamples: forceSamples,
+            registeredComparisonSampleCount: forceSamples.count,
+            measuredMeanForceXNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map(\.measuredForceXNewtons)) : nil,
+            measuredMeanForceZNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map(\.measuredForceZNewtons)) : nil,
+            computedMeanForceXNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map {
+                    $0.intervalMeanComputedForceNewtons.x
+                }) : nil,
+            computedMeanForceZNewtons: comparisonAvailable
+                ? pilotMean(forceSamples.map {
+                    $0.intervalMeanComputedForceNewtons.z
+                }) : nil,
+            normalizedRMSError: comparisonAvailable
+                ? pilotNormalizedRMSError(
+                    measured: measuredPairs,
+                    computed: computedPairs
+                ) : nil,
+            measuredImpulseXNewtonSeconds: measuredImpulse?.x,
+            measuredImpulseZNewtonSeconds: measuredImpulse?.y,
+            computedImpulseXNewtonSeconds: computedImpulse?.x,
+            computedImpulseZNewtonSeconds: computedImpulse?.y,
+            measuredPeakTimeSeconds: measuredPeak,
+            computedPeakTimeSeconds: computedPeak,
+            productionTauMarginPassed: tauPassed,
+            workingSetPreflightPassed: workingSetPassed,
+            allStepsCompleted: allStepsCompleted,
+            populationPositivityPassed: populationPassed,
+            forceAndMomentumAccountingPassed: accountingPassed,
+            collisionCorrectionIntrusionPassed: correctionPassed,
+            registeredWindowComplete: windowComplete,
+            fullWindowGatePassed: passed,
+            experimentalAgreementGateApplied: false,
+            gridConvergenceGateApplied: false,
+            productionModificationAuthorized: false,
+            classification: passed
+                ? "rr3-source-viscosity-d32-full-window-numerically-passed"
+                : "rr3-source-viscosity-d32-full-window-failed",
+            scientificVerdict: passed
+                ? (
+                    "RR3 completed the D32 registered force window with "
+                        + "positive finite populations, all 187 force bins, "
+                        + "and both momentum ledgers closed."
+                )
+                : (
+                    "RR3 failed at least one preregistered D32 full-window "
+                        + "positivity, force-sampling, momentum, tau, working-"
+                        + "set, or correction-intrusion gate."
+                ),
+            nextAction: passed
+                ? (
+                    "Independently audit every D32 step and force bin, then "
+                        + "apply a separately frozen D28/D32 same-physics "
+                        + "refinement verdict before any convergence claim."
+                )
+                : (
+                    "Localize the first failed D32 full-window condition; do "
+                        + "not compute a D28/D32 refinement verdict."
+                ),
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func sourceViscosityTargetedBoundaryCase(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration:
+            MetalIndexedBirdSurfaceTargetedBoundaryPreregistration,
+        sourcePreregistrationSHA256: String,
+        sourceFullWindowReport:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport,
+        sourceFullWindowReportSHA256: String,
+        referenceLengthCells: Int
+    ) throws -> MetalIndexedBirdSurfaceTargetedBoundaryCaseReport {
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        let fullWindowSHA = sourceFullWindowReportSHA256.lowercased()
+        let expectedFullWindowSHA = referenceLengthCells
+            == preregistration.coarseReferenceLengthCells
+            ? preregistration.sourceD28FullWindowReportSHA256
+            : preregistration.sourceD32FullWindowReportSHA256
+        let expectedStepsPerSample = referenceLengthCells
+            == preregistration.coarseReferenceLengthCells
+            ? preregistration.d28FluidStepsPerForceSample
+            : preregistration.d32FluidStepsPerForceSample
+        let expectedRequestedSteps = referenceLengthCells
+            == preregistration.coarseReferenceLengthCells
+            ? preregistration.d28RequestedSteps
+            : preregistration.d32RequestedSteps
+        let expectedTauPlus = referenceLengthCells
+            == preregistration.coarseReferenceLengthCells
+            ? preregistration.expectedD28TauPlus
+            : preregistration.expectedD32TauPlus
+        guard preregistration.schemaVersion == 2,
+              preregistration.passed,
+              preregistration.datasetIdentifier == surface.datasetIdentifier,
+              preregistration.manifestSHA256 == surface.manifestSHA256,
+              preregistration.forceTargetIdentifier
+                == target.datasetIdentifier,
+              preregistration.forceTargetSHA256 == target.targetSHA256,
+              preregistration.selectedCollisionOperator
+                == MetalIndexedBirdSurfaceCollisionOperator
+                    .positivityPreservingRecursiveRegularizedBGK.rawValue,
+              preregistration.movingWallNormalization
+                == MetalIndexedBirdSurfaceMovingWallNormalization
+                    .preStepLocalDensity.rawValue,
+              preregistration.sourcePropertyReynoldsNumber.isFinite,
+              preregistration.sourcePropertyReynoldsNumber > 0,
+              expectedTauPlus.isFinite,
+              expectedTauPlus > 0.5,
+              [preregistration.coarseReferenceLengthCells,
+               preregistration.fineReferenceLengthCells]
+                .contains(referenceLengthCells),
+              preregistration.firstTargetSampleIndex > 0,
+              preregistration.lastTargetSampleIndex
+                >= preregistration.firstTargetSampleIndex,
+              expectedStepsPerSample > 0,
+              expectedRequestedSteps
+                == preregistration.lastTargetSampleIndex
+                    * expectedStepsPerSample,
+              target.timesSeconds.indices.contains(
+                preregistration.lastTargetSampleIndex
+              ),
+              abs(
+                target.timesSeconds[preregistration.firstTargetSampleIndex]
+                    - preregistration.targetStartTimeSeconds
+              ) <= 1e-12,
+              abs(
+                target.timesSeconds[preregistration.lastTargetSampleIndex]
+                    - preregistration.targetEndTimeSeconds
+              ) <= 1e-12,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit),
+              fullWindowSHA == expectedFullWindowSHA,
+              sourceFullWindowReport.fullWindowGatePassed,
+              sourceFullWindowReport.referenceLengthCells
+                == referenceLengthCells,
+              sourceFullWindowReport.datasetIdentifier
+                == surface.datasetIdentifier,
+              sourceFullWindowReport.manifestSHA256 == surface.manifestSHA256,
+              sourceFullWindowReport.forceTargetIdentifier
+                == target.datasetIdentifier,
+              sourceFullWindowReport.forceTargetSHA256
+                == target.targetSHA256,
+              sourceFullWindowReport.selectedCollisionOperator
+                == preregistration.selectedCollisionOperator,
+              sourceFullWindowReport.movingWallNormalization
+                == preregistration.movingWallNormalization else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "targeted boundary replay does not match its locked evidence"
+            )
+        }
+#if canImport(Metal)
+        let collision = MetalIndexedBirdSurfaceCollisionOperator
+            .positivityPreservingRecursiveRegularizedBGK
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: referenceLengthCells
+        )
+        guard plan.fluidStepsPerForceSample == expectedStepsPerSample,
+              plan.totalFluidSteps >= expectedRequestedSteps else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "targeted boundary replay scaling changed from preregistration"
+            )
+        }
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber:
+                Float(preregistration.sourcePropertyReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        guard abs(Double(replay.tauPlus) - expectedTauPlus) <= 2e-7,
+              abs(
+                Double(replay.tauPlus)
+                    - sourceFullWindowReport.actualTauPlus
+              ) <= 2e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "targeted boundary replay tau changed from the source window"
+            )
+        }
+        let firstCapturedStep = (
+            preregistration.firstTargetSampleIndex - 1
+        ) * expectedStepsPerSample + 1
+        let lastCapturedStep = preregistration.lastTargetSampleIndex
+            * expectedStepsPerSample
+        let capture = try MetalIndexedMovingBoundaryForceCapture(
+            backend: backend,
+            cellCount: replay.grid.cellCount,
+            firstCapturedStep: firstCapturedStep,
+            lastCapturedStep: lastCapturedStep
+        )
+        let result = try replay.runCollisionMomentumClosure(
+            plan: plan,
+            collisionOperator: collision,
+            maximumRelativeRMSResidual:
+                preregistration.maximumRelativeRMSClosureResidual,
+            maximumCorrectionActivationFraction:
+                preregistration.maximumCorrectionActivationFraction,
+            requestedSteps: expectedRequestedSteps,
+            movingWallNormalization: .preStepLocalDensity,
+            movingBoundaryForceCapture: capture
+        )
+        var componentSteps =
+            [MetalIndexedBirdSurfaceBoundaryForceComponentStep]()
+        componentSteps.reserveCapacity(lastCapturedStep - firstCapturedStep + 1)
+        for sample in result.samples where
+            (firstCapturedStep...lastCapturedStep).contains(sample.step)
+        {
+            guard let components = capture.read(step: sample.step) else {
+                continue
+            }
+            let reconstructed =
+                components.reflectedPopulationForceNewtons
+                + components.movingWallForceNewtons
+                + components.interpolationResidualForceNewtons
+                + components.topologyImpulseForceNewtons
+            componentSteps.append(
+                MetalIndexedBirdSurfaceBoundaryForceComponentStep(
+                    step: sample.step,
+                    sourceTimeSeconds: sample.sourceTimeSeconds,
+                    reflectedPopulationForceNewtons:
+                        components.reflectedPopulationForceNewtons,
+                    movingWallForceNewtons:
+                        components.movingWallForceNewtons,
+                    interpolationResidualForceNewtons:
+                        components.interpolationResidualForceNewtons,
+                    topologyImpulseForceNewtons:
+                        components.topologyImpulseForceNewtons,
+                    reconstructedForceNewtons: reconstructed,
+                    productionForceNewtons: sample.aerodynamicForceNewtons,
+                    reconstructionResidualNewtons:
+                        reconstructed - sample.aerodynamicForceNewtons
+                )
+            )
+        }
+        let archivedSamples = Dictionary(uniqueKeysWithValues:
+            sourceFullWindowReport.registeredForceSamples.map {
+                ($0.targetSampleIndex, $0)
+            }
+        )
+        var componentBins =
+            [MetalIndexedBirdSurfaceBoundaryForceComponentBin]()
+        let firstTargetIndex = preregistration.firstTargetSampleIndex
+        let lastTargetIndex = preregistration.lastTargetSampleIndex
+        for targetIndex in firstTargetIndex...lastTargetIndex {
+            let endStep = targetIndex * expectedStepsPerSample
+            let startStep = endStep - expectedStepsPerSample + 1
+            let interval = componentSteps.filter {
+                (startStep...endStep).contains($0.step)
+            }
+            guard interval.count == expectedStepsPerSample,
+                  let archived = archivedSamples[targetIndex] else {
+                continue
+            }
+            func mean(
+                _ keyPath: KeyPath<
+                    MetalIndexedBirdSurfaceBoundaryForceComponentStep,
+                    SIMD3<Double>
+                >
+            ) -> SIMD3<Double> {
+                interval.reduce(SIMD3<Double>.zero) {
+                    $0 + $1[keyPath: keyPath]
+                } / Double(expectedStepsPerSample)
+            }
+            let reflected = mean(\.reflectedPopulationForceNewtons)
+            let wall = mean(\.movingWallForceNewtons)
+            let interpolation = mean(\.interpolationResidualForceNewtons)
+            let topology = mean(\.topologyImpulseForceNewtons)
+            let reconstructed = mean(\.reconstructedForceNewtons)
+            let production = mean(\.productionForceNewtons)
+            let archivedForce = archived.intervalMeanComputedForceNewtons
+            componentBins.append(
+                MetalIndexedBirdSurfaceBoundaryForceComponentBin(
+                    targetSampleIndex: targetIndex,
+                    sourceTimeSeconds: target.timesSeconds[targetIndex],
+                    reflectedPopulationMeanForceNewtons: reflected,
+                    movingWallMeanForceNewtons: wall,
+                    interpolationResidualMeanForceNewtons: interpolation,
+                    topologyImpulseMeanForceNewtons: topology,
+                    reconstructedMeanForceNewtons: reconstructed,
+                    productionMeanForceNewtons: production,
+                    archivedMeanForceNewtons: archivedForce,
+                    reconstructionResidualNewtons:
+                        reconstructed - production,
+                    archivedReproductionResidualNewtons:
+                        production - archivedForce
+                )
+            )
+        }
+        let reconstructionResiduals = componentSteps.map(
+            \.reconstructionResidualNewtons
+        )
+        let reconstructionRelativeRMS = vectorRMS(reconstructionResiduals)
+            / max(
+                vectorRMS(componentSteps.map(\.reconstructedForceNewtons)),
+                vectorRMS(componentSteps.map(\.productionForceNewtons)),
+                1e-30
+            )
+        let maximumReconstructionResidual = reconstructionResiduals.map(
+            vectorMagnitude
+        ).max() ?? .infinity
+        let reproductionResiduals = componentBins.map(
+            \.archivedReproductionResidualNewtons
+        )
+        let reproductionRelativeRMS = vectorRMS(reproductionResiduals)
+            / max(
+                vectorRMS(componentBins.map(\.productionMeanForceNewtons)),
+                vectorRMS(componentBins.map(\.archivedMeanForceNewtons)),
+                1e-30
+            )
+        let expectedCapturedSteps = lastCapturedStep - firstCapturedStep + 1
+        let numericalPassed = result.completedSteps == expectedRequestedSteps
+            && result.samples.count == expectedRequestedSteps
+            && result.allValuesFinite
+            && result.sampledPopulationPositivityPassed
+            && result.minimumPopulation > 0
+            && result.momentumClosurePassed
+            && result.relativeRMSRawControlVolumeClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.relativeRMSGlobalFluidClosureResidual
+                <= preregistration.maximumRelativeRMSClosureResidual
+            && result.collisionLimiterActivationFractionOfCellSteps
+                <= preregistration.maximumCorrectionActivationFraction
+        let reconstructionPassed = componentSteps.count
+                == expectedCapturedSteps
+            && reconstructionRelativeRMS.isFinite
+            && reconstructionRelativeRMS
+                <= preregistration.maximumComponentReconstructionRelativeRMS
+        let reproductionPassed = componentBins.count
+                == preregistration.lastTargetSampleIndex
+                    - preregistration.firstTargetSampleIndex + 1
+            && reproductionRelativeRMS.isFinite
+            && reproductionRelativeRMS
+                <= preregistration
+                    .maximumArchivedForceReproductionRelativeRMS
+        let passed = numericalPassed && reconstructionPassed
+            && reproductionPassed
+        return MetalIndexedBirdSurfaceTargetedBoundaryCaseReport(
+            schemaVersion: 1,
+            analysisIdentifier: (
+                "deetjen-ob-f03-source-viscosity-targeted-boundary-d"
+                    + "\(referenceLengthCells)-v1"
+            ),
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            sourceFullWindowReportSHA256: fullWindowSHA,
+            selectedCollisionOperator: collision.rawValue,
+            movingWallNormalization: preregistration.movingWallNormalization,
+            referenceLengthCells: referenceLengthCells,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            actualTauPlus: Double(replay.tauPlus),
+            requestedSteps: expectedRequestedSteps,
+            firstCapturedStep: firstCapturedStep,
+            lastCapturedStep: lastCapturedStep,
+            capturedStepCount: componentSteps.count,
+            componentSteps: componentSteps,
+            componentBins: componentBins,
+            componentReconstructionRelativeRMS:
+                reconstructionRelativeRMS,
+            maximumComponentReconstructionResidualNewtons:
+                maximumReconstructionResidual,
+            archivedForceReproductionRelativeRMS:
+                reproductionRelativeRMS,
+            numericalLedgerPassed: numericalPassed,
+            componentReconstructionPassed: reconstructionPassed,
+            archivedForceReproductionPassed: reproductionPassed,
+            targetedCasePassed: passed,
+            ledgerResult: result,
+            fluidEvolutionExecuted: true,
+            productionModificationAuthorized: false,
+            experimentalAgreementGateApplied: false,
+            gridConvergenceGateApplied: false,
+            classification: passed
+                ? "targeted-moving-boundary-components-closed"
+                : "targeted-moving-boundary-components-failed",
+            scientificVerdict: passed
+                ? (
+                    "The moving-geometry component replay exactly follows "
+                        + "the production RR3 trajectory and closes reflected, "
+                        + "moving-wall, interpolation, and topology loads over "
+                        + "the preregistered 25--30 ms interval."
+                )
+                : (
+                    "The targeted replay failed its numerical ledger, force-"
+                        + "component reconstruction, or archived-trajectory "
+                        + "reproduction contract."
+                ),
+            nextAction: passed
+                ? (
+                    "Combine the independently completed D28 and D32 cases; "
+                        + "attribute pair-difference energy with the frozen "
+                        + "self-plus-interaction decomposition before changing "
+                        + "any production boundary physics."
+                )
+                : (
+                    "Localize the first failed closure or reproduction step; "
+                        + "do not interpret component attribution."
+                ),
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
     }
 
     public static func collisionGridPreregistration(
@@ -7198,6 +10328,1634 @@ public enum MetalIndexedBirdSurfacePilotValidator {
 #endif
     }
 
+    public static func collisionGridMovingWallDistributedForcePreregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        linkGeometryPreregistration:
+            MetalIndexedBirdSurfaceLinkGeometryPreregistration,
+        sourceLinkGeometryPreregistrationSHA256: String,
+        linkGeometryReport: MetalIndexedBirdSurfaceLinkGeometryReport,
+        sourceLinkGeometryReportSHA256: String,
+        temporalDurationPreregistration:
+            MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration,
+        sourceTemporalDurationPreregistrationSHA256: String,
+        temporalDurationReport:
+            MetalIndexedBirdSurfaceMovingWallTemporalDurationReport,
+        sourceTemporalDurationReportSHA256: String,
+        linkPopulationPreregistration:
+            MetalIndexedBirdSurfaceLinkPopulationPreregistration,
+        sourceLinkPopulationPreregistrationSHA256: String,
+        linkPopulationReport: MetalIndexedBirdSurfaceLinkPopulationReport,
+        sourceLinkPopulationReportSHA256: String,
+        sourceLinkPopulationAuditSHA256: String,
+        linkPopulationAuditPassed: Bool
+    ) throws -> MetalIndexedBirdSurfaceDistributedForcePreregistration {
+        let hashes = [
+            sourceLinkGeometryPreregistrationSHA256,
+            sourceLinkGeometryReportSHA256,
+            sourceTemporalDurationPreregistrationSHA256,
+            sourceTemporalDurationReportSHA256,
+            sourceLinkPopulationPreregistrationSHA256,
+            sourceLinkPopulationReportSHA256,
+            sourceLinkPopulationAuditSHA256,
+        ].map { $0.lowercased() }
+        guard hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        linkGeometryPreregistration.datasetIdentifier
+            == surface.datasetIdentifier,
+        linkGeometryPreregistration.manifestSHA256 == surface.manifestSHA256,
+        linkGeometryPreregistration.passed,
+        linkGeometryReport.datasetIdentifier == surface.datasetIdentifier,
+        linkGeometryReport.manifestSHA256 == surface.manifestSHA256,
+        linkGeometryReport.sourceLinkGeometryPreregistrationSHA256
+            == hashes[0],
+        linkGeometryReport.d12.parityGatePassed,
+        linkGeometryReport.d16.parityGatePassed,
+        temporalDurationPreregistration.datasetIdentifier
+            == surface.datasetIdentifier,
+        temporalDurationPreregistration.manifestSHA256
+            == surface.manifestSHA256,
+        temporalDurationPreregistration.passed,
+        temporalDurationPreregistration.referenceLengthCells == [12, 16],
+        temporalDurationPreregistration.extendedForceBinCount == 24,
+        temporalDurationReport.datasetIdentifier == surface.datasetIdentifier,
+        temporalDurationReport.manifestSHA256 == surface.manifestSHA256,
+        temporalDurationReport.sourceDurationPreregistrationSHA256
+            == hashes[2],
+        temporalDurationReport.extendedSampling.d12.numericalCaseGatePassed,
+        temporalDurationReport.extendedSampling.d16.numericalCaseGatePassed,
+        temporalDurationReport.classification
+            == "persistent-fixed-wall-grid-disagreement",
+        linkPopulationPreregistration.contractRevision == 2,
+        linkPopulationPreregistration.passed,
+        linkPopulationReport.datasetIdentifier == surface.datasetIdentifier,
+        linkPopulationReport.manifestSHA256 == surface.manifestSHA256,
+        linkPopulationReport.sourceLinkPopulationPreregistrationSHA256
+            == hashes[4],
+        linkPopulationReport.sourceReproductionPassed,
+        linkPopulationReport.classification
+            == "realized-population-insensitive",
+        !linkPopulationReport.validationOnlyBoundaryABAuthorized,
+        !linkPopulationReport.d16CaptureAuthorized,
+        !linkPopulationReport.productionModificationAuthorized,
+        linkPopulationAuditPassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "distributed force preregistration requires the locked geometry, duration, and fallback-aware population evidence"
+            )
+        }
+        let d12Links = linkGeometryReport.d12.metalBins.reduce(0) {
+            $0 + $1.linkCount
+        }
+        let d16Links = linkGeometryReport.d16.metalBins.reduce(0) {
+            $0 + $1.linkCount
+        }
+        let d12Steps = temporalDurationReport.extendedSampling.d12
+            .requestedSteps
+        let d16Steps = temporalDurationReport.extendedSampling.d16
+            .requestedSteps
+        guard d12Links == 25_262,
+              d16Links == 45_514,
+              d12Steps == 576,
+              d16Steps == 768 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "distributed force source dimensions changed"
+            )
+        }
+        return MetalIndexedBirdSurfaceDistributedForcePreregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceLinkGeometryPreregistrationSHA256: hashes[0],
+            sourceLinkGeometryReportSHA256: hashes[1],
+            sourceTemporalDurationPreregistrationSHA256: hashes[2],
+            sourceTemporalDurationReportSHA256: hashes[3],
+            sourceLinkPopulationPreregistrationSHA256: hashes[4],
+            sourceLinkPopulationReportSHA256: hashes[5],
+            sourceLinkPopulationAuditSHA256: hashes[6],
+            referenceLengthCells: [12, 16],
+            expectedLinkCounts: [d12Links, d16Links],
+            frozenSourceTimeSeconds:
+                temporalDurationPreregistration.frozenSourceTimeSeconds,
+            temporalBinCount: 24,
+            expectedStepCounts: [d12Steps, d16Steps],
+            interpolationFractionBinCount: 20,
+            forceTerms: [
+                "base-reflection",
+                "moving-wall",
+                "interpolation-residual",
+            ],
+            maximumAllowedAbsoluteTermClosureNewtons: 1e-6,
+            maximumAllowedRelativeRMSSourceForceClosure: 1e-4,
+            maximumAllowedDurationBinRelativeDifference: 1e-4,
+            maximumAllowedMetadataMismatchCount: 0,
+            minimumDominantTermAlignmentFraction: 0.60,
+            minimumDominantAxisAbsoluteContributionFraction: 0.60,
+            targetJointBinAbsoluteContributionFraction: 0.80,
+            selectionRule: (
+                "Independently restart the locked 24-bin topology-free D12 and "
+                    + "D16 fixed-phase cases. Capture every production boundary "
+                    + "link before collision and decompose conventional mode-6 "
+                    + "exchange into algebraically closed base-reflection, "
+                    + "moving-wall, and interpolation-residual forces. Require "
+                    + "all 25,262/45,514 link identities, static component/"
+                    + "direction/q-bin classifications, production-force RMS "
+                    + "closure, and archived 24-bin histories to reproduce. A "
+                    + "term is dominant only if its signed alignment with the "
+                    + "D12/D16 total-delta history is at least 60% over the full "
+                    + "window and it remains the >=60% winner in all three "
+                    + "non-overlapping eight-bin blocks. Spatial axes are named "
+                    + "dominant only above 60% of absolute aligned contribution."
+            ),
+            fixedInputs: (
+                "Hashed link-geometry, temporal-duration, and fallback-aware "
+                    + "population artifacts; source phase 26.5 ms; RR3 collision; "
+                    + "pre-step local-density wall normalization; D12/D16 grids; "
+                    + "24 physical-time bins; 20 effective-q bins; four measured "
+                    + "components; all 18 non-rest D3Q19 directions; production "
+                    + "mode-6 force scaling. The capture is read-only."
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            claimBoundary: (
+                "This validation-only decomposition attributes the retained "
+                    + "fixed-phase D12/D16 grid disagreement. It does not prove "
+                    + "a replacement boundary law, modify production, authorize "
+                    + "D20, relax the raw spatial gate, or establish experimental "
+                    + "force agreement."
+            )
+        )
+    }
+
+    public static func collisionGridMovingWallDistributedForce(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        linkGeometryPreregistration:
+            MetalIndexedBirdSurfaceLinkGeometryPreregistration,
+        sourceLinkGeometryPreregistrationSHA256: String,
+        linkGeometryReport: MetalIndexedBirdSurfaceLinkGeometryReport,
+        sourceLinkGeometryReportSHA256: String,
+        temporalDurationPreregistration:
+            MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration,
+        sourceTemporalDurationPreregistrationSHA256: String,
+        temporalDurationReport:
+            MetalIndexedBirdSurfaceMovingWallTemporalDurationReport,
+        sourceTemporalDurationReportSHA256: String,
+        linkPopulationPreregistration:
+            MetalIndexedBirdSurfaceLinkPopulationPreregistration,
+        sourceLinkPopulationPreregistrationSHA256: String,
+        linkPopulationReport: MetalIndexedBirdSurfaceLinkPopulationReport,
+        sourceLinkPopulationReportSHA256: String,
+        sourceLinkPopulationAuditSHA256: String,
+        linkPopulationAuditPassed: Bool,
+        preregistration:
+            MetalIndexedBirdSurfaceDistributedForcePreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceDistributedForceReport {
+#if canImport(Metal)
+        let expected = try
+            collisionGridMovingWallDistributedForcePreregistration(
+                surface: surface,
+                target: target,
+                linkGeometryPreregistration: linkGeometryPreregistration,
+                sourceLinkGeometryPreregistrationSHA256:
+                    sourceLinkGeometryPreregistrationSHA256,
+                linkGeometryReport: linkGeometryReport,
+                sourceLinkGeometryReportSHA256:
+                    sourceLinkGeometryReportSHA256,
+                temporalDurationPreregistration:
+                    temporalDurationPreregistration,
+                sourceTemporalDurationPreregistrationSHA256:
+                    sourceTemporalDurationPreregistrationSHA256,
+                temporalDurationReport: temporalDurationReport,
+                sourceTemporalDurationReportSHA256:
+                    sourceTemporalDurationReportSHA256,
+                linkPopulationPreregistration:
+                    linkPopulationPreregistration,
+                sourceLinkPopulationPreregistrationSHA256:
+                    sourceLinkPopulationPreregistrationSHA256,
+                linkPopulationReport: linkPopulationReport,
+                sourceLinkPopulationReportSHA256:
+                    sourceLinkPopulationReportSHA256,
+                sourceLinkPopulationAuditSHA256:
+                    sourceLinkPopulationAuditSHA256,
+                linkPopulationAuditPassed: linkPopulationAuditPassed
+            )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "distributed force run does not match its locked preregistration"
+            )
+        }
+        let backend = try MetalBackend(fastMath: false)
+        func runCase(
+            referenceLengthCells: Int,
+            expectedLinkCount: Int,
+            expectedStepCount: Int,
+            sourceCase: MetalIndexedBirdSurfaceMovingWallTemporalSamplingCaseReport
+        ) throws -> MetalIndexedBirdSurfaceDistributedForceCaseReport {
+            let started = Date()
+            let plan = try refinementPlan(
+                surface: surface,
+                target: target,
+                referenceLengthCells: referenceLengthCells
+            )
+            let replay = try MetalIndexedBirdSurfaceReplay(
+                backend: backend,
+                dataset: surface,
+                cellSizeMeters: Float(plan.cellSizeMeters),
+                halfThicknessCells: Float(plan.halfThicknessCells),
+                referenceLengthCells: referenceLengthCells,
+                paddingCells: plan.paddingCells,
+                physicalAirDensity: sourceAirDensity,
+                targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+                latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+                spongeWidthCells: plan.spongeWidthCells,
+                spongeStrength: Float(plan.spongeStrength)
+            )
+            let snapshot = try replay.snapshot(
+                timeSeconds: Float(preregistration.frozenSourceTimeSeconds),
+                includeWallField: false
+            )
+            var links = [GPUIndexedBoundaryLink]()
+            links.reserveCapacity(expectedLinkCount)
+            for source in snapshot.partIdentifiers.indices {
+                let part = Int(snapshot.partIdentifiers[source])
+                guard (1...4).contains(part) else { continue }
+                let x = source % replay.grid.x
+                let yz = source / replay.grid.x
+                let y = yz % replay.grid.y
+                let z = yz / replay.grid.y
+                for direction in 1..<D3Q19.count {
+                    let offset = D3Q19.directions[direction]
+                    let targetX = x + Int(offset.x)
+                    let targetY = y + Int(offset.y)
+                    let targetZ = z + Int(offset.z)
+                    guard targetX >= 0, targetX < replay.grid.x,
+                          targetY >= 0, targetY < replay.grid.y,
+                          targetZ >= 0, targetZ < replay.grid.z else {
+                        continue
+                    }
+                    let targetCell = targetX + replay.grid.x * (
+                        targetY + replay.grid.y * targetZ
+                    )
+                    guard snapshot.partIdentifiers[targetCell] == 0 else {
+                        continue
+                    }
+                    links.append(GPUIndexedBoundaryLink(metadata:
+                        SIMD4<UInt32>(
+                            UInt32(targetCell),
+                            UInt32(direction),
+                            UInt32(part),
+                            UInt32(source)
+                        )
+                    ))
+                }
+            }
+            let capture = try MetalIndexedDistributedLinkTermCapture(
+                backend: backend,
+                links: links,
+                interpolationFractionBinCount:
+                    preregistration.interpolationFractionBinCount
+            )
+            let result = try replay.runCollisionMomentumClosure(
+                plan: plan,
+                collisionOperator:
+                    .positivityPreservingRecursiveRegularizedBGK,
+                maximumRelativeRMSResidual:
+                    collisionMomentumMaximumRelativeRMSResidual,
+                maximumCorrectionActivationFraction:
+                    collisionPreRollMaximumActivationFraction,
+                requestedSteps: expectedStepCount,
+                movingWallNormalization: .preStepLocalDensity,
+                fixedSurfaceTimeSeconds:
+                    Float(preregistration.frozenSourceTimeSeconds),
+                distributedLinkTermCapture: capture
+            )
+            guard capture.steps.count == expectedStepCount,
+                  result.samples.count == expectedStepCount,
+                  sourceCase.bins.count == preregistration.temporalBinCount
+            else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "distributed force capture returned an incomplete history"
+                )
+            }
+            let reconstructed = capture.steps.map(\.totalForceNewtons)
+            let sourceForces = result.samples.map(\.aerodynamicForceNewtons)
+            let residuals = zip(reconstructed, sourceForces).map {
+                $0 - $1
+            }
+            let relativeClosure = vectorRMS(residuals) / max(
+                vectorRMS(reconstructed), vectorRMS(sourceForces), 1e-30
+            )
+            let maximumClosure = residuals.map(vectorMagnitude).max()
+                ?? .infinity
+            let stepsPerBin = expectedStepCount
+                / preregistration.temporalBinCount
+            var temporalBins =
+                [MetalIndexedBirdSurfaceDistributedForceTemporalBin]()
+            var maximumDurationDifference = 0.0
+            for binIndex in 0..<preregistration.temporalBinCount {
+                let start = binIndex * stepsPerBin
+                let end = start + stepsPerBin
+                let captureSlice = capture.steps[start..<end]
+                let sourceSlice = sourceForces[start..<end]
+                let inverse = 1.0 / Double(stepsPerBin)
+                let reflected = captureSlice.reduce(.zero) {
+                    $0 + $1.reflectedForceNewtons
+                } * inverse
+                let wall = captureSlice.reduce(.zero) {
+                    $0 + $1.movingWallForceNewtons
+                } * inverse
+                let interpolation = captureSlice.reduce(.zero) {
+                    $0 + $1.interpolationResidualForceNewtons
+                } * inverse
+                let total = captureSlice.reduce(.zero) {
+                    $0 + $1.totalForceNewtons
+                } * inverse
+                let source = sourceSlice.reduce(.zero, +) * inverse
+                let archived = sourceCase.bins[binIndex]
+                    .impulsePreservingMeanForceNewtons
+                maximumDurationDifference = max(
+                    maximumDurationDifference,
+                    vectorMagnitude(total - archived) / max(
+                        vectorMagnitude(total),
+                        vectorMagnitude(archived),
+                        1e-30
+                    )
+                )
+                temporalBins.append(
+                    MetalIndexedBirdSurfaceDistributedForceTemporalBin(
+                        binIndex: binIndex,
+                        reflectedMeanForceNewtons: reflected,
+                        movingWallMeanForceNewtons: wall,
+                        interpolationResidualMeanForceNewtons:
+                            interpolation,
+                        reconstructedTotalMeanForceNewtons: total,
+                        sourceAerodynamicMeanForceNewtons: source
+                    )
+                )
+            }
+            let componentNames = Dictionary(uniqueKeysWithValues:
+                surface.components.map {
+                    (Int($0.partIdentifier), $0.name)
+                }
+            )
+            var spatialBins =
+                [MetalIndexedBirdSurfaceDistributedForceSpatialBin]()
+            let qBinCount = preregistration.interpolationFractionBinCount
+            for index in capture.spatialLinkCounts.indices {
+                let linkCount = capture.spatialLinkCounts[index]
+                guard linkCount > 0 else { continue }
+                let qBin = index % qBinCount
+                let directionPart = index / qBinCount
+                let direction = directionPart % (D3Q19.count - 1) + 1
+                let part = directionPart / (D3Q19.count - 1) + 1
+                let inverse = 1.0 / Double(expectedStepCount)
+                spatialBins.append(
+                    MetalIndexedBirdSurfaceDistributedForceSpatialBin(
+                        partIdentifier: part,
+                        componentName: componentNames[part] ?? "unknown",
+                        directionIndex: direction,
+                        interpolationFractionBinIndex: qBin,
+                        interpolationFractionLowerBound:
+                            Double(qBin) / Double(qBinCount),
+                        interpolationFractionUpperBound:
+                            Double(qBin + 1) / Double(qBinCount),
+                        linkCount: linkCount,
+                        fallbackLinkCount:
+                            capture.spatialFallbackCounts[index],
+                        reflectedMeanForceNewtons:
+                            capture.spatialReflectedSums[index] * inverse,
+                        movingWallMeanForceNewtons:
+                            capture.spatialWallSums[index] * inverse,
+                        interpolationResidualMeanForceNewtons:
+                            capture.spatialInterpolationSums[index] * inverse,
+                        reconstructedTotalMeanForceNewtons:
+                            capture.spatialTotalSums[index] * inverse
+                    )
+                )
+            }
+            let reproduced = links.count == expectedLinkCount
+                && result.completedSteps == expectedStepCount
+                && capture.metadataMismatchCount
+                    <= preregistration.maximumAllowedMetadataMismatchCount
+                && capture.maximumLinkClassificationMismatchCountPerStep == 0
+                && capture.maximumAbsoluteTermClosureNewtons
+                    <= preregistration
+                        .maximumAllowedAbsoluteTermClosureNewtons
+                && relativeClosure
+                    <= preregistration
+                        .maximumAllowedRelativeRMSSourceForceClosure
+                && maximumDurationDifference
+                    <= preregistration
+                        .maximumAllowedDurationBinRelativeDifference
+                && result.momentumClosurePassed
+                && result.sampledPopulationPositivityPassed
+                && result.allValuesFinite && capture.allValuesFinite
+            return MetalIndexedBirdSurfaceDistributedForceCaseReport(
+                schemaVersion: 1,
+                deviceName: backend.device.name,
+                referenceLengthCells: referenceLengthCells,
+                gridX: replay.grid.x,
+                gridY: replay.grid.y,
+                gridZ: replay.grid.z,
+                frozenSourceTimeSeconds:
+                    preregistration.frozenSourceTimeSeconds,
+                temporalBinCount: preregistration.temporalBinCount,
+                fluidStepsPerTemporalBin: stepsPerBin,
+                requestedSteps: expectedStepCount,
+                completedSteps: result.completedSteps,
+                runtimeSeconds: Date().timeIntervalSince(started),
+                expectedLinkCount: expectedLinkCount,
+                capturedLinkCount: links.count,
+                fallbackLinkCount: capture.fallbackLinkCount,
+                metadataMismatchCount: capture.metadataMismatchCount,
+                maximumLinkClassificationMismatchCountPerStep:
+                    capture.maximumLinkClassificationMismatchCountPerStep,
+                maximumAbsoluteTermClosureNewtons:
+                    capture.maximumAbsoluteTermClosureNewtons,
+                relativeRMSSourceForceClosure: relativeClosure,
+                maximumAbsoluteSourceForceClosureNewtons: maximumClosure,
+                maximumDurationBinRelativeDifference:
+                    maximumDurationDifference,
+                minimumPopulation: result.minimumPopulation,
+                collisionLimiterActivationFractionOfCellSteps:
+                    result.collisionLimiterActivationFractionOfCellSteps,
+                relativeRMSRawControlVolumeClosureResidual:
+                    result.relativeRMSRawControlVolumeClosureResidual,
+                relativeRMSGlobalFluidClosureResidual:
+                    result.relativeRMSGlobalFluidClosureResidual,
+                momentumClosurePassed: result.momentumClosurePassed,
+                sampledPopulationPositivityPassed:
+                    result.sampledPopulationPositivityPassed,
+                allValuesFinite: result.allValuesFinite
+                    && capture.allValuesFinite,
+                sourceReproductionPassed: reproduced,
+                temporalBins: temporalBins,
+                spatialBins: spatialBins
+            )
+        }
+        let durationD12 = temporalDurationReport.extendedSampling.d12
+        let durationD16 = temporalDurationReport.extendedSampling.d16
+        let d12 = try runCase(
+            referenceLengthCells: 12,
+            expectedLinkCount: preregistration.expectedLinkCounts[0],
+            expectedStepCount: preregistration.expectedStepCounts[0],
+            sourceCase: durationD12
+        )
+        let d16 = try runCase(
+            referenceLengthCells: 16,
+            expectedLinkCount: preregistration.expectedLinkCounts[1],
+            expectedStepCount: preregistration.expectedStepCounts[1],
+            sourceCase: durationD16
+        )
+        func squaredMagnitude(_ value: SIMD3<Double>) -> Double {
+            value.x * value.x + value.y * value.y + value.z * value.z
+        }
+        func dot(_ first: SIMD3<Double>, _ second: SIMD3<Double>) -> Double {
+            first.x * second.x + first.y * second.y
+                + first.z * second.z
+        }
+        let totalD12 = d12.temporalBins.map(
+            \.reconstructedTotalMeanForceNewtons
+        )
+        let totalD16 = d16.temporalBins.map(
+            \.reconstructedTotalMeanForceNewtons
+        )
+        let totalDelta = zip(totalD12, totalD16).map { $1 - $0 }
+        let totalDeltaRMS = vectorRMS(totalDelta)
+        let termHistories: [(String, [SIMD3<Double>], [SIMD3<Double>])] = [
+            (
+                "base-reflection",
+                d12.temporalBins.map(\.reflectedMeanForceNewtons),
+                d16.temporalBins.map(\.reflectedMeanForceNewtons)
+            ),
+            (
+                "moving-wall",
+                d12.temporalBins.map(\.movingWallMeanForceNewtons),
+                d16.temporalBins.map(\.movingWallMeanForceNewtons)
+            ),
+            (
+                "interpolation-residual",
+                d12.temporalBins.map(
+                    \.interpolationResidualMeanForceNewtons
+                ),
+                d16.temporalBins.map(
+                    \.interpolationResidualMeanForceNewtons
+                )
+            ),
+        ]
+        func alignment(
+            delta: [SIMD3<Double>],
+            range: Range<Int>
+        ) -> Double {
+            let numerator = range.reduce(0.0) {
+                $0 + dot(delta[$1], totalDelta[$1])
+            }
+            let denominator = range.reduce(0.0) {
+                $0 + squaredMagnitude(totalDelta[$1])
+            }
+            return numerator / max(denominator, 1e-30)
+        }
+        let fullRange = 0..<preregistration.temporalBinCount
+        let blockRanges = [0..<8, 8..<16, 16..<24]
+        let termAssessments = termHistories.map { identifier, first, second in
+            let delta = zip(first, second).map { $1 - $0 }
+            return MetalIndexedBirdSurfaceDistributedForceTermAssessment(
+                termIdentifier: identifier,
+                crossGridNormalizedRMSDifference:
+                    pilotPairwiseNormalizedRMSDifference(
+                        first: first,
+                        second: second
+                    ) ?? .infinity,
+                deltaRMSNewtons: vectorRMS(delta),
+                deltaToTotalDeltaRMSRatio:
+                    vectorRMS(delta) / max(totalDeltaRMS, 1e-30),
+                alignmentContributionFraction: alignment(
+                    delta: delta,
+                    range: fullRange
+                ),
+                blockAlignmentContributionFractions: blockRanges.map {
+                    alignment(delta: delta, range: $0)
+                }
+            )
+        }
+        let dominantAssessment = termAssessments.max {
+            $0.alignmentContributionFraction
+                < $1.alignmentContributionFraction
+        }
+        let dominantTerm = dominantAssessment?.termIdentifier
+        let blockWinners = blockRanges.indices.map { blockIndex in
+            termAssessments.max {
+                $0.blockAlignmentContributionFractions[blockIndex]
+                    < $1.blockAlignmentContributionFractions[blockIndex]
+            }!
+        }
+        let consistent = dominantTerm != nil && blockWinners.allSatisfy {
+            $0.termIdentifier == dominantTerm
+        }
+        let termGate = consistent
+            && (dominantAssessment?.alignmentContributionFraction ?? 0)
+                >= preregistration.minimumDominantTermAlignmentFraction
+            && blockWinners.enumerated().allSatisfy { index, winner in
+                winner.blockAlignmentContributionFractions[index]
+                    >= preregistration.minimumDominantTermAlignmentFraction
+            }
+        struct SpatialKey: Hashable {
+            let part: Int
+            let name: String
+            let direction: Int
+            let qBin: Int
+        }
+        func spatialMap(
+            _ bins: [MetalIndexedBirdSurfaceDistributedForceSpatialBin]
+        ) -> [SpatialKey: SIMD3<Double>] {
+            Dictionary(uniqueKeysWithValues: bins.map {
+                (
+                    SpatialKey(
+                        part: $0.partIdentifier,
+                        name: $0.componentName,
+                        direction: $0.directionIndex,
+                        qBin: $0.interpolationFractionBinIndex
+                    ),
+                    $0.reconstructedTotalMeanForceNewtons
+                )
+            })
+        }
+        let spatialD12 = spatialMap(d12.spatialBins)
+        let spatialD16 = spatialMap(d16.spatialBins)
+        let spatialKeys = Set(spatialD12.keys).union(spatialD16.keys)
+        let jointDeltas = Dictionary(uniqueKeysWithValues: spatialKeys.map {
+            ($0, (spatialD16[$0] ?? .zero) - (spatialD12[$0] ?? .zero))
+        })
+        let totalMeanDelta = jointDeltas.values.reduce(.zero, +)
+        func axisAssessments(
+            identifier: (SpatialKey) -> String
+        ) -> [MetalIndexedBirdSurfaceDistributedForceAxisAssessment] {
+            var grouped = [String: SIMD3<Double>]()
+            for (key, delta) in jointDeltas {
+                grouped[identifier(key), default: .zero] += delta
+            }
+            let totalProjection = max(
+                squaredMagnitude(totalMeanDelta),
+                1e-30
+            )
+            let absoluteProjection = grouped.values.reduce(0.0) {
+                $0 + abs(dot($1, totalMeanDelta))
+            }
+            return grouped.map { identifier, delta in
+                MetalIndexedBirdSurfaceDistributedForceAxisAssessment(
+                    identifier: identifier,
+                    deltaMeanForceNewtons: delta,
+                    signedAlignmentContributionFraction:
+                        dot(delta, totalMeanDelta) / totalProjection,
+                    absoluteAlignedContributionFraction:
+                        abs(dot(delta, totalMeanDelta))
+                            / max(absoluteProjection, 1e-30)
+                )
+            }.sorted {
+                $0.absoluteAlignedContributionFraction
+                    > $1.absoluteAlignedContributionFraction
+            }
+        }
+        let componentAssessments = axisAssessments {
+            "part-\($0.part)-\($0.name)"
+        }
+        let directionAssessments = axisAssessments {
+            "direction-\($0.direction)"
+        }
+        let qAssessments = axisAssessments {
+            "q-bin-\($0.qBin)"
+        }
+        func dominantAxis(
+            _ assessments:
+                [MetalIndexedBirdSurfaceDistributedForceAxisAssessment]
+        ) -> String? {
+            guard let first = assessments.first,
+                  first.absoluteAlignedContributionFraction
+                    >= preregistration
+                        .minimumDominantAxisAbsoluteContributionFraction
+            else { return nil }
+            return first.identifier
+        }
+        let jointScores = jointDeltas.values.map {
+            abs(dot($0, totalMeanDelta))
+        }.filter { $0 > 0 }.sorted(by: >)
+        let jointScoreTotal = jointScores.reduce(0, +)
+        var jointScore = 0.0
+        var jointCount = 0
+        for score in jointScores where jointScore
+            < preregistration.targetJointBinAbsoluteContributionFraction
+                * jointScoreTotal {
+            jointScore += score
+            jointCount += 1
+        }
+        let sourceReproduced = d12.sourceReproductionPassed
+            && d16.sourceReproductionPassed
+        let classification = !sourceReproduced
+            ? "invalid-distributed-force-decomposition"
+            : termGate
+                ? "\(dominantTerm!)-distributed-grid-bias"
+                : "mixed-term-distributed-grid-bias"
+        let nextAction: String
+        switch dominantTerm {
+        case "moving-wall" where termGate:
+            nextAction = "Within the already dominant component/direction/q classes, split the moving-wall term into pre-step-density and wall-projection factors before changing the boundary."
+        case "base-reflection" where termGate:
+            nextAction = "Capture the incoming reflected-population spectrum only in the dominant component/direction/q classes to distinguish streaming-state from geometry bias."
+        case "interpolation-residual" where termGate:
+            nextAction = "Decompose near/far auxiliary populations only in the dominant component/direction/q classes before an interpolation-law A/B."
+        default:
+            nextAction = "Retain the joint-bin ranking and add one preregistered covariance decomposition; no single force term is robust across all duration blocks."
+        }
+        return MetalIndexedBirdSurfaceDistributedForceReport(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            sourceLinkGeometryPreregistrationSHA256:
+                expected.sourceLinkGeometryPreregistrationSHA256,
+            sourceLinkGeometryReportSHA256:
+                expected.sourceLinkGeometryReportSHA256,
+            sourceTemporalDurationPreregistrationSHA256:
+                expected.sourceTemporalDurationPreregistrationSHA256,
+            sourceTemporalDurationReportSHA256:
+                expected.sourceTemporalDurationReportSHA256,
+            sourceLinkPopulationPreregistrationSHA256:
+                expected.sourceLinkPopulationPreregistrationSHA256,
+            sourceLinkPopulationReportSHA256:
+                expected.sourceLinkPopulationReportSHA256,
+            sourceLinkPopulationAuditSHA256:
+                expected.sourceLinkPopulationAuditSHA256,
+            d12: d12,
+            d16: d16,
+            metrics: MetalIndexedBirdSurfaceDistributedForceMetrics(
+                totalForcePairwiseNormalizedRMSDifference:
+                    pilotPairwiseNormalizedRMSDifference(
+                        first: totalD12,
+                        second: totalD16
+                    ) ?? .infinity,
+                totalDeltaRMSNewtons: totalDeltaRMS,
+                termAssessments: termAssessments,
+                dominantTerm: dominantTerm,
+                dominantTermConsistentAcrossBlocks: consistent,
+                dominantTermGatePassed: termGate,
+                componentAssessments: componentAssessments,
+                directionAssessments: directionAssessments,
+                interpolationFractionAssessments: qAssessments,
+                dominantComponent: dominantAxis(componentAssessments),
+                dominantDirection: dominantAxis(directionAssessments),
+                dominantInterpolationFractionBin:
+                    dominantAxis(qAssessments),
+                minimumJointBinsForTargetAbsoluteAlignedContribution:
+                    jointCount,
+                activeJointBinCount: jointScores.count,
+                achievedJointBinAbsoluteAlignedContributionFraction:
+                    jointScore / max(jointScoreTotal, 1e-30)
+            ),
+            sourceReproductionPassed: sourceReproduced,
+            classification: classification,
+            d20DiagnosticAuthorized: false,
+            productionModificationAuthorized: false,
+            rawSpatialGateModified: false,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: (
+                "The full-link fixed-phase D12/D16 force attribution is "
+                    + classification + ". All production links are included; "
+                    + "the prior sparse-root rejection remains unchanged."
+            ),
+            nextAction: nextAction,
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionGridMovingWallForceCovariancePreregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        distributedForcePreregistration:
+            MetalIndexedBirdSurfaceDistributedForcePreregistration,
+        sourceDistributedForcePreregistrationSHA256: String,
+        distributedForceReport:
+            MetalIndexedBirdSurfaceDistributedForceReport,
+        sourceDistributedForceReportSHA256: String,
+        sourceDistributedForceAuditSHA256: String,
+        distributedForceAuditPassed: Bool
+    ) throws -> MetalIndexedBirdSurfaceForceCovariancePreregistration {
+        let hashes = [
+            sourceDistributedForcePreregistrationSHA256,
+            sourceDistributedForceReportSHA256,
+            sourceDistributedForceAuditSHA256,
+        ].map { $0.lowercased() }
+        let terms = [
+            "base-reflection",
+            "moving-wall",
+            "interpolation-residual",
+        ]
+        guard hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        distributedForcePreregistration.datasetIdentifier
+            == surface.datasetIdentifier,
+        distributedForcePreregistration.manifestSHA256
+            == surface.manifestSHA256,
+        distributedForcePreregistration.forceTargetIdentifier
+            == target.datasetIdentifier,
+        distributedForcePreregistration.forceTargetSHA256
+            == target.targetSHA256,
+        distributedForcePreregistration.temporalBinCount == 24,
+        distributedForcePreregistration.forceTerms == terms,
+        distributedForcePreregistration.passed,
+        distributedForceReport.datasetIdentifier == surface.datasetIdentifier,
+        distributedForceReport.manifestSHA256 == surface.manifestSHA256,
+        distributedForceReport.forceTargetIdentifier
+            == target.datasetIdentifier,
+        distributedForceReport.forceTargetSHA256 == target.targetSHA256,
+        distributedForceReport.sourcePreregistrationSHA256 == hashes[0],
+        distributedForceReport.sourceReproductionPassed,
+        distributedForceReport.d12.temporalBins.count == 24,
+        distributedForceReport.d16.temporalBins.count == 24,
+        distributedForceReport.metrics.dominantTerm != nil,
+        !distributedForceReport.metrics.dominantTermGatePassed,
+        distributedForceReport.classification
+            == "mixed-term-distributed-grid-bias",
+        !distributedForceReport.d20DiagnosticAuthorized,
+        !distributedForceReport.productionModificationAuthorized,
+        distributedForceAuditPassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "force covariance preregistration requires the passed mixed-term distributed-force archive and independent audit"
+            )
+        }
+        return MetalIndexedBirdSurfaceForceCovariancePreregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceDistributedForcePreregistrationSHA256: hashes[0],
+            sourceDistributedForceReportSHA256: hashes[1],
+            sourceDistributedForceAuditSHA256: hashes[2],
+            temporalBinCount: 24,
+            blockCount: 3,
+            binsPerBlock: 8,
+            termIdentifiers: terms,
+            maximumAllowedTermDeltaReconstructionErrorNewtons: 5e-6,
+            maximumAllowedRelativeEnergyClosureError: 1e-5,
+            minimumDominantPairFullEnergyFraction: 0.50,
+            minimumDominantPairBlockEnergyFraction: 0.30,
+            minimumMechanismDecompositionFraction: 0.60,
+            selectionRule: (
+                "From the hashed 24-bin D12/D16 archive, form each term's "
+                    + "cross-grid vector delta. Decompose total mean-squared "
+                    + "delta into three self energies and three doubled pair "
+                    + "interactions, and split every pair interaction exactly "
+                    + "into centered covariance plus mean-offset dot product. "
+                    + "The dominant pair is the largest absolute full-window "
+                    + "interaction. It is robust only at >=50% of total energy, "
+                    + "when it remains the largest pair in all three independent "
+                    + "eight-bin blocks, preserves coherent/canceling sign, and "
+                    + "has >=30% absolute interaction in every block. Centered "
+                    + "or mean mechanism is named only at >=60% of the pair's "
+                    + "absolute centered-plus-mean decomposition."
+            ),
+            fixedInputs: (
+                "Hashed distributed-force preregistration, D12/D16 report, and "
+                    + "independent audit; exactly 24 bins, three eight-bin blocks, "
+                    + "and the frozen base-reflection, moving-wall, and "
+                    + "interpolation-residual terms. No Metal dispatch, fluid "
+                    + "evolution, spatial filtering, or threshold fitting."
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            claimBoundary: (
+                "This archive-only covariance test identifies robust coherent "
+                    + "or canceling term pairs in the retained fixed-phase grid "
+                    + "difference. It does not establish causality, authorize a "
+                    + "boundary change or D20, relax the raw spatial gate, or "
+                    + "claim experimental force or free-flight agreement."
+            )
+        )
+    }
+
+    public static func collisionGridMovingWallForceCovariance(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        distributedForcePreregistration:
+            MetalIndexedBirdSurfaceDistributedForcePreregistration,
+        sourceDistributedForcePreregistrationSHA256: String,
+        distributedForceReport:
+            MetalIndexedBirdSurfaceDistributedForceReport,
+        sourceDistributedForceReportSHA256: String,
+        sourceDistributedForceAuditSHA256: String,
+        distributedForceAuditPassed: Bool,
+        preregistration:
+            MetalIndexedBirdSurfaceForceCovariancePreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceForceCovarianceReport {
+        let expected = try
+            collisionGridMovingWallForceCovariancePreregistration(
+                surface: surface,
+                target: target,
+                distributedForcePreregistration:
+                    distributedForcePreregistration,
+                sourceDistributedForcePreregistrationSHA256:
+                    sourceDistributedForcePreregistrationSHA256,
+                distributedForceReport: distributedForceReport,
+                sourceDistributedForceReportSHA256:
+                    sourceDistributedForceReportSHA256,
+                sourceDistributedForceAuditSHA256:
+                    sourceDistributedForceAuditSHA256,
+                distributedForceAuditPassed: distributedForceAuditPassed
+            )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "force covariance run does not match its locked preregistration"
+            )
+        }
+        func squaredMagnitude(_ value: SIMD3<Double>) -> Double {
+            value.x * value.x + value.y * value.y + value.z * value.z
+        }
+        func dot(_ first: SIMD3<Double>, _ second: SIMD3<Double>) -> Double {
+            first.x * second.x + first.y * second.y
+                + first.z * second.z
+        }
+        func mean(_ values: [SIMD3<Double>]) -> SIMD3<Double> {
+            values.reduce(.zero, +) / Double(values.count)
+        }
+        func meanSquared(_ values: [SIMD3<Double>]) -> Double {
+            values.reduce(0.0) { $0 + squaredMagnitude($1) }
+                / Double(values.count)
+        }
+        func meanDot(
+            _ first: [SIMD3<Double>],
+            _ second: [SIMD3<Double>],
+            range: Range<Int>
+        ) -> Double {
+            range.reduce(0.0) {
+                $0 + dot(first[$1], second[$1])
+            } / Double(range.count)
+        }
+        let d12Bins = distributedForceReport.d12.temporalBins
+        let d16Bins = distributedForceReport.d16.temporalBins
+        let totalDelta = zip(d12Bins, d16Bins).map {
+            $1.reconstructedTotalMeanForceNewtons
+                - $0.reconstructedTotalMeanForceNewtons
+        }
+        let termDeltas: [(String, [SIMD3<Double>])] = [
+            (
+                "base-reflection",
+                zip(d12Bins, d16Bins).map {
+                    $1.reflectedMeanForceNewtons
+                        - $0.reflectedMeanForceNewtons
+                }
+            ),
+            (
+                "moving-wall",
+                zip(d12Bins, d16Bins).map {
+                    $1.movingWallMeanForceNewtons
+                        - $0.movingWallMeanForceNewtons
+                }
+            ),
+            (
+                "interpolation-residual",
+                zip(d12Bins, d16Bins).map {
+                    $1.interpolationResidualMeanForceNewtons
+                        - $0.interpolationResidualMeanForceNewtons
+                }
+            ),
+        ]
+        let count = preregistration.temporalBinCount
+        let reconstructedDelta = (0..<count).map { index in
+            termDeltas.reduce(.zero) { $0 + $1.1[index] }
+        }
+        let maximumReconstructionError = zip(
+            reconstructedDelta,
+            totalDelta
+        ).map { vectorMagnitude($0 - $1) }.max() ?? .infinity
+        let totalMean = mean(totalDelta)
+        let totalCentered = totalDelta.map { $0 - totalMean }
+        let totalEnergy = meanSquared(totalDelta)
+        let totalVariance = meanSquared(totalCentered)
+        let totalMeanEnergy = squaredMagnitude(totalMean)
+        let termMeans = termDeltas.map { mean($0.1) }
+        let termCentered = zip(termDeltas, termMeans).map { term, average in
+            term.1.map { $0 - average }
+        }
+        let rawSelfEnergies = termDeltas.map { meanSquared($0.1) }
+        let centeredSelfEnergies = termCentered.map(meanSquared)
+        let termReports = termDeltas.indices.map { index in
+            MetalIndexedBirdSurfaceForceCovarianceTerm(
+                termIdentifier: termDeltas[index].0,
+                meanDeltaForceNewtons: termMeans[index],
+                deltaRMSNewtons: sqrt(rawSelfEnergies[index]),
+                centeredDeltaRMSNewtons:
+                    sqrt(centeredSelfEnergies[index]),
+                rawSelfEnergyFraction:
+                    rawSelfEnergies[index] / max(totalEnergy, 1e-30)
+            )
+        }
+        let fullRange = 0..<count
+        let blockRanges = (0..<preregistration.blockCount).map {
+            let start = $0 * preregistration.binsPerBlock
+            return start..<(start + preregistration.binsPerBlock)
+        }
+        func sign(_ value: Double) -> String {
+            value < 0 ? "canceling" : value > 0 ? "coherent" : "neutral"
+        }
+        var rawPairDots = [Double]()
+        var centeredPairDots = [Double]()
+        var meanPairDots = [Double]()
+        var pairReports = [MetalIndexedBirdSurfaceForceCovariancePair]()
+        for first in 0..<(termDeltas.count - 1) {
+            for second in (first + 1)..<termDeltas.count {
+                let raw = meanDot(
+                    termDeltas[first].1,
+                    termDeltas[second].1,
+                    range: fullRange
+                )
+                let centered = meanDot(
+                    termCentered[first],
+                    termCentered[second],
+                    range: fullRange
+                )
+                let meanContribution = dot(
+                    termMeans[first],
+                    termMeans[second]
+                )
+                let blockFractions = blockRanges.map { range in
+                    let blockTotalEnergy = range.reduce(0.0) {
+                        $0 + squaredMagnitude(totalDelta[$1])
+                    } / Double(range.count)
+                    return 2.0 * meanDot(
+                        termDeltas[first].1,
+                        termDeltas[second].1,
+                        range: range
+                    ) / max(blockTotalEnergy, 1e-30)
+                }
+                let blockSigns = blockFractions.map(sign)
+                let decompositionMagnitude = abs(centered)
+                    + abs(meanContribution)
+                rawPairDots.append(raw)
+                centeredPairDots.append(centered)
+                meanPairDots.append(meanContribution)
+                pairReports.append(
+                    MetalIndexedBirdSurfaceForceCovariancePair(
+                        pairIdentifier:
+                            "\(termDeltas[first].0)+\(termDeltas[second].0)",
+                        firstTermIdentifier: termDeltas[first].0,
+                        secondTermIdentifier: termDeltas[second].0,
+                        rawDotMeanNewtonsSquared: raw,
+                        rawInteractionEnergyFraction:
+                            2.0 * raw / max(totalEnergy, 1e-30),
+                        centeredCovarianceTraceNewtonsSquared: centered,
+                        centeredInteractionEnergyFraction:
+                            2.0 * centered / max(totalEnergy, 1e-30),
+                        meanDotNewtonsSquared: meanContribution,
+                        meanInteractionEnergyFraction:
+                            2.0 * meanContribution
+                                / max(totalEnergy, 1e-30),
+                        maximumAbsoluteInteractionDecompositionErrorNewtonsSquared:
+                            abs(raw - centered - meanContribution),
+                        blockRawInteractionEnergyFractions: blockFractions,
+                        blockSigns: blockSigns,
+                        signConsistentAcrossBlocks:
+                            Set(blockSigns).count == 1,
+                        centeredShareOfAbsoluteDecomposition:
+                            abs(centered)
+                                / max(decompositionMagnitude, 1e-30),
+                        meanShareOfAbsoluteDecomposition:
+                            abs(meanContribution)
+                                / max(decompositionMagnitude, 1e-30)
+                    )
+                )
+            }
+        }
+        let rawReconstructedEnergy = rawSelfEnergies.reduce(0, +)
+            + 2.0 * rawPairDots.reduce(0, +)
+        let centeredReconstructedEnergy = centeredSelfEnergies.reduce(0, +)
+            + 2.0 * centeredPairDots.reduce(0, +)
+        let meanReconstructedEnergy = termMeans.reduce(0.0) {
+            $0 + squaredMagnitude($1)
+        } + 2.0 * meanPairDots.reduce(0, +)
+        let rawClosure = abs(rawReconstructedEnergy - totalEnergy)
+            / max(totalEnergy, 1e-30)
+        let centeredClosure = abs(
+            centeredReconstructedEnergy - totalVariance
+        ) / max(totalVariance, 1e-30)
+        let meanClosure = abs(
+            meanReconstructedEnergy - totalMeanEnergy
+        ) / max(totalMeanEnergy, 1e-30)
+        let dominant = pairReports.max {
+            abs($0.rawInteractionEnergyFraction)
+                < abs($1.rawInteractionEnergyFraction)
+        }!
+        let blockWinners = blockRanges.indices.map { blockIndex in
+            pairReports.max {
+                abs($0.blockRawInteractionEnergyFractions[blockIndex])
+                    < abs($1.blockRawInteractionEnergyFractions[blockIndex])
+            }!
+        }
+        let dominantSign = sign(dominant.rawInteractionEnergyFraction)
+        let consistent = blockWinners.allSatisfy {
+            $0.pairIdentifier == dominant.pairIdentifier
+        } && dominant.blockSigns.allSatisfy {
+            $0 == dominantSign && $0 != "neutral"
+        }
+        let dominantGate = consistent
+            && abs(dominant.rawInteractionEnergyFraction)
+                >= preregistration.minimumDominantPairFullEnergyFraction
+            && dominant.blockRawInteractionEnergyFractions.allSatisfy {
+                abs($0)
+                    >= preregistration
+                        .minimumDominantPairBlockEnergyFraction
+            }
+        let mechanism: String
+        if dominant.centeredShareOfAbsoluteDecomposition
+            >= preregistration.minimumMechanismDecompositionFraction {
+            mechanism = "phase-fluctuation-dominated"
+        } else if dominant.meanShareOfAbsoluteDecomposition
+            >= preregistration.minimumMechanismDecompositionFraction {
+            mechanism = "mean-offset-dominated"
+        } else {
+            mechanism = "mixed-mean-and-phase"
+        }
+        let maximumPairClosure = pairReports.map(
+            \.maximumAbsoluteInteractionDecompositionErrorNewtonsSquared
+        ).max() ?? .infinity
+        let sourceReproduced = maximumReconstructionError
+                <= preregistration
+                    .maximumAllowedTermDeltaReconstructionErrorNewtons
+            && [rawClosure, centeredClosure, meanClosure].allSatisfy {
+                $0 <= preregistration.maximumAllowedRelativeEnergyClosureError
+            }
+            && maximumPairClosure <= 1e-10
+        let classification = !sourceReproduced
+            ? "invalid-force-covariance-decomposition"
+            : dominantGate
+                ? "robust-\(dominantSign)-\(mechanism)-pair-covariance"
+                : "phase-dependent-term-pair-covariance"
+        let nextAction: String
+        if dominantGate && mechanism == "phase-fluctuation-dominated" {
+            nextAction = "Preregister an archive-only circular cross-correlation and three-mode cross-spectrum for the dominant pair before capturing any additional primitive."
+        } else if dominantGate {
+            nextAction = "Use the archived joint spatial bins to decompose the dominant pair's mean interaction by component, direction, and q before any new fluid run."
+        } else {
+            nextAction = "Retain all three pair histories and preregister an archive-only phase-block change-point test; no pair is stable enough for a targeted boundary experiment."
+        }
+        return MetalIndexedBirdSurfaceForceCovarianceReport(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            sourceDistributedForcePreregistrationSHA256:
+                expected.sourceDistributedForcePreregistrationSHA256,
+            sourceDistributedForceReportSHA256:
+                expected.sourceDistributedForceReportSHA256,
+            sourceDistributedForceAuditSHA256:
+                expected.sourceDistributedForceAuditSHA256,
+            metrics: MetalIndexedBirdSurfaceForceCovarianceMetrics(
+                totalDeltaMeanSquaredNewtonsSquared: totalEnergy,
+                totalDeltaVarianceNewtonsSquared: totalVariance,
+                totalMeanDeltaSquaredNewtonsSquared: totalMeanEnergy,
+                maximumTermDeltaReconstructionErrorNewtons:
+                    maximumReconstructionError,
+                rawEnergyClosureRelativeError: rawClosure,
+                centeredEnergyClosureRelativeError: centeredClosure,
+                meanEnergyClosureRelativeError: meanClosure,
+                terms: termReports,
+                pairs: pairReports,
+                dominantPairIdentifier: dominant.pairIdentifier,
+                dominantPairSign: dominantSign,
+                dominantPairConsistentAcrossBlocks: consistent,
+                dominantPairGatePassed: dominantGate,
+                dominantPairMechanism: mechanism
+            ),
+            sourceReproductionPassed: sourceReproduced,
+            classification: classification,
+            d20DiagnosticAuthorized: false,
+            productionModificationAuthorized: false,
+            fluidEvolutionExecuted: false,
+            rawSpatialGateModified: false,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: (
+                "The archive-only D12/D16 force-term covariance result is "
+                    + classification + ". It evaluates interaction energy, "
+                    + "not a replacement boundary law or experimental force fit."
+            ),
+            nextAction: nextAction,
+            claimBoundary: preregistration.claimBoundary
+        )
+    }
+
+    public static func collisionGridMovingWallSpatialInteractionPreregistration(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        distributedForceReport:
+            MetalIndexedBirdSurfaceDistributedForceReport,
+        sourceDistributedForceReportSHA256: String,
+        forceCovariancePreregistration:
+            MetalIndexedBirdSurfaceForceCovariancePreregistration,
+        sourceForceCovariancePreregistrationSHA256: String,
+        forceCovarianceReport:
+            MetalIndexedBirdSurfaceForceCovarianceReport,
+        sourceForceCovarianceReportSHA256: String,
+        sourceForceCovarianceAuditSHA256: String,
+        forceCovarianceAuditPassed: Bool
+    ) throws -> MetalIndexedBirdSurfaceSpatialInteractionPreregistration {
+        let hashes = [
+            sourceDistributedForceReportSHA256,
+            sourceForceCovariancePreregistrationSHA256,
+            sourceForceCovarianceReportSHA256,
+            sourceForceCovarianceAuditSHA256,
+        ].map { $0.lowercased() }
+        guard hashes.allSatisfy({
+            $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+        }),
+        distributedForceReport.datasetIdentifier == surface.datasetIdentifier,
+        distributedForceReport.manifestSHA256 == surface.manifestSHA256,
+        distributedForceReport.forceTargetIdentifier
+            == target.datasetIdentifier,
+        distributedForceReport.forceTargetSHA256 == target.targetSHA256,
+        distributedForceReport.sourceReproductionPassed,
+        distributedForceReport.d12.spatialBins.count == 1_438,
+        distributedForceReport.d16.spatialBins.count == 1_440,
+        forceCovariancePreregistration.datasetIdentifier
+            == surface.datasetIdentifier,
+        forceCovariancePreregistration.manifestSHA256
+            == surface.manifestSHA256,
+        forceCovariancePreregistration.forceTargetIdentifier
+            == target.datasetIdentifier,
+        forceCovariancePreregistration.forceTargetSHA256
+            == target.targetSHA256,
+        forceCovariancePreregistration.sourceDistributedForceReportSHA256
+            == hashes[0],
+        forceCovariancePreregistration.passed,
+        forceCovarianceReport.datasetIdentifier == surface.datasetIdentifier,
+        forceCovarianceReport.manifestSHA256 == surface.manifestSHA256,
+        forceCovarianceReport.forceTargetIdentifier == target.datasetIdentifier,
+        forceCovarianceReport.forceTargetSHA256 == target.targetSHA256,
+        forceCovarianceReport.sourcePreregistrationSHA256 == hashes[1],
+        forceCovarianceReport.sourceDistributedForceReportSHA256 == hashes[0],
+        forceCovarianceReport.sourceReproductionPassed,
+        forceCovarianceReport.metrics.dominantPairIdentifier
+            == "base-reflection+moving-wall",
+        forceCovarianceReport.metrics.dominantPairSign == "canceling",
+        forceCovarianceReport.metrics.dominantPairConsistentAcrossBlocks,
+        forceCovarianceReport.metrics.dominantPairGatePassed,
+        forceCovarianceReport.metrics.dominantPairMechanism
+            == "mean-offset-dominated",
+        forceCovarianceReport.classification
+            == "robust-canceling-mean-offset-dominated-pair-covariance",
+        !forceCovarianceReport.fluidEvolutionExecuted,
+        !forceCovarianceReport.productionModificationAuthorized,
+        forceCovarianceAuditPassed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "spatial interaction preregistration requires the passed robust canceling mean-offset covariance evidence"
+            )
+        }
+        let keys = Set(
+            (distributedForceReport.d12.spatialBins
+                + distributedForceReport.d16.spatialBins).map {
+                "\($0.partIdentifier)|\($0.componentName)|"
+                    + "\($0.directionIndex)|"
+                    + "\($0.interpolationFractionBinIndex)"
+            }
+        )
+        guard keys.count == 1_440 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "spatial interaction source union changed"
+            )
+        }
+        return MetalIndexedBirdSurfaceSpatialInteractionPreregistration(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceDistributedForceReportSHA256: hashes[0],
+            sourceForceCovariancePreregistrationSHA256: hashes[1],
+            sourceForceCovarianceReportSHA256: hashes[2],
+            sourceForceCovarianceAuditSHA256: hashes[3],
+            dominantPairIdentifier: "base-reflection+moving-wall",
+            expectedSpatialBinCounts: [1_438, 1_440],
+            expectedUnionSpatialBinCount: 1_440,
+            maximumAllowedTermMeanReconstructionErrorNewtons: 5e-6,
+            maximumAllowedRelativeInteractionClosureError: 1e-5,
+            minimumDominantAxisAbsoluteContributionFraction: 0.60,
+            targetJointBinAbsoluteContributionFraction: 0.80,
+            maximumJointBinFractionForTargetedCapture: 0.20,
+            selectionRule: (
+                "For every union component/direction/q bin, subtract D12 from "
+                    + "D16 separately for base reflection and moving wall. "
+                    + "Allocate the complete symmetric mean interaction with "
+                    + "c_i = r_i dot W_total + w_i dot R_total, so all within- "
+                    + "and cross-bin interactions are retained and sum exactly "
+                    + "to 2 R_total dot W_total. Group c_i independently by "
+                    + "component, D3Q19 direction, and q bin. Name an axis only "
+                    + "at >=60% of absolute contribution. Authorize a targeted "
+                    + "primitive capture only if at least two axes clear 60% "
+                    + "and no more than 20% of active joint bins provide 80% "
+                    + "of absolute interaction."
+            ),
+            fixedInputs: (
+                "Hashed distributed-force spatial bins and robust mean-offset "
+                    + "covariance artifacts; D12/D16; four measured components; "
+                    + "18 non-rest directions; 20 q bins; reflection and moving-"
+                    + "wall terms only. No fluid, Metal, filtering, pairwise "
+                    + "cross-bin truncation, or post-result threshold changes."
+            ),
+            passed: true,
+            experimentalAgreementGateApplied: false,
+            claimBoundary: (
+                "This archive-only allocation localizes the robust reflection-"
+                    + "moving-wall mean cancellation. It does not establish a "
+                    + "defective primitive, authorize production or D20, relax "
+                    + "the raw spatial gate, or claim experimental agreement."
+            )
+        )
+    }
+
+    public static func collisionGridMovingWallSpatialInteraction(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        distributedForceReport:
+            MetalIndexedBirdSurfaceDistributedForceReport,
+        sourceDistributedForceReportSHA256: String,
+        forceCovariancePreregistration:
+            MetalIndexedBirdSurfaceForceCovariancePreregistration,
+        sourceForceCovariancePreregistrationSHA256: String,
+        forceCovarianceReport:
+            MetalIndexedBirdSurfaceForceCovarianceReport,
+        sourceForceCovarianceReportSHA256: String,
+        sourceForceCovarianceAuditSHA256: String,
+        forceCovarianceAuditPassed: Bool,
+        preregistration:
+            MetalIndexedBirdSurfaceSpatialInteractionPreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalIndexedBirdSurfaceSpatialInteractionReport {
+        let expected = try
+            collisionGridMovingWallSpatialInteractionPreregistration(
+                surface: surface,
+                target: target,
+                distributedForceReport: distributedForceReport,
+                sourceDistributedForceReportSHA256:
+                    sourceDistributedForceReportSHA256,
+                forceCovariancePreregistration:
+                    forceCovariancePreregistration,
+                sourceForceCovariancePreregistrationSHA256:
+                    sourceForceCovariancePreregistrationSHA256,
+                forceCovarianceReport: forceCovarianceReport,
+                sourceForceCovarianceReportSHA256:
+                    sourceForceCovarianceReportSHA256,
+                sourceForceCovarianceAuditSHA256:
+                    sourceForceCovarianceAuditSHA256,
+                forceCovarianceAuditPassed: forceCovarianceAuditPassed
+            )
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        guard preregistration == expected,
+              preregistration.passed,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "spatial interaction run does not match its locked preregistration"
+            )
+        }
+        struct SpatialKey: Hashable {
+            let part: Int
+            let name: String
+            let direction: Int
+            let qBin: Int
+        }
+        struct TermValues {
+            let reflection: SIMD3<Double>
+            let wall: SIMD3<Double>
+        }
+        func map(
+            _ bins: [MetalIndexedBirdSurfaceDistributedForceSpatialBin]
+        ) -> [SpatialKey: TermValues] {
+            Dictionary(uniqueKeysWithValues: bins.map {
+                (
+                    SpatialKey(
+                        part: $0.partIdentifier,
+                        name: $0.componentName,
+                        direction: $0.directionIndex,
+                        qBin: $0.interpolationFractionBinIndex
+                    ),
+                    TermValues(
+                        reflection: $0.reflectedMeanForceNewtons,
+                        wall: $0.movingWallMeanForceNewtons
+                    )
+                )
+            })
+        }
+        func dot(_ first: SIMD3<Double>, _ second: SIMD3<Double>) -> Double {
+            first.x * second.x + first.y * second.y
+                + first.z * second.z
+        }
+        let d12 = map(distributedForceReport.d12.spatialBins)
+        let d16 = map(distributedForceReport.d16.spatialBins)
+        let keys = Set(d12.keys).union(d16.keys)
+        let sortedKeys = keys.sorted {
+            if $0.part != $1.part { return $0.part < $1.part }
+            if $0.name != $1.name { return $0.name < $1.name }
+            if $0.direction != $1.direction {
+                return $0.direction < $1.direction
+            }
+            return $0.qBin < $1.qBin
+        }
+        let zero = TermValues(reflection: .zero, wall: .zero)
+        let deltas = Dictionary(uniqueKeysWithValues: sortedKeys.map { key in
+            let first = d12[key] ?? zero
+            let second = d16[key] ?? zero
+            return (
+                key,
+                TermValues(
+                    reflection: second.reflection - first.reflection,
+                    wall: second.wall - first.wall
+                )
+            )
+        })
+        let reflectionTotal = sortedKeys.reduce(.zero) {
+            $0 + deltas[$1]!.reflection
+        }
+        let wallTotal = sortedKeys.reduce(.zero) {
+            $0 + deltas[$1]!.wall
+        }
+        guard let covarianceReflection = forceCovarianceReport.metrics.terms
+                .first(where: { $0.termIdentifier == "base-reflection" }),
+              let covarianceWall = forceCovarianceReport.metrics.terms
+                .first(where: { $0.termIdentifier == "moving-wall" }),
+              let covariancePair = forceCovarianceReport.metrics.pairs
+                .first(where: {
+                    $0.pairIdentifier == "base-reflection+moving-wall"
+                }) else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "spatial interaction source terms are incomplete"
+            )
+        }
+        let reflectionError = vectorMagnitude(
+            reflectionTotal - covarianceReflection.meanDeltaForceNewtons
+        )
+        let wallError = vectorMagnitude(
+            wallTotal - covarianceWall.meanDeltaForceNewtons
+        )
+        let maximumTermError = max(reflectionError, wallError)
+        let totalInteraction = 2.0 * dot(reflectionTotal, wallTotal)
+        let sourceInteraction = 2.0
+            * covariancePair.meanDotNewtonsSquared
+        let interactionClosure = abs(totalInteraction - sourceInteraction)
+            / max(abs(totalInteraction), abs(sourceInteraction), 1e-30)
+        var contributions = [SpatialKey: Double]()
+        for key in sortedKeys {
+            let delta = deltas[key]!
+            contributions[key] = dot(delta.reflection, wallTotal)
+                + dot(delta.wall, reflectionTotal)
+        }
+        let contributionSum = sortedKeys.reduce(0.0) {
+            $0 + contributions[$1]!
+        }
+        let allocationClosure = abs(contributionSum - totalInteraction)
+            / max(abs(contributionSum), abs(totalInteraction), 1e-30)
+        let absoluteTotal = sortedKeys.reduce(0.0) {
+            $0 + abs(contributions[$1]!)
+        }
+        func axisAssessments(
+            identifier: (SpatialKey) -> String
+        ) -> [MetalIndexedBirdSurfaceSpatialInteractionAxis] {
+            var grouped = [String: Double]()
+            for key in sortedKeys {
+                let contribution = contributions[key]!
+                grouped[identifier(key), default: 0] += contribution
+            }
+            let names = grouped.keys.sorted()
+            let groupedAbsoluteTotal = names.reduce(0.0) {
+                $0 + abs(grouped[$1]!)
+            }
+            return names.map { name in
+                let value = grouped[name]!
+                return MetalIndexedBirdSurfaceSpatialInteractionAxis(
+                    identifier: name,
+                    interactionNewtonsSquared: value,
+                    signedInteractionFraction:
+                        value / (abs(totalInteraction) > 1e-30
+                            ? totalInteraction : 1e-30),
+                    absoluteInteractionContributionFraction:
+                        abs(value) / max(groupedAbsoluteTotal, 1e-30)
+                )
+            }.sorted {
+                if $0.absoluteInteractionContributionFraction
+                    == $1.absoluteInteractionContributionFraction {
+                    return $0.identifier < $1.identifier
+                }
+                return $0.absoluteInteractionContributionFraction
+                    > $1.absoluteInteractionContributionFraction
+            }
+        }
+        let components = axisAssessments { "part-\($0.part)-\($0.name)" }
+        let directions = axisAssessments { "direction-\($0.direction)" }
+        let qBins = axisAssessments { "q-bin-\($0.qBin)" }
+        func dominant(
+            _ values: [MetalIndexedBirdSurfaceSpatialInteractionAxis]
+        ) -> String? {
+            guard let first = values.first,
+                  first.absoluteInteractionContributionFraction
+                    >= preregistration
+                        .minimumDominantAxisAbsoluteContributionFraction
+            else { return nil }
+            return first.identifier
+        }
+        let component = dominant(components)
+        let direction = dominant(directions)
+        let qBin = dominant(qBins)
+        var jointBins = sortedKeys.map { key in
+            let delta = deltas[key]!
+            let contribution = contributions[key]!
+            return MetalIndexedBirdSurfaceSpatialInteractionJointBin(
+                partIdentifier: key.part,
+                componentName: key.name,
+                directionIndex: key.direction,
+                interpolationFractionBinIndex: key.qBin,
+                reflectionMeanDeltaForceNewtons: delta.reflection,
+                movingWallMeanDeltaForceNewtons: delta.wall,
+                symmetricInteractionNewtonsSquared: contribution,
+                signedInteractionFraction:
+                    contribution / (abs(totalInteraction) > 1e-30
+                        ? totalInteraction : 1e-30),
+                absoluteInteractionContributionFraction:
+                    abs(contribution) / max(absoluteTotal, 1e-30),
+                supportsDominantCancellation:
+                    contribution * totalInteraction > 0
+            )
+        }
+        jointBins.sort {
+            if $0.absoluteInteractionContributionFraction
+                != $1.absoluteInteractionContributionFraction {
+                return $0.absoluteInteractionContributionFraction
+                    > $1.absoluteInteractionContributionFraction
+            }
+            if $0.partIdentifier != $1.partIdentifier {
+                return $0.partIdentifier < $1.partIdentifier
+            }
+            if $0.directionIndex != $1.directionIndex {
+                return $0.directionIndex < $1.directionIndex
+            }
+            return $0.interpolationFractionBinIndex
+                < $1.interpolationFractionBinIndex
+        }
+        let active = jointBins.filter {
+            $0.absoluteInteractionContributionFraction > 0
+        }
+        var accumulated = 0.0
+        var requiredCount = 0
+        for bin in active where accumulated
+            < preregistration.targetJointBinAbsoluteContributionFraction {
+            accumulated += bin.absoluteInteractionContributionFraction
+            requiredCount += 1
+        }
+        let supporting = active.filter(\.supportsDominantCancellation)
+        let opposing = active.filter { !$0.supportsDominantCancellation }
+        let supportingFraction = supporting.reduce(0.0) {
+            $0 + $1.absoluteInteractionContributionFraction
+        }
+        let dominantAxisCount = [component, direction, qBin]
+            .compactMap { $0 }.count
+        let concentrated = Double(requiredCount)
+            / Double(max(active.count, 1))
+                <= preregistration.maximumJointBinFractionForTargetedCapture
+        let targeted = dominantAxisCount >= 2 && concentrated
+        let sourceReproduced = keys.count
+                == preregistration.expectedUnionSpatialBinCount
+            && maximumTermError
+                <= preregistration
+                    .maximumAllowedTermMeanReconstructionErrorNewtons
+            && interactionClosure
+                <= preregistration.maximumAllowedRelativeInteractionClosureError
+            && allocationClosure
+                <= preregistration.maximumAllowedRelativeInteractionClosureError
+        let classification = !sourceReproduced
+            ? "invalid-spatial-mean-interaction-allocation"
+            : targeted
+                ? "targetable-spatial-mean-cancellation"
+                : dominantAxisCount > 0
+                    ? "partially-localized-spatial-mean-cancellation"
+                    : "distributed-spatial-mean-cancellation"
+        let nextAction = targeted
+            ? "Preregister one validation-only primitive capture restricted to the jointly dominant component, direction, and q classes; production remains unchanged."
+            : "Do not add a targeted primitive capture. Advance the independent source-viscosity agreement audit while retaining the archived interaction ranking."
+        return MetalIndexedBirdSurfaceSpatialInteractionReport(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            sourceDistributedForceReportSHA256:
+                expected.sourceDistributedForceReportSHA256,
+            sourceForceCovariancePreregistrationSHA256:
+                expected.sourceForceCovariancePreregistrationSHA256,
+            sourceForceCovarianceReportSHA256:
+                expected.sourceForceCovarianceReportSHA256,
+            sourceForceCovarianceAuditSHA256:
+                expected.sourceForceCovarianceAuditSHA256,
+            metrics: MetalIndexedBirdSurfaceSpatialInteractionMetrics(
+                reflectionMeanDeltaForceNewtons: reflectionTotal,
+                movingWallMeanDeltaForceNewtons: wallTotal,
+                maximumTermMeanReconstructionErrorNewtons:
+                    maximumTermError,
+                symmetricInteractionNewtonsSquared: totalInteraction,
+                sourcePairMeanInteractionNewtonsSquared: sourceInteraction,
+                relativeInteractionClosureError:
+                    max(interactionClosure, allocationClosure),
+                componentAssessments: components,
+                directionAssessments: directions,
+                interpolationFractionAssessments: qBins,
+                dominantComponent: component,
+                dominantDirection: direction,
+                dominantInterpolationFractionBin: qBin,
+                jointBins: jointBins,
+                minimumJointBinsForTargetAbsoluteContribution:
+                    requiredCount,
+                activeJointBinCount: active.count,
+                achievedJointBinAbsoluteContributionFraction: accumulated,
+                cancellationSupportingJointBinCount: supporting.count,
+                cancellationOpposingJointBinCount: opposing.count,
+                cancellationSupportingAbsoluteContributionFraction:
+                    supportingFraction
+            ),
+            sourceReproductionPassed: sourceReproduced,
+            classification: classification,
+            targetedPrimitiveCaptureAuthorized: targeted,
+            d20DiagnosticAuthorized: false,
+            productionModificationAuthorized: false,
+            fluidEvolutionExecuted: false,
+            rawSpatialGateModified: false,
+            experimentalAgreementGateApplied: false,
+            scientificVerdict: (
+                "The exact symmetric spatial allocation is " + classification
+                    + ". It localizes interaction accounting, not causal "
+                    + "boundary physics or experimental agreement."
+            ),
+            nextAction: nextAction,
+            claimBoundary: preregistration.claimBoundary
+        )
+    }
+
 #if canImport(Metal)
     private static func linkGeometryTriangleQuadrature(
         surface: MeasuredBirdSurfaceSequence,
@@ -10312,6 +15070,457 @@ private final class IndexedControlVolumeDiagnosticResources {
     }
 }
 
+private struct GPUIndexedBoundaryLink {
+    var metadata: SIMD4<UInt32>
+}
+
+private struct GPUIndexedBoundaryLinkForceTerm {
+    var reflected: SIMD4<Float>
+    var wall: SIMD4<Float>
+    var interpolation: SIMD4<Float>
+    var total: SIMD4<Float>
+    var metadata: SIMD4<UInt32>
+}
+
+private struct MetalIndexedDistributedLinkStep {
+    let step: Int
+    let reflectedForceNewtons: SIMD3<Double>
+    let movingWallForceNewtons: SIMD3<Double>
+    let interpolationResidualForceNewtons: SIMD3<Double>
+    let totalForceNewtons: SIMD3<Double>
+}
+
+private final class MetalIndexedDistributedLinkTermCapture {
+    let links: [GPUIndexedBoundaryLink]
+    let interpolationFractionBinCount: Int
+    private(set) var steps: [MetalIndexedDistributedLinkStep] = []
+    private(set) var spatialReflectedSums: [SIMD3<Double>]
+    private(set) var spatialWallSums: [SIMD3<Double>]
+    private(set) var spatialInterpolationSums: [SIMD3<Double>]
+    private(set) var spatialTotalSums: [SIMD3<Double>]
+    private(set) var spatialLinkCounts: [Int]
+    private(set) var spatialFallbackCounts: [Int]
+    private(set) var fallbackLinkCount = 0
+    private(set) var metadataMismatchCount = 0
+    private(set) var maximumLinkClassificationMismatchCountPerStep = 0
+    private(set) var maximumAbsoluteTermClosureNewtons = 0.0
+    private(set) var allValuesFinite = true
+
+    private let backend: MetalBackend
+    private let linkBuffer: MTLBuffer
+    private let termBuffer: MTLBuffer
+    private let pipeline: MTLComputePipelineState
+    private var baselineClassifications: [(joint: Int, branch: Int)]?
+
+    init(
+        backend: MetalBackend,
+        links: [GPUIndexedBoundaryLink],
+        interpolationFractionBinCount: Int
+    ) throws {
+        guard !links.isEmpty,
+              interpolationFractionBinCount > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "distributed link-term capture request is invalid"
+            )
+        }
+        self.backend = backend
+        self.links = links
+        self.interpolationFractionBinCount =
+            interpolationFractionBinCount
+        let jointCount = 4 * (D3Q19.count - 1)
+            * interpolationFractionBinCount
+        spatialReflectedSums = [SIMD3<Double>](
+            repeating: .zero,
+            count: jointCount
+        )
+        spatialWallSums = [SIMD3<Double>](
+            repeating: .zero,
+            count: jointCount
+        )
+        spatialInterpolationSums = [SIMD3<Double>](
+            repeating: .zero,
+            count: jointCount
+        )
+        spatialTotalSums = [SIMD3<Double>](
+            repeating: .zero,
+            count: jointCount
+        )
+        spatialLinkCounts = [Int](repeating: 0, count: jointCount)
+        spatialFallbackCounts = [Int](repeating: 0, count: jointCount)
+        let linkBytes = links.count
+            * MemoryLayout<GPUIndexedBoundaryLink>.stride
+        let termBytes = links.count
+            * MemoryLayout<GPUIndexedBoundaryLinkForceTerm>.stride
+        try backend.validateAllocationPlan(bufferLengths: [
+            linkBytes, termBytes,
+        ])
+        linkBuffer = try backend.makeSharedBuffer(length: linkBytes)
+        termBuffer = try backend.makeSharedBuffer(length: termBytes)
+        pipeline = try backend.pipeline(
+            named: "captureIndexedBoundaryLinkForceTerms"
+        )
+        linkBuffer.label = "Indexed distributed boundary links"
+        termBuffer.label = "Indexed distributed boundary link terms"
+        _ = links.withUnsafeBytes { bytes in
+            memcpy(linkBuffer.contents(), bytes.baseAddress!, linkBytes)
+        }
+        memset(termBuffer.contents(), 0, termBytes)
+    }
+
+    func encode(
+        commandBuffer: MTLCommandBuffer,
+        populationsIn: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode distributed boundary link terms."
+            )
+        }
+        var count = UInt32(links.count)
+        encoder.label = "Indexed distributed boundary link terms"
+        encoder.setBuffer(populationsIn, offset: 0, index: 0)
+        encoder.setBuffer(solidCurrent, offset: 0, index: 1)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 2)
+        encoder.setBuffer(linkBuffer, offset: 0, index: 3)
+        encoder.setBuffer(termBuffer, offset: 0, index: 4)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 5
+        )
+        encoder.setBytes(
+            &count,
+            length: MemoryLayout<UInt32>.stride,
+            index: 6
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: pipeline,
+            count: links.count
+        )
+        encoder.endEncoding()
+    }
+
+    func consume(step: Int) {
+        let pointer = termBuffer.contents().assumingMemoryBound(
+            to: GPUIndexedBoundaryLinkForceTerm.self
+        )
+        var reflectedSum = SIMD3<Double>.zero
+        var wallSum = SIMD3<Double>.zero
+        var interpolationSum = SIMD3<Double>.zero
+        var totalSum = SIMD3<Double>.zero
+        var classifications = [(joint: Int, branch: Int)]()
+        classifications.reserveCapacity(links.count)
+        var stepFallbackCount = 0
+        for index in links.indices {
+            let expected = links[index].metadata
+            let raw = pointer[index]
+            let metadataMatched = raw.metadata.x == expected.x
+                && raw.metadata.y == expected.y
+                && raw.metadata.z == expected.z
+                && raw.metadata.w != 0
+            guard metadataMatched else {
+                metadataMismatchCount += 1
+                classifications.append((-1, 0))
+                continue
+            }
+            let part = Int(raw.metadata.z)
+            let direction = Int(raw.metadata.y)
+            let branch = Int(raw.metadata.w)
+            let q = Double(raw.total.w)
+            let qBin = min(
+                Int(floor(q * Double(interpolationFractionBinCount))),
+                interpolationFractionBinCount - 1
+            )
+            let joint = ((part - 1) * (D3Q19.count - 1)
+                + direction - 1) * interpolationFractionBinCount + qBin
+            let reflected = SIMD3<Double>(
+                Double(raw.reflected.x),
+                Double(raw.reflected.y),
+                Double(raw.reflected.z)
+            )
+            let wall = SIMD3<Double>(
+                Double(raw.wall.x),
+                Double(raw.wall.y),
+                Double(raw.wall.z)
+            )
+            let interpolation = SIMD3<Double>(
+                Double(raw.interpolation.x),
+                Double(raw.interpolation.y),
+                Double(raw.interpolation.z)
+            )
+            let total = SIMD3<Double>(
+                Double(raw.total.x),
+                Double(raw.total.y),
+                Double(raw.total.z)
+            )
+            let closure = vectorMagnitude(
+                reflected + wall + interpolation - total
+            )
+            maximumAbsoluteTermClosureNewtons = max(
+                maximumAbsoluteTermClosureNewtons,
+                closure
+            )
+            allValuesFinite = allValuesFinite
+                && [q, closure].allSatisfy(\.isFinite)
+                && [reflected, wall, interpolation, total].allSatisfy {
+                    $0.x.isFinite && $0.y.isFinite && $0.z.isFinite
+                }
+            reflectedSum += reflected
+            wallSum += wall
+            interpolationSum += interpolation
+            totalSum += total
+            spatialReflectedSums[joint] += reflected
+            spatialWallSums[joint] += wall
+            spatialInterpolationSums[joint] += interpolation
+            spatialTotalSums[joint] += total
+            if step == 1 {
+                spatialLinkCounts[joint] += 1
+                if branch == 1 {
+                    spatialFallbackCounts[joint] += 1
+                }
+            }
+            if branch == 1 { stepFallbackCount += 1 }
+            classifications.append((joint, branch))
+        }
+        if let baseline = baselineClassifications {
+            let mismatches = zip(baseline, classifications).reduce(0) {
+                $0 + (($1.0.joint != $1.1.joint
+                    || $1.0.branch != $1.1.branch) ? 1 : 0)
+            }
+            maximumLinkClassificationMismatchCountPerStep = max(
+                maximumLinkClassificationMismatchCountPerStep,
+                mismatches
+            )
+        } else {
+            baselineClassifications = classifications
+            fallbackLinkCount = stepFallbackCount
+        }
+        steps.append(MetalIndexedDistributedLinkStep(
+            step: step,
+            reflectedForceNewtons: reflectedSum,
+            movingWallForceNewtons: wallSum,
+            interpolationResidualForceNewtons: interpolationSum,
+            totalForceNewtons: totalSum
+        ))
+    }
+}
+
+private struct MetalIndexedMovingBoundaryForceComponents {
+    let reflectedPopulationForceNewtons: SIMD3<Double>
+    let movingWallForceNewtons: SIMD3<Double>
+    let interpolationResidualForceNewtons: SIMD3<Double>
+    let topologyImpulseForceNewtons: SIMD3<Double>
+}
+
+/// Replays the production `stepFluidTRT` kernel from the same immutable
+/// pre-step state with its validation-only force selectors. The four replay
+/// dispatches write only scratch outputs and diagnostic reductions; the normal
+/// production dispatch still advances the sole authoritative population field.
+/// Unlike the compact fixed-link capture, this follows every link created or
+/// removed by the moving indexed surface on the current step.
+private final class MetalIndexedMovingBoundaryForceCapture {
+    private enum Component: Int, CaseIterable {
+        case reflectedPopulation
+        case movingWall
+        case interpolationResidual
+        case topologyImpulse
+
+        var selector: SIMD2<Float> {
+            switch self {
+            case .reflectedPopulation: return SIMD2<Float>(1, 2)
+            case .movingWall: return SIMD2<Float>(1, 3)
+            case .interpolationResidual: return SIMD2<Float>(1, 4)
+            case .topologyImpulse: return SIMD2<Float>(2, 6)
+            }
+        }
+    }
+
+    let firstCapturedStep: Int
+    let lastCapturedStep: Int
+
+    private let backend: MetalBackend
+    private let cellCount: Int
+    private let partialCount: Int
+    private let records: MTLBuffer
+
+    init(
+        backend: MetalBackend,
+        cellCount: Int,
+        firstCapturedStep: Int,
+        lastCapturedStep: Int
+    ) throws {
+        guard cellCount > 0,
+              firstCapturedStep > 0,
+              lastCapturedStep >= firstCapturedStep else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "moving-boundary force capture request is invalid"
+            )
+        }
+        self.backend = backend
+        self.cellCount = cellCount
+        partialCount = max(1, (cellCount + 255) / 256)
+        self.firstCapturedStep = firstCapturedStep
+        self.lastCapturedStep = lastCapturedStep
+        let stepCount = lastCapturedStep - firstCapturedStep + 1
+        let byteCount = stepCount * Component.allCases.count
+            * MemoryLayout<GPUForceTorque>.stride
+        try backend.validateAllocationPlan(bufferLengths: [byteCount])
+        records = try backend.makeSharedBuffer(length: byteCount)
+        records.label = "Moving indexed-boundary force components"
+        memset(records.contents(), 0, byteCount)
+    }
+
+    func encode(
+        commandBuffer: MTLCommandBuffer,
+        step: Int,
+        populationsIn: MTLBuffer,
+        scratchPopulationsOut: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        densityScratch: MTLBuffer,
+        velocityScratch: MTLBuffer,
+        reductionA: MTLBuffer,
+        reductionB: MTLBuffer,
+        bodyState: MTLBuffer,
+        uniforms: inout GPUUniforms,
+        fluidPipeline: MTLComputePipelineState,
+        reductionPipeline: MTLComputePipelineState
+    ) throws {
+        guard (firstCapturedStep...lastCapturedStep).contains(step) else {
+            return
+        }
+        let recordStep = step - firstCapturedStep
+        for component in Component.allCases {
+            var diagnosticUniforms = uniforms
+            let selector = component.selector
+            diagnosticUniforms.caseParameters.x = selector.x
+            diagnosticUniforms.caseParameters.y = selector.y
+            diagnosticUniforms.caseParameters.z = 0
+            guard let encoder = commandBuffer.makeComputeCommandEncoder()
+            else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to encode moving-boundary component replay."
+                )
+            }
+            encoder.label = "Moving-boundary component \(component)"
+            encoder.setBuffer(populationsIn, offset: 0, index: 0)
+            encoder.setBuffer(
+                scratchPopulationsOut,
+                offset: 0,
+                index: 1
+            )
+            encoder.setBuffer(solidPrevious, offset: 0, index: 2)
+            encoder.setBuffer(solidCurrent, offset: 0, index: 3)
+            encoder.setBuffer(wallVelocity, offset: 0, index: 4)
+            encoder.setBuffer(densityScratch, offset: 0, index: 5)
+            encoder.setBuffer(velocityScratch, offset: 0, index: 6)
+            encoder.setBuffer(reductionA, offset: 0, index: 7)
+            encoder.setBuffer(bodyState, offset: 0, index: 8)
+            encoder.setBytes(
+                &diagnosticUniforms,
+                length: MemoryLayout<GPUUniforms>.stride,
+                index: 9
+            )
+            backend.dispatch1DPadded(
+                encoder: encoder,
+                pipeline: fluidPipeline,
+                count: cellCount,
+                threadsPerThreadgroup: 256
+            )
+            encoder.endEncoding()
+
+            let total = try encodeReduction(
+                commandBuffer: commandBuffer,
+                reductionA: reductionA,
+                reductionB: reductionB,
+                pipeline: reductionPipeline
+            )
+            guard let blit = commandBuffer.makeBlitCommandEncoder() else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to store moving-boundary component replay."
+                )
+            }
+            let recordIndex = recordStep * Component.allCases.count
+                + component.rawValue
+            blit.copy(
+                from: total,
+                sourceOffset: 0,
+                to: records,
+                destinationOffset: recordIndex
+                    * MemoryLayout<GPUForceTorque>.stride,
+                size: MemoryLayout<GPUForceTorque>.stride
+            )
+            blit.endEncoding()
+        }
+    }
+
+    func read(step: Int) -> MetalIndexedMovingBoundaryForceComponents? {
+        guard (firstCapturedStep...lastCapturedStep).contains(step) else {
+            return nil
+        }
+        let pointer = records.contents().assumingMemoryBound(
+            to: GPUForceTorque.self
+        )
+        let start = (step - firstCapturedStep) * Component.allCases.count
+        func force(_ component: Component) -> SIMD3<Double> {
+            let value = pointer[start + component.rawValue].force
+            return SIMD3<Double>(
+                Double(value.x), Double(value.y), Double(value.z)
+            )
+        }
+        return MetalIndexedMovingBoundaryForceComponents(
+            reflectedPopulationForceNewtons: force(.reflectedPopulation),
+            movingWallForceNewtons: force(.movingWall),
+            interpolationResidualForceNewtons:
+                force(.interpolationResidual),
+            topologyImpulseForceNewtons: force(.topologyImpulse)
+        )
+    }
+
+    private func encodeReduction(
+        commandBuffer: MTLCommandBuffer,
+        reductionA: MTLBuffer,
+        reductionB: MTLBuffer,
+        pipeline: MTLComputePipelineState
+    ) throws -> MTLBuffer {
+        var input = reductionA
+        var output = reductionB
+        var count = partialCount
+        while count > 1 {
+            let outputCount = (count + 255) / 256
+            var count32 = UInt32(count)
+            guard let encoder = commandBuffer.makeComputeCommandEncoder()
+            else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to reduce moving-boundary component replay."
+                )
+            }
+            encoder.setBuffer(input, offset: 0, index: 0)
+            encoder.setBuffer(output, offset: 0, index: 1)
+            encoder.setBytes(
+                &count32,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: pipeline,
+                count: outputCount
+            )
+            encoder.endEncoding()
+            count = outputCount
+            input = output
+            output = output === reductionA ? reductionB : reductionA
+        }
+        return input
+    }
+}
+
 private final class MetalIndexedBoundaryTermCapture {
     let capturedSteps: [Int]
     let targetCellLinearIndex: Int
@@ -10553,6 +15762,9 @@ private final class MetalIndexedBirdSurfaceReplay {
     var forceToPhysical: Float {
         configuration.scaling.forceToPhysical
     }
+    var tauPlus: Float {
+        configuration.scaling.tauPlus
+    }
     var domainOriginMeters: SIMD3<Float> {
         configuration.domainOriginMeters
     }
@@ -10590,7 +15802,8 @@ private final class MetalIndexedBirdSurfaceReplay {
         targetReynoldsNumber: Float = 1_000,
         latticeReferenceSpeed: Float = 0.04,
         spongeWidthCells: Int = 4,
-        spongeStrength: Float = 0
+        spongeStrength: Float = 0,
+        diagnosticMinimumTauPlus: Float? = nil
     ) throws {
         self.backend = backend
         self.dataset = dataset
@@ -10613,15 +15826,29 @@ private final class MetalIndexedBirdSurfaceReplay {
             z: max(16, Int(ceil(extent.z / cellSizeMeters)) + 1)
         )
         let maximumSpeed = dataset.maximumPointSpeedMetersPerSecond
-        let scaling = try LatticeScaling(
-            characteristicLengthMeters:
-                Float(referenceLengthCells) * cellSizeMeters,
-            characteristicLengthCells: referenceLengthCells,
-            referenceSpeedMetersPerSecond: maximumSpeed,
-            targetReynoldsNumber: targetReynoldsNumber,
-            physicalAirDensity: physicalAirDensity,
-            latticeReferenceSpeed: latticeReferenceSpeed
-        )
+        let scaling: LatticeScaling
+        if let diagnosticMinimumTauPlus {
+            scaling = try LatticeScaling.diagnosticSubMargin(
+                characteristicLengthMeters:
+                    Float(referenceLengthCells) * cellSizeMeters,
+                characteristicLengthCells: referenceLengthCells,
+                referenceSpeedMetersPerSecond: maximumSpeed,
+                targetReynoldsNumber: targetReynoldsNumber,
+                physicalAirDensity: physicalAirDensity,
+                latticeReferenceSpeed: latticeReferenceSpeed,
+                minimumTauPlus: diagnosticMinimumTauPlus
+            )
+        } else {
+            scaling = try LatticeScaling(
+                characteristicLengthMeters:
+                    Float(referenceLengthCells) * cellSizeMeters,
+                characteristicLengthCells: referenceLengthCells,
+                referenceSpeedMetersPerSecond: maximumSpeed,
+                targetReynoldsNumber: targetReynoldsNumber,
+                physicalAirDensity: physicalAirDensity,
+                latticeReferenceSpeed: latticeReferenceSpeed
+            )
+        }
         configuration = try SimulationConfiguration(
             grid: grid,
             domainOriginMeters: minimum,
@@ -10988,7 +16215,11 @@ private final class MetalIndexedBirdSurfaceReplay {
         movingWallNormalization:
             MetalIndexedBirdSurfaceMovingWallNormalization = .referenceDensity,
         fixedSurfaceTimeSeconds: Float? = nil,
-        boundaryTermCaptures: [MetalIndexedBoundaryTermCapture] = []
+        boundaryTermCaptures: [MetalIndexedBoundaryTermCapture] = [],
+        distributedLinkTermCapture:
+            MetalIndexedDistributedLinkTermCapture? = nil,
+        movingBoundaryForceCapture:
+            MetalIndexedMovingBoundaryForceCapture? = nil
     ) throws -> MetalIndexedBirdSurfaceMomentumClosureCase {
         let started = Date()
         let requestedSteps = stepLimit ?? plan.preRollFluidSteps
@@ -11226,6 +16457,30 @@ private final class MetalIndexedBirdSurfaceReplay {
                     uniforms: &uniforms
                 )
             }
+            try distributedLinkTermCapture?.encode(
+                commandBuffer: commandBuffer,
+                populationsIn: populationsIn,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                uniforms: &uniforms
+            )
+            try movingBoundaryForceCapture?.encode(
+                commandBuffer: commandBuffer,
+                step: step,
+                populationsIn: populationsIn,
+                scratchPopulationsOut: populationsOut,
+                solidPrevious: solidPrevious,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                densityScratch: densityScratch,
+                velocityScratch: velocityAndCoveredMomentum,
+                reductionA: reductionA,
+                reductionB: reductionB,
+                bodyState: bodyState,
+                uniforms: &uniforms,
+                fluidPipeline: fluidPipeline,
+                reductionPipeline: forceReductionPipeline
+            )
             try encodeCouplingFluid(
                 commandBuffer: commandBuffer,
                 populationsIn: populationsIn,
@@ -11266,6 +16521,7 @@ private final class MetalIndexedBirdSurfaceReplay {
             commandBuffer.waitUntilCompleted()
             try check(commandBuffer)
             completedSteps = step
+            distributedLinkTermCapture?.consume(step: step)
 
             let rawLoad = reducedLoad.contents()
                 .assumingMemoryBound(to: GPUForceTorque.self)

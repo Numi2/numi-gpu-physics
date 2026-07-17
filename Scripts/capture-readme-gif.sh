@@ -29,14 +29,30 @@ swift build -c release --product birdflow-viewer
   --capture-frames 73 \
   --capture-dove-manifest \
     "$ROOT/ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json" \
-  --capture-dove-pilot \
-    "$ROOT/ValidationArtifacts/deetjen-dove-collision-extended-pilot.json"
+  --capture-dove-d32-full-window \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window.json" \
+  --capture-dove-d32-full-window-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window-audit.json" \
+  --capture-dove-d28-d32-refinement \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-d28-d32-refinement.json" \
+  --capture-dove-d28-d32-phase-localization \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-d28-d32-phase-localization.json" \
+  --capture-dove-d28-d32-phase-localization-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-d28-d32-phase-localization-audit.json" \
+  --capture-dove-targeted-boundary-d28 \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-d28.json" \
+  --capture-dove-targeted-boundary-d32 \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-d32.json" \
+  --capture-dove-targeted-boundary-attribution \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary.json" \
+  --capture-dove-targeted-boundary-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-audit.json"
 
 ffmpeg -v error -y \
   -framerate 24 \
   -i "$FRAMES/frame-%03d.png" \
   -filter_complex \
-  "[0:v]fps=24,scale=1120:630:flags=lanczos,split[a][b];[a]palettegen=max_colors=192:reserve_transparent=0:stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a[v]" \
+  "[0:v]fps=24,scale=1120:630:flags=lanczos,split[a][b];[a]palettegen=max_colors=144:reserve_transparent=0:stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a[v]" \
   -map "[v]" \
   -frames:v 72 \
   -gifflags 0 \

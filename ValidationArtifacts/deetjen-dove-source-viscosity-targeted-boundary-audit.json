@@ -1,0 +1,43 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-source-viscosity-targeted-boundary-audit-v1",
+  "checkCount": 15,
+  "checks": {
+    "absoluteLedger": true,
+    "alignedBins": true,
+    "archivedReproduction": true,
+    "caseComponentClosure": true,
+    "caseGates": true,
+    "claimBoundary": true,
+    "classification": true,
+    "componentDeltaClosure": true,
+    "energyClosure": true,
+    "frozenDominanceRule": true,
+    "leadingContribution": true,
+    "ledgerEntries": true,
+    "sourceHashes": true,
+    "targetInterval": true,
+    "temporalHalves": true
+  },
+  "claimBoundary": "This independent audit reconstructs the X/Z component difference, ten-term signed energy ledger, and temporal dominance rule from the two targeted case artifacts. It does not establish convergence, experimental agreement, or authority to modify production physics.",
+  "d28CaseSHA256": "d483b8d9314a8db159869045e0e4722b17bc77ef5c99e42386e77535783b5aa1",
+  "d32CaseSHA256": "93dd9ea0d1383b6e90d4f6c6f1795116eaae2145241a47c8d329aa619b6c7389",
+  "generatedBy": "Scripts/audit-dove-targeted-boundary-replay.py",
+  "independentReconstruction": {
+    "absoluteLedgerTotal": 11.872344632222676,
+    "componentDifferenceClosureRelativeRMS": 2.3834858908089667e-05,
+    "dominantContributionAvailable": true,
+    "earlyLeader": "reflectedPopulation",
+    "lateLeader": "reflectedPopulation",
+    "leadingAbsoluteLedgerFraction": 0.5842810106073754,
+    "leadingContributionKind": "self",
+    "leadingContributionName": "reflectedPopulation",
+    "productionSquaredDifferenceEnergy": 5.588676933908735,
+    "signedLedgerTotal": 5.588686290855508,
+    "squaredDifferenceEnergyClosureRelativeError": 1.6742658803848133e-06
+  },
+  "preregistrationSHA256": "d3eabdad7153d383a381d5ab84e21859a7294dbde9a9a06df4a446574586b9dd",
+  "productionModificationAuthorized": false,
+  "reportSHA256": "0ec0f37b081f9ff5927b818f161c71acd2323378655471fa04410db0e79e3e71",
+  "schemaVersion": 1
+}

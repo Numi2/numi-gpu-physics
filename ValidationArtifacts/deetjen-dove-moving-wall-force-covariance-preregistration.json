@@ -1,0 +1,28 @@
+{
+  "binsPerBlock" : 8,
+  "blockCount" : 3,
+  "claimBoundary" : "This archive-only covariance test identifies robust coherent or canceling term pairs in the retained fixed-phase grid difference. It does not establish causality, authorize a boundary change or D20, relax the raw spatial gate, or claim experimental force or free-flight agreement.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "Hashed distributed-force preregistration, D12\/D16 report, and independent audit; exactly 24 bins, three eight-bin blocks, and the frozen base-reflection, moving-wall, and interpolation-residual terms. No Metal dispatch, fluid evolution, spatial filtering, or threshold fitting.",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumAllowedRelativeEnergyClosureError" : 1e-05,
+  "maximumAllowedTermDeltaReconstructionErrorNewtons" : 5e-06,
+  "minimumDominantPairBlockEnergyFraction" : 0.3,
+  "minimumDominantPairFullEnergyFraction" : 0.5,
+  "minimumMechanismDecompositionFraction" : 0.6,
+  "passed" : true,
+  "schemaVersion" : 1,
+  "selectionRule" : "From the hashed 24-bin D12\/D16 archive, form each term's cross-grid vector delta. Decompose total mean-squared delta into three self energies and three doubled pair interactions, and split every pair interaction exactly into centered covariance plus mean-offset dot product. The dominant pair is the largest absolute full-window interaction. It is robust only at >=50% of total energy, when it remains the largest pair in all three independent eight-bin blocks, preserves coherent\/canceling sign, and has >=30% absolute interaction in every block. Centered or mean mechanism is named only at >=60% of the pair's absolute centered-plus-mean decomposition.",
+  "sourceDistributedForceAuditSHA256" : "c13bed0a6e59963c748b4ecf38cd6a5b657e5870c619ef601115b694f64ea4dd",
+  "sourceDistributedForcePreregistrationSHA256" : "d3f6a70c9bd40992c56ab7fc041206d94a553fd9d86bbac7b232761541e871b5",
+  "sourceDistributedForceReportSHA256" : "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f",
+  "temporalBinCount" : 24,
+  "termIdentifiers" : [
+    "base-reflection",
+    "moving-wall",
+    "interpolation-residual"
+  ]
+}

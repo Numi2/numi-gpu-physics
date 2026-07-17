@@ -1,6 +1,7 @@
 import AppKit
 import BirdFlowMetal
 import CoreText
+import CryptoKit
 import Foundation
 import Metal
 import simd
@@ -71,7 +72,8 @@ struct MeasuredDovePresentationLoop {
     let h01 = -2 * blendCubed + 3 * blendSquared
     let h11 = blendCubed - blendSquared
     let duration = Self.closureDurationSeconds
-    let position = h00 * end.position
+    let position =
+      h00 * end.position
       + h10 * duration * endVelocity
       + h01 * start.position
       + h11 * duration * startVelocity
@@ -79,12 +81,11 @@ struct MeasuredDovePresentationLoop {
     let dh10 = 3 * blendSquared - 4 * blend + 1
     let dh01 = -6 * blendSquared + 6 * blend
     let dh11 = 3 * blendSquared - 2 * blend
-    let velocity = (
-      dh00 * end.position
+    let velocity =
+      (dh00 * end.position
         + dh10 * duration * endVelocity
         + dh01 * start.position
-        + dh11 * duration * startVelocity
-    ) / duration
+        + dh11 * duration * startVelocity) / duration
     return DoveLoopPoint(position: position, velocity: velocity)
   }
 
@@ -98,7 +99,7 @@ struct MeasuredDovePresentationLoop {
     guard let time = sourceTime(phase: phase) else { return nil }
     return Float(Self.startFrame)
       + (time - dataset.frameTimesSeconds[Self.startFrame])
-        * dataset.sampleRateHertz
+      * dataset.sampleRateHertz
   }
 
   func phase(offsetBy seconds: Float, from phase: Float) -> Float {
@@ -140,7 +141,8 @@ struct MeasuredDovePresentationLoop {
       )
     }
     if timeSeconds >= dataset.frameTimesSeconds[lastIndex] {
-      let duration = dataset.frameTimesSeconds[lastIndex]
+      let duration =
+        dataset.frameTimesSeconds[lastIndex]
         - dataset.frameTimesSeconds[lastIndex - 1]
       return DoveLoopPoint(
         position: bodyCenters[lastIndex],
@@ -157,7 +159,8 @@ struct MeasuredDovePresentationLoop {
         lower = middle
       }
     }
-    let duration = dataset.frameTimesSeconds[upper]
+    let duration =
+      dataset.frameTimesSeconds[upper]
       - dataset.frameTimesSeconds[lower]
     let blend = (timeSeconds - dataset.frameTimesSeconds[lower]) / duration
     let delta = bodyCenters[upper] - bodyCenters[lower]
@@ -169,54 +172,217 @@ struct MeasuredDovePresentationLoop {
 }
 
 enum MeasuredDoveShowcaseCapture {
-  private struct PilotArtifact: Decodable {
-    struct Candidate: Decodable {
-      struct Report: Decodable {
-        struct Sample: Decodable {
-          let sourceTimeSeconds: Double
-          let measuredForceZNewtons: Double
-          let intervalMeanComputedForceNewtons: [Double]
-        }
-
-        let samples: [Sample]
-      }
-
-      let collisionOperator: String
-      let report: Report
+  private struct D32FullWindowArtifact: Decodable {
+    struct ForceSample: Decodable {
+      let sourceTimeSeconds: Double
+      let measuredForceZNewtons: Double
+      let intervalMeanComputedForceNewtons: [Double]
     }
 
-    let requestedFluidSteps: Int
+    struct LedgerResult: Decodable {
+      let allValuesFinite: Bool
+      let collisionLimiterActivationFractionOfCellSteps: Double
+      let collisionOperator: String
+      let completedSteps: Int
+      let minimumPopulation: Double
+      let momentumClosurePassed: Bool
+      let sampledPopulationPositivityPassed: Bool
+    }
+
+    let schemaVersion: Int
+    let selectedCollisionOperator: String
+    let referenceLengthCells: Int
+    let gridX: Int
+    let gridY: Int
+    let gridZ: Int
+    let actualTauPlus: Double
+    let requestedSteps: Int
     let requestedComparisonSamples: Int
-    let intervalMeanPairwiseNormalizedRMSDifference: Double
-    let maximumCorrectionActivationFraction: Double
-    let screeningGatePassed: Bool
+    let registeredForceSamples: [ForceSample]
+    let registeredComparisonSampleCount: Int
+    let normalizedRMSError: Double?
+    let productionTauMarginPassed: Bool
+    let workingSetPreflightPassed: Bool
+    let allStepsCompleted: Bool
+    let populationPositivityPassed: Bool
+    let forceAndMomentumAccountingPassed: Bool
+    let collisionCorrectionIntrusionPassed: Bool
+    let registeredWindowComplete: Bool
+    let fullWindowGatePassed: Bool
     let experimentalAgreementGateApplied: Bool
-    let cases: [Candidate]
+    let gridConvergenceGateApplied: Bool
+    let productionModificationAuthorized: Bool
+    let ledgerResult: LedgerResult
+  }
+
+  private struct D32FullWindowAudit: Decodable {
+    let checkCount: Int
+    let reportSHA256: String
+    let allChecksPassed: Bool
+    let d32ForceHistoryAcceptedAsRefinementInput: Bool
+  }
+
+  private struct D28D32Refinement: Decodable {
+    struct Metrics: Decodable {
+      let horizontalForceNormalizedRMSDifference: Double
+      let verticalForceNormalizedRMSDifference: Double
+    }
+
+    let sourceD32ReportSHA256: String
+    let sourceD32AuditSHA256: String
+    let metrics: Metrics
+    let gridTrendScore: Double
+    let maximumFinePairDifference: Double
+    let finePairStabilizationPassed: Bool
+    let gridConvergenceAccepted: Bool
+    let productionModificationAuthorized: Bool
+    let classification: String
+  }
+
+  private struct D28D32PhaseLocalization: Decodable {
+    struct DominantBand: Decodable {
+      let startTimeSeconds: Double
+      let endTimeSeconds: Double
+      let vectorSquaredDifferenceFraction: Double
+    }
+
+    struct TargetedReplay: Decodable {
+      let startTimeSeconds: Double
+      let endTimeSeconds: Double
+      let d36RunAuthorized: Bool
+    }
+
+    let sourceRefinementReportSHA256: String
+    let exploratoryPostHocAnalysis: Bool
+    let fluidEvolutionExecuted: Bool
+    let dominantPhaseBand: DominantBand
+    let targetedReplayRecommendation: TargetedReplay
+    let classification: String
+  }
+
+  private struct D28D32PhaseLocalizationAudit: Decodable {
+    let reportSHA256: String
+    let allChecksPassed: Bool
+    let targetedD28D32ReplaySupported: Bool
+    let d36RunAuthorized: Bool
+  }
+
+  private struct TargetedBoundaryAttribution: Decodable {
+    struct Attribution: Decodable {
+      let classification: String
+      let dominantContributionAvailable: Bool
+      let leadingContributionName: String
+      let leadingContributionKind: String
+      let leadingAbsoluteLedgerFraction: Double
+      let sameLeaderInBothTemporalHalves: Bool
+    }
+
+    let sourceD28CaseSHA256: String
+    let sourceD32CaseSHA256: String
+    let componentDifferenceClosureRelativeRMS: Double
+    let squaredDifferenceEnergyClosureRelativeError: Double
+    let attribution: Attribution
+    let bothTargetedCasesPassed: Bool
+    let productionModificationAuthorized: Bool
+    let experimentalAgreementGateApplied: Bool
+    let gridConvergenceGateApplied: Bool
+  }
+
+  private struct TargetedBoundaryAudit: Decodable {
+    let reportSHA256: String
+    let d28CaseSHA256: String
+    let d32CaseSHA256: String
+    let checkCount: Int
+    let allChecksPassed: Bool
+    let productionModificationAuthorized: Bool
   }
 
   private struct ForceHistory {
     let times: [Double]
     let measured: [Double]
-    let regularized: [Double]
-    let recursive: [Double]
-    let pairwiseDifference: Double
+    let computed: [Double]
+    let normalizedRMSError: Double
   }
 
   static func run(
     arguments: ReadmeShowcaseCapture.Arguments,
     manifestURL: URL,
-    pilotArtifactURL: URL
+    d32FullWindowArtifactURL: URL,
+    d32FullWindowAuditURL: URL,
+    refinementURL: URL,
+    phaseLocalizationURL: URL,
+    phaseLocalizationAuditURL: URL,
+    targetedD28URL: URL,
+    targetedD32URL: URL,
+    targetedAttributionURL: URL,
+    targetedAuditURL: URL
   ) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
       manifestURL: manifestURL
     )
+    let artifactData = try Data(contentsOf: d32FullWindowArtifactURL)
     let artifact = try JSONDecoder().decode(
-      PilotArtifact.self,
-      from: Data(contentsOf: pilotArtifactURL)
+      D32FullWindowArtifact.self,
+      from: artifactData
+    )
+    let auditData = try Data(contentsOf: d32FullWindowAuditURL)
+    let audit = try JSONDecoder().decode(
+      D32FullWindowAudit.self,
+      from: auditData
+    )
+    let refinementData = try Data(contentsOf: refinementURL)
+    let refinement = try JSONDecoder().decode(
+      D28D32Refinement.self,
+      from: refinementData
+    )
+    let phaseLocalizationData = try Data(contentsOf: phaseLocalizationURL)
+    let phaseLocalization = try JSONDecoder().decode(
+      D28D32PhaseLocalization.self,
+      from: phaseLocalizationData
+    )
+    let phaseLocalizationAudit = try JSONDecoder().decode(
+      D28D32PhaseLocalizationAudit.self,
+      from: Data(contentsOf: phaseLocalizationAuditURL)
+    )
+    let targetedD28Data = try Data(contentsOf: targetedD28URL)
+    let targetedD28 = try JSONDecoder().decode(
+      MetalIndexedBirdSurfaceTargetedBoundaryCaseReport.self,
+      from: targetedD28Data
+    )
+    let targetedD32Data = try Data(contentsOf: targetedD32URL)
+    let targetedD32 = try JSONDecoder().decode(
+      MetalIndexedBirdSurfaceTargetedBoundaryCaseReport.self,
+      from: targetedD32Data
+    )
+    let targetedAttributionData = try Data(
+      contentsOf: targetedAttributionURL
+    )
+    let targetedAttribution = try JSONDecoder().decode(
+      TargetedBoundaryAttribution.self,
+      from: targetedAttributionData
+    )
+    let targetedAudit = try JSONDecoder().decode(
+      TargetedBoundaryAudit.self,
+      from: Data(contentsOf: targetedAuditURL)
     )
     let forceHistory = try validateAndBuildHistory(
       dataset: dataset,
-      artifact: artifact
+      artifact: artifact,
+      audit: audit,
+      artifactSHA256: sha256(artifactData),
+      auditSHA256: sha256(auditData),
+      refinement: refinement,
+      refinementSHA256: sha256(refinementData),
+      phaseLocalization: phaseLocalization,
+      phaseLocalizationSHA256: sha256(phaseLocalizationData),
+      phaseLocalizationAudit: phaseLocalizationAudit,
+      targetedD28: targetedD28,
+      targetedD28SHA256: sha256(targetedD28Data),
+      targetedD32: targetedD32,
+      targetedD32SHA256: sha256(targetedD32Data),
+      targetedAttribution: targetedAttribution,
+      targetedAttributionSHA256: sha256(targetedAttributionData),
+      targetedAudit: targetedAudit
     )
     guard let device = MTLCreateSystemDefaultDevice() else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
@@ -238,15 +404,15 @@ enum MeasuredDoveShowcaseCapture {
       let bounds = frameBounds(loop: loop, phase: progress)
       let center = 0.5 * (bounds.minimum + bounds.maximum)
       var camera = CameraState()
-      camera.distance = 0.56 * (1 + 0.018 * cos(2 * .pi * progress))
-      camera.yaw = -1.02
-      camera.pitch = 0.34
+      camera.distance = 0.515 * (1 + 0.012 * cos(2 * .pi * progress))
+      camera.yaw = -1.02 + 0.045 * sin(2 * .pi * progress)
+      camera.pitch = 0.34 + 0.018 * cos(2 * .pi * progress)
       camera.target = center
       let forward = simd_normalize(center - camera.eye)
       let right = simd_normalize(
         simd_cross(forward, SIMD3<Float>(0, 0, 1))
       )
-      camera.target = center + 0.045 * right + SIMD3<Float>(0, 0, 0.005)
+      camera.target = center + 0.052 * right + SIMD3<Float>(0, 0, 0.005)
 
       let texture = try renderer.render(
         loop: loop,
@@ -266,7 +432,10 @@ enum MeasuredDoveShowcaseCapture {
           height: arguments.height,
           sourceTime: loop.sourceTime(phase: progress).map(Double.init),
           forceHistory: forceHistory,
-          artifact: artifact,
+          d32FullWindow: artifact,
+          refinement: refinement,
+          phaseLocalization: phaseLocalization,
+          targetedAttribution: targetedAttribution,
           frameCoordinate: loop.sourceFrameCoordinate(phase: progress)
         )
       }
@@ -285,50 +454,138 @@ enum MeasuredDoveShowcaseCapture {
 
   private static func validateAndBuildHistory(
     dataset: MeasuredBirdSurfaceSequence,
-    artifact: PilotArtifact
+    artifact: D32FullWindowArtifact,
+    audit: D32FullWindowAudit,
+    artifactSHA256: String,
+    auditSHA256: String,
+    refinement: D28D32Refinement,
+    refinementSHA256: String,
+    phaseLocalization: D28D32PhaseLocalization,
+    phaseLocalizationSHA256: String,
+    phaseLocalizationAudit: D28D32PhaseLocalizationAudit,
+    targetedD28: MetalIndexedBirdSurfaceTargetedBoundaryCaseReport,
+    targetedD28SHA256: String,
+    targetedD32: MetalIndexedBirdSurfaceTargetedBoundaryCaseReport,
+    targetedD32SHA256: String,
+    targetedAttribution: TargetedBoundaryAttribution,
+    targetedAttributionSHA256: String,
+    targetedAudit: TargetedBoundaryAudit
   ) throws -> ForceHistory {
+    let expectedOperator = "positivity-preserving-recursive-regularized-bgk"
     guard dataset.frameCount == 144,
       dataset.vertexCount == 2_157,
       dataset.triangleCount == 3_968,
-      artifact.screeningGatePassed,
+      artifact.schemaVersion == 1,
+      artifact.selectedCollisionOperator == expectedOperator,
+      artifact.referenceLengthCells == 32,
+      artifact.gridX == 296,
+      artifact.gridY == 271,
+      artifact.gridZ == 261,
+      artifact.actualTauPlus >= 0.500_05,
+      artifact.requestedSteps == 15_104,
       !artifact.experimentalAgreementGateApplied,
-      artifact.requestedFluidSteps == 3_776,
+      !artifact.gridConvergenceGateApplied,
+      !artifact.productionModificationAuthorized,
       artifact.requestedComparisonSamples == 187,
-      abs(artifact.maximumCorrectionActivationFraction - 0.05) <= 1e-12,
-      artifact.cases.count == 2,
-      artifact.cases.map(\.collisionOperator) == [
-        "positivity-preserving-regularized-bgk",
-        "positivity-preserving-recursive-regularized-bgk"
-      ],
-      artifact.cases.allSatisfy({ $0.report.samples.count == 187 })
+      artifact.registeredComparisonSampleCount == 187,
+      artifact.registeredForceSamples.count == 187,
+      artifact.productionTauMarginPassed,
+      artifact.workingSetPreflightPassed,
+      artifact.allStepsCompleted,
+      artifact.populationPositivityPassed,
+      artifact.forceAndMomentumAccountingPassed,
+      artifact.collisionCorrectionIntrusionPassed,
+      artifact.registeredWindowComplete,
+      artifact.fullWindowGatePassed,
+      artifact.ledgerResult.collisionOperator == expectedOperator,
+      artifact.ledgerResult.completedSteps == 15_104,
+      artifact.ledgerResult.allValuesFinite,
+      artifact.ledgerResult.sampledPopulationPositivityPassed,
+      artifact.ledgerResult.momentumClosurePassed,
+      artifact.ledgerResult.minimumPopulation > 0,
+      artifact.ledgerResult.collisionLimiterActivationFractionOfCellSteps
+        <= 0.05,
+      audit.checkCount >= 17,
+      audit.reportSHA256 == artifactSHA256,
+      audit.allChecksPassed,
+      audit.d32ForceHistoryAcceptedAsRefinementInput,
+      refinement.sourceD32ReportSHA256 == artifactSHA256,
+      refinement.sourceD32AuditSHA256 == auditSHA256,
+      refinement.gridTrendScore > refinement.maximumFinePairDifference,
+      abs(refinement.gridTrendScore - 0.056_321_598_232_749_01) < 1e-12,
+      abs(refinement.metrics.horizontalForceNormalizedRMSDifference
+        - 0.073_756_565_155_349_02) < 1e-12,
+      abs(refinement.metrics.verticalForceNormalizedRMSDifference
+        - 0.046_610_471_350_922_694) < 1e-12,
+      !refinement.finePairStabilizationPassed,
+      !refinement.gridConvergenceAccepted,
+      !refinement.productionModificationAuthorized,
+      refinement.classification == "d28-d32-fine-pair-not-stabilized",
+      phaseLocalization.sourceRefinementReportSHA256 == refinementSHA256,
+      phaseLocalization.exploratoryPostHocAnalysis,
+      !phaseLocalization.fluidEvolutionExecuted,
+      phaseLocalization.classification
+        == "early-window-phase-localized-two-component-grid-sensitivity",
+      abs(phaseLocalization.targetedReplayRecommendation.startTimeSeconds
+        - 0.025) < 1e-12,
+      abs(phaseLocalization.targetedReplayRecommendation.endTimeSeconds
+        - 0.030) < 1e-12,
+      !phaseLocalization.targetedReplayRecommendation.d36RunAuthorized,
+      phaseLocalizationAudit.reportSHA256 == phaseLocalizationSHA256,
+      phaseLocalizationAudit.allChecksPassed,
+      phaseLocalizationAudit.targetedD28D32ReplaySupported,
+      !phaseLocalizationAudit.d36RunAuthorized,
+      targetedD28.referenceLengthCells == 28,
+      targetedD28.targetedCasePassed,
+      targetedD28.componentBins.count == 11,
+      targetedD32.referenceLengthCells == 32,
+      targetedD32.targetedCasePassed,
+      targetedD32.componentBins.count == 11,
+      targetedD28.sourcePreregistrationSHA256
+        == targetedD32.sourcePreregistrationSHA256,
+      targetedAttribution.sourceD28CaseSHA256 == targetedD28SHA256,
+      targetedAttribution.sourceD32CaseSHA256 == targetedD32SHA256,
+      targetedAttribution.bothTargetedCasesPassed,
+      targetedAttribution.componentDifferenceClosureRelativeRMS <= 1e-4,
+      targetedAttribution.squaredDifferenceEnergyClosureRelativeError <= 1e-4,
+      !targetedAttribution.productionModificationAuthorized,
+      !targetedAttribution.experimentalAgreementGateApplied,
+      !targetedAttribution.gridConvergenceGateApplied,
+      targetedAudit.reportSHA256 == targetedAttributionSHA256,
+      targetedAudit.d28CaseSHA256 == targetedD28SHA256,
+      targetedAudit.d32CaseSHA256 == targetedD32SHA256,
+      targetedAudit.checkCount >= 15,
+      targetedAudit.allChecksPassed,
+      !targetedAudit.productionModificationAuthorized,
+      let normalizedRMSError = artifact.normalizedRMSError,
+      normalizedRMSError.isFinite
     else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
-        "measured-dove showcase inputs do not match the locked full-window artifact"
+        "measured-dove showcase inputs do not match the audited D32 frontier"
       )
     }
-    let regularized = artifact.cases[0].report.samples
-    let recursive = artifact.cases[1].report.samples
-    guard regularized.indices.allSatisfy({ index in
-      regularized[index].intervalMeanComputedForceNewtons.count == 3
-        && recursive[index].intervalMeanComputedForceNewtons.count == 3
-        && abs(regularized[index].sourceTimeSeconds
-          - recursive[index].sourceTimeSeconds) <= 1e-12
+    guard artifact.registeredForceSamples.allSatisfy({
+      $0.intervalMeanComputedForceNewtons.count == 3
+        && $0.sourceTimeSeconds.isFinite
+        && $0.measuredForceZNewtons.isFinite
+        && $0.intervalMeanComputedForceNewtons.allSatisfy(\.isFinite)
     }) else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
-        "measured-dove force histories are malformed or misaligned"
+        "audited D32 force history is malformed"
       )
     }
     return ForceHistory(
-      times: regularized.map(\.sourceTimeSeconds),
-      measured: regularized.map(\.measuredForceZNewtons),
-      regularized: regularized.map {
+      times: artifact.registeredForceSamples.map(\.sourceTimeSeconds),
+      measured: artifact.registeredForceSamples.map(\.measuredForceZNewtons),
+      computed: artifact.registeredForceSamples.map {
         $0.intervalMeanComputedForceNewtons[2]
       },
-      recursive: recursive.map {
-        $0.intervalMeanComputedForceNewtons[2]
-      },
-      pairwiseDifference: artifact.intervalMeanPairwiseNormalizedRMSDifference
+      normalizedRMSError: normalizedRMSError
     )
+  }
+
+  private static func sha256(_ data: Data) -> String {
+    SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
   }
 
   private static func frameBounds(
@@ -351,7 +608,10 @@ enum MeasuredDoveShowcaseCapture {
     height: Int,
     sourceTime: Double?,
     forceHistory: ForceHistory,
-    artifact: PilotArtifact,
+    d32FullWindow: D32FullWindowArtifact,
+    refinement: D28D32Refinement,
+    phaseLocalization: D28D32PhaseLocalization,
+    targetedAttribution: TargetedBoundaryAttribution,
     frameCoordinate: Float?
   ) {
     graphics.saveGState()
@@ -365,7 +625,7 @@ enum MeasuredDoveShowcaseCapture {
     )
     fillPanel(titlePanel, radius: 13 * scale, context: graphics)
     drawText(
-      "BIRDFLOWMETAL · RECONSTRUCTED DOVE",
+      "MEASURED DOVE · NATIVE METAL REPLAY",
       font: systemFont(.emphasizedSystem, size: 20 * scale),
       color: NSColor.white.cgColor,
       position: CGPoint(
@@ -376,7 +636,7 @@ enum MeasuredDoveShowcaseCapture {
       context: graphics
     )
     drawText(
-      "OB_F03  •  FORWARD 94 MS WINGBEAT  •  BODY-FOLLOWING  •  METAL",
+      "OB_F03  •  SOURCE-LOCKED 27–121 MS  •  BODY-FOLLOWING",
       font: systemFont(.userFixedPitch, size: 10.5 * scale),
       color: NSColor(
         calibratedRed: 0.61,
@@ -399,8 +659,8 @@ enum MeasuredDoveShowcaseCapture {
     )
     fillPanel(statusPanel, radius: 13 * scale, context: graphics)
     drawText(
-      "FULL-WINDOW NUMERICAL GATE",
-      font: systemFont(.emphasizedSystem, size: 13 * scale),
+      "D28/D32 TARGETED COMPONENT REPLAY",
+      font: systemFont(.emphasizedSystem, size: 12.5 * scale),
       color: NSColor.white.cgColor,
       position: CGPoint(
         x: statusPanel.minX + 16 * scale,
@@ -409,8 +669,27 @@ enum MeasuredDoveShowcaseCapture {
       tracking: 0.35 * scale,
       context: graphics
     )
+    let leadingContributionLabel: String
+    switch targetedAttribution.attribution.leadingContributionName {
+    case "reflectedPopulation": leadingContributionLabel = "REFLECTED POPULATION"
+    case "movingWall": leadingContributionLabel = "MOVING WALL"
+    case "interpolationResidual":
+      leadingContributionLabel = "INTERPOLATION RESIDUAL"
+    case "topologyImpulse": leadingContributionLabel = "TOPOLOGY IMPULSE"
+    default:
+      leadingContributionLabel = targetedAttribution.attribution
+        .leadingContributionName.uppercased()
+    }
+    let attributionStatus = targetedAttribution.attribution
+      .dominantContributionAvailable
+      ? String(
+        format: "AUDITED  •  %@  •  %.1f%% OF |LEDGER|",
+        leadingContributionLabel,
+        100 * targetedAttribution.attribution.leadingAbsoluteLedgerFraction
+      )
+      : "AUDITED  •  MIXED MECHANISMS  •  COMPONENT LEDGER CLOSED"
     drawText(
-      "PASSED  •  2 × 3,776 STEPS  •  187 FORCE SAMPLES",
+      attributionStatus,
       font: systemFont(.userFixedPitch, size: 10.5 * scale),
       color: NSColor(
         calibratedRed: 0.35,
@@ -435,53 +714,33 @@ enum MeasuredDoveShowcaseCapture {
       in: chart,
       currentTime: sourceTime,
       history: forceHistory,
+      sensitiveStartTime: phaseLocalization.targetedReplayRecommendation
+        .startTimeSeconds,
+      sensitiveEndTime: phaseLocalization.targetedReplayRecommendation
+        .endTimeSeconds,
       context: graphics,
       scale: scale
     )
 
-    var badgeX = margin
-    badgeX = drawBadge(
-      "POSITIVE POPULATIONS",
-      color: NSColor(calibratedRed: 0.22, green: 0.94, blue: 0.75, alpha: 1),
-      x: badgeX,
+    let progress = NSRect(
+      x: margin,
       y: margin,
-      scale: scale,
-      context: graphics
+      width: CGFloat(width) - 2 * margin - 360 * scale,
+      height: 58 * scale
     )
-    badgeX = drawBadge(
-      "MOMENTUM < 0.12%",
-      color: NSColor(calibratedRed: 0.21, green: 0.68, blue: 1, alpha: 1),
-      x: badgeX + 7 * scale,
-      y: margin,
-      scale: scale,
-      context: graphics
-    )
-    badgeX = drawBadge(
-      "REG ↔ RR3 < 0.9%",
-      color: NSColor(calibratedRed: 0.71, green: 0.44, blue: 1, alpha: 1),
-      x: badgeX + 7 * scale,
-      y: margin,
-      scale: scale,
-      context: graphics
-    )
-    _ = drawBadge(
-      "KINEMATIC TRAILS",
-      color: NSColor(calibratedRed: 1, green: 0.48, blue: 0.21, alpha: 1),
-      x: badgeX + 7 * scale,
-      y: margin,
-      scale: scale,
-      context: graphics
-    )
+    drawProgressRail(in: progress, context: graphics, scale: scale)
 
     let boundary = NSRect(
       x: CGFloat(width) - margin - 344 * scale,
       y: margin,
       width: 344 * scale,
-      height: 54 * scale
+      height: 58 * scale
     )
     fillPanel(boundary, radius: 12 * scale, context: graphics)
     drawText(
-      "SCIENCE BOUNDARY",
+      frameCoordinate.map {
+        "SCIENTIFIC BOUNDARY  ·  SOURCE t=\(Int($0.rounded())) ms"
+      } ?? "SCIENTIFIC BOUNDARY  ·  14 ms LOOP CLOSURE",
       font: systemFont(.emphasizedSystem, size: 10 * scale),
       color: NSColor.white.cgColor,
       position: CGPoint(
@@ -492,9 +751,11 @@ enum MeasuredDoveShowcaseCapture {
       context: graphics
     )
     drawText(
-      frameCoordinate.map {
-        "REFINEMENT OPEN  •  68.07× VISCOSITY  •  SOURCE t=\(Int($0.rounded())) ms"
-      } ?? "REFINEMENT OPEN  •  68.07× VISCOSITY  •  LOOP CLOSURE",
+      String(
+        format: "D28/D32 %.3f%% > %.1f%%  •  CONVERGENCE OPEN",
+        100 * refinement.gridTrendScore,
+        100 * refinement.maximumFinePairDifference
+      ),
       font: systemFont(.userFixedPitch, size: 9.5 * scale),
       color: NSColor(
         calibratedRed: 1,
@@ -516,12 +777,14 @@ enum MeasuredDoveShowcaseCapture {
     in rect: NSRect,
     currentTime: Double?,
     history: ForceHistory,
+    sensitiveStartTime: Double,
+    sensitiveEndTime: Double,
     context: CGContext,
     scale: CGFloat
   ) {
     fillPanel(rect, radius: 13 * scale, alpha: 0.82, context: context)
     drawText(
-      "VERTICAL FORCE HISTORY · DESCRIPTIVE",
+      "D32 FORCE HISTORY · DESCRIPTIVE",
       font: systemFont(.emphasizedSystem, size: 10.5 * scale),
       color: NSColor.white.cgColor,
       position: CGPoint(x: rect.minX + 14 * scale, y: rect.maxY - 22 * scale),
@@ -534,13 +797,38 @@ enum MeasuredDoveShowcaseCapture {
       width: rect.width - 28 * scale,
       height: rect.height - 68 * scale
     )
-    let values = history.measured + history.regularized + history.recursive
+    let values = history.measured + history.computed
     guard let rawMinimum = values.min(), let rawMaximum = values.max() else {
       return
     }
     let padding = max(0.1, 0.08 * (rawMaximum - rawMinimum))
     let minimum = rawMinimum - padding
     let maximum = rawMaximum + padding
+    let startTime = history.times[0]
+    let endTime = history.times[history.times.count - 1]
+    let sensitiveStart = min(
+      max((sensitiveStartTime - startTime) / (endTime - startTime), 0),
+      1
+    )
+    let sensitiveEnd = min(
+      max((sensitiveEndTime - startTime) / (endTime - startTime), 0),
+      1
+    )
+    let sensitiveRect = NSRect(
+      x: plot.minX + CGFloat(sensitiveStart) * plot.width,
+      y: plot.minY,
+      width: CGFloat(sensitiveEnd - sensitiveStart) * plot.width,
+      height: plot.height
+    )
+    context.setFillColor(
+      NSColor(calibratedRed: 1, green: 0.55, blue: 0.16, alpha: 0.13).cgColor
+    )
+    context.fill(sensitiveRect)
+    context.setStrokeColor(
+      NSColor(calibratedRed: 1, green: 0.64, blue: 0.22, alpha: 0.60).cgColor
+    )
+    context.setLineWidth(0.8 * scale)
+    context.stroke(sensitiveRect)
     context.setStrokeColor(NSColor(calibratedWhite: 1, alpha: 0.10).cgColor)
     context.setLineWidth(0.75 * scale)
     for index in 0...3 {
@@ -557,9 +845,10 @@ enum MeasuredDoveShowcaseCapture {
       context.setLineCap(.round)
       for index in values.indices {
         let x = plot.minX + CGFloat(index) / CGFloat(values.count - 1) * plot.width
-        let y = plot.minY
+        let y =
+          plot.minY
           + CGFloat((values[index] - minimum) / (maximum - minimum))
-            * plot.height
+          * plot.height
         if index == 0 {
           context.move(to: CGPoint(x: x, y: y))
         } else {
@@ -574,19 +863,15 @@ enum MeasuredDoveShowcaseCapture {
       width: 1
     )
     drawSeries(
-      history.regularized,
-      color: NSColor(calibratedRed: 0.18, green: 0.72, blue: 1, alpha: 0.95),
+      history.computed,
+      color: NSColor(calibratedRed: 0.45, green: 1, blue: 0.72, alpha: 0.92),
       width: 1.65
     )
-    drawSeries(
-      history.recursive,
-      color: NSColor(calibratedRed: 0.45, green: 1, blue: 0.72, alpha: 0.92),
-      width: 1.15
-    )
     if let currentTime {
-      let start = history.times[0]
-      let end = history.times[history.times.count - 1]
-      let marker = min(max((currentTime - start) / (end - start), 0), 1)
+      let marker = min(
+        max((currentTime - startTime) / (endTime - startTime), 0),
+        1
+      )
       let markerX = plot.minX + CGFloat(marker) * plot.width
       context.setStrokeColor(
         NSColor(calibratedRed: 1, green: 0.63, blue: 0.22, alpha: 0.85).cgColor
@@ -606,26 +891,30 @@ enum MeasuredDoveShowcaseCapture {
       context: context
     )
     drawLegendDot(
-      "REG",
-      color: NSColor(calibratedRed: 0.18, green: 0.72, blue: 1, alpha: 1),
+      "D32 RR3",
+      color: NSColor(calibratedRed: 0.45, green: 1, blue: 0.72, alpha: 1),
       x: rect.minX + 103 * scale,
       y: rect.minY + 14 * scale,
       scale: scale,
       context: context
     )
-    drawLegendDot(
-      "RR3",
-      color: NSColor(calibratedRed: 0.45, green: 1, blue: 0.72, alpha: 1),
-      x: rect.minX + 151 * scale,
-      y: rect.minY + 14 * scale,
-      scale: scale,
+    drawText(
+      String(format: "NRMS %.3f", history.normalizedRMSError),
+      font: systemFont(.userFixedPitch, size: 8.8 * scale),
+      color: NSColor(calibratedWhite: 0.78, alpha: 1).cgColor,
+      position: CGPoint(x: rect.maxX - 84 * scale, y: rect.minY + 11 * scale),
       context: context
     )
     drawText(
-      String(format: "Δ RMS %.3f%%", 100 * history.pairwiseDifference),
-      font: systemFont(.userFixedPitch, size: 8.8 * scale),
-      color: NSColor(calibratedWhite: 0.78, alpha: 1).cgColor,
-      position: CGPoint(x: rect.maxX - 91 * scale, y: rect.minY + 11 * scale),
+      "25–30 ms TARGET",
+      font: systemFont(.userFixedPitch, size: 7.4 * scale),
+      color: NSColor(
+        calibratedRed: 1,
+        green: 0.70,
+        blue: 0.30,
+        alpha: 1
+      ).cgColor,
+      position: CGPoint(x: rect.maxX - 89 * scale, y: rect.maxY - 23 * scale),
       context: context
     )
   }
@@ -659,40 +948,87 @@ enum MeasuredDoveShowcaseCapture {
     context.strokePath()
   }
 
-  @discardableResult
-  private static func drawBadge(
-    _ label: String,
-    color: NSColor,
-    x: CGFloat,
-    y: CGFloat,
-    scale: CGFloat,
-    context: CGContext
-  ) -> CGFloat {
-    let font = systemFont(.userFixedPitch, size: 8.6 * scale)
-    let line = textLine(label, font: font, color: NSColor.white.cgColor)
-    let textWidth = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
-    let rect = NSRect(
-      x: x,
-      y: y,
-      width: textWidth + 22 * scale,
-      height: 25 * scale
+  private static func drawProgressRail(
+    in rect: NSRect,
+    context: CGContext,
+    scale: CGFloat
+  ) {
+    fillPanel(rect, radius: 12 * scale, context: context)
+    drawText(
+      "VALIDATION PROGRESS",
+      font: systemFont(.emphasizedSystem, size: 10 * scale),
+      color: NSColor.white.cgColor,
+      position: CGPoint(x: rect.minX + 14 * scale, y: rect.minY + 32 * scale),
+      tracking: 0.38 * scale,
+      context: context
     )
-    fillPanel(rect, radius: 12.5 * scale, alpha: 0.77, context: context)
-    context.setFillColor(color.cgColor)
-    context.fillEllipse(
-      in: NSRect(
-        x: rect.minX + 7 * scale,
-        y: rect.midY - 2.5 * scale,
-        width: 5 * scale,
-        height: 5 * scale
+    drawText(
+      "SOURCE-VISCOSITY LADDER",
+      font: systemFont(.userFixedPitch, size: 7.8 * scale),
+      color: NSColor(calibratedWhite: 0.60, alpha: 1).cgColor,
+      position: CGPoint(x: rect.minX + 14 * scale, y: rect.minY + 13 * scale),
+      context: context
+    )
+
+    let labels = [
+      "SOURCE", "D16 A/B", "D28 PASS", "D32 PASS", "TARGET AUDIT", "PAIR OPEN",
+    ]
+    let colors = [
+      NSColor(calibratedRed: 0.28, green: 0.90, blue: 0.78, alpha: 1),
+      NSColor(calibratedRed: 0.24, green: 0.70, blue: 1, alpha: 1),
+      NSColor(calibratedRed: 0.64, green: 0.55, blue: 1, alpha: 1),
+      NSColor(calibratedRed: 0.43, green: 1, blue: 0.72, alpha: 1),
+      NSColor(calibratedRed: 0.20, green: 0.88, blue: 0.92, alpha: 1),
+      NSColor(calibratedRed: 1, green: 0.65, blue: 0.24, alpha: 1),
+    ]
+    let startX = rect.minX + 174 * scale
+    let endX = rect.maxX - 38 * scale
+    let nodeY = rect.minY + 34 * scale
+    context.setStrokeColor(
+      NSColor(calibratedRed: 0.28, green: 0.70, blue: 0.82, alpha: 0.30).cgColor
+    )
+    context.setLineWidth(1.2 * scale)
+    context.move(to: CGPoint(x: startX, y: nodeY))
+    context.addLine(to: CGPoint(x: endX, y: nodeY))
+    context.strokePath()
+    for index in labels.indices {
+      let fraction = CGFloat(index) / CGFloat(labels.count - 1)
+      let x = startX + fraction * (endX - startX)
+      context.setFillColor(colors[index].cgColor)
+      context.fillEllipse(
+        in: NSRect(
+          x: x - 4 * scale,
+          y: nodeY - 4 * scale,
+          width: 8 * scale,
+          height: 8 * scale
+        )
       )
-    )
-    context.textPosition = CGPoint(
-      x: rect.minX + 15 * scale,
-      y: rect.minY + 7.5 * scale
-    )
-    CTLineDraw(line, context)
-    return rect.maxX
+      context.setStrokeColor(
+        NSColor(calibratedWhite: 1, alpha: 0.34).cgColor
+      )
+      context.setLineWidth(1 * scale)
+      context.strokeEllipse(
+        in: NSRect(
+          x: x - 6.5 * scale,
+          y: nodeY - 6.5 * scale,
+          width: 13 * scale,
+          height: 13 * scale
+        )
+      )
+      let labelLine = textLine(
+        labels[index],
+        font: systemFont(.userFixedPitch, size: 7.5 * scale),
+        color: NSColor(calibratedWhite: 0.82, alpha: 1).cgColor
+      )
+      let labelWidth = CGFloat(
+        CTLineGetTypographicBounds(labelLine, nil, nil, nil)
+      )
+      context.textPosition = CGPoint(
+        x: x - 0.5 * labelWidth,
+        y: rect.minY + 10 * scale
+      )
+      CTLineDraw(labelLine, context)
+    }
   }
 
   private static func drawLegendDot(
@@ -750,7 +1086,7 @@ enum MeasuredDoveShowcaseCapture {
         attributes: [
           NSAttributedString.Key(kCTFontAttributeName as String): font,
           NSAttributedString.Key(kCTForegroundColorAttributeName as String): color,
-          NSAttributedString.Key(kCTKernAttributeName as String): tracking
+          NSAttributedString.Key(kCTKernAttributeName as String): tracking,
         ]
       )
     )
@@ -965,12 +1301,14 @@ private final class MeasuredDoveShowcaseRenderer {
       let indices = [Int(triangle.x), Int(triangle.y), Int(triangle.z)]
       let points = indices.map { states[$0].position }
       let rawNormal = simd_cross(points[1] - points[0], points[2] - points[0])
-      let normal = simd_length_squared(rawNormal) > 1e-16
+      let normal =
+        simd_length_squared(rawNormal) > 1e-16
         ? simd_normalize(rawNormal)
         : SIMD3<Float>(0, 0, 1)
-      let speed = indices.reduce(Float.zero) {
-        $0 + simd_length(states[$1].velocity)
-      } / 3
+      let speed =
+        indices.reduce(Float.zero) {
+          $0 + simd_length(states[$1].velocity)
+        } / 3
       let color = surfaceColor(
         partIdentifier: dataset.trianglePartIdentifiers[triangleIndex],
         normalizedSpeed: min(max(speed / 25.2305, 0), 1)
@@ -993,12 +1331,12 @@ private final class MeasuredDoveShowcaseRenderer {
     phase: Float
   ) -> [ColoredVertex] {
     var result: [ColoredVertex] = []
-    for ghostIndex in 1...3 {
+    for ghostIndex in 1...2 {
       let ghostPhase = loop.phase(
         offsetBy: -Float(ghostIndex) * 0.006,
         from: phase
       )
-      let alpha = Float(0.10 / Double(ghostIndex))
+      let alpha = Float(0.075 / Double(ghostIndex))
       for triangleIndex in 0..<dataset.triangleCount {
         let part = dataset.trianglePartIdentifiers[triangleIndex]
         guard part == 2 || part == 3 else { continue }
@@ -1008,10 +1346,12 @@ private final class MeasuredDoveShowcaseRenderer {
           loop.point(phase: ghostPhase, vertexIndex: $0).position
         }
         let rawNormal = simd_cross(points[1] - points[0], points[2] - points[0])
-        let normal = simd_length_squared(rawNormal) > 1e-16
+        let normal =
+          simd_length_squared(rawNormal) > 1e-16
           ? simd_normalize(rawNormal)
           : SIMD3<Float>(0, 0, 1)
-        let rgb = part == 2
+        let rgb =
+          part == 2
           ? SIMD3<Float>(0.16, 0.72, 1)
           : SIMD3<Float>(1, 0.42, 0.16)
         for point in points {
@@ -1033,55 +1373,82 @@ private final class MeasuredDoveShowcaseRenderer {
     phase: Float,
     camera: CameraState
   ) -> [[ColoredVertex]] {
-    wingtipIndices.enumerated().map { trailIndex, vertexIndex in
-      let sampleCount = 30
+    wingtipIndices.enumerated().flatMap { trailIndex, vertexIndex in
+      let sampleCount = 24
       var points: [SIMD3<Float>] = []
       for sample in stride(from: sampleCount - 1, through: 0, by: -1) {
         let samplePhase = loop.phase(
-          offsetBy: -Float(sample) * 0.0018,
+          offsetBy: -Float(sample) * 0.0014,
           from: phase
         )
         points.append(
           loop.point(phase: samplePhase, vertexIndex: vertexIndex).position
         )
       }
-      let rgb = trailIndex == 0
+      let rgb =
+        trailIndex == 0
         ? SIMD3<Float>(0.12, 0.76, 1)
         : SIMD3<Float>(1, 0.39, 0.15)
-      var vertices: [ColoredVertex] = []
-      vertices.reserveCapacity(points.count * 2)
-      for index in points.indices {
-        let previous = points[max(index - 1, 0)]
-        let next = points[min(index + 1, points.count - 1)]
-        let tangent = simd_normalize(next - previous + SIMD3<Float>(1e-8, 0, 0))
-        let view = simd_normalize(camera.eye - points[index])
-        let rawLateral = simd_cross(view, tangent)
-        let lateral = simd_length_squared(rawLateral) > 1e-12
-          ? simd_normalize(rawLateral)
-          : SIMD3<Float>(0, 0, 1)
-        let age = Float(index) / Float(points.count - 1)
-        let width = 0.00035 + 0.0018 * age
-        let color = SIMD4<Float>(
-          rgb,
-          0.68 * age * age
-        )
-        vertices.append(
-          ColoredVertex(
-            position: SIMD4<Float>(points[index] - width * lateral, 1),
-            normal: SIMD4<Float>(view, 0),
-            color: color
-          )
-        )
-        vertices.append(
-          ColoredVertex(
-            position: SIMD4<Float>(points[index] + width * lateral, 1),
-            normal: SIMD4<Float>(view, 0),
-            color: color
-          )
-        )
-      }
-      return vertices
+      return [
+        makeTrailVertices(
+          points: points,
+          rgb: rgb,
+          camera: camera,
+          baseWidth: 0.00045,
+          tipWidth: 0.0024,
+          peakAlpha: 0.14
+        ),
+        makeTrailVertices(
+          points: points,
+          rgb: rgb,
+          camera: camera,
+          baseWidth: 0.00016,
+          tipWidth: 0.00072,
+          peakAlpha: 0.82
+        ),
+      ]
     }
+  }
+
+  private func makeTrailVertices(
+    points: [SIMD3<Float>],
+    rgb: SIMD3<Float>,
+    camera: CameraState,
+    baseWidth: Float,
+    tipWidth: Float,
+    peakAlpha: Float
+  ) -> [ColoredVertex] {
+    var vertices: [ColoredVertex] = []
+    vertices.reserveCapacity(points.count * 2)
+    for index in points.indices {
+      let previous = points[max(index - 1, 0)]
+      let next = points[min(index + 1, points.count - 1)]
+      let tangent = simd_normalize(next - previous + SIMD3<Float>(1e-8, 0, 0))
+      let view = simd_normalize(camera.eye - points[index])
+      let rawLateral = simd_cross(view, tangent)
+      let lateral =
+        simd_length_squared(rawLateral) > 1e-12
+        ? simd_normalize(rawLateral)
+        : SIMD3<Float>(0, 0, 1)
+      let age = Float(index) / Float(points.count - 1)
+      let width = baseWidth + tipWidth * age
+      let color = SIMD4<Float>(rgb, peakAlpha * age * age)
+      vertices.append(
+        ColoredVertex(
+          position: SIMD4<Float>(points[index] - width * lateral, 1),
+          normal: SIMD4<Float>(view, 0),
+          color: color
+        )
+      )
+      vertices.append(
+        ColoredVertex(
+          position: SIMD4<Float>(points[index] + width * lateral, 1),
+          normal: SIMD4<Float>(view, 0),
+          color: color
+        )
+      )
+    }
+    return vertices
   }
 
   private func sharedBuffer(_ vertices: [ColoredVertex]) throws -> MTLBuffer {
@@ -1134,17 +1501,20 @@ private final class MeasuredDoveShowcaseRenderer {
     }
     bodyCenter /= Float(body.vertexCount)
     return [UInt8(2), UInt8(3)].compactMap { identifier in
-      guard let wing = dataset.components.first(where: {
-        $0.partIdentifier == identifier
-      }) else { return nil }
+      guard
+        let wing = dataset.components.first(where: {
+          $0.partIdentifier == identifier
+        })
+      else { return nil }
       return (wing.vertexOffset..<(wing.vertexOffset + wing.vertexCount)).max {
         simd_distance_squared(
           dataset.vertex(frame: referenceFrame, index: $0),
           bodyCenter
-        ) < simd_distance_squared(
-          dataset.vertex(frame: referenceFrame, index: $1),
-          bodyCenter
         )
+          < simd_distance_squared(
+            dataset.vertex(frame: referenceFrame, index: $1),
+            bodyCenter
+          )
       }
     }
   }

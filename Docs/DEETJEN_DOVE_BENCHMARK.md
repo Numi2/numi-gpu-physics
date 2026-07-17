@@ -249,6 +249,16 @@ margin. The pilot therefore declares `tau+=0.501`; its effective viscosity is
 `68.07x` the source convention. `experimentalAgreementGateApplied` is false by
 construction.
 
+The later source-scaling audit verifies both fluid-property constants directly
+from the SHA-locked deposited `MuscleModel.m` and reconstructs the viscosity
+ratio on D8/D12/D16. They are author-code conventions, not same-flight
+atmospheric measurements. The article reports no ambient temperature, pressure,
+humidity, or Reynolds number. BirdFlow's `128,813` source-property Reynolds is
+therefore labeled an engineering maximum-wall-speed/`0.08 m` proxy; it differs
+by `25.773%` from the deposited-blade-speed/selected-mean-chord proxy `102,417`.
+See `ValidationArtifacts/deetjen-dove-source-scaling.json` and its independent
+audit.
+
 The run is a negative integration result, not a force curve. The first sampled
 negative population appears at fluid step 176 (`5.5 ms`) in D3Q19 direction 7,
 cell `[31,35,29]`, `0.0764` cells from the moving surface. The load reduction
@@ -443,8 +453,8 @@ causes a hard failure.
 3. Reconstruct the 1000 Hz geometry-to-2000 Hz force synchronization from the
    deposited source code. Archive the exact source member CRCs and converted
    input bytes.
-4. Run a prescribed complete-surface replay at the reported `rho=1.18 kg/m^3`
-   and `mu=1.849e-5 kg/(m s)` source-model convention, while recording any
+4. Run a prescribed complete-surface replay at the deposited author-code
+   `rho=1.18 kg/m^3` and `mu=1.849e-5 kg/(m s)` convention, while recording any
    atmospheric uncertainty rather than calling those values same-flight
    measurements.
 5. Compare measured `FxWings` and `FzWings` using impulse, mean, peak magnitude,
@@ -462,10 +472,45 @@ positivity/load gate with a localized near-wall population. Two positivity-
 preserving alternatives pass the fixed pre-roll, independent momentum closure,
 and the full 3,776-step registered-window extension. The preregistered D=8/D=12
 decision selects RR3, but its sole authorized D=16 run fails positivity before
-the comparison window. Quantitative experimental acceptance therefore remains
-blocked by that fine-grid numerical failure, the five-flight repeatability
-envelope, source-condition time/space refinement, and measured-force acceptance
-without the current viscosity distortion.
+the comparison window under the old fixed-viscosity scaling.
+
+The subsequent source-property reconstruction established D28 as the first
+grid meeting the unchanged production `tau+>=0.50005` margin. RR3 then passed a
+2,800-step D28 pre-roll and the preregistered 13,216-step full measured-force
+window. All 187 bins were recorded; minimum population stayed positive;
+near-wing/global momentum residuals were `0.0824%/0.1507%`; and correction
+activated in only `0.00136%` of cell-steps. An independent audit reconstructs
+every step and bin. This cleared the earlier fine-grid numerical-survival
+blocker, but not quantitative experimental acceptance: joint normalized RMS
+force error is `2.1357`, vertical mean force is `39.0%` high, and horizontal
+mean force is `74.5%` low.
+
+The fixed-physics D32 member is now complete too. Its preregistered `296 x 271
+x 261` RR3 case completed the 3,200-step pre-roll and separately frozen
+15,104-step force window on Apple M4. All 187 bins were recorded; minimum
+population was `4.685e-9`; near-wing/global ledgers closed at
+`0.1613%/0.0964%`; and correction activation was `0.00144%`. Independent
+audits pass 18/18 pre-roll and 17/17 full-window checks.
+
+The preregistered D28/D32 pair nevertheless misses the inherited `5%`
+phase-history stabilization limit: the primary difference is `5.632%`, with
+horizontal/vertical component differences `7.376%/4.661%`. Mean, impulse, and
+peak time are stable below `0.8%`, but that cannot override the history gate.
+Archive-only phase localization places `42.67%` of total squared difference in
+the first 11 ms and identifies `25...30 ms` as the highest-information 5 ms
+target; a simple time lag does not explain it. The preregistered targeted replay
+then reproduced both archived trajectories exactly and closed reflected,
+moving-wall, interpolation, and topology components at `2.68e-5/3.33e-5`
+relative RMS. Its independent 15-check signed-energy audit identifies
+reflected-population self energy as a stable dominant contribution (`58.43%`
+of the absolute ledger in both temporal halves). Negative interactions with
+topology (`14.68%`) and interpolation (`7.51%`) prohibit a one-term rescaling.
+D36 is still not authorized. The next allocation should record selected-link
+pre-step outgoing-population provenance at D28/D32 to distinguish bulk
+collision/transport history from near-wall interpolation history. The
+five-flight repeatability envelope also remains open. These results are
+numerical refinement evidence—not experimental agreement, production
+readiness, or free flight.
 
 ## Claim after a successful ladder
 

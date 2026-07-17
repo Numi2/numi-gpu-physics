@@ -1,0 +1,36 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-source-viscosity-d28-d32-phase-localization-audit-v1",
+  "checkCount": 13,
+  "checks": {
+    "alignedSamples": true,
+    "classification": true,
+    "componentFractions": true,
+    "dominantBand": true,
+    "exploratoryBoundary": true,
+    "fixedWindow": true,
+    "lagScan": true,
+    "normalizedDominantComponent": true,
+    "peakHorizontal": true,
+    "peakVertical": true,
+    "sourceHashes": true,
+    "sourceVerdict": true,
+    "targetedInterval": true
+  },
+  "claimBoundary": "This independent audit reproduces the location, component split, peaks, and zero-lag result from archived force histories only. It does not establish cause, convergence, agreement, or production use.",
+  "d36RunAuthorized": false,
+  "generatedBy": "Scripts/audit-dove-source-viscosity-d28-d32-phase.py",
+  "independentReconstruction": {
+    "bestHorizontalLagSamples": 0,
+    "dominantBandIndex": 0,
+    "dominantBandVectorDifferenceFraction": 0.4266759811529953,
+    "horizontalEnergyFraction": 0.524634499656044,
+    "maximumFiveMillisecondHorizontalDifferenceFraction": 0.28935691663406776,
+    "maximumFiveMillisecondWindowEndTimeSeconds": 0.03,
+    "maximumFiveMillisecondWindowStartTimeSeconds": 0.025,
+    "verticalEnergyFraction": 0.4753655003439571
+  },
+  "reportSHA256": "5b51246274e7a01e0be207d7232099f68cc5d50e3c765b73e4bec4c16d961c9c",
+  "schemaVersion": 1,
+  "targetedD28D32ReplaySupported": true
+}

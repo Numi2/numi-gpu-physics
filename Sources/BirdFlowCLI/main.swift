@@ -155,9 +155,28 @@ private struct Arguments {
          --collision-grid-moving-wall-link-coefficient-preregister | \
          --collision-grid-moving-wall-link-coefficient | \
          --collision-grid-moving-wall-link-population-preregister | \
-         --collision-grid-moving-wall-link-population] \
+         --collision-grid-moving-wall-link-population | \
+         --collision-grid-moving-wall-distributed-force-preregister | \
+         --collision-grid-moving-wall-distributed-force | \
+         --collision-grid-moving-wall-force-covariance-preregister | \
+         --collision-grid-moving-wall-force-covariance | \
+         --collision-grid-moving-wall-spatial-interaction-preregister | \
+         --collision-grid-moving-wall-spatial-interaction | \
+         --source-viscosity-d16-preregister | \
+         --source-viscosity-d16-ab | \
+         --source-viscosity-d28-preregister | \
+         --source-viscosity-d28-pre-roll] \
         [--force-target TARGET.json] \
         [--archive FILE] [--json]
+
+      Targeted D28/D32 moving-boundary component replay:
+        birdflow replay measured-bird-surface --input MANIFEST.json \
+          --force-target TARGET.json \
+          --source-viscosity-targeted-boundary-case \
+          --preregistration TARGETED_PREREGISTRATION.json \
+          --source-targeted-full-window-report D28_OR_D32_REPORT.json \
+          --targeted-reference-length-cells 28|32 \
+          [--archive FILE] [--json]
     """
 }
 
@@ -193,6 +212,31 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var linkCoefficientPreregistrationPath: String?
     var linkCoefficientPath: String?
     var linkPopulationPreregistrationPath: String?
+    var linkPopulationPath: String?
+    var linkPopulationAuditPath: String?
+    var distributedForcePreregistrationPath: String?
+    var distributedForcePath: String?
+    var distributedForceAuditPath: String?
+    var forceCovariancePreregistrationPath: String?
+    var forceCovariancePath: String?
+    var forceCovarianceAuditPath: String?
+    var spatialInteractionPreregistrationPath: String?
+    var sourceScalingPath: String?
+    var sourceScalingAuditPath: String?
+    var sourceD16PreregistrationPath: String?
+    var sourceD16ReportPath: String?
+    var sourceD16AuditPath: String?
+    var sourceD28PreregistrationPath: String?
+    var sourceD28PreRollPath: String?
+    var sourceD28AuditPath: String?
+    var sourceD28FullWindowPreregistrationPath: String?
+    var sourceD28FullWindowReportPath: String?
+    var sourceD28FullWindowAuditPath: String?
+    var sourceD32PreregistrationPath: String?
+    var sourceD32PreRollPath: String?
+    var sourceD32AuditPath: String?
+    var sourceTargetedFullWindowReportPath: String?
+    var targetedReferenceLengthCells: Int?
     var spatialReferenceLengthCells: Int?
     var cellSizeMeters: Float = 0.01
     var halfThicknessCells: Float = 0.75
@@ -228,6 +272,23 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var collisionGridMovingWallLinkCoefficient = false
     var collisionGridMovingWallLinkPopulationPreregister = false
     var collisionGridMovingWallLinkPopulation = false
+    var collisionGridMovingWallDistributedForcePreregister = false
+    var collisionGridMovingWallDistributedForce = false
+    var collisionGridMovingWallForceCovariancePreregister = false
+    var collisionGridMovingWallForceCovariance = false
+    var collisionGridMovingWallSpatialInteractionPreregister = false
+    var collisionGridMovingWallSpatialInteraction = false
+    var sourceViscosityD16Preregister = false
+    var sourceViscosityD16AB = false
+    var sourceViscosityD28Preregister = false
+    var sourceViscosityD28PreRoll = false
+    var sourceViscosityD28FullWindowPreregister = false
+    var sourceViscosityD28FullWindow = false
+    var sourceViscosityD32Preregister = false
+    var sourceViscosityD32PreRoll = false
+    var sourceViscosityD32FullWindowPreregister = false
+    var sourceViscosityD32FullWindow = false
+    var sourceViscosityTargetedBoundaryCase = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -482,6 +543,208 @@ private struct MeasuredBirdSurfaceReplayArguments {
                     )
                 }
                 linkPopulationPreregistrationPath = values[index]
+            case "--link-population":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-population requires the completed realized-population report"
+                    )
+                }
+                linkPopulationPath = values[index]
+            case "--link-population-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--link-population-audit requires the independent audit JSON path"
+                    )
+                }
+                linkPopulationAuditPath = values[index]
+            case "--distributed-force-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--distributed-force-preregistration requires a locked JSON path"
+                    )
+                }
+                distributedForcePreregistrationPath = values[index]
+            case "--distributed-force":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--distributed-force requires the completed D12/D16 report"
+                    )
+                }
+                distributedForcePath = values[index]
+            case "--distributed-force-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--distributed-force-audit requires the independent audit JSON path"
+                    )
+                }
+                distributedForceAuditPath = values[index]
+            case "--force-covariance-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--force-covariance-preregistration requires a locked JSON path"
+                    )
+                }
+                forceCovariancePreregistrationPath = values[index]
+            case "--force-covariance":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--force-covariance requires the completed covariance report"
+                    )
+                }
+                forceCovariancePath = values[index]
+            case "--force-covariance-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--force-covariance-audit requires the independent audit JSON path"
+                    )
+                }
+                forceCovarianceAuditPath = values[index]
+            case "--spatial-interaction-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--spatial-interaction-preregistration requires a locked JSON path"
+                    )
+                }
+                spatialInteractionPreregistrationPath = values[index]
+            case "--source-scaling":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-scaling requires the locked source-scaling report"
+                    )
+                }
+                sourceScalingPath = values[index]
+            case "--source-scaling-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-scaling-audit requires its independent audit report"
+                    )
+                }
+                sourceScalingAuditPath = values[index]
+            case "--source-d16-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d16-preregistration requires the locked D16 JSON"
+                    )
+                }
+                sourceD16PreregistrationPath = values[index]
+            case "--source-d16-report":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d16-report requires the completed D16 A/B JSON"
+                    )
+                }
+                sourceD16ReportPath = values[index]
+            case "--source-d16-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d16-audit requires the independent D16 audit JSON"
+                    )
+                }
+                sourceD16AuditPath = values[index]
+            case "--source-d28-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d28-preregistration requires the locked D28 JSON"
+                    )
+                }
+                sourceD28PreregistrationPath = values[index]
+            case "--source-d28-pre-roll":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d28-pre-roll requires the completed D28 pre-roll JSON"
+                    )
+                }
+                sourceD28PreRollPath = values[index]
+            case "--source-d28-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d28-audit requires the independent D28 audit JSON"
+                    )
+                }
+                sourceD28AuditPath = values[index]
+            case "--source-d28-full-window-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d28-full-window-preregistration requires the locked D28 full-window contract"
+                    )
+                }
+                sourceD28FullWindowPreregistrationPath = values[index]
+            case "--source-d28-full-window-report":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d28-full-window-report requires the completed D28 full-window JSON"
+                    )
+                }
+                sourceD28FullWindowReportPath = values[index]
+            case "--source-d28-full-window-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d28-full-window-audit requires the independent D28 full-window audit"
+                    )
+                }
+                sourceD28FullWindowAuditPath = values[index]
+            case "--source-d32-preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d32-preregistration requires the locked D32 JSON"
+                    )
+                }
+                sourceD32PreregistrationPath = values[index]
+            case "--source-d32-pre-roll":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d32-pre-roll requires the completed D32 pre-roll JSON"
+                    )
+                }
+                sourceD32PreRollPath = values[index]
+            case "--source-d32-audit":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-d32-audit requires the independent D32 audit JSON"
+                    )
+                }
+                sourceD32AuditPath = values[index]
+            case "--source-targeted-full-window-report":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-targeted-full-window-report requires the matching D28 or D32 full-window JSON"
+                    )
+                }
+                sourceTargetedFullWindowReportPath = values[index]
+            case "--targeted-reference-length-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      [28, 32].contains(value) else {
+                    throw CLIError.invalidArgument(
+                        "--targeted-reference-length-cells requires 28 or 32"
+                    )
+                }
+                targetedReferenceLengthCells = value
             case "--reference-length-cells":
                 index += 1
                 guard index < values.count,
@@ -577,6 +840,40 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 collisionGridMovingWallLinkPopulationPreregister = true
             case "--collision-grid-moving-wall-link-population":
                 collisionGridMovingWallLinkPopulation = true
+            case "--collision-grid-moving-wall-distributed-force-preregister":
+                collisionGridMovingWallDistributedForcePreregister = true
+            case "--collision-grid-moving-wall-distributed-force":
+                collisionGridMovingWallDistributedForce = true
+            case "--collision-grid-moving-wall-force-covariance-preregister":
+                collisionGridMovingWallForceCovariancePreregister = true
+            case "--collision-grid-moving-wall-force-covariance":
+                collisionGridMovingWallForceCovariance = true
+            case "--collision-grid-moving-wall-spatial-interaction-preregister":
+                collisionGridMovingWallSpatialInteractionPreregister = true
+            case "--collision-grid-moving-wall-spatial-interaction":
+                collisionGridMovingWallSpatialInteraction = true
+            case "--source-viscosity-d16-preregister":
+                sourceViscosityD16Preregister = true
+            case "--source-viscosity-d16-ab":
+                sourceViscosityD16AB = true
+            case "--source-viscosity-d28-preregister":
+                sourceViscosityD28Preregister = true
+            case "--source-viscosity-d28-pre-roll":
+                sourceViscosityD28PreRoll = true
+            case "--source-viscosity-d28-full-window-preregister":
+                sourceViscosityD28FullWindowPreregister = true
+            case "--source-viscosity-d28-full-window":
+                sourceViscosityD28FullWindow = true
+            case "--source-viscosity-d32-preregister":
+                sourceViscosityD32Preregister = true
+            case "--source-viscosity-d32-pre-roll":
+                sourceViscosityD32PreRoll = true
+            case "--source-viscosity-d32-full-window-preregister":
+                sourceViscosityD32FullWindowPreregister = true
+            case "--source-viscosity-d32-full-window":
+                sourceViscosityD32FullWindow = true
+            case "--source-viscosity-targeted-boundary-case":
+                sourceViscosityTargetedBoundaryCase = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -619,7 +916,24 @@ private struct MeasuredBirdSurfaceReplayArguments {
             collisionGridMovingWallLinkCoefficientPreregister,
             collisionGridMovingWallLinkCoefficient,
             collisionGridMovingWallLinkPopulationPreregister,
-            collisionGridMovingWallLinkPopulation
+            collisionGridMovingWallLinkPopulation,
+            collisionGridMovingWallDistributedForcePreregister,
+            collisionGridMovingWallDistributedForce,
+            collisionGridMovingWallForceCovariancePreregister,
+            collisionGridMovingWallForceCovariance,
+            collisionGridMovingWallSpatialInteractionPreregister,
+            collisionGridMovingWallSpatialInteraction,
+            sourceViscosityD16Preregister,
+            sourceViscosityD16AB,
+            sourceViscosityD28Preregister,
+            sourceViscosityD28PreRoll,
+            sourceViscosityD28FullWindowPreregister,
+            sourceViscosityD28FullWindow,
+            sourceViscosityD32Preregister,
+            sourceViscosityD32PreRoll,
+            sourceViscosityD32FullWindowPreregister,
+            sourceViscosityD32FullWindow,
+            sourceViscosityTargetedBoundaryCase
         ].filter { $0 }.count
         guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
@@ -652,12 +966,75 @@ private struct MeasuredBirdSurfaceReplayArguments {
             || collisionGridMovingWallLinkCoefficient
             || collisionGridMovingWallLinkPopulationPreregister
             || collisionGridMovingWallLinkPopulation
+            || collisionGridMovingWallDistributedForcePreregister
+            || collisionGridMovingWallDistributedForce
+            || collisionGridMovingWallForceCovariancePreregister
+            || collisionGridMovingWallForceCovariance
+            || collisionGridMovingWallSpatialInteractionPreregister
+            || collisionGridMovingWallSpatialInteraction
+            || sourceViscosityD16Preregister
+            || sourceViscosityD16AB
+            || sourceViscosityD28Preregister
+            || sourceViscosityD28PreRoll
+            || sourceViscosityD28FullWindowPreregister
+            || sourceViscosityD28FullWindow
+            || sourceViscosityD32Preregister
+            || sourceViscosityD32PreRoll
+            || sourceViscosityD32FullWindowPreregister
+            || sourceViscosityD32FullWindow
+            || sourceViscosityTargetedBoundaryCase
         guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
                 "the coarse pilot and collision diagnostics require --force-target; other modes reject it"
             )
         }
-        let contractPathsValid = collisionGridDiscriminator
+        let contractPathsValid = sourceViscosityTargetedBoundaryCase
+            ? preregistrationPath != nil
+                && discriminatorPath == nil && completionPath == nil
+                && provenancePath == nil && boundaryTermsPath == nil
+                && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD32FullWindowPreregister
+            ? preregistrationPath == nil
+                && discriminatorPath == nil && completionPath == nil
+                && provenancePath == nil && boundaryTermsPath == nil
+                && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD32FullWindow
+                ? preregistrationPath != nil
+                    && discriminatorPath == nil && completionPath == nil
+                    && provenancePath == nil && boundaryTermsPath == nil
+                    && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD32Preregister
+            ? preregistrationPath == nil
+                && discriminatorPath == nil && completionPath == nil
+                && provenancePath == nil && boundaryTermsPath == nil
+                && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD32PreRoll
+                ? preregistrationPath != nil
+                    && discriminatorPath == nil && completionPath == nil
+                    && provenancePath == nil && boundaryTermsPath == nil
+                    && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD28FullWindowPreregister
+            ? preregistrationPath == nil
+                && discriminatorPath == nil && completionPath == nil
+                && provenancePath == nil && boundaryTermsPath == nil
+                && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD28FullWindow
+                ? preregistrationPath != nil
+                    && discriminatorPath == nil && completionPath == nil
+                    && provenancePath == nil && boundaryTermsPath == nil
+                    && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD16Preregister
+                    || sourceViscosityD28Preregister
+            ? preregistrationPath == nil
+                && discriminatorPath == nil && completionPath == nil
+                && provenancePath == nil && boundaryTermsPath == nil
+                && movingWallABPath == nil && movingWallLedgerPath == nil
+            : sourceViscosityD16AB || sourceViscosityD28PreRoll
+                ? preregistrationPath != nil
+                    && discriminatorPath == nil && completionPath == nil
+                    && provenancePath == nil && boundaryTermsPath == nil
+                    && movingWallABPath == nil && movingWallLedgerPath == nil
+            : collisionGridDiscriminator
             ? preregistrationPath != nil
                 && discriminatorPath == nil && completionPath == nil
                 && provenancePath == nil && boundaryTermsPath == nil
@@ -719,6 +1096,81 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 "the grid discriminator requires --preregistration; completion requires --discriminator; stage provenance requires --completion; boundary decomposition requires --provenance; moving-wall A/B also requires --boundary-terms; the candidate-A ledger additionally requires --moving-wall-ab; the full window additionally requires --moving-wall-ledger"
             )
         }
+        let sourceScalingPathsValid = sourceViscosityD16Preregister
+                || sourceViscosityD16AB
+            ? sourceScalingPath != nil && sourceScalingAuditPath != nil
+            : sourceScalingPath == nil && sourceScalingAuditPath == nil
+        guard sourceScalingPathsValid else {
+            throw CLIError.invalidArgument(
+                "source-viscosity D16 modes require --source-scaling and --source-scaling-audit; all other modes reject them"
+            )
+        }
+        let sourceD16PathsValid = sourceViscosityD28Preregister
+                || sourceViscosityD28PreRoll
+            ? sourceD16PreregistrationPath != nil
+                && sourceD16ReportPath != nil
+                && sourceD16AuditPath != nil
+            : sourceD16PreregistrationPath == nil
+                && sourceD16ReportPath == nil
+                && sourceD16AuditPath == nil
+        guard sourceD16PathsValid else {
+            throw CLIError.invalidArgument(
+                "source-viscosity D28 modes require --source-d16-preregistration, --source-d16-report, and --source-d16-audit; all other modes reject them"
+            )
+        }
+        let sourceD28PathsValid = sourceViscosityD28FullWindowPreregister
+                || sourceViscosityD28FullWindow
+            ? sourceD28PreregistrationPath != nil
+                && sourceD28PreRollPath != nil
+                && sourceD28AuditPath != nil
+            : sourceViscosityD32Preregister || sourceViscosityD32PreRoll
+                ? sourceD28PreregistrationPath != nil
+                    && sourceD28PreRollPath == nil
+                    && sourceD28AuditPath == nil
+                : sourceD28PreregistrationPath == nil
+                    && sourceD28PreRollPath == nil
+                    && sourceD28AuditPath == nil
+        guard sourceD28PathsValid else {
+            throw CLIError.invalidArgument(
+                "source-viscosity D28 full-window modes require --source-d28-preregistration, --source-d28-pre-roll, and --source-d28-audit; all other modes reject them"
+            )
+        }
+        let sourceD28FullWindowPathsValid = sourceViscosityD32Preregister
+                || sourceViscosityD32PreRoll
+            ? sourceD28FullWindowPreregistrationPath != nil
+                && sourceD28FullWindowReportPath != nil
+                && sourceD28FullWindowAuditPath != nil
+            : sourceD28FullWindowPreregistrationPath == nil
+                && sourceD28FullWindowReportPath == nil
+                && sourceD28FullWindowAuditPath == nil
+        guard sourceD28FullWindowPathsValid else {
+            throw CLIError.invalidArgument(
+                "source-viscosity D32 modes require the D28 full-window preregistration, report, and audit paths; all other modes reject them"
+            )
+        }
+        let sourceD32PathsValid = sourceViscosityD32FullWindowPreregister
+                || sourceViscosityD32FullWindow
+            ? sourceD32PreregistrationPath != nil
+                && sourceD32PreRollPath != nil
+                && sourceD32AuditPath != nil
+            : sourceD32PreregistrationPath == nil
+                && sourceD32PreRollPath == nil
+                && sourceD32AuditPath == nil
+        guard sourceD32PathsValid else {
+            throw CLIError.invalidArgument(
+                "source-viscosity D32 full-window modes require --source-d32-preregistration, --source-d32-pre-roll, and --source-d32-audit; all other modes reject them"
+            )
+        }
+        let targetedBoundaryPathsValid = sourceViscosityTargetedBoundaryCase
+            ? sourceTargetedFullWindowReportPath != nil
+                && targetedReferenceLengthCells != nil
+            : sourceTargetedFullWindowReportPath == nil
+                && targetedReferenceLengthCells == nil
+        guard targetedBoundaryPathsValid else {
+            throw CLIError.invalidArgument(
+                "targeted boundary replay requires --source-targeted-full-window-report and --targeted-reference-length-cells; all other modes reject them"
+            )
+        }
         guard (collisionGridMovingWallLedger
                 || collisionGridMovingWallFullWindow
                 || collisionGridMovingWallSpatialCase)
@@ -754,8 +1206,21 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 "spatial preregistration requires --moving-wall-full-window; a spatial case additionally requires --spatial-preregistration and --reference-length-cells; the discriminator requires --spatial-preregistration, --spatial-d8, and --spatial-d12"
             )
         }
-        let temporalPathsValid =
-            collisionGridMovingWallLinkPopulationPreregister
+        let distributedForceMode =
+            collisionGridMovingWallDistributedForcePreregister
+                || collisionGridMovingWallDistributedForce
+        let temporalPathsValid = distributedForceMode
+            ? spatialDiscriminatorPath == nil && lagBandPath == nil
+                && temporalPreregistrationPath == nil
+                && temporalSamplingPath == nil
+                && temporalDurationPreregistrationPath != nil
+                && temporalDurationPath != nil
+                && linkGeometryPreregistrationPath != nil
+                && linkGeometryPath != nil
+                && linkVelocityPreregistrationPath == nil
+                && linkVelocityPath == nil
+                && linkIntersectionPreregistrationPath == nil
+            : collisionGridMovingWallLinkPopulationPreregister
                 || collisionGridMovingWallLinkPopulation
             ? spatialDiscriminatorPath == nil && lagBandPath == nil
                 && temporalPreregistrationPath == nil
@@ -918,7 +1383,13 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 "temporal and link diagnostic evidence paths do not match the selected mode"
             )
         }
-        let rayPathsValid = collisionGridMovingWallLinkRayRootPreregister
+        let rayPathsValid = distributedForceMode
+            ? linkIntersectionPath == nil
+                && linkRayRootPreregistrationPath == nil
+                && linkRayRootPath == nil
+                && linkCoefficientPreregistrationPath == nil
+                && linkCoefficientPath == nil
+            : collisionGridMovingWallLinkRayRootPreregister
             ? linkIntersectionPath != nil
                 && linkRayRootPreregistrationPath == nil
                 && linkRayRootPath == nil
@@ -963,6 +1434,80 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 "ray-root and coefficient evidence paths do not match the selected mode"
             )
         }
+        let forceCovarianceMode =
+            collisionGridMovingWallForceCovariancePreregister
+                || collisionGridMovingWallForceCovariance
+        let spatialInteractionMode =
+            collisionGridMovingWallSpatialInteractionPreregister
+                || collisionGridMovingWallSpatialInteraction
+        let distributedForcePathsValid = spatialInteractionMode
+            ? linkPopulationPreregistrationPath == nil
+                && linkPopulationPath == nil
+                && linkPopulationAuditPath == nil
+                && distributedForcePreregistrationPath == nil
+                && distributedForcePath != nil
+                && distributedForceAuditPath == nil
+            : forceCovarianceMode
+            ? linkPopulationPreregistrationPath == nil
+                && linkPopulationPath == nil
+                && linkPopulationAuditPath == nil
+                && distributedForcePreregistrationPath != nil
+                && distributedForcePath != nil
+                && distributedForceAuditPath != nil
+            : collisionGridMovingWallDistributedForcePreregister
+            ? linkPopulationPreregistrationPath != nil
+                && linkPopulationPath != nil
+                && linkPopulationAuditPath != nil
+                && distributedForcePreregistrationPath == nil
+                && distributedForcePath == nil
+                && distributedForceAuditPath == nil
+            : collisionGridMovingWallDistributedForce
+                ? linkPopulationPreregistrationPath != nil
+                    && linkPopulationPath != nil
+                    && linkPopulationAuditPath != nil
+                    && distributedForcePreregistrationPath != nil
+                    && distributedForcePath == nil
+                    && distributedForceAuditPath == nil
+                : linkPopulationPath == nil
+                    && linkPopulationAuditPath == nil
+                    && distributedForcePreregistrationPath == nil
+                    && distributedForcePath == nil
+                    && distributedForceAuditPath == nil
+        guard distributedForcePathsValid else {
+            throw CLIError.invalidArgument(
+                "distributed-force modes require the geometry, duration, population report/audit, and locked distributed-force evidence paths"
+            )
+        }
+        let covariancePathsValid =
+            collisionGridMovingWallForceCovariancePreregister
+            ? forceCovariancePreregistrationPath == nil
+                && forceCovariancePath == nil
+                && forceCovarianceAuditPath == nil
+                && spatialInteractionPreregistrationPath == nil
+            : collisionGridMovingWallForceCovariance
+                ? forceCovariancePreregistrationPath != nil
+                    && forceCovariancePath == nil
+                    && forceCovarianceAuditPath == nil
+                    && spatialInteractionPreregistrationPath == nil
+                : collisionGridMovingWallSpatialInteractionPreregister
+                    ? forceCovariancePreregistrationPath != nil
+                        && forceCovariancePath != nil
+                        && forceCovarianceAuditPath != nil
+                        && spatialInteractionPreregistrationPath == nil
+                    : collisionGridMovingWallSpatialInteraction
+                        ? forceCovariancePreregistrationPath != nil
+                            && forceCovariancePath != nil
+                            && forceCovarianceAuditPath != nil
+                            && spatialInteractionPreregistrationPath != nil
+                        : forceCovariancePreregistrationPath == nil
+                            && forceCovariancePath == nil
+                            && forceCovarianceAuditPath == nil
+                            && spatialInteractionPreregistrationPath == nil
+        guard covariancePathsValid else {
+            throw CLIError.invalidArgument(
+                "force-covariance execution requires its locked preregistration; other modes reject it"
+            )
+        }
         if collisionGridPreregister || collisionGridDiscriminator
             || collisionGridCompletion || collisionGridProvenance
             || collisionGridBoundaryDecomposition || collisionGridMovingWallAB
@@ -986,7 +1531,24 @@ private struct MeasuredBirdSurfaceReplayArguments {
             || collisionGridMovingWallLinkCoefficientPreregister
             || collisionGridMovingWallLinkCoefficient
             || collisionGridMovingWallLinkPopulationPreregister
-            || collisionGridMovingWallLinkPopulation {
+            || collisionGridMovingWallLinkPopulation
+            || collisionGridMovingWallDistributedForcePreregister
+            || collisionGridMovingWallDistributedForce
+            || collisionGridMovingWallForceCovariancePreregister
+            || collisionGridMovingWallForceCovariance
+            || collisionGridMovingWallSpatialInteractionPreregister
+            || collisionGridMovingWallSpatialInteraction
+            || sourceViscosityD16Preregister
+            || sourceViscosityD16AB
+            || sourceViscosityD28Preregister
+            || sourceViscosityD28PreRoll
+            || sourceViscosityD28FullWindowPreregister
+            || sourceViscosityD28FullWindow
+            || sourceViscosityD32Preregister
+            || sourceViscosityD32PreRoll
+            || sourceViscosityD32FullWindowPreregister
+            || sourceViscosityD32FullWindow
+            || sourceViscosityTargetedBoundaryCase {
             guard cellSizeMeters == 0.01,
                   halfThicknessCells == 0.75 else {
                 throw CLIError.invalidArgument(
@@ -1061,6 +1623,58 @@ private struct MeasuredBirdSurfaceReplayArguments {
                                  Freeze the 576-step D12 production-primitive replay
       --collision-grid-moving-wall-link-population
                                  Replay realized production-q versus exact-q loads
+      --collision-grid-moving-wall-distributed-force-preregister
+                                 Freeze the full-link D12/D16 force-term discriminator
+      --collision-grid-moving-wall-distributed-force
+                                 Attribute distributed grid bias across reflection, wall, and interpolation terms
+      --collision-grid-moving-wall-force-covariance-preregister
+                                 Freeze the archive-only three-term covariance discriminator
+      --collision-grid-moving-wall-force-covariance
+                                 Decompose coherent and canceling D12/D16 term pairs
+      --collision-grid-moving-wall-spatial-interaction-preregister
+                                 Freeze exact spatial allocation of the dominant mean interaction
+      --collision-grid-moving-wall-spatial-interaction
+                                 Map reflection-wall cancellation across component, direction, and q
+      --source-viscosity-d16-preregister
+                                 Freeze the diagnostic-only D16 source-viscosity two-operator contract
+      --source-viscosity-d16-ab  Run both locked source-viscosity operators with per-step momentum and positivity gates
+      --source-viscosity-d28-preregister
+                                 Select one D16-cleared operator and freeze the first production-margin pre-roll
+      --source-viscosity-d28-pre-roll
+                                 Run the locked single-operator 2,800-step D28 gate
+      --source-viscosity-d28-full-window-preregister
+                                 Freeze the RR3-only 13,216-step D28 force-window contract
+      --source-viscosity-d28-full-window
+                                 Run the locked D28 source-viscosity force window
+      --source-viscosity-d32-preregister
+                                 Freeze one RR3 3,200-step D32 pre-roll from audited D28 evidence
+      --source-viscosity-d32-pre-roll
+                                 Run the locked D32 survival and momentum discriminator
+      --source-viscosity-d32-full-window-preregister
+                                 Freeze the RR3-only 15,104-step D32 force-window contract
+      --source-viscosity-d32-full-window
+                                 Run the locked D32 source-viscosity force window
+      --source-scaling FILE      SHA-locked source fluid/scaling reconstruction JSON
+      --source-scaling-audit FILE
+                                 Independent source-scaling audit JSON
+      --source-d16-preregistration FILE
+                                 Locked D16 source-viscosity preregistration JSON
+      --source-d16-report FILE   Completed D16 source-viscosity A/B JSON
+      --source-d16-audit FILE    Independent D16 source-viscosity audit JSON
+      --source-d28-preregistration FILE
+                                 Locked D28 production-margin preregistration JSON
+      --source-d28-pre-roll FILE Completed D28 production-margin pre-roll JSON
+      --source-d28-audit FILE    Independent D28 pre-roll audit JSON
+      --source-d28-full-window-preregistration FILE
+                                 Locked D28 full-window preregistration JSON
+      --source-d28-full-window-report FILE
+                                 Completed D28 full-window report JSON
+      --source-d28-full-window-audit FILE
+                                 Independent D28 full-window audit JSON
+      --source-d32-preregistration FILE
+                                 Locked D32 source-viscosity preregistration JSON
+      --source-d32-pre-roll FILE Completed D32 pre-roll JSON
+      --source-d32-audit FILE    Independent D32 pre-roll audit JSON
       --preregistration FILE     Locked grid preregistration JSON
       --discriminator FILE       Completed D=8/12 discriminator JSON
       --completion FILE          Failed selected-operator D=16 completion JSON
@@ -1100,6 +1714,21 @@ private struct MeasuredBirdSurfaceReplayArguments {
       --link-coefficient FILE    Completed coefficient-sensitivity report
       --link-population-preregistration FILE
                                  Locked realized-population replay preregistration JSON
+      --link-population FILE     Completed realized-population replay report
+      --link-population-audit FILE
+                                 Passed independent realized-population audit JSON
+      --distributed-force-preregistration FILE
+                                 Locked full-link force-term preregistration JSON
+      --distributed-force FILE  Completed full-link D12/D16 force report
+      --distributed-force-audit FILE
+                                 Passed independent distributed-force audit JSON
+      --force-covariance-preregistration FILE
+                                 Locked archive-only covariance preregistration JSON
+      --force-covariance FILE   Completed force covariance report
+      --force-covariance-audit FILE
+                                 Passed independent force covariance audit JSON
+      --spatial-interaction-preregistration FILE
+                                 Locked spatial interaction preregistration JSON
       --reference-length-cells N Spatial case grid; exactly 8 or 12
       --force-target FILE        Registered measured two-component force target
       --archive FILE            Atomically archive the parity report as JSON
@@ -2686,6 +3315,1261 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
         path: String
     ) throws -> T {
         try JSONDecoder().decode(type, from: artifactData(path))
+    }
+    func distributedForceEvidence() throws -> (
+        geometryPreregistrationData: Data,
+        geometryPreregistration:
+            MetalIndexedBirdSurfaceLinkGeometryPreregistration,
+        geometryReportData: Data,
+        geometryReport: MetalIndexedBirdSurfaceLinkGeometryReport,
+        durationPreregistrationData: Data,
+        durationPreregistration:
+            MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration,
+        durationReportData: Data,
+        durationReport:
+            MetalIndexedBirdSurfaceMovingWallTemporalDurationReport,
+        populationPreregistrationData: Data,
+        populationPreregistration:
+            MetalIndexedBirdSurfaceLinkPopulationPreregistration,
+        populationReportData: Data,
+        populationReport: MetalIndexedBirdSurfaceLinkPopulationReport,
+        populationAuditData: Data,
+        populationAuditPassed: Bool
+    ) {
+        let geometryPreregistrationData = try artifactData(
+            arguments.linkGeometryPreregistrationPath!
+        )
+        let geometryReportData = try artifactData(arguments.linkGeometryPath!)
+        let durationPreregistrationData = try artifactData(
+            arguments.temporalDurationPreregistrationPath!
+        )
+        let durationReportData = try artifactData(arguments.temporalDurationPath!)
+        let populationPreregistrationData = try artifactData(
+            arguments.linkPopulationPreregistrationPath!
+        )
+        let populationReportData = try artifactData(
+            arguments.linkPopulationPath!
+        )
+        let populationAuditData = try artifactData(
+            arguments.linkPopulationAuditPath!
+        )
+        let populationAuditObject = try JSONSerialization.jsonObject(
+            with: populationAuditData
+        )
+        let populationAuditPassed = (
+            populationAuditObject as? [String: Any]
+        )?["allChecksPassed"] as? Bool ?? false
+        return (
+            geometryPreregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceLinkGeometryPreregistration.self,
+                from: geometryPreregistrationData
+            ),
+            geometryReportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceLinkGeometryReport.self,
+                from: geometryReportData
+            ),
+            durationPreregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self,
+                from: durationPreregistrationData
+            ),
+            durationReportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self,
+                from: durationReportData
+            ),
+            populationPreregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceLinkPopulationPreregistration.self,
+                from: populationPreregistrationData
+            ),
+            populationReportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceLinkPopulationReport.self,
+                from: populationReportData
+            ),
+            populationAuditData,
+            populationAuditPassed
+        )
+    }
+    func forceCovarianceEvidence() throws -> (
+        preregistrationData: Data,
+        preregistration:
+            MetalIndexedBirdSurfaceDistributedForcePreregistration,
+        reportData: Data,
+        report: MetalIndexedBirdSurfaceDistributedForceReport,
+        auditData: Data,
+        auditPassed: Bool
+    ) {
+        let preregistrationData = try artifactData(
+            arguments.distributedForcePreregistrationPath!
+        )
+        let reportData = try artifactData(arguments.distributedForcePath!)
+        let auditData = try artifactData(arguments.distributedForceAuditPath!)
+        let auditObject = try JSONSerialization.jsonObject(with: auditData)
+        let auditPassed = (
+            auditObject as? [String: Any]
+        )?["allChecksPassed"] as? Bool ?? false
+        return (
+            preregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceDistributedForcePreregistration.self,
+                from: preregistrationData
+            ),
+            reportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceDistributedForceReport.self,
+                from: reportData
+            ),
+            auditData,
+            auditPassed
+        )
+    }
+    func spatialInteractionEvidence() throws -> (
+        distributedReportData: Data,
+        distributedReport: MetalIndexedBirdSurfaceDistributedForceReport,
+        covariancePreregistrationData: Data,
+        covariancePreregistration:
+            MetalIndexedBirdSurfaceForceCovariancePreregistration,
+        covarianceReportData: Data,
+        covarianceReport: MetalIndexedBirdSurfaceForceCovarianceReport,
+        covarianceAuditData: Data,
+        covarianceAuditPassed: Bool
+    ) {
+        let distributedReportData = try artifactData(
+            arguments.distributedForcePath!
+        )
+        let covariancePreregistrationData = try artifactData(
+            arguments.forceCovariancePreregistrationPath!
+        )
+        let covarianceReportData = try artifactData(
+            arguments.forceCovariancePath!
+        )
+        let covarianceAuditData = try artifactData(
+            arguments.forceCovarianceAuditPath!
+        )
+        let auditObject = try JSONSerialization.jsonObject(
+            with: covarianceAuditData
+        )
+        let auditPassed = (
+            auditObject as? [String: Any]
+        )?["allChecksPassed"] as? Bool ?? false
+        return (
+            distributedReportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceDistributedForceReport.self,
+                from: distributedReportData
+            ),
+            covariancePreregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceForceCovariancePreregistration.self,
+                from: covariancePreregistrationData
+            ),
+            covarianceReportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceForceCovarianceReport.self,
+                from: covarianceReportData
+            ),
+            covarianceAuditData,
+            auditPassed
+        )
+    }
+    func sourceScalingEvidence() throws -> (
+        reportData: Data,
+        report: MetalIndexedBirdSurfaceSourceScalingEvidence,
+        auditData: Data,
+        audit: MetalIndexedBirdSurfaceSourceScalingAuditEvidence
+    ) {
+        let reportData = try artifactData(arguments.sourceScalingPath!)
+        let auditData = try artifactData(arguments.sourceScalingAuditPath!)
+        return (
+            reportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceScalingEvidence.self,
+                from: reportData
+            ),
+            auditData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceScalingAuditEvidence.self,
+                from: auditData
+            )
+        )
+    }
+    func sourceD16Evidence() throws -> (
+        preregistrationData: Data,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityPreregistration,
+        reportData: Data,
+        report: MetalIndexedBirdSurfaceSourceViscosityReport,
+        auditData: Data,
+        audit: MetalIndexedBirdSurfaceSourceViscosityAuditEvidence
+    ) {
+        let preregistrationData = try artifactData(
+            arguments.sourceD16PreregistrationPath!
+        )
+        let reportData = try artifactData(arguments.sourceD16ReportPath!)
+        let auditData = try artifactData(arguments.sourceD16AuditPath!)
+        return (
+            preregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityPreregistration.self,
+                from: preregistrationData
+            ),
+            reportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityReport.self,
+                from: reportData
+            ),
+            auditData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityAuditEvidence.self,
+                from: auditData
+            )
+        )
+    }
+    func sourceD28Evidence() throws -> (
+        preregistrationData: Data,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28Preregistration,
+        preRollData: Data,
+        preRoll: MetalIndexedBirdSurfaceSourceViscosityD28Report,
+        auditData: Data,
+        audit: MetalIndexedBirdSurfaceSourceViscosityD28AuditEvidence
+    ) {
+        let preregistrationData = try artifactData(
+            arguments.sourceD28PreregistrationPath!
+        )
+        let preRollData = try artifactData(arguments.sourceD28PreRollPath!)
+        let auditData = try artifactData(arguments.sourceD28AuditPath!)
+        return (
+            preregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD28Preregistration.self,
+                from: preregistrationData
+            ),
+            preRollData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD28Report.self,
+                from: preRollData
+            ),
+            auditData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD28AuditEvidence.self,
+                from: auditData
+            )
+        )
+    }
+    func sourceD28FullWindowEvidence() throws -> (
+        d28PreregistrationData: Data,
+        d28Preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28Preregistration,
+        fullPreregistrationData: Data,
+        fullPreregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration,
+        fullReportData: Data,
+        fullReport: MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport,
+        fullAuditData: Data,
+        fullAudit:
+            MetalIndexedBirdSurfaceSourceViscosityD28FullWindowAuditEvidence
+    ) {
+        let d28PreregistrationData = try artifactData(
+            arguments.sourceD28PreregistrationPath!
+        )
+        let fullPreregistrationData = try artifactData(
+            arguments.sourceD28FullWindowPreregistrationPath!
+        )
+        let fullReportData = try artifactData(
+            arguments.sourceD28FullWindowReportPath!
+        )
+        let fullAuditData = try artifactData(
+            arguments.sourceD28FullWindowAuditPath!
+        )
+        return (
+            d28PreregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD28Preregistration.self,
+                from: d28PreregistrationData
+            ),
+            fullPreregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration.self,
+                from: fullPreregistrationData
+            ),
+            fullReportData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport.self,
+                from: fullReportData
+            ),
+            fullAuditData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD28FullWindowAuditEvidence.self,
+                from: fullAuditData
+            )
+        )
+    }
+    func sourceD32Evidence() throws -> (
+        preregistrationData: Data,
+        preregistration:
+            MetalIndexedBirdSurfaceSourceViscosityD32Preregistration,
+        preRollData: Data,
+        preRoll: MetalIndexedBirdSurfaceSourceViscosityD32Report,
+        auditData: Data,
+        audit: MetalIndexedBirdSurfaceSourceViscosityD32AuditEvidence
+    ) {
+        let preregistrationData = try artifactData(
+            arguments.sourceD32PreregistrationPath!
+        )
+        let preRollData = try artifactData(arguments.sourceD32PreRollPath!)
+        let auditData = try artifactData(arguments.sourceD32AuditPath!)
+        return (
+            preregistrationData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD32Preregistration.self,
+                from: preregistrationData
+            ),
+            preRollData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD32Report.self,
+                from: preRollData
+            ),
+            auditData,
+            try JSONDecoder().decode(
+                MetalIndexedBirdSurfaceSourceViscosityD32AuditEvidence.self,
+                from: auditData
+            )
+        )
+    }
+    if arguments.sourceViscosityD16Preregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceScalingEvidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD16Preregistration(
+                surface: dataset,
+                target: target,
+                sourceScaling: evidence.report,
+                sourceScalingReportSHA256: sha256Hex(evidence.reportData),
+                sourceScalingAudit: evidence.audit,
+                sourceScalingAuditSHA256: sha256Hex(evidence.auditData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print("requested_steps: \(report.requestedSteps)")
+            print("source_reynolds: \(report.sourcePropertyReynoldsNumber)")
+            print("source_tau_plus: \(report.sourceTauPlus)")
+            print("execution_tau_floor: \(report.executionMinimumTauPlus)")
+            print("production_tau_floor: \(report.productionMinimumTauPlus)")
+            print("candidate_operators: \(report.candidateOperators)")
+            print("preregistration_passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D16 source-viscosity preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.sourceViscosityD16AB {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceScalingEvidence()
+        let preregistrationData = try artifactData(
+            arguments.preregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD16Discriminator(
+                surface: dataset,
+                target: target,
+                sourceScaling: evidence.report,
+                sourceScalingReportSHA256: sha256Hex(evidence.reportData),
+                sourceScalingAudit: evidence.audit,
+                sourceScalingAuditSHA256: sha256Hex(evidence.auditData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceSourceViscosityPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+            print("requested_steps: \(report.requestedSteps)")
+            for candidate in report.cases {
+                print(
+                    "candidate: \(candidate.collisionOperator), "
+                        + "completed=\(candidate.report.completedSteps), "
+                        + "min_population=\(candidate.report.minimumPopulation), "
+                        + "near_ledger=\(candidate.report.relativeRMSRawControlVolumeClosureResidual), "
+                        + "global_ledger=\(candidate.report.relativeRMSGlobalFluidClosureResidual), "
+                        + "correction_fraction=\(candidate.report.collisionLimiterActivationFractionOfCellSteps), "
+                        + "eligible=\(candidate.eligibleForD28Planning)"
+                )
+            }
+            print("classification: \(report.classification)")
+            print("screening_gate_passed: \(report.screeningGatePassed)")
+            print("d28_planning_authorized: \(report.d28PlanningAuthorized)")
+            print("d28_run_authorized: \(report.d28RunAuthorized)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.sourceViscosityD28Preregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD16Evidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD28Preregistration(
+                surface: dataset,
+                target: target,
+                d16Preregistration: evidence.preregistration,
+                sourceD16PreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                d16Report: evidence.report,
+                sourceD16ReportSHA256: sha256Hex(evidence.reportData),
+                d16Audit: evidence.audit,
+                sourceD16AuditSHA256: sha256Hex(evidence.auditData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("selected_operator: \(report.selectedCollisionOperator)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print(
+                "grid: \(report.expectedGridX)x\(report.expectedGridY)x\(report.expectedGridZ)"
+            )
+            print("cell_count: \(report.expectedCellCount)")
+            print("requested_steps: \(report.requestedPreRollSteps)")
+            print("expected_tau_plus: \(report.expectedTauPlus)")
+            print(
+                "working_set_estimate_bytes: \(report.conservativeWorkingSetEstimateBytes)"
+            )
+            print("preregistration_passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 source-viscosity preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.sourceViscosityD28PreRoll {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD16Evidence()
+        let preregistrationData = try artifactData(
+            arguments.preregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD28PreRoll(
+                surface: dataset,
+                target: target,
+                d16Preregistration: evidence.preregistration,
+                sourceD16PreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                d16Report: evidence.report,
+                sourceD16ReportSHA256: sha256Hex(evidence.reportData),
+                d16Audit: evidence.audit,
+                sourceD16AuditSHA256: sha256Hex(evidence.auditData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceSourceViscosityD28Preregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("operator: \(report.selectedCollisionOperator)")
+            print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+            print("actual_tau_plus: \(report.actualTauPlus)")
+            print("completed_steps: \(report.caseReport.completedSteps)")
+            print("minimum_population: \(report.caseReport.minimumPopulation)")
+            print(
+                "near_ledger: \(report.caseReport.relativeRMSRawControlVolumeClosureResidual)"
+            )
+            print(
+                "global_ledger: \(report.caseReport.relativeRMSGlobalFluidClosureResidual)"
+            )
+            print(
+                "correction_fraction: \(report.caseReport.collisionLimiterActivationFractionOfCellSteps)"
+            )
+            print("pre_roll_gate_passed: \(report.preRollGatePassed)")
+            print(
+                "full_window_authorized: \(report.d28FullWindowRunAuthorized)"
+            )
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.sourceViscosityD28FullWindowPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD28Evidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD28FullWindowPreregistration(
+                surface: dataset,
+                target: target,
+                d28Preregistration: evidence.preregistration,
+                sourceD28PreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                d28PreRoll: evidence.preRoll,
+                sourceD28PreRollSHA256: sha256Hex(evidence.preRollData),
+                d28Audit: evidence.audit,
+                sourceD28AuditSHA256: sha256Hex(evidence.auditData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("operator: \(report.selectedCollisionOperator)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print(
+                "grid: \(report.expectedGridX)x\(report.expectedGridY)x\(report.expectedGridZ)"
+            )
+            print("requested_steps: \(report.requestedFullWindowSteps)")
+            print(
+                "comparison_samples: \(report.requestedComparisonSamples)"
+            )
+            print("expected_tau_plus: \(report.expectedTauPlus)")
+            print("preregistration_passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D28 source-viscosity full-window preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.sourceViscosityD28FullWindow {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD28Evidence()
+        let preregistrationData = try artifactData(
+            arguments.preregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD28FullWindow(
+                surface: dataset,
+                target: target,
+                d28Preregistration: evidence.preregistration,
+                sourceD28PreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                d28PreRoll: evidence.preRoll,
+                sourceD28PreRollSHA256: sha256Hex(evidence.preRollData),
+                d28Audit: evidence.audit,
+                sourceD28AuditSHA256: sha256Hex(evidence.auditData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("operator: \(report.selectedCollisionOperator)")
+            print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+            print("actual_tau_plus: \(report.actualTauPlus)")
+            print("completed_steps: \(report.ledgerResult.completedSteps)")
+            print(
+                "minimum_population: \(report.ledgerResult.minimumPopulation)"
+            )
+            print(
+                "near_ledger: \(report.ledgerResult.relativeRMSRawControlVolumeClosureResidual)"
+            )
+            print(
+                "global_ledger: \(report.ledgerResult.relativeRMSGlobalFluidClosureResidual)"
+            )
+            print(
+                "correction_fraction: \(report.ledgerResult.collisionLimiterActivationFractionOfCellSteps)"
+            )
+            print("force_samples: \(report.registeredComparisonSampleCount)")
+            print("normalized_rms_error: \(report.normalizedRMSError ?? .nan)")
+            print("full_window_gate_passed: \(report.fullWindowGatePassed)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.sourceViscosityD32Preregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD28FullWindowEvidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD32Preregistration(
+                surface: dataset,
+                target: target,
+                d28Preregistration: evidence.d28Preregistration,
+                sourceD28PreregistrationSHA256:
+                    sha256Hex(evidence.d28PreregistrationData),
+                d28FullWindowPreregistration:
+                    evidence.fullPreregistration,
+                sourceD28FullWindowPreregistrationSHA256:
+                    sha256Hex(evidence.fullPreregistrationData),
+                d28FullWindowReport: evidence.fullReport,
+                sourceD28FullWindowReportSHA256:
+                    sha256Hex(evidence.fullReportData),
+                d28FullWindowAudit: evidence.fullAudit,
+                sourceD28FullWindowAuditSHA256:
+                    sha256Hex(evidence.fullAuditData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("operator: \(report.selectedCollisionOperator)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print(
+                "grid: \(report.expectedGridX)x\(report.expectedGridY)x\(report.expectedGridZ)"
+            )
+            print("requested_steps: \(report.requestedPreRollSteps)")
+            print("expected_tau_plus: \(report.expectedTauPlus)")
+            print(
+                "working_set_estimate_bytes: \(report.conservativeWorkingSetEstimateBytes)"
+            )
+            print("preregistration_passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 source-viscosity preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.sourceViscosityD32PreRoll {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD28FullWindowEvidence()
+        let preregistrationData = try artifactData(
+            arguments.preregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD32PreRoll(
+                surface: dataset,
+                target: target,
+                d28Preregistration: evidence.d28Preregistration,
+                sourceD28PreregistrationSHA256:
+                    sha256Hex(evidence.d28PreregistrationData),
+                d28FullWindowPreregistration:
+                    evidence.fullPreregistration,
+                sourceD28FullWindowPreregistrationSHA256:
+                    sha256Hex(evidence.fullPreregistrationData),
+                d28FullWindowReport: evidence.fullReport,
+                sourceD28FullWindowReportSHA256:
+                    sha256Hex(evidence.fullReportData),
+                d28FullWindowAudit: evidence.fullAudit,
+                sourceD28FullWindowAuditSHA256:
+                    sha256Hex(evidence.fullAuditData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceSourceViscosityD32Preregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("operator: \(report.selectedCollisionOperator)")
+            print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+            print("actual_tau_plus: \(report.actualTauPlus)")
+            print("completed_steps: \(report.caseReport.completedSteps)")
+            print("minimum_population: \(report.caseReport.minimumPopulation)")
+            print(
+                "near_ledger: \(report.caseReport.relativeRMSRawControlVolumeClosureResidual)"
+            )
+            print(
+                "global_ledger: \(report.caseReport.relativeRMSGlobalFluidClosureResidual)"
+            )
+            print(
+                "correction_fraction: \(report.caseReport.collisionLimiterActivationFractionOfCellSteps)"
+            )
+            print("pre_roll_gate_passed: \(report.preRollGatePassed)")
+            print(
+                "full_window_authorized: \(report.d32FullWindowRunAuthorized)"
+            )
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.sourceViscosityD32FullWindowPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD32Evidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD32FullWindowPreregistration(
+                surface: dataset,
+                target: target,
+                d32Preregistration: evidence.preregistration,
+                sourceD32PreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                d32PreRoll: evidence.preRoll,
+                sourceD32PreRollSHA256: sha256Hex(evidence.preRollData),
+                d32Audit: evidence.audit,
+                sourceD32AuditSHA256: sha256Hex(evidence.auditData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("operator: \(report.selectedCollisionOperator)")
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print(
+                "grid: \(report.expectedGridX)x\(report.expectedGridY)x\(report.expectedGridZ)"
+            )
+            print("requested_steps: \(report.requestedFullWindowSteps)")
+            print("comparison_samples: \(report.requestedComparisonSamples)")
+            print("expected_tau_plus: \(report.expectedTauPlus)")
+            print("preregistration_passed: \(report.passed)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "D32 source-viscosity full-window preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.sourceViscosityD32FullWindow {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try sourceD32Evidence()
+        let preregistrationData = try artifactData(
+            arguments.preregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityD32FullWindow(
+                surface: dataset,
+                target: target,
+                d32Preregistration: evidence.preregistration,
+                sourceD32PreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                d32PreRoll: evidence.preRoll,
+                sourceD32PreRollSHA256: sha256Hex(evidence.preRollData),
+                d32Audit: evidence.audit,
+                sourceD32AuditSHA256: sha256Hex(evidence.auditData),
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceSourceViscosityD32FullWindowPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("operator: \(report.selectedCollisionOperator)")
+            print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+            print("actual_tau_plus: \(report.actualTauPlus)")
+            print("completed_steps: \(report.ledgerResult.completedSteps)")
+            print(
+                "minimum_population: \(report.ledgerResult.minimumPopulation)"
+            )
+            print(
+                "near_ledger: \(report.ledgerResult.relativeRMSRawControlVolumeClosureResidual)"
+            )
+            print(
+                "global_ledger: \(report.ledgerResult.relativeRMSGlobalFluidClosureResidual)"
+            )
+            print(
+                "correction_fraction: \(report.ledgerResult.collisionLimiterActivationFractionOfCellSteps)"
+            )
+            print("force_samples: \(report.registeredComparisonSampleCount)")
+            print("normalized_rms_error: \(report.normalizedRMSError ?? .nan)")
+            print("full_window_gate_passed: \(report.fullWindowGatePassed)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.sourceViscosityTargetedBoundaryCase {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistrationData = try artifactData(
+            arguments.preregistrationPath!
+        )
+        let sourceReportData = try artifactData(
+            arguments.sourceTargetedFullWindowReportPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityTargetedBoundaryCase(
+                surface: dataset,
+                target: target,
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceTargetedBoundaryPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData),
+                sourceFullWindowReport: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport.self,
+                    from: sourceReportData
+                ),
+                sourceFullWindowReportSHA256:
+                    sha256Hex(sourceReportData),
+                referenceLengthCells:
+                    arguments.targetedReferenceLengthCells!
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+            print("requested_steps: \(report.requestedSteps)")
+            print("captured_steps: \(report.capturedStepCount)")
+            print(
+                "component_reconstruction_relative_rms: "
+                    + "\(report.componentReconstructionRelativeRMS)"
+            )
+            print(
+                "archived_force_reproduction_relative_rms: "
+                    + "\(report.archivedForceReproductionRelativeRMS)"
+            )
+            print("near_ledger: \(report.ledgerResult.relativeRMSRawControlVolumeClosureResidual)")
+            print("global_ledger: \(report.ledgerResult.relativeRMSGlobalFluidClosureResidual)")
+            print("targeted_case_passed: \(report.targetedCasePassed)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallSpatialInteractionPreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try spatialInteractionEvidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallSpatialInteractionPreregistration(
+                surface: dataset,
+                target: target,
+                distributedForceReport: evidence.distributedReport,
+                sourceDistributedForceReportSHA256:
+                    sha256Hex(evidence.distributedReportData),
+                forceCovariancePreregistration:
+                    evidence.covariancePreregistration,
+                sourceForceCovariancePreregistrationSHA256:
+                    sha256Hex(evidence.covariancePreregistrationData),
+                forceCovarianceReport: evidence.covarianceReport,
+                sourceForceCovarianceReportSHA256:
+                    sha256Hex(evidence.covarianceReportData),
+                sourceForceCovarianceAuditSHA256:
+                    sha256Hex(evidence.covarianceAuditData),
+                forceCovarianceAuditPassed:
+                    evidence.covarianceAuditPassed
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("spatial_bin_counts: \(report.expectedSpatialBinCounts)")
+            print("union_spatial_bins: \(report.expectedUnionSpatialBinCount)")
+            print(
+                "dominant_axis_threshold: "
+                    + String(report
+                        .minimumDominantAxisAbsoluteContributionFraction)
+            )
+            print(
+                "maximum_joint_fraction_for_capture: "
+                    + String(report
+                        .maximumJointBinFractionForTargetedCapture)
+            )
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "spatial-interaction preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallSpatialInteraction {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try spatialInteractionEvidence()
+        let preregistrationData = try artifactData(
+            arguments.spatialInteractionPreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallSpatialInteraction(
+                surface: dataset,
+                target: target,
+                distributedForceReport: evidence.distributedReport,
+                sourceDistributedForceReportSHA256:
+                    sha256Hex(evidence.distributedReportData),
+                forceCovariancePreregistration:
+                    evidence.covariancePreregistration,
+                sourceForceCovariancePreregistrationSHA256:
+                    sha256Hex(evidence.covariancePreregistrationData),
+                forceCovarianceReport: evidence.covarianceReport,
+                sourceForceCovarianceReportSHA256:
+                    sha256Hex(evidence.covarianceReportData),
+                sourceForceCovarianceAuditSHA256:
+                    sha256Hex(evidence.covarianceAuditData),
+                forceCovarianceAuditPassed:
+                    evidence.covarianceAuditPassed,
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceSpatialInteractionPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print(
+                "maximum_term_mean_reconstruction_error_N: "
+                    + String(report.metrics
+                        .maximumTermMeanReconstructionErrorNewtons)
+            )
+            print(
+                "interaction_closure_relative_error: "
+                    + String(report.metrics
+                        .relativeInteractionClosureError)
+            )
+            print(
+                "dominant_component: "
+                    + (report.metrics.dominantComponent ?? "none")
+            )
+            print(
+                "dominant_direction: "
+                    + (report.metrics.dominantDirection ?? "none")
+            )
+            print(
+                "dominant_q_bin: "
+                    + (report.metrics
+                        .dominantInterpolationFractionBin ?? "none")
+            )
+            print(
+                "joint_bins_for_target: "
+                    + String(report.metrics
+                        .minimumJointBinsForTargetAbsoluteContribution)
+            )
+            print(
+                "targeted_capture_authorized: "
+                    + String(report.targetedPrimitiveCaptureAuthorized)
+            )
+            print("classification: \(report.classification)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallForceCovariancePreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try forceCovarianceEvidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallForceCovariancePreregistration(
+                surface: dataset,
+                target: target,
+                distributedForcePreregistration:
+                    evidence.preregistration,
+                sourceDistributedForcePreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                distributedForceReport: evidence.report,
+                sourceDistributedForceReportSHA256:
+                    sha256Hex(evidence.reportData),
+                sourceDistributedForceAuditSHA256:
+                    sha256Hex(evidence.auditData),
+                distributedForceAuditPassed: evidence.auditPassed
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("temporal_bins: \(report.temporalBinCount)")
+            print("blocks: \(report.blockCount) x \(report.binsPerBlock)")
+            print("terms: \(report.termIdentifiers)")
+            print(
+                "dominant_pair_full_energy_threshold: "
+                    + String(report.minimumDominantPairFullEnergyFraction)
+            )
+            print(
+                "dominant_pair_block_energy_threshold: "
+                    + String(report.minimumDominantPairBlockEnergyFraction)
+            )
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "force-covariance preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallForceCovariance {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try forceCovarianceEvidence()
+        let preregistrationData = try artifactData(
+            arguments.forceCovariancePreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallForceCovariance(
+                surface: dataset,
+                target: target,
+                distributedForcePreregistration:
+                    evidence.preregistration,
+                sourceDistributedForcePreregistrationSHA256:
+                    sha256Hex(evidence.preregistrationData),
+                distributedForceReport: evidence.report,
+                sourceDistributedForceReportSHA256:
+                    sha256Hex(evidence.reportData),
+                sourceDistributedForceAuditSHA256:
+                    sha256Hex(evidence.auditData),
+                distributedForceAuditPassed: evidence.auditPassed,
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceForceCovariancePreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print(
+                "maximum_term_delta_reconstruction_error_N: "
+                    + String(report.metrics
+                        .maximumTermDeltaReconstructionErrorNewtons)
+            )
+            print(
+                "raw_energy_closure_relative_error: "
+                    + String(report.metrics.rawEnergyClosureRelativeError)
+            )
+            print(
+                "dominant_pair: "
+                    + report.metrics.dominantPairIdentifier
+            )
+            print("dominant_pair_sign: \(report.metrics.dominantPairSign)")
+            print(
+                "dominant_pair_mechanism: "
+                    + report.metrics.dominantPairMechanism
+            )
+            print(
+                "dominant_pair_gate_passed: "
+                    + String(report.metrics.dominantPairGatePassed)
+            )
+            print("classification: \(report.classification)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallDistributedForcePreregister {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try distributedForceEvidence()
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallDistributedForcePreregistration(
+                surface: dataset,
+                target: target,
+                linkGeometryPreregistration:
+                    evidence.geometryPreregistration,
+                sourceLinkGeometryPreregistrationSHA256:
+                    sha256Hex(evidence.geometryPreregistrationData),
+                linkGeometryReport: evidence.geometryReport,
+                sourceLinkGeometryReportSHA256:
+                    sha256Hex(evidence.geometryReportData),
+                temporalDurationPreregistration:
+                    evidence.durationPreregistration,
+                sourceTemporalDurationPreregistrationSHA256:
+                    sha256Hex(evidence.durationPreregistrationData),
+                temporalDurationReport: evidence.durationReport,
+                sourceTemporalDurationReportSHA256:
+                    sha256Hex(evidence.durationReportData),
+                linkPopulationPreregistration:
+                    evidence.populationPreregistration,
+                sourceLinkPopulationPreregistrationSHA256:
+                    sha256Hex(evidence.populationPreregistrationData),
+                linkPopulationReport: evidence.populationReport,
+                sourceLinkPopulationReportSHA256:
+                    sha256Hex(evidence.populationReportData),
+                sourceLinkPopulationAuditSHA256:
+                    sha256Hex(evidence.populationAuditData),
+                linkPopulationAuditPassed: evidence.populationAuditPassed
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("reference_length_cells: \(report.referenceLengthCells)")
+            print("expected_link_counts: \(report.expectedLinkCounts)")
+            print("expected_step_counts: \(report.expectedStepCounts)")
+            print("temporal_bins: \(report.temporalBinCount)")
+            print("force_terms: \(report.forceTerms)")
+            print("preregistration_passed: \(report.passed)")
+            print("selection_rule: \(report.selectionRule)")
+        }
+        guard report.passed else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "distributed-force preregistration failed"
+            )
+        }
+        return
+    }
+    if arguments.collisionGridMovingWallDistributedForce {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let evidence = try distributedForceEvidence()
+        let preregistrationData = try artifactData(
+            arguments.distributedForcePreregistrationPath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallDistributedForce(
+                surface: dataset,
+                target: target,
+                linkGeometryPreregistration:
+                    evidence.geometryPreregistration,
+                sourceLinkGeometryPreregistrationSHA256:
+                    sha256Hex(evidence.geometryPreregistrationData),
+                linkGeometryReport: evidence.geometryReport,
+                sourceLinkGeometryReportSHA256:
+                    sha256Hex(evidence.geometryReportData),
+                temporalDurationPreregistration:
+                    evidence.durationPreregistration,
+                sourceTemporalDurationPreregistrationSHA256:
+                    sha256Hex(evidence.durationPreregistrationData),
+                temporalDurationReport: evidence.durationReport,
+                sourceTemporalDurationReportSHA256:
+                    sha256Hex(evidence.durationReportData),
+                linkPopulationPreregistration:
+                    evidence.populationPreregistration,
+                sourceLinkPopulationPreregistrationSHA256:
+                    sha256Hex(evidence.populationPreregistrationData),
+                linkPopulationReport: evidence.populationReport,
+                sourceLinkPopulationReportSHA256:
+                    sha256Hex(evidence.populationReportData),
+                sourceLinkPopulationAuditSHA256:
+                    sha256Hex(evidence.populationAuditData),
+                linkPopulationAuditPassed: evidence.populationAuditPassed,
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceDistributedForcePreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData)
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("d12_runtime_seconds: \(report.d12.runtimeSeconds)")
+            print("d16_runtime_seconds: \(report.d16.runtimeSeconds)")
+            print(
+                "total_force_pairwise_normalized_rms_difference: "
+                    + String(report.metrics
+                        .totalForcePairwiseNormalizedRMSDifference)
+            )
+            print("dominant_term: " + (report.metrics.dominantTerm ?? "none"))
+            print(
+                "dominant_term_gate_passed: "
+                    + String(report.metrics.dominantTermGatePassed)
+            )
+            print(
+                "dominant_component: "
+                    + (report.metrics.dominantComponent ?? "none")
+            )
+            print(
+                "dominant_direction: "
+                    + (report.metrics.dominantDirection ?? "none")
+            )
+            print(
+                "dominant_q_bin: "
+                    + (report.metrics.dominantInterpolationFractionBin ?? "none")
+            )
+            print("source_reproduction_passed: \(report.sourceReproductionPassed)")
+            print("classification: \(report.classification)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
     }
     if arguments.collisionGridMovingWallLinkPopulationPreregister {
         let target = try MeasuredBirdForceTargetLoader.load(

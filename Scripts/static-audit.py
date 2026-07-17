@@ -69,6 +69,7 @@ REQUIRED_KERNELS = {
     "captureIndexedPopulationStageProvenanceBeforeStep",
     "captureIndexedPopulationStageProvenanceAfterStep",
     "captureIndexedBoundaryTermDecomposition",
+    "captureIndexedBoundaryLinkForceTerms",
     "reducePopulationMinimum",
     "captureTRTCollisionDecomposition",
     "captureSymmetricLimiterLedger",
@@ -378,6 +379,27 @@ def main() -> int:
                 f"Swift={swift_fields}, Metal={metal_fields}"
             )
 
+    diagnostic_structs = {
+        "GPUIndexedBoundaryLink": ["metadata"],
+        "GPUIndexedBoundaryLinkForceTerm": [
+            "reflected", "wall", "interpolation", "total", "metadata",
+        ],
+    }
+    for struct_name, expected_fields in diagnostic_structs.items():
+        metal_body = extract_braced_body(shader, f"struct {struct_name}")
+        swift_body = extract_braced_body(swift, f"struct {struct_name}")
+        metal_fields = re.findall(
+            r"\b(?:float4|uint4)\s+(\w+)\s*;", metal_body
+        )
+        swift_fields = re.findall(
+            r"\bvar\s+(\w+)\s*:\s*SIMD4<", swift_body
+        )
+        if metal_fields != expected_fields or swift_fields != expected_fields:
+            fail(
+                f"diagnostic struct {struct_name} differs across Swift/Metal: "
+                f"Swift={swift_fields}, Metal={metal_fields}"
+            )
+
     expected_swift_bindings = {
         "private func encodeInitialization()": 6,
         "private func encodeShearInitialization()": 4,
@@ -417,6 +439,7 @@ def main() -> int:
         "func encodeBefore(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 7,
         "func encodeAfter(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 4,
         "func encodeBoundaryTerms(": 6,
+        "func encode(\n        commandBuffer: MTLCommandBuffer,\n        populationsIn: MTLBuffer,\n        solidCurrent: MTLBuffer,\n        wallVelocity: MTLBuffer,\n        uniforms: inout GPUUniforms": 7,
     }
     for declaration, count in expected_swift_bindings.items():
         body = extract_braced_body(swift, declaration)
@@ -479,6 +502,7 @@ def main() -> int:
         "captureIndexedPopulationStageProvenanceBeforeStep": 7,
         "captureIndexedPopulationStageProvenanceAfterStep": 4,
         "captureIndexedBoundaryTermDecomposition": 6,
+        "captureIndexedBoundaryLinkForceTerms": 7,
         "reducePopulationMinimum": 3,
         "captureTRTCollisionDecomposition": 8,
         "captureSymmetricLimiterLedger": 7,
@@ -621,6 +645,11 @@ def main() -> int:
             "func encodeBoundaryTerms(",
             ["populationsIn", "solidCurrent", "wallVelocity", "records", "uniforms", "target"],
             ["populationsIn", "solidCurrent", "wallVelocity", "terms", "uniforms", "target"],
+        ),
+        "captureIndexedBoundaryLinkForceTerms": (
+            "func encode(\n        commandBuffer: MTLCommandBuffer,\n        populationsIn: MTLBuffer,\n        solidCurrent: MTLBuffer,\n        wallVelocity: MTLBuffer,\n        uniforms: inout GPUUniforms",
+            ["populationsIn", "solidCurrent", "wallVelocity", "linkBuffer", "termBuffer", "uniforms", "count"],
+            ["populationsIn", "solidCurrent", "wallVelocity", "links", "terms", "uniforms", "linkCount"],
         ),
         "captureTRTCollisionDecomposition": (
             "private func encodeTRTCollisionDecomposition(",

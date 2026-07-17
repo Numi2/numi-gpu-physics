@@ -82,6 +82,58 @@ public struct LatticeScaling: Sendable, Equatable, Codable {
         latticeReferenceSpeed: Float = 0.05,
         trtMagicParameter: Float = 3.0 / 16.0
     ) throws {
+        try self.init(
+            characteristicLengthMeters: characteristicLengthMeters,
+            characteristicLengthCells: characteristicLengthCells,
+            referenceSpeedMetersPerSecond: referenceSpeedMetersPerSecond,
+            targetReynoldsNumber: targetReynoldsNumber,
+            physicalAirDensity: physicalAirDensity,
+            latticeReferenceSpeed: latticeReferenceSpeed,
+            trtMagicParameter: trtMagicParameter,
+            minimumTauPlus: 0.500_05
+        )
+    }
+
+    /// Constructs a deliberately sub-margin scaling for a package-owned,
+    /// preregistered stability diagnostic. Production callers must use the
+    /// public initializer and retain its `tauPlus >= 0.50005` guard.
+    package static func diagnosticSubMargin(
+        characteristicLengthMeters: Float,
+        characteristicLengthCells: Int,
+        referenceSpeedMetersPerSecond: Float,
+        targetReynoldsNumber: Float,
+        physicalAirDensity: Float,
+        latticeReferenceSpeed: Float = 0.05,
+        trtMagicParameter: Float = 3.0 / 16.0,
+        minimumTauPlus: Float
+    ) throws -> Self {
+        guard minimumTauPlus > 0.5, minimumTauPlus < 0.500_05 else {
+            throw BirdFlowConfigurationError.invalidPhysicalScale(
+                "A diagnostic tau floor must be above 0.5 and below the production 0.50005 margin."
+            )
+        }
+        return try Self(
+            characteristicLengthMeters: characteristicLengthMeters,
+            characteristicLengthCells: characteristicLengthCells,
+            referenceSpeedMetersPerSecond: referenceSpeedMetersPerSecond,
+            targetReynoldsNumber: targetReynoldsNumber,
+            physicalAirDensity: physicalAirDensity,
+            latticeReferenceSpeed: latticeReferenceSpeed,
+            trtMagicParameter: trtMagicParameter,
+            minimumTauPlus: minimumTauPlus
+        )
+    }
+
+    private init(
+        characteristicLengthMeters: Float,
+        characteristicLengthCells: Int,
+        referenceSpeedMetersPerSecond: Float,
+        targetReynoldsNumber: Float,
+        physicalAirDensity: Float,
+        latticeReferenceSpeed: Float,
+        trtMagicParameter: Float,
+        minimumTauPlus: Float
+    ) throws {
         guard characteristicLengthMeters > 0,
               characteristicLengthCells >= 8,
               referenceSpeedMetersPerSecond > 0,
@@ -108,7 +160,7 @@ public struct LatticeScaling: Sendable, Equatable, Codable {
 
         // This is a stability margin for a single-precision implementation, not
         // a claim that every case above the threshold is automatically stable.
-        guard tauPlus >= 0.500_05 else {
+        guard tauPlus >= minimumTauPlus else {
             throw BirdFlowConfigurationError.relaxationTooCloseToLimit(tauPlus)
         }
 

@@ -1,0 +1,523 @@
+{
+  "absoluteLedgerTotal": 11.872344632222674,
+  "analysisIdentifier": "deetjen-ob-f03-source-viscosity-targeted-boundary-attribution-v1",
+  "attribution": {
+    "classification": "dominant-self:reflectedPopulation",
+    "dominantContributionAvailable": true,
+    "earlyLeader": "reflectedPopulation",
+    "lateLeader": "reflectedPopulation",
+    "leadingAbsoluteLedgerFraction": 0.5842810106073755,
+    "leadingContributionKind": "self",
+    "leadingContributionName": "reflectedPopulation",
+    "minimumDominantContributionFraction": 0.5,
+    "sameLeaderInBothTemporalHalves": true
+  },
+  "bothTargetedCasesPassed": true,
+  "claimBoundary": "Version 2 corrects the first runner's implementation-only Reynolds mismatch while preserving every pre-observation interval, metric, threshold, and attribution rule; the invalid V1 contract and D28 output remain archived. This diagnostic can identify which production force-accounting mechanism explains the localized D28/D32 difference, but it cannot establish observed-order grid convergence, experimental agreement, production promotion, quantitative bird-load acceptance, or free flight.",
+  "componentD32MinusD28": {
+    "interpolationResidual": [
+      [
+        0.26355788896658594,
+        0.0530387523384499
+      ],
+      [
+        0.13962732771012398,
+        0.12136040025922867
+      ],
+      [
+        0.2530599015631846,
+        0.039757032005582005
+      ],
+      [
+        0.03496607047106537,
+        0.05191265373390966
+      ],
+      [
+        -0.10225768640105204,
+        -0.0561411750053854
+      ],
+      [
+        -0.12733408010431702,
+        -0.05389896123337429
+      ],
+      [
+        0.20470152968274702,
+        -0.16966856497206861
+      ],
+      [
+        -0.15685012630586104,
+        -0.1331946777453205
+      ],
+      [
+        -0.05353559612662395,
+        0.04835587998552779
+      ],
+      [
+        0.006353312903749075,
+        -0.02749779297820558
+      ],
+      [
+        0.08602033445744645,
+        0.08077272995485277
+      ]
+    ],
+    "movingWall": [
+      [
+        -0.18435559953961445,
+        -0.08903484152896102
+      ],
+      [
+        -0.14435401984623297,
+        -0.025413647294044495
+      ],
+      [
+        -0.15553588526589124,
+        0.04763518060956695
+      ],
+      [
+        -0.09156765256609845,
+        0.0504903883806298
+      ],
+      [
+        -0.14036262035369873,
+        0.09977755589144577
+      ],
+      [
+        -0.13702644620623516,
+        0.047885384942804254
+      ],
+      [
+        0.010019149099079527,
+        0.08980406341808189
+      ],
+      [
+        0.028889196259640926,
+        0.3956599613385543
+      ],
+      [
+        -0.06433052676064221,
+        -0.014275042074067379
+      ],
+      [
+        -0.16355642250606195,
+        0.0247483934674948
+      ],
+      [
+        -0.19387532983508038,
+        0.06537752917834716
+      ]
+    ],
+    "reflectedPopulation": [
+      [
+        0.32276616777691913,
+        0.6163924363042623
+      ],
+      [
+        -0.38280821698052137,
+        -0.9891265886170526
+      ],
+      [
+        0.21691320623669696,
+        0.4688437687499185
+      ],
+      [
+        -0.18285385199955329,
+        -0.017531584416116797
+      ],
+      [
+        -0.16046646663120612,
+        -0.2755142567413196
+      ],
+      [
+        1.1745010954993091,
+        0.13108914159238338
+      ],
+      [
+        -1.0732685838426903,
+        -0.5475782629634653
+      ],
+      [
+        0.9138252905436985,
+        0.41176335114453533
+      ],
+      [
+        -0.6908738102231666,
+        -0.5237900916753069
+      ],
+      [
+        0.41826367378234863,
+        0.34591666236519814
+      ],
+      [
+        0.0186612435749538,
+        -0.1608227998284355
+      ]
+    ],
+    "topologyImpulse": [
+      [
+        0.053872053112302254,
+        -0.10233559596235864
+      ],
+      [
+        -0.004296666809491256,
+        -0.005148668993829875
+      ],
+      [
+        0.15353024644511137,
+        -0.09005081954611732
+      ],
+      [
+        -0.1412243161882678,
+        -0.0574690309793888
+      ],
+      [
+        0.2686874823910834,
+        0.006403911962739331
+      ],
+      [
+        -0.37639080200876407,
+        0.0739217286630135
+      ],
+      [
+        0.48948184081486446,
+        -0.05802207317901775
+      ],
+      [
+        -0.037950673273631,
+        0.1727008291054517
+      ],
+      [
+        0.07670150910104923,
+        -0.338107829081959
+      ],
+      [
+        -0.028078647596494477,
+        -0.11078447323026408
+      ],
+      [
+        0.09897677387510129,
+        -0.04991377650627049
+      ]
+    ]
+  },
+  "componentDifferenceClosureRelativeRMS": 2.3834858908089667e-05,
+  "componentMetrics": {
+    "interpolationResidual": {
+      "normalizedRMSDifference": 0.17571365335530206,
+      "squaredDifferenceEnergy": 0.3417225232186152
+    },
+    "movingWall": {
+      "normalizedRMSDifference": 0.0018557734967996574,
+      "squaredDifferenceEnergy": 0.3906328343418228
+    },
+    "reflectedPopulation": {
+      "normalizedRMSDifference": 0.009865903416556332,
+      "squaredDifferenceEnergy": 6.936785519994113
+    },
+    "topologyImpulse": {
+      "normalizedRMSDifference": 0.01303957925138528,
+      "squaredDifferenceEnergy": 0.707490143047599
+    }
+  },
+  "contributionLedger": [
+    {
+      "fractionOfAbsoluteLedger": 0.5842810106073755,
+      "fractionOfSignedTotal": 1.241219341895149,
+      "kind": "self",
+      "name": "reflectedPopulation",
+      "signedSquaredDifferenceContribution": 6.936785519994113
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.14681652083286892,
+      "fractionOfSignedTotal": -0.31189017280926956,
+      "kind": "interaction",
+      "name": "reflectedPopulation x topologyImpulse",
+      "signedSquaredDifferenceContribution": -1.7430563330317197
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.07509865211582623,
+      "fractionOfSignedTotal": -0.1595360757309574,
+      "kind": "interaction",
+      "name": "reflectedPopulation x interpolationResidual",
+      "signedSquaredDifferenceContribution": -0.8915970793344875
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0595914425468583,
+      "fractionOfSignedTotal": 0.12659328261191372,
+      "kind": "self",
+      "name": "topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.707490143047599
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.03290275395827106,
+      "fractionOfSignedTotal": 0.06989707670315941,
+      "kind": "self",
+      "name": "movingWall",
+      "signedSquaredDifferenceContribution": 0.3906328343418228
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.028934169166409014,
+      "fractionOfSignedTotal": -0.06146640017220468,
+      "kind": "interaction",
+      "name": "movingWall x interpolationResidual",
+      "signedSquaredDifferenceContribution": -0.34351642799063886
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.02878306971406033,
+      "fractionOfSignedTotal": 0.061145411539337786,
+      "kind": "self",
+      "name": "interpolationResidual",
+      "signedSquaredDifferenceContribution": 0.3417225232186152
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.022049778969217247,
+      "fractionOfSignedTotal": 0.04684152256232825,
+      "kind": "interaction",
+      "name": "interpolationResidual x topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.2617825749868828
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.013784920788312541,
+      "fractionOfSignedTotal": -0.029284043120209644,
+      "kind": "interaction",
+      "name": "reflectedPopulation x movingWall",
+      "signedSquaredDifferenceContribution": -0.16365933032673716
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0077576813008008935,
+      "fractionOfSignedTotal": 0.01648005652075327,
+      "kind": "interaction",
+      "name": "movingWall x topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.0921018659500577
+    }
+  ],
+  "earlyContributionLedger": [
+    {
+      "fractionOfAbsoluteLedger": 0.6500763423354006,
+      "fractionOfSignedTotal": 0.9821984828498204,
+      "kind": "self",
+      "name": "reflectedPopulation",
+      "signedSquaredDifferenceContribution": 2.011297472651067
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.06842138977170009,
+      "fractionOfSignedTotal": -0.10337768174551891,
+      "kind": "interaction",
+      "name": "movingWall x interpolationResidual",
+      "signedSquaredDifferenceContribution": -0.21169170351394273
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.06129593097307524,
+      "fractionOfSignedTotal": 0.09261184646457993,
+      "kind": "self",
+      "name": "interpolationResidual",
+      "signedSquaredDifferenceContribution": 0.1896459585147203
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0454376556274433,
+      "fractionOfSignedTotal": 0.06865162368653253,
+      "kind": "self",
+      "name": "topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.1405813994066487
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.04261175823713478,
+      "fractionOfSignedTotal": -0.06438198341708513,
+      "kind": "interaction",
+      "name": "reflectedPopulation x topologyImpulse",
+      "signedSquaredDifferenceContribution": -0.13183824124359358
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.04216299315200336,
+      "fractionOfSignedTotal": 0.06370394553589019,
+      "kind": "self",
+      "name": "movingWall",
+      "signedSquaredDifferenceContribution": 0.13044978880692087
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.03573624749656891,
+      "fractionOfSignedTotal": -0.05399379394084476,
+      "kind": "interaction",
+      "name": "movingWall x topologyImpulse",
+      "signedSquaredDifferenceContribution": -0.11056582064449014
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.027391394831493537,
+      "fractionOfSignedTotal": 0.04138557996124187,
+      "kind": "interaction",
+      "name": "reflectedPopulation x interpolationResidual",
+      "signedSquaredDifferenceContribution": 0.08474734367205466
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0223013912620412,
+      "fractionOfSignedTotal": -0.033695108153490916,
+      "kind": "interaction",
+      "name": "reflectedPopulation x movingWall",
+      "signedSquaredDifferenceContribution": -0.06899917588264379
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.004564896313139226,
+      "fractionOfSignedTotal": 0.00689708875887503,
+      "kind": "interaction",
+      "name": "interpolationResidual x topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.014123517223449525
+    }
+  ],
+  "experimentalAgreementGateApplied": false,
+  "generatedBy": "Scripts/analyze-dove-targeted-boundary-replay.py",
+  "gridConvergenceGateApplied": false,
+  "lateContributionLedger": [
+    {
+      "fractionOfAbsoluteLedger": 0.5371874405078709,
+      "fractionOfSignedTotal": 1.391013108540127,
+      "kind": "self",
+      "name": "reflectedPopulation",
+      "signedSquaredDifferenceContribution": 4.9254880473430465
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.175723931214193,
+      "fractionOfSignedTotal": -0.45502607352854624,
+      "kind": "interaction",
+      "name": "reflectedPopulation x topologyImpulse",
+      "signedSquaredDifferenceContribution": -1.611218091788126
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.10648284121447385,
+      "fractionOfSignedTotal": -0.2757306236048528,
+      "kind": "interaction",
+      "name": "reflectedPopulation x interpolationResidual",
+      "signedSquaredDifferenceContribution": -0.9763444230065422
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.06182864602875054,
+      "fractionOfSignedTotal": 0.1601013922216212,
+      "kind": "self",
+      "name": "topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.5669087436409503
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.02837628737518331,
+      "fractionOfSignedTotal": 0.07347861236901601,
+      "kind": "self",
+      "name": "movingWall",
+      "signedSquaredDifferenceContribution": 0.2601830455349019
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.027010386398215912,
+      "fractionOfSignedTotal": 0.0699416976523705,
+      "kind": "interaction",
+      "name": "interpolationResidual x topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.24765905776343325
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.022103502188804313,
+      "fractionOfSignedTotal": 0.05723562944845448,
+      "kind": "interaction",
+      "name": "movingWall x topologyImpulse",
+      "signedSquaredDifferenceContribution": 0.20266768659454784
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.016585893574258666,
+      "fractionOfSignedTotal": 0.04294812878877652,
+      "kind": "self",
+      "name": "interpolationResidual",
+      "signedSquaredDifferenceContribution": 0.15207656470389486
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.014377171491765404,
+      "fractionOfSignedTotal": -0.0372287818007578,
+      "kind": "interaction",
+      "name": "movingWall x interpolationResidual",
+      "signedSquaredDifferenceContribution": -0.13182472447669616
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.010323900006484114,
+      "fractionOfSignedTotal": -0.026733090086208913,
+      "kind": "interaction",
+      "name": "reflectedPopulation x movingWall",
+      "signedSquaredDifferenceContribution": -0.09466015444409341
+    }
+  ],
+  "nextAction": "Design one narrowly isolated canonical for the identified mechanism before modifying production physics.",
+  "preregistrationSHA256": "d3eabdad7153d383a381d5ab84e21859a7294dbde9a9a06df4a446574586b9dd",
+  "productionD32MinusD28": [
+    [
+      0.45584299761269775,
+      0.4780653243485306
+    ],
+    [
+      -0.3918233825825155,
+      -0.8983212778610841
+    ],
+    [
+      0.46796718362851863,
+      0.46617524292586104
+    ],
+    [
+      -0.3806810431082599,
+      0.027414935108806382
+    ],
+    [
+      -0.13441152677738244,
+      -0.2254624968128545
+    ],
+    [
+      0.5337394628274654,
+      0.19897985032626564
+    ],
+    [
+      -0.3690690426488541,
+      -0.685485721432737
+    ],
+    [
+      0.7479108693743393,
+      0.8469285826597899
+    ],
+    [
+      -0.7320414010235774,
+      -0.8278182376442211
+    ],
+    [
+      0.2329818313425806,
+      0.2323714340371743
+    ],
+    [
+      0.009784068380083166,
+      -0.06462486906509315
+    ]
+  ],
+  "productionModificationAuthorized": false,
+  "schemaVersion": 1,
+  "scientificVerdict": "The preregistered targeted replay identifies reflectedPopulation as a temporally stable >=50% self contribution.",
+  "signedLedgerTotal": 5.588686290855507,
+  "sourceD28CaseSHA256": "d483b8d9314a8db159869045e0e4722b17bc77ef5c99e42386e77535783b5aa1",
+  "sourceD32CaseSHA256": "93dd9ea0d1383b6e90d4f6c6f1795116eaae2145241a47c8d329aa619b6c7389",
+  "squaredDifferenceEnergy": 5.588676933908735,
+  "squaredDifferenceEnergyClosureRelativeError": 1.6742658802258892e-06,
+  "targetSampleIndices": [
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+  ],
+  "targetTimesSeconds": [
+    0.025,
+    0.0255,
+    0.026,
+    0.0265,
+    0.027,
+    0.0275,
+    0.028,
+    0.0285,
+    0.029,
+    0.0295,
+    0.03
+  ]
+}

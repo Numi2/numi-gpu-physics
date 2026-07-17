@@ -1,0 +1,28 @@
+{
+  "candidateOperators" : [
+    "positivity-preserving-regularized-bgk",
+    "positivity-preserving-recursive-regularized-bgk"
+  ],
+  "claimBoundary" : "This preregistered sub-margin run is a collision survival and momentum-consistency diagnostic. The unchanged production tau>=0.50005 guard still rejects D16 and D20 source viscosity; no outcome establishes published Reynolds equivalence or experimental force agreement.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "executionMinimumTauPlus" : 0.5000200271606445,
+  "experimentalAgreementGateApplied" : false,
+  "fixedInputs" : "SHA-locked measured dove surface, measured-force timing, author-code rho\/mu, engineering Re, D16 geometry, 0.08 m reference length, fixed Courant scaling, 1600 steps, pre-step local-density moving-wall normalization, boundary operator, force estimator, far field, sponge, per-step positivity, momentum, and correction gates",
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumCorrectionActivationFraction" : 0.05,
+  "maximumRelativeRMSClosureResidual" : 0.005,
+  "movingWallNormalization" : "pre-step-local-density",
+  "passed" : true,
+  "productionMinimumTauPlus" : 0.5000500082969666,
+  "referenceLengthCells" : 16,
+  "requestedSteps" : 1600,
+  "schemaVersion" : 1,
+  "selectionRule" : "Run regularized BGK and recursive regularized BGK for every one of the 1600 D16 pre-roll steps at the reconstructed source-property Reynolds number. Require positive finite populations, finite loads, zero control-surface solid crossings, <=0.5% near-wing and global relative RMS momentum residuals, and <=5% collision correction activation. D28 planning requires at least one passing candidate; this diagnostic cannot authorize D20, D28 execution, production changes, or force agreement.",
+  "sourcePropertyReynoldsNumber" : 128812.93718204941,
+  "sourceScalingAuditSHA256" : "51b8c7cd805b5ea9dc52a0dd35befdb0ee11e7a753c37d8be27699f6735e0d51",
+  "sourceScalingPreregistrationSHA256" : "c4d2bceb50bdd38769f214cf1a2f2b12bf8ff9744b742d774cec58dc2f679c0d",
+  "sourceScalingReportSHA256" : "8f0381ec4c8899cf63f74ff37e1591b1634b7376a72726d889843b108d2c2a59",
+  "sourceTauPlus" : 0.5000293802979235
+}

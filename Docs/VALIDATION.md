@@ -2099,14 +2099,496 @@ and safety field; all 12 checks pass. The locked result is
 A/B and a D16 sparse-link replay, leaves D20 blocked, and makes no production
 change or experimental-agreement claim.
 
-Highest-ROI next step: preregister a distributed full-link decomposition over
-the existing D12/D16 fixed-phase histories, binning reflected and moving-wall
-force by component, lattice direction, and `q`. Why: the sparse geometric
-outliers are now quantitatively cleared, while the remaining discrepancy is
-broadband and the prior geometry audit still shows a distributed left-wing
-velocity-moment residual. ROI: aggregate counters can localize the force-bearing
-population class without storing the full lattice, modifying the boundary, or
-paying for D20.
+### Distributed full-link force attribution
+
+The distributed experiment was frozen before execution and run with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-distributed-force-preregister \
+  --link-geometry-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json \
+  --link-geometry ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json \
+  --temporal-duration-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json \
+  --temporal-duration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json \
+  --link-population-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-preregistration.json \
+  --link-population ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback.json \
+  --link-population-audit ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-distributed-force \
+  --link-geometry-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-preregistration.json \
+  --link-geometry ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json \
+  --temporal-duration-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json \
+  --temporal-duration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json \
+  --link-population-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-preregistration.json \
+  --link-population ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback.json \
+  --link-population-audit ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-audit.json \
+  --distributed-force-preregistration ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-distributed-force.json
+
+python3 Scripts/audit-dove-moving-wall-distributed-force.py
+```
+
+The capture is read-only and dispatches once per production boundary link
+immediately before collision. It uses the same populations, signed distance,
+wall velocity, pre-step local density, interpolation branches, and physical
+force conversion as production. It separates conventional mode-6 exchange
+into `-2 f_reflected c`, `-wallCorrection c`, and the remaining interpolation
+term. Host aggregation retains 24 temporal bins and joint component × D3Q19
+direction × 20-bin `q` summaries; it does not archive the full lattice.
+
+D12 captures all `25,262` links for `576` steps in `9.68 s`; D16 captures all
+`45,514` links for `768` steps in `25.67 s`. Both have zero metadata and static
+classification mismatches. Maximum per-link algebraic closure is
+`5.96e-8 N`/`2.98e-8 N`; reconstructed force closes to production at
+`6.31e-6`/`5.01e-6` relative RMS; and the independently restarted 24-bin
+histories reproduce the duration archive within `1.69e-5`/`2.62e-5`. Both
+positivity and momentum-closure gates pass.
+
+The total D12/D16 pairwise force difference is `9.9611%`. Base reflection has
+`89.90%` full-window signed alignment, moving wall `29.78%`, and interpolation
+residual `-19.68%`; the terms cancel substantially because their individual
+delta RMS values are `2.57×`, `2.13×`, and `0.60×` the total-delta RMS. The
+non-overlapping eight-bin winners are base reflection, moving wall, and moving
+wall. The base-reflection winner therefore fails the preregistered requirement
+to remain the at-least-`60%` winner in all three blocks. No component,
+direction, or `q` bin supplies `60%` of absolute aligned contribution, and
+`518` of `1,440` active joint bins are needed to reach `80%`.
+
+The independent Python implementation recomputes source hashes, contract and
+case gates, temporal/spatial algebra, duration reproduction, total and per-term
+cross-grid metrics, block winners, axis concentration, joint-bin concentration,
+classification, and safety fields. All 14 checks pass. The locked result is
+`mixed-term-distributed-grid-bias`: it rejects a single-term correction, leaves
+D20 and production changes blocked, and does not weaken the raw spatial or
+experimental-agreement gates.
+
+### Archive-only force-term covariance
+
+The pairwise energy/covariance contract was frozen before evaluating the
+archived term histories:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-force-covariance-preregister \
+  --distributed-force-preregistration ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-preregistration.json \
+  --distributed-force ValidationArtifacts/deetjen-dove-moving-wall-distributed-force.json \
+  --distributed-force-audit ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-force-covariance \
+  --distributed-force-preregistration ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-preregistration.json \
+  --distributed-force ValidationArtifacts/deetjen-dove-moving-wall-distributed-force.json \
+  --distributed-force-audit ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-audit.json \
+  --force-covariance-preregistration ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-force-covariance.json
+
+python3 Scripts/audit-dove-moving-wall-force-covariance.py
+```
+
+For each force term, the analysis forms the 24-vector D16-minus-D12 history.
+It exactly decomposes total mean-squared delta into three self energies and
+three doubled pair interactions. Each pair dot product is then split into the
+trace of centered covariance and the dot product of its mean vectors. The
+dominant pair was preregistered as robust only if it supplied at least `50%`
+absolute full-window interaction, remained the largest pair with the same sign
+in all three eight-bin blocks, and supplied at least `30%` in every block. A
+centered or mean mechanism required `60%` of the pair's absolute decomposition.
+
+The archived term sum reconstructs the total grid delta within `1.163e-6 N`.
+Raw, centered, and mean energy identities close at `1.777e-7`, `1.506e-7`, and
+`1.541e-6` relative error, respectively. Base reflection plus moving wall is
+the dominant interaction in all three blocks and is canceling throughout. Its
+full interaction fraction is `-9.40036`; block fractions are `-3.73230`,
+`-32.44041`, and `-163.20663`. Values with magnitude above one are physically
+and algebraically possible here because the normalized total is the much
+smaller residual after large self energies and pair interactions cancel.
+
+The dominant pair's centered covariance is small and positive, while its mean
+dot product is strongly negative. The absolute centered/mean split is
+`1.676%`/`98.324%`, clearing the frozen `60%` mean-offset criterion. A separate
+standard-library Python implementation reconstructs all term means, self
+energies, pair dots, block fractions, centered/mean identities, hashes, gates,
+classification, and safety fields; all nine checks pass. The locked result is
+`robust-canceling-mean-offset-dominated-pair-covariance`.
+
+This result is stronger than marginal term ranking but still diagnostic: it
+identifies an opposing mean-force pair, not which spatial population class or
+boundary primitive creates it. It performs no Metal dispatch, changes no
+production physics, leaves D20 blocked, and does not relax the raw spatial or
+experimental-agreement gates.
+
+### Exact spatial allocation of the dominant mean interaction
+
+The complete within- and cross-bin allocation was frozen and executed with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-spatial-interaction-preregister \
+  --distributed-force ValidationArtifacts/deetjen-dove-moving-wall-distributed-force.json \
+  --force-covariance-preregistration ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-preregistration.json \
+  --force-covariance ValidationArtifacts/deetjen-dove-moving-wall-force-covariance.json \
+  --force-covariance-audit ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-spatial-interaction-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-spatial-interaction \
+  --distributed-force ValidationArtifacts/deetjen-dove-moving-wall-distributed-force.json \
+  --force-covariance-preregistration ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-preregistration.json \
+  --force-covariance ValidationArtifacts/deetjen-dove-moving-wall-force-covariance.json \
+  --force-covariance-audit ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-audit.json \
+  --spatial-interaction-preregistration ValidationArtifacts/deetjen-dove-moving-wall-spatial-interaction-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-spatial-interaction.json
+
+python3 Scripts/audit-dove-moving-wall-spatial-interaction.py
+```
+
+A same-bin product would omit cross-bin cancellation. Instead, for reflection
+delta `r_i`, moving-wall delta `w_i`, and global term means `R` and `W`, each
+joint bin receives the symmetric contribution
+`c_i = r_i dot W + w_i dot R`. Summing all `c_i` exactly recovers
+`2 R dot W`; no `1,440²` pair matrix or arbitrary cross-bin assignment is
+needed. The frozen gate names an axis only at `60%` absolute contribution and
+authorizes a future primitive capture only when at least two axes pass and
+`80%` of interaction fits within at most `20%` of active joint bins.
+
+The D12/D16 spatial sums reproduce both covariance term means within
+`2.47e-14 N`; the symmetric interaction closes within `1.12e-14` relative.
+No axis approaches `60%`. The leading component is left wing at `44.386%` of
+absolute interaction, the leading stencil direction is direction 2 at
+`10.192%`, and the leading interpolation class is `q` bin 13 at `10.490%`.
+Reaching `80%` requires `591` of all `1,440` active joint bins, exceeding the
+frozen `20%` concentration limit. Exactly `720` bins support and `720` oppose
+the global cancellation; their absolute split is `50.102%` versus `49.898%`.
+
+Sorted reductions make both the Swift report and Python audit byte-stable
+across independent processes. The Python implementation reconstructs source
+hashes, both term means, complete symmetric allocation, all axis summaries,
+every joint-bin vector and contribution, concentration, classification, and
+safety locks; all nine checks pass. The classification is
+`distributed-spatial-mean-cancellation`. A targeted primitive capture, D20,
+and production modification are all rejected.
+
+### Source-property and Reynolds convention audit
+
+The archive-only source-scaling audit consumes the version-of-record article,
+the SHA-locked deposited `MuscleModel.m`, selected-bird wing span and area,
+selected-flight derived blade-element velocities, and the existing surface and
+grid artifacts. It dispatches no Metal work and advances no fluid state.
+
+Reproduce it after selective source acquisition:
+
+```bash
+python3 Scripts/acquire-dove-benchmark.py \
+  --download --include-force-code \
+  --output /tmp/deetjen-ob-f03-source --json
+
+curl -L https://elifesciences.org/articles/89968.pdf \
+  -o /tmp/deetjen-elife-89968.pdf
+pdftotext -layout /tmp/deetjen-elife-89968.pdf \
+  /tmp/deetjen-elife-89968.txt
+
+python3 Scripts/build-dove-source-scaling.py \
+  --preregister \
+  --source-root /tmp/deetjen-ob-f03-source \
+  --article-pdf /tmp/deetjen-elife-89968.pdf \
+  --article-text /tmp/deetjen-elife-89968.txt
+
+python3 Scripts/build-dove-source-scaling.py \
+  --evaluate \
+  --source-root /tmp/deetjen-ob-f03-source \
+  --article-pdf /tmp/deetjen-elife-89968.pdf \
+  --article-text /tmp/deetjen-elife-89968.txt
+
+python3 Scripts/audit-dove-source-scaling.py \
+  --source-root /tmp/deetjen-ob-f03-source \
+  --article-pdf /tmp/deetjen-elife-89968.pdf \
+  --article-text /tmp/deetjen-elife-89968.txt
+```
+
+The source code fixes `rho=1.18 kg/m^3` and `mu=1.849e-5 Pa s`, giving
+`nu=1.56694915e-5 m^2/s`. The solver constants, D8 source relaxation
+`tau+=0.5000146901`, and all three `68.07195x` effective/source viscosity ratios
+reconstruct within the frozen `2e-7` relative tolerance. The paper itself does
+not publish a Reynolds number or same-flight ambient temperature, pressure, or
+humidity. Standard dry-air inversions place the constant pair near
+`26.0...27.5 C` and one atmosphere, but the audit marks that only as a
+plausibility inference, never a measurement.
+
+The selected bird's deposited `0.0164165 m^2` single-wing area and
+`0.218591 m` radius give a mean chord of `0.0751015 m`. Combining that with the
+deposited `21.3687 m/s` maximum blade-element speed gives an author-data proxy
+`Re=102,417`. BirdFlow's converted `25.2304 m/s` maximum point speed and fixed
+`0.08 m` engineering length give source-property `Re=128,813`. Length differs
+only `6.522%`, but speed differs `18.072%` and their Reynolds products differ
+`25.773%`, failing the frozen `10%/15%` interchangeability gates. The result is
+`source-fluid-properties-confirmed-engineering-reynolds-not-published`.
+
+At fixed Courant scaling, source-viscosity `tau+` is `0.50001469`,
+`0.50002204`, and `0.50002938` for D8/D12/D16. D20 remains below the unchanged
+`0.50005` Float margin; D28 is the first eligible integer grid. The independent
+implementation re-reads all four primary source files, reproduces the article
+evidence and every equation, and passes all ten checks. No source-viscosity run,
+D20 allocation, production change, or experimental agreement is authorized.
+
+### Source-viscosity collision survival and first admissible grid
+
+The source-viscosity follow-up keeps the normal public `tau+>=0.50005`
+constructor unchanged. D16 is admitted only through a package-scoped,
+preregistered diagnostic floor of `0.50002`; D28 uses the normal constructor.
+Reproduce the locked chain locally:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d16-preregister \
+  --source-scaling ValidationArtifacts/deetjen-dove-source-scaling.json \
+  --source-scaling-audit ValidationArtifacts/deetjen-dove-source-scaling-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d16-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d16-ab \
+  --source-scaling ValidationArtifacts/deetjen-dove-source-scaling.json \
+  --source-scaling-audit ValidationArtifacts/deetjen-dove-source-scaling-audit.json \
+  --preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d16-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d16-ab.json
+
+python3 Scripts/audit-dove-source-viscosity-d16.py
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d28-preregister \
+  --source-d16-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d16-preregistration.json \
+  --source-d16-report ValidationArtifacts/deetjen-dove-source-viscosity-d16-ab.json \
+  --source-d16-audit ValidationArtifacts/deetjen-dove-source-viscosity-d16-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d28-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d28-pre-roll \
+  --source-d16-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d16-preregistration.json \
+  --source-d16-report ValidationArtifacts/deetjen-dove-source-viscosity-d16-ab.json \
+  --source-d16-audit ValidationArtifacts/deetjen-dove-source-viscosity-d16-audit.json \
+  --preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d28-pre-roll.json
+
+python3 Scripts/audit-dove-source-viscosity-d28.py
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d28-full-window-preregister \
+  --source-d28-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-preregistration.json \
+  --source-d28-pre-roll ValidationArtifacts/deetjen-dove-source-viscosity-d28-pre-roll.json \
+  --source-d28-audit ValidationArtifacts/deetjen-dove-source-viscosity-d28-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d28-full-window \
+  --source-d28-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-preregistration.json \
+  --source-d28-pre-roll ValidationArtifacts/deetjen-dove-source-viscosity-d28-pre-roll.json \
+  --source-d28-audit ValidationArtifacts/deetjen-dove-source-viscosity-d28-audit.json \
+  --preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window.json
+
+python3 Scripts/audit-dove-source-viscosity-d28-full-window.py
+python3 Scripts/analyze-dove-source-viscosity-d28-force.py
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d32-preregister \
+  --source-d28-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-preregistration.json \
+  --source-d28-full-window-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window-preregistration.json \
+  --source-d28-full-window-report ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window.json \
+  --source-d28-full-window-audit ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d32-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d32-pre-roll \
+  --source-d28-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-preregistration.json \
+  --source-d28-full-window-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window-preregistration.json \
+  --source-d28-full-window-report ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window.json \
+  --source-d28-full-window-audit ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window-audit.json \
+  --preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d32-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d32-pre-roll.json
+
+python3 Scripts/audit-dove-source-viscosity-d32.py
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d32-full-window-preregister \
+  --source-d32-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d32-preregistration.json \
+  --source-d32-pre-roll ValidationArtifacts/deetjen-dove-source-viscosity-d32-pre-roll.json \
+  --source-d32-audit ValidationArtifacts/deetjen-dove-source-viscosity-d32-audit.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-d32-full-window \
+  --source-d32-preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d32-preregistration.json \
+  --source-d32-pre-roll ValidationArtifacts/deetjen-dove-source-viscosity-d32-pre-roll.json \
+  --source-d32-audit ValidationArtifacts/deetjen-dove-source-viscosity-d32-audit.json \
+  --preregistration ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window.json
+
+python3 Scripts/audit-dove-source-viscosity-d32-full-window.py
+python3 Scripts/build-dove-source-viscosity-d28-d32-refinement.py --preregister
+python3 Scripts/build-dove-source-viscosity-d28-d32-refinement.py --evaluate
+python3 Scripts/audit-dove-source-viscosity-d28-d32-refinement.py
+python3 Scripts/analyze-dove-source-viscosity-d28-d32-phase.py
+python3 Scripts/audit-dove-source-viscosity-d28-d32-phase.py
+
+python3 Scripts/preregister-dove-targeted-boundary-replay.py
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-targeted-boundary-case \
+  --preregistration ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-preregistration.json \
+  --source-targeted-full-window-report ValidationArtifacts/deetjen-dove-source-viscosity-d28-full-window.json \
+  --targeted-reference-length-cells 28 \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-d28.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --source-viscosity-targeted-boundary-case \
+  --preregistration ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-preregistration.json \
+  --source-targeted-full-window-report ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window.json \
+  --targeted-reference-length-cells 32 \
+  --archive ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-d32.json
+
+python3 Scripts/analyze-dove-targeted-boundary-replay.py
+python3 Scripts/audit-dove-targeted-boundary-replay.py
+```
+
+Both D16 candidates completed 1,600 source-viscosity steps with strictly
+positive finite populations. Regularized BGK and RR3 reached minima of
+`9.344e-9` and `1.049e-8`; worst near-wing/global relative RMS residuals were
+`6.860e-4` and `6.584e-4`; limiter activation fractions were `1.083e-8` and
+`1.648e-9`. The independent audit reconstructs all 3,200 per-step force and
+momentum identities and passes 15 checks. This authorizes D28 planning only;
+D16 remains below the production Float margin.
+
+The frozen D28 selection rule minimizes the worst D16 momentum residual, then
+correction activation, then maximizes minimum population. It selects RR3 before
+any D28 fluid result is observed. The `259 x 238 x 229` grid contains
+`14,116,018` cells, estimates `3,613,700,608` bytes of concurrent working set,
+and has `tau+=0.50005144`. The Apple M4 run completed all 2,800 steps in
+`740.56 s`; minimum population was `4.838e-9`, near-wing/global relative RMS
+residuals were `0.0011814/0.0019461`, and correction activation was
+`1.441e-7`. The independent implementation passes all 17 checks and authorized
+only a preregistered single-RR3 D28 full force window.
+
+That full-window contract was written at
+`2026-07-17T05:20:32+0200`, before its output was observed, with SHA-256
+`65a60560363dac6f21ba5783e794a4da3bd05b50a864c283059888b16ac9febd`.
+It froze 13,216 steps, 56 steps per force bin, 187 bins, the existing `0.005`
+near/global momentum gates, and the existing `0.05` correction-intrusion gate.
+The Apple M4 RR3 run completed in `2,706.01 s`. Minimum population was
+`4.838e-9`; near-wing/global relative RMS residuals were
+`0.0008241/0.0015074`; correction activation was `1.3594e-5`; and every
+registered bin was recorded. The independent Python implementation recomputes
+all 13,216 step-level ledger identities, all 187 interval-mean force samples,
+their aggregate means, impulses, peak time, and normalized RMS error. All 17
+checks pass. The report and audit SHA-256 values are
+`5d5168aee5298a2d783e39d53c9017e386577e593057aa32300cbb1ae987278e`
+and `8d80288432fec231caba377fc3d1437b6874bfc4a970b74556ec32a169d055ab`.
+
+Numerical acceptance does not imply force agreement. Joint normalized RMS
+error is `2.135734`. The explicitly post-hoc component diagnosis classifies the
+result as `vertical-shape-correlated-but-amplitude-biased-with-horizontal-force-mismatch`:
+vertical correlation is `0.84785` with a `38.98%` high mean; horizontal
+correlation is `0.34319` with a `74.52%` mean deficit. The best vertical
+correlation lag is only `2 ms`. D16 over-viscous to D28 source-viscosity error
+improves by just `1.718%`, but that comparison changes both grid and viscosity
+and is not a convergence pair.
+
+The same-physics D32 path was frozen and run independently. Its `296 x 271 x
+261` grid contains `20,936,376` cells, estimates `5,359,712,256` bytes of
+working set, and has `tau+=0.50005877`. The 3,200-step pre-roll completed in
+`923.59 s`, with positive populations and both ledgers below `0.159%`; its
+18-check audit authorized the separately preregistered full window. That
+15,104-step Apple M4 run completed in `4,627.86 s`, retained minimum population
+`4.685e-9`, closed near-wing/global ledgers at `0.0016128/0.0009644`, activated
+correction in `1.4426e-5` of cell-steps, and recorded all 187 bins. Its
+17-check independent audit reproduces every ledger sample, force bin,
+aggregate, hash, and safety boundary. The D32 numerical gate passes; its
+descriptive joint normalized RMS experimental error is `2.11686` and is not an
+acceptance gate.
+
+The D28/D32 refinement comparison was frozen after the D32 numerical report
+existed but before the two force histories were compared. This timing and the
+inherited `5%` limits are explicit in the preregistration. Mean-force,
+impulse, and normalized peak-time differences pass at `0.7598%`, `0.7259%`,
+and `0%`, but the primary phase-resolved force-history difference is `5.6322%`.
+The horizontal and vertical component differences are `7.3757%` and
+`4.6610%`. The fine pair therefore does not stabilize; two grids also cannot
+supply observed order or Richardson uncertainty. The independent 12-check
+audit reproduces the failure and explicitly leaves D36 unauthorized.
+
+The next analysis executes no fluid. It localizes `42.67%` of total squared
+pair difference to the first `0.025...0.036 s` phase band and `28.94%` of
+horizontal squared difference to `0.025...0.030 s`. Horizontal/vertical
+absolute difference energy is nearly even (`52.46%/47.54%`), the best
+horizontal lag is zero, and difference magnitude has only `0.0131` correlation
+with ordinary horizontal-force transients. Its independent 13-check audit
+supports a targeted D28/D32 replay of that 5 ms interval, not D36. No
+experimental-force, grid-convergence, published-Reynolds, production, or
+free-flight claim is accepted.
+
+The targeted replay was frozen before either valid run. V2 explicitly locks
+the source-property Reynolds number `128812.9372` and expected D28/D32 tau
+values after the first runner mistakenly used the plan Reynolds number. That
+invalid V1 contract and D28 artifact are retained and labeled; the frozen
+archived-force reproduction gate rejected the run at `9.380%`. V2 changes no
+interval, threshold, attribution rule, or production physics. Its D28 and D32
+runs completed `3,360/3,840` steps in `1,090.40/1,846.16 s`, captured every
+one of the `616/704` fluid steps contributing to samples `50...60`, reproduced
+all 11 archived interval means exactly, retained positive populations, and
+closed near/global momentum ledgers below `0.203%`. The four force selectors
+sum to the authoritative production force within `2.683e-5/3.334e-5` relative
+RMS against the frozen `1e-4` limit.
+
+The pair analysis expands D32-minus-D28 X/Z squared-difference energy into four
+self contributions and all six signed pair interactions. Its independent
+15-check audit reconstructs component deltas, the full ten-term ledger, both
+temporal halves, hashes, gates, and claim boundary. Reflected-population self
+energy is the preregistered dominant term: `58.428%` of the absolute ledger,
+and it remains largest in both halves. Reflected/topology and
+reflected/interpolation interactions are negative `14.682%` and `7.510%`
+contributions, while moving-wall self energy is `3.290%`; therefore the result
+localizes sensitivity but does not justify scaling or removing any force term.
+Component-difference and squared-energy closure are `2.383e-5` and
+`1.674e-6`. The next admissible experiment is selected-link provenance of the
+pre-step reflected population at D28/D32; D36 and production edits remain
+unauthorized.
 
 ## 8. Complete measured bird
 

@@ -1,0 +1,66 @@
+{
+  "article": {
+    "doi": "10.7554/eLife.89968",
+    "extractedTextSHA256": "7b322d2424bc68c01df1bf481ce3ccaafad3a256c00c22dee0a4294203324335",
+    "pdfPageNumber": 15,
+    "pdfSHA256": "9be47a314ddd58fdd50eadaba125ce64a4d8da9c52c305d8801b23b4fa9ade6f",
+    "pdfURL": "https://elifesciences.org/articles/89968.pdf",
+    "populationScope": "N=4 doves; n=5 flights each",
+    "publishedReynoldsNumber": null,
+    "reportedAmbientPressurePascals": null,
+    "reportedAmbientTemperatureKelvin": null,
+    "reportedRelativeHumidity": null,
+    "table2FlightSpeedMeanMetersPerSecond": 1.23,
+    "table2FlightSpeedSDMetersPerSecond": 0.13,
+    "tableNumber": 2,
+    "versionOfRecordURL": "https://elifesciences.org/articles/89968"
+  },
+  "claimBoundary": "This audit can confirm an author-code fluid-property convention and solver scaling algebra. It cannot turn unmeasured atmospheric conditions or an engineering U/L proxy into a published Reynolds number, validate force agreement, or authorize production changes.",
+  "committedEvidenceSHA256": {
+    "coarseForcePilot": "90ef1c1e465ddc3eebad11acf112e41f0aefe345421aeceba1c48ec6bc142fe5",
+    "collisionGridPreregistration": "67a1dbc9efca0e724a692ef7d9bfebb708e80ae18030c3b935d451fe506e5030",
+    "engineeringIngestion": "f58d6d13bd1beba14e5f7c5d95244aca94b8e34e3eacbb38f06c5c7281787e25",
+    "sourceQualification": "731ac5d2f2aa4256553ca380201ed8d1bcc7176d044ee61bb6d39da46aa251a4",
+    "surfaceCPUParity": "ea4cd45ffd37e8459383d6fd57b8653a7b2e9c51e84bb74c100734cfaaac8c9d"
+  },
+  "datasetIdentifier": "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "definitions": {
+    "authorDataMeanChord": "c_mean = selected single-wing area / wing radius",
+    "authorDataReynoldsProxy": "Re_author_proxy = max(|BE_Vel1_w|) c_mean / nu_source",
+    "effectiveKinematicViscosity": "nu_effective = ((tau_floor - 0.5) / 3) dx^2 / dt",
+    "registeredEffectiveReynolds": "Re_registered_effective = max converted surface speed * 0.08 m / nu_effective",
+    "registeredSourcePropertyReynolds": "Re_registered_source = max converted surface speed * 0.08 m / nu_source",
+    "sourceKinematicViscosity": "nu_source = mu_source / rho_source",
+    "sourceRelaxation": "tau_source = 0.5 + 3 nu_source dt / dx^2"
+  },
+  "depositedSourceLocks": {
+    "derivedAnalysisArchivePath": "DoveMuscles_DataCode/9 MuscleModel/2TestRuns/OB/2018_12_11_OB_F03.mat",
+    "derivedAnalysisSHA256": "499378e2beebce224fd178732a8ff0ecae920eab9d024d82b8dc3b695cfce1a1",
+    "muscleModelArchivePath": "DoveMuscles_DataCode/9 MuscleModel/MuscleModel.m",
+    "muscleModelSHA256": "8d3ea0557a28ffbea6a1d45b20b0c04c83f5220bce6bcd15e40c771d4a9f8834",
+    "wingAreaArchivePath": "DoveMuscles_DataCode/2 Dissections/SurfArea/SurfAreas.mat",
+    "wingAreaSHA256": "f710a7c8c476e330d89dbe3587e35da93d6789103e19f992cb7059ea73f4ee00",
+    "wingSpanArchivePath": "DoveMuscles_DataCode/2 Dissections/SurfArea/WingSpan.mat",
+    "wingSpanSHA256": "19864fdbd0727f0588089e9fb95c1856722060e3ecb584f3e7ac9b24fd8a7370"
+  },
+  "expectedAuthorCodeConstants": {
+    "airDensityKilogramsPerCubicMeter": 1.18,
+    "dynamicViscosityPascalSeconds": 1.849e-05
+  },
+  "experimentalAgreementGateApplied": false,
+  "fixedInputs": "Version-of-record article; SHA-locked MuscleModel.m, WingSpan.mat, SurfAreas.mat, and selected-flight derived analysis; committed surface CPU parity, D8 pilot, and D8/D12/D16 grid contract. No fluid evolution, Metal dispatch, force rescaling, or tuned threshold.",
+  "manifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "passed": true,
+  "schemaVersion": 1,
+  "selectionRule": "Confirm rho and mu only as deposited author-code conventions. Reconstruct source/effective viscosity and tau on D=8/12/16. Compare the registered maximum-surface-speed/0.08 m Reynolds with a deposited-blade-speed/selected-mean-chord proxy. A published-Reynolds claim requires an explicit publication value and definition; inferred temperature is plausibility-only. Search integer D for the first source-viscosity tau satisfying the unchanged Float margin at the fixed Courant scaling.",
+  "thresholds": {
+    "maximumGridCellsForSourceViscositySearch": 64,
+    "maximumRelativeReferenceLengthDifference": 0.1,
+    "maximumRelativeReynoldsConventionDifference": 0.15,
+    "maximumRelativeSourceReconstructionError": 2e-07,
+    "maximumRelativeVelocityDifference": 0.1,
+    "minimumGridCellsForSourceViscositySearch": 8,
+    "minimumTauPlus": 0.50005,
+    "referenceLengthMeters": 0.08
+  }
+}

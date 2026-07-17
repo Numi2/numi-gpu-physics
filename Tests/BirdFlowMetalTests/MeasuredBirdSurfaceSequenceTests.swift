@@ -1458,6 +1458,890 @@ func measuredBirdMovingWallLinkPopulationRejectsSparseQAsDominant() throws {
     #expect(audit["allChecksPassed"] as? Bool == true)
 }
 
+@Test
+func measuredBirdDistributedForceRejectsSingleTermAttribution() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let geometryPreregistration = try decode(
+        "deetjen-dove-moving-wall-link-geometry-preregistration.json",
+        as: MetalIndexedBirdSurfaceLinkGeometryPreregistration.self
+    )
+    let geometry = try decode(
+        "deetjen-dove-moving-wall-link-geometry.json",
+        as: MetalIndexedBirdSurfaceLinkGeometryReport.self
+    )
+    let durationPreregistration = try decode(
+        "deetjen-dove-moving-wall-temporal-duration-preregistration.json",
+        as: MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self
+    )
+    let duration = try decode(
+        "deetjen-dove-moving-wall-temporal-duration.json",
+        as: MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self
+    )
+    let populationPreregistration = try decode(
+        "deetjen-dove-moving-wall-link-population-fallback-preregistration.json",
+        as: MetalIndexedBirdSurfaceLinkPopulationPreregistration.self
+    )
+    let population = try decode(
+        "deetjen-dove-moving-wall-link-population-fallback.json",
+        as: MetalIndexedBirdSurfaceLinkPopulationReport.self
+    )
+    let preregistration = try decode(
+        "deetjen-dove-moving-wall-distributed-force-preregistration.json",
+        as: MetalIndexedBirdSurfaceDistributedForcePreregistration.self
+    )
+    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridMovingWallDistributedForcePreregistration(
+            surface: surface,
+            target: target,
+            linkGeometryPreregistration: geometryPreregistration,
+            sourceLinkGeometryPreregistrationSHA256:
+                "022ad277bc571bc28f7979d67a66de9c8af8bde2e84429854a4c6b1690295624",
+            linkGeometryReport: geometry,
+            sourceLinkGeometryReportSHA256:
+                "39237cc559c086e3a4f06d36560f17192fa9d5737d2163bc82c2b1a7785dcacf",
+            temporalDurationPreregistration: durationPreregistration,
+            sourceTemporalDurationPreregistrationSHA256:
+                "8a15ee4877ada2b5b20badf70e2de894832afe11bcd6e95384786076541e3a85",
+            temporalDurationReport: duration,
+            sourceTemporalDurationReportSHA256:
+                "1257ddad7d5c78fbaf40876074fd847b9b1d410ac4d2ab04a947e6d0240842ae",
+            linkPopulationPreregistration: populationPreregistration,
+            sourceLinkPopulationPreregistrationSHA256:
+                "5c86f4445349f83aec032c23df1e9fe1900b0f4106c20b30465ec33af477a016",
+            linkPopulationReport: population,
+            sourceLinkPopulationReportSHA256:
+                "2313f6dd15766584abe4fb3b4b23854df08c38d0c1890d31f5655fac80802ef4",
+            sourceLinkPopulationAuditSHA256:
+                "033ab8a966d95d8e97a32df2434efd5f498533ed4e7e17804b9c767dd3d4f95d",
+            linkPopulationAuditPassed: true
+        )
+    #expect(preregistration == rebuilt)
+    #expect(preregistration.expectedLinkCounts == [25_262, 45_514])
+    #expect(preregistration.expectedStepCounts == [576, 768])
+    #expect(preregistration.temporalBinCount == 24)
+
+    let report = try decode(
+        "deetjen-dove-moving-wall-distributed-force.json",
+        as: MetalIndexedBirdSurfaceDistributedForceReport.self
+    )
+    let auditData = try Data(contentsOf: repositoryRootURL
+        .appendingPathComponent(
+            "ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-audit.json"
+        ))
+    let audit = try #require(
+        JSONSerialization.jsonObject(with: auditData) as? [String: Any]
+    )
+    #expect(report.sourceReproductionPassed)
+    #expect(report.d12.capturedLinkCount == 25_262)
+    #expect(report.d16.capturedLinkCount == 45_514)
+    #expect(report.d12.relativeRMSSourceForceClosure < 1e-5)
+    #expect(report.d16.relativeRMSSourceForceClosure < 1e-5)
+    #expect(report.metrics.totalForcePairwiseNormalizedRMSDifference < 0.10)
+    #expect(report.metrics.dominantTerm == "base-reflection")
+    #expect(!report.metrics.dominantTermConsistentAcrossBlocks)
+    #expect(!report.metrics.dominantTermGatePassed)
+    #expect(report.metrics.dominantComponent == nil)
+    #expect(report.metrics.dominantDirection == nil)
+    #expect(report.metrics.dominantInterpolationFractionBin == nil)
+    #expect(report.metrics.minimumJointBinsForTargetAbsoluteAlignedContribution == 518)
+    #expect(report.metrics.activeJointBinCount == 1_440)
+    #expect(report.classification == "mixed-term-distributed-grid-bias")
+    #expect(!report.d20DiagnosticAuthorized)
+    #expect(!report.productionModificationAuthorized)
+    #expect(!report.rawSpatialGateModified)
+    #expect(!report.experimentalAgreementGateApplied)
+    #expect(audit["allChecksPassed"] as? Bool == true)
+}
+
+@Test
+func measuredBirdForceCovarianceLocksMeanOffsetCancellation() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let distributedPreregistration = try decode(
+        "deetjen-dove-moving-wall-distributed-force-preregistration.json",
+        as: MetalIndexedBirdSurfaceDistributedForcePreregistration.self
+    )
+    let distributed = try decode(
+        "deetjen-dove-moving-wall-distributed-force.json",
+        as: MetalIndexedBirdSurfaceDistributedForceReport.self
+    )
+    let preregistration = try decode(
+        "deetjen-dove-moving-wall-force-covariance-preregistration.json",
+        as: MetalIndexedBirdSurfaceForceCovariancePreregistration.self
+    )
+    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridMovingWallForceCovariancePreregistration(
+            surface: surface,
+            target: target,
+            distributedForcePreregistration:
+                distributedPreregistration,
+            sourceDistributedForcePreregistrationSHA256:
+                "d3f6a70c9bd40992c56ab7fc041206d94a553fd9d86bbac7b232761541e871b5",
+            distributedForceReport: distributed,
+            sourceDistributedForceReportSHA256:
+                "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f",
+            sourceDistributedForceAuditSHA256:
+                "c13bed0a6e59963c748b4ecf38cd6a5b657e5870c619ef601115b694f64ea4dd",
+            distributedForceAuditPassed: true
+        )
+    #expect(preregistration == rebuilt)
+    #expect(preregistration.temporalBinCount == 24)
+    #expect(preregistration.blockCount == 3)
+    #expect(preregistration.binsPerBlock == 8)
+
+    let report = try decode(
+        "deetjen-dove-moving-wall-force-covariance.json",
+        as: MetalIndexedBirdSurfaceForceCovarianceReport.self
+    )
+    let auditData = try Data(contentsOf: repositoryRootURL
+        .appendingPathComponent(
+            "ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-audit.json"
+        ))
+    let audit = try #require(
+        JSONSerialization.jsonObject(with: auditData) as? [String: Any]
+    )
+    #expect(report.sourceReproductionPassed)
+    #expect(
+        report.metrics.maximumTermDeltaReconstructionErrorNewtons < 2e-6
+    )
+    #expect(report.metrics.rawEnergyClosureRelativeError < 2e-7)
+    #expect(
+        report.metrics.dominantPairIdentifier
+            == "base-reflection+moving-wall"
+    )
+    #expect(report.metrics.dominantPairSign == "canceling")
+    #expect(report.metrics.dominantPairConsistentAcrossBlocks)
+    #expect(report.metrics.dominantPairGatePassed)
+    #expect(report.metrics.dominantPairMechanism == "mean-offset-dominated")
+    let dominant = try #require(report.metrics.pairs.first {
+        $0.pairIdentifier == report.metrics.dominantPairIdentifier
+    })
+    #expect(dominant.rawInteractionEnergyFraction < -9.40)
+    #expect(dominant.blockSigns == ["canceling", "canceling", "canceling"])
+    #expect(dominant.meanShareOfAbsoluteDecomposition > 0.983)
+    #expect(
+        report.classification
+            == "robust-canceling-mean-offset-dominated-pair-covariance"
+    )
+    #expect(!report.d20DiagnosticAuthorized)
+    #expect(!report.productionModificationAuthorized)
+    #expect(!report.fluidEvolutionExecuted)
+    #expect(!report.rawSpatialGateModified)
+    #expect(!report.experimentalAgreementGateApplied)
+    #expect(audit["allChecksPassed"] as? Bool == true)
+}
+
+@Test
+func measuredBirdSpatialInteractionRejectsTargetedCapture() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let distributed = try decode(
+        "deetjen-dove-moving-wall-distributed-force.json",
+        as: MetalIndexedBirdSurfaceDistributedForceReport.self
+    )
+    let covariancePreregistration = try decode(
+        "deetjen-dove-moving-wall-force-covariance-preregistration.json",
+        as: MetalIndexedBirdSurfaceForceCovariancePreregistration.self
+    )
+    let covariance = try decode(
+        "deetjen-dove-moving-wall-force-covariance.json",
+        as: MetalIndexedBirdSurfaceForceCovarianceReport.self
+    )
+    let preregistration = try decode(
+        "deetjen-dove-moving-wall-spatial-interaction-preregistration.json",
+        as: MetalIndexedBirdSurfaceSpatialInteractionPreregistration.self
+    )
+    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridMovingWallSpatialInteractionPreregistration(
+            surface: surface,
+            target: target,
+            distributedForceReport: distributed,
+            sourceDistributedForceReportSHA256:
+                "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f",
+            forceCovariancePreregistration:
+                covariancePreregistration,
+            sourceForceCovariancePreregistrationSHA256:
+                "6e1a58f25fa722996367bc818db32187987a67532ddae099971ae8aa172376fe",
+            forceCovarianceReport: covariance,
+            sourceForceCovarianceReportSHA256:
+                "20ef161771c1cb6146c8b65a70dae9e2d11d1d822b8c43b836c8ebcb8ee59145",
+            sourceForceCovarianceAuditSHA256:
+                "ac10134edd1c5f1326cd18f0f39000b9b1ea8e5a5b68721687d251696fe630a2",
+            forceCovarianceAuditPassed: true
+        )
+    #expect(preregistration == rebuilt)
+    #expect(preregistration.expectedSpatialBinCounts == [1_438, 1_440])
+    #expect(preregistration.expectedUnionSpatialBinCount == 1_440)
+
+    let report = try decode(
+        "deetjen-dove-moving-wall-spatial-interaction.json",
+        as: MetalIndexedBirdSurfaceSpatialInteractionReport.self
+    )
+    let auditData = try Data(contentsOf: repositoryRootURL
+        .appendingPathComponent(
+            "ValidationArtifacts/deetjen-dove-moving-wall-spatial-interaction-audit.json"
+        ))
+    let audit = try #require(
+        JSONSerialization.jsonObject(with: auditData) as? [String: Any]
+    )
+    #expect(report.sourceReproductionPassed)
+    #expect(report.metrics.maximumTermMeanReconstructionErrorNewtons < 1e-12)
+    #expect(report.metrics.relativeInteractionClosureError < 1e-12)
+    #expect(report.metrics.dominantComponent == nil)
+    #expect(report.metrics.dominantDirection == nil)
+    #expect(report.metrics.dominantInterpolationFractionBin == nil)
+    let topComponent = try #require(
+        report.metrics.componentAssessments.first
+    )
+    let topDirection = try #require(
+        report.metrics.directionAssessments.first
+    )
+    let topQBin = try #require(
+        report.metrics.interpolationFractionAssessments.first
+    )
+    #expect(topComponent.identifier == "part-2-leftWing")
+    #expect(
+        topComponent.absoluteInteractionContributionFraction < 0.45
+    )
+    #expect(
+        topDirection.absoluteInteractionContributionFraction < 0.11
+    )
+    #expect(
+        topQBin.absoluteInteractionContributionFraction < 0.11
+    )
+    #expect(
+        report.metrics.minimumJointBinsForTargetAbsoluteContribution == 591
+    )
+    #expect(report.metrics.activeJointBinCount == 1_440)
+    #expect(
+        report.metrics.cancellationSupportingAbsoluteContributionFraction
+            > 0.501
+    )
+    #expect(
+        report.metrics.cancellationSupportingAbsoluteContributionFraction
+            < 0.502
+    )
+    #expect(report.classification == "distributed-spatial-mean-cancellation")
+    #expect(!report.targetedPrimitiveCaptureAuthorized)
+    #expect(!report.d20DiagnosticAuthorized)
+    #expect(!report.productionModificationAuthorized)
+    #expect(!report.fluidEvolutionExecuted)
+    #expect(!report.rawSpatialGateModified)
+    #expect(!report.experimentalAgreementGateApplied)
+    #expect(audit["allChecksPassed"] as? Bool == true)
+}
+
+@Test
+func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
+    func data(_ name: String) throws -> Data {
+        try Data(contentsOf: repositoryRootURL.appendingPathComponent(
+            "ValidationArtifacts/\(name)"
+        ))
+    }
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(type, from: data(name))
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let scalingData = try data("deetjen-dove-source-scaling.json")
+    let scalingAuditData = try data("deetjen-dove-source-scaling-audit.json")
+    let scaling = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceScalingEvidence.self,
+        from: scalingData
+    )
+    let scalingAudit = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceScalingAuditEvidence.self,
+        from: scalingAuditData
+    )
+    let d16Preregistration = try decode(
+        "deetjen-dove-source-viscosity-d16-preregistration.json",
+        as: MetalIndexedBirdSurfaceSourceViscosityPreregistration.self
+    )
+    let rebuiltD16 = try MetalIndexedBirdSurfacePilotValidator
+        .sourceViscosityD16Preregistration(
+            surface: surface,
+            target: target,
+            sourceScaling: scaling,
+            sourceScalingReportSHA256:
+                CheckpointArchive.sha256(scalingData),
+            sourceScalingAudit: scalingAudit,
+            sourceScalingAuditSHA256:
+                CheckpointArchive.sha256(scalingAuditData)
+        )
+    #expect(rebuiltD16 == d16Preregistration)
+    #expect(d16Preregistration.referenceLengthCells == 16)
+    #expect(d16Preregistration.requestedSteps == 1_600)
+    #expect(d16Preregistration.sourceTauPlus < 0.500_05)
+
+    let d16ReportData = try data(
+        "deetjen-dove-source-viscosity-d16-ab.json"
+    )
+    let d16AuditData = try data(
+        "deetjen-dove-source-viscosity-d16-audit.json"
+    )
+    let d16Report = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityReport.self,
+        from: d16ReportData
+    )
+    let d16Audit = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityAuditEvidence.self,
+        from: d16AuditData
+    )
+    #expect(d16Report.screeningGatePassed)
+    #expect(d16Report.d28PlanningAuthorized)
+    #expect(!d16Report.d28RunAuthorized)
+    #expect(d16Audit.allChecksPassed)
+
+    let d16PreregistrationData = try data(
+        "deetjen-dove-source-viscosity-d16-preregistration.json"
+    )
+    let d28Preregistration = try decode(
+        "deetjen-dove-source-viscosity-d28-preregistration.json",
+        as: MetalIndexedBirdSurfaceSourceViscosityD28Preregistration.self
+    )
+    let rebuiltD28 = try MetalIndexedBirdSurfacePilotValidator
+        .sourceViscosityD28Preregistration(
+            surface: surface,
+            target: target,
+            d16Preregistration: d16Preregistration,
+            sourceD16PreregistrationSHA256:
+                CheckpointArchive.sha256(d16PreregistrationData),
+            d16Report: d16Report,
+            sourceD16ReportSHA256:
+                CheckpointArchive.sha256(d16ReportData),
+            d16Audit: d16Audit,
+            sourceD16AuditSHA256:
+                CheckpointArchive.sha256(d16AuditData)
+        )
+    #expect(rebuiltD28 == d28Preregistration)
+    #expect(
+        d28Preregistration.selectedCollisionOperator
+            == "positivity-preserving-recursive-regularized-bgk"
+    )
+    #expect(d28Preregistration.expectedTauPlus >= 0.500_05)
+    #expect(d28Preregistration.requestedPreRollSteps == 2_800)
+    #expect(d28Preregistration.expectedCellCount == 14_116_018)
+
+    let d28Report = try decode(
+        "deetjen-dove-source-viscosity-d28-pre-roll.json",
+        as: MetalIndexedBirdSurfaceSourceViscosityD28Report.self
+    )
+    let d28AuditData = try data(
+        "deetjen-dove-source-viscosity-d28-audit.json"
+    )
+    let d28Audit = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityD28AuditEvidence.self,
+        from: d28AuditData
+    )
+    #expect(d28Report.productionTauMarginPassed)
+    #expect(d28Report.preRollGatePassed)
+    #expect(d28Report.d28FullWindowRunAuthorized)
+    #expect(!d28Report.productionModificationAuthorized)
+    #expect(!d28Report.experimentalAgreementGateApplied)
+    #expect(d28Audit.allChecksPassed)
+    #expect(d28Audit.d28FullWindowRunGatePassed)
+
+    let d28PreregistrationData = try data(
+        "deetjen-dove-source-viscosity-d28-preregistration.json"
+    )
+    let d28PreRollData = try data(
+        "deetjen-dove-source-viscosity-d28-pre-roll.json"
+    )
+    let fullWindowPreregistration = try decode(
+        "deetjen-dove-source-viscosity-d28-full-window-preregistration.json",
+        as: MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration.self
+    )
+    let rebuiltFullWindowPreregistration = try
+        MetalIndexedBirdSurfacePilotValidator
+        .sourceViscosityD28FullWindowPreregistration(
+            surface: surface,
+            target: target,
+            d28Preregistration: d28Preregistration,
+            sourceD28PreregistrationSHA256:
+                CheckpointArchive.sha256(d28PreregistrationData),
+            d28PreRoll: d28Report,
+            sourceD28PreRollSHA256:
+                CheckpointArchive.sha256(d28PreRollData),
+            d28Audit: d28Audit,
+            sourceD28AuditSHA256:
+                CheckpointArchive.sha256(d28AuditData)
+        )
+    #expect(rebuiltFullWindowPreregistration == fullWindowPreregistration)
+    #expect(fullWindowPreregistration.requestedFullWindowSteps == 13_216)
+    #expect(fullWindowPreregistration.requestedComparisonSamples == 187)
+    #expect(!fullWindowPreregistration.experimentalAgreementGateApplied)
+    #expect(!fullWindowPreregistration.gridConvergenceGateApplied)
+
+    let fullWindowPreregistrationData = try data(
+        "deetjen-dove-source-viscosity-d28-full-window-preregistration.json"
+    )
+    let fullWindowReportData = try data(
+        "deetjen-dove-source-viscosity-d28-full-window.json"
+    )
+    let fullWindowReport = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityD28FullWindowReport.self,
+        from: fullWindowReportData
+    )
+    #expect(
+        fullWindowReport.sourcePreregistrationSHA256
+            == CheckpointArchive.sha256(fullWindowPreregistrationData)
+    )
+    #expect(fullWindowReport.fullWindowGatePassed)
+    #expect(fullWindowReport.registeredComparisonSampleCount == 187)
+    #expect(fullWindowReport.ledgerResult.completedSteps == 13_216)
+    #expect(fullWindowReport.ledgerResult.minimumPopulation > 0)
+    #expect(!fullWindowReport.experimentalAgreementGateApplied)
+    #expect(!fullWindowReport.gridConvergenceGateApplied)
+    #expect(!fullWindowReport.productionModificationAuthorized)
+
+    let fullWindowAuditData = try data(
+        "deetjen-dove-source-viscosity-d28-full-window-audit.json"
+    )
+    let fullWindowAudit = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityD28FullWindowAuditEvidence.self,
+        from: fullWindowAuditData
+    )
+    #expect(fullWindowAudit.allChecksPassed)
+    #expect(fullWindowAudit.d28ForceHistoryAcceptedAsRefinementInput)
+    #expect(
+        fullWindowAudit.preregistrationSHA256
+            == CheckpointArchive.sha256(fullWindowPreregistrationData)
+    )
+    #expect(
+        fullWindowAudit.reportSHA256
+            == CheckpointArchive.sha256(fullWindowReportData)
+    )
+
+    let d32Preregistration = try decode(
+        "deetjen-dove-source-viscosity-d32-preregistration.json",
+        as: MetalIndexedBirdSurfaceSourceViscosityD32Preregistration.self
+    )
+    let rebuiltD32Preregistration = try
+        MetalIndexedBirdSurfacePilotValidator
+        .sourceViscosityD32Preregistration(
+            surface: surface,
+            target: target,
+            d28Preregistration: d28Preregistration,
+            sourceD28PreregistrationSHA256:
+                CheckpointArchive.sha256(d28PreregistrationData),
+            d28FullWindowPreregistration: fullWindowPreregistration,
+            sourceD28FullWindowPreregistrationSHA256:
+                CheckpointArchive.sha256(fullWindowPreregistrationData),
+            d28FullWindowReport: fullWindowReport,
+            sourceD28FullWindowReportSHA256:
+                CheckpointArchive.sha256(fullWindowReportData),
+            d28FullWindowAudit: fullWindowAudit,
+            sourceD28FullWindowAuditSHA256:
+                CheckpointArchive.sha256(fullWindowAuditData)
+        )
+    #expect(rebuiltD32Preregistration == d32Preregistration)
+    #expect(d32Preregistration.referenceLengthCells == 32)
+    #expect(d32Preregistration.requestedPreRollSteps == 3_200)
+    #expect(d32Preregistration.expectedCellCount == 20_936_376)
+    #expect(d32Preregistration.expectedTauPlus >= 0.500_05)
+    #expect(!d32Preregistration.experimentalAgreementGateApplied)
+    #expect(!d32Preregistration.gridConvergenceGateApplied)
+
+    let d32PreregistrationData = try data(
+        "deetjen-dove-source-viscosity-d32-preregistration.json"
+    )
+    let d32PreRollData = try data(
+        "deetjen-dove-source-viscosity-d32-pre-roll.json"
+    )
+    let d32AuditData = try data(
+        "deetjen-dove-source-viscosity-d32-audit.json"
+    )
+    let d32PreRoll = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityD32Report.self,
+        from: d32PreRollData
+    )
+    let d32Audit = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityD32AuditEvidence.self,
+        from: d32AuditData
+    )
+    #expect(d32PreRoll.preRollGatePassed)
+    #expect(d32PreRoll.d32FullWindowRunAuthorized)
+    #expect(d32PreRoll.caseReport.completedSteps == 3_200)
+    #expect(d32Audit.allChecksPassed)
+    #expect(d32Audit.d32FullWindowRunGatePassed)
+    #expect(
+        d32Audit.preregistrationSHA256
+            == CheckpointArchive.sha256(d32PreregistrationData)
+    )
+    #expect(
+        d32Audit.reportSHA256
+            == CheckpointArchive.sha256(d32PreRollData)
+    )
+
+    let d32FullWindowPreregistration = try decode(
+        "deetjen-dove-source-viscosity-d32-full-window-preregistration.json",
+        as: MetalIndexedBirdSurfaceSourceViscosityD32FullWindowPreregistration.self
+    )
+    let rebuiltD32FullWindowPreregistration = try
+        MetalIndexedBirdSurfacePilotValidator
+        .sourceViscosityD32FullWindowPreregistration(
+            surface: surface,
+            target: target,
+            d32Preregistration: d32Preregistration,
+            sourceD32PreregistrationSHA256:
+                CheckpointArchive.sha256(d32PreregistrationData),
+            d32PreRoll: d32PreRoll,
+            sourceD32PreRollSHA256:
+                CheckpointArchive.sha256(d32PreRollData),
+            d32Audit: d32Audit,
+            sourceD32AuditSHA256:
+                CheckpointArchive.sha256(d32AuditData)
+        )
+    #expect(
+        rebuiltD32FullWindowPreregistration
+            == d32FullWindowPreregistration
+    )
+    #expect(
+        d32FullWindowPreregistration.requestedFullWindowSteps == 15_104
+    )
+    #expect(d32FullWindowPreregistration.fluidStepsPerForceSample == 64)
+    #expect(d32FullWindowPreregistration.requestedComparisonSamples == 187)
+    #expect(!d32FullWindowPreregistration.experimentalAgreementGateApplied)
+    #expect(!d32FullWindowPreregistration.gridConvergenceGateApplied)
+
+    let d32FullWindowPreregistrationData = try data(
+        "deetjen-dove-source-viscosity-d32-full-window-preregistration.json"
+    )
+    let d32FullWindowReportData = try data(
+        "deetjen-dove-source-viscosity-d32-full-window.json"
+    )
+    let d32FullWindowReport = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityD32FullWindowReport.self,
+        from: d32FullWindowReportData
+    )
+    #expect(
+        d32FullWindowReport.sourcePreregistrationSHA256
+            == CheckpointArchive.sha256(d32FullWindowPreregistrationData)
+    )
+    #expect(d32FullWindowReport.referenceLengthCells == 32)
+    #expect(d32FullWindowReport.fullWindowGatePassed)
+    #expect(d32FullWindowReport.registeredComparisonSampleCount == 187)
+    #expect(d32FullWindowReport.ledgerResult.completedSteps == 15_104)
+    #expect(d32FullWindowReport.ledgerResult.minimumPopulation > 0)
+    #expect(!d32FullWindowReport.experimentalAgreementGateApplied)
+    #expect(!d32FullWindowReport.gridConvergenceGateApplied)
+    #expect(!d32FullWindowReport.productionModificationAuthorized)
+
+    let d32FullWindowAuditData = try data(
+        "deetjen-dove-source-viscosity-d32-full-window-audit.json"
+    )
+    let d32FullWindowAudit = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceSourceViscosityD32FullWindowAuditEvidence.self,
+        from: d32FullWindowAuditData
+    )
+    #expect(d32FullWindowAudit.allChecksPassed)
+    #expect(d32FullWindowAudit.d32ForceHistoryAcceptedAsRefinementInput)
+    #expect(
+        d32FullWindowAudit.preregistrationSHA256
+            == CheckpointArchive.sha256(d32FullWindowPreregistrationData)
+    )
+    #expect(
+        d32FullWindowAudit.reportSHA256
+            == CheckpointArchive.sha256(d32FullWindowReportData)
+    )
+
+    let refinementPreregistrationData = try data(
+        "deetjen-dove-source-viscosity-d28-d32-refinement-preregistration.json"
+    )
+    let refinementReportData = try data(
+        "deetjen-dove-source-viscosity-d28-d32-refinement.json"
+    )
+    let refinementAuditData = try data(
+        "deetjen-dove-source-viscosity-d28-d32-refinement-audit.json"
+    )
+    let refinementPreregistration = try #require(
+        JSONSerialization.jsonObject(with: refinementPreregistrationData)
+            as? [String: Any]
+    )
+    let refinementReport = try #require(
+        JSONSerialization.jsonObject(with: refinementReportData)
+            as? [String: Any]
+    )
+    let refinementAudit = try #require(
+        JSONSerialization.jsonObject(with: refinementAuditData)
+            as? [String: Any]
+    )
+    let refinementMetrics = try #require(
+        refinementReport["metrics"] as? [String: Any]
+    )
+    #expect(refinementPreregistration["maximumFinePairDifference"] as? Double == 0.05)
+    #expect(
+        refinementReport["preregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(refinementPreregistrationData)
+    )
+    #expect(
+        refinementReport["sourceD32ReportSHA256"] as? String
+            == CheckpointArchive.sha256(d32FullWindowReportData)
+    )
+    #expect(
+        refinementReport["sourceD32AuditSHA256"] as? String
+            == CheckpointArchive.sha256(d32FullWindowAuditData)
+    )
+    #expect(
+        refinementReport["classification"] as? String
+            == "d28-d32-fine-pair-not-stabilized"
+    )
+    #expect(refinementReport["finePairStabilizationPassed"] as? Bool == false)
+    #expect(refinementReport["gridConvergenceAccepted"] as? Bool == false)
+    let refinementScore = try #require(
+        refinementReport["gridTrendScore"] as? Double
+    )
+    let horizontalDifference = try #require(
+        refinementMetrics["horizontalForceNormalizedRMSDifference"] as? Double
+    )
+    let verticalDifference = try #require(
+        refinementMetrics["verticalForceNormalizedRMSDifference"] as? Double
+    )
+    #expect(abs(refinementScore - 0.056_321_598_232_749_01) < 1e-14)
+    #expect(abs(horizontalDifference - 0.073_756_565_155_349_02) < 1e-14)
+    #expect(abs(verticalDifference - 0.046_610_471_350_922_694) < 1e-14)
+    #expect(refinementAudit["allChecksPassed"] as? Bool == true)
+    #expect(refinementAudit["d36RunAuthorized"] as? Bool == false)
+    #expect(
+        refinementAudit["preregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(refinementPreregistrationData)
+    )
+    #expect(
+        refinementAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(refinementReportData)
+    )
+
+    let phaseLocalizationData = try data(
+        "deetjen-dove-source-viscosity-d28-d32-phase-localization.json"
+    )
+    let phaseLocalizationAuditData = try data(
+        "deetjen-dove-source-viscosity-d28-d32-phase-localization-audit.json"
+    )
+    let phaseLocalization = try #require(
+        JSONSerialization.jsonObject(with: phaseLocalizationData)
+            as? [String: Any]
+    )
+    let phaseLocalizationAudit = try #require(
+        JSONSerialization.jsonObject(with: phaseLocalizationAuditData)
+            as? [String: Any]
+    )
+    let dominantPhaseBand = try #require(
+        phaseLocalization["dominantPhaseBand"] as? [String: Any]
+    )
+    let targetedReplay = try #require(
+        phaseLocalization["targetedReplayRecommendation"] as? [String: Any]
+    )
+    #expect(phaseLocalization["exploratoryPostHocAnalysis"] as? Bool == true)
+    #expect(phaseLocalization["fluidEvolutionExecuted"] as? Bool == false)
+    #expect(
+        phaseLocalization["sourceRefinementReportSHA256"] as? String
+            == CheckpointArchive.sha256(refinementReportData)
+    )
+    #expect(
+        phaseLocalization["sourceRefinementAuditSHA256"] as? String
+            == CheckpointArchive.sha256(refinementAuditData)
+    )
+    #expect(dominantPhaseBand["bandIndex"] as? Int == 0)
+    #expect(targetedReplay["startTimeSeconds"] as? Double == 0.025)
+    #expect(targetedReplay["endTimeSeconds"] as? Double == 0.03)
+    #expect(targetedReplay["d36RunAuthorized"] as? Bool == false)
+    #expect(phaseLocalizationAudit["allChecksPassed"] as? Bool == true)
+    #expect(
+        phaseLocalizationAudit["targetedD28D32ReplaySupported"] as? Bool
+            == true
+    )
+    #expect(phaseLocalizationAudit["d36RunAuthorized"] as? Bool == false)
+    #expect(
+        phaseLocalizationAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(phaseLocalizationData)
+    )
+
+    let targetedPreregistrationData = try data(
+        "deetjen-dove-source-viscosity-targeted-boundary-preregistration.json"
+    )
+    let targetedPreregistration = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceTargetedBoundaryPreregistration.self,
+        from: targetedPreregistrationData
+    )
+    #expect(targetedPreregistration.schemaVersion == 2)
+    #expect(targetedPreregistration.firstTargetSampleIndex == 50)
+    #expect(targetedPreregistration.lastTargetSampleIndex == 60)
+    #expect(targetedPreregistration.d28RequestedSteps == 3_360)
+    #expect(targetedPreregistration.d32RequestedSteps == 3_840)
+    #expect(
+        targetedPreregistration.sourcePropertyReynoldsNumber
+            == d32Preregistration.sourcePropertyReynoldsNumber
+    )
+    #expect(
+        targetedPreregistration.expectedD28TauPlus
+            == fullWindowReport.actualTauPlus
+    )
+    #expect(
+        targetedPreregistration.expectedD32TauPlus
+            == d32FullWindowReport.actualTauPlus
+    )
+    #expect(
+        targetedPreregistration.maximumComponentReconstructionRelativeRMS
+            == 1e-4
+    )
+    #expect(
+        targetedPreregistration.minimumDominantContributionFraction == 0.5
+    )
+    #expect(!targetedPreregistration.experimentalAgreementGateApplied)
+    #expect(!targetedPreregistration.gridConvergenceGateApplied)
+
+    let targetedD28Data = try data(
+        "deetjen-dove-source-viscosity-targeted-boundary-d28.json"
+    )
+    let targetedD32Data = try data(
+        "deetjen-dove-source-viscosity-targeted-boundary-d32.json"
+    )
+    let targetedD28 = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceTargetedBoundaryCaseReport.self,
+        from: targetedD28Data
+    )
+    let targetedD32 = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceTargetedBoundaryCaseReport.self,
+        from: targetedD32Data
+    )
+    for targeted in [targetedD28, targetedD32] {
+        #expect(targeted.targetedCasePassed)
+        #expect(targeted.numericalLedgerPassed)
+        #expect(targeted.componentReconstructionPassed)
+        #expect(targeted.archivedForceReproductionPassed)
+        #expect(targeted.componentBins.count == 11)
+        #expect(
+            targeted.sourcePreregistrationSHA256
+                == CheckpointArchive.sha256(targetedPreregistrationData)
+        )
+        #expect(!targeted.productionModificationAuthorized)
+        #expect(!targeted.experimentalAgreementGateApplied)
+        #expect(!targeted.gridConvergenceGateApplied)
+    }
+    #expect(targetedD28.referenceLengthCells == 28)
+    #expect(targetedD28.capturedStepCount == 616)
+    #expect(targetedD28.archivedForceReproductionRelativeRMS == 0)
+    #expect(targetedD32.referenceLengthCells == 32)
+    #expect(targetedD32.capturedStepCount == 704)
+
+    let targetedReportData = try data(
+        "deetjen-dove-source-viscosity-targeted-boundary.json"
+    )
+    let targetedAuditData = try data(
+        "deetjen-dove-source-viscosity-targeted-boundary-audit.json"
+    )
+    let targetedReport = try #require(
+        JSONSerialization.jsonObject(with: targetedReportData)
+            as? [String: Any]
+    )
+    let targetedAudit = try #require(
+        JSONSerialization.jsonObject(with: targetedAuditData)
+            as? [String: Any]
+    )
+    #expect(
+        targetedReport["preregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(targetedPreregistrationData)
+    )
+    #expect(
+        targetedReport["sourceD28CaseSHA256"] as? String
+            == CheckpointArchive.sha256(targetedD28Data)
+    )
+    #expect(
+        targetedReport["sourceD32CaseSHA256"] as? String
+            == CheckpointArchive.sha256(targetedD32Data)
+    )
+    #expect(
+        targetedReport["productionModificationAuthorized"] as? Bool == false
+    )
+    #expect(targetedAudit["allChecksPassed"] as? Bool == true)
+    #expect(
+        targetedAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(targetedReportData)
+    )
+
+    let invalidRunnerPreregistration = try #require(
+        JSONSerialization.jsonObject(with: data(
+            "deetjen-dove-source-viscosity-targeted-boundary-preregistration-v1-invalid-runner.json"
+        )) as? [String: Any]
+    )
+    let invalidScalingCase = try #require(
+        JSONSerialization.jsonObject(with: data(
+            "deetjen-dove-source-viscosity-targeted-boundary-d28-invalid-scaling.json"
+        )) as? [String: Any]
+    )
+    #expect(invalidRunnerPreregistration["schemaVersion"] as? Int == 1)
+    #expect(invalidScalingCase["targetedCasePassed"] as? Bool == false)
+    #expect(
+        (invalidScalingCase["archivedForceReproductionRelativeRMS"]
+            as? Double ?? 0) > 0.09
+    )
+
+    let diagnosisData = try data(
+        "deetjen-dove-source-viscosity-d28-force-diagnosis.json"
+    )
+    let diagnosis = try #require(
+        JSONSerialization.jsonObject(with: diagnosisData) as? [String: Any]
+    )
+    #expect(diagnosis["exploratoryPostHocAnalysis"] as? Bool == true)
+    #expect(
+        diagnosis["classification"] as? String
+            == "vertical-shape-correlated-but-amplitude-biased-with-horizontal-force-mismatch"
+    )
+    #expect(
+        diagnosis["sourceD28FullWindowSHA256"] as? String
+            == CheckpointArchive.sha256(fullWindowReportData)
+    )
+    #expect(
+        diagnosis["sourceD28FullWindowAuditSHA256"] as? String
+            == CheckpointArchive.sha256(fullWindowAuditData)
+    )
+}
+
 #if canImport(Metal)
 @Test
 func productionMetalD16PopulationProvenanceCloses() throws {

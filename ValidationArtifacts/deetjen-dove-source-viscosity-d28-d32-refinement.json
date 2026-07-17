@@ -1,0 +1,48 @@
+{
+  "analysisIdentifier": "deetjen-ob-f03-source-viscosity-d28-d32-refinement-v1",
+  "claimBoundary": "This contract was frozen after the D32 numerical report existed but before the D28/D32 force histories were compared. Its 5% limits and metrics are inherited from the repository's earlier fine-pair spatial gate. A pass does not establish observed-order grid convergence, experimental agreement, production promotion, or free flight.",
+  "classification": "d28-d32-fine-pair-not-stabilized",
+  "coarseReferenceLengthCells": 28,
+  "experimentalComparison": {
+    "d28NormalizedRMSError": 2.135734157496252,
+    "d32NormalizedRMSError": 2.1168598012635407,
+    "experimentalAgreementAccepted": false,
+    "relativeErrorImprovement": 0.008837408984851285
+  },
+  "finePairStabilizationPassed": false,
+  "fineReferenceLengthCells": 32,
+  "gridConvergenceAccepted": false,
+  "gridTrendScore": 0.05632159823274901,
+  "maximumFinePairDifference": 0.05,
+  "metrics": {
+    "horizontalForceNormalizedRMSDifference": 0.07375656515534902,
+    "impulseRelativeDifference": 0.0072590973586094155,
+    "intervalForceNormalizedRMSDifference": 0.05632159823274901,
+    "meanForceRelativeDifference": 0.0075984509954662004,
+    "normalizedPeakTimeDifference": 0.0,
+    "peakTimeDifferenceSeconds": 0.0,
+    "verticalForceNormalizedRMSDifference": 0.046610471350922694
+  },
+  "nextAction": "Do not claim force-history stabilization; quantify whether a D36 allocation has sufficient expected information gain before running it.",
+  "numericalSafety": {
+    "d28CorrectionActivationFraction": 1.3594376007204362e-05,
+    "d28GlobalRelativeRMSResidual": 0.0015074263146748945,
+    "d28MinimumPopulation": 4.83835815856537e-09,
+    "d28NearWingRelativeRMSResidual": 0.0008241472282545871,
+    "d32CorrectionActivationFraction": 1.442564793424207e-05,
+    "d32GlobalRelativeRMSResidual": 0.0009643691558988729,
+    "d32MinimumPopulation": 4.685106524959792e-09,
+    "d32NearWingRelativeRMSResidual": 0.0016128130434896475
+  },
+  "observedOrderAvailable": false,
+  "operator": "positivity-preserving-recursive-regularized-bgk",
+  "preregistrationSHA256": "8b0ecf2fea55247d44db060c3bb510830e37f6e6b929c9a846f08d8f1876428c",
+  "productionModificationAuthorized": false,
+  "registeredForceSampleCount": 187,
+  "richardsonUncertaintyAvailable": false,
+  "schemaVersion": 1,
+  "sourceD28AuditSHA256": "8d80288432fec231caba377fc3d1437b6874bfc4a970b74556ec32a169d055ab",
+  "sourceD28ReportSHA256": "5d5168aee5298a2d783e39d53c9017e386577e593057aa32300cbb1ae987278e",
+  "sourceD32AuditSHA256": "5fb05a182d38f77711b5ef2eff08931905eaf1cfb87f24f61b1cba38b8893eb7",
+  "sourceD32ReportSHA256": "5e1a1774840019c9b1a58df108a7e63f91ada2a0671510f4b24c4d0a612db20f"
+}

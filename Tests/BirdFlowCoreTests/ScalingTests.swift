@@ -23,6 +23,53 @@ func scalingPreservesRequestedReynoldsNumber() throws {
 }
 
 @Test
+func diagnosticSubMarginDoesNotWeakenProductionTauGuard() throws {
+    let arguments = (
+        characteristicLengthMeters: Float(0.08),
+        characteristicLengthCells: 16,
+        referenceSpeedMetersPerSecond: Float(25.230_415),
+        targetReynoldsNumber: Float(128_812.94),
+        physicalAirDensity: Float(1.18),
+        latticeReferenceSpeed: Float(0.078_846)
+    )
+    #expect(throws: BirdFlowConfigurationError.self) {
+        _ = try LatticeScaling(
+            characteristicLengthMeters: arguments.characteristicLengthMeters,
+            characteristicLengthCells: arguments.characteristicLengthCells,
+            referenceSpeedMetersPerSecond:
+                arguments.referenceSpeedMetersPerSecond,
+            targetReynoldsNumber: arguments.targetReynoldsNumber,
+            physicalAirDensity: arguments.physicalAirDensity,
+            latticeReferenceSpeed: arguments.latticeReferenceSpeed
+        )
+    }
+
+    let diagnostic = try LatticeScaling.diagnosticSubMargin(
+        characteristicLengthMeters: arguments.characteristicLengthMeters,
+        characteristicLengthCells: arguments.characteristicLengthCells,
+        referenceSpeedMetersPerSecond: arguments.referenceSpeedMetersPerSecond,
+        targetReynoldsNumber: arguments.targetReynoldsNumber,
+        physicalAirDensity: arguments.physicalAirDensity,
+        latticeReferenceSpeed: arguments.latticeReferenceSpeed,
+        minimumTauPlus: 0.500_02
+    )
+    #expect(diagnostic.tauPlus >= 0.500_02)
+    #expect(diagnostic.tauPlus < 0.500_05)
+
+    #expect(throws: BirdFlowConfigurationError.self) {
+        _ = try LatticeScaling.diagnosticSubMargin(
+            characteristicLengthMeters: arguments.characteristicLengthMeters,
+            characteristicLengthCells: arguments.characteristicLengthCells,
+            referenceSpeedMetersPerSecond:
+                arguments.referenceSpeedMetersPerSecond,
+            targetReynoldsNumber: arguments.targetReynoldsNumber,
+            physicalAirDensity: arguments.physicalAirDensity,
+            minimumTauPlus: 0.5
+        )
+    }
+}
+
+@Test
 func highLatticeMachIsRejected() {
     #expect(throws: BirdFlowConfigurationError.self) {
         _ = try LatticeScaling(

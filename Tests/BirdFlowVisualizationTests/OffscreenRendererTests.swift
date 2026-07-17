@@ -129,10 +129,42 @@ func measuredDoveShowcaseCaptureClosesLoop() throws {
     root.appendingPathComponent(
       "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
     ).path,
-    "--capture-dove-pilot",
+    "--capture-dove-d32-full-window",
     root.appendingPathComponent(
-      "ValidationArtifacts/deetjen-dove-collision-extended-pilot.json"
-    ).path
+      "ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window.json"
+    ).path,
+    "--capture-dove-d32-full-window-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-d32-full-window-audit.json"
+    ).path,
+    "--capture-dove-d28-d32-refinement",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-d28-d32-refinement.json"
+    ).path,
+    "--capture-dove-d28-d32-phase-localization",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-d28-d32-phase-localization.json"
+    ).path,
+    "--capture-dove-d28-d32-phase-localization-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-d28-d32-phase-localization-audit.json"
+    ).path,
+    "--capture-dove-targeted-boundary-d28",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-d28.json"
+    ).path,
+    "--capture-dove-targeted-boundary-d32",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-d32.json"
+    ).path,
+    "--capture-dove-targeted-boundary-attribution",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary.json"
+    ).path,
+    "--capture-dove-targeted-boundary-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-audit.json"
+    ).path,
   ])
   try ReadmeShowcaseCapture.run(arguments)
   let firstData = try Data(

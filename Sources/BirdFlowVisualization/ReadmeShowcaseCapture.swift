@@ -13,12 +13,22 @@ public enum ReadmeShowcaseCapture {
     let frameCount: Int
     let preRollSteps: Int
     let doveManifestURL: URL?
-    let dovePilotArtifactURL: URL?
+    let doveD32FullWindowArtifactURL: URL?
+    let doveD32FullWindowAuditURL: URL?
+    let doveD28D32RefinementURL: URL?
+    let doveD28D32PhaseLocalizationURL: URL?
+    let doveD28D32PhaseLocalizationAuditURL: URL?
+    let doveTargetedBoundaryD28URL: URL?
+    let doveTargetedBoundaryD32URL: URL?
+    let doveTargetedBoundaryAttributionURL: URL?
+    let doveTargetedBoundaryAuditURL: URL?
 
     public init(commandLine: [String]) throws {
-      guard let captureIndex = commandLine.firstIndex(
-        of: "--capture-readme-frames"
-      ), captureIndex + 1 < commandLine.count else {
+      guard
+        let captureIndex = commandLine.firstIndex(
+          of: "--capture-readme-frames"
+        ), captureIndex + 1 < commandLine.count
+      else {
         throw CaptureError.invalidArguments(
           "--capture-readme-frames requires an output directory"
         )
@@ -54,10 +64,54 @@ public enum ReadmeShowcaseCapture {
         return URL(fileURLWithPath: commandLine[index + 1])
       }
       doveManifestURL = try fileURL(after: "--capture-dove-manifest")
-      dovePilotArtifactURL = try fileURL(after: "--capture-dove-pilot")
-      guard (doveManifestURL == nil) == (dovePilotArtifactURL == nil) else {
+      doveD32FullWindowArtifactURL = try fileURL(
+        after: "--capture-dove-d32-full-window"
+      )
+      doveD32FullWindowAuditURL = try fileURL(
+        after: "--capture-dove-d32-full-window-audit"
+      )
+      doveD28D32RefinementURL = try fileURL(
+        after: "--capture-dove-d28-d32-refinement"
+      )
+      doveD28D32PhaseLocalizationURL = try fileURL(
+        after: "--capture-dove-d28-d32-phase-localization"
+      )
+      doveD28D32PhaseLocalizationAuditURL = try fileURL(
+        after: "--capture-dove-d28-d32-phase-localization-audit"
+      )
+      doveTargetedBoundaryD28URL = try fileURL(
+        after: "--capture-dove-targeted-boundary-d28"
+      )
+      doveTargetedBoundaryD32URL = try fileURL(
+        after: "--capture-dove-targeted-boundary-d32"
+      )
+      doveTargetedBoundaryAttributionURL = try fileURL(
+        after: "--capture-dove-targeted-boundary-attribution"
+      )
+      doveTargetedBoundaryAuditURL = try fileURL(
+        after: "--capture-dove-targeted-boundary-audit"
+      )
+      let doveInputs = [
+        doveManifestURL,
+        doveD32FullWindowArtifactURL,
+        doveD32FullWindowAuditURL,
+        doveD28D32RefinementURL,
+        doveD28D32PhaseLocalizationURL,
+        doveD28D32PhaseLocalizationAuditURL,
+        doveTargetedBoundaryD28URL,
+        doveTargetedBoundaryD32URL,
+        doveTargetedBoundaryAttributionURL,
+        doveTargetedBoundaryAuditURL,
+      ]
+      guard
+        doveInputs.allSatisfy({ $0 == nil })
+          || doveInputs.allSatisfy({ $0 != nil })
+      else {
         throw CaptureError.invalidArguments(
-          "dove capture requires both --capture-dove-manifest and --capture-dove-pilot"
+          "dove capture requires --capture-dove-manifest, "
+            + "--capture-dove-d32-full-window, its audit, the D28/D32 "
+            + "refinement, and the phase-localization report and audit"
+            + ", plus both targeted cases and their attribution/audit"
         )
       }
       guard width >= 320, height >= 180, frameCount >= 2 else {
@@ -86,11 +140,30 @@ public enum ReadmeShowcaseCapture {
 
   public static func run(_ arguments: Arguments) throws {
     if let manifestURL = arguments.doveManifestURL,
-      let pilotURL = arguments.dovePilotArtifactURL {
+      let d32FullWindowURL = arguments.doveD32FullWindowArtifactURL,
+      let d32FullWindowAuditURL = arguments.doveD32FullWindowAuditURL,
+      let refinementURL = arguments.doveD28D32RefinementURL,
+      let phaseLocalizationURL = arguments.doveD28D32PhaseLocalizationURL,
+      let phaseLocalizationAuditURL =
+        arguments.doveD28D32PhaseLocalizationAuditURL,
+      let targetedD28URL = arguments.doveTargetedBoundaryD28URL,
+      let targetedD32URL = arguments.doveTargetedBoundaryD32URL,
+      let targetedAttributionURL =
+        arguments.doveTargetedBoundaryAttributionURL,
+      let targetedAuditURL = arguments.doveTargetedBoundaryAuditURL
+    {
       try MeasuredDoveShowcaseCapture.run(
         arguments: arguments,
         manifestURL: manifestURL,
-        pilotArtifactURL: pilotURL
+        d32FullWindowArtifactURL: d32FullWindowURL,
+        d32FullWindowAuditURL: d32FullWindowAuditURL,
+        refinementURL: refinementURL,
+        phaseLocalizationURL: phaseLocalizationURL,
+        phaseLocalizationAuditURL: phaseLocalizationAuditURL,
+        targetedD28URL: targetedD28URL,
+        targetedD32URL: targetedD32URL,
+        targetedAttributionURL: targetedAttributionURL,
+        targetedAuditURL: targetedAuditURL
       )
       return
     }
@@ -172,10 +245,11 @@ public enum ReadmeShowcaseCapture {
       1,
       Int((Double(cycleSteps) / Double(arguments.frameCount - 1)).rounded())
     )
-    let baseDistance = max(
-      configuration.domainSizeMeters.x,
-      max(configuration.domainSizeMeters.y, configuration.domainSizeMeters.z)
-    ) * 0.86
+    let baseDistance =
+      max(
+        configuration.domainSizeMeters.x,
+        max(configuration.domainSizeMeters.y, configuration.domainSizeMeters.z)
+      ) * 0.86
 
     for frameIndex in 0..<arguments.frameCount {
       let progress = Float(frameIndex) / Float(arguments.frameCount - 1)

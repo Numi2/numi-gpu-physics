@@ -1,0 +1,52 @@
+{
+  "allChecksPassed": true,
+  "auditor": "independent Python symmetric spatial interaction allocation",
+  "checks": {
+    "axisDominanceGatesReproduce": true,
+    "axisMetricsReproduce": true,
+    "classificationAndSafetyBoundaryReproduce": true,
+    "jointBinMetricsReproduce": true,
+    "jointConcentrationReproduces": true,
+    "preregisteredContractMatches": true,
+    "sourceEvidencePassed": true,
+    "sourceHashesMatch": true,
+    "spatialSourceAndAllocationClose": true
+  },
+  "claimBoundary": "This audit reconstructs the exact archive-only interaction allocation. It does not establish boundary causality or authorize production changes.",
+  "classification": "distributed-spatial-mean-cancellation",
+  "independentMetrics": {
+    "activeJointBinCount": 1440,
+    "cancellationSupportingAbsoluteContributionFraction": 0.5010217388287732,
+    "maximumTermMeanReconstructionErrorNewtons": 2.4675440407704586e-14,
+    "minimumJointBinsFor80Percent": 591,
+    "relativeInteractionClosureError": 1.1163115941105714e-14,
+    "targetedPrimitiveCaptureAuthorized": false,
+    "topComponent": {
+      "absoluteInteractionContributionFraction": 0.4438614617341232,
+      "identifier": "part-2-leftWing",
+      "interactionNewtonsSquared": -9.512018879663804,
+      "signedInteractionFraction": 1.5526272245059949
+    },
+    "topDirection": {
+      "absoluteInteractionContributionFraction": 0.1019162326577019,
+      "identifier": "direction-2",
+      "interactionNewtonsSquared": -13.872508556183092,
+      "signedInteractionFraction": 2.264380961498207
+    },
+    "topInterpolationFractionBin": {
+      "absoluteInteractionContributionFraction": 0.10490177646875574,
+      "identifier": "q-bin-13",
+      "interactionNewtonsSquared": -39.80859135836091,
+      "signedInteractionFraction": 6.497874267719051
+    }
+  },
+  "schemaVersion": 1,
+  "sourceSHA256": {
+    "distributedForceReport": "11d92030bad9d57d6ecce6de81c343c2838d7b2174fd049b8741993e0eb58f1f",
+    "forceCovarianceAudit": "ac10134edd1c5f1326cd18f0f39000b9b1ea8e5a5b68721687d251696fe630a2",
+    "forceCovariancePreregistration": "6e1a58f25fa722996367bc818db32187987a67532ddae099971ae8aa172376fe",
+    "forceCovarianceReport": "20ef161771c1cb6146c8b65a70dae9e2d11d1d822b8c43b836c8ebcb8ee59145",
+    "spatialInteractionPreregistration": "9205c16f89479d0de910959bb91b2cd941690ce8a458ee11b17361e4b6abe0d0",
+    "spatialInteractionReport": "26495fe3461969fce1c26ec28a79e44893c058005a5b6e9f9d15a6afbf758044"
+  }
+}

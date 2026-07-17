@@ -1,0 +1,23 @@
+{
+  "claimBoundary": "This contract was frozen after the D32 numerical report existed but before the D28/D32 force histories were compared. Its 5% limits and metrics are inherited from the repository's earlier fine-pair spatial gate. A pass does not establish observed-order grid convergence, experimental agreement, production promotion, or free flight.",
+  "coarseReferenceLengthCells": 28,
+  "expectedForceSamples": 187,
+  "experimentalAgreementGateApplied": false,
+  "fineReferenceLengthCells": 32,
+  "gridConvergenceGateApplied": false,
+  "maximumFinePairDifference": 0.05,
+  "passed": true,
+  "preregistrationIdentifier": "deetjen-ob-f03-source-viscosity-d28-d32-refinement-preregistration-v1",
+  "primaryMetric": "symmetric normalized RMS difference of registered X/Z interval-mean force history",
+  "schemaVersion": 1,
+  "selectionRule": "Require both independently audited numerical windows, identical RR3 operator and source-condition inputs, 187 aligned bins, and each of the force-history, mean, impulse, and normalized peak-time differences to be at most 5%. A pass is fine-pair stabilization only because two grids cannot establish observed order or a Richardson uncertainty. Measured-force error is descriptive and cannot pass this numerical gate.",
+  "sourceD28AuditSHA256": "8d80288432fec231caba377fc3d1437b6874bfc4a970b74556ec32a169d055ab",
+  "sourceD28ReportSHA256": "5d5168aee5298a2d783e39d53c9017e386577e593057aa32300cbb1ae987278e",
+  "sourceD32AuditSHA256": "5fb05a182d38f77711b5ef2eff08931905eaf1cfb87f24f61b1cba38b8893eb7",
+  "sourceD32ReportSHA256": "5e1a1774840019c9b1a58df108a7e63f91ada2a0671510f4b24c4d0a612db20f",
+  "supportingMetrics": [
+    "relative difference of X/Z mean-force vector",
+    "relative difference of X/Z trapezoidal-impulse vector",
+    "peak-time difference normalized by registered window duration"
+  ]
+}
