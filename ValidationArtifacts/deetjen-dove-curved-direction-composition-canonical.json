@@ -1,0 +1,838 @@
+{
+  "canonicalIdentifier": "deetjen-ob-f03-curved-direction-composition-canonical-v1",
+  "canonicalPassed": true,
+  "cases": [
+    {
+      "cellSizeMeters": 0.006666666362434626,
+      "components": [
+        {
+          "componentName": "body",
+          "directionHistogram": [
+            0.0,
+            0.03839655966825373,
+            0.03133159268929504,
+            0.05344801105820919,
+            0.05406235601290125,
+            0.04269697435109814,
+            0.04730456151128859,
+            0.06573491015205038,
+            0.05836277069574567,
+            0.06573491015205038,
+            0.05667332207034251,
+            0.04146828444171403,
+            0.03977883581631086,
+            0.07233911841499002,
+            0.05943787436645677,
+            0.06665642758408846,
+            0.07341422208570113,
+            0.06880663492551067,
+            0.06435263400399326
+          ],
+          "directionLinkCounts": [
+            0,
+            250,
+            204,
+            348,
+            352,
+            278,
+            308,
+            428,
+            380,
+            428,
+            369,
+            270,
+            259,
+            471,
+            387,
+            434,
+            478,
+            448,
+            419
+          ],
+          "partIdentifier": 1,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.025252375241106913,
+              "netLedgerFraction": 0.035258281780280974,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                0.0007259258596709495,
+                -8.395060962181002e-05,
+                -0.0005086419288850869
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.022061727799195813,
+              "netLedgerFraction": 0.035677344624831464,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                0.0005871681560355034,
+                -7.132007233840582e-05,
+                -0.0005193067486918706
+              ]
+            }
+          ]
+        },
+        {
+          "componentName": "leftWing",
+          "directionHistogram": [
+            0.0,
+            0.019432314410480347,
+            0.020524017467248912,
+            0.08231441048034935,
+            0.06593886462882097,
+            0.030131004366812226,
+            0.026855895196506552,
+            0.07816593886462882,
+            0.06441048034934498,
+            0.07576419213973799,
+            0.09388646288209607,
+            0.042576419213973794,
+            0.04017467248908297,
+            0.022489082969432316,
+            0.027510917030567687,
+            0.06899563318777294,
+            0.04847161572052402,
+            0.101528384279476,
+            0.09082969432314411
+          ],
+          "directionLinkCounts": [
+            0,
+            89,
+            94,
+            377,
+            302,
+            138,
+            123,
+            358,
+            295,
+            347,
+            430,
+            195,
+            184,
+            103,
+            126,
+            316,
+            222,
+            465,
+            416
+          ],
+          "partIdentifier": 2,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.017617125022027003,
+              "netLedgerFraction": 0.06366913856070856,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                -0.00010370369423870729,
+                0.0010839505183522003,
+                0.00026913577790521593
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.014488452912590566,
+              "netLedgerFraction": 0.05443560509239954,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                -0.00017575813222496116,
+                0.0007306542961299095,
+                0.00023933589043089598
+              ]
+            }
+          ]
+        },
+        {
+          "componentName": "rightWing",
+          "directionHistogram": [
+            0.0,
+            0.024279210925644914,
+            0.026230218946455667,
+            0.06394970734879687,
+            0.07847387817038803,
+            0.030565792326035117,
+            0.027747669629308476,
+            0.08150877953609366,
+            0.09820073704747452,
+            0.06785172339041838,
+            0.05657923260351182,
+            0.05050942987210058,
+            0.04964231519618469,
+            0.018859744201170606,
+            0.023845653587686973,
+            0.08996314762627357,
+            0.10101885974420116,
+            0.04660741383047908,
+            0.06416648601777585
+          ],
+          "directionLinkCounts": [
+            0,
+            112,
+            121,
+            295,
+            362,
+            141,
+            128,
+            376,
+            453,
+            313,
+            261,
+            233,
+            229,
+            87,
+            110,
+            415,
+            466,
+            215,
+            296
+          ],
+          "partIdentifier": 3,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.0177844271285176,
+              "netLedgerFraction": 0.05669547468400782,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                -0.00015308640578094842,
+                -0.0009753085529592688,
+                0.00020493825290030204
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.014762891920874474,
+              "netLedgerFraction": 0.049673120160010825,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                -0.0002352512655038699,
+                -0.0006740949757475412,
+                0.00016736015400013838
+              ]
+            }
+          ]
+        },
+        {
+          "componentName": "tail",
+          "directionHistogram": [
+            0.0,
+            0.05984515589035363,
+            0.06319313663946433,
+            0.02333124084536514,
+            0.023749738439003975,
+            0.052521448001673986,
+            0.05231219920485457,
+            0.07972379158819837,
+            0.08328102113412848,
+            0.04226825695752249,
+            0.04519774011299435,
+            0.021343377275580666,
+            0.024063611634233102,
+            0.10619376438585477,
+            0.11016949152542373,
+            0.03515379786566227,
+            0.035049173467252566,
+            0.07145846411383135,
+            0.07114459091860222
+          ],
+          "directionLinkCounts": [
+            0,
+            572,
+            604,
+            223,
+            227,
+            502,
+            500,
+            762,
+            796,
+            404,
+            432,
+            204,
+            230,
+            1015,
+            1053,
+            336,
+            335,
+            683,
+            680
+          ],
+          "partIdentifier": 4,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.03717653978529546,
+              "netLedgerFraction": 0.012670763943056128,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                -0.0004691357596512944,
+                -2.469135577112141e-05,
+                3.456789807956915e-05
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.035372367153570006,
+              "netLedgerFraction": 0.021788312411513473,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                -0.0007625924495341229,
+                -1.0135394227452424e-05,
+                0.00011106292109382696
+              ]
+            }
+          ]
+        }
+      ],
+      "frozenSourceTimeSeconds": 0.026499999687075615,
+      "gridCells": [
+        112,
+        103,
+        99
+      ],
+      "referenceLengthCells": 12,
+      "sourceMetalCPUParityPassed": true,
+      "wholeSurfaceDirectionHistogram": [
+        0.0,
+        0.04049560604861056,
+        0.04049560604861056,
+        0.04920433853218273,
+        0.04920433853218273,
+        0.04192067136410419,
+        0.04192067136410419,
+        0.07616182408360384,
+        0.07616182408360384,
+        0.05906104029768031,
+        0.05906104029768031,
+        0.03570580318264587,
+        0.03570580318264587,
+        0.06634470746575885,
+        0.06634470746575885,
+        0.05941730662655372,
+        0.05941730662655372,
+        0.07168870239885995,
+        0.07168870239885995
+      ],
+      "wholeSurfaceDirectionLinkCounts": [
+        0,
+        1023,
+        1023,
+        1243,
+        1243,
+        1059,
+        1059,
+        1924,
+        1924,
+        1492,
+        1492,
+        902,
+        902,
+        1676,
+        1676,
+        1501,
+        1501,
+        1811,
+        1811
+      ],
+      "wholeSurfaceOppositeDirectionCountMismatches": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "wholeSurfaceProfileResponses": [
+        {
+          "absoluteDirectionLedger": 0.09783046717694698,
+          "netLedgerFraction": 0.0,
+          "profileIdentifier": "rest-equilibrium",
+          "responseVector": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "absoluteDirectionLedger": 0.08668543978623086,
+          "netLedgerFraction": 0.00677119432512594,
+          "profileIdentifier": "deetjen-midpoint-pooled",
+          "responseVector": [
+            -0.0005864336912274515,
+            -2.4896146183490172e-05,
+            -1.5477831670097225e-06
+          ]
+        }
+      ]
+    },
+    {
+      "cellSizeMeters": 0.004999999888241291,
+      "components": [
+        {
+          "componentName": "body",
+          "directionHistogram": [
+            0.0,
+            0.0390131466621137,
+            0.03218371179784872,
+            0.053611063684480105,
+            0.05437937510670991,
+            0.042171760286836266,
+            0.046781628820215124,
+            0.06564794263274713,
+            0.05856240396107223,
+            0.06607478231176371,
+            0.057452620795629156,
+            0.04089124124978658,
+            0.0390131466621137,
+            0.07256274543281542,
+            0.060440498548745086,
+            0.06616015024756701,
+            0.07281884924022536,
+            0.06872118832166638,
+            0.06351374423766433
+          ],
+          "directionLinkCounts": [
+            0,
+            457,
+            377,
+            628,
+            637,
+            494,
+            548,
+            769,
+            686,
+            774,
+            673,
+            479,
+            457,
+            850,
+            708,
+            775,
+            853,
+            805,
+            744
+          ],
+          "partIdentifier": 1,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.025563961176958153,
+              "netLedgerFraction": 0.03417012888135788,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                0.0007055555240147646,
+                -7.361110782043835e-05,
+                -0.0005097221994358635
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.02231971942563611,
+              "netLedgerFraction": 0.03444053491936946,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                0.0005638954105803565,
+                -5.5330809681301526e-05,
+                -0.0005194852133526771
+              ]
+            }
+          ]
+        },
+        {
+          "componentName": "leftWing",
+          "directionHistogram": [
+            0.0,
+            0.01982352230146259,
+            0.02103227366130787,
+            0.08074459083766469,
+            0.06660219992747493,
+            0.03009790886014747,
+            0.026471654780611628,
+            0.07736008703009792,
+            0.06503082315967605,
+            0.07578871026229905,
+            0.09174422821225675,
+            0.04266892300253838,
+            0.040372295418832346,
+            0.022966275837060318,
+            0.028043031548410494,
+            0.06914057778315001,
+            0.05028405656956364,
+            0.09996373745920464,
+            0.09186510334824127
+          ],
+          "directionLinkCounts": [
+            0,
+            164,
+            174,
+            668,
+            551,
+            249,
+            219,
+            640,
+            538,
+            627,
+            759,
+            353,
+            334,
+            190,
+            232,
+            572,
+            416,
+            827,
+            760
+          ],
+          "partIdentifier": 2,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.017897230224524625,
+              "netLedgerFraction": 0.0563313137449026,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                -0.00010138888435645227,
+                0.0009597221793192962,
+                0.0002916666536281506
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.01473897055331159,
+              "netLedgerFraction": 0.048997301897543886,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                -0.00017520304569225675,
+                0.0006498376628265279,
+                0.0002618093010918382
+              ]
+            }
+          ]
+        },
+        {
+          "componentName": "rightWing",
+          "directionHistogram": [
+            0.0,
+            0.02422145328719723,
+            0.026011215845364515,
+            0.06526667462116692,
+            0.07767569502446009,
+            0.03126118601598855,
+            0.028755518434554348,
+            0.08113590263691683,
+            0.09605059062164419,
+            0.06598257964443383,
+            0.056437179334208325,
+            0.05082925665195084,
+            0.05023266913256174,
+            0.019210118124328837,
+            0.023505548263930316,
+            0.09032335043550888,
+            0.10010738575349004,
+            0.04903949409378356,
+            0.06395418207851092
+          ],
+          "directionLinkCounts": [
+            0,
+            203,
+            218,
+            547,
+            651,
+            262,
+            241,
+            680,
+            805,
+            553,
+            473,
+            426,
+            421,
+            161,
+            197,
+            757,
+            839,
+            411,
+            536
+          ],
+          "partIdentifier": 3,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.018188280696494356,
+              "netLedgerFraction": 0.04898544844538981,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                -0.00014722221564087608,
+                -0.0008611110726164451,
+                0.00017499999217689038
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.015087308718169512,
+              "netLedgerFraction": 0.043577343722047024,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                -0.00023079978239451542,
+                -0.0006004622302721807,
+                0.00013578138118080344
+              ]
+            }
+          ]
+        },
+        {
+          "componentName": "tail",
+          "directionHistogram": [
+            0.0,
+            0.05966406158870874,
+            0.0628718068354135,
+            0.02356234690306777,
+            0.02379563746646448,
+            0.05260702204595824,
+            0.05243205412341071,
+            0.0795520821182783,
+            0.08305144056922897,
+            0.04210894669310626,
+            0.04496675609471597,
+            0.021229441269100664,
+            0.023912282748162837,
+            0.10632217426805085,
+            0.11005482328239823,
+            0.03534352035460166,
+            0.03511022979120494,
+            0.07162020296279015,
+            0.07179517088533768
+          ],
+          "directionLinkCounts": [
+            0,
+            1023,
+            1078,
+            404,
+            408,
+            902,
+            899,
+            1364,
+            1424,
+            722,
+            771,
+            364,
+            410,
+            1823,
+            1887,
+            606,
+            602,
+            1228,
+            1231
+          ],
+          "partIdentifier": 4,
+          "profileResponses": [
+            {
+              "absoluteDirectionLedger": 0.03751319694444924,
+              "netLedgerFraction": 0.012252988349889977,
+              "profileIdentifier": "rest-equilibrium",
+              "responseVector": [
+                -0.0004569444240174358,
+                -2.4999998882412598e-05,
+                4.305555363082192e-05
+              ]
+            },
+            {
+              "absoluteDirectionLedger": 0.03567901000430826,
+              "netLedgerFraction": 0.02136045098633012,
+              "profileIdentifier": "deetjen-midpoint-pooled",
+              "responseVector": [
+                -0.0007522785808311294,
+                -1.929422896686814e-05,
+                0.00012054532099267364
+              ]
+            }
+          ]
+        }
+      ],
+      "frozenSourceTimeSeconds": 0.026499999687075615,
+      "gridCells": [
+        149,
+        136,
+        131
+      ],
+      "referenceLengthCells": 16,
+      "sourceMetalCPUParityPassed": true,
+      "wholeSurfaceDirectionHistogram": [
+        0.0,
+        0.04058092015643538,
+        0.04058092015643538,
+        0.04936942479237157,
+        0.04936942479237157,
+        0.041899195851825805,
+        0.041899195851825805,
+        0.0758667662697192,
+        0.0758667662697192,
+        0.05879509601441314,
+        0.05879509601441314,
+        0.03563738629872127,
+        0.03563738629872127,
+        0.06644109504767763,
+        0.06644109504767763,
+        0.059542118908467716,
+        0.059542118908467716,
+        0.07186799666036824,
+        0.07186799666036824
+      ],
+      "wholeSurfaceDirectionLinkCounts": [
+        0,
+        1847,
+        1847,
+        2247,
+        2247,
+        1907,
+        1907,
+        3453,
+        3453,
+        2676,
+        2676,
+        1622,
+        1622,
+        3024,
+        3024,
+        2710,
+        2710,
+        3271,
+        3271
+      ],
+      "wholeSurfaceOppositeDirectionCountMismatches": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "wholeSurfaceProfileResponses": [
+        {
+          "absoluteDirectionLedger": 0.09916266904242638,
+          "netLedgerFraction": 0.0,
+          "profileIdentifier": "rest-equilibrium",
+          "responseVector": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "absoluteDirectionLedger": 0.08782500870142547,
+          "netLedgerFraction": 0.006773965626014632,
+          "profileIdentifier": "deetjen-midpoint-pooled",
+          "responseVector": [
+            -0.0005943859983375444,
+            -2.524960609382159e-05,
+            -1.3492100873623188e-06
+          ]
+        }
+      ]
+    }
+  ],
+  "claimBoundary": "This archive-only canonical tests fixed-population D3Q19 direction redistribution on one source-locked curved complete-dove surface at D12/D16. It cannot establish the D28/D32 bird-load grid limit, validate wall velocity or interpolation, authorize a production edit or new fluid run, establish experimental agreement, or claim quantitative bird flight or free flight.",
+  "classification": "curved-direction-redistribution-cleared-at-d12-d16",
+  "componentSummaries": [
+    {
+      "componentName": "body",
+      "directionHistogramTotalVariation": 0.004493833172933559,
+      "partIdentifier": 1,
+      "profileResponseDifferences": [
+        {
+          "profileIdentifier": "rest-equilibrium",
+          "responseLedgerDifference": 0.0009000921587696883
+        },
+        {
+          "profileIdentifier": "deetjen-midpoint-pooled",
+          "responseLedgerDifference": 0.0012724533892275354
+        }
+      ]
+    },
+    {
+      "componentName": "leftWing",
+      "directionHistogramTotalVariation": 0.0064998888898859155,
+      "partIdentifier": 2,
+      "profileResponseDifferences": [
+        {
+          "profileIdentifier": "rest-equilibrium",
+          "responseLedgerDifference": 0.007111276556535945
+        },
+        {
+          "profileIdentifier": "deetjen-midpoint-pooled",
+          "responseLedgerDifference": 0.005740155919804163
+        }
+      ]
+    },
+    {
+      "componentName": "rightWing",
+      "directionHistogramTotalVariation": 0.007073047479494679,
+      "partIdentifier": 3,
+      "profileResponseDifferences": [
+        {
+          "profileIdentifier": "rest-equilibrium",
+          "responseLedgerDifference": 0.006571769316198152
+        },
+        {
+          "profileIdentifier": "deetjen-midpoint-pooled",
+          "responseLedgerDifference": 0.005376327817600432
+        }
+      ]
+    },
+    {
+      "componentName": "tail",
+      "directionHistogramTotalVariation": 0.0016739415587856531,
+      "partIdentifier": 4,
+      "profileResponseDifferences": [
+        {
+          "profileIdentifier": "rest-equilibrium",
+          "responseLedgerDifference": 0.00039786287125353825
+        },
+        {
+          "profileIdentifier": "deetjen-midpoint-pooled",
+          "responseLedgerDifference": 0.00047116497529165944
+        }
+      ]
+    }
+  ],
+  "d20RunAuthorized": false,
+  "d28D32FluidRunAuthorized": false,
+  "equilibriumProfilePassed": true,
+  "experimentalAgreementGateApplied": false,
+  "fluidEvolutionExecuted": false,
+  "gates": {
+    "componentDirectionHistograms": true,
+    "componentProfileResponses": true,
+    "equilibriumWholeSurfaceCancellation": true,
+    "sourceMetalCPUParity": true,
+    "wholeSurfaceDirectionHistogram": true,
+    "wholeSurfaceOppositeDirectionBalance": true,
+    "wholeSurfaceProfileResponses": true
+  },
+  "gridConvergenceGateApplied": false,
+  "maximumComponentDirectionHistogramTotalVariation": 0.007073047479494679,
+  "maximumComponentProfileResponseLedgerDifference": 0.007111276556535945,
+  "maximumEquilibriumWholeSurfaceNetLedgerFraction": 0.0,
+  "maximumWholeSurfaceOppositeDirectionCountMismatch": 0,
+  "maximumWholeSurfaceProfileResponseLedgerDifference": 9.125682623741343e-05,
+  "newMetalExecutionPerformed": false,
+  "nextAction": "Do not modify direction weighting. Preregister one archive-only D28/D32 full-link direction-count capture at the same 26.5 ms phase before any new fluid evolution.",
+  "productionModificationAuthorized": false,
+  "profileSummaries": [
+    {
+      "profileIdentifier": "rest-equilibrium",
+      "wholeSurfaceResponseLedgerDifference": 0.0
+    },
+    {
+      "profileIdentifier": "deetjen-midpoint-pooled",
+      "wholeSurfaceResponseLedgerDifference": 9.125682623741343e-05
+    }
+  ],
+  "schemaVersion": 1,
+  "scientificVerdict": "The source-locked 26.5 ms curved complete-dove direction-only canonical is curved-direction-redistribution-cleared-at-d12-d16.",
+  "sourceFieldsConsumed": [
+    "referenceLengthCells",
+    "cellSizeMeters",
+    "partIdentifier",
+    "directionIndex",
+    "linkCount",
+    "Metal/CPU count parity"
+  ],
+  "sourceLinkGeometryReportSHA256": "39237cc559c086e3a4f06d36560f17192fa9d5737d2163bc82c2b1a7785dcacf",
+  "sourceMidpointProfilePassed": true,
+  "sourcePreregistrationSHA256": "da9fd1f2090468d60f4d66190169199e4214a763804bb46c47c705a6fcefca06",
+  "sourceWallVelocityClassificationIgnored": "wall-velocity-deposition-bias",
+  "wholeSurfaceDirectionHistogramTotalVariation": 0.0013017889867095178
+}

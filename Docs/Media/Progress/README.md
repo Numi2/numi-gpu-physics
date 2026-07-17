@@ -112,9 +112,9 @@ its 73rd endpoint probe is pixel-identical to frame zero.
 
 ![V9 reflected-link provenance](2026-07-17-v9-reflected-link-provenance.gif)
 
-## Current hero — V10 direction-composition discriminator
+## Archived hero — V10 direction-composition discriminator
 
-The [current README animation](../birdflow-metal-native-viewer.gif) preserves
+The [archived V10 animation](2026-07-17-v10-direction-composition-discriminator.gif) preserves
 the seamless forward loop and audited D32 force chart while advancing the
 scientific status through the preregistered zero-fluid conditioned-factor
 discriminator. Its top panel and `DIRECTION` rail node are SHA-locked through
@@ -124,4 +124,38 @@ absolute conditioned-factor ledger and leads both temporal halves; the bottom
 boundary still reports the failed `5.632% > 5%` fine-pair gate. The V10
 encoding is `9,646,440` bytes with SHA-256
 `23467c2e983ceee1ce7aedeb4919ebf103dcf21f481e64bdf6aca2f220b79951`;
+its 73rd endpoint probe is pixel-identical to frame zero.
+
+![V10 direction-composition discriminator](2026-07-17-v10-direction-composition-discriminator.gif)
+
+## Archived hero — V11 planar direction weighting cleared
+
+The [archived V11 animation](2026-07-17-v11-planar-direction-weighting-cleared.gif) adds the
+preregistered 40-case planar direction-composition canonical to the complete
+artifact lock. Its top panel now reports `PLANAR D3Q19 DIRECTION WEIGHTING`,
+`40 METAL/CPU CASES`, and the `1.28%` maximum analytic-vector error; the rail
+advances to `PLANAR OK`. Those labels require the V2 preregistration, zero
+per-direction Metal/CPU mismatch, all eight passing gates, and the independent
+14-check audit. The lower boundary deliberately remains `PAIR OPEN` with
+`5.632% > 5.0%`, distinguishing the cleared planar operator from unresolved
+curved-surface redistribution and bird-load convergence. The V11 encoding is
+`9,445,971` bytes with SHA-256
+`8f401abd51624b3098f12705f920c59c2ff3100dd6b109796d83623042fe6c29`;
+its 73rd endpoint probe is pixel-identical to frame zero.
+
+![V11 planar direction weighting cleared](2026-07-17-v11-planar-direction-weighting-cleared.gif)
+
+## Current hero — V12 curved dove direction mix cleared
+
+The [current README animation](../birdflow-metal-native-viewer.gif) advances the
+fail-closed artifact chain through the source-locked D12/D16 complete-dove
+curved direction canonical. The top panel reports `CURVED DOVE DIRECTION MIX`,
+the `0.130%` whole-surface direction-histogram variation, and the `0.0091%`
+maximum whole fixed-profile response change. Those labels require the exact
+source link-geometry report, curved preregistration, passing seven-gate result,
+and independent `14/14`-check audit in addition to every V11 source. The rail
+advances to `CURVED OK`, while `PAIR OPEN` and the lower
+`D28/D32 5.632% > 5.0%` boundary remain visible. The V12 encoding is
+`9,424,489` bytes with SHA-256
+`4ee0eaed0a6c459c4660f2647137f4f6f7edc22b339f6ef933727fcad2daa602`;
 its 73rd endpoint probe is pixel-identical to frame zero.

@@ -37,9 +37,10 @@ func measuredBirdSurfaceLoaderLocksIndexedNonperiodicContract() throws {
     #expect(dataset.frameCount == 144)
     #expect(dataset.vertexCount == 2_157)
     #expect(dataset.triangleCount == 3_968)
-    #expect(dataset.components.map(\.name) == [
-        "body", "leftWing", "rightWing", "tail",
-    ])
+    #expect(
+        dataset.components.map(\.name) == [
+            "body", "leftWing", "rightWing", "tail",
+        ])
     #expect(dataset.components.map(\.partIdentifier) == [1, 2, 3, 4])
     #expect(dataset.trianglePartIdentifiers.count == 3_968)
     #expect(dataset.completeBirdSurfaceReady)
@@ -68,7 +69,8 @@ func measuredBirdSurfaceLoaderLocksIndexedNonperiodicContract() throws {
 
 @Test
 func measuredBirdSurfaceLoaderRejectsBinaryDrift() throws {
-    let sourceDirectory = measuredBirdSurfaceManifestURL
+    let sourceDirectory =
+        measuredBirdSurfaceManifestURL
         .deletingLastPathComponent()
     let temporaryDirectory = FileManager.default.temporaryDirectory
         .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -164,17 +166,18 @@ func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
     )
     let operators = MetalIndexedBirdSurfacePilotValidator
         .collisionPreRollOperators
-    #expect(operators.map(\.rawValue) == [
-        "production-trt",
-        "positivity-preserving-regularized-bgk",
-        "positivity-preserving-recursive-regularized-bgk"
-    ])
+    #expect(
+        operators.map(\.rawValue) == [
+            "production-trt",
+            "positivity-preserving-regularized-bgk",
+            "positivity-preserving-recursive-regularized-bgk",
+        ])
     #expect(operators.map(\.caseParameterW) == [-1, -3, -4])
     #expect(
         MetalIndexedBirdSurfacePilotValidator
             .collisionMomentumCandidateOperators.map(\.rawValue) == [
                 "positivity-preserving-regularized-bgk",
-                "positivity-preserving-recursive-regularized-bgk"
+                "positivity-preserving-recursive-regularized-bgk",
             ]
     )
 
@@ -199,12 +202,14 @@ func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
     #expect(
         refinement.allSatisfy {
             abs($0.maximumWallMach - refinement[0].maximumWallMach) < 1e-6
-                && abs($0.pilotToSourceViscosityRatio
-                    - refinement[0].pilotToSourceViscosityRatio) < 1e-4
+                && abs(
+                    $0.pilotToSourceViscosityRatio
+                        - refinement[0].pilotToSourceViscosityRatio) < 1e-4
                 && !$0.experimentalAgreementGateApplied
         }
     )
-    let preregistration = try MetalIndexedBirdSurfacePilotValidator
+    let preregistration =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridPreregistration(surface: surface, target: target)
     #expect(preregistration.passed)
     #expect(preregistration.discriminatorReferenceLengthCells == [8, 12])
@@ -222,9 +227,10 @@ func measuredBirdCollisionGridArtifactsRetainAuthorizedD16Failure() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let preregistration = try decode(
@@ -274,12 +280,14 @@ func measuredBirdCollisionGridArtifactsRetainAuthorizedD16Failure() throws {
 func measuredBirdD16PopulationProvenanceRetainsFirstWriter() throws {
     let report = try JSONDecoder().decode(
         MetalIndexedBirdSurfacePopulationStageProvenanceReport.self,
-        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json"
-        ))
+        from: Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-d16-population-stage-provenance.json"
+            ))
     )
-    #expect(report.selectedCollisionOperator
-        == "positivity-preserving-recursive-regularized-bgk")
+    #expect(
+        report.selectedCollisionOperator
+            == "positivity-preserving-recursive-regularized-bgk")
     #expect(report.referenceLengthCells == 16)
     #expect(report.targetCellCoordinate == SIMD3(64, 63, 68))
     #expect(report.targetDirection == 0)
@@ -291,10 +299,12 @@ func measuredBirdD16PopulationProvenanceRetainsFirstWriter() throws {
     #expect(
         report.selectedDirectionRemainedPositiveThroughReconstructionAtFailure
     )
-    #expect(report.negativeReconstructedDirectionsAtFailure
-        == [2, 8, 12, 13, 16])
-    #expect(report.negativeMovingBoundaryReconstructedDirectionsAtFailure
-        == [2, 8, 12, 13, 16])
+    #expect(
+        report.negativeReconstructedDirectionsAtFailure
+            == [2, 8, 12, 13, 16])
+    #expect(
+        report.negativeMovingBoundaryReconstructedDirectionsAtFailure
+            == [2, 8, 12, 13, 16])
     #expect(report.upstreamMovingBoundaryReconstructionPresentAtFailure)
     #expect(!report.targetDirectionMovingBoundaryReconstructedAtFailure)
     #expect(!report.topologyRefillAtFailure)
@@ -307,13 +317,15 @@ func measuredBirdD16PopulationProvenanceRetainsFirstWriter() throws {
     let failure = try #require(report.samples.last)
     #expect(failure.preStepPopulation > 0)
     #expect(failure.reconstructedDirectionPopulation > 0)
-    #expect(failure.reconstructedSpeedLattice
-        > failure.restEquilibriumPositivitySpeedLimit)
+    #expect(
+        failure.reconstructedSpeedLattice
+            > failure.restEquilibriumPositivitySpeedLimit)
     #expect(failure.equilibriumDirectionPopulation < 0)
     #expect(failure.positivityScale == 0)
     #expect(failure.postCollisionDirectionPopulation < 0)
-    #expect(failure.actualOutputDirectionPopulation
-        == failure.postCollisionDirectionPopulation)
+    #expect(
+        failure.actualOutputDirectionPopulation
+            == failure.postCollisionDirectionPopulation)
     #expect(failure.predictionAbsoluteError == 0)
 }
 
@@ -321,13 +333,15 @@ func measuredBirdD16PopulationProvenanceRetainsFirstWriter() throws {
 func measuredBirdD16BoundaryTermsRetainWallCorrectionDiscriminator() throws {
     let report = try JSONDecoder().decode(
         MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self,
-        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json"
-        ))
+        from: Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-d16-boundary-term-decomposition.json"
+            ))
     )
     let failureDirections = [2, 8, 12, 13, 16]
-    #expect(report.selectedCollisionOperator
-        == "positivity-preserving-recursive-regularized-bgk")
+    #expect(
+        report.selectedCollisionOperator
+            == "positivity-preserving-recursive-regularized-bgk")
     #expect(report.referenceLengthCells == 16)
     #expect(report.targetCellCoordinate == SIMD3(64, 63, 68))
     #expect(report.capturedSteps == [750, 751])
@@ -335,17 +349,21 @@ func measuredBirdD16BoundaryTermsRetainWallCorrectionDiscriminator() throws {
     #expect(report.maximumContributionClosureResidual < 1e-9)
     #expect(report.maximumReconstructionDifferenceFromStageArtifact < 1e-9)
     #expect(report.negativeMovingBoundaryDirectionsPreviousStep == [2, 3, 10])
-    #expect(report.negativeMovingBoundaryDirectionsAtFailure
-        == failureDirections)
+    #expect(
+        report.negativeMovingBoundaryDirectionsAtFailure
+            == failureDirections)
     #expect(report.directionsWithNegativeReflectedPopulation.isEmpty)
     #expect(report.directionsWithNegativeAuxiliaryContribution.isEmpty)
-    #expect(report.directionsWithNegativeWallContribution
-        == failureDirections)
+    #expect(
+        report.directionsWithNegativeWallContribution
+            == failureDirections)
     #expect(report.directionsMadeNonnegativeByHalfwayMovingWall.isEmpty)
-    #expect(report.directionsMadeNonnegativeByInterpolatedZeroWall
-        == failureDirections)
-    #expect(report.directionsMadeNonnegativeByHalfwayZeroWall
-        == failureDirections)
+    #expect(
+        report.directionsMadeNonnegativeByInterpolatedZeroWall
+            == failureDirections)
+    #expect(
+        report.directionsMadeNonnegativeByHalfwayZeroWall
+            == failureDirections)
     #expect(report.directionsMadeNonnegativeByRemovingAuxiliary.isEmpty)
     #expect(report.directionsRemainingNegativeUnderHalfwayZeroWall.isEmpty)
     #expect(report.dominantRepairTarget == "moving-wall-correction")
@@ -355,28 +373,31 @@ func measuredBirdD16BoundaryTermsRetainWallCorrectionDiscriminator() throws {
         $0.step == 751 && $0.productionPopulationNegative
     }
     #expect(failure.map(\.direction) == failureDirections)
-    #expect(failure.allSatisfy {
-        $0.reflectedPopulation > 0
-            && $0.auxiliaryContribution >= 0
-            && $0.wallCorrectionContribution < 0
-            && $0.productionReconstructedPopulation < 0
-            && $0.interpolatedZeroWallPopulation > 0
-            && $0.halfwayZeroWallPopulation > 0
-            && $0.halfwayMovingWallPopulation < 0
-            && $0.dominantNegativeContribution == "wall-correction"
-    })
+    #expect(
+        failure.allSatisfy {
+            $0.reflectedPopulation > 0
+                && $0.auxiliaryContribution >= 0
+                && $0.wallCorrectionContribution < 0
+                && $0.productionReconstructedPopulation < 0
+                && $0.interpolatedZeroWallPopulation > 0
+                && $0.halfwayZeroWallPopulation > 0
+                && $0.halfwayMovingWallPopulation < 0
+                && $0.dominantNegativeContribution == "wall-correction"
+        })
     #expect(failure.filter { $0.branch == "halfway-fallback" }.count == 4)
-    #expect(failure.filter { $0.branch == "interpolated-far-wall" }
-        .map(\.direction) == [12])
+    #expect(
+        failure.filter { $0.branch == "interpolated-far-wall" }
+            .map(\.direction) == [12])
 }
 
 @Test
 func measuredBirdD16MovingWallAdmissibilityRetainsLedgerBoundary() throws {
     let report = try JSONDecoder().decode(
         MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self,
-        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json"
-        ))
+        from: Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-d16-moving-wall-admissibility-ab.json"
+            ))
     )
     let failureDirections = [2, 8, 12, 13, 16]
     #expect(report.referenceLengthCells == 16)
@@ -389,14 +410,17 @@ func measuredBirdD16MovingWallAdmissibilityRetainsLedgerBoundary() throws {
     #expect(report.preStepPopulationCoverageDirections == Array(0..<19))
     #expect(abs(report.preStepLocalDensity - 0.030_192_742_6) < 1e-10)
     #expect(abs(report.selfConsistentLocalDensity - 0.034_896_398_1) < 1e-10)
-    #expect(report.referenceDensityBaseline.negativePopulationDirections
-        == failureDirections)
+    #expect(
+        report.referenceDensityBaseline.negativePopulationDirections
+            == failureDirections)
     #expect(!report.referenceDensityBaseline.populationGatePassed)
     #expect(!report.referenceDensityBaseline.equilibriumGatePassed)
-    #expect(report.candidateA.identifier
-        == "pre-step-local-density-normalization")
-    #expect(report.candidateA.correctionScaleRelativeToReferenceDensity
-        == report.preStepLocalDensity)
+    #expect(
+        report.candidateA.identifier
+            == "pre-step-local-density-normalization")
+    #expect(
+        report.candidateA.correctionScaleRelativeToReferenceDensity
+            == report.preStepLocalDensity)
     #expect(!report.candidateA.positivityInterventionActive)
     #expect(report.candidateA.negativePopulationDirections.isEmpty)
     #expect(report.candidateA.populationFloorViolationDirections.isEmpty)
@@ -406,12 +430,14 @@ func measuredBirdD16MovingWallAdmissibilityRetainsLedgerBoundary() throws {
     #expect(report.candidateB.positivityInterventionActive)
     #expect(report.candidateB.populationGatePassed)
     #expect(report.candidateB.equilibriumGatePassed)
-    #expect(report.candidateA.correctionScaleRelativeToReferenceDensity
-        < report.globalPositivityAdmissibilityScale)
+    #expect(
+        report.candidateA.correctionScaleRelativeToReferenceDensity
+            < report.globalPositivityAdmissibilityScale)
     #expect(report.selfConsistentDensityCrosscheck.populationGatePassed)
     #expect(report.selfConsistentDensityCrosscheck.equilibriumGatePassed)
-    #expect(report.candidateAuthorizedForProductionLedger
-        == report.candidateA.identifier)
+    #expect(
+        report.candidateAuthorizedForProductionLedger
+            == report.candidateA.identifier)
     #expect(report.admissibilityABGatePassed)
     #expect(!report.experimentalAgreementGateApplied)
 }
@@ -421,9 +447,10 @@ func measuredBirdD16MovingWallAdmissibilityReconstructsFromArchives() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -433,7 +460,8 @@ func measuredBirdD16MovingWallAdmissibilityReconstructsFromArchives() throws {
         targetURL: measuredBirdForceTargetURL,
         surface: surface
     )
-    let report = try MetalIndexedBirdSurfacePilotValidator
+    let report =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallAdmissibilityAB(
             surface: surface,
             target: target,
@@ -459,27 +487,32 @@ func measuredBirdD16MovingWallAdmissibilityReconstructsFromArchives() throws {
             )
         )
     #expect(report.admissibilityABGatePassed)
-    #expect(report.referenceDensityBaseline.negativePopulationDirections
-        == [2, 8, 12, 13, 16])
+    #expect(
+        report.referenceDensityBaseline.negativePopulationDirections
+            == [2, 8, 12, 13, 16])
     #expect(report.candidateA.negativePopulationDirections.isEmpty)
     #expect(report.candidateB.negativePopulationDirections.isEmpty)
-    #expect(report.candidateAuthorizedForProductionLedger
-        == "pre-step-local-density-normalization")
+    #expect(
+        report.candidateAuthorizedForProductionLedger
+            == "pre-step-local-density-normalization")
 }
 
 @Test
 func measuredBirdD16MovingWallLedgerRetainsPromotionBoundary() throws {
     let report = try JSONDecoder().decode(
         MetalIndexedBirdSurfaceMovingWallLedgerReport.self,
-        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-d16-moving-wall-ledger.json"
-        ))
+        from: Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-d16-moving-wall-ledger.json"
+            ))
     )
     #expect(report.schemaVersion == 1)
-    #expect(report.selectedCollisionOperator
-        == "positivity-preserving-recursive-regularized-bgk")
-    #expect(report.sourceAdmissibilityCandidateIdentifier
-        == "pre-step-local-density-normalization")
+    #expect(
+        report.selectedCollisionOperator
+            == "positivity-preserving-recursive-regularized-bgk")
+    #expect(
+        report.sourceAdmissibilityCandidateIdentifier
+            == "pre-step-local-density-normalization")
     #expect(report.movingWallNormalization == "pre-step-local-density")
     #expect(report.referenceLengthCells == 16)
     #expect(report.requestedSteps == 751)
@@ -504,17 +537,20 @@ func measuredBirdD16MovingWallLedgerRetainsPromotionBoundary() throws {
 func measuredBirdD16MovingWallFullWindowRetainsClaimBoundary() throws {
     let report = try JSONDecoder().decode(
         MetalIndexedBirdSurfaceMovingWallFullWindowReport.self,
-        from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window.json"
-        ))
+        from: Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-d16-moving-wall-full-window.json"
+            ))
     )
     #expect(report.schemaVersion == 1)
     #expect(report.sourceRetainedLedgerGatePassed)
     #expect(report.sourceRetainedLedgerSteps == 751)
-    #expect(report.sourceCandidateIdentifier
-        == "pre-step-local-density-normalization")
-    #expect(report.selectedCollisionOperator
-        == "positivity-preserving-recursive-regularized-bgk")
+    #expect(
+        report.sourceCandidateIdentifier
+            == "pre-step-local-density-normalization")
+    #expect(
+        report.selectedCollisionOperator
+            == "positivity-preserving-recursive-regularized-bgk")
     #expect(report.movingWallNormalization == "pre-step-local-density")
     #expect(report.referenceLengthCells == 16)
     #expect(report.requestedSteps == 7_552)
@@ -544,9 +580,10 @@ func measuredBirdMovingWallSpatialArtifactsRetainLockedRejection() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let preregistration = try decode(
@@ -590,10 +627,12 @@ func measuredBirdMovingWallSpatialArtifactsRetainLockedRejection() throws {
     #expect(report.d12ToD16.meanForceRelativeDifference < 0.05)
     #expect(report.d12ToD16.impulseRelativeDifference < 0.05)
 
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-spatial-discriminator-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -605,9 +644,10 @@ func measuredBirdMovingWallSpatialDiscriminatorReconstructsFromArchives() throws
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -617,7 +657,8 @@ func measuredBirdMovingWallSpatialDiscriminatorReconstructsFromArchives() throws
         targetURL: measuredBirdForceTargetURL,
         surface: surface
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallSpatialDiscriminator(
             surface: surface,
             target: target,
@@ -650,17 +691,23 @@ func measuredBirdMovingWallSpatialDiscriminatorReconstructsFromArchives() throws
     #expect(rebuilt.monotonicTrendReductionPassed)
     #expect(!rebuilt.fineGridForceConvergencePassed)
     #expect(!rebuilt.spatialRefinementGatePassed)
-    #expect(abs(rebuilt.d8ToD12.intervalForceNormalizedRMSDifference
-        - 0.127_045_351_751_702_2) < 1e-14)
-    #expect(abs(rebuilt.d12ToD16.intervalForceNormalizedRMSDifference
-        - 0.062_683_388_119_109_34) < 1e-14)
+    #expect(
+        abs(
+            rebuilt.d8ToD12.intervalForceNormalizedRMSDifference
+                - 0.127_045_351_751_702_2) < 1e-14)
+    #expect(
+        abs(
+            rebuilt.d12ToD16.intervalForceNormalizedRMSDifference
+                - 0.062_683_388_119_109_34) < 1e-14)
 }
 
 @Test
 func measuredBirdMovingWallSpatialLocalizationRetainsD20Rejection() throws {
     func object(_ name: String) throws -> [String: Any] {
-        let data = try Data(contentsOf: repositoryRootURL
-            .appendingPathComponent("ValidationArtifacts/\(name)"))
+        let data = try Data(
+            contentsOf:
+                repositoryRootURL
+                .appendingPathComponent("ValidationArtifacts/\(name)"))
         return try #require(
             JSONSerialization.jsonObject(with: data) as? [String: Any]
         )
@@ -690,15 +737,19 @@ func measuredBirdMovingWallSpatialLocalizationRetainsD20Rejection() throws {
     #expect(report["d20DiagnosticAuthorized"] as? Bool == false)
     #expect(report["productionPromotionAuthorized"] as? Bool == false)
     #expect(report["experimentalAgreementGateApplied"] as? Bool == false)
-    #expect(abs(try #require(
-        force["pairwiseNormalizedRMSDifference"] as? Double
-    ) - 0.062_683_388_119_109_34) < 1e-14)
-    #expect(try #require(
-        smoothness["normalizedFirstDifferenceRoughness"] as? Double
-    ) > 1)
-    #expect(try #require(
-        smoothness["highFrequencyEnergyFraction"] as? Double
-    ) > 0.5)
+    #expect(
+        abs(
+            try #require(
+                force["pairwiseNormalizedRMSDifference"] as? Double
+            ) - 0.062_683_388_119_109_34) < 1e-14)
+    #expect(
+        try #require(
+            smoothness["normalizedFirstDifferenceRoughness"] as? Double
+        ) > 1)
+    #expect(
+        try #require(
+            smoothness["highFrequencyEnergyFraction"] as? Double
+        ) > 0.5)
     #expect(topology["topologyEventLikely"] as? Bool == false)
     #expect(accounting["accountingContaminationLikely"] as? Bool == false)
     #expect(audit["allChecksPassed"] as? Bool == true)
@@ -707,8 +758,10 @@ func measuredBirdMovingWallSpatialLocalizationRetainsD20Rejection() throws {
 @Test
 func measuredBirdMovingWallSpatialLagBandRetainsRawRejection() throws {
     func object(_ name: String) throws -> [String: Any] {
-        let data = try Data(contentsOf: repositoryRootURL
-            .appendingPathComponent("ValidationArtifacts/\(name)"))
+        let data = try Data(
+            contentsOf:
+                repositoryRootURL
+                .appendingPathComponent("ValidationArtifacts/\(name)"))
         return try #require(
             JSONSerialization.jsonObject(with: data) as? [String: Any]
         )
@@ -722,9 +775,10 @@ func measuredBirdMovingWallSpatialLagBandRetainsRawRejection() throws {
     let lag = try #require(report["lagDiscriminator"] as? [String: Any])
     let band = try #require(report["bandDiscriminator"] as? [String: Any])
     let bands = try #require(band["bands"] as? [[String: Any]])
-    let decisionBand = try #require(bands.first {
-        ($0["requestedCutoffHertz"] as? Double) == 200
-    })
+    let decisionBand = try #require(
+        bands.first {
+            ($0["requestedCutoffHertz"] as? Double) == 200
+        })
 
     #expect(report["registeredComparisonBinCount"] as? Int == 187)
     #expect(report["classification"] as? String == "mixed-unresolved")
@@ -733,21 +787,26 @@ func measuredBirdMovingWallSpatialLagBandRetainsRawRejection() throws {
     #expect(report["d20DiagnosticAuthorized"] as? Bool == false)
     #expect(report["productionPromotionAuthorized"] as? Bool == false)
     #expect(report["experimentalAgreementGateApplied"] as? Bool == false)
-    #expect(abs(try #require(
-        report["rawPairwiseNormalizedRMSDifference"] as? Double
-    ) - 0.062_683_388_119_109_34) < 1e-14)
+    #expect(
+        abs(
+            try #require(
+                report["rawPairwiseNormalizedRMSDifference"] as? Double
+            ) - 0.062_683_388_119_109_34) < 1e-14)
     #expect(lag["subBinRegistrationSensitivityLikely"] as? Bool == false)
-    #expect(try #require(
-        lag["crossValidatedImprovementFraction"] as? Double
-    ) < 0.02)
+    #expect(
+        try #require(
+            lag["crossValidatedImprovementFraction"] as? Double
+        ) < 0.02)
     #expect(band["broadbandForceEstimatorNoiseLikely"] as? Bool == false)
     #expect(band["coherentLowBandGridBiasLikely"] as? Bool == false)
-    #expect(try #require(
-        decisionBand["combinedSignalEnergyRetentionFraction"] as? Double
-    ) < 0.75)
-    #expect(try #require(
-        decisionBand["pairwiseNormalizedRMSDifference"] as? Double
-    ) < 0.05)
+    #expect(
+        try #require(
+            decisionBand["combinedSignalEnergyRetentionFraction"] as? Double
+        ) < 0.75)
+    #expect(
+        try #require(
+            decisionBand["pairwiseNormalizedRMSDifference"] as? Double
+        ) < 0.05)
     #expect(audit["allChecksPassed"] as? Bool == true)
 }
 
@@ -756,9 +815,10 @@ func measuredBirdMovingWallTemporalSamplingLocksMixedResult() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -776,7 +836,8 @@ func measuredBirdMovingWallTemporalSamplingLocksMixedResult() throws {
         "deetjen-dove-moving-wall-temporal-sampling-preregistration.json",
         as: MetalIndexedBirdSurfaceMovingWallTemporalSamplingPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallTemporalSamplingPreregistration(
             surface: surface,
             target: target,
@@ -792,10 +853,12 @@ func measuredBirdMovingWallTemporalSamplingLocksMixedResult() throws {
         "deetjen-dove-moving-wall-temporal-sampling.json",
         as: MetalIndexedBirdSurfaceMovingWallTemporalSamplingReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-temporal-sampling-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -811,14 +874,16 @@ func measuredBirdMovingWallTemporalSamplingLocksMixedResult() throws {
     #expect(!report.rawSpatialGateModified)
     #expect(!report.productionPromotionAuthorized)
     #expect(!report.experimentalAgreementGateApplied)
-    #expect(abs(
-        report.metrics.endpointPairwiseNormalizedRMSDifference
-            - 0.195_868_452_776_605_56
-    ) < 1e-14)
-    #expect(abs(
-        report.metrics.impulsePreservingPairwiseNormalizedRMSDifference
-            - 0.094_871_223_471_399_73
-    ) < 1e-14)
+    #expect(
+        abs(
+            report.metrics.endpointPairwiseNormalizedRMSDifference
+                - 0.195_868_452_776_605_56
+        ) < 1e-14)
+    #expect(
+        abs(
+            report.metrics.impulsePreservingPairwiseNormalizedRMSDifference
+                - 0.094_871_223_471_399_73
+        ) < 1e-14)
     #expect(report.metrics.endpointToImpulseImprovementFraction > 0.5)
     #expect(report.metrics.directTotalImpulseRelativeDifference < 0.01)
     #expect(audit["allChecksPassed"] as? Bool == true)
@@ -829,9 +894,10 @@ func measuredBirdMovingWallTemporalDurationLocksPersistentGridResult() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -853,7 +919,8 @@ func measuredBirdMovingWallTemporalDurationLocksPersistentGridResult() throws {
         "deetjen-dove-moving-wall-temporal-duration-preregistration.json",
         as: MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallTemporalDurationPreregistration(
             surface: surface,
             target: target,
@@ -870,10 +937,12 @@ func measuredBirdMovingWallTemporalDurationLocksPersistentGridResult() throws {
         "deetjen-dove-moving-wall-temporal-duration.json",
         as: MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -891,16 +960,18 @@ func measuredBirdMovingWallTemporalDurationLocksPersistentGridResult() throws {
     #expect(!report.productionPromotionAuthorized)
     #expect(!report.experimentalAgreementGateApplied)
     #expect(report.prefixWindows.map(\.endBinExclusive) == [8, 16, 24])
-    #expect(abs(
-        report.prefixWindows.last!.metrics
-            .impulsePreservingPairwiseNormalizedRMSDifference
-            - 0.099_611_216_131_344_9
-    ) < 1e-14)
-    #expect(abs(
-        report.blockWindows.last!.metrics
-            .impulsePreservingPairwiseNormalizedRMSDifference
-            - 0.123_790_709_621_362_95
-    ) < 1e-14)
+    #expect(
+        abs(
+            report.prefixWindows.last!.metrics
+                .impulsePreservingPairwiseNormalizedRMSDifference
+                - 0.099_611_216_131_344_9
+        ) < 1e-14)
+    #expect(
+        abs(
+            report.blockWindows.last!.metrics
+                .impulsePreservingPairwiseNormalizedRMSDifference
+                - 0.123_790_709_621_362_95
+        ) < 1e-14)
     #expect(report.lateBlockImprovementFraction < 0)
     #expect(audit["allChecksPassed"] as? Bool == true)
 }
@@ -910,9 +981,10 @@ func measuredBirdMovingWallLinkGeometryLocksVelocityDepositionBias() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -934,7 +1006,8 @@ func measuredBirdMovingWallLinkGeometryLocksVelocityDepositionBias() throws {
         "deetjen-dove-moving-wall-link-geometry-preregistration.json",
         as: MetalIndexedBirdSurfaceLinkGeometryPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallLinkGeometryPreregistration(
             surface: surface,
             target: target,
@@ -953,10 +1026,12 @@ func measuredBirdMovingWallLinkGeometryLocksVelocityDepositionBias() throws {
         "deetjen-dove-moving-wall-link-geometry.json",
         as: MetalIndexedBirdSurfaceLinkGeometryReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -994,9 +1069,10 @@ func measuredBirdMovingWallLinkVelocityLocksIntersectionPlacementBias() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1018,7 +1094,8 @@ func measuredBirdMovingWallLinkVelocityLocksIntersectionPlacementBias() throws {
         "deetjen-dove-moving-wall-link-velocity-preregistration.json",
         as: MetalIndexedBirdSurfaceLinkVelocityPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallLinkVelocityPreregistration(
             surface: surface,
             target: target,
@@ -1036,10 +1113,12 @@ func measuredBirdMovingWallLinkVelocityLocksIntersectionPlacementBias() throws {
         "deetjen-dove-moving-wall-link-velocity.json",
         as: MetalIndexedBirdSurfaceLinkVelocityReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-link-velocity-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1071,9 +1150,10 @@ func measuredBirdMovingWallLinkIntersectionLocksJunctionAssociation() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1095,7 +1175,8 @@ func measuredBirdMovingWallLinkIntersectionLocksJunctionAssociation() throws {
         "deetjen-dove-moving-wall-link-intersection-preregistration.json",
         as: MetalIndexedBirdSurfaceLinkIntersectionPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallLinkIntersectionPreregistration(
             surface: surface,
             target: target,
@@ -1114,10 +1195,12 @@ func measuredBirdMovingWallLinkIntersectionLocksJunctionAssociation() throws {
         "deetjen-dove-moving-wall-link-intersection.json",
         as: MetalIndexedBirdSurfaceLinkIntersectionReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-link-intersection-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1138,12 +1221,14 @@ func measuredBirdMovingWallLinkIntersectionLocksJunctionAssociation() throws {
     #expect(report.d16.edgeOrJunctionAssociatedMeasureFraction == 1)
     #expect(report.d12.allOutliersArchived)
     #expect(report.d16.allOutliersArchived)
-    #expect(report.d12.outliers.allSatisfy {
-        $0.offsetSurfaceResidualCells > 0.75
-    })
-    #expect(report.d16.outliers.allSatisfy {
-        $0.offsetSurfaceResidualCells > 0.75
-    })
+    #expect(
+        report.d12.outliers.allSatisfy {
+            $0.offsetSurfaceResidualCells > 0.75
+        })
+    #expect(
+        report.d16.outliers.allSatisfy {
+            $0.offsetSurfaceResidualCells > 0.75
+        })
     #expect(!report.metrics.sameDominantDirectionAcrossGrids)
     #expect(report.metrics.minimumDominantDirectionMeasureFraction == 0.25)
     #expect(report.edgeOrJunctionAssociated)
@@ -1166,9 +1251,10 @@ func measuredBirdMovingWallLinkRayRootLocksCrossComponentBias() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1190,7 +1276,8 @@ func measuredBirdMovingWallLinkRayRootLocksCrossComponentBias() throws {
         "deetjen-dove-moving-wall-link-ray-root-preregistration.json",
         as: MetalIndexedBirdSurfaceLinkRayRootPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallLinkRayRootPreregistration(
             surface: surface,
             target: target,
@@ -1211,10 +1298,12 @@ func measuredBirdMovingWallLinkRayRootLocksCrossComponentBias() throws {
         "deetjen-dove-moving-wall-link-ray-root.json",
         as: MetalIndexedBirdSurfaceLinkRayRootReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-link-ray-root-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1224,14 +1313,16 @@ func measuredBirdMovingWallLinkRayRootLocksCrossComponentBias() throws {
     #expect(report.d16.sampleCount == 7)
     #expect(report.d12.endpointNearestComponentChangeCount == 8)
     #expect(report.d16.endpointNearestComponentChangeCount == 7)
-    #expect(report.d12.samples.allSatisfy {
-        $0.endpointNearestComponentChanged
-            && $0.fluidEndpointUsesRecordedAlternateComponent
-    })
-    #expect(report.d16.samples.allSatisfy {
-        $0.endpointNearestComponentChanged
-            && $0.fluidEndpointUsesRecordedAlternateComponent
-    })
+    #expect(
+        report.d12.samples.allSatisfy {
+            $0.endpointNearestComponentChanged
+                && $0.fluidEndpointUsesRecordedAlternateComponent
+        })
+    #expect(
+        report.d16.samples.allSatisfy {
+            $0.endpointNearestComponentChanged
+                && $0.fluidEndpointUsesRecordedAlternateComponent
+        })
     #expect(report.metrics.totalEndpointNearestComponentChangeCount == 15)
     #expect(report.metrics.totalGlobalRootComponentSwitchCount == 5)
     #expect(report.metrics.maximumRootClosureResidualCells < 1e-5)
@@ -1258,9 +1349,10 @@ func measuredBirdMovingWallLinkCoefficientLocksBranchSensitivity() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1282,7 +1374,8 @@ func measuredBirdMovingWallLinkCoefficientLocksBranchSensitivity() throws {
         "deetjen-dove-moving-wall-link-coefficient-preregistration.json",
         as: MetalIndexedBirdSurfaceLinkCoefficientPreregistration.self
     )
-    let rebuiltPreregistration = try MetalIndexedBirdSurfacePilotValidator
+    let rebuiltPreregistration =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallLinkCoefficientPreregistration(
             surface: surface,
             target: target,
@@ -1306,7 +1399,8 @@ func measuredBirdMovingWallLinkCoefficientLocksBranchSensitivity() throws {
         "deetjen-dove-moving-wall-link-coefficient.json",
         as: MetalIndexedBirdSurfaceLinkCoefficientReport.self
     )
-    let report = try MetalIndexedBirdSurfacePilotValidator
+    let report =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallLinkCoefficient(
             surface: surface,
             target: target,
@@ -1320,10 +1414,12 @@ func measuredBirdMovingWallLinkCoefficientLocksBranchSensitivity() throws {
             sourcePreregistrationSHA256:
                 "568550ab587a9d9d27fbabdf3a94950143a0c43693364c31b1b230112117d0a2"
         )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1365,9 +1461,10 @@ func measuredBirdMovingWallLinkPopulationRejectsSparseQAsDominant() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1397,7 +1494,8 @@ func measuredBirdMovingWallLinkPopulationRejectsSparseQAsDominant() throws {
         "deetjen-dove-moving-wall-link-population-fallback-preregistration.json",
         as: MetalIndexedBirdSurfaceLinkPopulationPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallLinkPopulationPreregistration(
             surface: surface,
             target: target,
@@ -1423,10 +1521,12 @@ func measuredBirdMovingWallLinkPopulationRejectsSparseQAsDominant() throws {
         "deetjen-dove-moving-wall-link-population-fallback.json",
         as: MetalIndexedBirdSurfaceLinkPopulationReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1463,9 +1563,10 @@ func measuredBirdDistributedForceRejectsSingleTermAttribution() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1503,7 +1604,8 @@ func measuredBirdDistributedForceRejectsSingleTermAttribution() throws {
         "deetjen-dove-moving-wall-distributed-force-preregistration.json",
         as: MetalIndexedBirdSurfaceDistributedForcePreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallDistributedForcePreregistration(
             surface: surface,
             target: target,
@@ -1538,10 +1640,12 @@ func measuredBirdDistributedForceRejectsSingleTermAttribution() throws {
         "deetjen-dove-moving-wall-distributed-force.json",
         as: MetalIndexedBirdSurfaceDistributedForceReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-distributed-force-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1572,9 +1676,10 @@ func measuredBirdForceCovarianceLocksMeanOffsetCancellation() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1596,7 +1701,8 @@ func measuredBirdForceCovarianceLocksMeanOffsetCancellation() throws {
         "deetjen-dove-moving-wall-force-covariance-preregistration.json",
         as: MetalIndexedBirdSurfaceForceCovariancePreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallForceCovariancePreregistration(
             surface: surface,
             target: target,
@@ -1620,10 +1726,12 @@ func measuredBirdForceCovarianceLocksMeanOffsetCancellation() throws {
         "deetjen-dove-moving-wall-force-covariance.json",
         as: MetalIndexedBirdSurfaceForceCovarianceReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-force-covariance-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1640,9 +1748,10 @@ func measuredBirdForceCovarianceLocksMeanOffsetCancellation() throws {
     #expect(report.metrics.dominantPairConsistentAcrossBlocks)
     #expect(report.metrics.dominantPairGatePassed)
     #expect(report.metrics.dominantPairMechanism == "mean-offset-dominated")
-    let dominant = try #require(report.metrics.pairs.first {
-        $0.pairIdentifier == report.metrics.dominantPairIdentifier
-    })
+    let dominant = try #require(
+        report.metrics.pairs.first {
+            $0.pairIdentifier == report.metrics.dominantPairIdentifier
+        })
     #expect(dominant.rawInteractionEnergyFraction < -9.40)
     #expect(dominant.blockSigns == ["canceling", "canceling", "canceling"])
     #expect(dominant.meanShareOfAbsoluteDecomposition > 0.983)
@@ -1663,9 +1772,10 @@ func measuredBirdSpatialInteractionRejectsTargetedCapture() throws {
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(
             type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/\(name)"
+                ))
         )
     }
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -1691,7 +1801,8 @@ func measuredBirdSpatialInteractionRejectsTargetedCapture() throws {
         "deetjen-dove-moving-wall-spatial-interaction-preregistration.json",
         as: MetalIndexedBirdSurfaceSpatialInteractionPreregistration.self
     )
-    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+    let rebuilt =
+        try MetalIndexedBirdSurfacePilotValidator
         .collisionGridMovingWallSpatialInteractionPreregistration(
             surface: surface,
             target: target,
@@ -1717,10 +1828,12 @@ func measuredBirdSpatialInteractionRejectsTargetedCapture() throws {
         "deetjen-dove-moving-wall-spatial-interaction.json",
         as: MetalIndexedBirdSurfaceSpatialInteractionReport.self
     )
-    let auditData = try Data(contentsOf: repositoryRootURL
-        .appendingPathComponent(
-            "ValidationArtifacts/deetjen-dove-moving-wall-spatial-interaction-audit.json"
-        ))
+    let auditData = try Data(
+        contentsOf:
+            repositoryRootURL
+            .appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-moving-wall-spatial-interaction-audit.json"
+            ))
     let audit = try #require(
         JSONSerialization.jsonObject(with: auditData) as? [String: Any]
     )
@@ -1774,9 +1887,10 @@ func measuredBirdSpatialInteractionRejectsTargetedCapture() throws {
 @Test
 func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
     func data(_ name: String) throws -> Data {
-        try Data(contentsOf: repositoryRootURL.appendingPathComponent(
-            "ValidationArtifacts/\(name)"
-        ))
+        try Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
     }
     func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
         try JSONDecoder().decode(type, from: data(name))
@@ -1802,7 +1916,8 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
         "deetjen-dove-source-viscosity-d16-preregistration.json",
         as: MetalIndexedBirdSurfaceSourceViscosityPreregistration.self
     )
-    let rebuiltD16 = try MetalIndexedBirdSurfacePilotValidator
+    let rebuiltD16 =
+        try MetalIndexedBirdSurfacePilotValidator
         .sourceViscosityD16Preregistration(
             surface: surface,
             target: target,
@@ -1844,7 +1959,8 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
         "deetjen-dove-source-viscosity-d28-preregistration.json",
         as: MetalIndexedBirdSurfaceSourceViscosityD28Preregistration.self
     )
-    let rebuiltD28 = try MetalIndexedBirdSurfacePilotValidator
+    let rebuiltD28 =
+        try MetalIndexedBirdSurfacePilotValidator
         .sourceViscosityD28Preregistration(
             surface: surface,
             target: target,
@@ -1896,8 +2012,8 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
         "deetjen-dove-source-viscosity-d28-full-window-preregistration.json",
         as: MetalIndexedBirdSurfaceSourceViscosityD28FullWindowPreregistration.self
     )
-    let rebuiltFullWindowPreregistration = try
-        MetalIndexedBirdSurfacePilotValidator
+    let rebuiltFullWindowPreregistration =
+        try MetalIndexedBirdSurfacePilotValidator
         .sourceViscosityD28FullWindowPreregistration(
             surface: surface,
             target: target,
@@ -1961,8 +2077,8 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
         "deetjen-dove-source-viscosity-d32-preregistration.json",
         as: MetalIndexedBirdSurfaceSourceViscosityD32Preregistration.self
     )
-    let rebuiltD32Preregistration = try
-        MetalIndexedBirdSurfacePilotValidator
+    let rebuiltD32Preregistration =
+        try MetalIndexedBirdSurfacePilotValidator
         .sourceViscosityD32Preregistration(
             surface: surface,
             target: target,
@@ -2022,8 +2138,8 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
         "deetjen-dove-source-viscosity-d32-full-window-preregistration.json",
         as: MetalIndexedBirdSurfaceSourceViscosityD32FullWindowPreregistration.self
     )
-    let rebuiltD32FullWindowPreregistration = try
-        MetalIndexedBirdSurfacePilotValidator
+    let rebuiltD32FullWindowPreregistration =
+        try MetalIndexedBirdSurfacePilotValidator
         .sourceViscosityD32FullWindowPreregistration(
             surface: surface,
             target: target,
@@ -2499,15 +2615,149 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
             == CheckpointArchive.sha256(compositionReportData)
     )
 
+    let directionV1PreregistrationData = try data(
+        "deetjen-dove-direction-composition-canonical-preregistration-v1-float-degenerate.json"
+    )
+    let directionV1ReportData = try data(
+        "deetjen-dove-direction-composition-canonical-v1-float-degenerate.json"
+    )
+    let directionPreregistrationData = try data(
+        "deetjen-dove-direction-composition-canonical-preregistration.json"
+    )
+    let directionReportData = try data(
+        "deetjen-dove-direction-composition-canonical.json"
+    )
+    let directionAuditData = try data(
+        "deetjen-dove-direction-composition-canonical-audit.json"
+    )
+    let directionV1Report = try #require(
+        JSONSerialization.jsonObject(with: directionV1ReportData)
+            as? [String: Any]
+    )
+    let directionPreregistration = try JSONDecoder().decode(
+        MetalDirectionCompositionPreregistration.self,
+        from: directionPreregistrationData
+    )
+    let directionReport = try JSONDecoder().decode(
+        MetalDirectionCompositionCanonicalReport.self,
+        from: directionReportData
+    )
+    let directionAudit = try #require(
+        JSONSerialization.jsonObject(with: directionAuditData)
+            as? [String: Any]
+    )
+    #expect(directionV1Report["canonicalPassed"] as? Bool == false)
+    #expect(
+        (directionV1Report["gates"] as? [String: Bool])?[
+            "metalCPUPerDirectionCounts"
+        ] == false
+    )
+    #expect(
+        (directionV1Report["gates"] as? [String: Bool])?[
+            "fineProfileVectorResponse"
+        ] == true
+    )
+    #expect(directionPreregistration.schemaVersion == 2)
+    #expect(
+        directionPreregistration.revisionHistory.v1PreregistrationSHA256
+            == CheckpointArchive.sha256(directionV1PreregistrationData)
+    )
+    #expect(
+        directionPreregistration.revisionHistory.v1FailedReportSHA256
+            == CheckpointArchive.sha256(directionV1ReportData)
+    )
+    #expect(directionReport.cases.count == 40)
+    #expect(directionReport.canonicalPassed)
+    #expect(directionReport.basicPlanarDirectionWeightingCleared)
+    #expect(directionReport.maximumMetalCPUPerDirectionCountMismatch == 0)
+    #expect(directionReport.maximumFineProfileVectorRelativeError < 0.013)
+    #expect(
+        directionReport.sourcePreregistrationSHA256
+            == CheckpointArchive.sha256(directionPreregistrationData)
+    )
+    #expect(!directionReport.fluidEvolutionExecuted)
+    #expect(!directionReport.productionModificationAuthorized)
+    #expect(directionAudit["allChecksPassed"] as? Bool == true)
+    #expect(directionAudit["checkCount"] as? Int == 14)
+    #expect(
+        directionAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(directionReportData)
+    )
+
+    let curvedDirectionPreregistrationData = try data(
+        "deetjen-dove-curved-direction-composition-canonical-preregistration.json"
+    )
+    let curvedDirectionReportData = try data(
+        "deetjen-dove-curved-direction-composition-canonical.json"
+    )
+    let curvedDirectionAuditData = try data(
+        "deetjen-dove-curved-direction-composition-canonical-audit.json"
+    )
+    let curvedDirectionPreregistration = try #require(
+        JSONSerialization.jsonObject(with: curvedDirectionPreregistrationData)
+            as? [String: Any]
+    )
+    let curvedDirectionReport = try #require(
+        JSONSerialization.jsonObject(with: curvedDirectionReportData)
+            as? [String: Any]
+    )
+    let curvedDirectionAudit = try #require(
+        JSONSerialization.jsonObject(with: curvedDirectionAuditData)
+            as? [String: Any]
+    )
+    #expect(curvedDirectionPreregistration["schemaVersion"] as? Int == 1)
+    #expect(curvedDirectionPreregistration["passed"] as? Bool == true)
+    #expect(
+        curvedDirectionPreregistration["sourcePlanarReportSHA256"] as? String
+            == CheckpointArchive.sha256(directionReportData)
+    )
+    #expect(curvedDirectionReport["canonicalPassed"] as? Bool == true)
+    #expect(
+        curvedDirectionReport["classification"] as? String
+            == "curved-direction-redistribution-cleared-at-d12-d16"
+    )
+    #expect(
+        curvedDirectionReport["sourcePreregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(curvedDirectionPreregistrationData)
+    )
+    #expect(
+        curvedDirectionReport[
+            "maximumWholeSurfaceOppositeDirectionCountMismatch"
+        ] as? Int == 0
+    )
+    #expect(
+        (curvedDirectionReport[
+            "wholeSurfaceDirectionHistogramTotalVariation"
+        ] as? Double ?? 1) < 0.0014
+    )
+    #expect(
+        (curvedDirectionReport[
+            "maximumWholeSurfaceProfileResponseLedgerDifference"
+        ] as? Double ?? 1) < 0.0001
+    )
+    #expect(curvedDirectionReport["fluidEvolutionExecuted"] as? Bool == false)
+    #expect(
+        curvedDirectionReport["productionModificationAuthorized"] as? Bool
+            == false
+    )
+    #expect(curvedDirectionAudit["allChecksPassed"] as? Bool == true)
+    #expect(curvedDirectionAudit["checkCount"] as? Int == 14)
+    #expect(
+        curvedDirectionAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(curvedDirectionReportData)
+    )
+
     let invalidRunnerPreregistration = try #require(
-        JSONSerialization.jsonObject(with: data(
-            "deetjen-dove-source-viscosity-targeted-boundary-preregistration-v1-invalid-runner.json"
-        )) as? [String: Any]
+        JSONSerialization.jsonObject(
+            with: data(
+                "deetjen-dove-source-viscosity-targeted-boundary-preregistration-v1-invalid-runner.json"
+            )) as? [String: Any]
     )
     let invalidScalingCase = try #require(
-        JSONSerialization.jsonObject(with: data(
-            "deetjen-dove-source-viscosity-targeted-boundary-d28-invalid-scaling.json"
-        )) as? [String: Any]
+        JSONSerialization.jsonObject(
+            with: data(
+                "deetjen-dove-source-viscosity-targeted-boundary-d28-invalid-scaling.json"
+            )) as? [String: Any]
     )
     #expect(invalidRunnerPreregistration["schemaVersion"] as? Int == 1)
     #expect(invalidScalingCase["targetedCasePassed"] as? Bool == false)
@@ -2538,338 +2788,354 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
 }
 
 #if canImport(Metal)
-@Test
-func productionMetalD16PopulationProvenanceCloses() throws {
-    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
-        try JSONDecoder().decode(
-            type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
-        )
-    }
-    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let target = try MeasuredBirdForceTargetLoader.load(
-        targetURL: measuredBirdForceTargetURL,
-        surface: surface
-    )
-    let report = try MetalIndexedBirdSurfacePilotValidator
-        .collisionGridPopulationStageProvenance(
-            surface: surface,
-            target: target,
-            preregistration: try decode(
-                "deetjen-dove-collision-grid-preregistration.json",
-                as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
-            ),
-            discriminator: try decode(
-                "deetjen-dove-collision-grid-discriminator.json",
-                as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
-            ),
-            completion: try decode(
-                "deetjen-dove-collision-grid-completion.json",
-                as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+    @Test
+    func productionMetalD16PopulationProvenanceCloses() throws {
+        func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+            try JSONDecoder().decode(
+                type,
+                from: Data(
+                    contentsOf: repositoryRootURL.appendingPathComponent(
+                        "ValidationArtifacts/\(name)"
+                    ))
             )
+        }
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
         )
-    #expect(report.provenanceGatePassed)
-    #expect(report.maximumPredictionAbsoluteError == 0)
-    #expect(report.firstNegativeCapturedStage == "post-collision")
-    #expect(report.negativeMovingBoundaryReconstructedDirectionsAtFailure
-        == [2, 8, 12, 13, 16])
-}
-
-@Test
-func productionMetalD16BoundaryTermDecompositionCloses() throws {
-    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
-        try JSONDecoder().decode(
-            type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
         )
-    }
-    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let target = try MeasuredBirdForceTargetLoader.load(
-        targetURL: measuredBirdForceTargetURL,
-        surface: surface
-    )
-    let report = try MetalIndexedBirdSurfacePilotValidator
-        .collisionGridBoundaryTermDecomposition(
-            surface: surface,
-            target: target,
-            preregistration: try decode(
-                "deetjen-dove-collision-grid-preregistration.json",
-                as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
-            ),
-            discriminator: try decode(
-                "deetjen-dove-collision-grid-discriminator.json",
-                as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
-            ),
-            completion: try decode(
-                "deetjen-dove-collision-grid-completion.json",
-                as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
-            ),
-            provenance: try decode(
-                "deetjen-dove-d16-population-stage-provenance.json",
-                as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
+        let report =
+            try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridPopulationStageProvenance(
+                surface: surface,
+                target: target,
+                preregistration: try decode(
+                    "deetjen-dove-collision-grid-preregistration.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+                ),
+                discriminator: try decode(
+                    "deetjen-dove-collision-grid-discriminator.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+                ),
+                completion: try decode(
+                    "deetjen-dove-collision-grid-completion.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+                )
             )
-        )
-    #expect(report.boundaryTermGatePassed)
-    #expect(report.maximumContributionClosureResidual < 1e-9)
-    #expect(report.maximumReconstructionDifferenceFromStageArtifact < 1e-9)
-    #expect(report.negativeMovingBoundaryDirectionsAtFailure
-        == [2, 8, 12, 13, 16])
-    #expect(report.dominantRepairTarget == "moving-wall-correction")
-}
-
-@Test
-func productionMetalD16MovingWallCandidateClosesForceMomentumLedgers() throws {
-    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
-        try JSONDecoder().decode(
-            type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
-        )
-    }
-    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let target = try MeasuredBirdForceTargetLoader.load(
-        targetURL: measuredBirdForceTargetURL,
-        surface: surface
-    )
-    let report = try MetalIndexedBirdSurfacePilotValidator
-        .collisionGridMovingWallLedger(
-            surface: surface,
-            target: target,
-            preregistration: try decode(
-                "deetjen-dove-collision-grid-preregistration.json",
-                as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
-            ),
-            discriminator: try decode(
-                "deetjen-dove-collision-grid-discriminator.json",
-                as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
-            ),
-            completion: try decode(
-                "deetjen-dove-collision-grid-completion.json",
-                as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
-            ),
-            provenance: try decode(
-                "deetjen-dove-d16-population-stage-provenance.json",
-                as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
-            ),
-            boundaryTerms: try decode(
-                "deetjen-dove-d16-boundary-term-decomposition.json",
-                as: MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self
-            ),
-            admissibility: try decode(
-                "deetjen-dove-d16-moving-wall-admissibility-ab.json",
-                as: MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self
-            )
-        )
-    #expect(report.ledgerGatePassed)
-    #expect(report.result.completedSteps == 751)
-    #expect(report.result.minimumPopulation > 0)
-    #expect(report.result.relativeRMSRawControlVolumeClosureResidual <= 0.005)
-    #expect(report.result.relativeRMSGlobalFluidClosureResidual <= 0.005)
-    #expect(!report.productionDefaultModified)
-}
-
-@Test
-func productionMetalD16MovingWallCandidateCompletesRegisteredWindow() throws {
-    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
-        try JSONDecoder().decode(
-            type,
-            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
-                "ValidationArtifacts/\(name)"
-            ))
-        )
-    }
-    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let target = try MeasuredBirdForceTargetLoader.load(
-        targetURL: measuredBirdForceTargetURL,
-        surface: surface
-    )
-    let report = try MetalIndexedBirdSurfacePilotValidator
-        .collisionGridMovingWallFullWindow(
-            surface: surface,
-            target: target,
-            preregistration: try decode(
-                "deetjen-dove-collision-grid-preregistration.json",
-                as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
-            ),
-            discriminator: try decode(
-                "deetjen-dove-collision-grid-discriminator.json",
-                as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
-            ),
-            completion: try decode(
-                "deetjen-dove-collision-grid-completion.json",
-                as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
-            ),
-            provenance: try decode(
-                "deetjen-dove-d16-population-stage-provenance.json",
-                as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
-            ),
-            boundaryTerms: try decode(
-                "deetjen-dove-d16-boundary-term-decomposition.json",
-                as: MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self
-            ),
-            admissibility: try decode(
-                "deetjen-dove-d16-moving-wall-admissibility-ab.json",
-                as: MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self
-            ),
-            retainedLedger: try decode(
-                "deetjen-dove-d16-moving-wall-ledger.json",
-                as: MetalIndexedBirdSurfaceMovingWallLedgerReport.self
-            )
-        )
-    #expect(report.fullWindowGatePassed)
-    #expect(report.ledgerResult.completedSteps == 7_552)
-    #expect(report.registeredComparisonSampleCount == 187)
-    #expect(report.ledgerResult.minimumPopulation > 0)
-    #expect(report.ledgerResult.relativeRMSRawControlVolumeClosureResidual <= 0.005)
-    #expect(report.ledgerResult.relativeRMSGlobalFluidClosureResidual <= 0.005)
-    #expect(!report.productionDefaultModified)
-    #expect(!report.experimentalAgreementGateApplied)
-}
-
-@Test
-func measuredBirdCollisionCandidatesCloseIndependentMomentumBudgets() throws {
-    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let target = try MeasuredBirdForceTargetLoader.load(
-        targetURL: measuredBirdForceTargetURL,
-        surface: surface
-    )
-    let report = try MetalIndexedBirdSurfacePilotValidator
-        .collisionMomentumClosure(surface: surface, target: target)
-    #expect(report.screeningGatePassed)
-    #expect(report.allCandidateRunsCompleted)
-    #expect(report.cases.count == 2)
-    #expect(report.eligibleCollisionOperators == [
-        "positivity-preserving-regularized-bgk",
-        "positivity-preserving-recursive-regularized-bgk"
-    ])
-    #expect(report.minimumControlSurfaceDistanceFromSweptSurfaceCells >= 5)
-    #expect(
-        report.minimumControlSurfaceDistanceFromDomainBoundaryCells
-            >= report.spongeWidthCells
-    )
-    for result in report.cases {
-        #expect(result.completedSteps == 800)
-        #expect(result.samples.count == 800)
-        #expect(result.maximumSolidControlSurfaceCrossingLinkCount == 0)
-        #expect(result.sampledPopulationPositivityPassed)
-        #expect(result.momentumClosurePassed)
+        #expect(report.provenanceGatePassed)
+        #expect(report.maximumPredictionAbsoluteError == 0)
+        #expect(report.firstNegativeCapturedStage == "post-collision")
         #expect(
-            result.relativeRMSRawControlVolumeClosureResidual <= 0.005
-        )
-        #expect(result.relativeRMSGlobalFluidClosureResidual <= 0.005)
+            report.negativeMovingBoundaryReconstructedDirectionsAtFailure
+                == [2, 8, 12, 13, 16])
     }
-}
 
-@Test
-func measuredBirdCollisionCandidatesCompleteExtendedPilot() throws {
-    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let target = try MeasuredBirdForceTargetLoader.load(
-        targetURL: measuredBirdForceTargetURL,
-        surface: surface
-    )
-    let report = try MetalIndexedBirdSurfacePilotValidator
-        .collisionExtendedPilot(surface: surface, target: target)
-    #expect(report.screeningGatePassed)
-    #expect(report.allCandidateRunsCompleted)
-    #expect(report.requestedFluidSteps == 3_776)
-    #expect(report.requestedComparisonSamples == 187)
-    #expect(report.populationDiagnosticStride == 1)
-    #expect(report.cases.count == 2)
-    #expect(report.eligibleCollisionOperators == [
-        "positivity-preserving-regularized-bgk",
-        "positivity-preserving-recursive-regularized-bgk"
-    ])
-    #expect(report.endpointPairwiseNormalizedRMSDifference != nil)
-    #expect(report.intervalMeanPairwiseNormalizedRMSDifference != nil)
-    for result in report.cases {
-        #expect(result.completionAndPositivityGatePassed)
-        #expect(result.correctionIntrusionGatePassed)
-        #expect(result.eligibleForRefinementDiscrimination)
-        #expect(result.report.completedFluidSteps == 3_776)
-        #expect(result.report.recordedComparisonSamples == 187)
-        #expect(result.report.recordedPopulationDiagnosticSamples == 3_776)
-        #expect(result.report.allComponentsPresentAtComparisonSamples)
-        #expect(result.report.allLoadsFinite)
-        #expect(result.report.allSampledPopulationsFinite)
-        #expect(result.report.sampledPopulationPositivityPassed)
-        #expect(result.report.integrationGatePassed)
+    @Test
+    func productionMetalD16BoundaryTermDecompositionCloses() throws {
+        func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+            try JSONDecoder().decode(
+                type,
+                from: Data(
+                    contentsOf: repositoryRootURL.appendingPathComponent(
+                        "ValidationArtifacts/\(name)"
+                    ))
+            )
+        }
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
+        )
+        let report =
+            try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridBoundaryTermDecomposition(
+                surface: surface,
+                target: target,
+                preregistration: try decode(
+                    "deetjen-dove-collision-grid-preregistration.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+                ),
+                discriminator: try decode(
+                    "deetjen-dove-collision-grid-discriminator.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+                ),
+                completion: try decode(
+                    "deetjen-dove-collision-grid-completion.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+                ),
+                provenance: try decode(
+                    "deetjen-dove-d16-population-stage-provenance.json",
+                    as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
+                )
+            )
+        #expect(report.boundaryTermGatePassed)
+        #expect(report.maximumContributionClosureResidual < 1e-9)
+        #expect(report.maximumReconstructionDifferenceFromStageArtifact < 1e-9)
         #expect(
-            result.report.collisionLimiterActivationFractionOfCellSteps
-                <= report.maximumCorrectionActivationFraction
-        )
+            report.negativeMovingBoundaryDirectionsAtFailure
+                == [2, 8, 12, 13, 16])
+        #expect(report.dominantRepairTarget == "moving-wall-correction")
     }
-}
 
-@Test
-func indexedBirdSurfaceMetalGeometryClosesAllFramesAndCPUMilestones() throws {
-    let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let report = try MetalIndexedBirdSurfaceValidator.audit(dataset)
-    #expect(report.passed)
-    #expect(report.frameAudits.count == 144)
-    #expect(report.cpuRasterMilestoneFrames == [0, 33, 89, 126, 143])
-    #expect(report.fractionalInterpolationProbeTimesSeconds.count == 5)
-    #expect(report.maximumPreparedPositionErrorMeters <= 2e-7)
-    #expect(report.maximumPreparedVelocityErrorMetersPerSecond <= 5e-3)
-    #expect(report.maximumCPUMaskMismatchCellCount == 0)
-    #expect(report.maximumCPUWallVelocityDifferenceLattice <= 2.5e-5)
-    #expect(report.maximumCPUSignedDistanceDifferenceCells <= 2e-5)
-    #expect(report.allComponentsPresentEveryFrame)
-    #expect(report.allValuesFinite)
-    #expect(!report.fluidCollisionExecuted)
-    #expect(!report.forceAccumulationExecuted)
-    #expect(report.frameAudits.allSatisfy {
-        $0.componentSolidCellCounts.count == 4
-            && $0.componentSolidCellCounts.allSatisfy { $0 > 0 }
-    })
-}
+    @Test
+    func productionMetalD16MovingWallCandidateClosesForceMomentumLedgers() throws {
+        func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+            try JSONDecoder().decode(
+                type,
+                from: Data(
+                    contentsOf: repositoryRootURL.appendingPathComponent(
+                        "ValidationArtifacts/\(name)"
+                    ))
+            )
+        }
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
+        )
+        let report =
+            try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallLedger(
+                surface: surface,
+                target: target,
+                preregistration: try decode(
+                    "deetjen-dove-collision-grid-preregistration.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+                ),
+                discriminator: try decode(
+                    "deetjen-dove-collision-grid-discriminator.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+                ),
+                completion: try decode(
+                    "deetjen-dove-collision-grid-completion.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+                ),
+                provenance: try decode(
+                    "deetjen-dove-d16-population-stage-provenance.json",
+                    as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
+                ),
+                boundaryTerms: try decode(
+                    "deetjen-dove-d16-boundary-term-decomposition.json",
+                    as: MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self
+                ),
+                admissibility: try decode(
+                    "deetjen-dove-d16-moving-wall-admissibility-ab.json",
+                    as: MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self
+                )
+            )
+        #expect(report.ledgerGatePassed)
+        #expect(report.result.completedSteps == 751)
+        #expect(report.result.minimumPopulation > 0)
+        #expect(report.result.relativeRMSRawControlVolumeClosureResidual <= 0.005)
+        #expect(report.result.relativeRMSGlobalFluidClosureResidual <= 0.005)
+        #expect(!report.productionDefaultModified)
+    }
 
-@Test
-func indexedBirdSurfaceClosesProductionMovingBoundaryImpulse() throws {
-    let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
-        manifestURL: measuredBirdSurfaceManifestURL
-    )
-    let report = try MetalIndexedBirdSurfaceCouplingValidator.audit(dataset)
-    #expect(report.passed)
-    #expect(report.steps >= 8)
-    #expect(report.newlyCoveredCellEvents > 0)
-    #expect(report.newlyUncoveredCellEvents > 0)
-    #expect(report.persistentBoundaryLinkEvents > 0)
-    #expect(report.maximumTopologyCounterMismatchCells == 0)
-    #expect(report.componentSolidCellCounts.count == 4)
-    #expect(report.componentSolidCellCounts.allSatisfy { $0 > 0 })
-    #expect(report.periodicBoundaries)
-    #expect(report.spongeStrength == 0)
-    #expect(report.maximumWallMach <= 0.15)
-    #expect(report.relativeRMSBoundaryClosureResidual <= 0.005)
-    #expect(report.allValuesFinite)
-    #expect(report.fluidKernel == "stepFluidTRT")
-    #expect(report.forceEstimator == "conservative-moving-domain-mode-6")
-    #expect(report.samples.allSatisfy {
-        $0.sourceLedgerTransitionCellCount
-            == $0.newlyCoveredCellCount + $0.newlyUncoveredCellCount
-            && $0.farFieldImpulseToFluid == .zero
-            && $0.spongeImpulseToFluid == .zero
-    })
-}
+    @Test
+    func productionMetalD16MovingWallCandidateCompletesRegisteredWindow() throws {
+        func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+            try JSONDecoder().decode(
+                type,
+                from: Data(
+                    contentsOf: repositoryRootURL.appendingPathComponent(
+                        "ValidationArtifacts/\(name)"
+                    ))
+            )
+        }
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
+        )
+        let report =
+            try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridMovingWallFullWindow(
+                surface: surface,
+                target: target,
+                preregistration: try decode(
+                    "deetjen-dove-collision-grid-preregistration.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridPreregistration.self
+                ),
+                discriminator: try decode(
+                    "deetjen-dove-collision-grid-discriminator.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridDiscriminatorReport.self
+                ),
+                completion: try decode(
+                    "deetjen-dove-collision-grid-completion.json",
+                    as: MetalIndexedBirdSurfaceCollisionGridCompletionReport.self
+                ),
+                provenance: try decode(
+                    "deetjen-dove-d16-population-stage-provenance.json",
+                    as: MetalIndexedBirdSurfacePopulationStageProvenanceReport.self
+                ),
+                boundaryTerms: try decode(
+                    "deetjen-dove-d16-boundary-term-decomposition.json",
+                    as: MetalIndexedBirdSurfaceBoundaryTermDecompositionReport.self
+                ),
+                admissibility: try decode(
+                    "deetjen-dove-d16-moving-wall-admissibility-ab.json",
+                    as: MetalIndexedBirdSurfaceMovingWallAdmissibilityABReport.self
+                ),
+                retainedLedger: try decode(
+                    "deetjen-dove-d16-moving-wall-ledger.json",
+                    as: MetalIndexedBirdSurfaceMovingWallLedgerReport.self
+                )
+            )
+        #expect(report.fullWindowGatePassed)
+        #expect(report.ledgerResult.completedSteps == 7_552)
+        #expect(report.registeredComparisonSampleCount == 187)
+        #expect(report.ledgerResult.minimumPopulation > 0)
+        #expect(report.ledgerResult.relativeRMSRawControlVolumeClosureResidual <= 0.005)
+        #expect(report.ledgerResult.relativeRMSGlobalFluidClosureResidual <= 0.005)
+        #expect(!report.productionDefaultModified)
+        #expect(!report.experimentalAgreementGateApplied)
+    }
+
+    @Test
+    func measuredBirdCollisionCandidatesCloseIndependentMomentumBudgets() throws {
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
+        )
+        let report =
+            try MetalIndexedBirdSurfacePilotValidator
+            .collisionMomentumClosure(surface: surface, target: target)
+        #expect(report.screeningGatePassed)
+        #expect(report.allCandidateRunsCompleted)
+        #expect(report.cases.count == 2)
+        #expect(
+            report.eligibleCollisionOperators == [
+                "positivity-preserving-regularized-bgk",
+                "positivity-preserving-recursive-regularized-bgk",
+            ])
+        #expect(report.minimumControlSurfaceDistanceFromSweptSurfaceCells >= 5)
+        #expect(
+            report.minimumControlSurfaceDistanceFromDomainBoundaryCells
+                >= report.spongeWidthCells
+        )
+        for result in report.cases {
+            #expect(result.completedSteps == 800)
+            #expect(result.samples.count == 800)
+            #expect(result.maximumSolidControlSurfaceCrossingLinkCount == 0)
+            #expect(result.sampledPopulationPositivityPassed)
+            #expect(result.momentumClosurePassed)
+            #expect(
+                result.relativeRMSRawControlVolumeClosureResidual <= 0.005
+            )
+            #expect(result.relativeRMSGlobalFluidClosureResidual <= 0.005)
+        }
+    }
+
+    @Test
+    func measuredBirdCollisionCandidatesCompleteExtendedPilot() throws {
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
+        )
+        let report =
+            try MetalIndexedBirdSurfacePilotValidator
+            .collisionExtendedPilot(surface: surface, target: target)
+        #expect(report.screeningGatePassed)
+        #expect(report.allCandidateRunsCompleted)
+        #expect(report.requestedFluidSteps == 3_776)
+        #expect(report.requestedComparisonSamples == 187)
+        #expect(report.populationDiagnosticStride == 1)
+        #expect(report.cases.count == 2)
+        #expect(
+            report.eligibleCollisionOperators == [
+                "positivity-preserving-regularized-bgk",
+                "positivity-preserving-recursive-regularized-bgk",
+            ])
+        #expect(report.endpointPairwiseNormalizedRMSDifference != nil)
+        #expect(report.intervalMeanPairwiseNormalizedRMSDifference != nil)
+        for result in report.cases {
+            #expect(result.completionAndPositivityGatePassed)
+            #expect(result.correctionIntrusionGatePassed)
+            #expect(result.eligibleForRefinementDiscrimination)
+            #expect(result.report.completedFluidSteps == 3_776)
+            #expect(result.report.recordedComparisonSamples == 187)
+            #expect(result.report.recordedPopulationDiagnosticSamples == 3_776)
+            #expect(result.report.allComponentsPresentAtComparisonSamples)
+            #expect(result.report.allLoadsFinite)
+            #expect(result.report.allSampledPopulationsFinite)
+            #expect(result.report.sampledPopulationPositivityPassed)
+            #expect(result.report.integrationGatePassed)
+            #expect(
+                result.report.collisionLimiterActivationFractionOfCellSteps
+                    <= report.maximumCorrectionActivationFraction
+            )
+        }
+    }
+
+    @Test
+    func indexedBirdSurfaceMetalGeometryClosesAllFramesAndCPUMilestones() throws {
+        let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let report = try MetalIndexedBirdSurfaceValidator.audit(dataset)
+        #expect(report.passed)
+        #expect(report.frameAudits.count == 144)
+        #expect(report.cpuRasterMilestoneFrames == [0, 33, 89, 126, 143])
+        #expect(report.fractionalInterpolationProbeTimesSeconds.count == 5)
+        #expect(report.maximumPreparedPositionErrorMeters <= 2e-7)
+        #expect(report.maximumPreparedVelocityErrorMetersPerSecond <= 5e-3)
+        #expect(report.maximumCPUMaskMismatchCellCount == 0)
+        #expect(report.maximumCPUWallVelocityDifferenceLattice <= 2.5e-5)
+        #expect(report.maximumCPUSignedDistanceDifferenceCells <= 2e-5)
+        #expect(report.allComponentsPresentEveryFrame)
+        #expect(report.allValuesFinite)
+        #expect(!report.fluidCollisionExecuted)
+        #expect(!report.forceAccumulationExecuted)
+        #expect(
+            report.frameAudits.allSatisfy {
+                $0.componentSolidCellCounts.count == 4
+                    && $0.componentSolidCellCounts.allSatisfy { $0 > 0 }
+            })
+    }
+
+    @Test
+    func indexedBirdSurfaceClosesProductionMovingBoundaryImpulse() throws {
+        let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let report = try MetalIndexedBirdSurfaceCouplingValidator.audit(dataset)
+        #expect(report.passed)
+        #expect(report.steps >= 8)
+        #expect(report.newlyCoveredCellEvents > 0)
+        #expect(report.newlyUncoveredCellEvents > 0)
+        #expect(report.persistentBoundaryLinkEvents > 0)
+        #expect(report.maximumTopologyCounterMismatchCells == 0)
+        #expect(report.componentSolidCellCounts.count == 4)
+        #expect(report.componentSolidCellCounts.allSatisfy { $0 > 0 })
+        #expect(report.periodicBoundaries)
+        #expect(report.spongeStrength == 0)
+        #expect(report.maximumWallMach <= 0.15)
+        #expect(report.relativeRMSBoundaryClosureResidual <= 0.005)
+        #expect(report.allValuesFinite)
+        #expect(report.fluidKernel == "stepFluidTRT")
+        #expect(report.forceEstimator == "conservative-moving-domain-mode-6")
+        #expect(
+            report.samples.allSatisfy {
+                $0.sourceLedgerTransitionCellCount
+                    == $0.newlyCoveredCellCount + $0.newlyUncoveredCellCount
+                    && $0.farFieldImpulseToFluid == .zero
+                    && $0.spongeImpulseToFluid == .zero
+            })
+    }
 #endif
 
 private func vectorError(

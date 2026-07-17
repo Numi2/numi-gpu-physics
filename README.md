@@ -12,9 +12,9 @@
   <img alt="BSD 3-Clause" src="https://img.shields.io/badge/License-BSD--3--Clause-blue">
 </p>
 
-![BirdFlowMetal native Metal viewer showing a continuous forward wingbeat of the reconstructed Deetjen dove, source-locked kinematics, the audited direction-composition discriminator, and the open D28/D32 refinement boundary](Docs/Media/birdflow-metal-native-viewer.gif)
+![BirdFlowMetal native Metal viewer showing a continuous forward wingbeat of the reconstructed Deetjen dove, source-locked kinematics, the cleared planar and curved direction-composition canonicals, and the open D28/D32 refinement boundary](Docs/Media/birdflow-metal-native-viewer.gif)
 
-<p align="center"><em>Native Metal rendering of the forward, body-following 27–121 ms repeated-pose interval, with a labeled 14 ms presentation-only closure for a continuous loop. Trails show surface kinematics, not CFD streamlines. The overlay is SHA-locked through the audited D32 RR3 window, selected-link provenance, and the exact zero-fluid six-factor Shapley discriminator: lattice-direction composition explains 87.66% of the absolute conditioned-factor ledger and leads both temporal halves. The D28/D32 force-history change remains 5.632% against the frozen 5% limit, so grid convergence and experimental agreement remain open.</em></p>
+<p align="center"><em>Native Metal rendering of the forward, body-following 27–121 ms repeated-pose interval, with a labeled 14 ms presentation-only closure for a continuous loop. Trails show surface kinematics, not CFD streamlines. The overlay is SHA-locked through the audited D32 RR3 window, selected-link provenance, the exact zero-fluid six-factor Shapley discriminator, the 40-case planar Metal/CPU canonical, and the source-locked complete-dove D12/D16 curved canonical. Direction composition leads the conditioned ledger at 87.66%, but both basic planar weighting and curved fixed-profile redistribution are now cleared: the curved whole-surface histogram changes by only 0.130% and the maximum whole-response change is 0.0091%. The D28/D32 force-history change remains 5.632% against the frozen 5% limit, so fine-grid direction support, grid convergence, and experimental agreement remain open.</em></p>
 
 <p align="center"><a href="Docs/Media/Progress/README.md">Explore the visual progress archive →</a></p>
 
@@ -46,7 +46,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; targeted provenance covers `100.0%/83.45%` of D28/D32 reflected X/Z score, and zero-fluid conditioned cross-application attributes `87.66%` of its factor ledger to lattice direction composition; force-history change remains `5.632%` against `5%`, so convergence and experimental agreement remain open |
+| Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; zero-fluid attribution assigns `87.66%` of its factor ledger to direction composition, while the planar canonical and a source-locked D12/D16 complete-dove curved canonical clear basic weighting and coarse curved redistribution; force-history change remains `5.632%` against `5%`, so fine-grid direction support, convergence, and experimental agreement remain open |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -595,14 +595,43 @@ direction composition is the stable leader in both temporal halves and supplies
 and [`18-check audit`](ValidationArtifacts/deetjen-dove-link-composition-discriminator-audit.json)
 are retained in the repository.
 
-Highest-ROI next experiment: one preregistered oblique planar/slab canonical
-that varies only D3Q19 direction composition across two resolutions and several
-subcell phases while holding wall motion, interpolation branch, topology,
-populations, and physical area fixed. Why: direction mix now owns `87.66%` of
-the independently reconstructed ledger. ROI: a tiny no-fluid or minimal-step
-case can distinguish a legitimate lattice quadrature effect from erroneous
-direction weighting before any production edit or D36 allocation. D36, grid
-convergence, experimental agreement, and production promotion remain blocked.
+The preregistered direction-composition planar canonical is now complete. It
+uses four X/Z orientations, two grids (`48/64` cells per fixed one-metre patch),
+five subcell phases, and both rest-equilibrium and source-locked reflected-
+population profiles: 40 cases total, with no collision, streaming, topology,
+or fluid evolution. Metal and an independent CPU enumerator agree on every
+per-direction link count. All eight frozen `5%` gates pass: the maximum fine
+analytic-vector error is `1.284%`, coarse/fine phase-mean change `2.867%`, fine
+phase spread `1.187%`, direction-histogram variation `0.657%`, equilibrium
+normal error `0.477%`, and tangential leakage `0.332%`. A retained V1 negative
+control documents the exact Float tie-classification failure that motivated a
+coordinate-arithmetic-only V2 revision; the independent NumPy audit passes all
+14 checks. See the
+[`V2 contract`](ValidationArtifacts/deetjen-dove-direction-composition-canonical-preregistration.json),
+[`40-case result`](ValidationArtifacts/deetjen-dove-direction-composition-canonical.json),
+and [`audit`](ValidationArtifacts/deetjen-dove-direction-composition-canonical-audit.json).
+
+The source-locked curved direction-only canonical is complete. It reuses the
+audited complete-dove Metal/CPU link counts at source sample 53 (`26.5 ms`) on
+D12 and D16, all four components, and the same equilibrium and Deetjen midpoint
+population profiles—without collision, streaming, topology evolution, or new
+Metal execution. Whole-bird opposite-direction counts match exactly and the
+equilibrium response cancels exactly. D12-to-D16 whole-surface histogram total
+variation is `0.1302%`; the maximum whole-response change is `0.00913%` and the
+worst component response change is `0.7111%`, all far below the frozen
+`5%/10%` limits. The independent NumPy audit passes `14/14` checks. See the
+[`contract`](ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-preregistration.json),
+[`result`](ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical.json),
+and [`audit`](ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-audit.json).
+
+Highest-ROI next experiment: preregister one archive-only D28/D32 full-link
+direction-count capture at the same `26.5 ms` phase. Why: planar arithmetic and
+coarse curved redistribution are now cleared, so the unresolved `5.632%`
+force-history miss can only be meaningfully tested at the actual fine pair.
+ROI: record counts only—no collision or fluid evolution—and decide whether
+fine-grid direction support is stable before allocating another long ladder or
+editing production physics. D36, grid convergence, experimental agreement,
+and production promotion remain blocked.
 
 ## Latest high-Re result
 

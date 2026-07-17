@@ -30,6 +30,13 @@ public enum ReadmeShowcaseCapture {
     let doveLinkCompositionPreregistrationURL: URL?
     let doveLinkCompositionAttributionURL: URL?
     let doveLinkCompositionAuditURL: URL?
+    let doveDirectionCompositionPreregistrationURL: URL?
+    let doveDirectionCompositionCanonicalURL: URL?
+    let doveDirectionCompositionAuditURL: URL?
+    let doveLinkGeometryReportURL: URL?
+    let doveCurvedDirectionCompositionPreregistrationURL: URL?
+    let doveCurvedDirectionCompositionCanonicalURL: URL?
+    let doveCurvedDirectionCompositionAuditURL: URL?
 
     public init(commandLine: [String]) throws {
       guard
@@ -123,6 +130,27 @@ public enum ReadmeShowcaseCapture {
       doveLinkCompositionAuditURL = try fileURL(
         after: "--capture-dove-link-composition-audit"
       )
+      doveDirectionCompositionPreregistrationURL = try fileURL(
+        after: "--capture-dove-direction-composition-preregistration"
+      )
+      doveDirectionCompositionCanonicalURL = try fileURL(
+        after: "--capture-dove-direction-composition-canonical"
+      )
+      doveDirectionCompositionAuditURL = try fileURL(
+        after: "--capture-dove-direction-composition-audit"
+      )
+      doveLinkGeometryReportURL = try fileURL(
+        after: "--capture-dove-link-geometry-report"
+      )
+      doveCurvedDirectionCompositionPreregistrationURL = try fileURL(
+        after: "--capture-dove-curved-direction-composition-preregistration"
+      )
+      doveCurvedDirectionCompositionCanonicalURL = try fileURL(
+        after: "--capture-dove-curved-direction-composition-canonical"
+      )
+      doveCurvedDirectionCompositionAuditURL = try fileURL(
+        after: "--capture-dove-curved-direction-composition-audit"
+      )
       let doveInputs = [
         doveManifestURL,
         doveD32FullWindowArtifactURL,
@@ -142,6 +170,13 @@ public enum ReadmeShowcaseCapture {
         doveLinkCompositionPreregistrationURL,
         doveLinkCompositionAttributionURL,
         doveLinkCompositionAuditURL,
+        doveDirectionCompositionPreregistrationURL,
+        doveDirectionCompositionCanonicalURL,
+        doveDirectionCompositionAuditURL,
+        doveLinkGeometryReportURL,
+        doveCurvedDirectionCompositionPreregistrationURL,
+        doveCurvedDirectionCompositionCanonicalURL,
+        doveCurvedDirectionCompositionAuditURL,
       ]
       guard
         doveInputs.allSatisfy({ $0 == nil })
@@ -156,6 +191,10 @@ public enum ReadmeShowcaseCapture {
             + "attribution, and audit"
             + ", plus the conditioned link-composition preregistration, "
             + "attribution, and audit"
+            + ", plus the planar direction-composition preregistration, "
+            + "canonical, and audit"
+            + ", plus the source link-geometry report and curved "
+            + "direction-composition preregistration, canonical, and audit"
         )
       }
       guard width >= 320, height >= 180, frameCount >= 2 else {
@@ -206,7 +245,20 @@ public enum ReadmeShowcaseCapture {
         arguments.doveLinkCompositionPreregistrationURL,
       let linkCompositionAttributionURL =
         arguments.doveLinkCompositionAttributionURL,
-      let linkCompositionAuditURL = arguments.doveLinkCompositionAuditURL
+      let linkCompositionAuditURL = arguments.doveLinkCompositionAuditURL,
+      let directionCompositionPreregistrationURL =
+        arguments.doveDirectionCompositionPreregistrationURL,
+      let directionCompositionCanonicalURL =
+        arguments.doveDirectionCompositionCanonicalURL,
+      let directionCompositionAuditURL =
+        arguments.doveDirectionCompositionAuditURL,
+      let linkGeometryReportURL = arguments.doveLinkGeometryReportURL,
+      let curvedDirectionCompositionPreregistrationURL =
+        arguments.doveCurvedDirectionCompositionPreregistrationURL,
+      let curvedDirectionCompositionCanonicalURL =
+        arguments.doveCurvedDirectionCompositionCanonicalURL,
+      let curvedDirectionCompositionAuditURL =
+        arguments.doveCurvedDirectionCompositionAuditURL
     {
       try MeasuredDoveShowcaseCapture.run(
         arguments: arguments,
@@ -228,7 +280,17 @@ public enum ReadmeShowcaseCapture {
         linkCompositionPreregistrationURL:
           linkCompositionPreregistrationURL,
         linkCompositionAttributionURL: linkCompositionAttributionURL,
-        linkCompositionAuditURL: linkCompositionAuditURL
+        linkCompositionAuditURL: linkCompositionAuditURL,
+        directionCompositionPreregistrationURL:
+          directionCompositionPreregistrationURL,
+        directionCompositionCanonicalURL: directionCompositionCanonicalURL,
+        directionCompositionAuditURL: directionCompositionAuditURL,
+        linkGeometryReportURL: linkGeometryReportURL,
+        curvedDirectionCompositionPreregistrationURL:
+          curvedDirectionCompositionPreregistrationURL,
+        curvedDirectionCompositionCanonicalURL:
+          curvedDirectionCompositionCanonicalURL,
+        curvedDirectionCompositionAuditURL: curvedDirectionCompositionAuditURL
       )
       return
     }

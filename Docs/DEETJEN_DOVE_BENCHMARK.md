@@ -533,14 +533,33 @@ leads both temporal halves and supplies `87.66%` of the absolute ledger.
 Link-measure scale is second at `11.71%` with a cancelling sign; each remaining
 factor is below `0.34%`. The independent audit passes all 18 checks.
 
-The highest-return next step is therefore one preregistered oblique
-planar/slab canonical isolating D3Q19 direction composition across two grids
-and several subcell phases. Wall motion, interpolation branch, topology,
-populations, and physical area must remain fixed. This tiny experiment can
-distinguish legitimate quadrature sensitivity from erroneous direction
-weighting before another long fluid ladder or broad boundary edit. D36,
-convergence, experimental agreement, production promotion, and free flight
-remain unauthorized.
+The preregistered oblique planar canonical is now complete: four X/Z
+orientations, two grids, five subcell phases, and equilibrium plus source-
+locked population profiles produce 40 no-fluid cases. Metal and CPU agree on
+every direction count. Maximum fine analytic-vector error is `1.284%`, the
+coarse/fine phase-mean change `2.867%`, fine phase spread `1.187%`, and
+direction-histogram variation `0.657%`; all eight unchanged `5%` gates pass.
+The retained V1 tie-classification failure and independent `14/14`-check audit
+make the arithmetic revision explicit. Basic planar weighting is therefore
+cleared; the `87.66%` attribution is not evidence for a global D3Q19 direction
+weight bug.
+
+The source-locked curved-surface direction-only canonical is now complete. It
+uses the audited sample-53 (`26.5 ms`) complete-dove D12/D16 Metal/CPU link
+counts, four component masks, and the same two frozen profiles without fluid
+evolution. Opposite whole-surface counts balance exactly; equilibrium cancels
+exactly; D12-to-D16 whole histogram TV is `0.1302%`; maximum whole-response
+change is `0.00913%`; and the worst component response change is `0.7111%`.
+All seven gates and all 14 independent audit checks pass. This rules out coarse
+curved direction redistribution as the explanation for the `87.66%`
+conditioned attribution, but it does not validate the source report's separate
+wall-velocity field.
+
+The highest-return next step is a preregistered archive-only D28/D32 full-link
+direction-count capture at the same `26.5 ms` phase. It targets the actual fine
+pair while avoiding collision and fluid evolution. D36, convergence,
+experimental agreement, production promotion, and free flight remain
+unauthorized.
 
 ## Claim after a successful ladder
 

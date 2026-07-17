@@ -1,0 +1,165 @@
+{
+  "claimBoundary": "This archive-only canonical tests fixed-population D3Q19 direction redistribution on one source-locked curved complete-dove surface at D12/D16. It cannot establish the D28/D32 bird-load grid limit, validate wall velocity or interpolation, authorize a production edit or new fluid run, establish experimental agreement, or claim quantitative bird flight or free flight.",
+  "classificationRule": "First require the source Metal/CPU parity gates, exact whole-mask opposite-direction balance, and closed-surface equilibrium cancellation. Clear curved direction redistribution at D12/D16 only if whole/component direction histograms and both frozen profile responses remain within their preregistered limits. A source-profile-only failure localizes population-weighted curved direction redistribution; a histogram or equilibrium failure localizes geometry/counting redistribution.",
+  "components": [
+    {
+      "componentName": "body",
+      "partIdentifier": 1
+    },
+    {
+      "componentName": "leftWing",
+      "partIdentifier": 2
+    },
+    {
+      "componentName": "rightWing",
+      "partIdentifier": 3
+    },
+    {
+      "componentName": "tail",
+      "partIdentifier": 4
+    }
+  ],
+  "d20RunAuthorized": false,
+  "d28D32FluidRunAuthorized": false,
+  "datasetIdentifier": "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "directionIndices": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "experimentalAgreementGateApplied": false,
+  "fixedInputs": "Hashed Deetjen OB_F03 complete-surface manifest; source sample 53 at 26.5 ms; audited production D12/D16 indexed-surface Metal and CPU link bins; production D3Q19 directions; and the exact planar equilibrium and Deetjen midpoint population profiles. Consume only component, direction, link count, and cell size. Ignore wall velocity, interpolation fraction, populations, force histories, and the source report's separate wall-velocity classification.",
+  "fixedPopulationProfiles": [
+    {
+      "directionPopulations": [
+        0.3333333333333333,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776
+      ],
+      "identifier": "rest-equilibrium",
+      "source": "rho=1, u=0 D3Q19 equilibrium; q0 is unused by the link sum"
+    },
+    {
+      "directionPopulations": [
+        0.0,
+        0.05481896151130449,
+        0.05673913023113411,
+        0.0,
+        0.0,
+        0.05575516067552731,
+        0.05556847946491219,
+        0.028361462604052267,
+        0.028664753198283367,
+        0.02807873461249134,
+        0.02841815050719536,
+        0.02730192725161408,
+        0.028614235197181502,
+        0.02717325645893574,
+        0.028581016389104326,
+        0.027945840058758716,
+        0.028476743097414683,
+        0.028583645169417943,
+        0.028255690238828415
+      ],
+      "identifier": "deetjen-midpoint-pooled",
+      "source": "count-weighted D28/D32 midpoint reflected-population means pooled over the 11 audited endpoints and every non-direction stratum; q0 and the unsupported pure-y directions are zero and unused because every canonical normal lies in the audited X/Z force plane"
+    }
+  ],
+  "fluidEvolutionAuthorized": false,
+  "frozenSourceSampleIndex": 53,
+  "frozenSourceTimeSeconds": 0.0265,
+  "gridConvergenceGateApplied": false,
+  "maximumComponentDirectionHistogramTotalVariation": 0.1,
+  "maximumComponentProfileResponseLedgerDifference": 0.1,
+  "maximumEquilibriumWholeSurfaceNetLedgerFraction": 1e-12,
+  "maximumWholeSurfaceDirectionHistogramTotalVariation": 0.05,
+  "maximumWholeSurfaceOppositeDirectionCountMismatch": 0,
+  "maximumWholeSurfaceProfileResponseLedgerDifference": 0.05,
+  "newMetalExecutionAuthorized": false,
+  "normalizationDefinition": "Normalize a D12/D16 response-vector change by the mean absolute direction ledger: 0.5*(sum_q ||term_D12,q|| + sum_q ||term_D16,q||). This remains finite when the closed-surface net response cancels. Direction histograms normalize N_q*dx^2 by their total over q.",
+  "oppositeDirectionPairs": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      11,
+      12
+    ],
+    [
+      13,
+      14
+    ],
+    [
+      15,
+      16
+    ],
+    [
+      17,
+      18
+    ]
+  ],
+  "passed": true,
+  "preregistrationIdentifier": "deetjen-ob-f03-curved-direction-composition-canonical-v1",
+  "productionModificationAuthorized": false,
+  "referenceLengthCells": [
+    12,
+    16
+  ],
+  "responseDefinition": "For grid g, component p, and fixed profile k, reconstruct the outward solid-to-fluid link response R_gpk = sum_q 2*f_kq*c_q*N_gpq*dx_g^2 from the archived Metal link counts. Whole-bird response is the exact sum over the four components.",
+  "schemaVersion": 1,
+  "sourceLinkGeometryAuditSHA256": "fde4a4b0897824c8db14436a37045c7dd72066bb0446683c7d7155f65cd6f66a",
+  "sourceLinkGeometryPreregistrationSHA256": "022ad277bc571bc28f7979d67a66de9c8af8bde2e84429854a4c6b1690295624",
+  "sourceLinkGeometryReportSHA256": "39237cc559c086e3a4f06d36560f17192fa9d5737d2163bc82c2b1a7785dcacf",
+  "sourcePlanarAuditSHA256": "e529ca9fc58f8b7de1d4bc63dba209096055d234bf07fb3337a37cceff10a041",
+  "sourcePlanarPreregistrationSHA256": "823486178b499708d4e0e837ab20a1e4cb3f76da41e166eaee8e7c26b6117467",
+  "sourcePlanarReportSHA256": "20ffbf3edd6b3002002dbd676c7fc664d7f1570408deb890033e109480a4cc83",
+  "sourceSurfaceManifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13"
+}

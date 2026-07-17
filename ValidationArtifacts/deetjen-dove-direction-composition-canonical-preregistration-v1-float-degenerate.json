@@ -1,0 +1,126 @@
+{
+  "analyticReference": "For fixed direction populations f_q and unit patch area, the exact one-sided planar response is sum_{c_q dot n > 0} 2 f_q c_q (c_q dot n). The lattice estimator replaces the crossing density (c_q dot n)/dx^2 with the counted production-convention solid-to-fluid links. Compare vectors, not only normal magnitude.",
+  "claimBoundary": "This tiny static planar canonical can test production-convention D3Q19 direction counting and fixed-population response against an analytic crossing-density reference. A pass clears only basic planar direction weighting; a failure localizes aliasing. It cannot establish whole-bird grid convergence, a production boundary defect, experimental agreement, quantitative bird loads, or free flight, and it never authorizes D36 or a production edit.",
+  "classificationRule": "Clear basic direction weighting only if Metal/CPU counts, both fixed-population analytic vector responses, fine-grid phase stability, coarse/fine phase means, direction-histogram variation, and the equilibrium normal/tangential gates all pass for every orientation. If only the bird-like profile fails, classify source-like direction aliasing; if equilibrium also fails, classify general direction weighting/geometry aliasing.",
+  "d36RunAuthorized": false,
+  "domainSideLengthMeters": 1.8125,
+  "experimentalAgreementGateApplied": false,
+  "fixedInputs": "Static analytic half-space; one square plane patch of fixed physical area; production D3Q19 directions; zero wall velocity; no topology change; fixed halfway q=0.5 branch; no collision, streaming, fluid state, cover/uncover impulse, or force-law modification. Only plane orientation, grid resolution, and normal subcell phase vary.",
+  "fixedPopulationProfiles": [
+    {
+      "directionPopulations": [
+        0.3333333333333333,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776
+      ],
+      "identifier": "rest-equilibrium",
+      "source": "rho=1, u=0 D3Q19 equilibrium; q0 is unused by the link sum"
+    },
+    {
+      "directionPopulations": [
+        0.0,
+        0.05481896151130449,
+        0.05673913023113411,
+        0.0,
+        0.0,
+        0.05575516067552731,
+        0.05556847946491219,
+        0.028361462604052267,
+        0.028664753198283367,
+        0.02807873461249134,
+        0.02841815050719536,
+        0.02730192725161408,
+        0.028614235197181502,
+        0.02717325645893574,
+        0.028581016389104326,
+        0.027945840058758716,
+        0.028476743097414683,
+        0.028583645169417943,
+        0.028255690238828415
+      ],
+      "identifier": "deetjen-midpoint-pooled",
+      "source": "count-weighted D28/D32 midpoint reflected-population means pooled over the 11 audited endpoints and every non-direction stratum; q0 and the unsupported pure-y directions are zero and unused because every canonical normal lies in the audited X/Z force plane"
+    }
+  ],
+  "fluidEvolutionAuthorized": false,
+  "gridConvergenceGateApplied": false,
+  "maximumCoarseFineDirectionHistogramTotalVariation": 0.05,
+  "maximumCoarseFinePhaseMeanProfileRelativeDifference": 0.05,
+  "maximumEquilibriumFineNormalResponseError": 0.05,
+  "maximumEquilibriumFineTangentialLeakage": 0.05,
+  "maximumFinePhaseProfileRelativeSpread": 0.05,
+  "maximumFineProfileVectorRelativeError": 0.05,
+  "maximumMetalCPUCountRelativeDifference": 0.0005,
+  "maximumMetalCPUPerDirectionCountMismatch": 2,
+  "orientations": [
+    {
+      "identifier": "axis-x",
+      "integerNormal": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "identifier": "face-diagonal-xz",
+      "integerNormal": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "identifier": "mixed-201",
+      "integerNormal": [
+        2,
+        0,
+        1
+      ]
+    },
+    {
+      "identifier": "oblique-302",
+      "integerNormal": [
+        3,
+        0,
+        2
+      ]
+    }
+  ],
+  "passed": true,
+  "patchSideLengthMeters": 1.0,
+  "planeOffsetRule": "plane offset from domain center is (phase - 0.5) * dx",
+  "preregistrationIdentifier": "deetjen-ob-f03-direction-composition-planar-canonical-v1",
+  "productionModificationAuthorized": false,
+  "referenceLengthCells": [
+    48,
+    64
+  ],
+  "schemaVersion": 1,
+  "sourceD28ProvenanceSHA256": "80b9dc99f84413d2ce0ff6c7438a4b90a7b976685c40a0acb47973989ebd3226",
+  "sourceD32ProvenanceSHA256": "fbcdeede0384a87c1f17cd05baab6a1bf19422c94c335c725872fa3a12abeda0",
+  "sourceDiscriminatorAuditSHA256": "5a0238be098c8e5a9cc3f071e98004268d7beb0296f2bceebdb44170fc310e07",
+  "sourceDiscriminatorSHA256": "1f07d87dbca8508c131dd06681efb31b8911002f154d13a2242807893ecc0ebb",
+  "subcellPhaseOffsets": [
+    0.1,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ]
+}

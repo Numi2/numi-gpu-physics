@@ -381,6 +381,63 @@ enum MeasuredDoveShowcaseCapture {
     let productionModificationAuthorized: Bool
   }
 
+  private struct DirectionCompositionAudit: Decodable {
+    let schemaVersion: Int
+    let preregistrationSHA256: String
+    let reportSHA256: String
+    let checkCount: Int
+    let allChecksPassed: Bool
+    let classification: String
+    let fluidEvolutionExecuted: Bool
+    let productionModificationAuthorized: Bool
+  }
+
+  private struct CurvedDirectionCompositionPreregistration: Decodable {
+    let schemaVersion: Int
+    let passed: Bool
+    let sourceLinkGeometryReportSHA256: String
+    let sourcePlanarReportSHA256: String
+    let referenceLengthCells: [Int]
+    let fluidEvolutionAuthorized: Bool
+    let newMetalExecutionAuthorized: Bool
+    let productionModificationAuthorized: Bool
+    let d20RunAuthorized: Bool
+    let d28D32FluidRunAuthorized: Bool
+  }
+
+  private struct CurvedDirectionCompositionCanonical: Decodable {
+    let schemaVersion: Int
+    let sourcePreregistrationSHA256: String
+    let sourceLinkGeometryReportSHA256: String
+    let canonicalPassed: Bool
+    let classification: String
+    let maximumWholeSurfaceOppositeDirectionCountMismatch: Int
+    let wholeSurfaceDirectionHistogramTotalVariation: Double
+    let maximumComponentDirectionHistogramTotalVariation: Double
+    let maximumWholeSurfaceProfileResponseLedgerDifference: Double
+    let maximumComponentProfileResponseLedgerDifference: Double
+    let gates: [String: Bool]
+    let equilibriumProfilePassed: Bool
+    let sourceMidpointProfilePassed: Bool
+    let fluidEvolutionExecuted: Bool
+    let newMetalExecutionPerformed: Bool
+    let productionModificationAuthorized: Bool
+    let d20RunAuthorized: Bool
+    let d28D32FluidRunAuthorized: Bool
+  }
+
+  private struct CurvedDirectionCompositionAudit: Decodable {
+    let schemaVersion: Int
+    let preregistrationSHA256: String
+    let reportSHA256: String
+    let sourceLinkGeometryReportSHA256: String
+    let checkCount: Int
+    let allChecksPassed: Bool
+    let classification: String
+    let fluidEvolutionExecuted: Bool
+    let productionModificationAuthorized: Bool
+  }
+
   private struct ForceHistory {
     let times: [Double]
     let measured: [Double]
@@ -407,7 +464,14 @@ enum MeasuredDoveShowcaseCapture {
     reflectedAuditURL: URL,
     linkCompositionPreregistrationURL: URL,
     linkCompositionAttributionURL: URL,
-    linkCompositionAuditURL: URL
+    linkCompositionAuditURL: URL,
+    directionCompositionPreregistrationURL: URL,
+    directionCompositionCanonicalURL: URL,
+    directionCompositionAuditURL: URL,
+    linkGeometryReportURL: URL,
+    curvedDirectionCompositionPreregistrationURL: URL,
+    curvedDirectionCompositionCanonicalURL: URL,
+    curvedDirectionCompositionAuditURL: URL
   ) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
       manifestURL: manifestURL
@@ -506,6 +570,43 @@ enum MeasuredDoveShowcaseCapture {
       LinkCompositionAudit.self,
       from: linkCompositionAuditData
     )
+    let directionCompositionPreregistrationData = try Data(
+      contentsOf: directionCompositionPreregistrationURL
+    )
+    let directionCompositionPreregistration = try JSONDecoder().decode(
+      MetalDirectionCompositionPreregistration.self,
+      from: directionCompositionPreregistrationData
+    )
+    let directionCompositionCanonicalData = try Data(
+      contentsOf: directionCompositionCanonicalURL
+    )
+    let directionCompositionCanonical = try JSONDecoder().decode(
+      MetalDirectionCompositionCanonicalReport.self,
+      from: directionCompositionCanonicalData
+    )
+    let directionCompositionAudit = try JSONDecoder().decode(
+      DirectionCompositionAudit.self,
+      from: Data(contentsOf: directionCompositionAuditURL)
+    )
+    let linkGeometryReportData = try Data(contentsOf: linkGeometryReportURL)
+    let curvedDirectionCompositionPreregistrationData = try Data(
+      contentsOf: curvedDirectionCompositionPreregistrationURL
+    )
+    let curvedDirectionCompositionPreregistration = try JSONDecoder().decode(
+      CurvedDirectionCompositionPreregistration.self,
+      from: curvedDirectionCompositionPreregistrationData
+    )
+    let curvedDirectionCompositionCanonicalData = try Data(
+      contentsOf: curvedDirectionCompositionCanonicalURL
+    )
+    let curvedDirectionCompositionCanonical = try JSONDecoder().decode(
+      CurvedDirectionCompositionCanonical.self,
+      from: curvedDirectionCompositionCanonicalData
+    )
+    let curvedDirectionCompositionAudit = try JSONDecoder().decode(
+      CurvedDirectionCompositionAudit.self,
+      from: Data(contentsOf: curvedDirectionCompositionAuditURL)
+    )
     let forceHistory = try validateAndBuildHistory(
       dataset: dataset,
       artifact: artifact,
@@ -539,7 +640,25 @@ enum MeasuredDoveShowcaseCapture {
       linkCompositionAttribution: linkCompositionAttribution,
       linkCompositionAttributionSHA256:
         sha256(linkCompositionAttributionData),
-      linkCompositionAudit: linkCompositionAudit
+      linkCompositionAudit: linkCompositionAudit,
+      directionCompositionPreregistration:
+        directionCompositionPreregistration,
+      directionCompositionPreregistrationSHA256:
+        sha256(directionCompositionPreregistrationData),
+      directionCompositionCanonical: directionCompositionCanonical,
+      directionCompositionCanonicalSHA256:
+        sha256(directionCompositionCanonicalData),
+      directionCompositionAudit: directionCompositionAudit,
+      linkGeometryReportSHA256: sha256(linkGeometryReportData),
+      curvedDirectionCompositionPreregistration:
+        curvedDirectionCompositionPreregistration,
+      curvedDirectionCompositionPreregistrationSHA256:
+        sha256(curvedDirectionCompositionPreregistrationData),
+      curvedDirectionCompositionCanonical:
+        curvedDirectionCompositionCanonical,
+      curvedDirectionCompositionCanonicalSHA256:
+        sha256(curvedDirectionCompositionCanonicalData),
+      curvedDirectionCompositionAudit: curvedDirectionCompositionAudit
     )
     guard let device = MTLCreateSystemDefaultDevice() else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
@@ -592,7 +711,8 @@ enum MeasuredDoveShowcaseCapture {
           d32FullWindow: artifact,
           refinement: refinement,
           phaseLocalization: phaseLocalization,
-          linkCompositionAttribution: linkCompositionAttribution,
+          curvedDirectionCompositionCanonical:
+            curvedDirectionCompositionCanonical,
           frameCoordinate: loop.sourceFrameCoordinate(phase: progress)
         )
       }
@@ -641,7 +761,20 @@ enum MeasuredDoveShowcaseCapture {
     linkCompositionPreregistrationSHA256: String,
     linkCompositionAttribution: LinkCompositionAttribution,
     linkCompositionAttributionSHA256: String,
-    linkCompositionAudit: LinkCompositionAudit
+    linkCompositionAudit: LinkCompositionAudit,
+    directionCompositionPreregistration:
+      MetalDirectionCompositionPreregistration,
+    directionCompositionPreregistrationSHA256: String,
+    directionCompositionCanonical: MetalDirectionCompositionCanonicalReport,
+    directionCompositionCanonicalSHA256: String,
+    directionCompositionAudit: DirectionCompositionAudit,
+    linkGeometryReportSHA256: String,
+    curvedDirectionCompositionPreregistration:
+      CurvedDirectionCompositionPreregistration,
+    curvedDirectionCompositionPreregistrationSHA256: String,
+    curvedDirectionCompositionCanonical: CurvedDirectionCompositionCanonical,
+    curvedDirectionCompositionCanonicalSHA256: String,
+    curvedDirectionCompositionAudit: CurvedDirectionCompositionAudit
   ) throws -> ForceHistory {
     let expectedOperator = "positivity-preserving-recursive-regularized-bgk"
     guard dataset.frameCount == 144,
@@ -685,10 +818,12 @@ enum MeasuredDoveShowcaseCapture {
       refinement.sourceD32AuditSHA256 == auditSHA256,
       refinement.gridTrendScore > refinement.maximumFinePairDifference,
       abs(refinement.gridTrendScore - 0.056_321_598_232_749_01) < 1e-12,
-      abs(refinement.metrics.horizontalForceNormalizedRMSDifference
-        - 0.073_756_565_155_349_02) < 1e-12,
-      abs(refinement.metrics.verticalForceNormalizedRMSDifference
-        - 0.046_610_471_350_922_694) < 1e-12,
+      abs(
+        refinement.metrics.horizontalForceNormalizedRMSDifference
+          - 0.073_756_565_155_349_02) < 1e-12,
+      abs(
+        refinement.metrics.verticalForceNormalizedRMSDifference
+          - 0.046_610_471_350_922_694) < 1e-12,
       !refinement.finePairStabilizationPassed,
       !refinement.gridConvergenceAccepted,
       !refinement.productionModificationAuthorized,
@@ -698,10 +833,12 @@ enum MeasuredDoveShowcaseCapture {
       !phaseLocalization.fluidEvolutionExecuted,
       phaseLocalization.classification
         == "early-window-phase-localized-two-component-grid-sensitivity",
-      abs(phaseLocalization.targetedReplayRecommendation.startTimeSeconds
-        - 0.025) < 1e-12,
-      abs(phaseLocalization.targetedReplayRecommendation.endTimeSeconds
-        - 0.030) < 1e-12,
+      abs(
+        phaseLocalization.targetedReplayRecommendation.startTimeSeconds
+          - 0.025) < 1e-12,
+      abs(
+        phaseLocalization.targetedReplayRecommendation.endTimeSeconds
+          - 0.030) < 1e-12,
       !phaseLocalization.targetedReplayRecommendation.d36RunAuthorized,
       phaseLocalizationAudit.reportSHA256 == phaseLocalizationSHA256,
       phaseLocalizationAudit.allChecksPassed,
@@ -828,6 +965,89 @@ enum MeasuredDoveShowcaseCapture {
       linkCompositionAudit.allChecksPassed,
       !linkCompositionAudit.fluidEvolutionExecuted,
       !linkCompositionAudit.productionModificationAuthorized,
+      directionCompositionPreregistration.schemaVersion == 2,
+      directionCompositionPreregistration.passed,
+      !directionCompositionPreregistration.fluidEvolutionAuthorized,
+      !directionCompositionPreregistration.productionModificationAuthorized,
+      !directionCompositionPreregistration.d36RunAuthorized,
+      directionCompositionCanonical.sourcePreregistrationSHA256
+        == directionCompositionPreregistrationSHA256,
+      directionCompositionCanonical.cases.count == 40,
+      directionCompositionCanonical.canonicalPassed,
+      directionCompositionCanonical.basicPlanarDirectionWeightingCleared,
+      directionCompositionCanonical.maximumMetalCPUPerDirectionCountMismatch
+        == 0,
+      directionCompositionCanonical.maximumMetalCPUCountRelativeDifference
+        == 0,
+      directionCompositionCanonical.maximumFineProfileVectorRelativeError
+        < 0.013,
+      directionCompositionCanonical.gates.count == 8,
+      directionCompositionCanonical.gates.values.allSatisfy({ $0 }),
+      !directionCompositionCanonical.fluidEvolutionExecuted,
+      !directionCompositionCanonical.productionModificationAuthorized,
+      directionCompositionAudit.schemaVersion == 1,
+      directionCompositionAudit.preregistrationSHA256
+        == directionCompositionPreregistrationSHA256,
+      directionCompositionAudit.reportSHA256
+        == directionCompositionCanonicalSHA256,
+      directionCompositionAudit.checkCount == 14,
+      directionCompositionAudit.allChecksPassed,
+      directionCompositionAudit.classification
+        == directionCompositionCanonical.classification,
+      !directionCompositionAudit.fluidEvolutionExecuted,
+      !directionCompositionAudit.productionModificationAuthorized,
+      curvedDirectionCompositionPreregistration.schemaVersion == 1,
+      curvedDirectionCompositionPreregistration.passed,
+      curvedDirectionCompositionPreregistration.referenceLengthCells == [12, 16],
+      curvedDirectionCompositionPreregistration.sourceLinkGeometryReportSHA256
+        == linkGeometryReportSHA256,
+      curvedDirectionCompositionPreregistration.sourcePlanarReportSHA256
+        == directionCompositionCanonicalSHA256,
+      !curvedDirectionCompositionPreregistration.fluidEvolutionAuthorized,
+      !curvedDirectionCompositionPreregistration.newMetalExecutionAuthorized,
+      !curvedDirectionCompositionPreregistration.productionModificationAuthorized,
+      !curvedDirectionCompositionPreregistration.d20RunAuthorized,
+      !curvedDirectionCompositionPreregistration.d28D32FluidRunAuthorized,
+      curvedDirectionCompositionCanonical.schemaVersion == 1,
+      curvedDirectionCompositionCanonical.sourcePreregistrationSHA256
+        == curvedDirectionCompositionPreregistrationSHA256,
+      curvedDirectionCompositionCanonical.sourceLinkGeometryReportSHA256
+        == linkGeometryReportSHA256,
+      curvedDirectionCompositionCanonical.canonicalPassed,
+      curvedDirectionCompositionCanonical.classification
+        == "curved-direction-redistribution-cleared-at-d12-d16",
+      curvedDirectionCompositionCanonical
+        .maximumWholeSurfaceOppositeDirectionCountMismatch == 0,
+      curvedDirectionCompositionCanonical
+        .wholeSurfaceDirectionHistogramTotalVariation < 0.0014,
+      curvedDirectionCompositionCanonical
+        .maximumComponentDirectionHistogramTotalVariation < 0.0072,
+      curvedDirectionCompositionCanonical
+        .maximumWholeSurfaceProfileResponseLedgerDifference < 0.0001,
+      curvedDirectionCompositionCanonical
+        .maximumComponentProfileResponseLedgerDifference < 0.0072,
+      curvedDirectionCompositionCanonical.gates.count == 7,
+      curvedDirectionCompositionCanonical.gates.values.allSatisfy({ $0 }),
+      curvedDirectionCompositionCanonical.equilibriumProfilePassed,
+      curvedDirectionCompositionCanonical.sourceMidpointProfilePassed,
+      !curvedDirectionCompositionCanonical.fluidEvolutionExecuted,
+      !curvedDirectionCompositionCanonical.newMetalExecutionPerformed,
+      !curvedDirectionCompositionCanonical.productionModificationAuthorized,
+      !curvedDirectionCompositionCanonical.d20RunAuthorized,
+      !curvedDirectionCompositionCanonical.d28D32FluidRunAuthorized,
+      curvedDirectionCompositionAudit.schemaVersion == 1,
+      curvedDirectionCompositionAudit.preregistrationSHA256
+        == curvedDirectionCompositionPreregistrationSHA256,
+      curvedDirectionCompositionAudit.reportSHA256
+        == curvedDirectionCompositionCanonicalSHA256,
+      curvedDirectionCompositionAudit.sourceLinkGeometryReportSHA256
+        == linkGeometryReportSHA256,
+      curvedDirectionCompositionAudit.checkCount == 14,
+      curvedDirectionCompositionAudit.allChecksPassed,
+      curvedDirectionCompositionAudit.classification
+        == curvedDirectionCompositionCanonical.classification,
+      !curvedDirectionCompositionAudit.fluidEvolutionExecuted,
+      !curvedDirectionCompositionAudit.productionModificationAuthorized,
       let normalizedRMSError = artifact.normalizedRMSError,
       normalizedRMSError.isFinite
     else {
@@ -835,12 +1055,14 @@ enum MeasuredDoveShowcaseCapture {
         "measured-dove showcase inputs do not match the audited D32 frontier"
       )
     }
-    guard artifact.registeredForceSamples.allSatisfy({
-      $0.intervalMeanComputedForceNewtons.count == 3
-        && $0.sourceTimeSeconds.isFinite
-        && $0.measuredForceZNewtons.isFinite
-        && $0.intervalMeanComputedForceNewtons.allSatisfy(\.isFinite)
-    }) else {
+    guard
+      artifact.registeredForceSamples.allSatisfy({
+        $0.intervalMeanComputedForceNewtons.count == 3
+          && $0.sourceTimeSeconds.isFinite
+          && $0.measuredForceZNewtons.isFinite
+          && $0.intervalMeanComputedForceNewtons.allSatisfy(\.isFinite)
+      })
+    else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
         "audited D32 force history is malformed"
       )
@@ -882,7 +1104,7 @@ enum MeasuredDoveShowcaseCapture {
     d32FullWindow: D32FullWindowArtifact,
     refinement: D28D32Refinement,
     phaseLocalization: D28D32PhaseLocalization,
-    linkCompositionAttribution: LinkCompositionAttribution,
+    curvedDirectionCompositionCanonical: CurvedDirectionCompositionCanonical,
     frameCoordinate: Float?
   ) {
     graphics.saveGState()
@@ -930,7 +1152,7 @@ enum MeasuredDoveShowcaseCapture {
     )
     fillPanel(statusPanel, radius: 13 * scale, context: graphics)
     drawText(
-      "D28/D32 CONDITIONED LINK COMPOSITION",
+      "CURVED DOVE DIRECTION MIX",
       font: systemFont(.emphasizedSystem, size: 12.5 * scale),
       color: NSColor.white.cgColor,
       position: CGPoint(
@@ -940,13 +1162,17 @@ enum MeasuredDoveShowcaseCapture {
       tracking: 0.35 * scale,
       context: graphics
     )
-    let attributionStatus = String(
-      format: "AUDITED  •  DIRECTION COMPOSITION  •  %.1f%% OF |LEDGER|",
-      100 * linkCompositionAttribution.attribution
-        .leadingAbsoluteLedgerFraction
+    let canonicalStatus = String(
+      format: "CLEARED  •  D12/D16  •  %.3f%% HIST  •  %.4f%% RESPONSE",
+      100
+        * curvedDirectionCompositionCanonical
+        .wholeSurfaceDirectionHistogramTotalVariation,
+      100
+        * curvedDirectionCompositionCanonical
+        .maximumWholeSurfaceProfileResponseLedgerDifference
     )
     drawText(
-      attributionStatus,
+      canonicalStatus,
       font: systemFont(.userFixedPitch, size: 10.5 * scale),
       color: NSColor(
         calibratedRed: 0.35,
@@ -1228,7 +1454,7 @@ enum MeasuredDoveShowcaseCapture {
     )
 
     let labels = [
-      "SOURCE", "D16 A/B", "D28", "D32", "TARGET", "DIRECTION", "PAIR OPEN",
+      "SOURCE", "D16", "D28", "D32", "PLANAR", "CURVED OK", "PAIR OPEN",
     ]
     let colors = [
       NSColor(calibratedRed: 0.28, green: 0.90, blue: 0.78, alpha: 1),

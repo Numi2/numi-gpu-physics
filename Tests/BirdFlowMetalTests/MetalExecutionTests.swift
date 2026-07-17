@@ -374,6 +374,40 @@ func measuredBirdSchema2RequiresAndAcceptsRigidWingMassContract() throws {
 #if canImport(Metal)
 import Metal
 
+@Test
+func productionMetalDirectionCompositionCanonicalClearsPlanarWeighting() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let root = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+    let preregistrationURL = root.appendingPathComponent(
+        "ValidationArtifacts/deetjen-dove-direction-composition-canonical-preregistration.json"
+    )
+    let preregistrationData = try Data(contentsOf: preregistrationURL)
+    let preregistration = try JSONDecoder().decode(
+        MetalDirectionCompositionPreregistration.self,
+        from: preregistrationData
+    )
+    let report = try MetalDirectionCompositionValidator.run(
+        preregistration: preregistration,
+        sourcePreregistrationSHA256:
+            CheckpointArchive.sha256(preregistrationData)
+    )
+
+    #expect(report.cases.count == 40)
+    #expect(report.canonicalPassed)
+    #expect(report.basicPlanarDirectionWeightingCleared)
+    #expect(report.maximumMetalCPUPerDirectionCountMismatch == 0)
+    #expect(report.maximumMetalCPUCountRelativeDifference == 0)
+    #expect(report.maximumFineProfileVectorRelativeError < 0.013)
+    #expect(report.maximumCoarseFinePhaseMeanProfileRelativeDifference < 0.029)
+    #expect(report.equilibriumProfilePassed)
+    #expect(report.sourceMidpointProfilePassed)
+    #expect(!report.fluidEvolutionExecuted)
+    #expect(!report.productionModificationAuthorized)
+}
+
 func compactMetalTestCase(freeFlight: Bool = false) throws -> (
     configuration: SimulationConfiguration,
     bird: BirdParameters,

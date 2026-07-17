@@ -62,7 +62,21 @@ swift build -c release --product birdflow-viewer
   --capture-dove-link-composition-attribution \
     "$ROOT/ValidationArtifacts/deetjen-dove-link-composition-discriminator.json" \
   --capture-dove-link-composition-audit \
-    "$ROOT/ValidationArtifacts/deetjen-dove-link-composition-discriminator-audit.json"
+    "$ROOT/ValidationArtifacts/deetjen-dove-link-composition-discriminator-audit.json" \
+  --capture-dove-direction-composition-preregistration \
+    "$ROOT/ValidationArtifacts/deetjen-dove-direction-composition-canonical-preregistration.json" \
+  --capture-dove-direction-composition-canonical \
+    "$ROOT/ValidationArtifacts/deetjen-dove-direction-composition-canonical.json" \
+  --capture-dove-direction-composition-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-direction-composition-canonical-audit.json" \
+  --capture-dove-link-geometry-report \
+    "$ROOT/ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json" \
+  --capture-dove-curved-direction-composition-preregistration \
+    "$ROOT/ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-preregistration.json" \
+  --capture-dove-curved-direction-composition-canonical \
+    "$ROOT/ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical.json" \
+  --capture-dove-curved-direction-composition-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-audit.json"
 
 ffmpeg -v error -y \
   -framerate 24 \

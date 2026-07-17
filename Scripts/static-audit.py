@@ -19,6 +19,7 @@ SWIFT_FILES = (
     ROOT / "Sources/BirdFlowMetal/MetalWingValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalFlappingWingValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalIndexedBirdSurfaceValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalDirectionCompositionValidation.swift",
     ROOT / "Sources/BirdFlowMetal/BirdPartLoadDiagnostics.swift",
 )
 CORE = ROOT / "Sources/BirdFlowCore/D3Q19.swift"
@@ -81,6 +82,7 @@ REQUIRED_KERNELS = {
     "monitorBirdRuntimeSafety",
     "updateWingInertialReaction",
     "captureBirdPartLoad",
+    "measureObliquePlaneDirectionComposition",
 }
 
 REQUIRED_VISUALIZATION_KERNELS = {
@@ -386,6 +388,11 @@ def main() -> int:
         "GPUIndexedBoundaryLinkForceTerm": [
             "reflected", "wall", "interpolation", "total", "metadata",
         ],
+        "GPUDirectionCompositionParameters": [
+            "grid", "originAndCellSize", "normalAndOffset",
+            "tangentUAndHalfExtent", "tangentVAndHalfExtent",
+            "integerNormalAndPhase",
+        ],
     }
     for struct_name, expected_fields in diagnostic_structs.items():
         metal_body = extract_braced_body(shader, f"struct {struct_name}")
@@ -442,6 +449,7 @@ def main() -> int:
         "func encodeAfter(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 4,
         "func encodeBoundaryTerms(": 6,
         "func encode(\n        commandBuffer: MTLCommandBuffer,\n        populationsIn: MTLBuffer,\n        solidCurrent: MTLBuffer,\n        wallVelocity: MTLBuffer,\n        uniforms: inout GPUUniforms": 7,
+        "private static func metalCounts(": 2,
     }
     for declaration, count in expected_swift_bindings.items():
         body = extract_braced_body(swift, declaration)
@@ -516,6 +524,7 @@ def main() -> int:
         "monitorBirdRuntimeSafety": 5,
         "updateWingInertialReaction": 6,
         "captureBirdPartLoad": 8,
+        "measureObliquePlaneDirectionComposition": 2,
     }
     for kernel, count in expected_buffers.items():
         match = re.search(
@@ -664,6 +673,11 @@ def main() -> int:
             "func consumeAndCapture(",
             ["populationsIn", "solidPrevious", "solidCurrent", "wallVelocity", "selectedBuffer", "provenanceBuffer", "uniforms", "selectedCount"],
             ["populationsIn", "solidPrevious", "solidCurrent", "wallVelocity", "selected", "records", "uniforms", "selectedCount"],
+        ),
+        "measureObliquePlaneDirectionComposition": (
+            "private static func metalCounts(",
+            ["countBuffer", "localParameters"],
+            ["directionCounts", "parameters"],
         ),
         "captureTRTCollisionDecomposition": (
             "private func encodeTRTCollisionDecomposition(",

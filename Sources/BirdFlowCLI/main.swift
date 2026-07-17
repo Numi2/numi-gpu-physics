@@ -125,6 +125,8 @@ private struct Arguments {
       birdflow validate flapping-wing --compare-link-forces [--json]
       birdflow validate flapping-wing --decompose-link-numerator [--json]
       birdflow validate flapping-wing --momentum-budget [--json]
+      birdflow validate direction-composition --preregistration FILE \
+        [--archive FILE] [--json]
 
     Measured prescribed replay:
       birdflow replay measured-bird --input DATASET.json [--audit-only] [--json]
@@ -2853,6 +2855,68 @@ private enum CLIError: Error, CustomStringConvertible {
         case .acceptanceFailed(let message): return message
         }
     }
+}
+
+private struct DirectionCompositionArguments {
+    let preregistrationPath: String
+    let archivePath: String?
+    let json: Bool
+
+    init(_ values: [String]) throws {
+        var preregistrationPath: String?
+        var archivePath: String?
+        var json = false
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--preregistration requires a JSON path"
+                    )
+                }
+                preregistrationPath = values[index]
+            case "--archive":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output JSON path"
+                    )
+                }
+                archivePath = values[index]
+            case "--json":
+                json = true
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown direction-composition option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+        guard let preregistrationPath else {
+            throw CLIError.invalidArgument(
+                "direction-composition requires --preregistration FILE"
+            )
+        }
+        self.preregistrationPath = preregistrationPath
+        self.archivePath = archivePath
+        self.json = json
+    }
+
+    static let help = """
+    birdflow validate direction-composition --preregistration FILE [options]
+
+      --archive FILE          Atomically write the canonical report
+      --json                  Emit the machine-readable report
+      --help                  Show this help
+
+    Runs the preregistered static, no-fluid Metal/CPU oblique-plane direction
+    counting canonical at two grids and five subcell phases.
+    """
 }
 
 private func makeConfiguration(
@@ -7709,11 +7773,54 @@ private func runFlappingWingValidation(_ values: [String]) throws {
     }
 }
 
+private func runDirectionCompositionValidation(_ values: [String]) throws {
+    let arguments = try DirectionCompositionArguments(values)
+    let preregistrationData = try Data(contentsOf: URL(
+        fileURLWithPath: arguments.preregistrationPath
+    ))
+    let preregistration = try JSONDecoder().decode(
+        MetalDirectionCompositionPreregistration.self,
+        from: preregistrationData
+    )
+    let report = try MetalDirectionCompositionValidator.run(
+        preregistration: preregistration,
+        sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+    )
+    if let archivePath = arguments.archivePath {
+        try writeJSON(report, to: archivePath)
+    }
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("device: \(report.deviceName)")
+        print("runtime_seconds: \(report.runtimeSeconds)")
+        print("classification: \(report.classification)")
+        print(
+            "maximum_fine_profile_vector_error: "
+                + String(report.maximumFineProfileVectorRelativeError)
+        )
+        print(
+            "maximum_coarse_fine_mean_difference: "
+                + String(
+                    report
+                        .maximumCoarseFinePhaseMeanProfileRelativeDifference
+                )
+        )
+        print("canonical_passed: \(report.canonicalPassed)")
+        print("next_action: \(report.nextAction)")
+    }
+    guard report.canonicalPassed else {
+        throw CLIError.acceptanceFailed(
+            "direction-composition canonical exceeded a frozen gate"
+        )
+    }
+}
+
 private func run(_ values: [String]) throws {
     if values.count > 1, values[1] == "validate" {
         guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition> [options]"
             )
         }
         switch values[2] {
@@ -7729,9 +7836,11 @@ private func run(_ values: [String]) throws {
             try runWingValidation(values)
         case "flapping-wing":
             try runFlappingWingValidation(values)
+        case "direction-composition":
+            try runDirectionCompositionValidation(values)
         default:
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition> [options]"
             )
         }
     } else if values.count > 1, values[1] == "replay" {

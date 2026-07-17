@@ -151,6 +151,15 @@ struct GPUIndexedBirdSurfaceParameters {
     float4 translationAndVelocityScale;
 };
 
+struct GPUDirectionCompositionParameters {
+    uint4 grid;
+    float4 originAndCellSize;
+    float4 normalAndOffset;
+    float4 tangentUAndHalfExtent;
+    float4 tangentVAndHalfExtent;
+    float4 integerNormalAndPhase;
+};
+
 struct GPUPreparedMeasuredWingPoint {
     float4 position;
     float4 velocity;
@@ -1553,6 +1562,65 @@ kernel void resolveIndexedBirdSurface(
     }
     partIdentifiers[gid] = resolved.partIdentifier;
     wallVelocity[gid] = resolved.wallVelocity;
+}
+
+/// Counts one-sided solid-to-fluid D3Q19 links crossing a finite analytic
+/// plane patch. This diagnostic advances no populations and fixes the
+/// interpolation branch at halfway in its host-side response reconstruction.
+kernel void measureObliquePlaneDirectionComposition(
+    device atomic_uint* directionCounts [[buffer(0)]],
+    constant GPUDirectionCompositionParameters& parameters [[buffer(1)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= parameters.grid.w) {
+        return;
+    }
+    uint3 cell = unflatten(gid, parameters.grid.xyz);
+    float cellSize = parameters.originAndCellSize.w;
+    float3 position = parameters.originAndCellSize.xyz
+        + (float3(cell) + 0.5f) * cellSize;
+    float3 rawNormal = parameters.integerNormalAndPhase.xyz;
+    float rawNormalLength = length(rawNormal);
+    float phase = parameters.integerNormalAndPhase.w;
+    float3 centeredCell = float3(cell) + 0.5f
+        - 0.5f * float3(parameters.grid.xyz);
+    float signedDistance = cellSize * (
+        dot(centeredCell, rawNormal)
+            - (phase - 0.5f) * rawNormalLength
+    ) / rawNormalLength;
+    if (signedDistance < 0.0f || signedDistance > 1.415f * cellSize) {
+        return;
+    }
+    float3 tangentU = parameters.tangentUAndHalfExtent.xyz;
+    float3 tangentV = parameters.tangentVAndHalfExtent.xyz;
+    float halfExtent = parameters.tangentUAndHalfExtent.w;
+    float tolerance = 1.0e-5f * cellSize;
+    int3 grid = int3(parameters.grid.xyz);
+    for (uint q = 1u; q < Q; ++q) {
+        int3 source = int3(cell) - C[q];
+        if (any(source < int3(0)) || any(source >= grid)) {
+            continue;
+        }
+        float3 direction = float3(C[q]);
+        float sourceDistance = cellSize * (
+            dot(centeredCell - direction, rawNormal)
+                - (phase - 0.5f) * rawNormalLength
+        ) / rawNormalLength;
+        if (sourceDistance >= 0.0f) {
+            continue;
+        }
+        float fraction = signedDistance
+            / (signedDistance - sourceDistance);
+        float3 intersection = position
+            - fraction * cellSize * direction;
+        if (abs(dot(intersection, tangentU)) > halfExtent + tolerance
+            || abs(dot(intersection, tangentV)) > halfExtent + tolerance) {
+            continue;
+        }
+        atomic_fetch_add_explicit(
+            &directionCounts[q], 1u, memory_order_relaxed
+        );
+    }
 }
 
 /// Production-flow variant of the accepted indexed resolver. In addition to

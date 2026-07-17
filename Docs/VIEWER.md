@@ -31,12 +31,17 @@ chart is decoded from the committed D32 RR3 source-viscosity full-window
 artifact and remains explicitly descriptive. The D32 rail node is locked to
 its audit: 15,104 positive finite steps, all 187 registered force bins, closed
 momentum ledgers, and negligible correction intrusion. The top status and
-`DIRECTION` node additionally require the V2 reflected-population
+`CURVED OK` node additionally require the V2 reflected-population
 preregistration, both passing selected-link D28/D32 cases, the exact
 population/composition attribution and 16-check audit, plus the zero-fluid
 conditioned-factor preregistration, Shapley result, and independent 18-check
-audit. They report lattice direction composition as the stable `87.7%`
-factor-ledger leader in both temporal halves. The underlying selected links
+audit. They then require the planar direction-composition V2 preregistration,
+40-case Metal/CPU result, and independent 14-check audit, followed by the exact
+source link-geometry report and the curved D12/D16 preregistration, result, and
+independent 14-check audit. The panel reports curved complete-dove direction
+redistribution as cleared at D12/D16 with `0.130%` whole histogram variation
+and `0.0091%` maximum whole-response change; it does not claim D28/D32
+direction stability or bird-load convergence. The underlying selected links
 retain `100.0%/83.45%` D28/D32 X/Z score coverage and zero capture overflow or
 detail mismatch.
 The scientific-boundary panel is separately locked to the failed D28/D32
@@ -44,7 +49,7 @@ The scientific-boundary panel is separately locked to the failed D28/D32
 `25...30 ms` band is locked to the independently audited archive-only phase
 localization, not selected by the renderer. Capture rejects a surface, D32
 window, refinement, localization, targeted case, provenance preregistration or
-case, conditioned-factor contract, attribution, or audit that no
+case, conditioned-factor contract, planar or curved canonical, attribution, or audit that no
 longer matches the locked hashes, the `144 / 2,157 / 3,968`
 frame/vertex/triangle contract, the 187-bin force window, or the explicit
 no-D36/no-convergence boundary. It also rejects

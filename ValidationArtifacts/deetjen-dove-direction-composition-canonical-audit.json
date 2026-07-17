@@ -1,0 +1,41 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-direction-composition-planar-audit-v1",
+  "checkCount": 14,
+  "checks": {
+    "analyticProfileResponses": true,
+    "bothProfilesPass": true,
+    "caseCoverage": true,
+    "caseGeometryAndMetrics": true,
+    "claimBoundary": true,
+    "classification": true,
+    "frozenGates": true,
+    "independentDirectionCounts": true,
+    "maximumMetrics": true,
+    "noFluidOrTopology": true,
+    "orientationSummaries": true,
+    "sourceHashes": true,
+    "transparentV1Retention": true,
+    "v2ArithmeticOnlyRevision": true
+  },
+  "claimBoundary": "This independent NumPy audit reconstructs all 40 analytic plane cases, direction counts, two fixed-population vector responses, phase/grid metrics, V1 failure provenance, V2 gates, and safety boundary. It does not authorize a production edit or bird claim.",
+  "classification": "direction-weighting-cleared-in-planar-canonical",
+  "fluidEvolutionExecuted": false,
+  "generatedBy": "Scripts/audit-dove-direction-composition-canonical.py",
+  "independentReconstruction": {
+    "maximumCoarseFineDirectionHistogramTotalVariation": 0.0065695066573672745,
+    "maximumCoarseFinePhaseMeanProfileRelativeDifference": 0.028674829956489564,
+    "maximumEquilibriumFineNormalResponseError": 0.004771145539349098,
+    "maximumEquilibriumFineTangentialLeakage": 0.0033191633052692803,
+    "maximumFinePhaseProfileRelativeSpread": 0.011870237834548481,
+    "maximumFineProfileVectorRelativeError": 0.01283636869830677,
+    "maximumMetalCPUCountRelativeDifference": 0.0,
+    "maximumMetalCPUPerDirectionCountMismatch": 0
+  },
+  "preregistrationSHA256": "823486178b499708d4e0e837ab20a1e4cb3f76da41e166eaee8e7c26b6117467",
+  "productionModificationAuthorized": false,
+  "reportSHA256": "20ffbf3edd6b3002002dbd676c7fc664d7f1570408deb890033e109480a4cc83",
+  "schemaVersion": 1,
+  "v1FailedReportSHA256": "cda8904431408dad96546402488ebe48736bf69bd19702fbb7491e398fad5804",
+  "v1PreregistrationSHA256": "50e43512ff59a50b7a825cae68435e6e4e6d754781037d4c49d76ee5b8d13811"
+}

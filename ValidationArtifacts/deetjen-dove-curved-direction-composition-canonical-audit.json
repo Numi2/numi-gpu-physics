@@ -1,0 +1,38 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-curved-direction-composition-canonical-audit-v1",
+  "checkCount": 14,
+  "checks": {
+    "auditedInputs": true,
+    "caseCoverageAndMetadata": true,
+    "claimBoundaryAndNoAuthorization": true,
+    "classificationAndProfiles": true,
+    "fieldIsolation": true,
+    "frozenContract": true,
+    "frozenGates": true,
+    "independentCaseReconstruction": true,
+    "independentComponentSummaries": true,
+    "independentMaximumMetrics": true,
+    "independentMetalCPUCounts": true,
+    "independentProfileSummaries": true,
+    "sourceIdentities": true,
+    "wholeSurfaceOppositeBalance": true
+  },
+  "claimBoundary": "This independent NumPy audit reconstructs both complete-dove curved grids, all four component and whole-surface direction histograms, two fixed-population responses, frozen gates, source isolation, and safety boundary. It does not validate wall velocity, authorize a production edit or fluid run, or establish quantitative bird flight.",
+  "classification": "curved-direction-redistribution-cleared-at-d12-d16",
+  "fluidEvolutionExecuted": false,
+  "generatedBy": "Scripts/audit-dove-curved-direction-composition-canonical.py",
+  "independentReconstruction": {
+    "maximumComponentDirectionHistogramTotalVariation": 0.007073047479494679,
+    "maximumComponentProfileResponseLedgerDifference": 0.007111276556535965,
+    "maximumEquilibriumWholeSurfaceNetLedgerFraction": 0.0,
+    "maximumWholeSurfaceOppositeDirectionCountMismatch": 0,
+    "maximumWholeSurfaceProfileResponseLedgerDifference": 9.125682623741422e-05,
+    "wholeSurfaceDirectionHistogramTotalVariation": 0.0013017889867095525
+  },
+  "preregistrationSHA256": "da9fd1f2090468d60f4d66190169199e4214a763804bb46c47c705a6fcefca06",
+  "productionModificationAuthorized": false,
+  "reportSHA256": "7de738d9210b78956e8bcc4af6598a6a9a4d6f69385ba475e7eb79555805b525",
+  "schemaVersion": 1,
+  "sourceLinkGeometryReportSHA256": "39237cc559c086e3a4f06d36560f17192fa9d5737d2163bc82c2b1a7785dcacf"
+}

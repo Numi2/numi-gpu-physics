@@ -2650,6 +2650,68 @@ fixed. It does not authorize D36, a production boundary change, grid
 convergence, experimental agreement, quantitative bird-load acceptance, or
 free flight.
 
+That planar canonical is complete under the frozen V2 contract. Four X/Z plane
+orientations, two resolutions (`48/64` cells per fixed physical patch), five
+normal subcell phases, and two fixed population profiles produce 40 static
+cases. No collision, streaming, topology, or fluid evolution occurs. Metal and
+the independent CPU enumerator have zero per-direction count mismatch in every
+case. All eight unchanged `5%` gates pass: maximum fine analytic-vector error
+`1.28364%`, coarse/fine phase-mean response change `2.86748%`, fine phase spread
+`1.18702%`, coarse/fine direction-histogram total variation `0.65695%`,
+equilibrium normal-response error `0.47711%`, and equilibrium tangential
+leakage `0.33192%`.
+
+The preserved V1 result is a negative control: every response, refinement,
+phase, and histogram gate passed, but exact phase-0.5 lattice-center ties were
+classified differently by world-coordinate Float arithmetic on Metal and CPU.
+V2 changes only the evaluation coordinates to centered cell units with the
+frozen integer normal; its preregistration locks both V1 hashes. An independent
+NumPy implementation reconstructs all 40 counts, vector responses, summaries,
+gates, hashes, revision provenance, and safety boundary with `14/14` checks
+passing. This clears basic planar D3Q19 direction weighting and authorizes no
+production edit, D36 run, convergence claim, or experimental comparison.
+
+Reproduce the frozen planar gate locally:
+
+```bash
+python3 Scripts/preregister-dove-direction-composition-canonical.py
+swift build -c release --product birdflow
+.build/release/birdflow validate direction-composition \
+  --preregistration ValidationArtifacts/deetjen-dove-direction-composition-canonical-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-direction-composition-canonical.json \
+  --json
+python3 Scripts/audit-dove-direction-composition-canonical.py
+```
+
+The archived report includes runtime metadata, so rerunning with `--archive`
+creates a new report hash; the preregistration generator is byte-stable across
+Python hash seeds, and the audit is byte-stable for a fixed report.
+
+The subsequent source-locked curved canonical consumes the already audited
+complete-dove D12/D16 Metal and CPU link counts at source sample 53
+(`26.5 ms`). It reconstructs body, left-wing, right-wing, tail, and whole-bird
+direction histograms plus the same two fixed-population response ledgers. No
+wall velocity, interpolation fraction, force history, collision, streaming,
+topology evolution, or new Metal execution is used. Whole-surface opposite
+counts and equilibrium cancellation are exact. D12-to-D16 whole histogram TV
+is `0.00130179`, maximum whole-response change `9.12568e-5`, and maximum
+component histogram/response changes `0.00707305/0.00711128`; every frozen gate
+passes and the independent NumPy reconstruction passes `14/14` checks.
+
+Reproduce the archive-only curved gate locally:
+
+```bash
+python3 Scripts/preregister-dove-curved-direction-composition-canonical.py
+python3 Scripts/analyze-dove-curved-direction-composition-canonical.py
+python3 Scripts/audit-dove-curved-direction-composition-canonical.py
+```
+
+This clears D12/D16 fixed-profile curved direction redistribution only. It does
+not validate wall velocity or interpolation, establish the D28/D32 grid limit,
+or authorize a fluid run or production edit. The next permitted experiment is
+one preregistered archive-only D28/D32 full-link direction-count capture at the
+same phase.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

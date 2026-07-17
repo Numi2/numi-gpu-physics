@@ -197,6 +197,34 @@ func measuredDoveShowcaseCaptureClosesLoop() throws {
     root.appendingPathComponent(
       "ValidationArtifacts/deetjen-dove-link-composition-discriminator-audit.json"
     ).path,
+    "--capture-dove-direction-composition-preregistration",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-direction-composition-canonical-preregistration.json"
+    ).path,
+    "--capture-dove-direction-composition-canonical",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-direction-composition-canonical.json"
+    ).path,
+    "--capture-dove-direction-composition-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-direction-composition-canonical-audit.json"
+    ).path,
+    "--capture-dove-link-geometry-report",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-moving-wall-link-geometry.json"
+    ).path,
+    "--capture-dove-curved-direction-composition-preregistration",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-preregistration.json"
+    ).path,
+    "--capture-dove-curved-direction-composition-canonical",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical.json"
+    ).path,
+    "--capture-dove-curved-direction-composition-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-audit.json"
+    ).path,
   ])
   try ReadmeShowcaseCapture.run(arguments)
   let firstData = try Data(
