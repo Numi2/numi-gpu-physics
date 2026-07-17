@@ -297,6 +297,39 @@ enum MeasuredDoveShowcaseCapture {
     let productionModificationAuthorized: Bool
   }
 
+  private struct ReflectedProvenanceAttribution: Decodable {
+    struct Attribution: Decodable {
+      let classification: String
+      let dominantContributionAvailable: Bool
+      let leadingContributionName: String
+      let leadingContributionKind: String
+      let leadingAbsoluteLedgerFraction: Double
+      let sameLeaderInBothTemporalHalves: Bool
+    }
+
+    let preregistrationSHA256: String
+    let sourceD28CaseSHA256: String
+    let sourceD32CaseSHA256: String
+    let populationCompositionClosureRelativeRMS: Double
+    let rawFloatForceConsistencyRelativeRMS: Double
+    let attribution: Attribution
+    let bothProvenanceCasesPassed: Bool
+    let populationCompositionClosurePassed: Bool
+    let productionModificationAuthorized: Bool
+    let experimentalAgreementGateApplied: Bool
+    let gridConvergenceGateApplied: Bool
+  }
+
+  private struct ReflectedProvenanceAudit: Decodable {
+    let preregistrationSHA256: String
+    let d28CaseSHA256: String
+    let d32CaseSHA256: String
+    let reportSHA256: String
+    let checkCount: Int
+    let allChecksPassed: Bool
+    let productionModificationAuthorized: Bool
+  }
+
   private struct ForceHistory {
     let times: [Double]
     let measured: [Double]
@@ -315,7 +348,12 @@ enum MeasuredDoveShowcaseCapture {
     targetedD28URL: URL,
     targetedD32URL: URL,
     targetedAttributionURL: URL,
-    targetedAuditURL: URL
+    targetedAuditURL: URL,
+    reflectedPreregistrationURL: URL,
+    reflectedD28URL: URL,
+    reflectedD32URL: URL,
+    reflectedAttributionURL: URL,
+    reflectedAuditURL: URL
   ) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
       manifestURL: manifestURL
@@ -365,6 +403,34 @@ enum MeasuredDoveShowcaseCapture {
       TargetedBoundaryAudit.self,
       from: Data(contentsOf: targetedAuditURL)
     )
+    let reflectedPreregistrationData = try Data(
+      contentsOf: reflectedPreregistrationURL
+    )
+    let reflectedPreregistration = try JSONDecoder().decode(
+      MetalIndexedBirdSurfaceReflectedProvenancePreregistration.self,
+      from: reflectedPreregistrationData
+    )
+    let reflectedD28Data = try Data(contentsOf: reflectedD28URL)
+    let reflectedD28 = try JSONDecoder().decode(
+      MetalIndexedBirdSurfaceReflectedProvenanceCaseReport.self,
+      from: reflectedD28Data
+    )
+    let reflectedD32Data = try Data(contentsOf: reflectedD32URL)
+    let reflectedD32 = try JSONDecoder().decode(
+      MetalIndexedBirdSurfaceReflectedProvenanceCaseReport.self,
+      from: reflectedD32Data
+    )
+    let reflectedAttributionData = try Data(
+      contentsOf: reflectedAttributionURL
+    )
+    let reflectedAttribution = try JSONDecoder().decode(
+      ReflectedProvenanceAttribution.self,
+      from: reflectedAttributionData
+    )
+    let reflectedAudit = try JSONDecoder().decode(
+      ReflectedProvenanceAudit.self,
+      from: Data(contentsOf: reflectedAuditURL)
+    )
     let forceHistory = try validateAndBuildHistory(
       dataset: dataset,
       artifact: artifact,
@@ -382,7 +448,16 @@ enum MeasuredDoveShowcaseCapture {
       targetedD32SHA256: sha256(targetedD32Data),
       targetedAttribution: targetedAttribution,
       targetedAttributionSHA256: sha256(targetedAttributionData),
-      targetedAudit: targetedAudit
+      targetedAudit: targetedAudit,
+      reflectedPreregistration: reflectedPreregistration,
+      reflectedPreregistrationSHA256: sha256(reflectedPreregistrationData),
+      reflectedD28: reflectedD28,
+      reflectedD28SHA256: sha256(reflectedD28Data),
+      reflectedD32: reflectedD32,
+      reflectedD32SHA256: sha256(reflectedD32Data),
+      reflectedAttribution: reflectedAttribution,
+      reflectedAttributionSHA256: sha256(reflectedAttributionData),
+      reflectedAudit: reflectedAudit
     )
     guard let device = MTLCreateSystemDefaultDevice() else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
@@ -435,7 +510,7 @@ enum MeasuredDoveShowcaseCapture {
           d32FullWindow: artifact,
           refinement: refinement,
           phaseLocalization: phaseLocalization,
-          targetedAttribution: targetedAttribution,
+          reflectedAttribution: reflectedAttribution,
           frameCoordinate: loop.sourceFrameCoordinate(phase: progress)
         )
       }
@@ -469,7 +544,17 @@ enum MeasuredDoveShowcaseCapture {
     targetedD32SHA256: String,
     targetedAttribution: TargetedBoundaryAttribution,
     targetedAttributionSHA256: String,
-    targetedAudit: TargetedBoundaryAudit
+    targetedAudit: TargetedBoundaryAudit,
+    reflectedPreregistration:
+      MetalIndexedBirdSurfaceReflectedProvenancePreregistration,
+    reflectedPreregistrationSHA256: String,
+    reflectedD28: MetalIndexedBirdSurfaceReflectedProvenanceCaseReport,
+    reflectedD28SHA256: String,
+    reflectedD32: MetalIndexedBirdSurfaceReflectedProvenanceCaseReport,
+    reflectedD32SHA256: String,
+    reflectedAttribution: ReflectedProvenanceAttribution,
+    reflectedAttributionSHA256: String,
+    reflectedAudit: ReflectedProvenanceAudit
   ) throws -> ForceHistory {
     let expectedOperator = "positivity-preserving-recursive-regularized-bgk"
     guard dataset.frameCount == 144,
@@ -557,6 +642,52 @@ enum MeasuredDoveShowcaseCapture {
       targetedAudit.checkCount >= 15,
       targetedAudit.allChecksPassed,
       !targetedAudit.productionModificationAuthorized,
+      reflectedPreregistration.schemaVersion == 2,
+      reflectedPreregistration.passed,
+      reflectedPreregistration.referenceLengthCells == [28, 32],
+      reflectedPreregistration.targetSampleIndices == Array(50...60),
+      reflectedPreregistration.candidateCapacity == 262_144,
+      reflectedPreregistration.selectedLinksPerEndpoint == 131_072,
+      reflectedD28.schemaVersion == 2,
+      reflectedD28.referenceLengthCells == 28,
+      reflectedD28.provenanceCasePassed,
+      reflectedD28.candidateOverflowCount == 0,
+      reflectedD28.candidateDetailMismatchCount == 0,
+      reflectedD28.minimumSelectedAbsoluteScoreCoverage >= 0.5,
+      reflectedD32.schemaVersion == 2,
+      reflectedD32.referenceLengthCells == 32,
+      reflectedD32.provenanceCasePassed,
+      reflectedD32.candidateOverflowCount == 0,
+      reflectedD32.candidateDetailMismatchCount == 0,
+      reflectedD32.minimumSelectedAbsoluteScoreCoverage >= 0.5,
+      reflectedD28.sourcePreregistrationSHA256
+        == reflectedPreregistrationSHA256,
+      reflectedD32.sourcePreregistrationSHA256
+        == reflectedPreregistrationSHA256,
+      reflectedAttribution.preregistrationSHA256
+        == reflectedPreregistrationSHA256,
+      reflectedAttribution.sourceD28CaseSHA256 == reflectedD28SHA256,
+      reflectedAttribution.sourceD32CaseSHA256 == reflectedD32SHA256,
+      reflectedAttribution.bothProvenanceCasesPassed,
+      reflectedAttribution.populationCompositionClosurePassed,
+      reflectedAttribution.populationCompositionClosureRelativeRMS <= 1e-10,
+      reflectedAttribution.rawFloatForceConsistencyRelativeRMS <= 1e-6,
+      reflectedAttribution.attribution.dominantContributionAvailable,
+      reflectedAttribution.attribution.leadingContributionName
+        == "linkComposition",
+      reflectedAttribution.attribution.leadingContributionKind == "self",
+      reflectedAttribution.attribution.leadingAbsoluteLedgerFraction >= 0.5,
+      reflectedAttribution.attribution.sameLeaderInBothTemporalHalves,
+      !reflectedAttribution.productionModificationAuthorized,
+      !reflectedAttribution.experimentalAgreementGateApplied,
+      !reflectedAttribution.gridConvergenceGateApplied,
+      reflectedAudit.preregistrationSHA256 == reflectedPreregistrationSHA256,
+      reflectedAudit.d28CaseSHA256 == reflectedD28SHA256,
+      reflectedAudit.d32CaseSHA256 == reflectedD32SHA256,
+      reflectedAudit.reportSHA256 == reflectedAttributionSHA256,
+      reflectedAudit.checkCount >= 16,
+      reflectedAudit.allChecksPassed,
+      !reflectedAudit.productionModificationAuthorized,
       let normalizedRMSError = artifact.normalizedRMSError,
       normalizedRMSError.isFinite
     else {
@@ -611,7 +742,7 @@ enum MeasuredDoveShowcaseCapture {
     d32FullWindow: D32FullWindowArtifact,
     refinement: D28D32Refinement,
     phaseLocalization: D28D32PhaseLocalization,
-    targetedAttribution: TargetedBoundaryAttribution,
+    reflectedAttribution: ReflectedProvenanceAttribution,
     frameCoordinate: Float?
   ) {
     graphics.saveGState()
@@ -659,7 +790,7 @@ enum MeasuredDoveShowcaseCapture {
     )
     fillPanel(statusPanel, radius: 13 * scale, context: graphics)
     drawText(
-      "D28/D32 TARGETED COMPONENT REPLAY",
+      "D28/D32 REFLECTED-LINK PROVENANCE",
       font: systemFont(.emphasizedSystem, size: 12.5 * scale),
       color: NSColor.white.cgColor,
       position: CGPoint(
@@ -670,22 +801,19 @@ enum MeasuredDoveShowcaseCapture {
       context: graphics
     )
     let leadingContributionLabel: String
-    switch targetedAttribution.attribution.leadingContributionName {
-    case "reflectedPopulation": leadingContributionLabel = "REFLECTED POPULATION"
-    case "movingWall": leadingContributionLabel = "MOVING WALL"
-    case "interpolationResidual":
-      leadingContributionLabel = "INTERPOLATION RESIDUAL"
-    case "topologyImpulse": leadingContributionLabel = "TOPOLOGY IMPULSE"
+    switch reflectedAttribution.attribution.leadingContributionName {
+    case "populationHistory": leadingContributionLabel = "POPULATION HISTORY"
+    case "linkComposition": leadingContributionLabel = "LINK COMPOSITION"
     default:
-      leadingContributionLabel = targetedAttribution.attribution
+      leadingContributionLabel = reflectedAttribution.attribution
         .leadingContributionName.uppercased()
     }
-    let attributionStatus = targetedAttribution.attribution
+    let attributionStatus = reflectedAttribution.attribution
       .dominantContributionAvailable
       ? String(
         format: "AUDITED  •  %@  •  %.1f%% OF |LEDGER|",
         leadingContributionLabel,
-        100 * targetedAttribution.attribution.leadingAbsoluteLedgerFraction
+        100 * reflectedAttribution.attribution.leadingAbsoluteLedgerFraction
       )
       : "AUDITED  •  MIXED MECHANISMS  •  COMPONENT LEDGER CLOSED"
     drawText(
@@ -971,7 +1099,7 @@ enum MeasuredDoveShowcaseCapture {
     )
 
     let labels = [
-      "SOURCE", "D16 A/B", "D28 PASS", "D32 PASS", "TARGET AUDIT", "PAIR OPEN",
+      "SOURCE", "D16 A/B", "D28", "D32", "TARGET", "PROVENANCE", "PAIR OPEN",
     ]
     let colors = [
       NSColor(calibratedRed: 0.28, green: 0.90, blue: 0.78, alpha: 1),
@@ -979,6 +1107,7 @@ enum MeasuredDoveShowcaseCapture {
       NSColor(calibratedRed: 0.64, green: 0.55, blue: 1, alpha: 1),
       NSColor(calibratedRed: 0.43, green: 1, blue: 0.72, alpha: 1),
       NSColor(calibratedRed: 0.20, green: 0.88, blue: 0.92, alpha: 1),
+      NSColor(calibratedRed: 0.35, green: 0.96, blue: 0.72, alpha: 1),
       NSColor(calibratedRed: 1, green: 0.65, blue: 0.24, alpha: 1),
     ]
     let startX = rect.minX + 174 * scale

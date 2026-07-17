@@ -268,6 +268,42 @@ struct GPUIndexedBoundaryLinkForceTerm {
     uint4 metadata;
 };
 
+/// One high-influence reflected-link candidate. Selection is diagnostic-only;
+/// x is the absolute X/Z mode-2 force score and y/z are target and direction.
+struct GPUIndexedReflectedLinkCandidate {
+    float score;
+    uint target;
+    uint direction;
+    uint padding;
+};
+
+/// Fixed-order partial over every production-active reflected boundary link.
+struct GPUIndexedReflectedGroupSummary {
+    // xyz=full mode-2 reflected force; w=sum of absolute X/Z link scores.
+    float4 forceAndAbsoluteScore;
+    // x=active link count, y=target cells with at least one active link.
+    uint4 counts;
+};
+
+/// Pre-step provenance for one selected reflected population. This reads the
+/// immutable production input and current/previous topology but writes only a
+/// validation buffer.
+struct GPUIndexedReflectedLinkProvenance {
+    // x=post-collision outgoing/reflected population, y=paired population,
+    // z=pre-step density, w=local equilibrium in the reflected direction.
+    float4 population;
+    // x=nonequilibrium, y=normalized nonequilibrium, z=q, w=selection score.
+    float4 history;
+    // x=wall projection, y=wall correction, z/w=target/source signed distance.
+    float4 wall;
+    // xyz=mode-2 reflected force; w=detail-reconstructed score.
+    float4 force;
+    // x=target, y=direction, z=solid source, w=current source part.
+    uint4 metadata;
+    // x=previous target part, y=previous source part, z=branch, w=valid.
+    uint4 topology;
+};
+
 /// One direction of a diagnostic-only TRT collision decomposition. Float4 and
 /// uint4 fields keep the layout identical to the Swift readback structure.
 struct GPUTRTCollisionTerm {
@@ -4777,6 +4813,237 @@ kernel void captureIndexedBoundaryLinkForceTerms(
     );
     term.metadata = uint4(target, q, sourcePart, branch);
     terms[gid] = term;
+}
+
+/// Appends every nonzero-X/Z production-active reflected link without
+/// mutating production state. The append order is intentionally irrelevant:
+/// the CPU performs the preregistered deterministic score/target/direction
+/// sort. Fixed-order per-group totals independently reproduce the source
+/// reflected force and absolute X/Z score.
+kernel void selectIndexedReflectedPopulationCandidates(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidPrevious [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device GPUIndexedReflectedLinkCandidate* candidates [[buffer(3)]],
+    device GPUIndexedReflectedGroupSummary* summaries [[buffer(4)]],
+    device atomic_uint* appendState [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    constant uint& candidateCapacity [[buffer(7)]],
+    uint gid [[thread_position_in_grid]],
+    uint lane [[thread_index_in_threadgroup]],
+    uint group [[threadgroup_position_in_grid]],
+    uint laneCount [[threads_per_threadgroup]]
+) {
+    threadgroup float4 laneTotals[256];
+    threadgroup uint2 laneCounts[256];
+
+    float3 totalForce = float3(0);
+    float totalAbsoluteScore = 0.0f;
+    uint activeLinkCount = 0u;
+    bool activeTarget = false;
+
+    if (gid < uniforms.grid.w
+        && solidCurrent[gid] == 0u
+        && solidPrevious[gid] == 0u) {
+        uint3 size = uniforms.grid.xyz;
+        uint3 cell = unflatten(gid, size);
+        float forceScale = uniforms.timeStepAndScales.w;
+        for (uint q = 1u; q < Q; ++q) {
+            int3 sourceCell = int3(cell) - C[q];
+            if (!inside(sourceCell, size)) {
+                continue;
+            }
+            uint source = flatten(uint3(sourceCell), size);
+            if (solidCurrent[source] == 0u) {
+                continue;
+            }
+            float reflected = populationsIn[
+                OPP[q] * uniforms.grid.w + gid
+            ];
+            float3 force = -2.0f * reflected * float3(C[q]) * forceScale;
+            float score = length(force.xz);
+            totalForce += force;
+            totalAbsoluteScore += score;
+            activeLinkCount += 1u;
+            activeTarget = true;
+            if (score > 0.0f) {
+                uint output = atomic_fetch_add_explicit(
+                    &appendState[0],
+                    1u,
+                    memory_order_relaxed
+                );
+                if (output < candidateCapacity) {
+                    GPUIndexedReflectedLinkCandidate candidate;
+                    candidate.score = score;
+                    candidate.target = gid;
+                    candidate.direction = q;
+                    candidate.padding = 0u;
+                    candidates[output] = candidate;
+                } else {
+                    atomic_store_explicit(
+                        &appendState[1],
+                        1u,
+                        memory_order_relaxed
+                    );
+                }
+            }
+        }
+    }
+
+    laneTotals[lane] = float4(totalForce, totalAbsoluteScore);
+    laneCounts[lane] = uint2(activeLinkCount, activeTarget ? 1u : 0u);
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    if (lane != 0u) {
+        return;
+    }
+    float4 groupTotal = float4(0);
+    uint2 groupCounts = uint2(0);
+    for (uint index = 0u; index < laneCount; ++index) {
+        groupTotal += laneTotals[index];
+        groupCounts += laneCounts[index];
+    }
+    GPUIndexedReflectedGroupSummary summary;
+    summary.forceAndAbsoluteScore = groupTotal;
+    summary.counts = uint4(groupCounts, 0u, 0u);
+    summaries[group] = summary;
+}
+
+/// Captures the production pre-step source state for the CPU-selected links.
+/// The reflected population is a post-collision outgoing population from the
+/// immutable input field and is decomposed against its local equilibrium.
+kernel void captureIndexedReflectedPopulationProvenance(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidPrevious [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device const GPUIndexedReflectedLinkCandidate* selected [[buffer(4)]],
+    device GPUIndexedReflectedLinkProvenance* records [[buffer(5)]],
+    constant GPUUniforms& uniforms [[buffer(6)]],
+    constant uint& selectedCount [[buffer(7)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid >= selectedCount) {
+        return;
+    }
+    GPUIndexedReflectedLinkCandidate candidate = selected[gid];
+    GPUIndexedReflectedLinkProvenance record;
+    record.population = float4(0);
+    record.history = float4(0);
+    record.wall = float4(0);
+    record.force = float4(0);
+    record.metadata = uint4(candidate.target, candidate.direction, 0u, 0u);
+    record.topology = uint4(0);
+    uint target = candidate.target;
+    uint q = candidate.direction;
+    if (target >= uniforms.grid.w || q == 0u || q >= Q
+        || solidCurrent[target] != 0u || solidPrevious[target] != 0u) {
+        records[gid] = record;
+        return;
+    }
+
+    uint3 size = uniforms.grid.xyz;
+    uint3 cell = unflatten(target, size);
+    int3 sourceCell = int3(cell) - C[q];
+    if (!inside(sourceCell, size)) {
+        records[gid] = record;
+        return;
+    }
+    uint source = flatten(uint3(sourceCell), size);
+    uint sourcePart = uint(solidCurrent[source]);
+    if (sourcePart == 0u) {
+        records[gid] = record;
+        return;
+    }
+
+    float rho = 0.0f;
+    float3 momentum = float3(0);
+    for (uint populationDirection = 0u;
+         populationDirection < Q;
+         ++populationDirection) {
+        float value = populationsIn[
+            populationDirection * uniforms.grid.w + target
+        ];
+        rho += value;
+        momentum += value * float3(C[populationDirection]);
+    }
+    rho = max(rho, 1.0e-8f);
+    float3 velocity = momentum / rho;
+    uint reflectedDirection = OPP[q];
+    float reflected = populationsIn[
+        reflectedDirection * uniforms.grid.w + target
+    ];
+    float paired = populationsIn[q * uniforms.grid.w + target];
+    float equilibriumReflected = equilibrium(
+        reflectedDirection,
+        rho,
+        velocity
+    );
+    float nonequilibrium = reflected - equilibriumReflected;
+
+    float linkFraction = clamp(
+        populationsIn[q * uniforms.grid.w + source],
+        1.0e-4f,
+        1.0f
+    );
+    float3 direction = float3(C[q]);
+    float3 wall = mix(
+        wallVelocity[target].xyz,
+        wallVelocity[source].xyz,
+        linkFraction
+    );
+    uint branch = linkFraction <= 0.5f ? 2u : 3u;
+    if (linkFraction <= 0.5f) {
+        int3 fartherCell = int3(cell) + C[q];
+        bool fartherUnavailable = !inside(fartherCell, size);
+        if (!fartherUnavailable) {
+            uint farther = flatten(uint3(fartherCell), size);
+            fartherUnavailable = solidCurrent[farther] != 0u;
+        }
+        if (fartherUnavailable) {
+            linkFraction = 0.5f;
+            wall = wallVelocity[source].xyz;
+            branch = 1u;
+        }
+    }
+    float wallProjection = dot(direction, wall);
+    float movingWallDensity = uniforms.farFieldLattice.w;
+    if (uniforms.integration.y != 0u) {
+        movingWallDensity = rho;
+    }
+    float wallCorrection = 2.0f * W[q] * movingWallDensity
+        * wallProjection / CS2;
+    float3 reflectedForce = -2.0f * reflected * direction
+        * uniforms.timeStepAndScales.w;
+    float score = length(reflectedForce.xz);
+
+    record.population = float4(
+        reflected,
+        paired,
+        rho,
+        equilibriumReflected
+    );
+    record.history = float4(
+        nonequilibrium,
+        nonequilibrium / max(abs(equilibriumReflected), 1.0e-12f),
+        linkFraction,
+        candidate.score
+    );
+    record.wall = float4(
+        wallProjection,
+        wallCorrection,
+        wallVelocity[target].w,
+        wallVelocity[source].w
+    );
+    record.force = float4(reflectedForce, score);
+    record.metadata = uint4(target, q, source, sourcePart);
+    record.topology = uint4(
+        uint(solidPrevious[target]),
+        uint(solidPrevious[source]),
+        branch,
+        1u
+    );
+    records[gid] = record;
 }
 
 /// Diagnostic-only replay of the exact indexed-bird population path for one

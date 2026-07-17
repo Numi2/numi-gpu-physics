@@ -512,6 +512,27 @@ five-flight repeatability envelope also remains open. These results are
 numerical refinement evidence—not experimental agreement, production
 readiness, or free flight.
 
+The selected-link discriminator has now resolved that fork. A preserved V1
+negative control failed only the unchanged majority-coverage gate (`10.03%` at
+D28); V2 expanded observation capacity without changing physics or attribution
+thresholds. Its D28/D32 cases capture all 11 target endpoints with zero
+overflow or candidate mismatch, reproduce reflected force within
+`8.93e-7/9.34e-7` relative RMS, and cover `100.0%/83.45%` of absolute X/Z
+reflected score. The exact population/composition split closes at `5.54e-16`,
+and an independent 16-check audit identifies near-wall link composition as a
+temporally stable `91.12%` absolute-ledger self contribution. Bulk population
+history contributes only `0.216%`; the interaction contributes a cancelling
+`8.659%`.
+
+The highest-return next step is therefore a zero-fluid, frozen-population
+composition cross-application using the committed endpoint strata. It should
+separately substitute link count/occupancy, direction, interpolation branch,
+topology class, and link-fraction-bin coefficients, then preregister a tiny
+prescribed-surface canonical for only the leading factor. This prevents another
+long fluid ladder or broad boundary edit from being spent on a mechanism the
+data do not support. D36, convergence, experimental agreement, production
+promotion, and free flight remain unauthorized.
+
 ## Claim after a successful ladder
 
 A successful result can support this bounded statement:

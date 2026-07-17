@@ -177,6 +177,15 @@ private struct Arguments {
           --source-targeted-full-window-report D28_OR_D32_REPORT.json \
           --targeted-reference-length-cells 28|32 \
           [--archive FILE] [--json]
+
+      Selected-link reflected-population provenance:
+        birdflow replay measured-bird-surface --input MANIFEST.json \
+          --force-target TARGET.json \
+          --source-viscosity-reflected-provenance-case \
+          --preregistration REFLECTED_PREREGISTRATION.json \
+          --source-targeted-boundary-case D28_OR_D32_TARGETED_CASE.json \
+          --targeted-reference-length-cells 28|32 \
+          [--archive FILE] [--json]
     """
 }
 
@@ -236,6 +245,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var sourceD32PreRollPath: String?
     var sourceD32AuditPath: String?
     var sourceTargetedFullWindowReportPath: String?
+    var sourceTargetedBoundaryCasePath: String?
     var targetedReferenceLengthCells: Int?
     var spatialReferenceLengthCells: Int?
     var cellSizeMeters: Float = 0.01
@@ -289,6 +299,7 @@ private struct MeasuredBirdSurfaceReplayArguments {
     var sourceViscosityD32FullWindowPreregister = false
     var sourceViscosityD32FullWindow = false
     var sourceViscosityTargetedBoundaryCase = false
+    var sourceViscosityReflectedProvenanceCase = false
     var json = false
 
     init(_ values: [String]) throws {
@@ -735,6 +746,14 @@ private struct MeasuredBirdSurfaceReplayArguments {
                     )
                 }
                 sourceTargetedFullWindowReportPath = values[index]
+            case "--source-targeted-boundary-case":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--source-targeted-boundary-case requires the matching D28 or D32 targeted component JSON"
+                    )
+                }
+                sourceTargetedBoundaryCasePath = values[index]
             case "--targeted-reference-length-cells":
                 index += 1
                 guard index < values.count,
@@ -874,6 +893,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
                 sourceViscosityD32FullWindow = true
             case "--source-viscosity-targeted-boundary-case":
                 sourceViscosityTargetedBoundaryCase = true
+            case "--source-viscosity-reflected-provenance-case":
+                sourceViscosityReflectedProvenanceCase = true
             case "--json":
                 json = true
             case "--help", "-h":
@@ -933,7 +954,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
             sourceViscosityD32PreRoll,
             sourceViscosityD32FullWindowPreregister,
             sourceViscosityD32FullWindow,
-            sourceViscosityTargetedBoundaryCase
+            sourceViscosityTargetedBoundaryCase,
+            sourceViscosityReflectedProvenanceCase
         ].filter { $0 }.count
         guard selectedModes <= 1 else {
             throw CLIError.invalidArgument(
@@ -983,12 +1005,14 @@ private struct MeasuredBirdSurfaceReplayArguments {
             || sourceViscosityD32FullWindowPreregister
             || sourceViscosityD32FullWindow
             || sourceViscosityTargetedBoundaryCase
+            || sourceViscosityReflectedProvenanceCase
         guard needsForceTarget == (forceTargetPath != nil) else {
             throw CLIError.invalidArgument(
                 "the coarse pilot and collision diagnostics require --force-target; other modes reject it"
             )
         }
         let contractPathsValid = sourceViscosityTargetedBoundaryCase
+                || sourceViscosityReflectedProvenanceCase
             ? preregistrationPath != nil
                 && discriminatorPath == nil && completionPath == nil
                 && provenancePath == nil && boundaryTermsPath == nil
@@ -1163,12 +1187,18 @@ private struct MeasuredBirdSurfaceReplayArguments {
         }
         let targetedBoundaryPathsValid = sourceViscosityTargetedBoundaryCase
             ? sourceTargetedFullWindowReportPath != nil
+                && sourceTargetedBoundaryCasePath == nil
                 && targetedReferenceLengthCells != nil
-            : sourceTargetedFullWindowReportPath == nil
-                && targetedReferenceLengthCells == nil
+            : sourceViscosityReflectedProvenanceCase
+                ? sourceTargetedFullWindowReportPath == nil
+                    && sourceTargetedBoundaryCasePath != nil
+                    && targetedReferenceLengthCells != nil
+                : sourceTargetedFullWindowReportPath == nil
+                    && sourceTargetedBoundaryCasePath == nil
+                    && targetedReferenceLengthCells == nil
         guard targetedBoundaryPathsValid else {
             throw CLIError.invalidArgument(
-                "targeted boundary replay requires --source-targeted-full-window-report and --targeted-reference-length-cells; all other modes reject them"
+                "targeted boundary replay requires --source-targeted-full-window-report; reflected provenance requires --source-targeted-boundary-case; both require --targeted-reference-length-cells and other modes reject these paths"
             )
         }
         guard (collisionGridMovingWallLedger
@@ -1548,7 +1578,8 @@ private struct MeasuredBirdSurfaceReplayArguments {
             || sourceViscosityD32PreRoll
             || sourceViscosityD32FullWindowPreregister
             || sourceViscosityD32FullWindow
-            || sourceViscosityTargetedBoundaryCase {
+            || sourceViscosityTargetedBoundaryCase
+            || sourceViscosityReflectedProvenanceCase {
             guard cellSizeMeters == 0.01,
                   halfThicknessCells == 0.75 else {
                 throw CLIError.invalidArgument(
@@ -1654,6 +1685,10 @@ private struct MeasuredBirdSurfaceReplayArguments {
                                  Freeze the RR3-only 15,104-step D32 force-window contract
       --source-viscosity-d32-full-window
                                  Run the locked D32 source-viscosity force window
+      --source-viscosity-targeted-boundary-case
+                                 Replay D28 or D32 boundary-force components in the locked 25--30 ms band
+      --source-viscosity-reflected-provenance-case
+                                 Capture high-influence reflected-link population/q/topology provenance
       --source-scaling FILE      SHA-locked source fluid/scaling reconstruction JSON
       --source-scaling-audit FILE
                                  Independent source-scaling audit JSON
@@ -1675,6 +1710,12 @@ private struct MeasuredBirdSurfaceReplayArguments {
                                  Locked D32 source-viscosity preregistration JSON
       --source-d32-pre-roll FILE Completed D32 pre-roll JSON
       --source-d32-audit FILE    Independent D32 pre-roll audit JSON
+      --source-targeted-full-window-report FILE
+                                 Matching D28 or D32 full-window source JSON for component replay
+      --source-targeted-boundary-case FILE
+                                 Matching D28 or D32 targeted component case for reflected provenance
+      --targeted-reference-length-cells 28|32
+                                 Select the locked D28 or D32 targeted grid
       --preregistration FILE     Locked grid preregistration JSON
       --discriminator FILE       Completed D=8/12 discriminator JSON
       --completion FILE          Failed selected-operator D=16 completion JSON
@@ -4190,6 +4231,62 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
             print("near_ledger: \(report.ledgerResult.relativeRMSRawControlVolumeClosureResidual)")
             print("global_ledger: \(report.ledgerResult.relativeRMSGlobalFluidClosureResidual)")
             print("targeted_case_passed: \(report.targetedCasePassed)")
+            print("next_action: \(report.nextAction)")
+        }
+        return
+    }
+    if arguments.sourceViscosityReflectedProvenanceCase {
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: URL(fileURLWithPath: arguments.forceTargetPath!),
+            surface: dataset
+        )
+        let preregistrationData = try artifactData(
+            arguments.preregistrationPath!
+        )
+        let sourceCaseData = try artifactData(
+            arguments.sourceTargetedBoundaryCasePath!
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .sourceViscosityReflectedPopulationProvenanceCase(
+                surface: dataset,
+                target: target,
+                preregistration: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceReflectedProvenancePreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    sha256Hex(preregistrationData),
+                sourceTargetedCase: try JSONDecoder().decode(
+                    MetalIndexedBirdSurfaceTargetedBoundaryCaseReport.self,
+                    from: sourceCaseData
+                ),
+                sourceTargetedCaseSHA256: sha256Hex(sourceCaseData),
+                referenceLengthCells:
+                    arguments.targetedReferenceLengthCells!
+            )
+        if let archivePath = arguments.archivePath {
+            try writeJSON(report, to: archivePath)
+        }
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("grid: \(report.gridX)x\(report.gridY)x\(report.gridZ)")
+            print("requested_steps: \(report.requestedSteps)")
+            print("captured_endpoints: \(report.endpointCount)")
+            print(
+                "minimum_selected_score_coverage: "
+                    + "\(report.minimumSelectedAbsoluteScoreCoverage)"
+            )
+            print(
+                "source_reflected_force_reproduction_relative_rms: "
+                    + "\(report.sourceReflectedForceReproductionRelativeRMS)"
+            )
+            print(
+                "candidate_detail_score_difference: "
+                    + "\(report.maximumCandidateDetailScoreDifferenceNewtons)"
+            )
+            print("provenance_case_passed: \(report.provenanceCasePassed)")
             print("next_action: \(report.nextAction)")
         }
         return

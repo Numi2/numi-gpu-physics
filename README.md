@@ -12,9 +12,9 @@
   <img alt="BSD 3-Clause" src="https://img.shields.io/badge/License-BSD--3--Clause-blue">
 </p>
 
-![BirdFlowMetal native Metal viewer showing a continuous forward wingbeat of the reconstructed Deetjen dove, source-locked kinematics, the audited D32 force history, and the open D28/D32 refinement boundary](Docs/Media/birdflow-metal-native-viewer.gif)
+![BirdFlowMetal native Metal viewer showing a continuous forward wingbeat of the reconstructed Deetjen dove, source-locked kinematics, the audited reflected-link provenance result, and the open D28/D32 refinement boundary](Docs/Media/birdflow-metal-native-viewer.gif)
 
-<p align="center"><em>Native Metal rendering of the forward, body-following 27–121 ms repeated-pose interval, with a labeled 14 ms presentation-only closure for a continuous loop. Trails show surface kinematics, not CFD streamlines. The overlay is locked to the audited D32 RR3 source-viscosity window: all 15,104 steps and 187 force bins pass numerical gates, while the D28/D32 force-history change is 5.632% against the frozen 5% stabilization limit. The highlighted 25–30 ms interval is the archive-only high-information target; grid convergence and experimental agreement remain open.</em></p>
+<p align="center"><em>Native Metal rendering of the forward, body-following 27–121 ms repeated-pose interval, with a labeled 14 ms presentation-only closure for a continuous loop. Trails show surface kinematics, not CFD streamlines. The overlay is SHA-locked through the audited D32 RR3 window, exact D28/D32 component replay, and selected-link provenance: near-wall link composition supplies 91.12% of the absolute population/composition ledger and leads both temporal halves. The D28/D32 force-history change remains 5.632% against the frozen 5% limit, so grid convergence and experimental agreement remain open.</em></p>
 
 <p align="center"><a href="Docs/Media/Progress/README.md">Explore the visual progress archive →</a></p>
 
@@ -46,7 +46,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins with positive populations, closed ledgers, and negligible limiter intrusion; the preregistered D28/D32 force-history change is `5.632%` against `5%`, so convergence and experimental agreement remain open |
+| Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; targeted provenance covers `100.0%/83.45%` of D28/D32 reflected X/Z score and attributes `91.12%` of the ledger to near-wall link composition, but the force-history change remains `5.632%` against `5%`, so convergence and experimental agreement remain open |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -565,17 +565,32 @@ The failed first runner and its V1 contract remain explicitly archived: they
 used the plan Reynolds number instead of source-property Reynolds and were
 rejected by the frozen trajectory-reproduction gate.
 
-Highest-ROI next experiment: a compact reflected-population provenance
-canonical at the two existing grids, conditioned on the target interval's
-boundary links. Why: moving-wall force itself changes only `0.186%` normalized
-RMS, while reflected-population self energy is the stable `58.43%` leader;
-the remaining question is whether the pre-step outgoing difference comes from
-bulk collision/transport or near-wall interpolation history. ROI: record the
-selected outgoing population before reconstruction, its post-collision source,
-link fraction, part, and topology state for only the highest-energy links. This
-reuses the existing provenance and selector infrastructure and can distinguish
-those causes before any D36 allocation or production-physics edit. D36, grid
-convergence, experimental agreement, and production promotion remain blocked.
+The selected-link reflected-population discriminator is now complete. Its
+preserved V1 negative control passed the numerical and exact-detail identities
+but failed the unchanged `50%` coverage gate at `10.03%`. V2 changed only the
+observation capacity: D28/D32 completed `3,360/3,840` steps on Apple M4, captured
+all 11 endpoints with zero overflow or detail mismatch, reproduced source
+reflected force within `8.93e-7/9.34e-7` relative RMS, and covered
+`100.0%/83.45%` of absolute X/Z reflected score. The midpoint identity closes
+at `5.54e-16`; raw Metal float-force consistency is `1.48e-9`; and an
+independent `16/16`-check audit identifies near-wall link composition as the
+stable `91.12%` self contribution. Population history is only `0.216%`, while
+their interaction contributes `8.659%` with a cancelling sign. See the
+[`V2 contract`](ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-preregistration.json),
+[`D28 case`](ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-d28.json),
+[`D32 case`](ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-d32.json),
+[`attribution`](ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance.json),
+and [`audit`](ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-audit.json).
+
+Highest-ROI next experiment: a frozen-population, geometry-only link-composition
+canonical on the already captured D28/D32 endpoint strata. Why: the new audit
+rules out bulk population history as the primary source of the grid trend and
+localizes `91.12%` to changes in link count/direction/branch/topology/q-bin
+coefficients. ROI: cross-apply D28 populations to D32 coefficients and vice
+versa, then isolate occupancy, direction, interpolation branch, topology, and
+q-bin substitutions without another fluid run. Only the leading substitution
+would advance to a tiny prescribed-surface canonical. D36, grid convergence,
+experimental agreement, and production promotion remain blocked.
 
 ## Latest high-Re result
 
@@ -724,7 +739,7 @@ python3 Scripts/static-audit.py
 > [!NOTE]
 > Validation is local-only. There are intentionally no GitHub Actions workflows, so pushes and pull requests do not consume hosted macOS CI minutes.
 
-Latest recorded local run on Apple M4 (2026-07-17): **125 release tests passed in 940.417 seconds** after a 60.34-second release build. The complete local validation gate then passed all 125 debug tests in 1058.650 seconds, the independent physical-condition verifier, static Swift/MSL layout audit, offline compilation of both Metal libraries, and the moving-wall, translating-body, fixed-sphere, and fixed-wing production-Metal canonicals.
+Latest recorded local run on Apple M4 (2026-07-17): **125 release tests passed in 945.672 seconds** (`946.19 s` command wall time). The complete local validation gate also retains its prior 125-test debug pass in 1058.650 seconds, independent physical-condition verifier, static Swift/MSL layout audit, offline compilation of both Metal libraries, and moving-wall, translating-body, fixed-sphere, and fixed-wing production-Metal canonicals.
 
 ## Run the solver
 

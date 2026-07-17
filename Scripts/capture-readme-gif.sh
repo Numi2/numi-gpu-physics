@@ -46,7 +46,17 @@ swift build -c release --product birdflow-viewer
   --capture-dove-targeted-boundary-attribution \
     "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary.json" \
   --capture-dove-targeted-boundary-audit \
-    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-audit.json"
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-targeted-boundary-audit.json" \
+  --capture-dove-reflected-provenance-preregistration \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-preregistration.json" \
+  --capture-dove-reflected-provenance-d28 \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-d28.json" \
+  --capture-dove-reflected-provenance-d32 \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-d32.json" \
+  --capture-dove-reflected-provenance-attribution \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance.json" \
+  --capture-dove-reflected-provenance-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-audit.json"
 
 ffmpeg -v error -y \
   -framerate 24 \

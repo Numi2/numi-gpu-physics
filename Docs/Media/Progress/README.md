@@ -81,19 +81,31 @@ SHA-256: `d7b511d170eeb4785487c08fae21a2e5c5d8ae4561819b1145648f0c96538147`
 
 ![V7 D32 phase-localization frontier](2026-07-17-v7-d32-phase-frontier.gif)
 
-## Current hero
+## V8 — targeted-boundary attribution frontier
+
+V8 preserved the forward loop and locked its status panel to both valid D28/D32
+targeted component replays plus their 15-check signed-energy audit. It reported
+reflected-population self energy as the stable `58.4%` absolute-ledger leader,
+while retaining the failed `5.632% > 5%` refinement boundary. The selected-link
+population-versus-composition fork was still open.
+
+SHA-256: `fdbf5533df6b06a3321aad31c338a97e0391ed296189003e34f0fab661fcbdaf`
+
+![V8 targeted-boundary attribution frontier](2026-07-17-v8-targeted-boundary-frontier.gif)
+
+## Current hero — V9 reflected-link provenance
 
 The [current README animation](../birdflow-metal-native-viewer.gif) keeps the
 forward loop while improving silhouette lighting, visual hierarchy, camera
 framing, dual-layer wingtip traces, file-size headroom, and validation status.
 Its force chart remains artifact-locked to the independently audited D32 RR3
-source-viscosity full window. The top status and new `TARGET AUDIT` rail node
-are additionally locked to both exact-reproduction component cases and their
-15-check attribution audit: reflected-population self energy supplies `58.4%`
-of the absolute ledger. The amber chart band retains the audited `25...30 ms`
-interval, while the boundary panel still reports the failed D28/D32
-`5.632% > 5%` fine-pair gate. Convergence and experimental agreement therefore
-remain explicitly open. The current encoding is `9,511,375` bytes with
-SHA-256 `fdbf5533df6b06a3321aad31c338a97e0391ed296189003e34f0fab661fcbdaf`.
-Its seam RGB mean absolute change is `1.550368`, only `0.701829x` the median
-adjacent-frame change.
+source-viscosity full window. The top status and `PROVENANCE` rail node are
+additionally locked through the V2 selected-link preregistration, both passing
+cases, the exact population/composition attribution, and its independent
+16-check audit: near-wall link composition supplies `91.1%` of the absolute
+ledger and leads both temporal halves. The amber chart band retains the audited
+`25...30 ms` interval, while the boundary panel still reports the failed
+D28/D32 `5.632% > 5%` fine-pair gate. Convergence and experimental agreement
+therefore remain explicitly open. The V9 encoding is `9,557,715` bytes with
+SHA-256 `f25e4ed8680a930de6d67362fe6dfffc6d91742e55e8fa99d68b5661c56afe61`;
+its 73rd endpoint probe is pixel-identical to frame zero.

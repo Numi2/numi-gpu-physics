@@ -2905,6 +2905,169 @@ public struct MetalIndexedBirdSurfaceTargetedBoundaryCaseReport:
     public let claimBoundary: String
 }
 
+public struct MetalIndexedBirdSurfaceReflectedProvenancePreregistration:
+    Codable, Sendable, Equatable
+{
+    public let schemaVersion: Int
+    public let preregistrationIdentifier: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceTargetedPreregistrationSHA256: String
+    public let sourceD28TargetedCaseSHA256: String
+    public let sourceD32TargetedCaseSHA256: String
+    public let sourceTargetedAttributionSHA256: String
+    public let sourceTargetedAuditSHA256: String
+    public let sourceV1PreregistrationSHA256: String?
+    public let sourceV1D28CaseSHA256: String?
+    public let selectedCollisionOperator: String
+    public let movingWallNormalization: String
+    public let sourcePropertyReynoldsNumber: Double
+    public let expectedD28TauPlus: Double
+    public let expectedD32TauPlus: Double
+    public let referenceLengthCells: [Int]
+    public let targetSampleIndices: [Int]
+    public let targetStartTimeSeconds: Double
+    public let targetEndTimeSeconds: Double
+    public let d28FluidStepsPerForceSample: Int
+    public let d32FluidStepsPerForceSample: Int
+    public let d28RequestedSteps: Int
+    public let d32RequestedSteps: Int
+    public let d28CaptureEndpointSteps: [Int]
+    public let d32CaptureEndpointSteps: [Int]
+    public let threadgroupWidth: Int
+    public let candidateLinksPerThreadgroup: Int
+    public let candidateCapacity: Int
+    public let selectedLinksPerEndpoint: Int
+    public let storedExemplarsPerEndpoint: Int
+    public let linkFractionBinCount: Int
+    public let selectionScore: String
+    public let minimumSelectedAbsoluteScoreCoverage: Double
+    public let maximumSourceReflectedForceReproductionRelativeRMS: Double
+    public let maximumCandidateDetailScoreDifference: Double
+    public let maximumPopulationCompositionClosureRelativeRMS: Double
+    public let minimumDominantContributionFraction: Double
+    public let selectionRule: String
+    public let fixedInputs: String
+    public let passed: Bool
+    public let productionModificationAuthorized: Bool
+    public let d36RunAuthorized: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let claimBoundary: String
+}
+
+public struct MetalIndexedBirdSurfaceReflectedProvenanceExemplar:
+    Codable, Sendable
+{
+    public let rank: Int
+    public let targetCellCoordinate: SIMD3<Int>
+    public let sourceCellCoordinate: SIMD3<Int>
+    public let directionIndex: Int
+    public let reflectedPostCollisionDirectionIndex: Int
+    public let partIdentifier: Int
+    public let branch: String
+    public let topologyClass: String
+    public let previousSourcePartIdentifier: Int
+    public let linkFraction: Double
+    public let reflectedPostCollisionPopulation: Double
+    public let pairedPreStepPopulation: Double
+    public let preStepLocalDensity: Double
+    public let localEquilibriumPopulation: Double
+    public let reflectedNonequilibriumPopulation: Double
+    public let normalizedReflectedNonequilibrium: Double
+    public let wallDirectionProjectionLattice: Double
+    public let wallCorrectionPopulation: Double
+    public let targetSignedDistanceCells: Double
+    public let sourceSignedDistanceCells: Double
+    public let reflectedForceNewtons: SIMD3<Double>
+    public let absoluteXZForceScoreNewtons: Double
+    public let candidateDetailScoreDifferenceNewtons: Double
+}
+
+public struct MetalIndexedBirdSurfaceReflectedProvenanceStratum:
+    Codable, Sendable
+{
+    public let partIdentifier: Int
+    public let directionIndex: Int
+    public let branch: String
+    public let topologyClass: String
+    public let linkFractionBin: Int
+    public let selectedLinkCount: Int
+    public let reflectedPopulationSum: Double
+    public let reflectedPopulationMean: Double
+    public let normalizedNonequilibriumMean: Double
+    public let preStepDensityMean: Double
+    public let coefficientVectorNewtonsPerPopulation: SIMD3<Double>
+    public let selectedReflectedForceNewtons: SIMD3<Double>
+    public let absoluteXZForceScoreSumNewtons: Double
+}
+
+public struct MetalIndexedBirdSurfaceReflectedProvenanceEndpoint:
+    Codable, Sendable
+{
+    public let targetSampleIndex: Int
+    public let step: Int
+    public let sourceTimeSeconds: Double
+    public let productionActiveLinkCount: Int
+    public let candidateTargetCellCount: Int
+    public let selectedLinkCount: Int
+    public let fullReflectedForceNewtons: SIMD3<Double>
+    public let sourceReflectedForceNewtons: SIMD3<Double>
+    public let sourceForceResidualNewtons: SIMD3<Double>
+    public let fullAbsoluteXZForceScoreNewtons: Double
+    public let selectedAbsoluteXZForceScoreNewtons: Double
+    public let selectedAbsoluteScoreCoverage: Double
+    public let selectedReflectedForceNewtons: SIMD3<Double>
+    public let strata: [MetalIndexedBirdSurfaceReflectedProvenanceStratum]
+    public let exemplars: [MetalIndexedBirdSurfaceReflectedProvenanceExemplar]
+}
+
+public struct MetalIndexedBirdSurfaceReflectedProvenanceCaseReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let analysisIdentifier: String
+    public let deviceName: String
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourcePreregistrationSHA256: String
+    public let sourceTargetedCaseSHA256: String
+    public let selectedCollisionOperator: String
+    public let movingWallNormalization: String
+    public let referenceLengthCells: Int
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let actualTauPlus: Double
+    public let requestedSteps: Int
+    public let captureEndpointSteps: [Int]
+    public let endpointCount: Int
+    public let endpoints: [MetalIndexedBirdSurfaceReflectedProvenanceEndpoint]
+    public let minimumSelectedAbsoluteScoreCoverage: Double
+    public let sourceReflectedForceReproductionRelativeRMS: Double
+    public let maximumCandidateDetailScoreDifferenceNewtons: Double
+    public let candidateDetailMismatchCount: Int
+    public let candidateOverflowCount: Int
+    public let numericalLedgerPassed: Bool
+    public let selectionCoveragePassed: Bool
+    public let sourceReflectedForceReproductionPassed: Bool
+    public let candidateDetailPassed: Bool
+    public let provenanceCasePassed: Bool
+    public let ledgerResult: MetalIndexedBirdSurfaceMomentumClosureCase
+    public let fluidEvolutionExecuted: Bool
+    public let productionModificationAuthorized: Bool
+    public let gridConvergenceGateApplied: Bool
+    public let experimentalAgreementGateApplied: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let nextAction: String
+    public let claimBoundary: String
+}
+
 public enum MetalIndexedBirdSurfacePilotValidator {
     public static let sourceAirDensity: Float = 1.18
     public static let sourceDynamicViscosity: Float = 1.849e-5
@@ -5252,6 +5415,269 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                 : (
                     "Localize the first failed closure or reproduction step; "
                         + "do not interpret component attribution."
+                ),
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func sourceViscosityReflectedPopulationProvenanceCase(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration:
+            MetalIndexedBirdSurfaceReflectedProvenancePreregistration,
+        sourcePreregistrationSHA256: String,
+        sourceTargetedCase:
+            MetalIndexedBirdSurfaceTargetedBoundaryCaseReport,
+        sourceTargetedCaseSHA256: String,
+        referenceLengthCells: Int
+    ) throws -> MetalIndexedBirdSurfaceReflectedProvenanceCaseReport {
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        let targetedCaseSHA = sourceTargetedCaseSHA256.lowercased()
+        let coarse = referenceLengthCells == 28
+        let expectedTargetedCaseSHA = coarse
+            ? preregistration.sourceD28TargetedCaseSHA256
+            : preregistration.sourceD32TargetedCaseSHA256
+        let expectedStepsPerSample = coarse
+            ? preregistration.d28FluidStepsPerForceSample
+            : preregistration.d32FluidStepsPerForceSample
+        let expectedRequestedSteps = coarse
+            ? preregistration.d28RequestedSteps
+            : preregistration.d32RequestedSteps
+        let expectedEndpointSteps = coarse
+            ? preregistration.d28CaptureEndpointSteps
+            : preregistration.d32CaptureEndpointSteps
+        let expectedTau = coarse
+            ? preregistration.expectedD28TauPlus
+            : preregistration.expectedD32TauPlus
+        let mappedEndpointSteps = preregistration.targetSampleIndices.map {
+            $0 * expectedStepsPerSample
+        }
+        guard preregistration.schemaVersion == 2,
+              preregistration.passed,
+              !preregistration.productionModificationAuthorized,
+              !preregistration.d36RunAuthorized,
+              preregistration.datasetIdentifier == surface.datasetIdentifier,
+              preregistration.manifestSHA256 == surface.manifestSHA256,
+              preregistration.forceTargetIdentifier
+                == target.datasetIdentifier,
+              preregistration.forceTargetSHA256 == target.targetSHA256,
+              preregistration.referenceLengthCells == [28, 32],
+              preregistration.targetSampleIndices == Array(50...60),
+              preregistration.threadgroupWidth == 256,
+              preregistration.candidateLinksPerThreadgroup == 0,
+              preregistration.candidateCapacity == 262_144,
+              preregistration.selectedLinksPerEndpoint == 131_072,
+              preregistration.storedExemplarsPerEndpoint == 32,
+              preregistration.linkFractionBinCount == 4,
+              preregistration.minimumSelectedAbsoluteScoreCoverage == 0.5,
+              preregistration.maximumSourceReflectedForceReproductionRelativeRMS
+                == 0.0001,
+              preregistration.maximumCandidateDetailScoreDifference
+                == 0.000001,
+              preregistration.selectedCollisionOperator
+                == MetalIndexedBirdSurfaceCollisionOperator
+                    .positivityPreservingRecursiveRegularizedBGK.rawValue,
+              preregistration.movingWallNormalization
+                == MetalIndexedBirdSurfaceMovingWallNormalization
+                    .preStepLocalDensity.rawValue,
+              preregistration.referenceLengthCells
+                .contains(referenceLengthCells),
+              expectedEndpointSteps == mappedEndpointSteps,
+              expectedEndpointSteps.last == expectedRequestedSteps,
+              preregistrationSHA.count == 64,
+              preregistrationSHA.allSatisfy(\.isHexDigit),
+              targetedCaseSHA == expectedTargetedCaseSHA,
+              sourceTargetedCase.targetedCasePassed,
+              sourceTargetedCase.sourcePreregistrationSHA256
+                == preregistration.sourceTargetedPreregistrationSHA256,
+              sourceTargetedCase.referenceLengthCells == referenceLengthCells,
+              sourceTargetedCase.requestedSteps == expectedRequestedSteps,
+              sourceTargetedCase.selectedCollisionOperator
+                == preregistration.selectedCollisionOperator,
+              sourceTargetedCase.movingWallNormalization
+                == preregistration.movingWallNormalization,
+              sourceTargetedCase.componentSteps.count > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "reflected-population provenance does not match its locked evidence"
+            )
+        }
+#if canImport(Metal)
+        let collision = MetalIndexedBirdSurfaceCollisionOperator
+            .positivityPreservingRecursiveRegularizedBGK
+        let plan = try scaledRefinementPlan(
+            surface: surface,
+            target: target,
+            referenceLengthCells: referenceLengthCells
+        )
+        guard plan.fluidStepsPerForceSample == expectedStepsPerSample,
+              plan.totalFluidSteps >= expectedRequestedSteps else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "reflected-population provenance scaling changed"
+            )
+        }
+        let sourceStepByIndex = Dictionary(uniqueKeysWithValues:
+            sourceTargetedCase.componentSteps.map { ($0.step, $0) }
+        )
+        let sourceForces = try expectedEndpointSteps.map { step in
+            guard let source = sourceStepByIndex[step] else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "source reflected-population endpoint is absent"
+                )
+            }
+            return source.reflectedPopulationForceNewtons
+        }
+        let sourceTimes = preregistration.targetSampleIndices.map {
+            target.timesSeconds[$0]
+        }
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            halfThicknessCells: Float(plan.halfThicknessCells),
+            referenceLengthCells: referenceLengthCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber:
+                Float(preregistration.sourcePropertyReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        guard abs(Double(replay.tauPlus) - expectedTau) <= 2e-7,
+              abs(
+                Double(replay.tauPlus) - sourceTargetedCase.actualTauPlus
+              ) <= 2e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "reflected-population provenance tau changed"
+            )
+        }
+        let capture = try MetalIndexedReflectedPopulationCapture(
+            backend: backend,
+            grid: replay.grid,
+            endpointSteps: expectedEndpointSteps,
+            targetSampleIndices: preregistration.targetSampleIndices,
+            sourceTimesSeconds: sourceTimes,
+            sourceReflectedForces: sourceForces,
+            candidateCapacity: preregistration.candidateCapacity,
+            selectedLinkLimit: preregistration.selectedLinksPerEndpoint,
+            storedExemplarLimit:
+                preregistration.storedExemplarsPerEndpoint,
+            linkFractionBinCount: preregistration.linkFractionBinCount,
+            forceScale: Double(replay.forceToPhysical)
+        )
+        let result = try replay.runCollisionMomentumClosure(
+            plan: plan,
+            collisionOperator: collision,
+            maximumRelativeRMSResidual: 0.005,
+            maximumCorrectionActivationFraction: 0.05,
+            requestedSteps: expectedRequestedSteps,
+            movingWallNormalization: .preStepLocalDensity,
+            reflectedPopulationCapture: capture
+        )
+        let endpoints = capture.endpoints.sorted { $0.step < $1.step }
+        let residuals = endpoints.map(\.sourceForceResidualNewtons)
+        let reproductionRelativeRMS = vectorRMS(residuals)
+            / max(
+                vectorRMS(endpoints.map(\.fullReflectedForceNewtons)),
+                vectorRMS(endpoints.map(\.sourceReflectedForceNewtons)),
+                1e-30
+            )
+        let minimumCoverage = endpoints.map(
+            \.selectedAbsoluteScoreCoverage
+        ).min() ?? 0
+        let numericalPassed = result.completedSteps == expectedRequestedSteps
+            && result.samples.count == expectedRequestedSteps
+            && result.allValuesFinite
+            && result.sampledPopulationPositivityPassed
+            && result.minimumPopulation > 0
+            && result.momentumClosurePassed
+            && result.relativeRMSRawControlVolumeClosureResidual <= 0.005
+            && result.relativeRMSGlobalFluidClosureResidual <= 0.005
+            && result.collisionLimiterActivationFractionOfCellSteps <= 0.05
+        let coveragePassed = endpoints.count == expectedEndpointSteps.count
+            && endpoints.map(\.step) == expectedEndpointSteps
+            && minimumCoverage
+                >= preregistration.minimumSelectedAbsoluteScoreCoverage
+        let reproductionPassed = reproductionRelativeRMS.isFinite
+            && reproductionRelativeRMS
+                <= preregistration
+                    .maximumSourceReflectedForceReproductionRelativeRMS
+        let detailPassed = capture.candidateDetailMismatchCount == 0
+            && capture.candidateOverflowCount == 0
+            && capture.maximumCandidateDetailScoreDifference.isFinite
+            && capture.maximumCandidateDetailScoreDifference
+                <= preregistration.maximumCandidateDetailScoreDifference
+        let passed = numericalPassed && coveragePassed
+            && reproductionPassed && detailPassed
+        return MetalIndexedBirdSurfaceReflectedProvenanceCaseReport(
+            schemaVersion: 2,
+            analysisIdentifier: (
+                "deetjen-ob-f03-source-viscosity-reflected-provenance-d"
+                    + "\(referenceLengthCells)-v2"
+            ),
+            deviceName: backend.device.name,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            sourceTargetedCaseSHA256: targetedCaseSHA,
+            selectedCollisionOperator: collision.rawValue,
+            movingWallNormalization: preregistration.movingWallNormalization,
+            referenceLengthCells: referenceLengthCells,
+            gridX: replay.grid.x,
+            gridY: replay.grid.y,
+            gridZ: replay.grid.z,
+            actualTauPlus: Double(replay.tauPlus),
+            requestedSteps: expectedRequestedSteps,
+            captureEndpointSteps: expectedEndpointSteps,
+            endpointCount: endpoints.count,
+            endpoints: endpoints,
+            minimumSelectedAbsoluteScoreCoverage: minimumCoverage,
+            sourceReflectedForceReproductionRelativeRMS:
+                reproductionRelativeRMS,
+            maximumCandidateDetailScoreDifferenceNewtons:
+                capture.maximumCandidateDetailScoreDifference,
+            candidateDetailMismatchCount:
+                capture.candidateDetailMismatchCount,
+            candidateOverflowCount: capture.candidateOverflowCount,
+            numericalLedgerPassed: numericalPassed,
+            selectionCoveragePassed: coveragePassed,
+            sourceReflectedForceReproductionPassed: reproductionPassed,
+            candidateDetailPassed: detailPassed,
+            provenanceCasePassed: passed,
+            ledgerResult: result,
+            fluidEvolutionExecuted: true,
+            productionModificationAuthorized: false,
+            gridConvergenceGateApplied: false,
+            experimentalAgreementGateApplied: false,
+            classification: passed
+                ? "selected-reflected-population-provenance-closed"
+                : "selected-reflected-population-provenance-failed",
+            scientificVerdict: passed
+                ? (
+                    "The high-influence selected links reproduce the source "
+                        + "reflected force, cover the preregistered majority "
+                        + "of absolute X/Z score, and retain valid pre-step "
+                        + "population, q, branch, part, and topology provenance."
+                )
+                : (
+                    "The selected-link capture failed its numerical, coverage, "
+                        + "source-force reproduction, or detail-identity gate."
+                ),
+            nextAction: passed
+                ? (
+                    "Combine the independently completed D28 and D32 strata "
+                        + "with the frozen population-versus-composition energy "
+                        + "decomposition before changing production physics."
+                )
+                : (
+                    "Repair the first failed provenance gate; do not interpret "
+                        + "population-versus-composition attribution."
                 ),
             claimBoundary: preregistration.claimBoundary
         )
@@ -15082,6 +15508,27 @@ private struct GPUIndexedBoundaryLinkForceTerm {
     var metadata: SIMD4<UInt32>
 }
 
+private struct GPUIndexedReflectedLinkCandidate {
+    var score: Float
+    var target: UInt32
+    var direction: UInt32
+    var padding: UInt32
+}
+
+private struct GPUIndexedReflectedGroupSummary {
+    var forceAndAbsoluteScore: SIMD4<Float>
+    var counts: SIMD4<UInt32>
+}
+
+private struct GPUIndexedReflectedLinkProvenance {
+    var population: SIMD4<Float>
+    var history: SIMD4<Float>
+    var wall: SIMD4<Float>
+    var force: SIMD4<Float>
+    var metadata: SIMD4<UInt32>
+    var topology: SIMD4<UInt32>
+}
+
 private struct MetalIndexedDistributedLinkStep {
     let step: Int
     let reflectedForceNewtons: SIMD3<Double>
@@ -15518,6 +15965,501 @@ private final class MetalIndexedMovingBoundaryForceCapture {
             output = output === reductionA ? reductionB : reductionA
         }
         return input
+    }
+}
+
+/// Selects and captures the preregistered high-influence reflected links at
+/// force-bin endpoints. Selection reads every production-active link and the
+/// detailed pass reads the same immutable pre-step populations after the
+/// authoritative command buffer completes but before its buffers are swapped.
+private final class MetalIndexedReflectedPopulationCapture {
+    private struct StratumKey: Hashable {
+        let part: Int
+        let direction: Int
+        let branch: Int
+        let topology: Int
+        let fractionBin: Int
+    }
+
+    private struct StratumAccumulator {
+        var count = 0
+        var reflectedPopulationSum = 0.0
+        var normalizedNonequilibriumSum = 0.0
+        var densitySum = 0.0
+        var forceSum = SIMD3<Double>.zero
+        var absoluteScoreSum = 0.0
+    }
+
+    private let backend: MetalBackend
+    private let grid: GridSize
+    private let cellCount: Int
+    private let groupCount: Int
+    private let candidateCapacity: Int
+    private let selectedLinkLimit: Int
+    private let storedExemplarLimit: Int
+    private let linkFractionBinCount: Int
+    private let forceScale: Double
+    private let endpointIndexByStep: [Int: Int]
+    private let sourceTimeByStep: [Int: Double]
+    private let sourceForceByStep: [Int: SIMD3<Double>]
+    private let candidateBuffer: MTLBuffer
+    private let summaryBuffer: MTLBuffer
+    private let appendStateBuffer: MTLBuffer
+    private let selectedBuffer: MTLBuffer
+    private let provenanceBuffer: MTLBuffer
+    private let selectionPipeline: MTLComputePipelineState
+    private let provenancePipeline: MTLComputePipelineState
+
+    private(set) var endpoints =
+        [MetalIndexedBirdSurfaceReflectedProvenanceEndpoint]()
+    private(set) var maximumCandidateDetailScoreDifference = 0.0
+    private(set) var candidateDetailMismatchCount = 0
+    private(set) var candidateOverflowCount = 0
+
+    init(
+        backend: MetalBackend,
+        grid: GridSize,
+        endpointSteps: [Int],
+        targetSampleIndices: [Int],
+        sourceTimesSeconds: [Double],
+        sourceReflectedForces: [SIMD3<Double>],
+        candidateCapacity: Int,
+        selectedLinkLimit: Int,
+        storedExemplarLimit: Int,
+        linkFractionBinCount: Int,
+        forceScale: Double
+    ) throws {
+        guard !endpointSteps.isEmpty,
+              Set(endpointSteps).count == endpointSteps.count,
+              endpointSteps.allSatisfy({ $0 > 0 }),
+              endpointSteps.count == targetSampleIndices.count,
+              endpointSteps.count == sourceTimesSeconds.count,
+              endpointSteps.count == sourceReflectedForces.count,
+              candidateCapacity > 0,
+              candidateCapacity >= selectedLinkLimit,
+              selectedLinkLimit > 0,
+              storedExemplarLimit > 0,
+              storedExemplarLimit <= selectedLinkLimit,
+              linkFractionBinCount > 0,
+              forceScale.isFinite,
+              forceScale > 0 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "reflected-population capture request is invalid"
+            )
+        }
+        self.backend = backend
+        self.grid = grid
+        cellCount = grid.cellCount
+        groupCount = max(1, (grid.cellCount + 255) / 256)
+        self.candidateCapacity = candidateCapacity
+        self.selectedLinkLimit = selectedLinkLimit
+        self.storedExemplarLimit = storedExemplarLimit
+        self.linkFractionBinCount = linkFractionBinCount
+        self.forceScale = forceScale
+        endpointIndexByStep = Dictionary(uniqueKeysWithValues:
+            zip(endpointSteps, targetSampleIndices)
+        )
+        sourceTimeByStep = Dictionary(uniqueKeysWithValues:
+            zip(endpointSteps, sourceTimesSeconds)
+        )
+        sourceForceByStep = Dictionary(uniqueKeysWithValues:
+            zip(endpointSteps, sourceReflectedForces)
+        )
+        let candidateBytes = candidateCapacity
+            * MemoryLayout<GPUIndexedReflectedLinkCandidate>.stride
+        let summaryBytes = groupCount
+            * MemoryLayout<GPUIndexedReflectedGroupSummary>.stride
+        let selectedBytes = selectedLinkLimit
+            * MemoryLayout<GPUIndexedReflectedLinkCandidate>.stride
+        let provenanceBytes = selectedLinkLimit
+            * MemoryLayout<GPUIndexedReflectedLinkProvenance>.stride
+        try backend.validateAllocationPlan(bufferLengths: [
+            candidateBytes, summaryBytes,
+            2 * MemoryLayout<UInt32>.stride,
+            selectedBytes, provenanceBytes,
+        ])
+        candidateBuffer = try backend.makeSharedBuffer(length: candidateBytes)
+        summaryBuffer = try backend.makeSharedBuffer(length: summaryBytes)
+        appendStateBuffer = try backend.makeSharedBuffer(
+            length: 2 * MemoryLayout<UInt32>.stride
+        )
+        selectedBuffer = try backend.makeSharedBuffer(length: selectedBytes)
+        provenanceBuffer = try backend.makeSharedBuffer(
+            length: provenanceBytes
+        )
+        candidateBuffer.label = "Selected reflected-link candidates"
+        summaryBuffer.label = "Reflected-link group summaries"
+        appendStateBuffer.label = "Reflected-link append state"
+        selectedBuffer.label = "Selected reflected links"
+        provenanceBuffer.label = "Selected reflected-link provenance"
+        selectionPipeline = try backend.pipeline(
+            named: "selectIndexedReflectedPopulationCandidates"
+        )
+        provenancePipeline = try backend.pipeline(
+            named: "captureIndexedReflectedPopulationProvenance"
+        )
+    }
+
+    func encodeSelection(
+        commandBuffer: MTLCommandBuffer,
+        step: Int,
+        populationsIn: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard endpointIndexByStep[step] != nil else { return }
+        memset(
+            appendStateBuffer.contents(),
+            0,
+            2 * MemoryLayout<UInt32>.stride
+        )
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to encode reflected-population link selection."
+            )
+        }
+        encoder.label = "Select reflected-population provenance links"
+        encoder.setBuffer(populationsIn, offset: 0, index: 0)
+        encoder.setBuffer(solidPrevious, offset: 0, index: 1)
+        encoder.setBuffer(solidCurrent, offset: 0, index: 2)
+        encoder.setBuffer(candidateBuffer, offset: 0, index: 3)
+        encoder.setBuffer(summaryBuffer, offset: 0, index: 4)
+        encoder.setBuffer(appendStateBuffer, offset: 0, index: 5)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 6
+        )
+        var candidateCapacity32 = UInt32(candidateCapacity)
+        encoder.setBytes(
+            &candidateCapacity32,
+            length: MemoryLayout<UInt32>.stride,
+            index: 7
+        )
+        backend.dispatch1DPadded(
+            encoder: encoder,
+            pipeline: selectionPipeline,
+            count: cellCount,
+            threadsPerThreadgroup: 256
+        )
+        encoder.endEncoding()
+    }
+
+    func consumeAndCapture(
+        step: Int,
+        populationsIn: MTLBuffer,
+        solidPrevious: MTLBuffer,
+        solidCurrent: MTLBuffer,
+        wallVelocity: MTLBuffer,
+        uniforms: inout GPUUniforms
+    ) throws {
+        guard let targetSampleIndex = endpointIndexByStep[step],
+              let sourceTime = sourceTimeByStep[step],
+              let sourceForce = sourceForceByStep[step] else { return }
+
+        let summaryPointer = summaryBuffer.contents().assumingMemoryBound(
+            to: GPUIndexedReflectedGroupSummary.self
+        )
+        var fullForce = SIMD3<Double>.zero
+        var fullAbsoluteScore = 0.0
+        var activeLinkCount = 0
+        var candidateTargetCount = 0
+        for group in 0..<groupCount {
+            let summary = summaryPointer[group]
+            fullForce += SIMD3<Double>(
+                Double(summary.forceAndAbsoluteScore.x),
+                Double(summary.forceAndAbsoluteScore.y),
+                Double(summary.forceAndAbsoluteScore.z)
+            )
+            fullAbsoluteScore += Double(
+                summary.forceAndAbsoluteScore.w
+            )
+            activeLinkCount += Int(summary.counts.x)
+            candidateTargetCount += Int(summary.counts.y)
+        }
+
+        let appendState = appendStateBuffer.contents().assumingMemoryBound(
+            to: UInt32.self
+        )
+        let appendedCandidateCount = Int(appendState[0])
+        if appendState[1] != 0 || appendedCandidateCount > candidateCapacity {
+            candidateOverflowCount += 1
+        }
+        let candidateCount = min(appendedCandidateCount, candidateCapacity)
+        let candidatePointer = candidateBuffer.contents()
+            .assumingMemoryBound(to: GPUIndexedReflectedLinkCandidate.self)
+        var candidates = [GPUIndexedReflectedLinkCandidate]()
+        candidates.reserveCapacity(min(candidateCount, selectedLinkLimit * 4))
+        for index in 0..<candidateCount {
+            let candidate = candidatePointer[index]
+            if candidate.score.isFinite,
+               candidate.score > 0,
+               candidate.target < UInt32(cellCount),
+               (1..<UInt32(D3Q19.count)).contains(candidate.direction) {
+                candidates.append(candidate)
+            }
+        }
+        candidates.sort {
+            if $0.score != $1.score { return $0.score > $1.score }
+            if $0.target != $1.target { return $0.target < $1.target }
+            return $0.direction < $1.direction
+        }
+        if candidates.count > selectedLinkLimit {
+            candidates.removeSubrange(selectedLinkLimit...)
+        }
+        let selectedBytes = candidates.count
+            * MemoryLayout<GPUIndexedReflectedLinkCandidate>.stride
+        if selectedBytes > 0 {
+            _ = candidates.withUnsafeBytes { bytes in
+                memcpy(
+                    selectedBuffer.contents(),
+                    bytes.baseAddress!,
+                    selectedBytes
+                )
+            }
+        }
+        memset(
+            provenanceBuffer.contents(),
+            0,
+            candidates.count
+                * MemoryLayout<GPUIndexedReflectedLinkProvenance>.stride
+        )
+
+        guard let commandBuffer = backend.queue.makeCommandBuffer(),
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to capture selected reflected-population provenance."
+            )
+        }
+        var selectedCount = UInt32(candidates.count)
+        encoder.label = "Capture reflected-population provenance"
+        encoder.setBuffer(populationsIn, offset: 0, index: 0)
+        encoder.setBuffer(solidPrevious, offset: 0, index: 1)
+        encoder.setBuffer(solidCurrent, offset: 0, index: 2)
+        encoder.setBuffer(wallVelocity, offset: 0, index: 3)
+        encoder.setBuffer(selectedBuffer, offset: 0, index: 4)
+        encoder.setBuffer(provenanceBuffer, offset: 0, index: 5)
+        encoder.setBytes(
+            &uniforms,
+            length: MemoryLayout<GPUUniforms>.stride,
+            index: 6
+        )
+        encoder.setBytes(
+            &selectedCount,
+            length: MemoryLayout<UInt32>.stride,
+            index: 7
+        )
+        backend.dispatch1D(
+            encoder: encoder,
+            pipeline: provenancePipeline,
+            count: candidates.count
+        )
+        encoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        if commandBuffer.status == .error {
+            throw BirdFlowError.commandBufferFailed(
+                commandBuffer.error?.localizedDescription
+                    ?? "Selected reflected-population capture failed."
+            )
+        }
+
+        let recordPointer = provenanceBuffer.contents().assumingMemoryBound(
+            to: GPUIndexedReflectedLinkProvenance.self
+        )
+        var strata = [StratumKey: StratumAccumulator]()
+        var exemplars =
+            [MetalIndexedBirdSurfaceReflectedProvenanceExemplar]()
+        var selectedForce = SIMD3<Double>.zero
+        var selectedAbsoluteScore = 0.0
+        var validSelectedCount = 0
+        for (index, candidate) in candidates.enumerated() {
+            let raw = recordPointer[index]
+            let valid = raw.topology.w == 1
+                && raw.metadata.x == candidate.target
+                && raw.metadata.y == candidate.direction
+                && raw.force.w.isFinite
+                && raw.population.x.isFinite
+            guard valid else {
+                candidateDetailMismatchCount += 1
+                continue
+            }
+            let scoreDifference = abs(
+                Double(raw.force.w) - Double(candidate.score)
+            )
+            maximumCandidateDetailScoreDifference = max(
+                maximumCandidateDetailScoreDifference,
+                scoreDifference
+            )
+            let part = Int(raw.metadata.w)
+            let direction = Int(raw.metadata.y)
+            let branch = Int(raw.topology.z)
+            let previousSourcePart = Int(raw.topology.y)
+            let topology = previousSourcePart == 0
+                ? 2 : (previousSourcePart == part ? 1 : 3)
+            let linkFraction = Double(raw.history.z)
+            let fractionBin = min(
+                Int(floor(linkFraction * Double(linkFractionBinCount))),
+                linkFractionBinCount - 1
+            )
+            let key = StratumKey(
+                part: part,
+                direction: direction,
+                branch: branch,
+                topology: topology,
+                fractionBin: fractionBin
+            )
+            let force = SIMD3<Double>(
+                Double(raw.force.x),
+                Double(raw.force.y),
+                Double(raw.force.z)
+            )
+            let score = Double(raw.force.w)
+            var accumulator = strata[key] ?? StratumAccumulator()
+            accumulator.count += 1
+            accumulator.reflectedPopulationSum += Double(raw.population.x)
+            accumulator.normalizedNonequilibriumSum +=
+                Double(raw.history.y)
+            accumulator.densitySum += Double(raw.population.z)
+            accumulator.forceSum += force
+            accumulator.absoluteScoreSum += score
+            strata[key] = accumulator
+            selectedForce += force
+            selectedAbsoluteScore += score
+            validSelectedCount += 1
+
+            if exemplars.count < storedExemplarLimit {
+                exemplars.append(
+                    MetalIndexedBirdSurfaceReflectedProvenanceExemplar(
+                        rank: index + 1,
+                        targetCellCoordinate: coordinate(
+                            linearIndex: Int(raw.metadata.x)
+                        ),
+                        sourceCellCoordinate: coordinate(
+                            linearIndex: Int(raw.metadata.z)
+                        ),
+                        directionIndex: direction,
+                        reflectedPostCollisionDirectionIndex:
+                            D3Q19.opposite[direction],
+                        partIdentifier: part,
+                        branch: branchName(branch),
+                        topologyClass: topologyName(topology),
+                        previousSourcePartIdentifier: previousSourcePart,
+                        linkFraction: linkFraction,
+                        reflectedPostCollisionPopulation:
+                            Double(raw.population.x),
+                        pairedPreStepPopulation:
+                            Double(raw.population.y),
+                        preStepLocalDensity: Double(raw.population.z),
+                        localEquilibriumPopulation:
+                            Double(raw.population.w),
+                        reflectedNonequilibriumPopulation:
+                            Double(raw.history.x),
+                        normalizedReflectedNonequilibrium:
+                            Double(raw.history.y),
+                        wallDirectionProjectionLattice:
+                            Double(raw.wall.x),
+                        wallCorrectionPopulation: Double(raw.wall.y),
+                        targetSignedDistanceCells: Double(raw.wall.z),
+                        sourceSignedDistanceCells: Double(raw.wall.w),
+                        reflectedForceNewtons: force,
+                        absoluteXZForceScoreNewtons: score,
+                        candidateDetailScoreDifferenceNewtons:
+                            scoreDifference
+                    )
+                )
+            }
+        }
+
+        let stratumReports = strata.map { key, value in
+            let count = Double(value.count)
+            let direction = D3Q19.directions[key.direction]
+            let coefficient = -2.0 * forceScale * count
+                * SIMD3<Double>(
+                    Double(direction.x),
+                    Double(direction.y),
+                    Double(direction.z)
+                )
+            return MetalIndexedBirdSurfaceReflectedProvenanceStratum(
+                partIdentifier: key.part,
+                directionIndex: key.direction,
+                branch: branchName(key.branch),
+                topologyClass: topologyName(key.topology),
+                linkFractionBin: key.fractionBin,
+                selectedLinkCount: value.count,
+                reflectedPopulationSum: value.reflectedPopulationSum,
+                reflectedPopulationMean:
+                    value.reflectedPopulationSum / max(count, 1),
+                normalizedNonequilibriumMean:
+                    value.normalizedNonequilibriumSum / max(count, 1),
+                preStepDensityMean: value.densitySum / max(count, 1),
+                coefficientVectorNewtonsPerPopulation: coefficient,
+                selectedReflectedForceNewtons: value.forceSum,
+                absoluteXZForceScoreSumNewtons:
+                    value.absoluteScoreSum
+            )
+        }.sorted {
+            if $0.partIdentifier != $1.partIdentifier {
+                return $0.partIdentifier < $1.partIdentifier
+            }
+            if $0.directionIndex != $1.directionIndex {
+                return $0.directionIndex < $1.directionIndex
+            }
+            if $0.branch != $1.branch { return $0.branch < $1.branch }
+            if $0.topologyClass != $1.topologyClass {
+                return $0.topologyClass < $1.topologyClass
+            }
+            return $0.linkFractionBin < $1.linkFractionBin
+        }
+        let coverage = selectedAbsoluteScore
+            / max(fullAbsoluteScore, 1e-30)
+        endpoints.append(
+            MetalIndexedBirdSurfaceReflectedProvenanceEndpoint(
+                targetSampleIndex: targetSampleIndex,
+                step: step,
+                sourceTimeSeconds: sourceTime,
+                productionActiveLinkCount: activeLinkCount,
+                candidateTargetCellCount: candidateTargetCount,
+                selectedLinkCount: validSelectedCount,
+                fullReflectedForceNewtons: fullForce,
+                sourceReflectedForceNewtons: sourceForce,
+                sourceForceResidualNewtons: fullForce - sourceForce,
+                fullAbsoluteXZForceScoreNewtons: fullAbsoluteScore,
+                selectedAbsoluteXZForceScoreNewtons:
+                    selectedAbsoluteScore,
+                selectedAbsoluteScoreCoverage: coverage,
+                selectedReflectedForceNewtons: selectedForce,
+                strata: stratumReports,
+                exemplars: exemplars
+            )
+        )
+    }
+
+    private func coordinate(linearIndex: Int) -> SIMD3<Int> {
+        SIMD3<Int>(
+            linearIndex % grid.x,
+            (linearIndex / grid.x) % grid.y,
+            linearIndex / (grid.x * grid.y)
+        )
+    }
+
+    private func branchName(_ branch: Int) -> String {
+        switch branch {
+        case 1: return "halfway-fallback"
+        case 2: return "interpolated-near-wall"
+        case 3: return "interpolated-far-wall"
+        default: return "invalid"
+        }
+    }
+
+    private func topologyName(_ topology: Int) -> String {
+        switch topology {
+        case 1: return "persistent-source"
+        case 2: return "newly-covered-source"
+        case 3: return "part-reassigned-source"
+        default: return "invalid"
+        }
     }
 }
 
@@ -16219,7 +17161,9 @@ private final class MetalIndexedBirdSurfaceReplay {
         distributedLinkTermCapture:
             MetalIndexedDistributedLinkTermCapture? = nil,
         movingBoundaryForceCapture:
-            MetalIndexedMovingBoundaryForceCapture? = nil
+            MetalIndexedMovingBoundaryForceCapture? = nil,
+        reflectedPopulationCapture:
+            MetalIndexedReflectedPopulationCapture? = nil
     ) throws -> MetalIndexedBirdSurfaceMomentumClosureCase {
         let started = Date()
         let requestedSteps = stepLimit ?? plan.preRollFluidSteps
@@ -16481,6 +17425,14 @@ private final class MetalIndexedBirdSurfaceReplay {
                 fluidPipeline: fluidPipeline,
                 reductionPipeline: forceReductionPipeline
             )
+            try reflectedPopulationCapture?.encodeSelection(
+                commandBuffer: commandBuffer,
+                step: step,
+                populationsIn: populationsIn,
+                solidPrevious: solidPrevious,
+                solidCurrent: partMask,
+                uniforms: &uniforms
+            )
             try encodeCouplingFluid(
                 commandBuffer: commandBuffer,
                 populationsIn: populationsIn,
@@ -16522,6 +17474,14 @@ private final class MetalIndexedBirdSurfaceReplay {
             try check(commandBuffer)
             completedSteps = step
             distributedLinkTermCapture?.consume(step: step)
+            try reflectedPopulationCapture?.consumeAndCapture(
+                step: step,
+                populationsIn: populationsIn,
+                solidPrevious: solidPrevious,
+                solidCurrent: partMask,
+                wallVelocity: wallVelocityAndDistance,
+                uniforms: &uniforms
+            )
 
             let rawLoad = reducedLoad.contents()
                 .assumingMemoryBound(to: GPUForceTorque.self)

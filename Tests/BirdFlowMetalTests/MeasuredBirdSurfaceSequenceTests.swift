@@ -2304,6 +2304,128 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
             == CheckpointArchive.sha256(targetedReportData)
     )
 
+    let provenancePreregistrationData = try data(
+        "deetjen-dove-source-viscosity-reflected-provenance-preregistration.json"
+    )
+    let provenancePreregistration = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceReflectedProvenancePreregistration.self,
+        from: provenancePreregistrationData
+    )
+    #expect(provenancePreregistration.schemaVersion == 2)
+    #expect(provenancePreregistration.referenceLengthCells == [28, 32])
+    #expect(provenancePreregistration.targetSampleIndices == Array(50...60))
+    #expect(provenancePreregistration.candidateLinksPerThreadgroup == 0)
+    #expect(provenancePreregistration.candidateCapacity == 262_144)
+    #expect(provenancePreregistration.selectedLinksPerEndpoint == 131_072)
+    #expect(
+        provenancePreregistration.minimumSelectedAbsoluteScoreCoverage == 0.5
+    )
+    #expect(
+        provenancePreregistration.maximumPopulationCompositionClosureRelativeRMS
+            == 1e-10
+    )
+
+    let provenanceV1PreregistrationData = try data(
+        "deetjen-dove-source-viscosity-reflected-provenance-preregistration-v1-insufficient-coverage.json"
+    )
+    let provenanceV1D28Data = try data(
+        "deetjen-dove-source-viscosity-reflected-provenance-d28-v1-insufficient-coverage.json"
+    )
+    let provenanceV1D28 = try #require(
+        JSONSerialization.jsonObject(with: provenanceV1D28Data)
+            as? [String: Any]
+    )
+    #expect(
+        provenancePreregistration.sourceV1PreregistrationSHA256
+            == CheckpointArchive.sha256(provenanceV1PreregistrationData)
+    )
+    #expect(
+        provenancePreregistration.sourceV1D28CaseSHA256
+            == CheckpointArchive.sha256(provenanceV1D28Data)
+    )
+    #expect(provenanceV1D28["provenanceCasePassed"] as? Bool == false)
+    #expect(provenanceV1D28["selectionCoveragePassed"] as? Bool == false)
+    #expect(provenanceV1D28["numericalLedgerPassed"] as? Bool == true)
+    #expect(
+        provenanceV1D28["sourceReflectedForceReproductionPassed"] as? Bool
+            == true
+    )
+    #expect(provenanceV1D28["candidateDetailPassed"] as? Bool == true)
+
+    let provenanceD28Data = try data(
+        "deetjen-dove-source-viscosity-reflected-provenance-d28.json"
+    )
+    let provenanceD32Data = try data(
+        "deetjen-dove-source-viscosity-reflected-provenance-d32.json"
+    )
+    let provenanceD28 = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceReflectedProvenanceCaseReport.self,
+        from: provenanceD28Data
+    )
+    let provenanceD32 = try JSONDecoder().decode(
+        MetalIndexedBirdSurfaceReflectedProvenanceCaseReport.self,
+        from: provenanceD32Data
+    )
+    for provenance in [provenanceD28, provenanceD32] {
+        #expect(provenance.schemaVersion == 2)
+        #expect(provenance.endpointCount == 11)
+        #expect(provenance.provenanceCasePassed)
+        #expect(provenance.numericalLedgerPassed)
+        #expect(provenance.selectionCoveragePassed)
+        #expect(provenance.sourceReflectedForceReproductionPassed)
+        #expect(provenance.candidateDetailPassed)
+        #expect(provenance.candidateDetailMismatchCount == 0)
+        #expect(provenance.candidateOverflowCount == 0)
+        #expect(provenance.minimumSelectedAbsoluteScoreCoverage >= 0.5)
+        #expect(
+            provenance.sourcePreregistrationSHA256
+                == CheckpointArchive.sha256(provenancePreregistrationData)
+        )
+        #expect(!provenance.productionModificationAuthorized)
+        #expect(!provenance.experimentalAgreementGateApplied)
+        #expect(!provenance.gridConvergenceGateApplied)
+    }
+    #expect(provenanceD28.referenceLengthCells == 28)
+    #expect(provenanceD32.referenceLengthCells == 32)
+
+    let provenanceReportData = try data(
+        "deetjen-dove-source-viscosity-reflected-provenance.json"
+    )
+    let provenanceAuditData = try data(
+        "deetjen-dove-source-viscosity-reflected-provenance-audit.json"
+    )
+    let provenanceReport = try #require(
+        JSONSerialization.jsonObject(with: provenanceReportData)
+            as? [String: Any]
+    )
+    let provenanceAudit = try #require(
+        JSONSerialization.jsonObject(with: provenanceAuditData)
+            as? [String: Any]
+    )
+    #expect(provenanceReport["bothProvenanceCasesPassed"] as? Bool == true)
+    #expect(
+        provenanceReport["populationCompositionClosurePassed"] as? Bool
+            == true
+    )
+    #expect(
+        provenanceReport["preregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(provenancePreregistrationData)
+    )
+    #expect(
+        provenanceReport["sourceD28CaseSHA256"] as? String
+            == CheckpointArchive.sha256(provenanceD28Data)
+    )
+    #expect(
+        provenanceReport["sourceD32CaseSHA256"] as? String
+            == CheckpointArchive.sha256(provenanceD32Data)
+    )
+    #expect(provenanceAudit["allChecksPassed"] as? Bool == true)
+    #expect(provenanceAudit["checkCount"] as? Int == 16)
+    #expect(
+        provenanceAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(provenanceReportData)
+    )
+
     let invalidRunnerPreregistration = try #require(
         JSONSerialization.jsonObject(with: data(
             "deetjen-dove-source-viscosity-targeted-boundary-preregistration-v1-invalid-runner.json"

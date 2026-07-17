@@ -2590,6 +2590,44 @@ Component-difference and squared-energy closure are `2.383e-5` and
 pre-step reflected population at D28/D32; D36 and production edits remain
 unauthorized.
 
+That selected-link experiment is complete under a transparent V2 contract.
+The preserved V1 capture retained only `8,192` links and covered `10.028%` of
+the D28 absolute X/Z reflected score; it nevertheless passed the numerical
+ledger, source-force reproduction (`8.931e-7` relative RMS), and exact
+candidate-detail identity. V2 therefore changed observation capacity only,
+not physics, phases, score, the `50%` gate, or the attribution rule. It appends
+every positive-score production link into a `262,144`-entry bounded buffer,
+requires zero overflow, and deterministically retains at most `131,072` links.
+
+The V2 D28/D32 cases completed `3,360/3,840` steps on Apple M4 and captured all
+11 endpoints. Minimum selected-score coverage is `99.9999999%/83.4524%`;
+source reflected-force reproduction is `8.931e-7/9.336e-7` relative RMS; and
+candidate score difference, identity mismatch, and overflow counts are zero.
+Both positivity and momentum ledgers pass. The exact per-stratum midpoint
+identity
+
+`0.5(K32 + K28)(m32 - m28) + 0.5(m32 + m28)(K32 - K28)`
+
+separates mean reflected-population history from link-composition coefficient
+change for every part, lattice direction, interpolation branch, topology
+class, and link-fraction bin. Algebra closes at `5.539e-16` relative RMS and
+the independently accumulated Metal float-force sum agrees at `1.477e-9`.
+The independent 16-check audit reconstructs the preserved negative control,
+source hashes, both case gates, endpoint alignment, decomposition, three-term
+signed ledger, temporal halves, and claim boundary. Near-wall link composition
+is the stable dominant self term at `91.125%` of the absolute ledger;
+population history is `0.216%`, and their negative interaction is `8.659%`.
+
+This clears bulk collision/transport population history as the primary cause
+of the localized D28/D32 reflected-force change. It does not prove which
+near-wall compositional feature is responsible and does not authorize a
+boundary edit. The next admissible discriminator is zero-fluid cross-application
+of the captured D28/D32 population means and coefficients, conditioned in turn
+on occupancy/count, direction, interpolation branch, topology, and q-bin. Only
+the leading frozen substitution may advance to a minimal prescribed-surface
+canonical; D36, production changes, grid convergence, experimental agreement,
+quantitative bird-load acceptance, and free flight remain unauthorized.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

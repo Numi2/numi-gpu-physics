@@ -22,6 +22,11 @@ public enum ReadmeShowcaseCapture {
     let doveTargetedBoundaryD32URL: URL?
     let doveTargetedBoundaryAttributionURL: URL?
     let doveTargetedBoundaryAuditURL: URL?
+    let doveReflectedProvenancePreregistrationURL: URL?
+    let doveReflectedProvenanceD28URL: URL?
+    let doveReflectedProvenanceD32URL: URL?
+    let doveReflectedProvenanceAttributionURL: URL?
+    let doveReflectedProvenanceAuditURL: URL?
 
     public init(commandLine: [String]) throws {
       guard
@@ -91,6 +96,21 @@ public enum ReadmeShowcaseCapture {
       doveTargetedBoundaryAuditURL = try fileURL(
         after: "--capture-dove-targeted-boundary-audit"
       )
+      doveReflectedProvenancePreregistrationURL = try fileURL(
+        after: "--capture-dove-reflected-provenance-preregistration"
+      )
+      doveReflectedProvenanceD28URL = try fileURL(
+        after: "--capture-dove-reflected-provenance-d28"
+      )
+      doveReflectedProvenanceD32URL = try fileURL(
+        after: "--capture-dove-reflected-provenance-d32"
+      )
+      doveReflectedProvenanceAttributionURL = try fileURL(
+        after: "--capture-dove-reflected-provenance-attribution"
+      )
+      doveReflectedProvenanceAuditURL = try fileURL(
+        after: "--capture-dove-reflected-provenance-audit"
+      )
       let doveInputs = [
         doveManifestURL,
         doveD32FullWindowArtifactURL,
@@ -102,6 +122,11 @@ public enum ReadmeShowcaseCapture {
         doveTargetedBoundaryD32URL,
         doveTargetedBoundaryAttributionURL,
         doveTargetedBoundaryAuditURL,
+        doveReflectedProvenancePreregistrationURL,
+        doveReflectedProvenanceD28URL,
+        doveReflectedProvenanceD32URL,
+        doveReflectedProvenanceAttributionURL,
+        doveReflectedProvenanceAuditURL,
       ]
       guard
         doveInputs.allSatisfy({ $0 == nil })
@@ -112,6 +137,8 @@ public enum ReadmeShowcaseCapture {
             + "--capture-dove-d32-full-window, its audit, the D28/D32 "
             + "refinement, and the phase-localization report and audit"
             + ", plus both targeted cases and their attribution/audit"
+            + ", plus the reflected-provenance preregistration, both cases, "
+            + "attribution, and audit"
         )
       }
       guard width >= 320, height >= 180, frameCount >= 2 else {
@@ -150,7 +177,14 @@ public enum ReadmeShowcaseCapture {
       let targetedD32URL = arguments.doveTargetedBoundaryD32URL,
       let targetedAttributionURL =
         arguments.doveTargetedBoundaryAttributionURL,
-      let targetedAuditURL = arguments.doveTargetedBoundaryAuditURL
+      let targetedAuditURL = arguments.doveTargetedBoundaryAuditURL,
+      let reflectedPreregistrationURL =
+        arguments.doveReflectedProvenancePreregistrationURL,
+      let reflectedD28URL = arguments.doveReflectedProvenanceD28URL,
+      let reflectedD32URL = arguments.doveReflectedProvenanceD32URL,
+      let reflectedAttributionURL =
+        arguments.doveReflectedProvenanceAttributionURL,
+      let reflectedAuditURL = arguments.doveReflectedProvenanceAuditURL
     {
       try MeasuredDoveShowcaseCapture.run(
         arguments: arguments,
@@ -163,7 +197,12 @@ public enum ReadmeShowcaseCapture {
         targetedD28URL: targetedD28URL,
         targetedD32URL: targetedD32URL,
         targetedAttributionURL: targetedAttributionURL,
-        targetedAuditURL: targetedAuditURL
+        targetedAuditURL: targetedAuditURL,
+        reflectedPreregistrationURL: reflectedPreregistrationURL,
+        reflectedD28URL: reflectedD28URL,
+        reflectedD32URL: reflectedD32URL,
+        reflectedAttributionURL: reflectedAttributionURL,
+        reflectedAuditURL: reflectedAuditURL
       )
       return
     }
