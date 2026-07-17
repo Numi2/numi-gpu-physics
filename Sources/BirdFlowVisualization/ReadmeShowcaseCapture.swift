@@ -37,6 +37,16 @@ public enum ReadmeShowcaseCapture {
     let doveCurvedDirectionCompositionPreregistrationURL: URL?
     let doveCurvedDirectionCompositionCanonicalURL: URL?
     let doveCurvedDirectionCompositionAuditURL: URL?
+    let doveFineDirectionCompositionPreregistrationURL: URL?
+    let doveFineDirectionCompositionCensusURL: URL?
+    let doveFineDirectionCompositionDiscriminatorURL: URL?
+    let doveFineDirectionCompositionAuditURL: URL?
+    let doveFineDirectionPhaseV1PreregistrationURL: URL?
+    let doveFineDirectionPhaseV1FailureURL: URL?
+    let doveFineDirectionPhasePreregistrationURL: URL?
+    let doveFineDirectionPhaseCensusURL: URL?
+    let doveFineDirectionPhaseDiscriminatorURL: URL?
+    let doveFineDirectionPhaseAuditURL: URL?
 
     public init(commandLine: [String]) throws {
       guard
@@ -151,6 +161,36 @@ public enum ReadmeShowcaseCapture {
       doveCurvedDirectionCompositionAuditURL = try fileURL(
         after: "--capture-dove-curved-direction-composition-audit"
       )
+      doveFineDirectionCompositionPreregistrationURL = try fileURL(
+        after: "--capture-dove-fine-direction-composition-preregistration"
+      )
+      doveFineDirectionCompositionCensusURL = try fileURL(
+        after: "--capture-dove-fine-direction-composition-census"
+      )
+      doveFineDirectionCompositionDiscriminatorURL = try fileURL(
+        after: "--capture-dove-fine-direction-composition-discriminator"
+      )
+      doveFineDirectionCompositionAuditURL = try fileURL(
+        after: "--capture-dove-fine-direction-composition-audit"
+      )
+      doveFineDirectionPhaseV1PreregistrationURL = try fileURL(
+        after: "--capture-dove-fine-direction-phase-v1-preregistration"
+      )
+      doveFineDirectionPhaseV1FailureURL = try fileURL(
+        after: "--capture-dove-fine-direction-phase-v1-failure"
+      )
+      doveFineDirectionPhasePreregistrationURL = try fileURL(
+        after: "--capture-dove-fine-direction-phase-preregistration"
+      )
+      doveFineDirectionPhaseCensusURL = try fileURL(
+        after: "--capture-dove-fine-direction-phase-census"
+      )
+      doveFineDirectionPhaseDiscriminatorURL = try fileURL(
+        after: "--capture-dove-fine-direction-phase-discriminator"
+      )
+      doveFineDirectionPhaseAuditURL = try fileURL(
+        after: "--capture-dove-fine-direction-phase-audit"
+      )
       let doveInputs = [
         doveManifestURL,
         doveD32FullWindowArtifactURL,
@@ -177,6 +217,16 @@ public enum ReadmeShowcaseCapture {
         doveCurvedDirectionCompositionPreregistrationURL,
         doveCurvedDirectionCompositionCanonicalURL,
         doveCurvedDirectionCompositionAuditURL,
+        doveFineDirectionCompositionPreregistrationURL,
+        doveFineDirectionCompositionCensusURL,
+        doveFineDirectionCompositionDiscriminatorURL,
+        doveFineDirectionCompositionAuditURL,
+        doveFineDirectionPhaseV1PreregistrationURL,
+        doveFineDirectionPhaseV1FailureURL,
+        doveFineDirectionPhasePreregistrationURL,
+        doveFineDirectionPhaseCensusURL,
+        doveFineDirectionPhaseDiscriminatorURL,
+        doveFineDirectionPhaseAuditURL,
       ]
       guard
         doveInputs.allSatisfy({ $0 == nil })
@@ -195,6 +245,10 @@ public enum ReadmeShowcaseCapture {
             + "canonical, and audit"
             + ", plus the source link-geometry report and curved "
             + "direction-composition preregistration, canonical, and audit"
+            + ", plus the fine-pair direction-composition preregistration, "
+            + "census, discriminator, and audit"
+            + ", plus the phase-window V1 preregistration/failure and V2 "
+            + "preregistration, census, discriminator, and audit"
         )
       }
       guard width >= 320, height >= 180, frameCount >= 2 else {
@@ -258,7 +312,26 @@ public enum ReadmeShowcaseCapture {
       let curvedDirectionCompositionCanonicalURL =
         arguments.doveCurvedDirectionCompositionCanonicalURL,
       let curvedDirectionCompositionAuditURL =
-        arguments.doveCurvedDirectionCompositionAuditURL
+        arguments.doveCurvedDirectionCompositionAuditURL,
+      let fineDirectionCompositionPreregistrationURL =
+        arguments.doveFineDirectionCompositionPreregistrationURL,
+      let fineDirectionCompositionCensusURL =
+        arguments.doveFineDirectionCompositionCensusURL,
+      let fineDirectionCompositionDiscriminatorURL =
+        arguments.doveFineDirectionCompositionDiscriminatorURL,
+      let fineDirectionCompositionAuditURL =
+        arguments.doveFineDirectionCompositionAuditURL,
+      let fineDirectionPhaseV1PreregistrationURL =
+        arguments.doveFineDirectionPhaseV1PreregistrationURL,
+      let fineDirectionPhaseV1FailureURL =
+        arguments.doveFineDirectionPhaseV1FailureURL,
+      let fineDirectionPhasePreregistrationURL =
+        arguments.doveFineDirectionPhasePreregistrationURL,
+      let fineDirectionPhaseCensusURL =
+        arguments.doveFineDirectionPhaseCensusURL,
+      let fineDirectionPhaseDiscriminatorURL =
+        arguments.doveFineDirectionPhaseDiscriminatorURL,
+      let fineDirectionPhaseAuditURL = arguments.doveFineDirectionPhaseAuditURL
     {
       try MeasuredDoveShowcaseCapture.run(
         arguments: arguments,
@@ -290,7 +363,22 @@ public enum ReadmeShowcaseCapture {
           curvedDirectionCompositionPreregistrationURL,
         curvedDirectionCompositionCanonicalURL:
           curvedDirectionCompositionCanonicalURL,
-        curvedDirectionCompositionAuditURL: curvedDirectionCompositionAuditURL
+        curvedDirectionCompositionAuditURL: curvedDirectionCompositionAuditURL,
+        fineDirectionCompositionPreregistrationURL:
+          fineDirectionCompositionPreregistrationURL,
+        fineDirectionCompositionCensusURL: fineDirectionCompositionCensusURL,
+        fineDirectionCompositionDiscriminatorURL:
+          fineDirectionCompositionDiscriminatorURL,
+        fineDirectionCompositionAuditURL: fineDirectionCompositionAuditURL,
+        fineDirectionPhaseV1PreregistrationURL:
+          fineDirectionPhaseV1PreregistrationURL,
+        fineDirectionPhaseV1FailureURL: fineDirectionPhaseV1FailureURL,
+        fineDirectionPhasePreregistrationURL:
+          fineDirectionPhasePreregistrationURL,
+        fineDirectionPhaseCensusURL: fineDirectionPhaseCensusURL,
+        fineDirectionPhaseDiscriminatorURL:
+          fineDirectionPhaseDiscriminatorURL,
+        fineDirectionPhaseAuditURL: fineDirectionPhaseAuditURL
       )
       return
     }

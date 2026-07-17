@@ -555,11 +555,31 @@ curved direction redistribution as the explanation for the `87.66%`
 conditioned attribution, but it does not validate the source report's separate
 wall-velocity field.
 
-The highest-return next step is a preregistered archive-only D28/D32 full-link
-direction-count capture at the same `26.5 ms` phase. It targets the actual fine
-pair while avoiding collision and fluid evolution. D36, convergence,
-experimental agreement, production promotion, and free flight remain
-unauthorized.
+The preregistered D28/D32 complete-link census at the same `26.5 ms` phase is
+also complete. Metal and CPU match every component/direction count exactly;
+the static totals remain within `0.7482%` of the moving-run active-link totals.
+D28-to-D32 whole histogram TV is `0.06569%`, maximum whole fixed-profile
+response change `0.001161%`, and the worst component response change `0.1945%`.
+All eight gates and all 16 independent audit checks pass. The capture takes
+`0.483 s` internally, allocates no populations, and executes no fluid or force
+kernel. This clears fine-pair direction redistribution at one source phase,
+not across the force-difference interval.
+
+The counts-only D28/D32 extension across samples `50...60` (`25...30 ms`) is
+now complete. Exact-parity V1 is retained as a negative control after four
+one-cell arithmetic ties stopped it. V2 preregisters a `1e-5`-cell tie
+qualification while retaining exact whole-surface direction counts and every
+physical threshold. All 22 cases qualify and all eight gates pass at all 11
+phases. The maximum whole histogram, whole response, component histogram, and
+component response changes are `0.07833%`, `0.003243%`, `0.6251%`, and
+`0.5665%`; the independent audit passes `18/18` checks. This clears static
+fine-pair direction support throughout the localized interval.
+
+The highest-return next step is a zero-fluid force-bearing replay separating
+moving-wall velocity, interpolation branch, and reflected-population effects
+over those same samples. It reuses archived populations and geometry before an
+hour-scale D36 allocation. D36, convergence, experimental agreement,
+production promotion, and free flight remain unauthorized.
 
 ## Claim after a successful ladder
 

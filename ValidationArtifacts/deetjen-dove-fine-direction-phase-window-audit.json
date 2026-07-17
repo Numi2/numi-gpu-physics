@@ -1,0 +1,42 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-fine-direction-phase-window-audit-v1",
+  "censusSHA256": "4afb80f4e5a918a3c4d4f0e38f7fae4ea4c7adf5db59ab800cf2d3ac4ed7ce1f",
+  "checkCount": 18,
+  "checks": {
+    "aggregateGates": true,
+    "allElevenPhasesPass": true,
+    "captureIsolation": true,
+    "claimBoundaryAndNoAuthorization": true,
+    "classification": true,
+    "completeCaseCoverage": true,
+    "independentComponentQualification": true,
+    "independentMaximumMetrics": true,
+    "independentPhaseMetrics": true,
+    "independentTieQualification": true,
+    "independentWholeDirectionParity": true,
+    "oppositeAndEquilibriumClosure": true,
+    "productionLinkConsistency": true,
+    "qualifiedCensusDecision": true,
+    "qualifiedSourceIdentities": true,
+    "retainedV1Failure": true,
+    "retainedV1SourceIdentities": true,
+    "v2FrozenCoverage": true
+  },
+  "claimBoundary": "Independent reconstruction of all 22 raw cases, four arithmetic ties, eleven D28/D32 phase pairs, eight gates, and the safety boundary; no force or convergence claim is made.",
+  "classification": "fine-direction-phase-window-cleared-at-d28-d32",
+  "fluidEvolutionExecuted": false,
+  "generatedBy": "Scripts/audit-dove-fine-direction-phase-window.py",
+  "independentMaximumMetrics": {
+    "componentDirectionHistogramTotalVariation": 0.006250746219812486,
+    "componentProfileResponseLedgerDifference": 0.00566462496479988,
+    "wholeDirectionHistogramTotalVariation": 0.0007833379455010128,
+    "wholeProfileResponseLedgerDifference": 3.243495027391196e-05
+  },
+  "preregistrationSHA256": "5a0d523b9c795b9ede584a4e421876ca48c776851f453bc1ad7bd1e95542f1c3",
+  "productionModificationAuthorized": false,
+  "reportSHA256": "c4113f3bae058a13a4746c8831e3a63464bacb6793d14735613c98c81c9e31fb",
+  "retainedV1FailureSHA256": "7312cf3da22988c91012af07f2762e4d0fc706e199461bf8c7f3ac43af5005a7",
+  "retainedV1PreregistrationSHA256": "b9c28b157217cfc59b3ea4db44141e32dd924988e0fe8284bedaa5352eabcce9",
+  "schemaVersion": 1
+}

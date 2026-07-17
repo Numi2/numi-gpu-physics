@@ -76,7 +76,27 @@ swift build -c release --product birdflow-viewer
   --capture-dove-curved-direction-composition-canonical \
     "$ROOT/ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical.json" \
   --capture-dove-curved-direction-composition-audit \
-    "$ROOT/ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-audit.json"
+    "$ROOT/ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-audit.json" \
+  --capture-dove-fine-direction-composition-preregistration \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-composition-preregistration.json" \
+  --capture-dove-fine-direction-composition-census \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-composition-census.json" \
+  --capture-dove-fine-direction-composition-discriminator \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-composition-discriminator.json" \
+  --capture-dove-fine-direction-composition-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-composition-audit.json" \
+  --capture-dove-fine-direction-phase-v1-preregistration \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-phase-window-preregistration-v1-exact-parity.json" \
+  --capture-dove-fine-direction-phase-v1-failure \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-phase-window-census-v1-exact-parity-failure.json" \
+  --capture-dove-fine-direction-phase-preregistration \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-phase-window-preregistration.json" \
+  --capture-dove-fine-direction-phase-census \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-phase-window-census.json" \
+  --capture-dove-fine-direction-phase-discriminator \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-phase-window-discriminator.json" \
+  --capture-dove-fine-direction-phase-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-fine-direction-phase-window-audit.json"
 
 ffmpeg -v error -y \
   -framerate 24 \

@@ -1,0 +1,195 @@
+{
+  "claimBoundary": "This geometry-only D28/D32 census can clear or localize fine-pair direction support at one source phase. It cannot validate wall velocity, interpolation, force magnitude, phase history, bird-load grid convergence, experimental agreement, quantitative bird flight, or free flight, and it authorizes no production edit or D36 run.",
+  "classificationRule": "Classify invalid-census-parity if Metal and CPU masks or any component/direction count differ. Classify production-link-set-mismatch if either total differs from its archived moving-run active-link reference by more than 5%. Otherwise clear fine-pair direction redistribution only if exact opposite balance, closed-surface equilibrium cancellation, whole/component histograms, and both inherited fixed-profile response gates pass.",
+  "components": [
+    {
+      "componentName": "body",
+      "partIdentifier": 1
+    },
+    {
+      "componentName": "leftWing",
+      "partIdentifier": 2
+    },
+    {
+      "componentName": "rightWing",
+      "partIdentifier": 3
+    },
+    {
+      "componentName": "tail",
+      "partIdentifier": 4
+    }
+  ],
+  "d36RunAuthorized": false,
+  "datasetIdentifier": "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "directionIndices": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "expectedGridCells": {
+    "28": [
+      259,
+      238,
+      229
+    ],
+    "32": [
+      296,
+      271,
+      261
+    ]
+  },
+  "experimentalAgreementGateApplied": false,
+  "fixedPopulationProfiles": [
+    {
+      "directionPopulations": [
+        0.3333333333333333,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776
+      ],
+      "identifier": "rest-equilibrium",
+      "source": "rho=1, u=0 D3Q19 equilibrium; q0 is unused by the link sum"
+    },
+    {
+      "directionPopulations": [
+        0.0,
+        0.05481896151130449,
+        0.05673913023113411,
+        0.0,
+        0.0,
+        0.05575516067552731,
+        0.05556847946491219,
+        0.028361462604052267,
+        0.028664753198283367,
+        0.02807873461249134,
+        0.02841815050719536,
+        0.02730192725161408,
+        0.028614235197181502,
+        0.02717325645893574,
+        0.028581016389104326,
+        0.027945840058758716,
+        0.028476743097414683,
+        0.028583645169417943,
+        0.028255690238828415
+      ],
+      "identifier": "deetjen-midpoint-pooled",
+      "source": "count-weighted D28/D32 midpoint reflected-population means pooled over the 11 audited endpoints and every non-direction stratum; q0 and the unsupported pure-y directions are zero and unused because every canonical normal lies in the audited X/Z force plane"
+    }
+  ],
+  "fluidEvolutionAuthorized": false,
+  "forceTargetIdentifier": "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "frozenSourceSampleIndex": 53,
+  "frozenSourceTimeSeconds": 0.0265,
+  "gridConvergenceGateApplied": false,
+  "halfThicknessMeters": 0.0075,
+  "manifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumCensusToProductionActiveLinkRelativeDifference": 0.05,
+  "maximumComponentDirectionHistogramTotalVariation": 0.1,
+  "maximumComponentProfileResponseLedgerDifference": 0.1,
+  "maximumEquilibriumWholeSurfaceNetLedgerFraction": 1e-12,
+  "maximumMetalCPUMaskMismatchCellCount": 0,
+  "maximumMetalCPUPerDirectionCountMismatch": 0,
+  "maximumWholeSurfaceDirectionHistogramTotalVariation": 0.05,
+  "maximumWholeSurfaceOppositeDirectionCountMismatch": 0,
+  "maximumWholeSurfaceProfileResponseLedgerDifference": 0.05,
+  "newPhysicsKernelAuthorized": false,
+  "normalizationDefinition": "Normalize a D28/D32 response-vector change by the mean absolute direction ledger: 0.5*(sum_q ||term_D28,q|| + sum_q ||term_D32,q||). This remains finite when the closed-surface net response cancels. Direction histograms normalize N_q*dx^2 by their total over q.",
+  "oppositeDirectionPairs": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      11,
+      12
+    ],
+    [
+      13,
+      14
+    ],
+    [
+      15,
+      16
+    ],
+    [
+      17,
+      18
+    ]
+  ],
+  "passed": true,
+  "populationAllocationAuthorized": false,
+  "preregistrationIdentifier": "deetjen-ob-f03-fine-direction-composition-v1",
+  "productionActiveLinkReference": [
+    {
+      "activeLinkCount": 139963,
+      "referenceLengthCells": 28
+    },
+    {
+      "activeLinkCount": 183370,
+      "referenceLengthCells": 32
+    }
+  ],
+  "productionModificationAuthorized": false,
+  "referenceLengthCells": [
+    28,
+    32
+  ],
+  "responseDefinition": "For grid g, component p, and fixed profile k, reconstruct the outward solid-to-fluid link response R_gpk = sum_q 2*f_kq*c_q*N_gpq*dx_g^2 from the archived Metal link counts. Whole-bird response is the exact sum over the four components.",
+  "schemaVersion": 1,
+  "selectionRule": "At source sample 53 (26.5 ms), raster the complete measured-dove surface independently through the production Metal indexed-surface path and CPU reference at D28 and D32. Enumerate every current solid-to-fluid D3Q19 link by component and direction. Execute no population allocation, collision, streaming, force estimator, or topology evolution. Require exact Metal/CPU masks and direction counts; compare total counts with the already archived production active-link totals; then apply the inherited curved-canonical histogram and fixed-population response ledgers without changing their thresholds.",
+  "sourceCurvedAuditSHA256": "fc1cbaea7f7a24f0d30efa5865e6234509a202b6797ccd4e208cc5e3211e3fc1",
+  "sourceCurvedPreregistrationSHA256": "da9fd1f2090468d60f4d66190169199e4214a763804bb46c47c705a6fcefca06",
+  "sourceCurvedReportSHA256": "7de738d9210b78956e8bcc4af6598a6a9a4d6f69385ba475e7eb79555805b525",
+  "sourceD28ProvenanceSHA256": "80b9dc99f84413d2ce0ff6c7438a4b90a7b976685c40a0acb47973989ebd3226",
+  "sourceD32ProvenanceSHA256": "fbcdeede0384a87c1f17cd05baab6a1bf19422c94c335c725872fa3a12abeda0",
+  "sourceProvenanceAuditSHA256": "0df7a08aaea90fcbc3a390084acb165f725a4a776889a8baafdb9982be9e65ea",
+  "sourceRefinementAuditSHA256": "63ae86ab78e4b0eca208d88aba1833b74af55e097f8a0a3e98b3c2d1508e5254",
+  "sourceRefinementSHA256": "d1d5abb89837983bdbea9e69b30a50829806341159c33cad9d93c985990c9cae"
+}

@@ -1,0 +1,1524 @@
+{
+  "cases" : [
+    {
+      "allValuesFinite" : true,
+      "cellSizeMeters" : 0.0028571428265422583,
+      "censusToProductionActiveLinkRelativeDifference" : 0.007481314442127955,
+      "cpuBins" : [
+        {
+          "directionIndex" : 1,
+          "linkCount" : 1415,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 1163,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1961,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1961,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 1531,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 1710,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2415,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2157,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2422,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2151,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1508,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1443,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 2689,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 2254,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2462,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 2670,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 2518,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 2331,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 508,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 538,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2045,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1720,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 765,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 672,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 1972,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 1675,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 1972,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2327,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1100,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1038,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 593,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 718,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 1759,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 1317,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 2549,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 2340,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 623,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 673,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1693,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1999,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 799,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 729,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2111,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2483,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 1712,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 1476,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1314,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1294,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 509,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 630,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2336,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 2580,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 1285,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 1656,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 3137,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 3309,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1235,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1254,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 2769,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 2753,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 4195,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 4378,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2236,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2388,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1120,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1267,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 5613,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 5802,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 1871,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 1861,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 3767,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 3792,
+          "partIdentifier" : 4
+        }
+      ],
+      "deviceName" : "Apple M4",
+      "frozenSourceTimeSeconds" : 0.026499999687075615,
+      "gridCells" : [
+        259,
+        238,
+        229
+      ],
+      "halfThicknessMeters" : 0.007499999919673428,
+      "maximumMetalCPUPerDirectionCountMismatch" : 0,
+      "metalBins" : [
+        {
+          "directionIndex" : 1,
+          "linkCount" : 1415,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 1163,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1961,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1961,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 1531,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 1710,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2415,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2157,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2422,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2151,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1508,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1443,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 2689,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 2254,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2462,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 2670,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 2518,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 2331,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 508,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 538,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2045,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1720,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 765,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 672,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 1972,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 1675,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 1972,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2327,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1100,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1038,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 593,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 718,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 1759,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 1317,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 2549,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 2340,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 623,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 673,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1693,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1999,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 799,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 729,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2111,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2483,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 1712,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 1476,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1314,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1294,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 509,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 630,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2336,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 2580,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 1285,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 1656,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 3137,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 3309,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1235,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1254,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 2769,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 2753,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 4195,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 4378,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2236,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2388,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1120,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1267,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 5613,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 5802,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 1871,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 1861,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 3767,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 3792,
+          "partIdentifier" : 4
+        }
+      ],
+      "metalCPUExactDirectionCountMatch" : true,
+      "metalCPUMaskMismatchCellCount" : 0,
+      "parityGatePassed" : true,
+      "productionActiveLinkReference" : 139963,
+      "productionLinkSetConsistencyGatePassed" : true,
+      "referenceLengthCells" : 28,
+      "runtimeSeconds" : 0.1637558937072754,
+      "schemaVersion" : 1,
+      "totalCPULinkCount" : 141018,
+      "totalMetalLinkCount" : 141018
+    },
+    {
+      "allValuesFinite" : true,
+      "cellSizeMeters" : 0.0024999999441206455,
+      "censusToProductionActiveLinkRelativeDifference" : 0.006350857799308558,
+      "cpuBins" : [
+        {
+          "directionIndex" : 1,
+          "linkCount" : 1876,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 1548,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2576,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 2585,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 2010,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 2237,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 3185,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2858,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 3209,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2845,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 2004,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1913,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 3526,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 2956,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 3256,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 3523,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 3279,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 3053,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 665,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 690,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2677,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 2248,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 1006,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 878,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2581,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2202,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2575,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 3038,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1440,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1340,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 782,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 940,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2291,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 1728,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 3327,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 3060,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 795,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 877,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2214,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 2611,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 1036,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 957,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2777,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 3247,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2239,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 1935,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1686,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1687,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 659,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 820,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 3051,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 3358,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 1695,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 2166,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 4095,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 4316,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1603,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1626,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 3603,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 3583,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 5480,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 5716,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2915,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 3120,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1469,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1659,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 7324,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 7575,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2440,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 2429,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 4925,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 4947,
+          "partIdentifier" : 4
+        }
+      ],
+      "deviceName" : "Apple M4",
+      "frozenSourceTimeSeconds" : 0.026499999687075615,
+      "gridCells" : [
+        296,
+        271,
+        261
+      ],
+      "halfThicknessMeters" : 0.007499999832361937,
+      "maximumMetalCPUPerDirectionCountMismatch" : 0,
+      "metalBins" : [
+        {
+          "directionIndex" : 1,
+          "linkCount" : 1876,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 1548,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2576,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 2585,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 2010,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 2237,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 3185,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2858,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 3209,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 2845,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 2004,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1913,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 3526,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 2956,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 3256,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 3523,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 3279,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 3053,
+          "partIdentifier" : 1
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 665,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 690,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2677,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 2248,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 1006,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 878,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2581,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 2202,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2575,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 3038,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1440,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1340,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 782,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 940,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2291,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 1728,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 3327,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 3060,
+          "partIdentifier" : 2
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 795,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 877,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 2214,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 2611,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 1036,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 957,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 2777,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 3247,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2239,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 1935,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1686,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1687,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 659,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 820,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 3051,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 3358,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 1695,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 2166,
+          "partIdentifier" : 3
+        },
+        {
+          "directionIndex" : 1,
+          "linkCount" : 4095,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 2,
+          "linkCount" : 4316,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 3,
+          "linkCount" : 1603,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 4,
+          "linkCount" : 1626,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 5,
+          "linkCount" : 3603,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 6,
+          "linkCount" : 3583,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 7,
+          "linkCount" : 5480,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 8,
+          "linkCount" : 5716,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 9,
+          "linkCount" : 2915,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 10,
+          "linkCount" : 3120,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 11,
+          "linkCount" : 1469,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 12,
+          "linkCount" : 1659,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 13,
+          "linkCount" : 7324,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 14,
+          "linkCount" : 7575,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 15,
+          "linkCount" : 2440,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 16,
+          "linkCount" : 2429,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 17,
+          "linkCount" : 4925,
+          "partIdentifier" : 4
+        },
+        {
+          "directionIndex" : 18,
+          "linkCount" : 4947,
+          "partIdentifier" : 4
+        }
+      ],
+      "metalCPUExactDirectionCountMatch" : true,
+      "metalCPUMaskMismatchCellCount" : 0,
+      "parityGatePassed" : true,
+      "productionActiveLinkReference" : 183370,
+      "productionLinkSetConsistencyGatePassed" : true,
+      "referenceLengthCells" : 32,
+      "runtimeSeconds" : 0.2846250534057617,
+      "schemaVersion" : 1,
+      "totalCPULinkCount" : 184542,
+      "totalMetalLinkCount" : 184542
+    }
+  ],
+  "censusIdentifier" : "deetjen-ob-f03-fine-direction-census-v1",
+  "censusPassed" : true,
+  "claimBoundary" : "This geometry-only D28\/D32 census can clear or localize fine-pair direction support at one source phase. It cannot validate wall velocity, interpolation, force magnitude, phase history, bird-load grid convergence, experimental agreement, quantitative bird flight, or free flight, and it authorizes no production edit or D36 run.",
+  "classification" : "fine-direction-census-captured",
+  "d36RunAuthorized" : false,
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "deviceName" : "Apple M4",
+  "experimentalAgreementGateApplied" : false,
+  "fluidEvolutionExecuted" : false,
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "gridConvergenceGateApplied" : false,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumCensusToProductionActiveLinkRelativeDifference" : 0.007481314442127955,
+  "maximumMetalCPUMaskMismatchCellCount" : 0,
+  "maximumMetalCPUPerDirectionCountMismatch" : 0,
+  "newPhysicsKernelExecuted" : false,
+  "nextAction" : "Apply the preregistered fixed-profile direction-response analysis to the captured counts.",
+  "populationAllocationPerformed" : false,
+  "productionModificationAuthorized" : false,
+  "runtimeSeconds" : 0.48331594467163086,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "The source-locked D28\/D32 complete-link direction census is fine-direction-census-captured.",
+  "sourcePreregistrationSHA256" : "4d414ee01f96c2bf3e929670b1c5b335396aebc1b5d5c6782a71899f6cbef196"
+}

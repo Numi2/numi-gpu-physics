@@ -225,6 +225,46 @@ func measuredDoveShowcaseCaptureClosesLoop() throws {
     root.appendingPathComponent(
       "ValidationArtifacts/deetjen-dove-curved-direction-composition-canonical-audit.json"
     ).path,
+    "--capture-dove-fine-direction-composition-preregistration",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-composition-preregistration.json"
+    ).path,
+    "--capture-dove-fine-direction-composition-census",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-composition-census.json"
+    ).path,
+    "--capture-dove-fine-direction-composition-discriminator",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-composition-discriminator.json"
+    ).path,
+    "--capture-dove-fine-direction-composition-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-composition-audit.json"
+    ).path,
+    "--capture-dove-fine-direction-phase-v1-preregistration",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-preregistration-v1-exact-parity.json"
+    ).path,
+    "--capture-dove-fine-direction-phase-v1-failure",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-census-v1-exact-parity-failure.json"
+    ).path,
+    "--capture-dove-fine-direction-phase-preregistration",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-preregistration.json"
+    ).path,
+    "--capture-dove-fine-direction-phase-census",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-census.json"
+    ).path,
+    "--capture-dove-fine-direction-phase-discriminator",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-discriminator.json"
+    ).path,
+    "--capture-dove-fine-direction-phase-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-audit.json"
+    ).path,
   ])
   try ReadmeShowcaseCapture.run(arguments)
   let firstData = try Data(

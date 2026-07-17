@@ -2747,6 +2747,140 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
             == CheckpointArchive.sha256(curvedDirectionReportData)
     )
 
+    let fineDirectionPreregistrationData = try data(
+        "deetjen-dove-fine-direction-composition-preregistration.json"
+    )
+    let fineDirectionCensusData = try data(
+        "deetjen-dove-fine-direction-composition-census.json"
+    )
+    let fineDirectionReportData = try data(
+        "deetjen-dove-fine-direction-composition-discriminator.json"
+    )
+    let fineDirectionAuditData = try data(
+        "deetjen-dove-fine-direction-composition-audit.json"
+    )
+    let fineDirectionPreregistration = try #require(
+        JSONSerialization.jsonObject(with: fineDirectionPreregistrationData)
+            as? [String: Any]
+    )
+    let fineDirectionCensus = try #require(
+        JSONSerialization.jsonObject(with: fineDirectionCensusData)
+            as? [String: Any]
+    )
+    let fineDirectionReport = try #require(
+        JSONSerialization.jsonObject(with: fineDirectionReportData)
+            as? [String: Any]
+    )
+    let fineDirectionAudit = try #require(
+        JSONSerialization.jsonObject(with: fineDirectionAuditData)
+            as? [String: Any]
+    )
+    #expect(fineDirectionPreregistration["schemaVersion"] as? Int == 1)
+    #expect(fineDirectionPreregistration["passed"] as? Bool == true)
+    #expect(
+        fineDirectionPreregistration["sourceCurvedReportSHA256"] as? String
+            == CheckpointArchive.sha256(curvedDirectionReportData)
+    )
+    #expect(fineDirectionCensus["censusPassed"] as? Bool == true)
+    #expect(
+        fineDirectionCensus["sourcePreregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(fineDirectionPreregistrationData)
+    )
+    #expect(
+        fineDirectionCensus["maximumMetalCPUMaskMismatchCellCount"] as? Int
+            == 0
+    )
+    #expect(
+        fineDirectionCensus["maximumMetalCPUPerDirectionCountMismatch"] as? Int
+            == 0
+    )
+    #expect(fineDirectionReport["analysisPassed"] as? Bool == true)
+    #expect(
+        fineDirectionReport["classification"] as? String
+            == "fine-direction-redistribution-cleared-at-d28-d32"
+    )
+    #expect(
+        fineDirectionReport["sourceCensusSHA256"] as? String
+            == CheckpointArchive.sha256(fineDirectionCensusData)
+    )
+    #expect(
+        (fineDirectionReport[
+            "wholeSurfaceDirectionHistogramTotalVariation"
+        ] as? Double ?? 1) < 0.0007
+    )
+    #expect(
+        (fineDirectionReport[
+            "maximumWholeSurfaceProfileResponseLedgerDifference"
+        ] as? Double ?? 1) < 0.000_012
+    )
+    #expect(fineDirectionReport["fluidEvolutionExecuted"] as? Bool == false)
+    #expect(
+        fineDirectionReport["productionModificationAuthorized"] as? Bool
+            == false
+    )
+    #expect(fineDirectionAudit["allChecksPassed"] as? Bool == true)
+    #expect(fineDirectionAudit["checkCount"] as? Int == 16)
+    #expect(
+        fineDirectionAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(fineDirectionReportData)
+    )
+
+    let phasePreregistrationData = try data(
+        "deetjen-dove-fine-direction-phase-window-preregistration.json"
+    )
+    let phaseCensusData = try data(
+        "deetjen-dove-fine-direction-phase-window-census.json"
+    )
+    let phaseReportData = try data(
+        "deetjen-dove-fine-direction-phase-window-discriminator.json"
+    )
+    let phaseAuditData = try data(
+        "deetjen-dove-fine-direction-phase-window-audit.json"
+    )
+    let phasePreregistration = try #require(
+        JSONSerialization.jsonObject(with: phasePreregistrationData)
+            as? [String: Any]
+    )
+    let phaseCensus = try #require(
+        JSONSerialization.jsonObject(with: phaseCensusData) as? [String: Any]
+    )
+    let phaseReport = try #require(
+        JSONSerialization.jsonObject(with: phaseReportData) as? [String: Any]
+    )
+    let phaseAudit = try #require(
+        JSONSerialization.jsonObject(with: phaseAuditData) as? [String: Any]
+    )
+    #expect(phasePreregistration["schemaVersion"] as? Int == 2)
+    #expect(phasePreregistration["arithmeticOnlyRevision"] as? Bool == true)
+    #expect(phaseCensus["censusPassed"] as? Bool == true)
+    #expect(phaseCensus["qualifiedTieCellCount"] as? Int == 4)
+    #expect(
+        phaseCensus["sourcePreregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(phasePreregistrationData)
+    )
+    #expect(phaseReport["analysisPassed"] as? Bool == true)
+    #expect(phaseReport["passedPhaseCount"] as? Int == 11)
+    #expect(
+        phaseReport["classification"] as? String
+            == "fine-direction-phase-window-cleared-at-d28-d32"
+    )
+    #expect(
+        (phaseReport[
+            "maximumWholeSurfaceDirectionHistogramTotalVariation"
+        ] as? Double ?? 1) < 0.000_8
+    )
+    #expect(
+        (phaseReport[
+            "maximumWholeSurfaceProfileResponseLedgerDifference"
+        ] as? Double ?? 1) < 0.000_033
+    )
+    #expect(phaseAudit["allChecksPassed"] as? Bool == true)
+    #expect(phaseAudit["checkCount"] as? Int == 18)
+    #expect(
+        phaseAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(phaseReportData)
+    )
+
     let invalidRunnerPreregistration = try #require(
         JSONSerialization.jsonObject(
             with: data(
@@ -2788,6 +2922,120 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
 }
 
 #if canImport(Metal)
+    @Test
+    func productionMetalFineDirectionCensusReproducesArchive() throws {
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
+        )
+        let preregistrationData = try Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-fine-direction-composition-preregistration.json"
+            )
+        )
+        let expected = try JSONDecoder().decode(
+            MetalFineDirectionCensusReport.self,
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/deetjen-dove-fine-direction-composition-census.json"
+                )
+            )
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridFineDirectionCensus(
+                surface: surface,
+                target: target,
+                preregistration: try JSONDecoder().decode(
+                    MetalFineDirectionCompositionPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    CheckpointArchive.sha256(preregistrationData)
+            )
+        #expect(report.censusPassed)
+        #expect(!report.fluidEvolutionExecuted)
+        #expect(!report.populationAllocationPerformed)
+        #expect(!report.newPhysicsKernelExecuted)
+        #expect(report.maximumMetalCPUMaskMismatchCellCount == 0)
+        #expect(report.maximumMetalCPUPerDirectionCountMismatch == 0)
+        #expect(report.cases.count == expected.cases.count)
+        for (actual, archived) in zip(report.cases, expected.cases) {
+            #expect(actual.referenceLengthCells == archived.referenceLengthCells)
+            #expect(actual.gridCells == archived.gridCells)
+            #expect(actual.metalBins == archived.metalBins)
+            #expect(actual.cpuBins == archived.cpuBins)
+            #expect(actual.totalMetalLinkCount == archived.totalMetalLinkCount)
+            #expect(actual.totalCPULinkCount == archived.totalCPULinkCount)
+            #expect(actual.parityGatePassed)
+            #expect(actual.productionLinkSetConsistencyGatePassed)
+        }
+    }
+
+    @Test
+    func productionMetalFineDirectionPhaseWindowReproducesV1Archive() throws {
+        let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+            manifestURL: measuredBirdSurfaceManifestURL
+        )
+        let target = try MeasuredBirdForceTargetLoader.load(
+            targetURL: measuredBirdForceTargetURL,
+            surface: surface
+        )
+        let preregistrationData = try Data(
+            contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-preregistration-v1-exact-parity.json"
+            )
+        )
+        let expected = try JSONDecoder().decode(
+            MetalFineDirectionPhaseCensusReport.self,
+            from: Data(
+                contentsOf: repositoryRootURL.appendingPathComponent(
+                    "ValidationArtifacts/deetjen-dove-fine-direction-phase-window-census-v1-exact-parity-failure.json"
+                )
+            )
+        )
+        let report = try MetalIndexedBirdSurfacePilotValidator
+            .collisionGridFineDirectionPhaseWindowCensus(
+                surface: surface,
+                target: target,
+                preregistration: try JSONDecoder().decode(
+                    MetalFineDirectionPhaseWindowPreregistration.self,
+                    from: preregistrationData
+                ),
+                sourcePreregistrationSHA256:
+                    CheckpointArchive.sha256(preregistrationData)
+            )
+        #expect(!report.censusPassed)
+        #expect(report.classification == "invalid-census-parity")
+        #expect(!report.fluidEvolutionExecuted)
+        #expect(!report.populationAllocationPerformed)
+        #expect(!report.newPhysicsKernelExecuted)
+        #expect(report.cases.count == expected.cases.count)
+        for (actual, archived) in zip(report.cases, expected.cases) {
+            #expect(actual.sourceSampleIndex == archived.sourceSampleIndex)
+            #expect(actual.referenceLengthCells == archived.referenceLengthCells)
+            #expect(actual.gridCells == archived.gridCells)
+            #expect(actual.metalBins == archived.metalBins)
+            #expect(actual.cpuBins == archived.cpuBins)
+            #expect(actual.totalMetalLinkCount == archived.totalMetalLinkCount)
+            #expect(actual.totalCPULinkCount == archived.totalCPULinkCount)
+            #expect(
+                actual.metalCPUMaskMismatchCellCount
+                    == archived.metalCPUMaskMismatchCellCount
+            )
+            #expect(
+                actual.maximumMetalCPUPerDirectionCountMismatch
+                    == archived.maximumMetalCPUPerDirectionCountMismatch
+            )
+            #expect(
+                actual.productionLinkSetConsistencyGatePassed
+                    == archived.productionLinkSetConsistencyGatePassed
+            )
+        }
+    }
+
     @Test
     func productionMetalD16PopulationProvenanceCloses() throws {
         func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {

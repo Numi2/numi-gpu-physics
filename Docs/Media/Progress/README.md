@@ -145,9 +145,9 @@ its 73rd endpoint probe is pixel-identical to frame zero.
 
 ![V11 planar direction weighting cleared](2026-07-17-v11-planar-direction-weighting-cleared.gif)
 
-## Current hero — V12 curved dove direction mix cleared
+## Archived hero — V12 curved dove direction mix cleared
 
-The [current README animation](../birdflow-metal-native-viewer.gif) advances the
+The [archived V12 animation](2026-07-17-v12-curved-direction-mix-cleared.gif) advances the
 fail-closed artifact chain through the source-locked D12/D16 complete-dove
 curved direction canonical. The top panel reports `CURVED DOVE DIRECTION MIX`,
 the `0.130%` whole-surface direction-histogram variation, and the `0.0091%`
@@ -159,3 +159,40 @@ advances to `CURVED OK`, while `PAIR OPEN` and the lower
 `9,424,489` bytes with SHA-256
 `4ee0eaed0a6c459c4660f2647137f4f6f7edc22b339f6ef933727fcad2daa602`;
 its 73rd endpoint probe is pixel-identical to frame zero.
+
+![V12 curved dove direction mix cleared](2026-07-17-v12-curved-direction-mix-cleared.gif)
+
+## Archived hero — V13 fine dove direction mix cleared
+
+The [archived V13 animation](2026-07-17-v13-fine-direction-mix-cleared.gif) extends the
+artifact lock through the preregistered sample-53 D28/D32 complete-link census,
+its production-Metal/independent-CPU exact parity, all eight discriminator
+gates, and the independent `16/16` audit. The panel reports `0.066%`
+whole-surface direction-histogram variation and `0.0012%` maximum whole
+fixed-profile response change. The rail advances to `FINE OK` but ends at
+`PHASE OPEN`: this result covers `26.5 ms`, not the complete `25...30 ms`
+force-divergence interval. The lower `D28/D32 5.632% > 5.0%` convergence
+boundary therefore remains visible. The V13 encoding is `9,378,840` bytes with
+SHA-256
+`a4d4c88d41fe0d4c9ad80650db5b42077af3729cda15b827a1fa4f82817ba00e`;
+its 73rd endpoint probe is pixel-identical to frame zero and its encoded seam
+is `0.702x` the median adjacent-frame difference.
+
+![V13 fine dove direction mix cleared](2026-07-17-v13-fine-direction-mix-cleared.gif)
+
+## Current hero — V14 phase-resolved direction mix cleared
+
+The [current README animation](../birdflow-metal-native-viewer.gif) extends the
+fail-closed lock across all 11 D28/D32 source samples from `25...30 ms`. It
+retains the exact-parity V1 failure as a negative control, requires the
+arithmetic-only V2 tie qualification, all 22 qualified cases, all eight gates
+at every phase, and the independent `18/18` audit. The top panel reports the
+worst whole-surface phase-window values: `0.078%` direction-histogram variation
+and `0.0032%` fixed-profile response change. The rail advances to `PHASE OK`
+but ends at `WALL OPEN`, because static direction counts do not exercise wall
+velocity, interpolation, or realized populations. The lower
+`D28/D32 5.632% > 5.0%` convergence failure remains visible. V14 is 72
+forward-only frames at 24 fps and `9,354,306` bytes with SHA-256
+`9cb8afc8a5f1e661ed1ad4d959049454570b584246c4d2811921e48075425c7c`.
+Its endpoint probe is pixel-identical and its encoded seam is `0.700x` the
+median adjacent-frame difference.

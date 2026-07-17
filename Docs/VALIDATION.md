@@ -2708,9 +2708,86 @@ python3 Scripts/audit-dove-curved-direction-composition-canonical.py
 
 This clears D12/D16 fixed-profile curved direction redistribution only. It does
 not validate wall velocity or interpolation, establish the D28/D32 grid limit,
-or authorize a fluid run or production edit. The next permitted experiment is
-one preregistered archive-only D28/D32 full-link direction-count capture at the
-same phase.
+or authorize a fluid run or production edit.
+
+The separately preregistered D28/D32 complete-link census then executes the
+same sample-53 geometry through the production indexed Metal raster and the
+independent CPU raster. It scans every current solid-to-fluid link by component
+and D3Q19 direction, but allocates no populations and invokes no collision,
+streaming, force, or new physics kernel. On Apple M4, the two cases complete in
+`0.483 s` internally (`1.01 s` command wall time), with about `1.89 GB` peak
+footprint. Metal and CPU masks and all 144 component/direction counts match
+exactly. Static total-link counts are `141,018/184,542`; their differences from
+the archived moving-run active-link totals are `0.7481%/0.6351%`, both below
+the frozen `5%` consistency gate.
+
+Applying the unchanged fixed-profile ledger gives D28-to-D32 whole histogram TV
+`0.000656866`, maximum whole response change `1.16085e-5`, maximum component
+histogram TV `0.00248144`, and maximum component response change `0.00194463`.
+Opposite-direction balance and equilibrium cancellation are exact. All eight
+gates and the independent `16/16`-check NumPy audit pass.
+
+Reproduce the fine-grid gate locally:
+
+```bash
+python3 Scripts/preregister-dove-fine-direction-composition.py
+swift build -c release --product birdflow
+.build/release/birdflow validate fine-direction-census \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --preregistration ValidationArtifacts/deetjen-dove-fine-direction-composition-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-fine-direction-composition-census.json
+python3 Scripts/analyze-dove-fine-direction-composition.py
+python3 Scripts/audit-dove-fine-direction-composition.py
+```
+
+The raw census report includes runtime metadata, so rerunning it changes its
+hash. This one-phase result alone does not establish phase-resolved direction
+stability or bird-load convergence.
+
+The follow-on phase-window census freezes source samples `50...60`
+(`25...30 ms`) before capture and executes 22 D28/D32 geometry cases. Exact
+parity V1 correctly stops on four isolated one-cell disagreements. Three are
+solid/fluid sign ties whose Metal and CPU signed distances are within
+`4.9e-6` cells of zero; the fourth is a wing/tail ownership tie whose distance
+difference is `7.7e-6` cells. The V1 preregistration and failed census remain
+immutable negative controls. V2 changes only arithmetic equivalence: at most
+one tie per case, a frozen `1e-5`-cell tolerance, at most one component-link
+count difference, and exact whole-surface direction counts in all 18
+directions. It does not relax any physical histogram or response threshold.
+
+All 22 cases qualify, all eight gates pass at all 11 phases, and the largest
+production active-link difference is `0.7482%` against `5%`. The phase-window
+maxima are `0.07833%` whole histogram TV, `0.6251%` component histogram TV,
+`0.003243%` whole fixed-profile response change, and `0.5665%` component
+response change. Opposite-direction balance and equilibrium cancellation are
+exact. The independent implementation reconstructs the V1 stop, four tie
+qualifications, every phase metric, all gates, hashes, and safety fields with
+`18/18` checks passing. The source capture takes `4.06 s` internally (`4.52 s`
+command wall time) on Apple M4 and executes no fluid evolution or force kernel.
+
+Reproduce the phase-window chain locally:
+
+```bash
+python3 Scripts/preregister-dove-fine-direction-phase-window.py
+.build/release/birdflow validate fine-direction-phase-window \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --preregistration ValidationArtifacts/deetjen-dove-fine-direction-phase-window-preregistration-v1-exact-parity.json \
+  --archive ValidationArtifacts/deetjen-dove-fine-direction-phase-window-census-v1-exact-parity-failure.json
+python3 Scripts/preregister-dove-fine-direction-phase-window-v2.py
+python3 Scripts/qualify-dove-fine-direction-phase-window.py
+python3 Scripts/analyze-dove-fine-direction-phase-window.py
+python3 Scripts/audit-dove-fine-direction-phase-window.py
+```
+
+The first CLI command is expected to stop at the retained V1 exact-parity gate
+after writing its archive. Static direction support is now cleared across the
+localized interval, but wall velocity, interpolation, realized populations,
+force convergence, experimental agreement, D36, and production changes remain
+unauthorized. The next permitted experiment is a preregistered zero-fluid
+force-bearing replay separating those remaining boundary terms over the same
+samples.
 
 ## 8. Complete measured bird
 

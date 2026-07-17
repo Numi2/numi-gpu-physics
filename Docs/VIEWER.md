@@ -30,18 +30,26 @@ are explicitly kinematic histories, not CFD streamlines. The embedded force
 chart is decoded from the committed D32 RR3 source-viscosity full-window
 artifact and remains explicitly descriptive. The D32 rail node is locked to
 its audit: 15,104 positive finite steps, all 187 registered force bins, closed
-momentum ledgers, and negligible correction intrusion. The top status and
-`CURVED OK` node additionally require the V2 reflected-population
+momentum ledgers, and negligible correction intrusion. The phase-resolved
+status additionally requires the V2 reflected-population
 preregistration, both passing selected-link D28/D32 cases, the exact
 population/composition attribution and 16-check audit, plus the zero-fluid
 conditioned-factor preregistration, Shapley result, and independent 18-check
 audit. They then require the planar direction-composition V2 preregistration,
 40-case Metal/CPU result, and independent 14-check audit, followed by the exact
 source link-geometry report and the curved D12/D16 preregistration, result, and
-independent 14-check audit. The panel reports curved complete-dove direction
-redistribution as cleared at D12/D16 with `0.130%` whole histogram variation
-and `0.0091%` maximum whole-response change; it does not claim D28/D32
-direction stability or bird-load convergence. The underlying selected links
+independent 14-check audit. Next, the sample-53 D28/D32 complete-link
+preregistration, production-Metal/independent-CPU census, eight-gate
+discriminator, and independent 16-check audit must all match their source
+hashes. Finally, V14 requires the retained exact-parity phase-window failure,
+the preregistered arithmetic-only V2 tie qualification, all 22 qualified
+D28/D32 cases across samples 50 through 60, eight passing gates at every
+phase, and the independent 18-check audit. The panel reports the worst
+phase-window direction redistribution as `0.078%` whole histogram variation
+and `0.0032%` maximum whole-response change. The rail advances to `PHASE OK`
+and ends at `WALL OPEN`, because a zero-fluid count census does not establish
+moving-wall velocity, interpolation, realized-population behavior, or
+bird-load convergence. The underlying selected links
 retain `100.0%/83.45%` D28/D32 X/Z score coverage and zero capture overflow or
 detail mismatch.
 The scientific-boundary panel is separately locked to the failed D28/D32
@@ -50,7 +58,8 @@ The scientific-boundary panel is separately locked to the failed D28/D32
 localization, not selected by the renderer. Capture rejects a surface, D32
 window, refinement, localization, targeted case, provenance preregistration or
 case, conditioned-factor contract, planar or curved canonical, attribution, or audit that no
-longer matches the locked hashes, the `144 / 2,157 / 3,968`
+longer matches the locked hashes, either retained phase-window negative
+control, the qualified phase census, the `144 / 2,157 / 3,968`
 frame/vertex/triangle contract, the 187-bin force window, or the explicit
 no-D36/no-convergence boundary. It also rejects
 a wrong image size, display-frame count, frame rate, file budget, or

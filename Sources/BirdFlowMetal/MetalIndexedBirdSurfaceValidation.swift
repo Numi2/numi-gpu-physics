@@ -8697,6 +8697,620 @@ public enum MetalIndexedBirdSurfacePilotValidator {
 #endif
     }
 
+    public static func collisionGridFineDirectionCensus(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration: MetalFineDirectionCompositionPreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalFineDirectionCensusReport {
+#if canImport(Metal)
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        let sourceHashes = [
+            preregistration.sourceCurvedPreregistrationSHA256,
+            preregistration.sourceCurvedReportSHA256,
+            preregistration.sourceCurvedAuditSHA256,
+            preregistration.sourceD28ProvenanceSHA256,
+            preregistration.sourceD32ProvenanceSHA256,
+            preregistration.sourceProvenanceAuditSHA256,
+            preregistration.sourceRefinementSHA256,
+            preregistration.sourceRefinementAuditSHA256,
+            preregistrationSHA,
+        ]
+        let expectedComponents = surface.components.map {
+            (Int($0.partIdentifier), $0.name)
+        }
+        let registeredComponents = preregistration.components.map {
+            ($0.partIdentifier, $0.componentName)
+        }
+        guard preregistration.schemaVersion == 1,
+              preregistration.passed,
+              preregistration.datasetIdentifier == surface.datasetIdentifier,
+              preregistration.manifestSHA256 == surface.manifestSHA256,
+              preregistration.forceTargetIdentifier == target.datasetIdentifier,
+              preregistration.forceTargetSHA256 == target.targetSHA256,
+              sourceHashes.allSatisfy({
+                  $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+              }),
+              preregistration.referenceLengthCells == [28, 32],
+              preregistration.expectedGridCells == [
+                  "28": [259, 238, 229],
+                  "32": [296, 271, 261],
+              ],
+              preregistration.frozenSourceSampleIndex == 53,
+              abs(preregistration.frozenSourceTimeSeconds - 0.0265) <= 1e-12,
+              abs(
+                  preregistration.halfThicknessMeters
+                      - Double(refinementBaseHalfThicknessMeters)
+              ) <= 1e-9,
+              registeredComponents.count == expectedComponents.count,
+              zip(registeredComponents, expectedComponents).allSatisfy({
+                  $0.0.0 == $0.1.0 && $0.0.1 == $0.1.1
+              }),
+              preregistration.directionIndices == Array(1..<D3Q19.count),
+              preregistration.oppositeDirectionPairs == [
+                  [1, 2], [3, 4], [5, 6], [7, 8], [9, 10],
+                  [11, 12], [13, 14], [15, 16], [17, 18],
+              ],
+              preregistration.fixedPopulationProfiles.count == 2,
+              preregistration.fixedPopulationProfiles.allSatisfy({
+                  $0.directionPopulations.count == D3Q19.count
+                      && $0.directionPopulations.allSatisfy({
+                          $0.isFinite && $0 >= 0
+                      })
+              }),
+              preregistration.productionActiveLinkReference.map(
+                  \.referenceLengthCells
+              ) == [28, 32],
+              preregistration.productionActiveLinkReference.map(
+                  \.activeLinkCount
+              ) == [139_963, 183_370],
+              preregistration.maximumMetalCPUMaskMismatchCellCount == 0,
+              preregistration.maximumMetalCPUPerDirectionCountMismatch == 0,
+              preregistration.maximumCensusToProductionActiveLinkRelativeDifference
+                  == 0.05,
+              preregistration.maximumWholeSurfaceOppositeDirectionCountMismatch
+                  == 0,
+              preregistration.maximumEquilibriumWholeSurfaceNetLedgerFraction
+                  == 1e-12,
+              preregistration.maximumWholeSurfaceDirectionHistogramTotalVariation
+                  == 0.05,
+              preregistration.maximumComponentDirectionHistogramTotalVariation
+                  == 0.10,
+              preregistration.maximumWholeSurfaceProfileResponseLedgerDifference
+                  == 0.05,
+              preregistration.maximumComponentProfileResponseLedgerDifference
+                  == 0.10,
+              !preregistration.fluidEvolutionAuthorized,
+              !preregistration.populationAllocationAuthorized,
+              !preregistration.newPhysicsKernelAuthorized,
+              !preregistration.productionModificationAuthorized,
+              !preregistration.d36RunAuthorized,
+              !preregistration.gridConvergenceGateApplied,
+              !preregistration.experimentalAgreementGateApplied else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "fine direction census does not match its frozen contract"
+            )
+        }
+
+        func directionBins(
+            partIdentifiers: [UInt8],
+            grid: GridSize
+        ) -> [MetalFineDirectionCountBin] {
+            var counts = [Int](
+                repeating: 0,
+                count: 4 * (D3Q19.count - 1)
+            )
+            for index in partIdentifiers.indices {
+                let part = Int(partIdentifiers[index])
+                guard (1...4).contains(part) else { continue }
+                let x = index % grid.x
+                let yz = index / grid.x
+                let y = yz % grid.y
+                let z = yz / grid.y
+                for direction in 1..<D3Q19.count {
+                    let raw = D3Q19.directions[direction]
+                    let nx = x + Int(raw.x)
+                    let ny = y + Int(raw.y)
+                    let nz = z + Int(raw.z)
+                    guard nx >= 0, nx < grid.x,
+                          ny >= 0, ny < grid.y,
+                          nz >= 0, nz < grid.z else { continue }
+                    let neighbor = nx + grid.x * (ny + grid.y * nz)
+                    guard partIdentifiers[neighbor] == 0 else { continue }
+                    let bin = (part - 1) * (D3Q19.count - 1)
+                        + direction - 1
+                    counts[bin] += 1
+                }
+            }
+            return (1...4).flatMap { part in
+                (1..<D3Q19.count).map { direction in
+                    let index = (part - 1) * (D3Q19.count - 1)
+                        + direction - 1
+                    return MetalFineDirectionCountBin(
+                        partIdentifier: part,
+                        directionIndex: direction,
+                        linkCount: counts[index]
+                    )
+                }
+            }
+        }
+
+        let start = Date()
+        let backend = try MetalBackend(fastMath: false)
+        var cases = [MetalFineDirectionCensusCase]()
+        for resolution in preregistration.referenceLengthCells {
+            let caseStart = Date()
+            let plan = try scaledRefinementPlan(
+                surface: surface,
+                target: target,
+                referenceLengthCells: resolution
+            )
+            let replay = try MetalIndexedBirdSurfaceReplay(
+                backend: backend,
+                dataset: surface,
+                cellSizeMeters: Float(plan.cellSizeMeters),
+                halfThicknessCells: Float(plan.halfThicknessCells),
+                referenceLengthCells: resolution,
+                paddingCells: plan.paddingCells,
+                physicalAirDensity: sourceAirDensity,
+                targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+                latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+                spongeWidthCells: plan.spongeWidthCells,
+                spongeStrength: 0
+            )
+            let expectedGrid = preregistration.expectedGridCells[
+                String(resolution)
+            ]!
+            guard [replay.grid.x, replay.grid.y, replay.grid.z] == expectedGrid
+            else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "fine direction census grid differs from preregistration"
+                )
+            }
+            let time = Float(preregistration.frozenSourceTimeSeconds)
+            let metal = try replay.snapshot(
+                timeSeconds: time,
+                includeWallField: false
+            )
+            let cpu = replay.cpuRaster(timeSeconds: time)
+            var maskMismatch = 0
+            for index in metal.partIdentifiers.indices
+            where metal.partIdentifiers[index] != cpu.partIdentifiers[index] {
+                maskMismatch += 1
+            }
+            let metalBins = directionBins(
+                partIdentifiers: metal.partIdentifiers,
+                grid: replay.grid
+            )
+            let cpuBins = directionBins(
+                partIdentifiers: cpu.partIdentifiers,
+                grid: replay.grid
+            )
+            let maximumCountMismatch = zip(metalBins, cpuBins).reduce(0) {
+                max($0, abs($1.0.linkCount - $1.1.linkCount))
+            }
+            let totalMetal = metalBins.reduce(0) { $0 + $1.linkCount }
+            let totalCPU = cpuBins.reduce(0) { $0 + $1.linkCount }
+            let productionReference = preregistration
+                .productionActiveLinkReference.first {
+                    $0.referenceLengthCells == resolution
+                }!.activeLinkCount
+            let productionDifference = Double(
+                abs(totalMetal - productionReference)
+            ) / Double(max(totalMetal, productionReference, 1))
+            let exactCounts = maximumCountMismatch == 0
+                && totalMetal == totalCPU
+            let parity = maskMismatch
+                    <= preregistration.maximumMetalCPUMaskMismatchCellCount
+                && maximumCountMismatch
+                    <= preregistration.maximumMetalCPUPerDirectionCountMismatch
+                && exactCounts
+            let productionConsistency = productionDifference
+                <= preregistration
+                    .maximumCensusToProductionActiveLinkRelativeDifference
+            cases.append(MetalFineDirectionCensusCase(
+                schemaVersion: 1,
+                deviceName: backend.device.name,
+                referenceLengthCells: resolution,
+                gridCells: [replay.grid.x, replay.grid.y, replay.grid.z],
+                cellSizeMeters: plan.cellSizeMeters,
+                halfThicknessMeters: plan.cellSizeMeters
+                    * plan.halfThicknessCells,
+                frozenSourceTimeSeconds: Double(time),
+                runtimeSeconds: Date().timeIntervalSince(caseStart),
+                metalBins: metalBins,
+                cpuBins: cpuBins,
+                totalMetalLinkCount: totalMetal,
+                totalCPULinkCount: totalCPU,
+                productionActiveLinkReference: productionReference,
+                censusToProductionActiveLinkRelativeDifference:
+                    productionDifference,
+                metalCPUMaskMismatchCellCount: maskMismatch,
+                maximumMetalCPUPerDirectionCountMismatch:
+                    maximumCountMismatch,
+                metalCPUExactDirectionCountMatch: exactCounts,
+                allValuesFinite: productionDifference.isFinite,
+                parityGatePassed: parity,
+                productionLinkSetConsistencyGatePassed:
+                    productionConsistency
+            ))
+        }
+        let maximumMaskMismatch = cases.map(
+            \.metalCPUMaskMismatchCellCount
+        ).max() ?? .max
+        let maximumCountMismatch = cases.map(
+            \.maximumMetalCPUPerDirectionCountMismatch
+        ).max() ?? .max
+        let maximumProductionDifference = cases.map(
+            \.censusToProductionActiveLinkRelativeDifference
+        ).max() ?? .infinity
+        let passed = cases.count == 2
+            && cases.allSatisfy(\.parityGatePassed)
+            && cases.allSatisfy(\.productionLinkSetConsistencyGatePassed)
+        let classification = !cases.allSatisfy(\.parityGatePassed)
+            ? "invalid-census-parity"
+            : !cases.allSatisfy(\.productionLinkSetConsistencyGatePassed)
+                ? "production-link-set-mismatch"
+                : "fine-direction-census-captured"
+        return MetalFineDirectionCensusReport(
+            schemaVersion: 1,
+            censusIdentifier: "deetjen-ob-f03-fine-direction-census-v1",
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            deviceName: backend.device.name,
+            runtimeSeconds: Date().timeIntervalSince(start),
+            fluidEvolutionExecuted: false,
+            populationAllocationPerformed: false,
+            newPhysicsKernelExecuted: false,
+            cases: cases,
+            maximumMetalCPUMaskMismatchCellCount: maximumMaskMismatch,
+            maximumMetalCPUPerDirectionCountMismatch: maximumCountMismatch,
+            maximumCensusToProductionActiveLinkRelativeDifference:
+                maximumProductionDifference,
+            censusPassed: passed,
+            productionModificationAuthorized: false,
+            d36RunAuthorized: false,
+            gridConvergenceGateApplied: false,
+            experimentalAgreementGateApplied: false,
+            classification: classification,
+            scientificVerdict: (
+                "The source-locked D28/D32 complete-link direction census is "
+                    + classification + "."
+            ),
+            nextAction: passed
+                ? "Apply the preregistered fixed-profile direction-response analysis to the captured counts."
+                : "Stop before direction-response analysis and localize the failing census parity or production-link-set gate.",
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
+    public static func collisionGridFineDirectionPhaseWindowCensus(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        preregistration: MetalFineDirectionPhaseWindowPreregistration,
+        sourcePreregistrationSHA256: String
+    ) throws -> MetalFineDirectionPhaseCensusReport {
+#if canImport(Metal)
+        let preregistrationSHA = sourcePreregistrationSHA256.lowercased()
+        let sourceHashes = [
+            preregistration.sourceSinglePhasePreregistrationSHA256,
+            preregistration.sourceSinglePhaseCensusSHA256,
+            preregistration.sourceSinglePhaseDiscriminatorSHA256,
+            preregistration.sourceSinglePhaseAuditSHA256,
+            preregistration.sourceD28ProvenanceSHA256,
+            preregistration.sourceD32ProvenanceSHA256,
+            preregistrationSHA,
+        ]
+        let expectedSamples = Array(50...60)
+        let expectedTimes = expectedSamples.map { Double($0) / 2_000 }
+        let expectedComponents = surface.components.map {
+            (Int($0.partIdentifier), $0.name)
+        }
+        let registeredComponents = preregistration.components.map {
+            ($0.partIdentifier, $0.componentName)
+        }
+        let referenceKeys = preregistration.productionActiveLinkReferences.map {
+            "\($0.referenceLengthCells):\($0.sourceSampleIndex)"
+        }
+        guard preregistration.schemaVersion == 1,
+              preregistration.passed,
+              preregistration.datasetIdentifier == surface.datasetIdentifier,
+              preregistration.manifestSHA256 == surface.manifestSHA256,
+              preregistration.forceTargetIdentifier == target.datasetIdentifier,
+              preregistration.forceTargetSHA256 == target.targetSHA256,
+              sourceHashes.allSatisfy({
+                  $0.count == 64 && $0.allSatisfy(\.isHexDigit)
+              }),
+              preregistration.referenceLengthCells == [28, 32],
+              preregistration.expectedGridCells == [
+                  "28": [259, 238, 229],
+                  "32": [296, 271, 261],
+              ],
+              preregistration.sourceSampleIndices == expectedSamples,
+              zip(preregistration.sourceTimesSeconds, expectedTimes)
+                  .allSatisfy({ abs($0.0 - $0.1) <= 1e-12 }),
+              abs(
+                  preregistration.halfThicknessMeters
+                      - Double(refinementBaseHalfThicknessMeters)
+              ) <= 1e-9,
+              registeredComponents.count == expectedComponents.count,
+              zip(registeredComponents, expectedComponents).allSatisfy({
+                  $0.0.0 == $0.1.0 && $0.0.1 == $0.1.1
+              }),
+              preregistration.directionIndices == Array(1..<D3Q19.count),
+              preregistration.oppositeDirectionPairs == [
+                  [1, 2], [3, 4], [5, 6], [7, 8], [9, 10],
+                  [11, 12], [13, 14], [15, 16], [17, 18],
+              ],
+              preregistration.fixedPopulationProfiles.count == 2,
+              preregistration.fixedPopulationProfiles.allSatisfy({
+                  $0.directionPopulations.count == D3Q19.count
+                      && $0.directionPopulations.allSatisfy({
+                          $0.isFinite && $0 >= 0
+                      })
+              }),
+              referenceKeys.count == 22,
+              Set(referenceKeys).count == 22,
+              preregistration.productionActiveLinkReferences.allSatisfy({
+                  [28, 32].contains($0.referenceLengthCells)
+                      && expectedSamples.contains($0.sourceSampleIndex)
+                      && abs(
+                          $0.sourceTimeSeconds
+                              - Double($0.sourceSampleIndex) / 2_000
+                      ) <= 1e-12
+                      && $0.activeLinkCount > 0
+              }),
+              preregistration.maximumMetalCPUMaskMismatchCellCount == 0,
+              preregistration.maximumMetalCPUPerDirectionCountMismatch == 0,
+              preregistration.maximumCensusToProductionActiveLinkRelativeDifference
+                  == 0.05,
+              preregistration.maximumWholeSurfaceOppositeDirectionCountMismatch
+                  == 0,
+              preregistration.maximumEquilibriumWholeSurfaceNetLedgerFraction
+                  == 1e-12,
+              preregistration.maximumWholeSurfaceDirectionHistogramTotalVariation
+                  == 0.05,
+              preregistration.maximumComponentDirectionHistogramTotalVariation
+                  == 0.10,
+              preregistration.maximumWholeSurfaceProfileResponseLedgerDifference
+                  == 0.05,
+              preregistration.maximumComponentProfileResponseLedgerDifference
+                  == 0.10,
+              !preregistration.fluidEvolutionAuthorized,
+              !preregistration.populationAllocationAuthorized,
+              !preregistration.newPhysicsKernelAuthorized,
+              !preregistration.productionModificationAuthorized,
+              !preregistration.d36RunAuthorized,
+              !preregistration.gridConvergenceGateApplied,
+              !preregistration.experimentalAgreementGateApplied else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "fine direction phase window does not match its frozen contract"
+            )
+        }
+
+        func directionBins(
+            partIdentifiers: [UInt8],
+            grid: GridSize
+        ) -> [MetalFineDirectionCountBin] {
+            var counts = [Int](repeating: 0, count: 4 * (D3Q19.count - 1))
+            for index in partIdentifiers.indices {
+                let part = Int(partIdentifiers[index])
+                guard (1...4).contains(part) else { continue }
+                let x = index % grid.x
+                let yz = index / grid.x
+                let y = yz % grid.y
+                let z = yz / grid.y
+                for direction in 1..<D3Q19.count {
+                    let raw = D3Q19.directions[direction]
+                    let nx = x + Int(raw.x)
+                    let ny = y + Int(raw.y)
+                    let nz = z + Int(raw.z)
+                    guard nx >= 0, nx < grid.x,
+                          ny >= 0, ny < grid.y,
+                          nz >= 0, nz < grid.z else { continue }
+                    let neighbor = nx + grid.x * (ny + grid.y * nz)
+                    guard partIdentifiers[neighbor] == 0 else { continue }
+                    let bin = (part - 1) * (D3Q19.count - 1) + direction - 1
+                    counts[bin] += 1
+                }
+            }
+            return (1...4).flatMap { part in
+                (1..<D3Q19.count).map { direction in
+                    let index = (part - 1) * (D3Q19.count - 1)
+                        + direction - 1
+                    return MetalFineDirectionCountBin(
+                        partIdentifier: part,
+                        directionIndex: direction,
+                        linkCount: counts[index]
+                    )
+                }
+            }
+        }
+
+        let start = Date()
+        let backend = try MetalBackend(fastMath: false)
+        var cases = [MetalFineDirectionPhaseCensusCase]()
+        for resolution in preregistration.referenceLengthCells {
+            let plan = try scaledRefinementPlan(
+                surface: surface,
+                target: target,
+                referenceLengthCells: resolution
+            )
+            let replay = try MetalIndexedBirdSurfaceReplay(
+                backend: backend,
+                dataset: surface,
+                cellSizeMeters: Float(plan.cellSizeMeters),
+                halfThicknessCells: Float(plan.halfThicknessCells),
+                referenceLengthCells: resolution,
+                paddingCells: plan.paddingCells,
+                physicalAirDensity: sourceAirDensity,
+                targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+                latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+                spongeWidthCells: plan.spongeWidthCells,
+                spongeStrength: 0
+            )
+            let expectedGrid = preregistration.expectedGridCells[
+                String(resolution)
+            ]!
+            guard [replay.grid.x, replay.grid.y, replay.grid.z] == expectedGrid
+            else {
+                throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                    "fine direction phase-window grid differs from preregistration"
+                )
+            }
+            for (sampleIndex, sourceTime) in zip(
+                preregistration.sourceSampleIndices,
+                preregistration.sourceTimesSeconds
+            ) {
+                let caseStart = Date()
+                let time = Float(sourceTime)
+                let metal = try replay.snapshot(
+                    timeSeconds: time,
+                    includeWallField: true
+                )
+                let cpu = replay.cpuRaster(timeSeconds: time)
+                var maskMismatches = [MetalFineDirectionMaskMismatch]()
+                for index in metal.partIdentifiers.indices
+                where metal.partIdentifiers[index] != cpu.partIdentifiers[index] {
+                    let x = index % replay.grid.x
+                    let yz = index / replay.grid.x
+                    let y = yz % replay.grid.y
+                    let z = yz / replay.grid.y
+                    maskMismatches.append(MetalFineDirectionMaskMismatch(
+                        cellCoordinate: [x, y, z],
+                        metalPartIdentifier: Int(metal.partIdentifiers[index]),
+                        cpuPartIdentifier: Int(cpu.partIdentifiers[index]),
+                        metalSignedDistanceCells: Double(
+                            metal.wallVelocityAndDistance![index].w
+                        ),
+                        cpuSignedDistanceCells: Double(
+                            cpu.wallVelocityAndDistance[index].w
+                        )
+                    ))
+                }
+                let maskMismatch = maskMismatches.count
+                let metalBins = directionBins(
+                    partIdentifiers: metal.partIdentifiers,
+                    grid: replay.grid
+                )
+                let cpuBins = directionBins(
+                    partIdentifiers: cpu.partIdentifiers,
+                    grid: replay.grid
+                )
+                let maximumCountMismatch = zip(metalBins, cpuBins).reduce(0) {
+                    max($0, abs($1.0.linkCount - $1.1.linkCount))
+                }
+                let totalMetal = metalBins.reduce(0) { $0 + $1.linkCount }
+                let totalCPU = cpuBins.reduce(0) { $0 + $1.linkCount }
+                let productionReference = preregistration
+                    .productionActiveLinkReferences.first {
+                        $0.referenceLengthCells == resolution
+                            && $0.sourceSampleIndex == sampleIndex
+                    }!.activeLinkCount
+                let productionDifference = Double(
+                    abs(totalMetal - productionReference)
+                ) / Double(max(totalMetal, productionReference, 1))
+                let exactCounts = maximumCountMismatch == 0
+                    && totalMetal == totalCPU
+                let parity = maskMismatch
+                        <= preregistration.maximumMetalCPUMaskMismatchCellCount
+                    && maximumCountMismatch
+                        <= preregistration.maximumMetalCPUPerDirectionCountMismatch
+                    && exactCounts
+                let productionConsistency = productionDifference
+                    <= preregistration
+                        .maximumCensusToProductionActiveLinkRelativeDifference
+                cases.append(MetalFineDirectionPhaseCensusCase(
+                    schemaVersion: 1,
+                    deviceName: backend.device.name,
+                    sourceSampleIndex: sampleIndex,
+                    sourceTimeSeconds: Double(time),
+                    referenceLengthCells: resolution,
+                    gridCells: [replay.grid.x, replay.grid.y, replay.grid.z],
+                    cellSizeMeters: plan.cellSizeMeters,
+                    halfThicknessMeters: plan.cellSizeMeters
+                        * plan.halfThicknessCells,
+                    runtimeSeconds: Date().timeIntervalSince(caseStart),
+                    metalBins: metalBins,
+                    cpuBins: cpuBins,
+                    totalMetalLinkCount: totalMetal,
+                    totalCPULinkCount: totalCPU,
+                    productionActiveLinkReference: productionReference,
+                    censusToProductionActiveLinkRelativeDifference:
+                        productionDifference,
+                    metalCPUMaskMismatchCellCount: maskMismatch,
+                    maskMismatches: maskMismatches,
+                    maximumMetalCPUPerDirectionCountMismatch:
+                        maximumCountMismatch,
+                    metalCPUExactDirectionCountMatch: exactCounts,
+                    allValuesFinite: productionDifference.isFinite,
+                    parityGatePassed: parity,
+                    productionLinkSetConsistencyGatePassed:
+                        productionConsistency
+                ))
+            }
+        }
+        let maximumMaskMismatch = cases.map(
+            \.metalCPUMaskMismatchCellCount
+        ).max() ?? .max
+        let maximumCountMismatch = cases.map(
+            \.maximumMetalCPUPerDirectionCountMismatch
+        ).max() ?? .max
+        let maximumProductionDifference = cases.map(
+            \.censusToProductionActiveLinkRelativeDifference
+        ).max() ?? .infinity
+        let passed = cases.count == 22
+            && cases.allSatisfy(\.parityGatePassed)
+            && cases.allSatisfy(\.productionLinkSetConsistencyGatePassed)
+        let classification = !cases.allSatisfy(\.parityGatePassed)
+            ? "invalid-census-parity"
+            : !cases.allSatisfy(\.productionLinkSetConsistencyGatePassed)
+                ? "production-link-set-mismatch"
+                : "fine-direction-phase-window-census-captured"
+        return MetalFineDirectionPhaseCensusReport(
+            schemaVersion: 1,
+            censusIdentifier: "deetjen-ob-f03-fine-direction-phase-window-census-v1",
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourcePreregistrationSHA256: preregistrationSHA,
+            deviceName: backend.device.name,
+            runtimeSeconds: Date().timeIntervalSince(start),
+            fluidEvolutionExecuted: false,
+            populationAllocationPerformed: false,
+            newPhysicsKernelExecuted: false,
+            cases: cases,
+            maximumMetalCPUMaskMismatchCellCount: maximumMaskMismatch,
+            maximumMetalCPUPerDirectionCountMismatch: maximumCountMismatch,
+            maximumCensusToProductionActiveLinkRelativeDifference:
+                maximumProductionDifference,
+            censusPassed: passed,
+            productionModificationAuthorized: false,
+            d36RunAuthorized: false,
+            gridConvergenceGateApplied: false,
+            experimentalAgreementGateApplied: false,
+            classification: classification,
+            scientificVerdict: (
+                "The source-locked D28/D32 complete-link phase-window census is "
+                    + classification + "."
+            ),
+            nextAction: passed
+                ? "Apply the frozen per-sample histogram and fixed-profile response gates to all eleven D28/D32 pairs."
+                : "Stop before response analysis and localize the failing phase census gate.",
+            claimBoundary: preregistration.claimBoundary
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
+    }
+
     public static func collisionGridMovingWallLinkVelocityPreregistration(
         surface: MeasuredBirdSurfaceSequence,
         target: MeasuredBirdForceTarget,

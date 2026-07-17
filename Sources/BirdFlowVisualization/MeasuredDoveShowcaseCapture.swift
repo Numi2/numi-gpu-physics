@@ -438,6 +438,133 @@ enum MeasuredDoveShowcaseCapture {
     let productionModificationAuthorized: Bool
   }
 
+  private struct FineDirectionCompositionPreregistration: Decodable {
+    let schemaVersion: Int
+    let passed: Bool
+    let referenceLengthCells: [Int]
+    let frozenSourceSampleIndex: Int
+    let frozenSourceTimeSeconds: Double
+    let fluidEvolutionAuthorized: Bool
+    let populationAllocationAuthorized: Bool
+    let newPhysicsKernelAuthorized: Bool
+    let productionModificationAuthorized: Bool
+    let d36RunAuthorized: Bool
+  }
+
+  private struct FineDirectionCompositionCensus: Decodable {
+    let schemaVersion: Int
+    let sourcePreregistrationSHA256: String
+    let censusPassed: Bool
+    let runtimeSeconds: Double
+    let maximumCensusToProductionActiveLinkRelativeDifference: Double
+    let maximumMetalCPUMaskMismatchCellCount: Int
+    let maximumMetalCPUPerDirectionCountMismatch: Int
+    let fluidEvolutionExecuted: Bool
+    let populationAllocationPerformed: Bool
+    let newPhysicsKernelExecuted: Bool
+    let productionModificationAuthorized: Bool
+    let d36RunAuthorized: Bool
+  }
+
+  private struct FineDirectionCompositionDiscriminator: Decodable {
+    let schemaVersion: Int
+    let sourcePreregistrationSHA256: String
+    let sourceCensusSHA256: String
+    let analysisPassed: Bool
+    let classification: String
+    let wholeSurfaceDirectionHistogramTotalVariation: Double
+    let maximumComponentDirectionHistogramTotalVariation: Double
+    let maximumWholeSurfaceProfileResponseLedgerDifference: Double
+    let maximumComponentProfileResponseLedgerDifference: Double
+    let gates: [String: Bool]
+    let fluidEvolutionExecuted: Bool
+    let productionModificationAuthorized: Bool
+    let d36RunAuthorized: Bool
+  }
+
+  private struct FineDirectionCompositionAudit: Decodable {
+    let schemaVersion: Int
+    let preregistrationSHA256: String
+    let censusSHA256: String
+    let reportSHA256: String
+    let checkCount: Int
+    let allChecksPassed: Bool
+    let classification: String
+    let fluidEvolutionExecuted: Bool
+    let productionModificationAuthorized: Bool
+  }
+
+  private struct FineDirectionPhaseV1Preregistration: Decodable {
+    let schemaVersion: Int
+    let passed: Bool
+    let sourceSampleIndices: [Int]
+  }
+
+  private struct FineDirectionPhaseV1Failure: Decodable {
+    let schemaVersion: Int
+    let sourcePreregistrationSHA256: String
+    let censusPassed: Bool
+    let classification: String
+  }
+
+  private struct FineDirectionPhasePreregistration: Decodable {
+    let schemaVersion: Int
+    let sourceV1PreregistrationSHA256: String
+    let sourceV1ExactParityFailureSHA256: String
+    let arithmeticOnlyRevision: Bool
+    let maximumMetalCPUWholeDirectionCountMismatch: Int
+    let maximumQualifiedTieCellsPerCase: Int
+    let solidFluidTieAbsoluteDistanceToleranceCells: Double
+    let productionModificationAuthorized: Bool
+    let d36RunAuthorized: Bool
+  }
+
+  private struct FineDirectionPhaseCensus: Decodable {
+    let schemaVersion: Int
+    let sourcePreregistrationSHA256: String
+    let sourceV1ExactParityFailureSHA256: String
+    let censusPassed: Bool
+    let qualifiedCaseCount: Int
+    let qualifiedTieCellCount: Int
+    let maximumMetalCPUWholeDirectionCountMismatch: Int
+    let fluidEvolutionExecuted: Bool
+    let newMetalExecutionPerformed: Bool
+    let productionModificationAuthorized: Bool
+    let d36RunAuthorized: Bool
+  }
+
+  private struct FineDirectionPhaseDiscriminator: Decodable {
+    let schemaVersion: Int
+    let sourcePreregistrationSHA256: String
+    let sourceCensusSHA256: String
+    let phaseCount: Int
+    let passedPhaseCount: Int
+    let maximumWholeSurfaceDirectionHistogramTotalVariation: Double
+    let maximumComponentDirectionHistogramTotalVariation: Double
+    let maximumWholeSurfaceProfileResponseLedgerDifference: Double
+    let maximumComponentProfileResponseLedgerDifference: Double
+    let gates: [String: Bool]
+    let analysisPassed: Bool
+    let classification: String
+    let fluidEvolutionExecuted: Bool
+    let productionModificationAuthorized: Bool
+    let d36RunAuthorized: Bool
+  }
+
+  private struct FineDirectionPhaseAudit: Decodable {
+    let schemaVersion: Int
+    let preregistrationSHA256: String
+    let censusSHA256: String
+    let reportSHA256: String
+    let retainedV1PreregistrationSHA256: String
+    let retainedV1FailureSHA256: String
+    let checkCount: Int
+    let allChecksPassed: Bool
+    let classification: String
+    let fluidEvolutionExecuted: Bool
+    let productionModificationAuthorized: Bool
+  }
+
   private struct ForceHistory {
     let times: [Double]
     let measured: [Double]
@@ -471,7 +598,17 @@ enum MeasuredDoveShowcaseCapture {
     linkGeometryReportURL: URL,
     curvedDirectionCompositionPreregistrationURL: URL,
     curvedDirectionCompositionCanonicalURL: URL,
-    curvedDirectionCompositionAuditURL: URL
+    curvedDirectionCompositionAuditURL: URL,
+    fineDirectionCompositionPreregistrationURL: URL,
+    fineDirectionCompositionCensusURL: URL,
+    fineDirectionCompositionDiscriminatorURL: URL,
+    fineDirectionCompositionAuditURL: URL,
+    fineDirectionPhaseV1PreregistrationURL: URL,
+    fineDirectionPhaseV1FailureURL: URL,
+    fineDirectionPhasePreregistrationURL: URL,
+    fineDirectionPhaseCensusURL: URL,
+    fineDirectionPhaseDiscriminatorURL: URL,
+    fineDirectionPhaseAuditURL: URL
   ) throws {
     let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
       manifestURL: manifestURL
@@ -607,6 +744,70 @@ enum MeasuredDoveShowcaseCapture {
       CurvedDirectionCompositionAudit.self,
       from: Data(contentsOf: curvedDirectionCompositionAuditURL)
     )
+    let fineDirectionCompositionPreregistrationData = try Data(
+      contentsOf: fineDirectionCompositionPreregistrationURL
+    )
+    let fineDirectionCompositionPreregistration = try JSONDecoder().decode(
+      FineDirectionCompositionPreregistration.self,
+      from: fineDirectionCompositionPreregistrationData
+    )
+    let fineDirectionCompositionCensusData = try Data(
+      contentsOf: fineDirectionCompositionCensusURL
+    )
+    let fineDirectionCompositionCensus = try JSONDecoder().decode(
+      FineDirectionCompositionCensus.self,
+      from: fineDirectionCompositionCensusData
+    )
+    let fineDirectionCompositionDiscriminatorData = try Data(
+      contentsOf: fineDirectionCompositionDiscriminatorURL
+    )
+    let fineDirectionCompositionDiscriminator = try JSONDecoder().decode(
+      FineDirectionCompositionDiscriminator.self,
+      from: fineDirectionCompositionDiscriminatorData
+    )
+    let fineDirectionCompositionAudit = try JSONDecoder().decode(
+      FineDirectionCompositionAudit.self,
+      from: Data(contentsOf: fineDirectionCompositionAuditURL)
+    )
+    let fineDirectionPhaseV1PreregistrationData = try Data(
+      contentsOf: fineDirectionPhaseV1PreregistrationURL
+    )
+    let fineDirectionPhaseV1Preregistration = try JSONDecoder().decode(
+      FineDirectionPhaseV1Preregistration.self,
+      from: fineDirectionPhaseV1PreregistrationData
+    )
+    let fineDirectionPhaseV1FailureData = try Data(
+      contentsOf: fineDirectionPhaseV1FailureURL
+    )
+    let fineDirectionPhaseV1Failure = try JSONDecoder().decode(
+      FineDirectionPhaseV1Failure.self,
+      from: fineDirectionPhaseV1FailureData
+    )
+    let fineDirectionPhasePreregistrationData = try Data(
+      contentsOf: fineDirectionPhasePreregistrationURL
+    )
+    let fineDirectionPhasePreregistration = try JSONDecoder().decode(
+      FineDirectionPhasePreregistration.self,
+      from: fineDirectionPhasePreregistrationData
+    )
+    let fineDirectionPhaseCensusData = try Data(
+      contentsOf: fineDirectionPhaseCensusURL
+    )
+    let fineDirectionPhaseCensus = try JSONDecoder().decode(
+      FineDirectionPhaseCensus.self,
+      from: fineDirectionPhaseCensusData
+    )
+    let fineDirectionPhaseDiscriminatorData = try Data(
+      contentsOf: fineDirectionPhaseDiscriminatorURL
+    )
+    let fineDirectionPhaseDiscriminator = try JSONDecoder().decode(
+      FineDirectionPhaseDiscriminator.self,
+      from: fineDirectionPhaseDiscriminatorData
+    )
+    let fineDirectionPhaseAudit = try JSONDecoder().decode(
+      FineDirectionPhaseAudit.self,
+      from: Data(contentsOf: fineDirectionPhaseAuditURL)
+    )
     let forceHistory = try validateAndBuildHistory(
       dataset: dataset,
       artifact: artifact,
@@ -658,7 +859,35 @@ enum MeasuredDoveShowcaseCapture {
         curvedDirectionCompositionCanonical,
       curvedDirectionCompositionCanonicalSHA256:
         sha256(curvedDirectionCompositionCanonicalData),
-      curvedDirectionCompositionAudit: curvedDirectionCompositionAudit
+      curvedDirectionCompositionAudit: curvedDirectionCompositionAudit,
+      fineDirectionCompositionPreregistration:
+        fineDirectionCompositionPreregistration,
+      fineDirectionCompositionPreregistrationSHA256:
+        sha256(fineDirectionCompositionPreregistrationData),
+      fineDirectionCompositionCensus: fineDirectionCompositionCensus,
+      fineDirectionCompositionCensusSHA256:
+        sha256(fineDirectionCompositionCensusData),
+      fineDirectionCompositionDiscriminator:
+        fineDirectionCompositionDiscriminator,
+      fineDirectionCompositionDiscriminatorSHA256:
+        sha256(fineDirectionCompositionDiscriminatorData),
+      fineDirectionCompositionAudit: fineDirectionCompositionAudit,
+      fineDirectionPhaseV1Preregistration:
+        fineDirectionPhaseV1Preregistration,
+      fineDirectionPhaseV1PreregistrationSHA256:
+        sha256(fineDirectionPhaseV1PreregistrationData),
+      fineDirectionPhaseV1Failure: fineDirectionPhaseV1Failure,
+      fineDirectionPhaseV1FailureSHA256:
+        sha256(fineDirectionPhaseV1FailureData),
+      fineDirectionPhasePreregistration: fineDirectionPhasePreregistration,
+      fineDirectionPhasePreregistrationSHA256:
+        sha256(fineDirectionPhasePreregistrationData),
+      fineDirectionPhaseCensus: fineDirectionPhaseCensus,
+      fineDirectionPhaseCensusSHA256: sha256(fineDirectionPhaseCensusData),
+      fineDirectionPhaseDiscriminator: fineDirectionPhaseDiscriminator,
+      fineDirectionPhaseDiscriminatorSHA256:
+        sha256(fineDirectionPhaseDiscriminatorData),
+      fineDirectionPhaseAudit: fineDirectionPhaseAudit
     )
     guard let device = MTLCreateSystemDefaultDevice() else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
@@ -711,8 +940,7 @@ enum MeasuredDoveShowcaseCapture {
           d32FullWindow: artifact,
           refinement: refinement,
           phaseLocalization: phaseLocalization,
-          curvedDirectionCompositionCanonical:
-            curvedDirectionCompositionCanonical,
+          fineDirectionPhaseDiscriminator: fineDirectionPhaseDiscriminator,
           frameCoordinate: loop.sourceFrameCoordinate(phase: progress)
         )
       }
@@ -774,7 +1002,28 @@ enum MeasuredDoveShowcaseCapture {
     curvedDirectionCompositionPreregistrationSHA256: String,
     curvedDirectionCompositionCanonical: CurvedDirectionCompositionCanonical,
     curvedDirectionCompositionCanonicalSHA256: String,
-    curvedDirectionCompositionAudit: CurvedDirectionCompositionAudit
+    curvedDirectionCompositionAudit: CurvedDirectionCompositionAudit,
+    fineDirectionCompositionPreregistration:
+      FineDirectionCompositionPreregistration,
+    fineDirectionCompositionPreregistrationSHA256: String,
+    fineDirectionCompositionCensus: FineDirectionCompositionCensus,
+    fineDirectionCompositionCensusSHA256: String,
+    fineDirectionCompositionDiscriminator:
+      FineDirectionCompositionDiscriminator,
+    fineDirectionCompositionDiscriminatorSHA256: String,
+    fineDirectionCompositionAudit: FineDirectionCompositionAudit,
+    fineDirectionPhaseV1Preregistration:
+      FineDirectionPhaseV1Preregistration,
+    fineDirectionPhaseV1PreregistrationSHA256: String,
+    fineDirectionPhaseV1Failure: FineDirectionPhaseV1Failure,
+    fineDirectionPhaseV1FailureSHA256: String,
+    fineDirectionPhasePreregistration: FineDirectionPhasePreregistration,
+    fineDirectionPhasePreregistrationSHA256: String,
+    fineDirectionPhaseCensus: FineDirectionPhaseCensus,
+    fineDirectionPhaseCensusSHA256: String,
+    fineDirectionPhaseDiscriminator: FineDirectionPhaseDiscriminator,
+    fineDirectionPhaseDiscriminatorSHA256: String,
+    fineDirectionPhaseAudit: FineDirectionPhaseAudit
   ) throws -> ForceHistory {
     let expectedOperator = "positivity-preserving-recursive-regularized-bgk"
     guard dataset.frameCount == 144,
@@ -1048,6 +1297,139 @@ enum MeasuredDoveShowcaseCapture {
         == curvedDirectionCompositionCanonical.classification,
       !curvedDirectionCompositionAudit.fluidEvolutionExecuted,
       !curvedDirectionCompositionAudit.productionModificationAuthorized,
+      fineDirectionCompositionPreregistration.schemaVersion == 1,
+      fineDirectionCompositionPreregistration.passed,
+      fineDirectionCompositionPreregistration.referenceLengthCells == [28, 32],
+      fineDirectionCompositionPreregistration.frozenSourceSampleIndex == 53,
+      abs(fineDirectionCompositionPreregistration.frozenSourceTimeSeconds - 0.0265)
+        <= 1e-12,
+      !fineDirectionCompositionPreregistration.fluidEvolutionAuthorized,
+      !fineDirectionCompositionPreregistration.populationAllocationAuthorized,
+      !fineDirectionCompositionPreregistration.newPhysicsKernelAuthorized,
+      !fineDirectionCompositionPreregistration.productionModificationAuthorized,
+      !fineDirectionCompositionPreregistration.d36RunAuthorized,
+      fineDirectionCompositionCensus.schemaVersion == 1,
+      fineDirectionCompositionCensus.sourcePreregistrationSHA256
+        == fineDirectionCompositionPreregistrationSHA256,
+      fineDirectionCompositionCensus.censusPassed,
+      fineDirectionCompositionCensus.runtimeSeconds < 1,
+      fineDirectionCompositionCensus
+        .maximumCensusToProductionActiveLinkRelativeDifference < 0.01,
+      fineDirectionCompositionCensus.maximumMetalCPUMaskMismatchCellCount == 0,
+      fineDirectionCompositionCensus.maximumMetalCPUPerDirectionCountMismatch
+        == 0,
+      !fineDirectionCompositionCensus.fluidEvolutionExecuted,
+      !fineDirectionCompositionCensus.populationAllocationPerformed,
+      !fineDirectionCompositionCensus.newPhysicsKernelExecuted,
+      !fineDirectionCompositionCensus.productionModificationAuthorized,
+      !fineDirectionCompositionCensus.d36RunAuthorized,
+      fineDirectionCompositionDiscriminator.schemaVersion == 1,
+      fineDirectionCompositionDiscriminator.sourcePreregistrationSHA256
+        == fineDirectionCompositionPreregistrationSHA256,
+      fineDirectionCompositionDiscriminator.sourceCensusSHA256
+        == fineDirectionCompositionCensusSHA256,
+      fineDirectionCompositionDiscriminator.analysisPassed,
+      fineDirectionCompositionDiscriminator.classification
+        == "fine-direction-redistribution-cleared-at-d28-d32",
+      fineDirectionCompositionDiscriminator
+        .wholeSurfaceDirectionHistogramTotalVariation < 0.001,
+      fineDirectionCompositionDiscriminator
+        .maximumComponentDirectionHistogramTotalVariation < 0.003,
+      fineDirectionCompositionDiscriminator
+        .maximumWholeSurfaceProfileResponseLedgerDifference < 0.00002,
+      fineDirectionCompositionDiscriminator
+        .maximumComponentProfileResponseLedgerDifference < 0.002,
+      fineDirectionCompositionDiscriminator.gates.count == 8,
+      fineDirectionCompositionDiscriminator.gates.values.allSatisfy({ $0 }),
+      !fineDirectionCompositionDiscriminator.fluidEvolutionExecuted,
+      !fineDirectionCompositionDiscriminator.productionModificationAuthorized,
+      !fineDirectionCompositionDiscriminator.d36RunAuthorized,
+      fineDirectionCompositionAudit.schemaVersion == 1,
+      fineDirectionCompositionAudit.preregistrationSHA256
+        == fineDirectionCompositionPreregistrationSHA256,
+      fineDirectionCompositionAudit.censusSHA256
+        == fineDirectionCompositionCensusSHA256,
+      fineDirectionCompositionAudit.reportSHA256
+        == fineDirectionCompositionDiscriminatorSHA256,
+      fineDirectionCompositionAudit.checkCount == 16,
+      fineDirectionCompositionAudit.allChecksPassed,
+      fineDirectionCompositionAudit.classification
+        == fineDirectionCompositionDiscriminator.classification,
+      !fineDirectionCompositionAudit.fluidEvolutionExecuted,
+      !fineDirectionCompositionAudit.productionModificationAuthorized,
+      fineDirectionPhaseV1Preregistration.schemaVersion == 1,
+      fineDirectionPhaseV1Preregistration.passed,
+      fineDirectionPhaseV1Preregistration.sourceSampleIndices == Array(50...60),
+      fineDirectionPhaseV1Failure.schemaVersion == 1,
+      fineDirectionPhaseV1Failure.sourcePreregistrationSHA256
+        == fineDirectionPhaseV1PreregistrationSHA256,
+      !fineDirectionPhaseV1Failure.censusPassed,
+      fineDirectionPhaseV1Failure.classification == "invalid-census-parity",
+      fineDirectionPhasePreregistration.schemaVersion == 2,
+      fineDirectionPhasePreregistration.sourceV1PreregistrationSHA256
+        == fineDirectionPhaseV1PreregistrationSHA256,
+      fineDirectionPhasePreregistration.sourceV1ExactParityFailureSHA256
+        == fineDirectionPhaseV1FailureSHA256,
+      fineDirectionPhasePreregistration.arithmeticOnlyRevision,
+      fineDirectionPhasePreregistration
+        .maximumMetalCPUWholeDirectionCountMismatch == 0,
+      fineDirectionPhasePreregistration.maximumQualifiedTieCellsPerCase == 1,
+      fineDirectionPhasePreregistration
+        .solidFluidTieAbsoluteDistanceToleranceCells == 0.00001,
+      !fineDirectionPhasePreregistration.productionModificationAuthorized,
+      !fineDirectionPhasePreregistration.d36RunAuthorized,
+      fineDirectionPhaseCensus.schemaVersion == 2,
+      fineDirectionPhaseCensus.sourcePreregistrationSHA256
+        == fineDirectionPhasePreregistrationSHA256,
+      fineDirectionPhaseCensus.sourceV1ExactParityFailureSHA256
+        == fineDirectionPhaseV1FailureSHA256,
+      fineDirectionPhaseCensus.censusPassed,
+      fineDirectionPhaseCensus.qualifiedCaseCount == 22,
+      fineDirectionPhaseCensus.qualifiedTieCellCount == 4,
+      fineDirectionPhaseCensus.maximumMetalCPUWholeDirectionCountMismatch == 0,
+      !fineDirectionPhaseCensus.fluidEvolutionExecuted,
+      !fineDirectionPhaseCensus.newMetalExecutionPerformed,
+      !fineDirectionPhaseCensus.productionModificationAuthorized,
+      !fineDirectionPhaseCensus.d36RunAuthorized,
+      fineDirectionPhaseDiscriminator.schemaVersion == 1,
+      fineDirectionPhaseDiscriminator.sourcePreregistrationSHA256
+        == fineDirectionPhasePreregistrationSHA256,
+      fineDirectionPhaseDiscriminator.sourceCensusSHA256
+        == fineDirectionPhaseCensusSHA256,
+      fineDirectionPhaseDiscriminator.phaseCount == 11,
+      fineDirectionPhaseDiscriminator.passedPhaseCount == 11,
+      fineDirectionPhaseDiscriminator
+        .maximumWholeSurfaceDirectionHistogramTotalVariation < 0.0008,
+      fineDirectionPhaseDiscriminator
+        .maximumComponentDirectionHistogramTotalVariation < 0.0063,
+      fineDirectionPhaseDiscriminator
+        .maximumWholeSurfaceProfileResponseLedgerDifference < 0.000033,
+      fineDirectionPhaseDiscriminator
+        .maximumComponentProfileResponseLedgerDifference < 0.0057,
+      fineDirectionPhaseDiscriminator.gates.count == 8,
+      fineDirectionPhaseDiscriminator.gates.values.allSatisfy({ $0 }),
+      fineDirectionPhaseDiscriminator.analysisPassed,
+      fineDirectionPhaseDiscriminator.classification
+        == "fine-direction-phase-window-cleared-at-d28-d32",
+      !fineDirectionPhaseDiscriminator.fluidEvolutionExecuted,
+      !fineDirectionPhaseDiscriminator.productionModificationAuthorized,
+      !fineDirectionPhaseDiscriminator.d36RunAuthorized,
+      fineDirectionPhaseAudit.schemaVersion == 1,
+      fineDirectionPhaseAudit.preregistrationSHA256
+        == fineDirectionPhasePreregistrationSHA256,
+      fineDirectionPhaseAudit.censusSHA256 == fineDirectionPhaseCensusSHA256,
+      fineDirectionPhaseAudit.reportSHA256
+        == fineDirectionPhaseDiscriminatorSHA256,
+      fineDirectionPhaseAudit.retainedV1PreregistrationSHA256
+        == fineDirectionPhaseV1PreregistrationSHA256,
+      fineDirectionPhaseAudit.retainedV1FailureSHA256
+        == fineDirectionPhaseV1FailureSHA256,
+      fineDirectionPhaseAudit.checkCount == 18,
+      fineDirectionPhaseAudit.allChecksPassed,
+      fineDirectionPhaseAudit.classification
+        == fineDirectionPhaseDiscriminator.classification,
+      !fineDirectionPhaseAudit.fluidEvolutionExecuted,
+      !fineDirectionPhaseAudit.productionModificationAuthorized,
       let normalizedRMSError = artifact.normalizedRMSError,
       normalizedRMSError.isFinite
     else {
@@ -1104,7 +1486,7 @@ enum MeasuredDoveShowcaseCapture {
     d32FullWindow: D32FullWindowArtifact,
     refinement: D28D32Refinement,
     phaseLocalization: D28D32PhaseLocalization,
-    curvedDirectionCompositionCanonical: CurvedDirectionCompositionCanonical,
+    fineDirectionPhaseDiscriminator: FineDirectionPhaseDiscriminator,
     frameCoordinate: Float?
   ) {
     graphics.saveGState()
@@ -1152,7 +1534,7 @@ enum MeasuredDoveShowcaseCapture {
     )
     fillPanel(statusPanel, radius: 13 * scale, context: graphics)
     drawText(
-      "CURVED DOVE DIRECTION MIX",
+      "PHASE-RESOLVED DIRECTION MIX",
       font: systemFont(.emphasizedSystem, size: 12.5 * scale),
       color: NSColor.white.cgColor,
       position: CGPoint(
@@ -1163,12 +1545,12 @@ enum MeasuredDoveShowcaseCapture {
       context: graphics
     )
     let canonicalStatus = String(
-      format: "CLEARED  •  D12/D16  •  %.3f%% HIST  •  %.4f%% RESPONSE",
+      format: "CLEARED  •  11 PHASES  •  %.3f%% HIST  •  %.4f%% RESPONSE",
       100
-        * curvedDirectionCompositionCanonical
-        .wholeSurfaceDirectionHistogramTotalVariation,
+        * fineDirectionPhaseDiscriminator
+        .maximumWholeSurfaceDirectionHistogramTotalVariation,
       100
-        * curvedDirectionCompositionCanonical
+        * fineDirectionPhaseDiscriminator
         .maximumWholeSurfaceProfileResponseLedgerDifference
     )
     drawText(
@@ -1454,7 +1836,7 @@ enum MeasuredDoveShowcaseCapture {
     )
 
     let labels = [
-      "SOURCE", "D16", "D28", "D32", "PLANAR", "CURVED OK", "PAIR OPEN",
+      "SOURCE", "D28", "D32", "CURVED", "FINE", "PHASE OK", "WALL OPEN",
     ]
     let colors = [
       NSColor(calibratedRed: 0.28, green: 0.90, blue: 0.78, alpha: 1),

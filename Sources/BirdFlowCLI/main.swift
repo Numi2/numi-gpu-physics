@@ -127,6 +127,10 @@ private struct Arguments {
       birdflow validate flapping-wing --momentum-budget [--json]
       birdflow validate direction-composition --preregistration FILE \
         [--archive FILE] [--json]
+      birdflow validate fine-direction-census --input MANIFEST \
+        --force-target TARGET --preregistration FILE --archive FILE [--json]
+      birdflow validate fine-direction-phase-window --input MANIFEST \
+        --force-target TARGET --preregistration FILE --archive FILE [--json]
 
     Measured prescribed replay:
       birdflow replay measured-bird --input DATASET.json [--audit-only] [--json]
@@ -2916,6 +2920,92 @@ private struct DirectionCompositionArguments {
 
     Runs the preregistered static, no-fluid Metal/CPU oblique-plane direction
     counting canonical at two grids and five subcell phases.
+    """
+}
+
+private struct FineDirectionCensusArguments {
+    let manifestPath: String
+    let forceTargetPath: String
+    let preregistrationPath: String
+    let archivePath: String
+    let json: Bool
+
+    init(_ values: [String]) throws {
+        var manifestPath: String?
+        var forceTargetPath: String?
+        var preregistrationPath: String?
+        var archivePath: String?
+        var json = false
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--input":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--input requires a surface manifest path"
+                    )
+                }
+                manifestPath = values[index]
+            case "--force-target":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--force-target requires a JSON path"
+                    )
+                }
+                forceTargetPath = values[index]
+            case "--preregistration":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--preregistration requires a JSON path"
+                    )
+                }
+                preregistrationPath = values[index]
+            case "--archive":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output JSON path"
+                    )
+                }
+                archivePath = values[index]
+            case "--json":
+                json = true
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown fine-direction-census option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+        guard let manifestPath, let forceTargetPath,
+              let preregistrationPath, let archivePath else {
+            throw CLIError.invalidArgument(
+                "fine-direction-census requires --input, --force-target, --preregistration, and --archive"
+            )
+        }
+        self.manifestPath = manifestPath
+        self.forceTargetPath = forceTargetPath
+        self.preregistrationPath = preregistrationPath
+        self.archivePath = archivePath
+        self.json = json
+    }
+
+    static let help = """
+    birdflow validate fine-direction-census --input MANIFEST \
+      --force-target TARGET --preregistration FILE --archive FILE [options]
+
+      --json                  Emit the machine-readable report
+      --help                  Show this help
+
+    Captures every component/direction link count from independent production
+    Metal and CPU geometry at the preregistered D28/D32 source phase. It does
+    not allocate populations or execute collision, streaming, or force kernels.
     """
 }
 
@@ -7816,11 +7906,108 @@ private func runDirectionCompositionValidation(_ values: [String]) throws {
     }
 }
 
+private func runFineDirectionCensus(_ values: [String]) throws {
+    let arguments = try FineDirectionCensusArguments(values)
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: URL(fileURLWithPath: arguments.manifestPath)
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: URL(fileURLWithPath: arguments.forceTargetPath),
+        surface: surface
+    )
+    let preregistrationData = try Data(contentsOf: URL(
+        fileURLWithPath: arguments.preregistrationPath
+    ))
+    let preregistration = try JSONDecoder().decode(
+        MetalFineDirectionCompositionPreregistration.self,
+        from: preregistrationData
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridFineDirectionCensus(
+            surface: surface,
+            target: target,
+            preregistration: preregistration,
+            sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+        )
+    try writeJSON(report, to: arguments.archivePath)
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("device: \(report.deviceName)")
+        print("runtime_seconds: \(report.runtimeSeconds)")
+        for item in report.cases {
+            print(
+                "D\(item.referenceLengthCells): links="
+                    + "\(item.totalMetalLinkCount) parity="
+                    + "\(item.parityGatePassed) production_difference="
+                    + "\(item.censusToProductionActiveLinkRelativeDifference)"
+            )
+        }
+        print("classification: \(report.classification)")
+        print("census_passed: \(report.censusPassed)")
+        print("next_action: \(report.nextAction)")
+    }
+    guard report.censusPassed else {
+        throw CLIError.acceptanceFailed(
+            "fine direction census exceeded a frozen capture gate"
+        )
+    }
+}
+
+private func runFineDirectionPhaseWindowCensus(_ values: [String]) throws {
+    let arguments = try FineDirectionCensusArguments(values)
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: URL(fileURLWithPath: arguments.manifestPath)
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: URL(fileURLWithPath: arguments.forceTargetPath),
+        surface: surface
+    )
+    let preregistrationData = try Data(contentsOf: URL(
+        fileURLWithPath: arguments.preregistrationPath
+    ))
+    let preregistration = try JSONDecoder().decode(
+        MetalFineDirectionPhaseWindowPreregistration.self,
+        from: preregistrationData
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridFineDirectionPhaseWindowCensus(
+            surface: surface,
+            target: target,
+            preregistration: preregistration,
+            sourcePreregistrationSHA256: sha256Hex(preregistrationData)
+        )
+    try writeJSON(report, to: arguments.archivePath)
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("device: \(report.deviceName)")
+        print("runtime_seconds: \(report.runtimeSeconds)")
+        for item in report.cases {
+            print(
+                "sample=\(item.sourceSampleIndex) "
+                    + "D\(item.referenceLengthCells): links="
+                    + "\(item.totalMetalLinkCount) parity="
+                    + "\(item.parityGatePassed) production_difference="
+                    + "\(item.censusToProductionActiveLinkRelativeDifference)"
+            )
+        }
+        print("classification: \(report.classification)")
+        print("census_passed: \(report.censusPassed)")
+        print("next_action: \(report.nextAction)")
+    }
+    guard report.censusPassed else {
+        throw CLIError.acceptanceFailed(
+            "fine direction phase window exceeded a frozen capture gate"
+        )
+    }
+}
+
 private func run(_ values: [String]) throws {
     if values.count > 1, values[1] == "validate" {
         guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition|fine-direction-census|fine-direction-phase-window> [options]"
             )
         }
         switch values[2] {
@@ -7838,9 +8025,13 @@ private func run(_ values: [String]) throws {
             try runFlappingWingValidation(values)
         case "direction-composition":
             try runDirectionCompositionValidation(values)
+        case "fine-direction-census":
+            try runFineDirectionCensus(values)
+        case "fine-direction-phase-window":
+            try runFineDirectionPhaseWindowCensus(values)
         default:
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition|fine-direction-census|fine-direction-phase-window> [options]"
             )
         }
     } else if values.count > 1, values[1] == "replay" {

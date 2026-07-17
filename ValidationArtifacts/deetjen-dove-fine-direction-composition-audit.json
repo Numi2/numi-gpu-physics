@@ -1,0 +1,40 @@
+{
+  "allChecksPassed": true,
+  "auditIdentifier": "deetjen-ob-f03-fine-direction-composition-audit-v1",
+  "censusSHA256": "26cad1249b8faae5145afdee90cf9f5f714ab9c56d9b78b286b6fe1da6550ad8",
+  "checkCount": 16,
+  "checks": {
+    "auditedInputs": true,
+    "captureIsolation": true,
+    "caseCoverageAndMetadata": true,
+    "claimBoundaryAndNoAuthorization": true,
+    "classification": true,
+    "frozenContract": true,
+    "frozenGates": true,
+    "independentCaseReconstruction": true,
+    "independentComponentSummaries": true,
+    "independentMaximumMetrics": true,
+    "independentMetalCPUCounts": true,
+    "independentProfileSummaries": true,
+    "independentTotals": true,
+    "productionLinkSetConsistency": true,
+    "sourceIdentities": true,
+    "wholeSurfaceOppositeBalance": true
+  },
+  "claimBoundary": "This independent NumPy audit reconstructs both fine-grid censuses, all 144 Metal/CPU component-direction counts, whole and component histograms, two fixed-profile responses, source identities, frozen gates, classification, and safety boundary. It does not establish force convergence or authorize D36 or a production edit.",
+  "classification": "fine-direction-redistribution-cleared-at-d28-d32",
+  "fluidEvolutionExecuted": false,
+  "generatedBy": "Scripts/audit-dove-fine-direction-composition.py",
+  "independentReconstruction": {
+    "maximumComponentDirectionHistogramTotalVariation": 0.002481436049189791,
+    "maximumComponentProfileResponseLedgerDifference": 0.0019446292194608915,
+    "maximumEquilibriumWholeSurfaceNetLedgerFraction": 0.0,
+    "maximumWholeSurfaceOppositeDirectionCountMismatch": 0,
+    "maximumWholeSurfaceProfileResponseLedgerDifference": 1.1608475393088412e-05,
+    "wholeSurfaceDirectionHistogramTotalVariation": 0.0006568658283864076
+  },
+  "preregistrationSHA256": "4d414ee01f96c2bf3e929670b1c5b335396aebc1b5d5c6782a71899f6cbef196",
+  "productionModificationAuthorized": false,
+  "reportSHA256": "4c07e7a16be303a7a0619738a2ea5e6adb94a9adc74e16f1ec68b59bb2e3c065",
+  "schemaVersion": 1
+}

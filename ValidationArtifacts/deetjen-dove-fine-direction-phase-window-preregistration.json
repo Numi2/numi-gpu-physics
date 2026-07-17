@@ -1,0 +1,348 @@
+{
+  "arithmeticOnlyRevision": true,
+  "claimBoundary": "This V2 is an arithmetic-equivalence qualification of the retained V1 one-cell raster ties. It requires exact whole-surface direction counts and does not relax any histogram or response threshold. It can clear static D28/D32 direction support over 25-30 ms, but cannot validate moving-wall velocity, interpolation, realized populations, force magnitude, bird-load convergence, experimental agreement, quantitative bird flight, or free flight, and authorizes no production edit or D36 run.",
+  "classificationRule": "Classify unqualified-arithmetic-mismatch if any V1 disagreement falls outside the frozen tie definitions, if a case has more than one tie cell, if any whole-surface direction count differs, or if a component/direction count differs by more than one link. Otherwise apply the unchanged production-link, opposite-balance, histogram, equilibrium, and fixed-profile gates independently at all eleven samples.",
+  "componentOwnershipTieDistanceDifferenceToleranceCells": 1e-05,
+  "components": [
+    {
+      "componentName": "body",
+      "partIdentifier": 1
+    },
+    {
+      "componentName": "leftWing",
+      "partIdentifier": 2
+    },
+    {
+      "componentName": "rightWing",
+      "partIdentifier": 3
+    },
+    {
+      "componentName": "tail",
+      "partIdentifier": 4
+    }
+  ],
+  "d36RunAuthorized": false,
+  "datasetIdentifier": "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "directionIndices": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "expectedGridCells": {
+    "28": [
+      259,
+      238,
+      229
+    ],
+    "32": [
+      296,
+      271,
+      261
+    ]
+  },
+  "experimentalAgreementGateApplied": false,
+  "fixedPopulationProfiles": [
+    {
+      "directionPopulations": [
+        0.3333333333333333,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.05555555555555555,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776,
+        0.027777777777777776
+      ],
+      "identifier": "rest-equilibrium",
+      "source": "rho=1, u=0 D3Q19 equilibrium; q0 is unused by the link sum"
+    },
+    {
+      "directionPopulations": [
+        0.0,
+        0.05481896151130449,
+        0.05673913023113411,
+        0.0,
+        0.0,
+        0.05575516067552731,
+        0.05556847946491219,
+        0.028361462604052267,
+        0.028664753198283367,
+        0.02807873461249134,
+        0.02841815050719536,
+        0.02730192725161408,
+        0.028614235197181502,
+        0.02717325645893574,
+        0.028581016389104326,
+        0.027945840058758716,
+        0.028476743097414683,
+        0.028583645169417943,
+        0.028255690238828415
+      ],
+      "identifier": "deetjen-midpoint-pooled",
+      "source": "count-weighted D28/D32 midpoint reflected-population means pooled over the 11 audited endpoints and every non-direction stratum; q0 and the unsupported pure-y directions are zero and unused because every canonical normal lies in the audited X/Z force plane"
+    }
+  ],
+  "fluidEvolutionAuthorized": false,
+  "forceTargetIdentifier": "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256": "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "gridConvergenceGateApplied": false,
+  "halfThicknessMeters": 0.0075,
+  "manifestSHA256": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "maximumCensusToProductionActiveLinkRelativeDifference": 0.05,
+  "maximumComponentDirectionHistogramTotalVariation": 0.1,
+  "maximumComponentProfileResponseLedgerDifference": 0.1,
+  "maximumEquilibriumWholeSurfaceNetLedgerFraction": 1e-12,
+  "maximumMetalCPUMaskMismatchCellCount": 1,
+  "maximumMetalCPUPerDirectionCountMismatch": 1,
+  "maximumMetalCPUWholeDirectionCountMismatch": 0,
+  "maximumQualifiedTieCellsPerCase": 1,
+  "maximumWholeSurfaceDirectionHistogramTotalVariation": 0.05,
+  "maximumWholeSurfaceOppositeDirectionCountMismatch": 0,
+  "maximumWholeSurfaceProfileResponseLedgerDifference": 0.05,
+  "newPhysicsKernelAuthorized": false,
+  "normalizationDefinition": "Normalize a D28/D32 response-vector change by the mean absolute direction ledger: 0.5*(sum_q ||term_D28,q|| + sum_q ||term_D32,q||). This remains finite when the closed-surface net response cancels. Direction histograms normalize N_q*dx^2 by their total over q.",
+  "oppositeDirectionPairs": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      11,
+      12
+    ],
+    [
+      13,
+      14
+    ],
+    [
+      15,
+      16
+    ],
+    [
+      17,
+      18
+    ]
+  ],
+  "passed": true,
+  "populationAllocationAuthorized": false,
+  "preregistrationIdentifier": "deetjen-ob-f03-fine-direction-phase-window-v2",
+  "productionActiveLinkReferences": [
+    {
+      "activeLinkCount": 141738,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 50,
+      "sourceTimeSeconds": 0.025
+    },
+    {
+      "activeLinkCount": 141044,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 51,
+      "sourceTimeSeconds": 0.0255
+    },
+    {
+      "activeLinkCount": 140319,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 52,
+      "sourceTimeSeconds": 0.026
+    },
+    {
+      "activeLinkCount": 139963,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 53,
+      "sourceTimeSeconds": 0.0265
+    },
+    {
+      "activeLinkCount": 140237,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 54,
+      "sourceTimeSeconds": 0.027
+    },
+    {
+      "activeLinkCount": 140450,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 55,
+      "sourceTimeSeconds": 0.0275
+    },
+    {
+      "activeLinkCount": 140249,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 56,
+      "sourceTimeSeconds": 0.028
+    },
+    {
+      "activeLinkCount": 140015,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 57,
+      "sourceTimeSeconds": 0.0285
+    },
+    {
+      "activeLinkCount": 139894,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 58,
+      "sourceTimeSeconds": 0.029
+    },
+    {
+      "activeLinkCount": 140554,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 59,
+      "sourceTimeSeconds": 0.0295
+    },
+    {
+      "activeLinkCount": 141666,
+      "referenceLengthCells": 28,
+      "sourceSampleIndex": 60,
+      "sourceTimeSeconds": 0.03
+    },
+    {
+      "activeLinkCount": 185285,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 50,
+      "sourceTimeSeconds": 0.025
+    },
+    {
+      "activeLinkCount": 185134,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 51,
+      "sourceTimeSeconds": 0.0255
+    },
+    {
+      "activeLinkCount": 183690,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 52,
+      "sourceTimeSeconds": 0.026
+    },
+    {
+      "activeLinkCount": 183370,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 53,
+      "sourceTimeSeconds": 0.0265
+    },
+    {
+      "activeLinkCount": 183551,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 54,
+      "sourceTimeSeconds": 0.027
+    },
+    {
+      "activeLinkCount": 183694,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 55,
+      "sourceTimeSeconds": 0.0275
+    },
+    {
+      "activeLinkCount": 183428,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 56,
+      "sourceTimeSeconds": 0.028
+    },
+    {
+      "activeLinkCount": 182788,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 57,
+      "sourceTimeSeconds": 0.0285
+    },
+    {
+      "activeLinkCount": 182985,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 58,
+      "sourceTimeSeconds": 0.029
+    },
+    {
+      "activeLinkCount": 184177,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 59,
+      "sourceTimeSeconds": 0.0295
+    },
+    {
+      "activeLinkCount": 185565,
+      "referenceLengthCells": 32,
+      "sourceSampleIndex": 60,
+      "sourceTimeSeconds": 0.03
+    }
+  ],
+  "productionModificationAuthorized": false,
+  "referenceLengthCells": [
+    28,
+    32
+  ],
+  "responseDefinition": "For grid g, component p, and fixed profile k, reconstruct the outward solid-to-fluid link response R_gpk = sum_q 2*f_kq*c_q*N_gpq*dx_g^2 from the archived Metal link counts. Whole-bird response is the exact sum over the four components.",
+  "schemaVersion": 2,
+  "selectionRule": "For each source sample 50 through 60 inclusive (25 through 30 ms), raster the complete measured-dove surface through production Metal and the independent CPU reference at D28 and D32. Count every current solid-to-fluid D3Q19 link by component and direction. Allocate no populations and execute no collision, streaming, force, or topology evolution. Apply the unchanged single-phase parity, production-link, opposite-balance, histogram, and fixed-profile response gates at every sample; the window passes only when all eleven samples pass. V2 consumes the already captured V1 counts without a new Metal run. A single Metal/CPU mask disagreement is equivalent only when it is either a solid/fluid sign tie with both absolute signed distances no larger than 1e-5 cells, or a nonzero/nonzero component-ownership tie whose signed-distance difference is no larger than 1e-5 cells. Whole-surface direction counts must remain exact in every case and per-component/direction differences may not exceed one link.",
+  "solidFluidTieAbsoluteDistanceToleranceCells": 1e-05,
+  "sourceD28ProvenanceSHA256": "80b9dc99f84413d2ce0ff6c7438a4b90a7b976685c40a0acb47973989ebd3226",
+  "sourceD32ProvenanceSHA256": "fbcdeede0384a87c1f17cd05baab6a1bf19422c94c335c725872fa3a12abeda0",
+  "sourceSampleIndices": [
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+  ],
+  "sourceSinglePhaseAuditSHA256": "49a878a0341fb1a324e6b85297ba05e04496e97bda07e07780aa6e74f179b119",
+  "sourceSinglePhaseCensusSHA256": "26cad1249b8faae5145afdee90cf9f5f714ab9c56d9b78b286b6fe1da6550ad8",
+  "sourceSinglePhaseDiscriminatorSHA256": "4c07e7a16be303a7a0619738a2ea5e6adb94a9adc74e16f1ec68b59bb2e3c065",
+  "sourceSinglePhasePreregistrationSHA256": "4d414ee01f96c2bf3e929670b1c5b335396aebc1b5d5c6782a71899f6cbef196",
+  "sourceTimesSeconds": [
+    0.025,
+    0.0255,
+    0.026,
+    0.0265,
+    0.027,
+    0.0275,
+    0.028,
+    0.0285,
+    0.029,
+    0.0295,
+    0.03
+  ],
+  "sourceV1ExactParityFailureSHA256": "7312cf3da22988c91012af07f2762e4d0fc706e199461bf8c7f3ac43af5005a7",
+  "sourceV1PreregistrationSHA256": "b9c28b157217cfc59b3ea4db44141e32dd924988e0fe8284bedaa5352eabcce9"
+}
