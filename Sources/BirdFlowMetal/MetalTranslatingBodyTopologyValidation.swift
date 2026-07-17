@@ -3491,7 +3491,9 @@ public enum MetalTranslatingBodyTopologyValidator {
 #endif
     }
 
-    public static func run() throws
+    public static func run(
+        captureMacroscopicFields: Bool = false
+    ) throws
         -> MetalTranslatingBodyTopologyValidationReport
     {
 #if canImport(Metal)
@@ -3501,12 +3503,14 @@ public enum MetalTranslatingBodyTopologyValidator {
         let legacy = try MetalTranslatingBodyTopologySimulation(
             backend: backend,
             linkForceMode: 0,
-            caseConfiguration: caseConfiguration
+            caseConfiguration: caseConfiguration,
+            captureMacroscopicFields: captureMacroscopicFields
         ).run(steps: steps)
         let conservative = try MetalTranslatingBodyTopologySimulation(
             backend: backend,
             linkForceMode: 6,
-            caseConfiguration: caseConfiguration
+            caseConfiguration: caseConfiguration,
+            captureMacroscopicFields: captureMacroscopicFields
         ).run(steps: steps)
         guard legacy.count == conservative.count,
               conservative.count == steps else {
@@ -4777,6 +4781,7 @@ private final class MetalTranslatingBodyTopologySimulation {
     private let positivityPreservingRegularizedCollisionEnabled: Bool
     private let positivityPreservingRecursiveRegularizedCollisionEnabled: Bool
     private let conservationLedgerEnabled: Bool
+    private let captureMacroscopicFields: Bool
     private let characteristicLengthCells: Int
     private let parameters: MTLBuffer
     private let bodyState: MTLBuffer
@@ -4827,7 +4832,8 @@ private final class MetalTranslatingBodyTopologySimulation {
         symmetricPositivityLimiterEnabled: Bool = false,
         positivityPreservingRegularizedCollisionEnabled: Bool = false,
         positivityPreservingRecursiveRegularizedCollisionEnabled: Bool = false,
-        conservationLedgerEnabled: Bool = false
+        conservationLedgerEnabled: Bool = false,
+        captureMacroscopicFields: Bool = false
     ) throws {
         self.backend = backend
         self.linkForceMode = linkForceMode
@@ -4838,6 +4844,7 @@ private final class MetalTranslatingBodyTopologySimulation {
         self.positivityPreservingRecursiveRegularizedCollisionEnabled =
             positivityPreservingRecursiveRegularizedCollisionEnabled
         self.conservationLedgerEnabled = conservationLedgerEnabled
+        self.captureMacroscopicFields = captureMacroscopicFields
         let bulkCollisionTreatmentCount = [
             symmetricPositivityLimiterEnabled,
             positivityPreservingRegularizedCollisionEnabled,
@@ -5523,10 +5530,10 @@ private final class MetalTranslatingBodyTopologySimulation {
         GPUUniforms(
             configuration: configuration,
             time: time,
-            // The velocity buffer carries preserved newly covered momentum
-            // from geometry into the fluid step; field capture would replace
-            // that validation-only scratch value before the impulse is read.
-            captureMacroscopicFields: false,
+            // stepFluidTRT consumes geometry-preserved covered momentum before
+            // publishing the solid-node wall state, so field capture must be
+            // safe to combine with conservative topology accounting.
+            captureMacroscopicFields: captureMacroscopicFields,
             accumulateLoads: true,
             hasPreviousGeometry: true,
             periodicBoundaries: periodicBoundaries,

@@ -1,0 +1,194 @@
+{
+  "continuationThreshold": 0.05,
+  "nextAction": "retain the negative convergence result; do not execute the c20 minimum selector",
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-c20-sequential-discriminator-v1.json",
+    "preregisteredBeforeC20Execution": true,
+    "sha256": "2e343588f69236f90f32a308a5f66decc2cb00b93fce544fda34da1fc2482bfd"
+  },
+  "quantitativeFormationClaimAuthorized": false,
+  "schemaVersion": 1,
+  "stage1": {
+    "absoluteSavingPointChange": 0.014246249276268233,
+    "c16SavingFraction": 0.11916298225576903,
+    "c20SavingFraction": 0.13340923153203726,
+    "flowCapture": {
+      "allRequestedFollowerLocalPhasesPresent": true,
+      "files": [
+        {
+          "followerPhase": 0.25504201680672267,
+          "leaderPhase": 0.005042016806722689,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-005042.json",
+          "sha256": "6c593f2e6f60f22a2f0fa9ec8314dc1cffa1d9218c3759304ce0d3e5bb323c86"
+        },
+        {
+          "followerPhase": 0.2649393090569561,
+          "leaderPhase": 0.014939309056956116,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-014939.json",
+          "sha256": "1d35ff1515f89bc3863bc2af4a6a25cec1b39dabe05a1a453a1782ec97e1ae08"
+        },
+        {
+          "followerPhase": 0.2750233426704015,
+          "leaderPhase": 0.025023342670401495,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-025023.json",
+          "sha256": "ceebbbb6032fb3262645c112f923bf1208956c3ad7589231ced494b540ab81bf"
+        },
+        {
+          "followerPhase": 0.2849206349206349,
+          "leaderPhase": 0.03492063492063492,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-034921.json",
+          "sha256": "c4258f90c81d047d0cb7e7eb0914c37cb3d0fa242fa738662d39f8e9e68e0961"
+        },
+        {
+          "followerPhase": 0.2950046685340803,
+          "leaderPhase": 0.0450046685340803,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-045005.json",
+          "sha256": "1ed011523cb13f027decc9ae46e0befb63d65d3abfaa746657ee1b303bf74361"
+        },
+        {
+          "followerPhase": 0.7050887021475256,
+          "leaderPhase": 0.45508870214752567,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-455089.json",
+          "sha256": "e794a4366ab80b5bca1cc8ec9cdff3fd548884918674905871e96274c0b89583"
+        },
+        {
+          "followerPhase": 0.7149859943977591,
+          "leaderPhase": 0.4649859943977591,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-464986.json",
+          "sha256": "eac67277e82303ac1429ff5acc71d1a42fe3d114c429eccf234f3c8e3e1f67cd"
+        },
+        {
+          "followerPhase": 0.7250700280112045,
+          "leaderPhase": 0.47507002801120446,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-475070.json",
+          "sha256": "510bf04b813a78f12763a5d0871652e18d7ded06acd93029e752f4448cf6a452"
+        },
+        {
+          "followerPhase": 0.734967320261438,
+          "leaderPhase": 0.4849673202614379,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-484967.json",
+          "sha256": "697e58638a4de916264bf46fe2a27df0a74a1c81838e800783eab0000ca1a172"
+        },
+        {
+          "followerPhase": 0.7450513538748833,
+          "leaderPhase": 0.4950513538748833,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-495051.json",
+          "sha256": "4e2e17f71311300cdac694e12a16d6821f4cbf67ac8466f876354f4926a09ed3"
+        },
+        {
+          "followerPhase": 0.7549486461251167,
+          "leaderPhase": 0.5049486461251167,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-504949.json",
+          "sha256": "08de934665864e04cdb7cb64653250bb4a7ffebe99bf3bf3b49ef34781235a11"
+        },
+        {
+          "followerPhase": 0.765032679738562,
+          "leaderPhase": 0.515032679738562,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-515033.json",
+          "sha256": "a3de80d5e1919c3d2a5c77ea9a2d98018c684ee03c860433dd1bb471c3043c71"
+        },
+        {
+          "followerPhase": 0.7749299719887955,
+          "leaderPhase": 0.5249299719887955,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-524930.json",
+          "sha256": "46cfa6b4eca2b6fda049f4ac40e018caddaf8f863fbfe270aeaeded8b8daae6e"
+        },
+        {
+          "followerPhase": 0.7850140056022409,
+          "leaderPhase": 0.5350140056022409,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-535014.json",
+          "sha256": "36790fb0b88778fb5652808357af57edce272f42fede63f027006f5bedd246a8"
+        },
+        {
+          "followerPhase": 0.7949112978524743,
+          "leaderPhase": 0.5449112978524743,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-544911.json",
+          "sha256": "1c8c2470ecc2caf87cfb93fed9d1958aee569ea96e693ce5af3cce3282db1c67"
+        },
+        {
+          "followerPhase": 0.20499533146591986,
+          "leaderPhase": 0.9549953314659198,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-954995.json",
+          "sha256": "29285d680504be689f63ed556fd7310bd2cdc4bd32a2f72dfc6914baf2e1ad7d"
+        },
+        {
+          "followerPhase": 0.2150793650793652,
+          "leaderPhase": 0.9650793650793651,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-965079.json",
+          "sha256": "e07bb62801a7b6a0383b95324339a522701327ed23c2c401993f2514e4ebbc2c"
+        },
+        {
+          "followerPhase": 0.2249766573295986,
+          "leaderPhase": 0.9749766573295985,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-974977.json",
+          "sha256": "7d2860f8ccc84ef4e1f4452367155e67f59dfd05688009eafb1ea1f564a72ed0"
+        },
+        {
+          "followerPhase": 0.23506069094304394,
+          "leaderPhase": 0.9850606909430439,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-985061.json",
+          "sha256": "c4be5a81f4ffc14e2a108f116205538657bac387359647f19bf063ea5930b487"
+        },
+        {
+          "followerPhase": 0.24495798319327733,
+          "leaderPhase": 0.9949579831932773,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-994958.json",
+          "sha256": "f032a133ded55a1213bf99c25f8ede615fc843f32b0f33d4819bfc97ca033aa8"
+        },
+        {
+          "followerPhase": 0.25,
+          "leaderPhase": 0,
+          "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/phase-000000.json",
+          "sha256": "0b67b901f8edd87ce313cd87100ad869caf99ca6ab4094918e1c3b411d0be73f"
+        }
+      ],
+      "indexPath": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/index.json",
+      "indexSHA256": "ece938ab03b0be4b7613c84cac9de936d1c833bef93174083e35017363bffb6f",
+      "sliceCount": 21
+    },
+    "gates": {
+      "maximumIsolatedRelativeClosureResidual": 3.7509635149035603e-06,
+      "maximumRelativeForceClosureResidual": 7.174681968535879e-07,
+      "maximumRelativePeriodicPowerDifference": 0.023664134168891238,
+      "maximumRelativeTorqueClosureResidual": 4.415661805978743e-06,
+      "overlapVoxelSamples": 0,
+      "passed": true
+    },
+    "passed": false,
+    "phaseResolvedFinePair": {
+      "absoluteResidualCorrelations": {
+        "powerVsDrag": 0.6834216364677517,
+        "powerVsLift": -0.06477118429759605
+      },
+      "alignment": "100 bins by follower-local phase",
+      "dragCoefficientResidual": {
+        "maximumAbsolute": 0.23203375612925514,
+        "maximumPhase": 0.055,
+        "maximumSigned": -0.23203375612925514,
+        "pairedMidstrokeBandAbsoluteFraction": 0.15960727369853597,
+        "rms": 0.06453220987285849
+      },
+      "liftCoefficientResidual": {
+        "maximumAbsolute": 0.12816255069217664,
+        "maximumPhase": 0.565,
+        "maximumSigned": 0.12816255069217664,
+        "pairedMidstrokeBandAbsoluteFraction": 0.25195037958994754,
+        "rms": 0.06485554958531672
+      },
+      "normalizedPowerResidual": {
+        "maximumAbsolute": 0.11217471153367098,
+        "maximumPhase": 0.055,
+        "maximumSigned": -0.11217471153367098,
+        "pairedMidstrokeBandAbsoluteFraction": 0.23148245310268054,
+        "rms": 0.031265371980939934
+      },
+      "powerNormalization": "each grid divided by its matched isolated follower mean-positive-power scalar"
+    },
+    "relativeFinePairChange": 0.10678608303689313,
+    "reportPath": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+    "reportSHA256": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6",
+    "selector": "maximum"
+  },
+  "status": "stage1_failed_stop",
+  "thresholdsUnchanged": true
+}

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "study": "formation-flight c20 sequential fine-grid discriminator",
+  "preregisteredBeforeC20Execution": true,
+  "scientificPurpose": "test whether the c12-to-c16 formation-effect change persists at c20 while localizing the diagnosed midstroke field differences",
+  "sharedConfiguration": {
+    "chordCells": 20,
+    "cycles": 5,
+    "followerOffsetChords": [0, 0, -3]
+  },
+  "fieldCapture": {
+    "plane": "center y plane",
+    "finalCycleFollowerLocalPhaseWindows": [
+      [0.20, 0.30],
+      [0.70, 0.80]
+    ],
+    "followerLocalTargetPhases": [
+      0.205, 0.215, 0.225, 0.235, 0.245,
+      0.255, 0.265, 0.275, 0.285, 0.295,
+      0.705, 0.715, 0.725, 0.735, 0.745,
+      0.755, 0.765, 0.775, 0.785, 0.795
+    ],
+    "requestedLeaderPhasesForBothSelectedOffsets": [
+      0.005, 0.015, 0.025, 0.035, 0.045,
+      0.455, 0.465, 0.475, 0.485, 0.495,
+      0.505, 0.515, 0.525, 0.535, 0.545,
+      0.955, 0.965, 0.975, 0.985, 0.995
+    ],
+    "observationRule": "capture is GPU-resident, does not modify populations, geometry, loads, or gate thresholds"
+  },
+  "unchangedGates": {
+    "maximumRelativeOwnerOrIsolatedClosureResidual": 0.0002,
+    "maximumRelativeFinalCyclePowerDifference": 0.20,
+    "maximumOverlapVoxelSamples": 0,
+    "allReportedValuesFinite": true
+  },
+  "sequentialRule": {
+    "stage1": "run the c20 maximum selector at phase offset 0.25",
+    "stage1ContinuationCriterion": "absolute c16-to-c20 maximum-saving change divided by absolute c20 saving must be no greater than 0.05",
+    "stage1FailureAction": "stop; retain the negative result and do not spend a second c20 run on the minimum selector",
+    "stage2": "only after stage1 passes, run the c20 minimum selector at phase offset 0.75",
+    "stage2AcceptanceCriterion": "c16-to-c20 best-minus-minimum contrast change divided by absolute c20 contrast must be no greater than 0.05, and both c20 runs must pass every unchanged gate",
+    "quantitativeClaimRule": "a quantitative formation-benefit claim remains unauthorized unless both stages pass"
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "sha256": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c16-minimum-z3-phase075/formation-flight-report.json",
+      "sha256": "72d881089afe4cd7bb1628ed9c91ac1ae184d307e639a05e2690f934306ce625"
+    }
+  ]
+}

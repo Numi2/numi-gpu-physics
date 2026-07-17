@@ -67,6 +67,37 @@ nonidentical endpoint probe.
 Only the completed Metal render texture is read back for image encoding. Exact
 earlier hero binaries are retained in [`Media/Progress`](Media/Progress/README.md).
 
+## Formation Observatory capture
+
+Regenerate the separate formation-flight presentation locally with:
+
+```bash
+./Scripts/capture-formation-observatory-gif.sh
+```
+
+The command decodes the c20 formation accounting archive, its 21 indexed field
+captures, and the preregistered sequential decision. It evaluates the same
+published prescribed-wing kinematics for a leader and phase-shifted follower
+and renders both analytic beta planforms through the native offscreen Metal
+pipeline. During the two measured phase windows, the renderer selects an actual
+archived field and fades it only at the window boundary. The real zero-phase
+capture anchors both sides of the encoded loop seam; the displayed field phase
+remains explicit, and no field values are interpolated. Slice hue shows signed vertical velocity while
+opacity follows vorticity magnitude. The fail-closed overlay reports c16 and
+c20 savings, the frozen continuation limit, waveform residual, owner closure,
+overlap, and the stopped quantitative decision. Wake-history ribbons remain
+presentation guides and are labeled separately from CFD.
+
+The capture writes 48 unique frames plus a pixel-identical endpoint probe at
+`1120 x 630`. The local script requires a seamless endpoint, exactly 48 encoded
+frames, and a file below 10 MB before replacing
+`Docs/Media/formation-flight-observatory.gif`. The source c20 run captured fields
+GPU-resident at 20 requested follower-local phases plus its legacy final state.
+A dedicated archive smoke proves that simultaneous field capture preserves
+conservative owner accounting and reproduces the prior CPU vorticity extraction
+to `1e-9` maximum absolute difference. The capture script itself neither reruns
+nor mutates the fluid solution.
+
 The New Run sheet uses the CLI defaults: fixed flight, `Re=2000`, an `8 m/s`
 reference speed, `0.04` lattice speed, resolution scale 1, and a 32-step solver
 batch. It also exposes free flight, resolution scaling, and batch size. The

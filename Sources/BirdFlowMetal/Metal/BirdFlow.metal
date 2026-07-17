@@ -138,6 +138,13 @@ struct GPUPreparedFlappingWing {
     float4 state;
 };
 
+/// Formation-only controls. activeOwners uses bit zero for the leader and
+/// bit one for the follower; cycleSteps is retained beside it so overlap
+/// diagnostics can be accumulated without a CPU synchronization every step.
+struct GPUFormationFlightControl {
+    uint4 activeOwnersAndCycleSteps;
+};
+
 struct GPUMeasuredWingSurfaceParameters {
     uint4 counts;
     uint4 pointCounts;
@@ -1272,6 +1279,182 @@ kernel void buildPrescribedFlappingWing(
     }
 }
 
+inline bool prescribedFormationWingContains(
+    float3 world,
+    constant GPUFlappingWingParameters& wing,
+    device const GPUPreparedFlappingWing& prepared,
+    constant GPUUniforms& uniforms
+) {
+    float3 relative = world - prepared.root.xyz;
+    float guardRadius = wing.geometry.x
+        + 1.5f * wing.rootAndChord.w
+        + 2.0f * uniforms.originAndCellSize.w;
+    if (dot(relative, relative) > guardRadius * guardRadius) {
+        return false;
+    }
+    return prescribedWingMaximumViolation(
+        prescribedWingBoundaryCoordinates(
+            world,
+            wing,
+            prepared,
+            uniforms
+        )
+    ) <= 0.0f;
+}
+
+/// Voxelizes two prescribed wings into one ownership mask. The ordinary fluid
+/// step treats every nonzero value as solid, while formation diagnostics retain
+/// 1=leader and 2=follower. A single union pass avoids order-dependent erasure
+/// where two independently dispatched geometry kernels overlap in space.
+kernel void buildPrescribedFormationWings(
+    device uchar* solid [[buffer(0)]],
+    device float4* wallVelocity [[buffer(1)]],
+    device const uchar* solidPrevious [[buffer(2)]],
+    constant GPUFlappingWingParameters& leaderWing [[buffer(3)]],
+    device const GPUPreparedFlappingWing& leaderPrepared [[buffer(4)]],
+    constant GPUFlappingWingParameters& followerWing [[buffer(5)]],
+    device const GPUPreparedFlappingWing& followerPrepared [[buffer(6)]],
+    constant GPUUniforms& uniforms [[buffer(7)]],
+    device float* boundaryLinks [[buffer(8)]],
+    device float4* coveredFluidMomentum [[buffer(9)]],
+    device atomic_uint* overlapCounts [[buffer(10)]],
+    constant GPUFormationFlightControl& control [[buffer(11)]],
+    uint3 cell [[thread_position_in_grid]]
+) {
+    uint3 size = uniforms.grid.xyz;
+    if (any(cell >= size)) {
+        return;
+    }
+
+    uint gid = flatten(cell, size);
+    float3 world = cellPosition(cell, uniforms);
+    uint active = control.activeOwnersAndCycleSteps.x;
+    bool leaderInside = (active & 1u) != 0u
+        && prescribedFormationWingContains(
+            world,
+            leaderWing,
+            leaderPrepared,
+            uniforms
+        );
+    bool followerInside = (active & 2u) != 0u
+        && prescribedFormationWingContains(
+            world,
+            followerWing,
+            followerPrepared,
+            uniforms
+        );
+    if (leaderInside && followerInside) {
+        uint cycleSteps = max(
+            control.activeOwnersAndCycleSteps.y,
+            1u
+        );
+        uint sample = (uint(
+            max(uniforms.timeStepAndScales.x, 1.0f)
+        ) - 1u) % cycleSteps;
+        atomic_fetch_add_explicit(
+            &overlapCounts[sample],
+            1u,
+            memory_order_relaxed
+        );
+    }
+
+    // A detected overlap is intentionally owned by the leader so the mask
+    // remains a valid solid union. The nonzero overlap count fails the run.
+    uchar owner = leaderInside
+        ? uchar(1)
+        : (followerInside ? uchar(2) : uchar(0));
+    uchar previousOwner = uniforms.flags.z != 0u
+        ? solidPrevious[gid]
+        : uchar(0);
+    bool wasSolid = previousOwner != 0;
+    bool isSolid = owner != 0;
+    solid[gid] = owner;
+
+    // Fluid-side interpolation needs the affine velocity field belonging to
+    // the adjacent wing. With separated bodies the nearest root is unique;
+    // just-uncovered cells retain their previous owner explicitly.
+    uchar velocityOwner = owner != 0
+        ? owner
+        : (previousOwner != 0
+            ? previousOwner
+            : (distance(world, leaderPrepared.root.xyz)
+                    <= distance(world, followerPrepared.root.xyz)
+                ? uchar(1)
+                : uchar(2)));
+    device const GPUPreparedFlappingWing* velocityPrepared =
+        velocityOwner == 2
+        ? &followerPrepared
+        : &leaderPrepared;
+    float3 relative = world - velocityPrepared->root.xyz;
+    wallVelocity[gid] = float4(
+        cross(velocityPrepared->angularVelocity.xyz, relative),
+        isSolid ? -float(owner) : 1.0f
+    );
+
+    if (!isSolid) {
+        return;
+    }
+
+    if (uniforms.flags.z != 0u && !wasSolid) {
+        float previousDensity = 0.0f;
+        float3 previousMomentum = float3(0);
+        for (uint q = 0u; q < Q; ++q) {
+            float previous = boundaryLinks[
+                q * uniforms.grid.w + gid
+            ];
+            previousDensity += previous;
+            previousMomentum += previous * float3(C[q]);
+        }
+        coveredFluidMomentum[gid] = float4(
+            previousMomentum,
+            previousDensity
+        );
+    }
+
+    bool selectedLeader = owner == 1;
+    for (uint q = 1u; q < Q; ++q) {
+        int3 neighborCell = int3(cell) + C[q];
+        if (any(neighborCell < int3(0))
+            || any(neighborCell >= int3(size))) {
+            continue;
+        }
+        float3 neighborWorld = world
+            + float3(C[q]) * uniforms.originAndCellSize.w;
+        bool neighborLeader = (active & 1u) != 0u
+            && prescribedFormationWingContains(
+                neighborWorld,
+                leaderWing,
+                leaderPrepared,
+                uniforms
+            );
+        bool neighborFollower = (active & 2u) != 0u
+            && prescribedFormationWingContains(
+                neighborWorld,
+                followerWing,
+                followerPrepared,
+                uniforms
+            );
+        if (neighborLeader || neighborFollower) {
+            continue;
+        }
+        boundaryLinks[q * uniforms.grid.w + gid] = selectedLeader
+            ? prescribedWingLinkFraction(
+                neighborWorld,
+                world,
+                leaderWing,
+                leaderPrepared,
+                uniforms
+            )
+            : prescribedWingLinkFraction(
+                neighborWorld,
+                world,
+                followerWing,
+                followerPrepared,
+                uniforms
+            );
+    }
+}
+
 /// Interpolates the complete compact measured surface once per step. Position
 /// and velocity come from the same periodic linear segment, so moving-wall
 /// momentum cannot drift from the geometry phase.
@@ -2245,6 +2428,65 @@ inline float spongeFactor(
     return strength * normalizedDistance * normalizedDistance;
 }
 
+/// Stores one compact center-plane observation after a requested fluid step.
+/// The flow field itself is produced by stepFluidTRT; this pass retains only
+/// vertical velocity, three-dimensional central-difference vorticity, and the
+/// owner mask. Multiple final-cycle phases therefore remain GPU-resident
+/// without copying full three-dimensional fields back to the CPU.
+kernel void captureFormationFlowSlice(
+    device const float4* velocity [[buffer(0)]],
+    device const uchar* solid [[buffer(1)]],
+    device float2* fieldHistory [[buffer(2)]],
+    device uchar* ownerHistory [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    constant uint& captureSlot [[buffer(5)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint3 size = uniforms.grid.xyz;
+    uint sliceCells = size.x * size.z;
+    if (gid >= sliceCells) {
+        return;
+    }
+    uint x = gid % size.x;
+    uint z = gid / size.x;
+    uint y = size.y / 2u;
+    uint3 centerCell = uint3(x, y, z);
+    uint center = flatten(centerCell, size);
+    uint output = captureSlot * sliceCells + gid;
+    uchar owner = solid[center];
+    ownerHistory[output] = owner;
+    float vertical = velocity[center].z;
+    float vorticity = 0.0f;
+    if (owner == 0u
+        && x > 0u && x + 1u < size.x
+        && y > 0u && y + 1u < size.y
+        && z > 0u && z + 1u < size.z) {
+        uint lowerX = flatten(uint3(x - 1u, y, z), size);
+        uint upperX = flatten(uint3(x + 1u, y, z), size);
+        uint lowerY = flatten(uint3(x, y - 1u, z), size);
+        uint upperY = flatten(uint3(x, y + 1u, z), size);
+        uint lowerZ = flatten(uint3(x, y, z - 1u), size);
+        uint upperZ = flatten(uint3(x, y, z + 1u), size);
+        if (solid[lowerX] == 0u && solid[upperX] == 0u
+            && solid[lowerY] == 0u && solid[upperY] == 0u
+            && solid[lowerZ] == 0u && solid[upperZ] == 0u) {
+            float3 derivativeX = 0.5f
+                * (velocity[upperX].xyz - velocity[lowerX].xyz);
+            float3 derivativeY = 0.5f
+                * (velocity[upperY].xyz - velocity[lowerY].xyz);
+            float3 derivativeZ = 0.5f
+                * (velocity[upperZ].xyz - velocity[lowerZ].xyz);
+            float3 curl = float3(
+                derivativeY.z - derivativeZ.y,
+                derivativeZ.x - derivativeX.z,
+                derivativeX.y - derivativeY.x
+            );
+            vorticity = length(curl);
+        }
+    }
+    fieldHistory[output] = float2(vertical, vorticity);
+}
+
 kernel void stepFluidTRT(
     device const float* populationsIn [[buffer(0)]],
     device float* populationsOut [[buffer(1)]],
@@ -2302,11 +2544,6 @@ kernel void stepFluidTRT(
                     wall
                 );
             }
-            if (captureFields) {
-                density[gid] = 1.0f;
-                velocity[gid] = float4(wall, 0);
-            }
-
             // A newly covered node transfers the difference between its
             // previous fluid momentum and the moving-solid equilibrium.
             if (accumulateLoads && !wasSolid && includeTopologyImpulse) {
@@ -2335,6 +2572,14 @@ kernel void stepFluidTRT(
                     world - body.position.xyz,
                     cellForcePhysical
                 );
+            }
+            // Geometry temporarily stores newly covered fluid momentum in
+            // `velocity`. Consume it above before publishing the requested
+            // solid-node macroscopic wall state; otherwise field capture and
+            // conservative topology loads cannot be enabled on the same step.
+            if (captureFields) {
+                density[gid] = 1.0f;
+                velocity[gid] = float4(wall, 0);
             }
         }
         else {
@@ -4258,6 +4503,220 @@ kernel void reduceExternalFluidSources(
         total.counts += input[index].counts;
     }
     output[gid] = total;
+}
+
+/// Reconstructs the interpolated conservative moving-domain load for one
+/// formation owner without mutating fluid state. This is intentionally a
+/// compact load-only pass: it preserves the validated production collision
+/// kernel and avoids two redundant D3Q19 collision writes per time step.
+kernel void capturePrescribedFormationLoad(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidPrevious [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device GPUForceTorque* partialLoads [[buffer(4)]],
+    device const GPUPreparedFlappingWing& leaderPrepared [[buffer(5)]],
+    device const GPUPreparedFlappingWing& followerPrepared [[buffer(6)]],
+    constant GPUUniforms& uniforms [[buffer(7)]],
+    constant uint& selectedOwner [[buffer(8)]],
+    device const float4* coveredFluidMomentum [[buffer(9)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupForces[256];
+    threadgroup float4 groupTorques[256];
+    float3 cellForcePhysical = float3(0);
+    float3 cellTorquePhysical = float3(0);
+
+    if (gid < uniforms.grid.w) {
+        uint3 size = uniforms.grid.xyz;
+        uint3 cell = unflatten(gid, size);
+        float3 world = cellPosition(cell, uniforms);
+        uchar previousOwner = solidPrevious[gid];
+        uchar currentOwner = solidCurrent[gid];
+        bool wasSolid = previousOwner != 0;
+        bool isSolid = currentOwner != 0;
+        float3 reference = selectedOwner == 2u
+            ? followerPrepared.root.xyz
+            : leaderPrepared.root.xyz;
+
+        if (isSolid) {
+            if (!wasSolid && uint(currentOwner) == selectedOwner) {
+                // Geometry preserves this value before repurposing the solid
+                // node population slots as interpolated link fractions.
+                float3 previousMomentum = coveredFluidMomentum[gid].xyz;
+                cellForcePhysical = previousMomentum
+                    * uniforms.timeStepAndScales.w;
+                cellTorquePhysical = cross(
+                    world - reference,
+                    cellForcePhysical
+                );
+            }
+        }
+        else if (wasSolid) {
+            if (uint(previousOwner) == selectedOwner) {
+                float3 momentum = float3(0);
+                float3 refillVelocity = wallVelocity[gid].xyz;
+                for (uint q = 0u; q < Q; ++q) {
+                    float value = equilibrium(q, 1.0f, refillVelocity);
+                    momentum += value * float3(C[q]);
+                }
+                float3 topologyForceOnBody = -momentum;
+                for (uint q = 1u; q < Q; ++q) {
+                    int3 neighborCell = int3(cell) + C[q];
+                    if (!inside(neighborCell, size)) {
+                        continue;
+                    }
+                    uint neighbor = flatten(uint3(neighborCell), size);
+                    bool persistentFluidNeighbor =
+                        solidPrevious[neighbor] == 0
+                        && solidCurrent[neighbor] == 0;
+                    if (!persistentFluidNeighbor) {
+                        continue;
+                    }
+                    float oldSolidOutgoing = populationsIn[
+                        q * uniforms.grid.w + gid
+                    ];
+                    float suppressedNeighborIncoming = populationsIn[
+                        OPP[q] * uniforms.grid.w + neighbor
+                    ];
+                    topologyForceOnBody -= (
+                        oldSolidOutgoing + suppressedNeighborIncoming
+                    ) * float3(C[q]);
+                }
+                cellForcePhysical = topologyForceOnBody
+                    * uniforms.timeStepAndScales.w;
+                cellTorquePhysical = cross(
+                    world - reference,
+                    cellForcePhysical
+                );
+            }
+        }
+        else {
+            bool interiorDomain = cell.x > 0u
+                && cell.y > 0u
+                && cell.z > 0u
+                && cell.x + 1u < size.x
+                && cell.y + 1u < size.y
+                && cell.z + 1u < size.z;
+            float3 forceOnBodyLattice = float3(0);
+            for (uint q = 1u; q < Q; ++q) {
+                int3 sourceCell = int3(cell) - C[q];
+                if (!interiorDomain && !inside(sourceCell, size)) {
+                    if (uniforms.flags.w == 0u) {
+                        continue;
+                    }
+                    sourceCell.x = sourceCell.x < 0
+                        ? int(size.x) - 1
+                        : (sourceCell.x >= int(size.x)
+                            ? 0
+                            : sourceCell.x);
+                    sourceCell.y = sourceCell.y < 0
+                        ? int(size.y) - 1
+                        : (sourceCell.y >= int(size.y)
+                            ? 0
+                            : sourceCell.y);
+                    sourceCell.z = sourceCell.z < 0
+                        ? int(size.z) - 1
+                        : (sourceCell.z >= int(size.z)
+                            ? 0
+                            : sourceCell.z);
+                }
+                uint source = flatten(uint3(sourceCell), size);
+                if (uint(solidCurrent[source]) != selectedOwner) {
+                    continue;
+                }
+
+                float reflected = populationsIn[
+                    OPP[q] * uniforms.grid.w + gid
+                ];
+                float3 direction = float3(C[q]);
+                float linkFraction = clamp(
+                    populationsIn[q * uniforms.grid.w + source],
+                    1.0e-4f,
+                    1.0f
+                );
+                float3 wall = mix(
+                    wallVelocity[gid].xyz,
+                    wallVelocity[source].xyz,
+                    linkFraction
+                );
+                uint farther = 0u;
+                bool interpolatedBoundary = true;
+                if (linkFraction <= 0.5f) {
+                    int3 fartherCell = int3(cell) + C[q];
+                    if (inside(fartherCell, size)) {
+                        farther = flatten(uint3(fartherCell), size);
+                    }
+                    if (!inside(fartherCell, size)
+                        || solidCurrent[farther] != 0) {
+                        interpolatedBoundary = false;
+                        linkFraction = 0.5f;
+                        wall = wallVelocity[source].xyz;
+                    }
+                }
+                float wallCorrection = 2.0f
+                    * W[q]
+                    * uniforms.farFieldLattice.w
+                    * dot(direction, wall)
+                    / CS2;
+                float incoming = reflected + wallCorrection;
+                if (interpolatedBoundary) {
+                    if (linkFraction <= 0.5f) {
+                        float fartherOutgoing = populationsIn[
+                            OPP[q] * uniforms.grid.w + farther
+                        ];
+                        incoming = 2.0f * linkFraction * reflected
+                            + (1.0f - 2.0f * linkFraction)
+                                * fartherOutgoing
+                            + wallCorrection;
+                    }
+                    else {
+                        float previousIncoming = populationsIn[
+                            q * uniforms.grid.w + gid
+                        ];
+                        incoming = (reflected + wallCorrection)
+                                / (2.0f * linkFraction)
+                            + (2.0f * linkFraction - 1.0f)
+                                * previousIncoming
+                                / (2.0f * linkFraction);
+                    }
+                }
+                float3 linkForceLattice = -(
+                    incoming + reflected
+                ) * direction;
+                forceOnBodyLattice += linkForceLattice;
+                float3 linkForcePhysical = linkForceLattice
+                    * uniforms.timeStepAndScales.w;
+                float3 boundaryPoint = world
+                    - linkFraction
+                    * direction
+                    * uniforms.originAndCellSize.w;
+                cellTorquePhysical += cross(
+                    boundaryPoint - reference,
+                    linkForcePhysical
+                );
+            }
+            cellForcePhysical = forceOnBodyLattice
+                * uniforms.timeStepAndScales.w;
+        }
+    }
+
+    groupForces[threadIndex] = float4(cellForcePhysical, 0);
+    groupTorques[threadIndex] = float4(cellTorquePhysical, 0);
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        float4 force = float4(0);
+        float4 torque = float4(0);
+        for (uint index = 0u; index < threadsPerThreadgroup; ++index) {
+            force += groupForces[index];
+            torque += groupTorques[index];
+        }
+        partialLoads[threadgroupPosition].force = force;
+        partialLoads[threadgroupPosition].torque = torque;
+    }
 }
 
 /// Reconstructs the production conservative moving-domain load for one bird

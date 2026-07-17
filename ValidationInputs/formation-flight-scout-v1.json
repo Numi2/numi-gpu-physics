@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "status": "preregisteredBeforeInteractionSweep",
+  "canonical": "Li-Nabawy Re100 prescribed hovering wing",
+  "primaryMetric": "followerPositivePowerSavingFraction",
+  "coarseGridChordCells": 8,
+  "coarseCycles": 3,
+  "quickScreen": {
+    "xOffsetsChords": [0.0],
+    "yOffsetsChords": [0.0],
+    "zOffsetsChords": [-3.0, -4.0],
+    "phaseOffsetsCycles": [0.0, 0.25, 0.5, 0.75]
+  },
+  "fullScreen": {
+    "xOffsetsChords": [0.0],
+    "yOffsetsChords": [0.0, 0.5, 1.0],
+    "zOffsetsChords": [-2.0, -3.0, -4.0, -5.0],
+    "phaseOffsetsCycles": [0.0, 0.25, 0.5, 0.75]
+  },
+  "promotion": {
+    "selection": ["largestSaving", "nearestNeutral", "largestPenalty"],
+    "chordCells": [12, 16],
+    "cycles": 5
+  },
+  "frozenGates": {
+    "maximumRelativeOwnerForceClosure": 0.0002,
+    "maximumRelativeOwnerTorqueClosure": 0.0002,
+    "maximumRelativePeriodicPowerDifference": 0.20,
+    "maximumOverlapVoxelSamples": 0
+  },
+  "claimBoundary": "Coarse cells select hypotheses only. A formation interaction claim requires promoted five-cycle 12/16-cell results."
+}

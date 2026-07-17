@@ -40,10 +40,11 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 |---|---|---|
 | D3Q19 reference and production kernels | **Accepted engineering gate** | CPU/GPU early-step agreement, shear-wave convergence, mass tracking, batch invariance |
 | Moving planar walls | **Accepted** | Couette and oscillating Stokes velocity/force/phase refinement |
-| Topology-changing body | **Accepted** | 64 covered + 64 uncovered events; conservative force-budget RMS residual `3.64e-5` |
+| Topology-changing body | **Accepted** | 64 covered + 64 uncovered events; conservative force-budget RMS residual `3.64e-5`; field-capture invariance regression is sub-second locally |
 | Fixed sphere, Re=100 | **Accepted canonical** | drag, symmetry, torque leakage, refinement, batching |
 | Fixed finite wing, Re=100 | **Accepted canonical** | finest `CL=0.76135`, `CD=0.70711`; two-finest changes below `3%` |
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
+| Formation Flight Observatory | **Coupling/accounting accepted; quantitative effect open** | The c20 maximum passes every solver gate but changes `10.68%` from c16 against the preregistered `5%` continuation limit; stage 2 stops and grid convergence remains open |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; planar weighting plus D12/D16 and D28/D32 complete-dove direction censuses clear static direction redistribution at the locked 26.5 ms phase with exact Metal/CPU parity; force-history change remains `5.632%` against `5%`, so the full localized phase window, force-bearing wall/interpolation interaction, convergence, and experimental agreement remain open |
@@ -51,6 +52,106 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
 The most important accepted flapping result is committed as [`flapping-wing-fixed-thickness-acceptance.json`](ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json). The current high-Re open question is committed as [`measured-wing-stationary-wall-recursive-regularization-duration.json`](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json).
+
+## Formation Flight Observatory
+
+![Formation Flight Observatory native Metal presentation with independently phased leader and follower prescribed wings, phase-resolved c20 CFD, matched isolated-control power, owner-load closure, and the preregistered non-convergence decision](Docs/Media/formation-flight-observatory.gif)
+
+BirdFlowMetal can now place a leader and follower in the same D3Q19 fluid,
+assign each an independent wingbeat phase, and resolve force, root torque, and
+actuator power per flyer. The first gate uses two copies of the accepted
+prescribed hovering-wing canonical, so it studies multi-body wake interaction
+without waiting for another bird dataset. The native Metal presentation now
+scans the 21 archived c20 field states only inside their two measured phase
+windows and separates them from the lighter kinematic wake-history guides. Its
+upper-right decision panel is decoded from the preregistered c20 summary: the
+solver gates pass, but the `10.68%` c16-to-c20 change exceeds the frozen `5%`
+limit. The 48-frame forward loop is pixel-seamless; it does not reverse motion
+or interpolate CFD between measured states.
+
+```bash
+swift run birdflow validate formation-flight \
+  --chord-cells 8 --cycles 3 \
+  --offset-z -4 --phase-offset 0.25 \
+  --archive ValidationArtifacts/formation-flight-c8-z4-phase025
+```
+
+Every coupled case runs matched leader-only and follower-only controls. Mean
+positive actuator power is the primary energy measure, and the run fails if
+the wings overlap or if the two owner loads do not close to the unchanged
+production solver total. The three-cycle c8 `z/c=-4`, `Δφ=0.25` case closes
+force at `4.65e-7` and torque at `6.10e-6` in cycle-global relative L-infinity
+norm, with zero overlapping voxels. The follower uses `3.69%` less mean positive
+power than its matched isolated control, while the two-flyer system uses `2.14%`
+less. The last-two-cycle power difference is `10.26%`, below the frozen `20%`
+coarse-screen limit. This is an interaction hypothesis; the completed 12/16-cell
+promotion below tests refinement and does not clear it. The preregistered
+eight-case quick screen is
+now complete: all cells pass, savings span `1.21%...7.91%`, and the strongest
+cell is `z/c=-3`, `Δφ=0.25` with a `4.56%` two-flyer system reduction. Because
+no c8 cell produced a penalty, the frozen largest-penalty selector honestly
+collapses to the smallest-saving `1.21%` cell rather than manufacturing a
+negative control.
+The selected five-cycle c16 extrema now complete the preregistered
+discriminator. Maximum/minimum savings are `11.916%`/`3.738%`, with final-cycle
+power differences of `2.34%`/`2.83%`, zero overlap, and owner closure below
+`1.3e-6` force and `4.3e-6` torque. The c16 best-minus-minimum contrast is
+`8.178` percentage points. That is `1.519` points (`18.57%`) above c12, while
+the maximum itself changes `18.77%` from c12 to c16. The solver and accounting
+are cleared, but neither the absolute interaction magnitude nor its phase
+contrast is grid-converged; no quantitative formation-benefit claim is made.
+
+![Phase-aligned c12/c16 formation power, lift, and drag discrimination with the fine-pair residual highlighted](Docs/Media/formation-flight-phase-refinement-atlas.png)
+
+The archived phase histories localize why the fine pair remains open without
+running more CFD. The normalized power-discrimination residual peaks at
+follower phase `0.745`; just 21 of 100 bins carry half its absolute magnitude,
+and the fixed quarter/three-quarter-cycle midstroke neighborhoods carry
+`42.3%`. Its absolute magnitude correlates with the lift and drag residuals at
+`0.757`/`0.760`, pointing to a phase-localized aerodynamic refinement problem
+rather than a scalar normalization artifact.
+
+A separate audit confirms that the acceptance checks do not mutate or clamp
+solver output. The promoted reports have `36.5x` conservation headroom and
+`7.07x` final-cycle repeatability headroom. Fixed upper bounds at 24
+cells/chord, 20 cycles, and 12 chord offsets have been removed: device memory,
+checked arithmetic, and exact representability now determine the feasible
+study size. Physical validity and conservation checks remain intact.
+
+The preregistered c20 maximum-selector measurement is now complete. Saving
+increases from `11.916%` at c16 to `13.341%` at c20, a `10.68%` fine-pair
+change against the frozen `5%` continuation limit. Every solver gate passes:
+zero overlap, `7.17e-7` force closure, `4.42e-6` torque closure, and `2.366%`
+cycle repeatability. The failure is therefore unresolved grid dependence, not
+accounting or stationarity. The sequential rule stops the c20 minimum run and
+saves another roughly two hours while retaining the negative result.
+
+![Preregistered c20 maximum-selector refinement, phase power residual, and GPU-resident midstroke field envelope](Docs/Media/formation-flight-c20-stage1-atlas.png)
+
+![Four actual c20 Formation Observatory wake fields at paired midstroke phases, with signed vertical velocity, vorticity contours, owner silhouettes, common physical scales, and the stopped preregistered decision](Docs/Media/formation-flight-c20-cfd-phase-plate.png)
+
+The phase plate enlarges four of the archived GPU fields with a common signed
+vertical-velocity scale and common vorticity contour levels. Cyan and orange
+show the leader and follower ownership masks. The phase rail shows all 20
+requested midstroke captures; no temporal interpolation is used. This makes
+the wake topology visually inspectable without weakening the negative
+convergence result.
+
+Twenty compact GPU-resident field captures cover the diagnosed
+follower-midstroke bands without changing populations or loads. The
+capture-on/off smoke is report-identical and agrees with the previous CPU
+vorticity extraction to `1e-9` maximum absolute difference. All 21 c20 slices
+are finite, indexed by both leader and follower-local phase, and SHA-locked by
+the discriminator summary. Quantitative formation benefit remains
+unauthorized.
+
+The c16/c20 normalized power-waveform residual peaks at follower phase `0.055`
+with magnitude `0.112`; only `23.15%` lies in the earlier midstroke bands and
+its absolute magnitude tracks drag residual (`r=0.683`) rather than lift.
+This redirects the next diagnostic toward an early-cycle coupled-only field
+comparison instead of another full refinement ladder.
+
+See the [scientific contract and scouting matrix](Docs/FORMATION_FLIGHT_OBSERVATORY.md).
 
 The next experimental validation source is now qualified without weakening the
 measured-data contract. Deetjen et al.'s Ringneck-dove deposit provides

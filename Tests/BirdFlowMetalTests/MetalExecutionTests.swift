@@ -1182,6 +1182,34 @@ func productionMetalTranslatingBodyTopologyClosesMomentumBudget() throws {
 }
 
 @Test
+func topologyAccountingIsInvariantToMacroscopicFieldCapture() throws {
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let baseline = try MetalTranslatingBodyTopologyValidator.run()
+    let observed = try MetalTranslatingBodyTopologyValidator.run(
+        captureMacroscopicFields: true
+    )
+
+    #expect(baseline.passed)
+    #expect(observed.passed)
+    #expect(
+        observed.maximumConservativeForceResidual
+            == baseline.maximumConservativeForceResidual
+    )
+    #expect(
+        observed.conservativeRelativeRMSResidual
+            == baseline.conservativeRelativeRMSResidual
+    )
+    #expect(
+        observed.newlyCoveredCellEvents
+            == baseline.newlyCoveredCellEvents
+    )
+    #expect(
+        observed.newlyUncoveredCellEvents
+            == baseline.newlyUncoveredCellEvents
+    )
+}
+
+@Test
 func productionMetalHighReTranslatingBodyLocalizesInstability() throws {
     guard MTLCreateSystemDefaultDevice() != nil else { return }
     let report = try MetalTranslatingBodyTopologyValidator

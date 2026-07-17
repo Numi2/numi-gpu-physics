@@ -125,6 +125,8 @@ private struct Arguments {
       birdflow validate flapping-wing --compare-link-forces [--json]
       birdflow validate flapping-wing --decompose-link-numerator [--json]
       birdflow validate flapping-wing --momentum-budget [--json]
+      birdflow validate formation-flight [--chord-cells N] [--cycles N] \
+        [--offset-x C --offset-y C --offset-z C --phase-offset C] [--json]
       birdflow validate direction-composition --preregistration FILE \
         [--archive FILE] [--json]
       birdflow validate fine-direction-census --input MANIFEST \
@@ -2846,6 +2848,123 @@ private struct FlappingWingArguments {
     fifth-cycle mean and phase-resolved loads, half-stroke symmetry,
     cycle periodicity, refinement, batch invariance, and vortex-phase archive
     coverage against the production moving-boundary and fluid kernels.
+    """
+}
+
+private struct FormationFlightArguments {
+    var chordCells = 8
+    var cycles = 3
+    var offset = SIMD3<Double>(0, 0, -4)
+    var phaseOffset = 0.25
+    var fieldCapturePhases: [Double] = []
+    var json = false
+    var archivePath: String?
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--chord-cells":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 8 else {
+                    throw CLIError.invalidArgument(
+                        "--chord-cells requires an integer of at least 8; device-aware allocation checks determine the feasible maximum"
+                    )
+                }
+                chordCells = value
+            case "--cycles":
+                index += 1
+                guard index < values.count,
+                      let value = Int(values[index]),
+                      value >= 1 else {
+                    throw CLIError.invalidArgument(
+                        "--cycles requires a positive integer; exact timestep representability determines the feasible maximum"
+                    )
+                }
+                cycles = value
+            case "--offset-x", "--offset-y", "--offset-z":
+                let option = values[index]
+                index += 1
+                guard index < values.count,
+                      let value = Double(values[index]), value.isFinite else {
+                    throw CLIError.invalidArgument(
+                        "\(option) requires a finite chord-valued offset"
+                    )
+                }
+                if option == "--offset-x" { offset.x = value }
+                if option == "--offset-y" { offset.y = value }
+                if option == "--offset-z" { offset.z = value }
+            case "--phase-offset":
+                index += 1
+                guard index < values.count,
+                      let value = Double(values[index]), value.isFinite else {
+                    throw CLIError.invalidArgument(
+                        "--phase-offset requires a finite cycle fraction"
+                    )
+                }
+                phaseOffset = value
+            case "--field-phases":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--field-phases requires comma-separated cycle phases"
+                    )
+                }
+                let tokens = values[index].split(
+                    separator: ",",
+                    omittingEmptySubsequences: false
+                )
+                let parsed = tokens.compactMap { Double($0) }
+                guard !tokens.isEmpty,
+                      parsed.count == tokens.count,
+                      parsed.allSatisfy(\.isFinite) else {
+                    throw CLIError.invalidArgument(
+                        "--field-phases requires finite comma-separated cycle phases"
+                    )
+                }
+                fieldCapturePhases.append(contentsOf: parsed)
+            case "--json":
+                json = true
+            case "--archive":
+                index += 1
+                guard index < values.count, !values[index].isEmpty else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output directory"
+                    )
+                }
+                archivePath = values[index]
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown formation-flight option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow validate formation-flight [options]
+
+      --chord-cells N    Cells per chord (default/minimum: 8; hardware-limited)
+      --cycles N         Cycles per coupled/isolated case (default: 3)
+      --offset-x C       Follower x offset in chords (default: 0)
+      --offset-y C       Follower y offset in chords (default: 0)
+      --offset-z C       Follower z offset in chords (default: -4)
+      --phase-offset C   Follower wingbeat phase in cycles (default: 0.25)
+      --field-phases CSV Final-cycle CFD slice phases; requires --archive
+      --archive DIR      Save the complete machine-readable report
+      --json             Emit machine-readable JSON
+      --help             Show this help
+
+    The command places two copies of the accepted prescribed hovering-wing
+    canonical in one fluid, resolves leader/follower loads and positive
+    actuator power, runs matched isolated controls, and fails on geometry
+    overlap, owner-load nonclosure, nonfinite output, or cycle nonrepeatability.
     """
 }
 
@@ -7906,6 +8025,58 @@ private func runDirectionCompositionValidation(_ values: [String]) throws {
     }
 }
 
+private func runFormationFlightValidation(_ values: [String]) throws {
+    let arguments = try FormationFlightArguments(values)
+    let archive = arguments.archivePath.map {
+        URL(fileURLWithPath: $0, isDirectory: true)
+    }
+    let report = try MetalFormationFlightValidator.run(
+        configuration: FormationFlightConfiguration(
+            chordCells: arguments.chordCells,
+            cycles: arguments.cycles,
+            followerOffsetChords: arguments.offset,
+            followerPhaseOffsetCycles: arguments.phaseOffset
+        ),
+        archiveDirectory: archive,
+        fieldCapturePhases: arguments.fieldCapturePhases
+    )
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("device: \(report.deviceName)")
+        print(
+            "grid: \(report.gridX)x\(report.gridY)x\(report.gridZ) "
+                + "cycle_steps: \(report.cycleSteps)"
+        )
+        print(
+            "follower_positive_power_saving_fraction: "
+                + String(report.followerPositivePowerSavingFraction)
+        )
+        print(
+            "system_positive_power_change_fraction: "
+                + String(report.systemPositivePowerChangeFraction)
+        )
+        print(
+            "owner_force_closure: "
+                + String(
+                    report.gates.maximumRelativeForceClosureResidual
+                )
+                + " owner_torque_closure: "
+                + String(
+                    report.gates.maximumRelativeTorqueClosureResidual
+                )
+        )
+        print("overlap_voxel_samples: \(report.overlapVoxelSamples)")
+        print("classification: \(report.scientificVerdict)")
+        print("passed: \(report.gates.passed)")
+    }
+    guard report.gates.passed else {
+        throw CLIError.acceptanceFailed(
+            "formation-flight observatory exceeded a frozen accounting gate"
+        )
+    }
+}
+
 private func runFineDirectionCensus(_ values: [String]) throws {
     let arguments = try FineDirectionCensusArguments(values)
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
@@ -8007,7 +8178,7 @@ private func run(_ values: [String]) throws {
     if values.count > 1, values[1] == "validate" {
         guard values.count > 2 else {
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition|fine-direction-census|fine-direction-phase-window> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|formation-flight|direction-composition|fine-direction-census|fine-direction-phase-window> [options]"
             )
         }
         switch values[2] {
@@ -8023,6 +8194,8 @@ private func run(_ values: [String]) throws {
             try runWingValidation(values)
         case "flapping-wing":
             try runFlappingWingValidation(values)
+        case "formation-flight":
+            try runFormationFlightValidation(values)
         case "direction-composition":
             try runDirectionCompositionValidation(values)
         case "fine-direction-census":
@@ -8031,7 +8204,7 @@ private func run(_ values: [String]) throws {
             try runFineDirectionPhaseWindowCensus(values)
         default:
             throw CLIError.invalidArgument(
-                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|direction-composition|fine-direction-census|fine-direction-phase-window> [options]"
+                "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|formation-flight|direction-composition|fine-direction-census|fine-direction-phase-window> [options]"
             )
         }
     } else if values.count > 1, values[1] == "replay" {

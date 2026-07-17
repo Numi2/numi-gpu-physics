@@ -1,0 +1,130 @@
+{
+  "allAvailableCasesPassed": true,
+  "bestCellGridChanges": [
+    {
+      "absoluteChangePercentagePoints": 1.7675369160970926,
+      "coarseChordCells": 8,
+      "fineChordCells": 12,
+      "relativeChange": 0.1825984362163162
+    },
+    {
+      "absoluteChangePercentagePoints": 2.2363855564280235,
+      "coarseChordCells": 12,
+      "fineChordCells": 16,
+      "relativeChange": 0.18767452056779602
+    }
+  ],
+  "c16ExtremaComplete": true,
+  "cases": [
+    {
+      "chordCells": 8,
+      "followerPositivePowerSavingFraction": 0.07912375753051787,
+      "forceClosure": 4.715388115528185e-07,
+      "periodicPowerDifference": 0.06124370820602411,
+      "phaseOffsetCycles": 0.25,
+      "report": "ValidationArtifacts/formation-flight-scout-v1/y0-z3-phase0p25/formation-flight-report.json",
+      "reportSHA256": "f5513cbfd4af84a65a7536b63092d5218b1d509a2d791c2972c4b9aa815505ce",
+      "runtimeSeconds": 132.8293319940567,
+      "selection": "maximum",
+      "systemPositivePowerChangeFraction": -0.04560758032715702,
+      "torqueClosure": 7.129749974410515e-06
+    },
+    {
+      "chordCells": 8,
+      "followerPositivePowerSavingFraction": 0.012093963081039334,
+      "forceClosure": 4.6389806129809585e-07,
+      "periodicPowerDifference": 0.10744239244808691,
+      "phaseOffsetCycles": 0.75,
+      "report": "ValidationArtifacts/formation-flight-scout-v1/y0-z3-phase0p75/formation-flight-report.json",
+      "reportSHA256": "f025c8a86501cb9960897305d0015943d2287059d7f06379147946390e0e4a58",
+      "runtimeSeconds": 58.8849880695343,
+      "selection": "minimum",
+      "systemPositivePowerChangeFraction": -0.0116423076604201,
+      "torqueClosure": 6.3260099523176905e-06
+    },
+    {
+      "chordCells": 12,
+      "followerPositivePowerSavingFraction": 0.0967991266914888,
+      "forceClosure": 9.499015050096205e-07,
+      "periodicPowerDifference": 0.02398514994265753,
+      "phaseOffsetCycles": 0.25,
+      "report": "ValidationArtifacts/formation-flight-promotion/c12-best-z3-phase025/formation-flight-report.json",
+      "reportSHA256": "092ba238cd747fc39865ee026183c6b3538f0a17a34a37d883942887ec542615",
+      "runtimeSeconds": 586.606528043747,
+      "selection": "maximum",
+      "systemPositivePowerChangeFraction": -0.054298613835944254,
+      "torqueClosure": 4.831443220609799e-06
+    },
+    {
+      "chordCells": 12,
+      "followerPositivePowerSavingFraction": 0.030205520150752774,
+      "forceClosure": 7.440201557074033e-07,
+      "periodicPowerDifference": 0.02325818993341047,
+      "phaseOffsetCycles": 0.75,
+      "report": "ValidationArtifacts/formation-flight-promotion/c12-minimum-z3-phase075/formation-flight-report.json",
+      "reportSHA256": "dc4ed37f372e6874c020f5b48935837bdab105366c2bb301af5e7f094a25e2c2",
+      "runtimeSeconds": 930.6002620458603,
+      "selection": "minimum",
+      "systemPositivePowerChangeFraction": -0.021860241596567756,
+      "torqueClosure": 5.452995537780225e-06
+    },
+    {
+      "chordCells": 16,
+      "followerPositivePowerSavingFraction": 0.11916298225576903,
+      "forceClosure": 1.1357720950400108e-06,
+      "periodicPowerDifference": 0.023424908531560838,
+      "phaseOffsetCycles": 0.25,
+      "report": "ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "reportSHA256": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415",
+      "runtimeSeconds": 2370.2583619356155,
+      "selection": "maximum",
+      "systemPositivePowerChangeFraction": -0.06536113981002145,
+      "torqueClosure": 4.227761564834509e-06
+    },
+    {
+      "chordCells": 16,
+      "followerPositivePowerSavingFraction": 0.03738339673381107,
+      "forceClosure": 1.2591800668815267e-06,
+      "periodicPowerDifference": 0.028274262975642128,
+      "phaseOffsetCycles": 0.75,
+      "report": "ValidationArtifacts/formation-flight-promotion/c16-minimum-z3-phase075/formation-flight-report.json",
+      "reportSHA256": "72d881089afe4cd7bb1628ed9c91ac1ae184d307e639a05e2690f934306ce625",
+      "runtimeSeconds": 2450.43175303936,
+      "selection": "minimum",
+      "systemPositivePowerChangeFraction": -0.025986670395751248,
+      "torqueClosure": 4.2735155147966e-06
+    }
+  ],
+  "classification": "extrema runs complete; absolute saving and phase contrast remain grid-dependent, so no quantitative formation claim is authorized",
+  "phaseContrastGridChanges": [
+    {
+      "absoluteChangePercentagePoints": -0.04361879087425091,
+      "coarseChordCells": 8,
+      "fineChordCells": 12,
+      "relativeChange": 0.006549996784986983
+    },
+    {
+      "absoluteChangePercentagePoints": 1.5185978981221941,
+      "coarseChordCells": 12,
+      "fineChordCells": 16,
+      "relativeChange": 0.18569400767070993
+    }
+  ],
+  "phaseContrasts": [
+    {
+      "bestMinusMinimumPercentagePoints": 6.702979444947854,
+      "chordCells": 8
+    },
+    {
+      "bestMinusMinimumPercentagePoints": 6.659360654073603,
+      "chordCells": 12
+    },
+    {
+      "bestMinusMinimumPercentagePoints": 8.177958552195797,
+      "chordCells": 16
+    }
+  ],
+  "preregistrationSHA256": "915ec67d62c00dfeb196c234c3e8b6d629ec61b6a5ba78e07763e9e4fba29433",
+  "quantitativeFormationClaimAuthorized": false,
+  "schemaVersion": 1
+}

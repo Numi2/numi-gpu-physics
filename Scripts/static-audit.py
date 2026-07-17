@@ -18,6 +18,7 @@ SWIFT_FILES = (
     ROOT / "Sources/BirdFlowMetal/MetalSphereValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalWingValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalFlappingWingValidation.swift",
+    ROOT / "Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalIndexedBirdSurfaceValidation.swift",
     ROOT / "Sources/BirdFlowMetal/MetalDirectionCompositionValidation.swift",
     ROOT / "Sources/BirdFlowMetal/BirdPartLoadDiagnostics.swift",
@@ -33,6 +34,7 @@ REQUIRED_KERNELS = {
     "buildBirdGeometry",
     "prepareBirdGeometry",
     "buildPrescribedFlappingWing",
+    "buildPrescribedFormationWings",
     "preparePrescribedFlappingWing",
     "prepareMeasuredWingSurface",
     "clearMeasuredWingSurface",
@@ -82,6 +84,8 @@ REQUIRED_KERNELS = {
     "monitorBirdRuntimeSafety",
     "updateWingInertialReaction",
     "captureBirdPartLoad",
+    "capturePrescribedFormationLoad",
+    "captureFormationFlowSlice",
     "measureObliquePlaneDirectionComposition",
 }
 
@@ -480,6 +484,7 @@ def main() -> int:
         "buildBirdGeometry": 6,
         "prepareBirdGeometry": 5,
         "buildPrescribedFlappingWing": 8,
+        "buildPrescribedFormationWings": 12,
         "preparePrescribedFlappingWing": 3,
         "prepareMeasuredWingSurface": 5,
         "clearMeasuredWingSurface": 4,
@@ -524,6 +529,7 @@ def main() -> int:
         "monitorBirdRuntimeSafety": 5,
         "updateWingInertialReaction": 6,
         "captureBirdPartLoad": 8,
+        "capturePrescribedFormationLoad": 10,
         "measureObliquePlaneDirectionComposition": 2,
     }
     for kernel, count in expected_buffers.items():
@@ -583,6 +589,16 @@ def main() -> int:
             "private func encodePrescribedGeometry(",
             ["target", "wallVelocity", "currentSolid", "parameters", "prepared", "uniforms", "currentPopulations", "velocity"],
             ["solid", "wallVelocity", "solidPrevious", "wing", "prepared", "uniforms", "boundaryLinks", "coveredFluidMomentum"],
+        ),
+        "buildPrescribedFormationWings": (
+            "private func encodeGeometry(\n        commandBuffer: MTLCommandBuffer,\n        uniforms: inout GPUUniforms,\n        target: MTLBuffer",
+            ["target", "wallVelocity", "currentSolid", "leaderParameters", "leaderPrepared", "followerParameters", "followerPrepared", "uniforms", "currentPopulations", "velocity", "overlapCounts", "control"],
+            ["solid", "wallVelocity", "solidPrevious", "leaderWing", "leaderPrepared", "followerWing", "followerPrepared", "uniforms", "boundaryLinks", "coveredFluidMomentum", "overlapCounts", "control"],
+        ),
+        "capturePrescribedFormationLoad": (
+            "private func encodeOwnerLoad(",
+            ["currentPopulations", "currentSolid", "nextSolid", "wallVelocity", "reductionA", "leaderPrepared", "followerPrepared", "uniforms", "owner", "velocity"],
+            ["populationsIn", "solidPrevious", "solidCurrent", "wallVelocity", "partialLoads", "leaderPrepared", "followerPrepared", "uniforms", "selectedOwner", "coveredFluidMomentum"],
         ),
         "buildMeasuredWingSurfaceLinks": (
             "private func encodeMeasuredLinks(",

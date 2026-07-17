@@ -4,7 +4,7 @@ Aerodynamic output is not accepted as quantitative until this sequence passes. E
 
 ## Current automated coverage
 
-The repository currently provides ten automated harnesses:
+The repository currently provides eleven automated harnesses:
 
 - Swift algebra, scaling, rigid-body, and layout tests;
 - live strict-math Metal moving-wing fixed-body and free-flight batch-partition regressions, plus CPU/GPU rigid-body one-step parity;
@@ -14,10 +14,18 @@ The repository currently provides ten automated harnesses:
 - a production-Metal translating-sphere topology gate that closes cover/uncover force against an independent fluid-momentum budget;
 - production-Metal fixed-sphere steady drag, curved-boundary symmetry, torque leakage, refinement, and batching checks;
 - production-Metal fixed finite-wing lift/drag, symmetry, leakage, refinement, and batching checks;
-- a production-Metal prescribed flapping-wing phase-load, periodicity, vortex-diagnostic, refinement, and batching gate; and
+- a production-Metal prescribed flapping-wing phase-load, periodicity, vortex-diagnostic, refinement, and batching gate;
+- a two-flyer formation-flight gate with shared-fluid ownership, actuator power, matched isolated controls, and global load closure; and
 - offline compilation and linking of every Metal entry point.
 
-`Scripts/validate.sh` runs the nine currently accepted build/canonical gates. The prescribed flapping command is intentionally separate because its locked literature load gates have not passed. Sections 2, 4, 5, and 6 all execute the production fluid and momentum-exchange operators; section 3 still requires a forced-channel GPU mode. The fixed-wing gate isolates axis-aligned load accuracy and does not validate the procedural bird's geometry or kinematics. The flapping gate is the current evidence boundary for rotating sub-cell moving surfaces.
+`Scripts/validate.sh` retains the compact local release gates; expensive
+flapping, formation, measured-bird, and refinement studies remain explicit
+local commands. Sections 2, 4, 5, and 6 all execute the production fluid and
+momentum-exchange operators; section 3 still requires a forced-channel GPU
+mode. The fixed-wing gate isolates axis-aligned load accuracy and does not
+validate the procedural bird's geometry or kinematics. The accepted flapping
+gate is the current evidence boundary for one rotating sub-cell moving surface;
+the formation gate extends that accounting to two independently phased owners.
 
 ## 1. Algebra and layout
 
@@ -2842,6 +2850,108 @@ gate. No actual complete measured specimen has been supplied, so complete-bird
 acceptance remains open without weakening it.
 The synthetic release conformance result is recorded in
 `ValidationArtifacts/measured-bird-replay-summary.json`.
+
+## 8.5 Formation Flight Observatory
+
+The formation canonical places two accepted prescribed wings in one fluid and
+compares each coupled flyer with a matched isolated control.
+
+```bash
+swift run -c release birdflow validate formation-flight \
+  --chord-cells 8 --cycles 3 \
+  --offset-x 0 --offset-y 0 --offset-z -4 \
+  --phase-offset 0.25 \
+  --archive ValidationArtifacts/formation-flight-c8-z4-phase025
+```
+
+Accounting acceptance:
+
+- zero simultaneous leader/follower occupancy;
+- finite per-owner force, root torque, signed power, and positive power;
+- leader plus follower force closes to the production total below `2e-4` in
+  cycle-global relative L-infinity norm;
+- owner root torques shifted to the global origin close to the production total
+  torque below the same `2e-4` limit;
+- both isolated-control ownership reconstructions pass that closure limit; and
+- the two final coupled cycles change by no more than `20%` in RMS power during
+  the coarse screen.
+
+Interaction acceptance requires a preregistered position/phase screen at eight
+cells per chord, then five-cycle 12/16-cell promotion of the selected best,
+neutral, and worst cells. Mean positive follower power is the primary metric.
+Signed and phase-resolved power must remain archived so energy return and
+load-phase shifts cannot be hidden by one scalar.
+
+Archived coupled runs also emit a compact final-phase symmetry-plane CFD field
+with signed vertical velocity, vorticity magnitude, and owner mask. Field
+capture is enabled only on the target step. A one-cycle c8 observation smoke
+retains exact formation accounting (`7.85e-8` force and `2.58e-6` torque
+relative closure), so the native visualization cannot silently alter the
+reported load or power result. A focused translating-body regression also
+requires capture-disabled and capture-enabled conservative residuals and
+cover/uncover event counts to be identical; it completes in under a second on
+the Apple M4.
+
+Status: the c8 three-cycle `z/c=-4`, `Δφ=0.25` case passes with zero overlap,
+cycle-global relative force/torque closure of `4.65e-7` and `6.10e-6`, and a
+`10.26%` last-two-cycle power difference below the frozen `20%` coarse limit.
+The follower positive-power reduction is `3.69%` and system reduction is
+`2.14%`. They are coarse hypotheses because the full map and 12/16-cell
+refinement promotion remain open. The preregistered eight-case quick map is now
+complete: all cases pass, follower positive-power
+saving spans `1.21%...7.91%`, and the maximum occurs at `z/c=-3`, `Δφ=0.25`
+with a `4.56%` system reduction. The worst owner closure anywhere in the screen
+is `4.72e-7` force and `1.12e-5` torque. No c8 penalty was observed, so the
+frozen minimum selector is the `1.21%` smallest-saving cell.
+The selected five-cycle c12/c16 extrema all pass. At c16 the maximum and
+minimum savings are `11.916%` and `3.738%`; final-two-cycle power differences
+are `2.34%`/`2.83%`, force closure is at most `1.26e-6`, torque closure at most
+`4.28e-6`, isolated closure at most `4.42e-6`, and overlap is zero. The c16
+best-minus-minimum contrast is `8.178` percentage points, a `1.519`-point
+(`18.57%`) change from c12. Maximum saving changes `18.77%` from c12 to c16.
+The c8/c12 timing agreement therefore does not survive the fine pair: extrema
+execution is complete, but absolute saving and phase contrast remain
+grid-dependent and no quantitative formation-benefit claim is authorized.
+The exploratory phase-refinement atlas aligns the archived c12/c16 extrema by
+follower-local phase without new CFD. Its normalized power-discrimination
+residual has RMS `0.0336`, peaks at phase `0.745`, and places half of its
+absolute magnitude in 21 of 100 bins. The fixed `0.20...0.30` and
+`0.70...0.80` midstroke bands carry `42.3%`; absolute power residual correlates
+with lift/drag residuals at `0.757`/`0.760`. This localizes the next refinement
+study but is explicitly not an acceptance gate or a phase-resolved saving
+curve because isolated phase histories are not present in schema 1.
+
+An audit of all 12 scout/promoted reports confirms that gates classify output
+and never mutate or clamp the solver. Promoted conservation and periodicity
+headroom are `36.5x` and `7.07x`; the c8 screen's smaller `1.65x` periodicity
+headroom affects only hypothesis selection. Arbitrary maxima of 24
+cells/chord, 20 cycles, and 12 chord offsets have been removed in favor of
+device working-set, checked-arithmetic, and exact-representability limits.
+Validity, non-overlap, finite-state, and conservation checks remain mandatory.
+The preregistered sequential c20 stage 1 is complete. Maximum-selector saving
+increases from `11.916%` at c16 to `13.341%` at c20, a `10.679%` change
+relative to c20 against the frozen `5%` continuation limit. Stage 1 therefore
+fails and the c20 minimum is not executed. All unchanged c20 gates pass: zero
+overlap, `7.17e-7` force closure, `4.42e-6` torque closure, `3.75e-6` isolated
+closure, and `2.366%` final-cycle power difference. This is a grid-convergence
+failure, not an accounting or repeatability failure; quantitative formation
+benefit remains unauthorized.
+
+Twenty compact GPU-resident center-plane captures cover the two
+phase-localized follower midstroke bands; their index records leader and
+follower-local phase explicitly. All 21 archived slices are finite and
+complete. A c8 capture-invariance smoke retained identical scientific reports
+and agrees with the retired CPU slice reconstruction to `1e-9` maximum
+vorticity difference. The decision, report SHA, index SHA, and every slice SHA
+are retained in
+`ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json`.
+The phase-aligned c16/c20 maximum-selector normalized-power residual has RMS
+`0.0313`, maximum `0.1122` at follower phase `0.055`, and only `23.15%` of
+its absolute magnitude in the prior midstroke bands. Absolute residual tracks
+drag (`r=0.683`) rather than lift (`r=-0.065`). The next high-ROI diagnostic is
+therefore a coupled-only c16/c20 field comparison around follower phase
+`0.00...0.10`, not the stopped minimum selector or a complete c24 ladder.
+See `Docs/FORMATION_FLIGHT_OBSERVATORY.md`.
 
 ## 9. Free flight
 

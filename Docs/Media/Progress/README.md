@@ -196,3 +196,21 @@ forward-only frames at 24 fps and `9,354,306` bytes with SHA-256
 `9cb8afc8a5f1e661ed1ad4d959049454570b584246c4d2811921e48075425c7c`.
 Its endpoint probe is pixel-identical and its encoded seam is `0.700x` the
 median adjacent-frame difference.
+
+## Formation Observatory branch — V1 c8 scout
+
+This [archived Formation Observatory animation](2026-07-18-v1-formation-scout-observatory.gif)
+introduced the two-owner native-Metal scene, independent wingbeat phase,
+matched isolated-control power, the complete preregistered c8 scout map, and a
+single archived CFD slice. It is preserved before the presentation advanced to
+the c20 sequential result. The binary is `7,686,569` bytes with SHA-256
+`961b509463da2c949c80024f448c287714226eb3930d207b2a6c01e17738fde0`.
+
+The [current Formation Observatory animation](../formation-flight-observatory.gif)
+replaces the static slice and coarse map with a seamless scan of the 21 indexed
+c20 field captures and the preregistered `10.68% > 5%` stop decision. It keeps
+kinematic wake guides visually distinct from actual CFD and does not interpolate
+between archived field values. The encoding is 48 forward-only frames at
+`1120 × 630`, `6,550,458` bytes, with SHA-256
+`6f5f77409ca9afa0eedb37f0dbad675d689c2a18c5e7e13d0ad85b980a715ec6`;
+its 49th endpoint probe is pixel-identical to frame zero.

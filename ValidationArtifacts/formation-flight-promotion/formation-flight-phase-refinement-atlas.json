@@ -1,0 +1,1462 @@
+{
+  "alignment": "100 archived samples sorted by follower-local phase so both phase-offset cases compare identical local kinematics",
+  "analysisType": "exploratory post-result phase localization; not an acceptance gate",
+  "classification": "fine-pair divergence is phase-localized descriptively; no threshold is applied and quantitative formation benefit remains unauthorized",
+  "inputs": [
+    {
+      "chordCells": 12,
+      "report": "ValidationArtifacts/formation-flight-promotion/c12-best-z3-phase025/formation-flight-report.json",
+      "selection": "maximum",
+      "sha256": "092ba238cd747fc39865ee026183c6b3538f0a17a34a37d883942887ec542615"
+    },
+    {
+      "chordCells": 12,
+      "report": "ValidationArtifacts/formation-flight-promotion/c12-minimum-z3-phase075/formation-flight-report.json",
+      "selection": "minimum",
+      "sha256": "dc4ed37f372e6874c020f5b48935837bdab105366c2bb301af5e7f094a25e2c2"
+    },
+    {
+      "chordCells": 16,
+      "report": "ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "selection": "maximum",
+      "sha256": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415"
+    },
+    {
+      "chordCells": 16,
+      "report": "ValidationArtifacts/formation-flight-promotion/c16-minimum-z3-phase075/formation-flight-report.json",
+      "selection": "minimum",
+      "sha256": "72d881089afe4cd7bb1628ed9c91ac1ae184d307e639a05e2690f934306ce625"
+    }
+  ],
+  "limitation": "schema-1 reports do not retain phase-resolved isolated histories; this localizes coupled waveform refinement but is not a phase-resolved saving curve",
+  "metrics": {
+    "crossSignalCorrelation": {
+      "powerVsDragAbsolute": 0.7596197375680799,
+      "powerVsLiftAbsolute": 0.7571809284959737
+    },
+    "dragContrastResidual": {
+      "binsRequiredForHalfAbsoluteResidual": 27,
+      "maximumAbsolute": {
+        "absoluteValue": 0.19098786979357008,
+        "signedValue": -0.19098786979357008
+      },
+      "maximumPhase": 0.255,
+      "pairedMidstrokeBandAbsoluteFraction": 0.35902213650780734,
+      "pairedMidstrokeBandDefinition": "0.20 <= follower phase < 0.30 or 0.70 <= follower phase < 0.80",
+      "rms": 0.07463215066636812,
+      "topTenBins": [
+        {
+          "absoluteResidualFraction": 0.030658944622673552,
+          "followerPhase": 0.255,
+          "signedResidual": -0.19098786979357008
+        },
+        {
+          "absoluteResidualFraction": 0.030232185673456785,
+          "followerPhase": 0.745,
+          "signedResidual": -0.18832940311673685
+        },
+        {
+          "absoluteResidualFraction": 0.024248352185440282,
+          "followerPhase": 0.735,
+          "signedResidual": -0.15105350777392967
+        },
+        {
+          "absoluteResidualFraction": 0.02322089119526252,
+          "followerPhase": 0.765,
+          "signedResidual": -0.1446530074232124
+        },
+        {
+          "absoluteResidualFraction": 0.02321206004176069,
+          "followerPhase": 0.795,
+          "signedResidual": -0.14459799433597498
+        },
+        {
+          "absoluteResidualFraction": 0.021572177662169567,
+          "followerPhase": 0.285,
+          "signedResidual": -0.1343824554045241
+        },
+        {
+          "absoluteResidualFraction": 0.020846160613055782,
+          "followerPhase": 0.725,
+          "signedResidual": -0.12985978016731092
+        },
+        {
+          "absoluteResidualFraction": 0.020807409884902088,
+          "followerPhase": 0.715,
+          "signedResidual": -0.12961838506666057
+        },
+        {
+          "absoluteResidualFraction": 0.019786746727216493,
+          "followerPhase": 0.275,
+          "signedResidual": -0.12326023136429898
+        },
+        {
+          "absoluteResidualFraction": 0.019374772344519516,
+          "followerPhase": 0.775,
+          "signedResidual": -0.12069386416773775
+        }
+      ]
+    },
+    "liftContrastResidual": {
+      "binsRequiredForHalfAbsoluteResidual": 21,
+      "maximumAbsolute": {
+        "absoluteValue": 0.1886185882091047,
+        "signedValue": -0.1886185882091047
+      },
+      "maximumPhase": 0.725,
+      "pairedMidstrokeBandAbsoluteFraction": 0.47988972749331066,
+      "pairedMidstrokeBandDefinition": "0.20 <= follower phase < 0.30 or 0.70 <= follower phase < 0.80",
+      "rms": 0.07285212675603853,
+      "topTenBins": [
+        {
+          "absoluteResidualFraction": 0.034176385688894285,
+          "followerPhase": 0.725,
+          "signedResidual": -0.1886185882091047
+        },
+        {
+          "absoluteResidualFraction": 0.0341235395670212,
+          "followerPhase": 0.745,
+          "signedResidual": -0.1883269318300258
+        },
+        {
+          "absoluteResidualFraction": 0.03142648186068886,
+          "followerPhase": 0.735,
+          "signedResidual": -0.17344194014255776
+        },
+        {
+          "absoluteResidualFraction": 0.030880478392592014,
+          "followerPhase": 0.715,
+          "signedResidual": -0.17042856113147153
+        },
+        {
+          "absoluteResidualFraction": 0.028995664839699804,
+          "followerPhase": 0.255,
+          "signedResidual": -0.16002632390778992
+        },
+        {
+          "absoluteResidualFraction": 0.02774843565307914,
+          "followerPhase": 0.705,
+          "signedResidual": -0.1531428983023133
+        },
+        {
+          "absoluteResidualFraction": 0.027632988928952506,
+          "followerPhase": 0.235,
+          "signedResidual": -0.1525057508193597
+        },
+        {
+          "absoluteResidualFraction": 0.026389458486199967,
+          "followerPhase": 0.755,
+          "signedResidual": -0.14564273848557607
+        },
+        {
+          "absoluteResidualFraction": 0.026371148428623842,
+          "followerPhase": 0.765,
+          "signedResidual": -0.1455416857516365
+        },
+        {
+          "absoluteResidualFraction": 0.026297668417682305,
+          "followerPhase": 0.245,
+          "signedResidual": -0.1451361514727474
+        }
+      ]
+    },
+    "normalizedPowerContrastResidual": {
+      "binsRequiredForHalfAbsoluteResidual": 21,
+      "maximumAbsolute": {
+        "absoluteValue": 0.09534528556844535,
+        "signedValue": -0.09534528556844535
+      },
+      "maximumPhase": 0.745,
+      "pairedMidstrokeBandAbsoluteFraction": 0.4229681645255279,
+      "pairedMidstrokeBandDefinition": "0.20 <= follower phase < 0.30 or 0.70 <= follower phase < 0.80",
+      "rms": 0.03361460536101736,
+      "topTenBins": [
+        {
+          "absoluteResidualFraction": 0.037135872076654676,
+          "followerPhase": 0.745,
+          "signedResidual": -0.09534528556844535
+        },
+        {
+          "absoluteResidualFraction": 0.03520017803701793,
+          "followerPhase": 0.255,
+          "signedResidual": -0.09037544668594
+        },
+        {
+          "absoluteResidualFraction": 0.028202018655243008,
+          "followerPhase": 0.735,
+          "signedResidual": -0.07240787335599297
+        },
+        {
+          "absoluteResidualFraction": 0.027369416022195767,
+          "followerPhase": 0.715,
+          "signedResidual": -0.07027018999557355
+        },
+        {
+          "absoluteResidualFraction": 0.026350764608001627,
+          "followerPhase": 0.705,
+          "signedResidual": -0.06765483173010556
+        },
+        {
+          "absoluteResidualFraction": 0.025878319091509058,
+          "followerPhase": 0.395,
+          "signedResidual": -0.06644184142809961
+        },
+        {
+          "absoluteResidualFraction": 0.024929993904750335,
+          "followerPhase": 0.115,
+          "signedResidual": -0.06400704373285171
+        },
+        {
+          "absoluteResidualFraction": 0.024320603411794373,
+          "followerPhase": 0.225,
+          "signedResidual": -0.06244245113479319
+        },
+        {
+          "absoluteResidualFraction": 0.024294608418819086,
+          "followerPhase": 0.725,
+          "signedResidual": -0.062375709736517626
+        },
+        {
+          "absoluteResidualFraction": 0.02401573382513826,
+          "followerPhase": 0.235,
+          "signedResidual": -0.061659707222361027
+        }
+      ]
+    }
+  },
+  "phaseBins": [
+    {
+      "dragContrastC12": -0.04383710610453173,
+      "dragContrastC16": 0.020946775989200805,
+      "dragContrastResidualC16MinusC12": 0.06478388209373254,
+      "followerPhase": 0.005,
+      "liftContrastC12": -0.0018507094460439855,
+      "liftContrastC16": 0.005379202410302472,
+      "liftContrastResidualC16MinusC12": 0.007229911856346458,
+      "normalizedPowerContrastC12": 0.01821714115143517,
+      "normalizedPowerContrastC16": 0.010467046112256052,
+      "normalizedPowerContrastResidualC16MinusC12": -0.007750095039179117
+    },
+    {
+      "dragContrastC12": 0.002402175539549578,
+      "dragContrastC16": 0.057582296128880994,
+      "dragContrastResidualC16MinusC12": 0.055180120589331416,
+      "followerPhase": 0.015,
+      "liftContrastC12": 0.002171472334933283,
+      "liftContrastC16": 0.0204753104413139,
+      "liftContrastResidualC16MinusC12": 0.018303838106380615,
+      "normalizedPowerContrastC12": 0.014987084953541736,
+      "normalizedPowerContrastC16": 0.014138324215932606,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0008487607376091305
+    },
+    {
+      "dragContrastC12": 0.04379112645746264,
+      "dragContrastC16": 0.09150024000806134,
+      "dragContrastResidualC16MinusC12": 0.0477091135505987,
+      "followerPhase": 0.025,
+      "liftContrastC12": 0.033735113581060905,
+      "liftContrastC16": 0.03994817790272781,
+      "liftContrastResidualC16MinusC12": 0.006213064321666906,
+      "normalizedPowerContrastC12": 0.021451597420228508,
+      "normalizedPowerContrastC16": 0.023712849817443926,
+      "normalizedPowerContrastResidualC16MinusC12": 0.0022612523972154186
+    },
+    {
+      "dragContrastC12": 0.06338335547206286,
+      "dragContrastC16": 0.10826063347573656,
+      "dragContrastResidualC16MinusC12": 0.04487727800367369,
+      "followerPhase": 0.035,
+      "liftContrastC12": 0.06157735204601894,
+      "liftContrastC16": 0.058407262459863385,
+      "liftContrastResidualC16MinusC12": -0.0031700895861555556,
+      "normalizedPowerContrastC12": 0.0328988479927268,
+      "normalizedPowerContrastC16": 0.02973410085295497,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0031647471397718285
+    },
+    {
+      "dragContrastC12": 0.04251583107750623,
+      "dragContrastC16": 0.1273046104308806,
+      "dragContrastResidualC16MinusC12": 0.08478877935337437,
+      "followerPhase": 0.045,
+      "liftContrastC12": 0.05562630614465036,
+      "liftContrastC16": 0.07519966321526755,
+      "liftContrastResidualC16MinusC12": 0.019573357070617192,
+      "normalizedPowerContrastC12": 0.024314059356045803,
+      "normalizedPowerContrastC16": 0.03884021104737001,
+      "normalizedPowerContrastResidualC16MinusC12": 0.014526151691324207
+    },
+    {
+      "dragContrastC12": 0.08845472185732461,
+      "dragContrastC16": 0.14774949700902562,
+      "dragContrastResidualC16MinusC12": 0.05929477515170101,
+      "followerPhase": 0.055,
+      "liftContrastC12": 0.09149628191372194,
+      "liftContrastC16": 0.10823115243824782,
+      "liftContrastResidualC16MinusC12": 0.01673487052452588,
+      "normalizedPowerContrastC12": 0.03593579421820159,
+      "normalizedPowerContrastC16": 0.045823007393247184,
+      "normalizedPowerContrastResidualC16MinusC12": 0.009887213175045595
+    },
+    {
+      "dragContrastC12": 0.08779828491369202,
+      "dragContrastC16": 0.15753074609144568,
+      "dragContrastResidualC16MinusC12": 0.06973246117775367,
+      "followerPhase": 0.065,
+      "liftContrastC12": 0.08817378965672995,
+      "liftContrastC16": 0.13524899740635393,
+      "liftContrastResidualC16MinusC12": 0.04707520774962398,
+      "normalizedPowerContrastC12": 0.03146506797417614,
+      "normalizedPowerContrastC16": 0.047562304810004896,
+      "normalizedPowerContrastResidualC16MinusC12": 0.016097236835828754
+    },
+    {
+      "dragContrastC12": 0.06040969184303391,
+      "dragContrastC16": 0.13186335010762296,
+      "dragContrastResidualC16MinusC12": 0.07145365826458905,
+      "followerPhase": 0.075,
+      "liftContrastC12": 0.10135124636237336,
+      "liftContrastC16": 0.14981300799409725,
+      "liftContrastResidualC16MinusC12": 0.04846176163172389,
+      "normalizedPowerContrastC12": 0.01740200873548714,
+      "normalizedPowerContrastC16": 0.03369582637864854,
+      "normalizedPowerContrastResidualC16MinusC12": 0.0162938176431614
+    },
+    {
+      "dragContrastC12": 0.018075034789905242,
+      "dragContrastC16": 0.09386052169494574,
+      "dragContrastResidualC16MinusC12": 0.0757854869050405,
+      "followerPhase": 0.085,
+      "liftContrastC12": 0.0768222649087309,
+      "liftContrastC16": 0.14321000442920895,
+      "liftContrastResidualC16MinusC12": 0.06638773952047805,
+      "normalizedPowerContrastC12": -0.006415225652619094,
+      "normalizedPowerContrastC16": 0.013268894062732128,
+      "normalizedPowerContrastResidualC16MinusC12": 0.019684119715351223
+    },
+    {
+      "dragContrastC12": -0.008922434469973872,
+      "dragContrastC16": 0.041731178147563774,
+      "dragContrastResidualC16MinusC12": 0.05065361261753765,
+      "followerPhase": 0.095,
+      "liftContrastC12": 0.06008591618177206,
+      "liftContrastC16": 0.11557055422087292,
+      "liftContrastResidualC16MinusC12": 0.055484638039100864,
+      "normalizedPowerContrastC12": -0.02267725116351893,
+      "normalizedPowerContrastC16": -0.016891656369577568,
+      "normalizedPowerContrastResidualC16MinusC12": 0.005785594793941362
+    },
+    {
+      "dragContrastC12": -0.020592659481354136,
+      "dragContrastC16": -0.029741588403622288,
+      "dragContrastResidualC16MinusC12": -0.009148928922268151,
+      "followerPhase": 0.105,
+      "liftContrastC12": 0.07318256448774785,
+      "liftContrastC16": 0.06381799017669554,
+      "liftContrastResidualC16MinusC12": -0.00936457431105231,
+      "normalizedPowerContrastC12": -0.0311676003807857,
+      "normalizedPowerContrastC16": -0.05494113424939284,
+      "normalizedPowerContrastResidualC16MinusC12": -0.023773533868607144
+    },
+    {
+      "dragContrastC12": -0.024833559896690005,
+      "dragContrastC16": -0.09085525001236405,
+      "dragContrastResidualC16MinusC12": -0.06602169011567405,
+      "followerPhase": 0.115,
+      "liftContrastC12": 0.06474132468972582,
+      "liftContrastC16": 0.0180928810215516,
+      "liftContrastResidualC16MinusC12": -0.04664844366817422,
+      "normalizedPowerContrastC12": -0.025383088711856017,
+      "normalizedPowerContrastC16": -0.08939013244470773,
+      "normalizedPowerContrastResidualC16MinusC12": -0.06400704373285171
+    },
+    {
+      "dragContrastC12": -0.1168055756602191,
+      "dragContrastC16": -0.14153320613243303,
+      "dragContrastResidualC16MinusC12": -0.024727630472213935,
+      "followerPhase": 0.125,
+      "liftContrastC12": 0.029030656908570318,
+      "liftContrastC16": -0.009416255083731673,
+      "liftContrastResidualC16MinusC12": -0.03844691199230199,
+      "normalizedPowerContrastC12": -0.07934768951837834,
+      "normalizedPowerContrastC16": -0.11648590469252373,
+      "normalizedPowerContrastResidualC16MinusC12": -0.037138215174145395
+    },
+    {
+      "dragContrastC12": -0.15546634781690027,
+      "dragContrastC16": -0.16772666793441338,
+      "dragContrastResidualC16MinusC12": -0.012260320117513102,
+      "followerPhase": 0.135,
+      "liftContrastC12": 0.02707790926029796,
+      "liftContrastC16": -0.010972422136423021,
+      "liftContrastResidualC16MinusC12": -0.03805033139672098,
+      "normalizedPowerContrastC12": -0.10167447302521448,
+      "normalizedPowerContrastC16": -0.1289701547647415,
+      "normalizedPowerContrastResidualC16MinusC12": -0.02729568173952701
+    },
+    {
+      "dragContrastC12": -0.19274585023714774,
+      "dragContrastC16": -0.1704545749132751,
+      "dragContrastResidualC16MinusC12": 0.02229127532387265,
+      "followerPhase": 0.145,
+      "liftContrastC12": 0.000494423518523246,
+      "liftContrastC16": 0.020563654153859856,
+      "liftContrastResidualC16MinusC12": 0.02006923063533661,
+      "normalizedPowerContrastC12": -0.12681574324507872,
+      "normalizedPowerContrastC16": -0.130732905121825,
+      "normalizedPowerContrastResidualC16MinusC12": -0.003917161876746289
+    },
+    {
+      "dragContrastC12": -0.25122608298737825,
+      "dragContrastC16": -0.14880581631690615,
+      "dragContrastResidualC16MinusC12": 0.1024202666704721,
+      "followerPhase": 0.155,
+      "liftContrastC12": 0.010101106270913984,
+      "liftContrastC16": 0.07650704879849468,
+      "liftContrastResidualC16MinusC12": 0.0664059425275807,
+      "normalizedPowerContrastC12": -0.15934894002068378,
+      "normalizedPowerContrastC16": -0.1165768623500767,
+      "normalizedPowerContrastResidualC16MinusC12": 0.04277207767060709
+    },
+    {
+      "dragContrastC12": -0.20997240503812686,
+      "dragContrastC16": -0.10451762618914495,
+      "dragContrastResidualC16MinusC12": 0.10545477884898191,
+      "followerPhase": 0.165,
+      "liftContrastC12": 0.06394844506093245,
+      "liftContrastC16": 0.14899355591680696,
+      "liftContrastResidualC16MinusC12": 0.08504511085587452,
+      "normalizedPowerContrastC12": -0.14059583665794528,
+      "normalizedPowerContrastC16": -0.08981983174452579,
+      "normalizedPowerContrastResidualC16MinusC12": 0.05077600491341949
+    },
+    {
+      "dragContrastC12": -0.12000530753011018,
+      "dragContrastC16": -0.04996669030927636,
+      "dragContrastResidualC16MinusC12": 0.07003861722083382,
+      "followerPhase": 0.175,
+      "liftContrastC12": 0.14436288266289743,
+      "liftContrastC16": 0.21886915631216786,
+      "liftContrastResidualC16MinusC12": 0.07450627364927043,
+      "normalizedPowerContrastC12": -0.09174126170034391,
+      "normalizedPowerContrastC16": -0.056467940952790396,
+      "normalizedPowerContrastResidualC16MinusC12": 0.035273320747553516
+    },
+    {
+      "dragContrastC12": -0.08712558170043128,
+      "dragContrastC16": -0.015558953999556202,
+      "dragContrastResidualC16MinusC12": 0.07156662770087507,
+      "followerPhase": 0.185,
+      "liftContrastC12": 0.22180154390804707,
+      "liftContrastC16": 0.2606735658028856,
+      "liftContrastResidualC16MinusC12": 0.038872021894838515,
+      "normalizedPowerContrastC12": -0.07408018676577743,
+      "normalizedPowerContrastC16": -0.031825984494026294,
+      "normalizedPowerContrastResidualC16MinusC12": 0.04225420227175114
+    },
+    {
+      "dragContrastC12": -0.057127415004008864,
+      "dragContrastC16": -0.01723078498084618,
+      "dragContrastResidualC16MinusC12": 0.03989663002316268,
+      "followerPhase": 0.195,
+      "liftContrastC12": 0.2362862383766744,
+      "liftContrastC16": 0.2540093646572734,
+      "liftContrastResidualC16MinusC12": 0.017723126280599022,
+      "normalizedPowerContrastC12": -0.04846945526455215,
+      "normalizedPowerContrastC16": -0.029176932873551165,
+      "normalizedPowerContrastResidualC16MinusC12": 0.019292522391000988
+    },
+    {
+      "dragContrastC12": -0.04543846094954551,
+      "dragContrastC16": -0.06857126961951421,
+      "dragContrastResidualC16MinusC12": -0.023132808669968696,
+      "followerPhase": 0.205,
+      "liftContrastC12": 0.24143973071393754,
+      "liftContrastC16": 0.1804625429338118,
+      "liftContrastResidualC16MinusC12": -0.06097718778012573,
+      "normalizedPowerContrastC12": -0.04586723742693222,
+      "normalizedPowerContrastC16": -0.05765596869440448,
+      "normalizedPowerContrastResidualC16MinusC12": -0.011788731267472263
+    },
+    {
+      "dragContrastC12": -0.10997741538406025,
+      "dragContrastC16": -0.17311440843995207,
+      "dragContrastResidualC16MinusC12": -0.06313699305589182,
+      "followerPhase": 0.215,
+      "liftContrastC12": 0.13323542524749565,
+      "liftContrastC16": 0.040485303873915246,
+      "liftContrastResidualC16MinusC12": -0.09275012137358041,
+      "normalizedPowerContrastC12": -0.07604012216023226,
+      "normalizedPowerContrastC16": -0.1163294704333353,
+      "normalizedPowerContrastResidualC16MinusC12": -0.04028934827310304
+    },
+    {
+      "dragContrastC12": -0.1820056524098992,
+      "dragContrastC16": -0.29189636080681636,
+      "dragContrastResidualC16MinusC12": -0.10989070839691717,
+      "followerPhase": 0.225,
+      "liftContrastC12": 0.015207971880006665,
+      "liftContrastC16": -0.1282132395206328,
+      "liftContrastResidualC16MinusC12": -0.14342121140063946,
+      "normalizedPowerContrastC12": -0.11937783263568424,
+      "normalizedPowerContrastC16": -0.18182028377047743,
+      "normalizedPowerContrastResidualC16MinusC12": -0.06244245113479319
+    },
+    {
+      "dragContrastC12": -0.2939972440263592,
+      "dragContrastC16": -0.4036231391099765,
+      "dragContrastResidualC16MinusC12": -0.10962589508361731,
+      "followerPhase": 0.235,
+      "liftContrastC12": -0.14246988254915305,
+      "liftContrastC16": -0.29497563336851274,
+      "liftContrastResidualC16MinusC12": -0.1525057508193597,
+      "normalizedPowerContrastC12": -0.18005917658529413,
+      "normalizedPowerContrastC16": -0.24171888380765516,
+      "normalizedPowerContrastResidualC16MinusC12": -0.061659707222361027
+    },
+    {
+      "dragContrastC12": -0.42042347075953357,
+      "dragContrastC16": -0.5077296106329805,
+      "dragContrastResidualC16MinusC12": -0.08730613987344693,
+      "followerPhase": 0.245,
+      "liftContrastC12": -0.31476341426061705,
+      "liftContrastC16": -0.45989956573336443,
+      "liftContrastResidualC16MinusC12": -0.1451361514727474,
+      "normalizedPowerContrastC12": -0.25827849794610347,
+      "normalizedPowerContrastC16": -0.2940830401313479,
+      "normalizedPowerContrastResidualC16MinusC12": -0.035804542185244426
+    },
+    {
+      "dragContrastC12": -0.3968515640035639,
+      "dragContrastC16": -0.587839433797134,
+      "dragContrastResidualC16MinusC12": -0.19098786979357008,
+      "followerPhase": 0.255,
+      "liftContrastC12": -0.4434341503951864,
+      "liftContrastC16": -0.6034604743029763,
+      "liftContrastResidualC16MinusC12": -0.16002632390778992,
+      "normalizedPowerContrastC12": -0.23840996116858648,
+      "normalizedPowerContrastC16": -0.3287854078545265,
+      "normalizedPowerContrastResidualC16MinusC12": -0.09037544668594
+    },
+    {
+      "dragContrastC12": -0.5560218961060808,
+      "dragContrastC16": -0.6309627405535574,
+      "dragContrastResidualC16MinusC12": -0.07494084444747662,
+      "followerPhase": 0.265,
+      "liftContrastC12": -0.5908009656517177,
+      "liftContrastC16": -0.7017440423515602,
+      "liftContrastResidualC16MinusC12": -0.11094307669984249,
+      "normalizedPowerContrastC12": -0.3069317264747803,
+      "normalizedPowerContrastC16": -0.34394140678417473,
+      "normalizedPowerContrastResidualC16MinusC12": -0.037009680309394444
+    },
+    {
+      "dragContrastC12": -0.5135419491222188,
+      "dragContrastC16": -0.6368021804865178,
+      "dragContrastResidualC16MinusC12": -0.12326023136429898,
+      "followerPhase": 0.275,
+      "liftContrastC12": -0.6062941038982166,
+      "liftContrastC16": -0.7324756175263027,
+      "liftContrastResidualC16MinusC12": -0.12618151362808616,
+      "normalizedPowerContrastC12": -0.28036421764800035,
+      "normalizedPowerContrastC16": -0.33595581159626,
+      "normalizedPowerContrastResidualC16MinusC12": -0.05559159394825963
+    },
+    {
+      "dragContrastC12": -0.5088719700448703,
+      "dragContrastC16": -0.6432544254493944,
+      "dragContrastResidualC16MinusC12": -0.1343824554045241,
+      "followerPhase": 0.285,
+      "liftContrastC12": -0.6464890465799464,
+      "liftContrastC16": -0.7513363824774131,
+      "liftContrastResidualC16MinusC12": -0.10484733589746664,
+      "normalizedPowerContrastC12": -0.26725446405746656,
+      "normalizedPowerContrastC16": -0.3271482803650093,
+      "normalizedPowerContrastResidualC16MinusC12": -0.05989381630754276
+    },
+    {
+      "dragContrastC12": -0.5374274525670868,
+      "dragContrastC16": -0.5927080947874654,
+      "dragContrastResidualC16MinusC12": -0.05528064222037865,
+      "followerPhase": 0.295,
+      "liftContrastC12": -0.6034879407119922,
+      "liftContrastC16": -0.702267579418953,
+      "liftContrastResidualC16MinusC12": -0.09877963870696083,
+      "normalizedPowerContrastC12": -0.26122370556485575,
+      "normalizedPowerContrastC16": -0.28989375715248533,
+      "normalizedPowerContrastResidualC16MinusC12": -0.028670051587629586
+    },
+    {
+      "dragContrastC12": -0.4197079314550658,
+      "dragContrastC16": -0.5240300156382856,
+      "dragContrastResidualC16MinusC12": -0.10432208418321975,
+      "followerPhase": 0.305,
+      "liftContrastC12": -0.5283013279124897,
+      "liftContrastC16": -0.626847832978598,
+      "liftContrastResidualC16MinusC12": -0.09854650506610829,
+      "normalizedPowerContrastC12": -0.19809159743644256,
+      "normalizedPowerContrastC16": -0.2473530424851874,
+      "normalizedPowerContrastResidualC16MinusC12": -0.049261445048744856
+    },
+    {
+      "dragContrastC12": -0.3310315431134576,
+      "dragContrastC16": -0.4360859043031191,
+      "dragContrastResidualC16MinusC12": -0.1050543611896615,
+      "followerPhase": 0.315,
+      "liftContrastC12": -0.45156454533873824,
+      "liftContrastC16": -0.5282154513901951,
+      "liftContrastResidualC16MinusC12": -0.07665090605145686,
+      "normalizedPowerContrastC12": -0.14255616098621715,
+      "normalizedPowerContrastC16": -0.19506390252471872,
+      "normalizedPowerContrastResidualC16MinusC12": -0.05250774153850157
+    },
+    {
+      "dragContrastC12": -0.31208851062801557,
+      "dragContrastC16": -0.37446643910968636,
+      "dragContrastResidualC16MinusC12": -0.062377928481670786,
+      "followerPhase": 0.325,
+      "liftContrastC12": -0.3735469918646115,
+      "liftContrastC16": -0.4601769187441396,
+      "liftContrastResidualC16MinusC12": -0.08662992687952809,
+      "normalizedPowerContrastC12": -0.12640360282980034,
+      "normalizedPowerContrastC16": -0.16188846292657377,
+      "normalizedPowerContrastResidualC16MinusC12": -0.03548486009677343
+    },
+    {
+      "dragContrastC12": -0.2443592791904452,
+      "dragContrastC16": -0.3079314949243388,
+      "dragContrastResidualC16MinusC12": -0.0635722157338936,
+      "followerPhase": 0.335,
+      "liftContrastC12": -0.30624885562192117,
+      "liftContrastC16": -0.37651108338314776,
+      "liftContrastResidualC16MinusC12": -0.07026222776122659,
+      "normalizedPowerContrastC12": -0.10243647528472977,
+      "normalizedPowerContrastC16": -0.1309021296591084,
+      "normalizedPowerContrastResidualC16MinusC12": -0.028465654374378646
+    },
+    {
+      "dragContrastC12": -0.2285456976818523,
+      "dragContrastC16": -0.23604506825943306,
+      "dragContrastResidualC16MinusC12": -0.007499370577580766,
+      "followerPhase": 0.345,
+      "liftContrastC12": -0.19980161195786672,
+      "liftContrastC16": -0.263465721261293,
+      "liftContrastResidualC16MinusC12": -0.06366410930342625,
+      "normalizedPowerContrastC12": -0.09406494656184505,
+      "normalizedPowerContrastC16": -0.09742178556407732,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0033568390022322703
+    },
+    {
+      "dragContrastC12": -0.14368760830499339,
+      "dragContrastC16": -0.18452125464779545,
+      "dragContrastResidualC16MinusC12": -0.040833646342802066,
+      "followerPhase": 0.355,
+      "liftContrastC12": -0.08878652568236212,
+      "liftContrastC16": -0.1692006676438409,
+      "liftContrastResidualC16MinusC12": -0.08041414196147878,
+      "normalizedPowerContrastC12": -0.05935035783658016,
+      "normalizedPowerContrastC16": -0.07657786359128371,
+      "normalizedPowerContrastResidualC16MinusC12": -0.017227505754703554
+    },
+    {
+      "dragContrastC12": -0.10079317115338116,
+      "dragContrastC16": -0.12039491609032105,
+      "dragContrastResidualC16MinusC12": -0.01960174493693989,
+      "followerPhase": 0.365,
+      "liftContrastC12": -0.015741476255233255,
+      "liftContrastC16": -0.059731626253891834,
+      "liftContrastResidualC16MinusC12": -0.04399014999865858,
+      "normalizedPowerContrastC12": -0.03640255013587357,
+      "normalizedPowerContrastC16": -0.049891898759886866,
+      "normalizedPowerContrastResidualC16MinusC12": -0.013489348624013298
+    },
+    {
+      "dragContrastC12": -0.05230219695918503,
+      "dragContrastC16": -0.07460869519378832,
+      "dragContrastResidualC16MinusC12": -0.02230649823460329,
+      "followerPhase": 0.375,
+      "liftContrastC12": 0.07439440892039251,
+      "liftContrastC16": 0.021102395589134515,
+      "liftContrastResidualC16MinusC12": -0.05329201333125799,
+      "normalizedPowerContrastC12": -0.018950800342757868,
+      "normalizedPowerContrastC16": -0.03704996304755248,
+      "normalizedPowerContrastResidualC16MinusC12": -0.018099162704794614
+    },
+    {
+      "dragContrastC12": -0.056121029731865946,
+      "dragContrastC16": -0.04916978657998872,
+      "dragContrastResidualC16MinusC12": 0.006951243151877229,
+      "followerPhase": 0.385,
+      "liftContrastC12": 0.12865215301826938,
+      "liftContrastC16": 0.0677372327558663,
+      "liftContrastResidualC16MinusC12": -0.06091492026240308,
+      "normalizedPowerContrastC12": -0.035443759731772495,
+      "normalizedPowerContrastC16": -0.03159490040747692,
+      "normalizedPowerContrastResidualC16MinusC12": 0.0038488593242955726
+    },
+    {
+      "dragContrastC12": 0.07987710603304166,
+      "dragContrastC16": -0.019814015922341,
+      "dragContrastResidualC16MinusC12": -0.09969112195538266,
+      "followerPhase": 0.395,
+      "liftContrastC12": 0.13592637311266098,
+      "liftContrastC16": 0.10702392562844132,
+      "liftContrastResidualC16MinusC12": -0.028902447484219662,
+      "normalizedPowerContrastC12": 0.042204297674269364,
+      "normalizedPowerContrastC16": -0.02423754375383025,
+      "normalizedPowerContrastResidualC16MinusC12": -0.06644184142809961
+    },
+    {
+      "dragContrastC12": -0.043607113147949406,
+      "dragContrastC16": -0.010515488531327666,
+      "dragContrastResidualC16MinusC12": 0.03309162461662174,
+      "followerPhase": 0.405,
+      "liftContrastC12": 0.14167159692289055,
+      "liftContrastC16": 0.11333095083189937,
+      "liftContrastResidualC16MinusC12": -0.028340646090991184,
+      "normalizedPowerContrastC12": -0.02751247678770219,
+      "normalizedPowerContrastC16": -0.023861272551534585,
+      "normalizedPowerContrastResidualC16MinusC12": 0.0036512042361676045
+    },
+    {
+      "dragContrastC12": -0.012002687944761004,
+      "dragContrastC16": -1.0246175834005555e-05,
+      "dragContrastResidualC16MinusC12": 0.011992441768926998,
+      "followerPhase": 0.415,
+      "liftContrastC12": 0.16419320762883372,
+      "liftContrastC16": 0.10513655676206035,
+      "liftContrastResidualC16MinusC12": -0.059056650866773364,
+      "normalizedPowerContrastC12": -0.032066767023244847,
+      "normalizedPowerContrastC16": -0.021451094225199308,
+      "normalizedPowerContrastResidualC16MinusC12": 0.010615672798045539
+    },
+    {
+      "dragContrastC12": 0.010548204637130354,
+      "dragContrastC16": 0.009186776403711239,
+      "dragContrastResidualC16MinusC12": -0.0013614282334191152,
+      "followerPhase": 0.425,
+      "liftContrastC12": 0.09996973244666352,
+      "liftContrastC16": 0.08805204208872919,
+      "liftContrastResidualC16MinusC12": -0.01191769035793433,
+      "normalizedPowerContrastC12": -0.01713992240915463,
+      "normalizedPowerContrastC16": -0.01918459740683809,
+      "normalizedPowerContrastResidualC16MinusC12": -0.00204467499768346
+    },
+    {
+      "dragContrastC12": 0.016319563283414773,
+      "dragContrastC16": 0.0008243372275811289,
+      "dragContrastResidualC16MinusC12": -0.015495226055833644,
+      "followerPhase": 0.435,
+      "liftContrastC12": 0.09709058829460715,
+      "liftContrastC16": 0.06129425516293274,
+      "liftContrastResidualC16MinusC12": -0.03579633313167441,
+      "normalizedPowerContrastC12": -0.013428178293322324,
+      "normalizedPowerContrastC16": -0.020725023442858537,
+      "normalizedPowerContrastResidualC16MinusC12": -0.007296845149536213
+    },
+    {
+      "dragContrastC12": 0.06693417471396024,
+      "dragContrastC16": 0.0059370195756125455,
+      "dragContrastResidualC16MinusC12": -0.06099715513834769,
+      "followerPhase": 0.445,
+      "liftContrastC12": 0.06420309006671387,
+      "liftContrastC16": 0.04492764005974892,
+      "liftContrastResidualC16MinusC12": -0.019275450006964956,
+      "normalizedPowerContrastC12": 0.004402233406974321,
+      "normalizedPowerContrastC16": -0.01796800428128098,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0223702376882553
+    },
+    {
+      "dragContrastC12": 0.019162199839902305,
+      "dragContrastC16": 0.024053989269723353,
+      "dragContrastResidualC16MinusC12": 0.004891789429821047,
+      "followerPhase": 0.455,
+      "liftContrastC12": 0.0457649220740044,
+      "liftContrastC16": 0.037129066367096786,
+      "liftContrastResidualC16MinusC12": -0.008635855706907614,
+      "normalizedPowerContrastC12": -0.01912822334187192,
+      "normalizedPowerContrastC16": -0.007932259752695292,
+      "normalizedPowerContrastResidualC16MinusC12": 0.011195963589176627
+    },
+    {
+      "dragContrastC12": 0.05861086265880455,
+      "dragContrastC16": 0.026778544899708212,
+      "dragContrastResidualC16MinusC12": -0.03183231775909634,
+      "followerPhase": 0.465,
+      "liftContrastC12": 0.04897766131988007,
+      "liftContrastC16": 0.028034668745960778,
+      "liftContrastResidualC16MinusC12": -0.020942992573919295,
+      "normalizedPowerContrastC12": 0.009378445035288896,
+      "normalizedPowerContrastC16": -0.00108048943557576,
+      "normalizedPowerContrastResidualC16MinusC12": -0.010458934470864656
+    },
+    {
+      "dragContrastC12": 0.05879858282486605,
+      "dragContrastC16": -0.003579850585261002,
+      "dragContrastResidualC16MinusC12": -0.062378433410127054,
+      "followerPhase": 0.475,
+      "liftContrastC12": 0.01992830867006273,
+      "liftContrastC16": 0.009640190873910007,
+      "liftContrastResidualC16MinusC12": -0.010288117796152723,
+      "normalizedPowerContrastC12": 0.020899040543388953,
+      "normalizedPowerContrastC16": 0.0007023637413774708,
+      "normalizedPowerContrastResidualC16MinusC12": -0.020196676802011482
+    },
+    {
+      "dragContrastC12": 0.0019034728084977581,
+      "dragContrastC16": -0.02990629695594943,
+      "dragContrastResidualC16MinusC12": -0.03180976976444719,
+      "followerPhase": 0.485,
+      "liftContrastC12": 0.009968082130067474,
+      "liftContrastC16": 0.006564755076935963,
+      "liftContrastResidualC16MinusC12": -0.0034033270531315107,
+      "normalizedPowerContrastC12": 0.002612591868827646,
+      "normalizedPowerContrastC16": 0.006060026995111732,
+      "normalizedPowerContrastResidualC16MinusC12": 0.003447435126284086
+    },
+    {
+      "dragContrastC12": -0.005523163234518846,
+      "dragContrastC16": -0.0752768407542006,
+      "dragContrastResidualC16MinusC12": -0.06975367751968176,
+      "followerPhase": 0.495,
+      "liftContrastC12": 0.011188838011665009,
+      "liftContrastC16": 0.008094298647951192,
+      "liftContrastResidualC16MinusC12": -0.0030945393637138163,
+      "normalizedPowerContrastC12": 0.017531560946930688,
+      "normalizedPowerContrastC16": 0.007941842048165528,
+      "normalizedPowerContrastResidualC16MinusC12": -0.00958971889876516
+    },
+    {
+      "dragContrastC12": 0.07343442580084458,
+      "dragContrastC16": 0.1274114342745487,
+      "dragContrastResidualC16MinusC12": 0.053977008473704124,
+      "followerPhase": 0.505,
+      "liftContrastC12": 0.011033640834324447,
+      "liftContrastC16": 0.021653169856178073,
+      "liftContrastResidualC16MinusC12": 0.010619529021853626,
+      "normalizedPowerContrastC12": 0.0068923689220846684,
+      "normalizedPowerContrastC16": 0.009418943360044452,
+      "normalizedPowerContrastResidualC16MinusC12": 0.002526574437959783
+    },
+    {
+      "dragContrastC12": 0.09459893472383207,
+      "dragContrastC16": 0.17947589158487864,
+      "dragContrastResidualC16MinusC12": 0.08487695686104657,
+      "followerPhase": 0.515,
+      "liftContrastC12": 0.029086969382206132,
+      "liftContrastC16": 0.04663977066735188,
+      "liftContrastResidualC16MinusC12": 0.017552801285145747,
+      "normalizedPowerContrastC12": 0.013731239752402442,
+      "normalizedPowerContrastC16": 0.013542449452087608,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0001887903003148332
+    },
+    {
+      "dragContrastC12": 0.10523303362289771,
+      "dragContrastC16": 0.214951315023431,
+      "dragContrastResidualC16MinusC12": 0.1097182814005333,
+      "followerPhase": 0.525,
+      "liftContrastC12": 0.03753068692906808,
+      "liftContrastC16": 0.07492493929310517,
+      "liftContrastResidualC16MinusC12": 0.037394252364037095,
+      "normalizedPowerContrastC12": 0.015530730589399078,
+      "normalizedPowerContrastC16": 0.02193039521697135,
+      "normalizedPowerContrastResidualC16MinusC12": 0.006399664627572271
+    },
+    {
+      "dragContrastC12": 0.14613853047786884,
+      "dragContrastC16": 0.23760854838983536,
+      "dragContrastResidualC16MinusC12": 0.09147001791196652,
+      "followerPhase": 0.535,
+      "liftContrastC12": 0.08153775882605424,
+      "liftContrastC16": 0.10740840608124969,
+      "liftContrastResidualC16MinusC12": 0.025870647255195445,
+      "normalizedPowerContrastC12": 0.01855175481770921,
+      "normalizedPowerContrastC16": 0.024464613489444176,
+      "normalizedPowerContrastResidualC16MinusC12": 0.005912858671734966
+    },
+    {
+      "dragContrastC12": 0.17350979168285408,
+      "dragContrastC16": 0.2314769141429569,
+      "dragContrastResidualC16MinusC12": 0.05796712246010283,
+      "followerPhase": 0.545,
+      "liftContrastC12": 0.09762735879330464,
+      "liftContrastC16": 0.1282260365302666,
+      "liftContrastResidualC16MinusC12": 0.030598677736961954,
+      "normalizedPowerContrastC12": 0.024988242760978496,
+      "normalizedPowerContrastC16": 0.027864091988854145,
+      "normalizedPowerContrastResidualC16MinusC12": 0.0028758492278756487
+    },
+    {
+      "dragContrastC12": 0.17112984070040183,
+      "dragContrastC16": 0.2620737451005799,
+      "dragContrastResidualC16MinusC12": 0.09094390440017808,
+      "followerPhase": 0.555,
+      "liftContrastC12": 0.12856931736955102,
+      "liftContrastC16": 0.18798946525364424,
+      "liftContrastResidualC16MinusC12": 0.05942014788409322,
+      "normalizedPowerContrastC12": 0.026466490034989687,
+      "normalizedPowerContrastC16": 0.03375719272473965,
+      "normalizedPowerContrastResidualC16MinusC12": 0.007290702689749962
+    },
+    {
+      "dragContrastC12": 0.18464699799900375,
+      "dragContrastC16": 0.28620672860735685,
+      "dragContrastResidualC16MinusC12": 0.1015597306083531,
+      "followerPhase": 0.565,
+      "liftContrastC12": 0.17665718529351015,
+      "liftContrastC16": 0.2420208156098569,
+      "liftContrastResidualC16MinusC12": 0.06536363031634673,
+      "normalizedPowerContrastC12": 0.032170873281416656,
+      "normalizedPowerContrastC16": 0.04291717033274023,
+      "normalizedPowerContrastResidualC16MinusC12": 0.010746297051323572
+    },
+    {
+      "dragContrastC12": 0.1690447301237641,
+      "dragContrastC16": 0.28444915287583084,
+      "dragContrastResidualC16MinusC12": 0.11540442275206675,
+      "followerPhase": 0.575,
+      "liftContrastC12": 0.1909526698507208,
+      "liftContrastC16": 0.2811675649463874,
+      "liftContrastResidualC16MinusC12": 0.0902148950956666,
+      "normalizedPowerContrastC12": 0.020021206270593783,
+      "normalizedPowerContrastC16": 0.04446704890949793,
+      "normalizedPowerContrastResidualC16MinusC12": 0.024445842638904147
+    },
+    {
+      "dragContrastC12": 0.16263594842507034,
+      "dragContrastC16": 0.25946769745151377,
+      "dragContrastResidualC16MinusC12": 0.09683174902644343,
+      "followerPhase": 0.585,
+      "liftContrastC12": 0.20658681453120398,
+      "liftContrastC16": 0.29675872561183836,
+      "liftContrastResidualC16MinusC12": 0.09017191108063438,
+      "normalizedPowerContrastC12": 0.016170788269015635,
+      "normalizedPowerContrastC16": 0.040040692052209836,
+      "normalizedPowerContrastResidualC16MinusC12": 0.023869903783194202
+    },
+    {
+      "dragContrastC12": 0.18189478817211935,
+      "dragContrastC16": 0.22689477341047226,
+      "dragContrastResidualC16MinusC12": 0.04499998523835291,
+      "followerPhase": 0.595,
+      "liftContrastC12": 0.23429283312243687,
+      "liftContrastC16": 0.2921850616984263,
+      "liftContrastResidualC16MinusC12": 0.05789222857598941,
+      "normalizedPowerContrastC12": 0.02852505231853386,
+      "normalizedPowerContrastC16": 0.02673780467448239,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0017872476440514706
+    },
+    {
+      "dragContrastC12": 0.13228796238293894,
+      "dragContrastC16": 0.15571319952579454,
+      "dragContrastResidualC16MinusC12": 0.023425237142855604,
+      "followerPhase": 0.605,
+      "liftContrastC12": 0.21618854178591462,
+      "liftContrastC16": 0.25237894960809304,
+      "liftContrastResidualC16MinusC12": 0.036190407822178416,
+      "normalizedPowerContrastC12": 0.008408147087012319,
+      "normalizedPowerContrastC16": 0.00018832259401535545,
+      "normalizedPowerContrastResidualC16MinusC12": -0.008219824492996963
+    },
+    {
+      "dragContrastC12": 0.03238708560001502,
+      "dragContrastC16": 0.09295410932645698,
+      "dragContrastResidualC16MinusC12": 0.06056702372644196,
+      "followerPhase": 0.615,
+      "liftContrastC12": 0.18705156692711988,
+      "liftContrastC16": 0.22279403717776147,
+      "liftContrastResidualC16MinusC12": 0.03574247025064159,
+      "normalizedPowerContrastC12": -0.04709007666033127,
+      "normalizedPowerContrastC16": -0.030054334428344598,
+      "normalizedPowerContrastResidualC16MinusC12": 0.017035742231986672
+    },
+    {
+      "dragContrastC12": 0.039071351315311365,
+      "dragContrastC16": 0.03269650093767851,
+      "dragContrastResidualC16MinusC12": -0.006374850377632857,
+      "followerPhase": 0.625,
+      "liftContrastC12": 0.209597955121463,
+      "liftContrastC16": 0.20010436893331085,
+      "liftContrastResidualC16MinusC12": -0.009493586188152159,
+      "normalizedPowerContrastC12": -0.03436226858864144,
+      "normalizedPowerContrastC16": -0.057733587065450176,
+      "normalizedPowerContrastResidualC16MinusC12": -0.023371318476808733
+    },
+    {
+      "dragContrastC12": -0.0005791358452917894,
+      "dragContrastC16": -0.0035117004702358567,
+      "dragContrastResidualC16MinusC12": -0.0029325646249440673,
+      "followerPhase": 0.635,
+      "liftContrastC12": 0.1708023210971117,
+      "liftContrastC16": 0.19291301968293384,
+      "liftContrastResidualC16MinusC12": 0.022110698585822153,
+      "normalizedPowerContrastC12": -0.05184324490024539,
+      "normalizedPowerContrastC16": -0.07257431855921048,
+      "normalizedPowerContrastResidualC16MinusC12": -0.020731073658965093
+    },
+    {
+      "dragContrastC12": -0.07254010802216038,
+      "dragContrastC16": -0.01709542180136836,
+      "dragContrastResidualC16MinusC12": 0.05544468622079202,
+      "followerPhase": 0.645,
+      "liftContrastC12": 0.16728498768133948,
+      "liftContrastC16": 0.21636043561168838,
+      "liftContrastResidualC16MinusC12": 0.0490754479303489,
+      "normalizedPowerContrastC12": -0.08957294350949907,
+      "normalizedPowerContrastC16": -0.0756254374136559,
+      "normalizedPowerContrastResidualC16MinusC12": 0.013947506095843165
+    },
+    {
+      "dragContrastC12": -0.05428641492803421,
+      "dragContrastC16": -0.024554211444622664,
+      "dragContrastResidualC16MinusC12": 0.029732203483411546,
+      "followerPhase": 0.655,
+      "liftContrastC12": 0.19273124301803712,
+      "liftContrastC16": 0.23950148352762657,
+      "liftContrastResidualC16MinusC12": 0.046770240509589445,
+      "normalizedPowerContrastC12": -0.08108045324324253,
+      "normalizedPowerContrastC16": -0.0719610375162768,
+      "normalizedPowerContrastResidualC16MinusC12": 0.00911941572696573
+    },
+    {
+      "dragContrastC12": -0.0745254444633161,
+      "dragContrastC16": -0.021424720905357297,
+      "dragContrastResidualC16MinusC12": 0.05310072355795881,
+      "followerPhase": 0.665,
+      "liftContrastC12": 0.21792229022421683,
+      "liftContrastC16": 0.2675823672167944,
+      "liftContrastResidualC16MinusC12": 0.04966007699257757,
+      "normalizedPowerContrastC12": -0.09014706464733357,
+      "normalizedPowerContrastC16": -0.06488635014433908,
+      "normalizedPowerContrastResidualC16MinusC12": 0.025260714502994497
+    },
+    {
+      "dragContrastC12": -0.07205748653817223,
+      "dragContrastC16": -0.019931528210801464,
+      "dragContrastResidualC16MinusC12": 0.05212595832737077,
+      "followerPhase": 0.675,
+      "liftContrastC12": 0.2608491199394455,
+      "liftContrastC16": 0.2841289006732449,
+      "liftContrastResidualC16MinusC12": 0.023279780733799438,
+      "normalizedPowerContrastC12": -0.08902197392796962,
+      "normalizedPowerContrastC16": -0.05896298761422725,
+      "normalizedPowerContrastResidualC16MinusC12": 0.030058986313742375
+    },
+    {
+      "dragContrastC12": -0.003613785115159196,
+      "dragContrastC16": -0.045991135184090925,
+      "dragContrastResidualC16MinusC12": -0.04237735006893173,
+      "followerPhase": 0.685,
+      "liftContrastC12": 0.30754967376291054,
+      "liftContrastC16": 0.25767862208785597,
+      "liftContrastResidualC16MinusC12": -0.04987105167505457,
+      "normalizedPowerContrastC12": -0.03687323592254654,
+      "normalizedPowerContrastC16": -0.0644257152955936,
+      "normalizedPowerContrastResidualC16MinusC12": -0.027552479373047056
+    },
+    {
+      "dragContrastC12": -0.022384020408400485,
+      "dragContrastC16": -0.09511682481708039,
+      "dragContrastResidualC16MinusC12": -0.07273280440867991,
+      "followerPhase": 0.695,
+      "liftContrastC12": 0.273802284062597,
+      "liftContrastC16": 0.18753003993748574,
+      "liftContrastResidualC16MinusC12": -0.08627224412511125,
+      "normalizedPowerContrastC12": -0.044413054592160606,
+      "normalizedPowerContrastC16": -0.08662149973921074,
+      "normalizedPowerContrastResidualC16MinusC12": -0.04220844514705013
+    },
+    {
+      "dragContrastC12": -0.058171326964304715,
+      "dragContrastC16": -0.1755724788817008,
+      "dragContrastResidualC16MinusC12": -0.11740115191739608,
+      "followerPhase": 0.705,
+      "liftContrastC12": 0.22323706148597355,
+      "liftContrastC16": 0.07009416318366024,
+      "liftContrastResidualC16MinusC12": -0.1531428983023133,
+      "normalizedPowerContrastC12": -0.06035292436529116,
+      "normalizedPowerContrastC16": -0.12800775609539672,
+      "normalizedPowerContrastResidualC16MinusC12": -0.06765483173010556
+    },
+    {
+      "dragContrastC12": -0.1530770874898244,
+      "dragContrastC16": -0.282695472556485,
+      "dragContrastResidualC16MinusC12": -0.12961838506666057,
+      "followerPhase": 0.715,
+      "liftContrastC12": 0.08872041483831361,
+      "liftContrastC16": -0.08170814629315792,
+      "liftContrastResidualC16MinusC12": -0.17042856113147153,
+      "normalizedPowerContrastC12": -0.11439315374699888,
+      "normalizedPowerContrastC16": -0.18466334374257243,
+      "normalizedPowerContrastResidualC16MinusC12": -0.07027018999557355
+    },
+    {
+      "dragContrastC12": -0.257564403710715,
+      "dragContrastC16": -0.3874241838780259,
+      "dragContrastResidualC16MinusC12": -0.12985978016731092,
+      "followerPhase": 0.725,
+      "liftContrastC12": -0.04851544853627643,
+      "liftContrastC16": -0.23713403674538114,
+      "liftContrastResidualC16MinusC12": -0.1886185882091047,
+      "normalizedPowerContrastC12": -0.1757418103825199,
+      "normalizedPowerContrastC16": -0.23811752011903753,
+      "normalizedPowerContrastResidualC16MinusC12": -0.062375709736517626
+    },
+    {
+      "dragContrastC12": -0.33227016865235326,
+      "dragContrastC16": -0.48332367642628293,
+      "dragContrastResidualC16MinusC12": -0.15105350777392967,
+      "followerPhase": 0.735,
+      "liftContrastC12": -0.212791322876408,
+      "liftContrastC16": -0.38623326301896577,
+      "liftContrastResidualC16MinusC12": -0.17344194014255776,
+      "normalizedPowerContrastC12": -0.21157759183277736,
+      "normalizedPowerContrastC16": -0.2839854651887703,
+      "normalizedPowerContrastResidualC16MinusC12": -0.07240787335599297
+    },
+    {
+      "dragContrastC12": -0.38100923226759864,
+      "dragContrastC16": -0.5693386353843355,
+      "dragContrastResidualC16MinusC12": -0.18832940311673685,
+      "followerPhase": 0.745,
+      "liftContrastC12": -0.34847037160486005,
+      "liftContrastC16": -0.5367973034348859,
+      "liftContrastResidualC16MinusC12": -0.1883269318300258,
+      "normalizedPowerContrastC12": -0.22744264018618288,
+      "normalizedPowerContrastC16": -0.3227879257546282,
+      "normalizedPowerContrastResidualC16MinusC12": -0.09534528556844535
+    },
+    {
+      "dragContrastC12": -0.5755895039741177,
+      "dragContrastC16": -0.6361426389900391,
+      "dragContrastResidualC16MinusC12": -0.06055313501592141,
+      "followerPhase": 0.755,
+      "liftContrastC12": -0.44901313978324264,
+      "liftContrastC16": -0.5946558782688187,
+      "liftContrastResidualC16MinusC12": -0.14564273848557607,
+      "normalizedPowerContrastC12": -0.32859493300677955,
+      "normalizedPowerContrastC16": -0.35185945326346024,
+      "normalizedPowerContrastResidualC16MinusC12": -0.023264520256680687
+    },
+    {
+      "dragContrastC12": -0.5455570721000984,
+      "dragContrastC16": -0.6902100795233108,
+      "dragContrastResidualC16MinusC12": -0.1446530074232124,
+      "followerPhase": 0.765,
+      "liftContrastC12": -0.5720534169288525,
+      "liftContrastC16": -0.717595102680489,
+      "liftContrastResidualC16MinusC12": -0.1455416857516365,
+      "normalizedPowerContrastC12": -0.31208188117476987,
+      "normalizedPowerContrastC16": -0.3728883255227564,
+      "normalizedPowerContrastResidualC16MinusC12": -0.060806444347986544
+    },
+    {
+      "dragContrastC12": -0.5982811639998238,
+      "dragContrastC16": -0.7189750281675615,
+      "dragContrastResidualC16MinusC12": -0.12069386416773775,
+      "followerPhase": 0.775,
+      "liftContrastC12": -0.669130490229787,
+      "liftContrastC16": -0.785375287775621,
+      "liftContrastResidualC16MinusC12": -0.11624479754583406,
+      "normalizedPowerContrastC12": -0.32001436148589435,
+      "normalizedPowerContrastC16": -0.3751774254687614,
+      "normalizedPowerContrastResidualC16MinusC12": -0.05516306398286708
+    },
+    {
+      "dragContrastC12": -0.6672409572925806,
+      "dragContrastC16": -0.7450408176456766,
+      "dragContrastResidualC16MinusC12": -0.07779986035309605,
+      "followerPhase": 0.785,
+      "liftContrastC12": -0.7434737674241183,
+      "liftContrastC16": -0.8408104130722776,
+      "liftContrastResidualC16MinusC12": -0.09733664564815925,
+      "normalizedPowerContrastC12": -0.33857232810426685,
+      "normalizedPowerContrastC16": -0.3730462941218884,
+      "normalizedPowerContrastResidualC16MinusC12": -0.03447396601762154
+    },
+    {
+      "dragContrastC12": -0.560145023312727,
+      "dragContrastC16": -0.704743017648702,
+      "dragContrastResidualC16MinusC12": -0.14459799433597498,
+      "followerPhase": 0.795,
+      "liftContrastC12": -0.747131149961823,
+      "liftContrastC16": -0.8213370387986008,
+      "liftContrastResidualC16MinusC12": -0.07420588883677781,
+      "normalizedPowerContrastC12": -0.2748544214718023,
+      "normalizedPowerContrastC16": -0.33552578864043725,
+      "normalizedPowerContrastResidualC16MinusC12": -0.06067136716863497
+    },
+    {
+      "dragContrastC12": -0.5921936860203905,
+      "dragContrastC16": -0.6454297385866186,
+      "dragContrastResidualC16MinusC12": -0.0532360525662281,
+      "followerPhase": 0.805,
+      "liftContrastC12": -0.7444988796941863,
+      "liftContrastC16": -0.7799478352541189,
+      "liftContrastResidualC16MinusC12": -0.03544895555993266,
+      "normalizedPowerContrastC12": -0.2694678406576394,
+      "normalizedPowerContrastC16": -0.2923158779676951,
+      "normalizedPowerContrastResidualC16MinusC12": -0.02284803731005569
+    },
+    {
+      "dragContrastC12": -0.5114581434477514,
+      "dragContrastC16": -0.5676476378804141,
+      "dragContrastResidualC16MinusC12": -0.056189494432662634,
+      "followerPhase": 0.815,
+      "liftContrastC12": -0.6926292349782606,
+      "liftContrastC16": -0.7110745828113587,
+      "liftContrastResidualC16MinusC12": -0.018445347833098147,
+      "normalizedPowerContrastC12": -0.21688057425984586,
+      "normalizedPowerContrastC16": -0.24117994085449146,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0242993665946456
+    },
+    {
+      "dragContrastC12": -0.46114748662258176,
+      "dragContrastC16": -0.5126331298292619,
+      "dragContrastResidualC16MinusC12": -0.05148564320668014,
+      "followerPhase": 0.825,
+      "liftContrastC12": -0.6369179533108937,
+      "liftContrastC16": -0.6636054059571188,
+      "liftContrastResidualC16MinusC12": -0.026687452646225074,
+      "normalizedPowerContrastC12": -0.1956922244902517,
+      "normalizedPowerContrastC16": -0.20763840903068176,
+      "normalizedPowerContrastResidualC16MinusC12": -0.01194618454043006
+    },
+    {
+      "dragContrastC12": -0.43551851921512075,
+      "dragContrastC16": -0.4401808216751095,
+      "dragContrastResidualC16MinusC12": -0.004662302459988776,
+      "followerPhase": 0.835,
+      "liftContrastC12": -0.5948516345052952,
+      "liftContrastC16": -0.5813952621177334,
+      "liftContrastResidualC16MinusC12": 0.01345637238756181,
+      "normalizedPowerContrastC12": -0.17523619618247221,
+      "normalizedPowerContrastC16": -0.17089657403055192,
+      "normalizedPowerContrastResidualC16MinusC12": 0.004339622151920297
+    },
+    {
+      "dragContrastC12": -0.29181828128567755,
+      "dragContrastC16": -0.35320550997250155,
+      "dragContrastResidualC16MinusC12": -0.061387228686824,
+      "followerPhase": 0.845,
+      "liftContrastC12": -0.4213736262233738,
+      "liftContrastC16": -0.455871041760044,
+      "liftContrastResidualC16MinusC12": -0.034497415536670184,
+      "normalizedPowerContrastC12": -0.10419579396797474,
+      "normalizedPowerContrastC16": -0.12674968645425633,
+      "normalizedPowerContrastResidualC16MinusC12": -0.02255389248628159
+    },
+    {
+      "dragContrastC12": -0.262174046081602,
+      "dragContrastC16": -0.27787348516694,
+      "dragContrastResidualC16MinusC12": -0.015699439085337996,
+      "followerPhase": 0.855,
+      "liftContrastC12": -0.3109563531679882,
+      "liftContrastC16": -0.33406504956782257,
+      "liftContrastResidualC16MinusC12": -0.023108696399834372,
+      "normalizedPowerContrastC12": -0.08928726762090888,
+      "normalizedPowerContrastC16": -0.09075628323023355,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0014690156093246642
+    },
+    {
+      "dragContrastC12": -0.18259190497627165,
+      "dragContrastC16": -0.17933964924705537,
+      "dragContrastResidualC16MinusC12": 0.00325225572921628,
+      "followerPhase": 0.865,
+      "liftContrastC12": -0.18340905088245507,
+      "liftContrastC16": -0.1904023984364691,
+      "liftContrastResidualC16MinusC12": -0.00699334755401404,
+      "normalizedPowerContrastC12": -0.055989643120668564,
+      "normalizedPowerContrastC16": -0.0420689351994501,
+      "normalizedPowerContrastResidualC16MinusC12": 0.013920707921218467
+    },
+    {
+      "dragContrastC12": -0.08767988332948606,
+      "dragContrastC16": -0.1025389448168994,
+      "dragContrastResidualC16MinusC12": -0.014859061487413339,
+      "followerPhase": 0.875,
+      "liftContrastC12": -0.05357478641762081,
+      "liftContrastC16": -0.0712059825850091,
+      "liftContrastResidualC16MinusC12": -0.017631196167388286,
+      "normalizedPowerContrastC12": -0.00555992349092449,
+      "normalizedPowerContrastC16": -0.008621803919912852,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0030618804289883617
+    },
+    {
+      "dragContrastC12": -0.01113606068059747,
+      "dragContrastC16": -0.04531765055584236,
+      "dragContrastResidualC16MinusC12": -0.03418158987524489,
+      "followerPhase": 0.885,
+      "liftContrastC12": 0.011814356968812723,
+      "liftContrastC16": 0.015178520456295308,
+      "liftContrastResidualC16MinusC12": 0.0033641634874825854,
+      "normalizedPowerContrastC12": 0.03403914316796808,
+      "normalizedPowerContrastC16": 0.014947687272844234,
+      "normalizedPowerContrastResidualC16MinusC12": -0.019091455895123843
+    },
+    {
+      "dragContrastC12": -0.06202226142796663,
+      "dragContrastC16": 0.0009268994289435284,
+      "dragContrastResidualC16MinusC12": 0.06294916085691016,
+      "followerPhase": 0.895,
+      "liftContrastC12": 0.11470265229907795,
+      "liftContrastC16": 0.08319462665972499,
+      "liftContrastResidualC16MinusC12": -0.031508025639352955,
+      "normalizedPowerContrastC12": -0.010100891349351437,
+      "normalizedPowerContrastC16": 0.0319803813517312,
+      "normalizedPowerContrastResidualC16MinusC12": 0.04208127270108264
+    },
+    {
+      "dragContrastC12": 0.08503413468448873,
+      "dragContrastC16": 0.02099515790593509,
+      "dragContrastResidualC16MinusC12": -0.06403897677855364,
+      "followerPhase": 0.905,
+      "liftContrastC12": 0.14305035152739176,
+      "liftContrastC16": 0.10803146840673472,
+      "liftContrastResidualC16MinusC12": -0.03501888312065704,
+      "normalizedPowerContrastC12": 0.06237303913900183,
+      "normalizedPowerContrastC16": 0.035123681556588515,
+      "normalizedPowerContrastResidualC16MinusC12": -0.027249357582413314
+    },
+    {
+      "dragContrastC12": 0.0832660378787824,
+      "dragContrastC16": 0.03928110074339264,
+      "dragContrastResidualC16MinusC12": -0.04398493713538976,
+      "followerPhase": 0.915,
+      "liftContrastC12": 0.1310769681330315,
+      "liftContrastC16": 0.1175357187695818,
+      "liftContrastResidualC16MinusC12": -0.013541249363449692,
+      "normalizedPowerContrastC12": 0.07325738345818444,
+      "normalizedPowerContrastC16": 0.03567611799361259,
+      "normalizedPowerContrastResidualC16MinusC12": -0.037581265464571856
+    },
+    {
+      "dragContrastC12": 0.06883142377579521,
+      "dragContrastC16": 0.040431819647248624,
+      "dragContrastResidualC16MinusC12": -0.028399604128546585,
+      "followerPhase": 0.925,
+      "liftContrastC12": 0.15049846454037108,
+      "liftContrastC16": 0.10616221807874626,
+      "liftContrastResidualC16MinusC12": -0.04433624646162482,
+      "normalizedPowerContrastC12": 0.04870363385048837,
+      "normalizedPowerContrastC16": 0.03009101716867557,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0186126166818128
+    },
+    {
+      "dragContrastC12": 0.08860478966508101,
+      "dragContrastC16": 0.03594029807806898,
+      "dragContrastResidualC16MinusC12": -0.05266449158701203,
+      "followerPhase": 0.935,
+      "liftContrastC12": 0.11094142955998865,
+      "liftContrastC16": 0.08072746456478885,
+      "liftContrastResidualC16MinusC12": -0.030213964995199794,
+      "normalizedPowerContrastC12": 0.048079019368748366,
+      "normalizedPowerContrastC16": 0.023446881610139192,
+      "normalizedPowerContrastResidualC16MinusC12": -0.024632137758609174
+    },
+    {
+      "dragContrastC12": 0.038666538341161516,
+      "dragContrastC16": 0.021532567083326182,
+      "dragContrastResidualC16MinusC12": -0.017133971257835334,
+      "followerPhase": 0.945,
+      "liftContrastC12": 0.07608581037852047,
+      "liftContrastC16": 0.0598255132255614,
+      "liftContrastResidualC16MinusC12": -0.01626029715295907,
+      "normalizedPowerContrastC12": 0.02302731555996973,
+      "normalizedPowerContrastC16": 0.011737438356308472,
+      "normalizedPowerContrastResidualC16MinusC12": -0.011289877203661258
+    },
+    {
+      "dragContrastC12": 0.08528055198284723,
+      "dragContrastC16": 0.039000642286508125,
+      "dragContrastResidualC16MinusC12": -0.046279909696339105,
+      "followerPhase": 0.955,
+      "liftContrastC12": 0.0553181079764411,
+      "liftContrastC16": 0.044036664101881784,
+      "liftContrastResidualC16MinusC12": -0.011281443874559316,
+      "normalizedPowerContrastC12": 0.0375462519499975,
+      "normalizedPowerContrastC16": 0.015361413462760432,
+      "normalizedPowerContrastResidualC16MinusC12": -0.02218483848723707
+    },
+    {
+      "dragContrastC12": 0.07169588141268846,
+      "dragContrastC16": 0.044913734413065454,
+      "dragContrastResidualC16MinusC12": -0.026782146999623002,
+      "followerPhase": 0.965,
+      "liftContrastC12": 0.02663492718644117,
+      "liftContrastC16": 0.028893683855510055,
+      "liftContrastResidualC16MinusC12": 0.0022587566690688843,
+      "normalizedPowerContrastC12": 0.026183032022679575,
+      "normalizedPowerContrastC16": 0.014158667154697047,
+      "normalizedPowerContrastResidualC16MinusC12": -0.012024364867982529
+    },
+    {
+      "dragContrastC12": -0.0010465308143676189,
+      "dragContrastC16": 0.028395465627539085,
+      "dragContrastResidualC16MinusC12": 0.029441996441906704,
+      "followerPhase": 0.975,
+      "liftContrastC12": -0.0016855731171066916,
+      "liftContrastC16": 0.01085153355361574,
+      "liftContrastResidualC16MinusC12": 0.012537106670722432,
+      "normalizedPowerContrastC12": -0.0055285914073014975,
+      "normalizedPowerContrastC16": 0.007737627604800124,
+      "normalizedPowerContrastResidualC16MinusC12": 0.013266219012101621
+    },
+    {
+      "dragContrastC12": 0.06857575110069089,
+      "dragContrastC16": 0.027283597837461954,
+      "dragContrastResidualC16MinusC12": -0.04129215326322894,
+      "followerPhase": 0.985,
+      "liftContrastC12": -0.0006429195115011388,
+      "liftContrastC16": 0.002130733779787314,
+      "liftContrastResidualC16MinusC12": 0.0027736532912884526,
+      "normalizedPowerContrastC12": 0.02318249416089203,
+      "normalizedPowerContrastC16": 0.010834107351649629,
+      "normalizedPowerContrastResidualC16MinusC12": -0.012348386809242402
+    },
+    {
+      "dragContrastC12": 0.04231595651328379,
+      "dragContrastC16": 0.00776971567591056,
+      "dragContrastResidualC16MinusC12": -0.03454624083737323,
+      "followerPhase": 0.995,
+      "liftContrastC12": -0.009449908825788278,
+      "liftContrastC16": 0.00031252894938485487,
+      "liftContrastResidualC16MinusC12": 0.009762437775173133,
+      "normalizedPowerContrastC12": 0.011513197125209353,
+      "normalizedPowerContrastC16": 0.010199635100153086,
+      "normalizedPowerContrastResidualC16MinusC12": -0.0013135620250562668
+    }
+  ],
+  "powerNormalization": "each coupled follower signed-power trace divided by its own matched isolated mean-positive-power scalar",
+  "qualityGateAudit": {
+    "acceptanceGatesMutateOrClampSolverOutput": false,
+    "allReportsPassed": true,
+    "closureAcceptanceLimit": 0.0002,
+    "closureHeadroomFactor": 17.88201488047638,
+    "coarseScout": {
+      "periodicHeadroomFactor": 1.6495768485030757,
+      "reportCount": 8,
+      "worstRelativePeriodicPowerDifference": 0.12124321469563053
+    },
+    "configurationCeilings": {
+      "maximumChordCells": "none; Metal buffer and recommended working-set checks apply",
+      "maximumCycles": "none arbitrary; checked arithmetic and exact Float timestep representation apply",
+      "maximumOffsetChords": "none arbitrary; finite/grid/device checks apply"
+    },
+    "maximumOverlapVoxelSamples": 0,
+    "periodicAcceptanceLimit": 0.2,
+    "periodicHeadroomFactor": 1.6495768485030757,
+    "promotedFinePair": {
+      "closureHeadroomFactor": 36.49390174186422,
+      "periodicHeadroomFactor": 7.073570765480152,
+      "reportCount": 4,
+      "worstRelativeOwnerOrIsolatedClosure": 5.480367690324783e-06,
+      "worstRelativePeriodicPowerDifference": 0.028274262975642128
+    },
+    "qualityLimitedByAcceptanceGates": false,
+    "reportCount": 12,
+    "worstRelativeOwnerOrIsolatedClosure": 1.1184421964571811e-05,
+    "worstRelativePeriodicPowerDifference": 0.12124321469563053
+  },
+  "schemaVersion": 1,
+  "scientificQuestion": "Which follower-local wingbeat phases produce the c12/c16 change in maximum-minus-minimum formation discrimination?"
+}
