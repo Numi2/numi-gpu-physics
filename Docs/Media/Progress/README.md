@@ -93,9 +93,9 @@ SHA-256: `fdbf5533df6b06a3321aad31c338a97e0391ed296189003e34f0fab661fcbdaf`
 
 ![V8 targeted-boundary attribution frontier](2026-07-17-v8-targeted-boundary-frontier.gif)
 
-## Current hero — V9 reflected-link provenance
+## Archived hero — V9 reflected-link provenance
 
-The [current README animation](../birdflow-metal-native-viewer.gif) keeps the
+The archived [V9 animation](2026-07-17-v9-reflected-link-provenance.gif) keeps the
 forward loop while improving silhouette lighting, visual hierarchy, camera
 framing, dual-layer wingtip traces, file-size headroom, and validation status.
 Its force chart remains artifact-locked to the independently audited D32 RR3
@@ -108,4 +108,20 @@ ledger and leads both temporal halves. The amber chart band retains the audited
 D28/D32 `5.632% > 5%` fine-pair gate. Convergence and experimental agreement
 therefore remain explicitly open. The V9 encoding is `9,557,715` bytes with
 SHA-256 `f25e4ed8680a930de6d67362fe6dfffc6d91742e55e8fa99d68b5661c56afe61`;
+its 73rd endpoint probe is pixel-identical to frame zero.
+
+![V9 reflected-link provenance](2026-07-17-v9-reflected-link-provenance.gif)
+
+## Current hero — V10 direction-composition discriminator
+
+The [current README animation](../birdflow-metal-native-viewer.gif) preserves
+the seamless forward loop and audited D32 force chart while advancing the
+scientific status through the preregistered zero-fluid conditioned-factor
+discriminator. Its top panel and `DIRECTION` rail node are SHA-locked through
+the six-factor contract, all 64 D28/D32 hybrid states, exact Shapley result,
+and independent 18-check audit. Direction composition supplies `87.7%` of the
+absolute conditioned-factor ledger and leads both temporal halves; the bottom
+boundary still reports the failed `5.632% > 5%` fine-pair gate. The V10
+encoding is `9,646,440` bytes with SHA-256
+`23467c2e983ceee1ce7aedeb4919ebf103dcf21f481e64bdf6aca2f220b79951`;
 its 73rd endpoint probe is pixel-identical to frame zero.

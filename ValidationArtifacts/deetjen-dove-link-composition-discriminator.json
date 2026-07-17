@@ -1,0 +1,1312 @@
+{
+  "absoluteLedgerTotal": 5246734.252389333,
+  "analysisIdentifier": "deetjen-ob-f03-link-composition-shapley-discriminator-v1",
+  "analysisPassed": true,
+  "attribution": {
+    "classification": "dominant-conditioned-factor:directionComposition",
+    "dominantFactorAvailable": true,
+    "earlyLeader": "directionComposition",
+    "lateLeader": "directionComposition",
+    "leadingAbsoluteLedgerFraction": 0.8766065007737596,
+    "leadingFactor": "directionComposition",
+    "minimumDominantContributionFraction": 0.5,
+    "sameLeaderInBothTemporalHalves": true
+  },
+  "claimBoundary": "This zero-fluid diagnostic can identify which conditioned selected-link composition factor explains the accepted majority-coverage D28/D32 reflected-force composition term. It cannot establish a boundary defect, whole-boundary causality, grid convergence, experimental agreement, production promotion, quantitative bird loads, or free flight. A dominant factor authorizes only one frozen minimal canonical for that factor.",
+  "compositionD32MinusD28Newtons": [
+    [
+      531.9778671172343,
+      -53.44263977648836
+    ],
+    [
+      536.0325884308364,
+      -6.712586597156658
+    ],
+    [
+      542.36056090354,
+      -12.273983392804254
+    ],
+    [
+      587.336034967525,
+      -18.796648797840234
+    ],
+    [
+      597.227714639274,
+      -40.572593007550225
+    ],
+    [
+      642.2083345586908,
+      -51.76730825560384
+    ],
+    [
+      641.1205688358525,
+      -74.11334152438694
+    ],
+    [
+      630.5431717849578,
+      -11.663183657767036
+    ],
+    [
+      621.9826990408369,
+      -49.703432069437355
+    ],
+    [
+      621.5728071268256,
+      -44.89995838025291
+    ],
+    [
+      633.9906938261751,
+      -56.65392517622341
+    ]
+  ],
+  "contributionLedger": [
+    {
+      "fractionOfAbsoluteLedger": 0.8766065007737596,
+      "fractionOfSignedTotal": 1.1546225330002513,
+      "name": "directionComposition",
+      "signedSquaredDifferenceContribution": 4599321.353476841
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.11705181564262426,
+      "fractionOfSignedTotal": -0.15417483642919713,
+      "name": "linkMeasureScale",
+      "signedSquaredDifferenceContribution": -614139.7704365182
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.003340790720286186,
+      "fractionOfSignedTotal": -0.004400323566247544,
+      "name": "partOccupancy",
+      "signedSquaredDifferenceContribution": -17528.241102189964
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.001458699053734987,
+      "fractionOfSignedTotal": 0.001921325925397446,
+      "name": "linkFractionBin",
+      "signedSquaredDifferenceContribution": 7653.406289159266
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0014425026568795909,
+      "fractionOfSignedTotal": 0.0018999928360966614,
+      "name": "interpolationBranch",
+      "signedSquaredDifferenceContribution": 7568.428099012767
+    },
+    {
+      "fractionOfAbsoluteLedger": 9.969115271530174e-05,
+      "fractionOfSignedTotal": 0.0001313082336992203,
+      "name": "topologyClass",
+      "signedSquaredDifferenceContribution": 523.0529856115495
+    }
+  ],
+  "d36RunAuthorized": false,
+  "earlyContributionLedger": [
+    {
+      "fractionOfAbsoluteLedger": 0.8745208401734731,
+      "fractionOfSignedTotal": 1.1580462961724565,
+      "name": "directionComposition",
+      "signedSquaredDifferenceContribution": 1819501.7280557223
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.11453314696245936,
+      "fractionOfSignedTotal": -0.15166555276434787,
+      "name": "linkMeasureScale",
+      "signedSquaredDifferenceContribution": -238294.21695258535
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.007797869673496666,
+      "fractionOfSignedTotal": -0.010325990735266018,
+      "name": "partOccupancy",
+      "signedSquaredDifferenceContribution": -16224.012847156468
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0019248084642732415,
+      "fractionOfSignedTotal": 0.002548844133263726,
+      "name": "interpolationBranch",
+      "signedSquaredDifferenceContribution": 4004.698534373105
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0011389276714720157,
+      "fractionOfSignedTotal": 0.0015081755756613648,
+      "name": "linkFractionBin",
+      "signedSquaredDifferenceContribution": 2369.6186199093295
+    },
+    {
+      "fractionOfAbsoluteLedger": 8.44070548256782e-05,
+      "fractionOfSignedTotal": -0.00011177238176772621,
+      "name": "topologyClass",
+      "signedSquaredDifferenceContribution": -175.61477675586454
+    }
+  ],
+  "endpointStateReconstructionRelativeRMS": 5.626536186095504e-16,
+  "endpoints": [
+    {
+      "compositionD32MinusD28Newtons": [
+        531.9778671172343,
+        -53.44263977648836
+      ],
+      "d28CompositionStateNewtons": [
+        52.257679876239045,
+        4.3498585214361185
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 127412,
+      "d32CompositionStateNewtons": [
+        584.2355469934733,
+        -49.092781255052245
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          621.5009487912671,
+          -51.4413562780026
+        ],
+        "interpolationBranch": [
+          1.090285150878258,
+          -0.9065826927735008
+        ],
+        "linkFractionBin": [
+          0.8887130927223582,
+          -1.065703902451429
+        ],
+        "linkMeasureScale": [
+          -84.11354552604968,
+          5.190820547555429
+        ],
+        "partOccupancy": [
+          -7.39155211770963,
+          -5.057101241203776
+        ],
+        "topologyClass": [
+          0.003017726125965934,
+          -0.16271620961247305
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.0003250123675178102,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          692.643926042383,
+          -44.45106410575289
+        ],
+        "interpolationBranch": [
+          2.063580328731163,
+          -1.6695645125712844
+        ],
+        "linkFractionBin": [
+          1.3897430519229417,
+          -2.02563663542648
+        ],
+        "linkMeasureScale": [
+          -11.098590856302977,
+          -0.9238316765412122
+        ],
+        "partOccupancy": [
+          -12.723986673000738,
+          8.868454521594757
+        ],
+        "topologyClass": [
+          -0.055523374201086995,
+          -0.19551155441064338
+        ]
+      },
+      "sourceTimeSeconds": 0.025,
+      "targetSampleIndex": 50
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        536.0325884308364,
+        -6.712586597156658
+      ],
+      "d28CompositionStateNewtons": [
+        46.80042698474544,
+        2.321170815138032
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 126910,
+      "d32CompositionStateNewtons": [
+        582.8330154155818,
+        -4.391415782018626
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          621.6203286063214,
+          11.459325014078678
+        ],
+        "interpolationBranch": [
+          1.06750975880557,
+          -4.421859415173362
+        ],
+        "linkFractionBin": [
+          0.4471927319874294,
+          -0.8778975354316437
+        ],
+        "linkMeasureScale": [
+          -81.74324297506489,
+          -0.8185265813967082
+        ],
+        "partOccupancy": [
+          -5.387350798995547,
+          -11.970842494114681
+        ],
+        "topologyClass": [
+          0.028151107782325133,
+          -0.08278558511894255
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.000395570847327881,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          690.4906141187076,
+          28.835150331957834
+        ],
+        "interpolationBranch": [
+          2.014571735644104,
+          -8.888778458966286
+        ],
+        "linkFractionBin": [
+          1.1766393921453897,
+          -1.590655135019432
+        ],
+        "linkMeasureScale": [
+          -9.793763240057643,
+          -0.485743376029653
+        ],
+        "partOccupancy": [
+          -11.223822786703764,
+          6.891973861787292
+        ],
+        "topologyClass": [
+          -0.08001754461146504,
+          -0.40495176522253473
+        ]
+      },
+      "sourceTimeSeconds": 0.0255,
+      "targetSampleIndex": 51
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        542.36056090354,
+        -12.273983392804254
+      ],
+      "d28CompositionStateNewtons": [
+        50.821192537950274,
+        7.276225464487524
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 126417,
+      "d32CompositionStateNewtons": [
+        593.1817534414903,
+        -4.99775792831673
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          628.2801628757604,
+          -1.3716659795721546
+        ],
+        "interpolationBranch": [
+          1.486616471592657,
+          -0.5118211950917748
+        ],
+        "linkFractionBin": [
+          0.8177449332318943,
+          -1.2993266104141565
+        ],
+        "linkMeasureScale": [
+          -82.11653341379484,
+          -1.1323056058966716
+        ],
+        "partOccupancy": [
+          -6.168418871770706,
+          -7.956753311299621
+        ],
+        "topologyClass": [
+          0.060988908520501955,
+          -0.0021106905298770157
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.00015820657031886536,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          698.220660841394,
+          12.901819048769084
+        ],
+        "interpolationBranch": [
+          2.7170914475702617,
+          -0.9897362692585432
+        ],
+        "linkFractionBin": [
+          1.4378476301583945,
+          -2.7353713554794723
+        ],
+        "linkMeasureScale": [
+          -10.478457811239181,
+          -1.500232830974312
+        ],
+        "partOccupancy": [
+          -10.837389310201004,
+          7.268737706695617
+        ],
+        "topologyClass": [
+          0.12866076263939163,
+          -0.1400658433283155
+        ]
+      },
+      "sourceTimeSeconds": 0.026,
+      "targetSampleIndex": 52
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        587.336034967525,
+        -18.796648797840234
+      ],
+      "d28CompositionStateNewtons": [
+        45.040361906279585,
+        7.225516753326573
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 126215,
+      "d32CompositionStateNewtons": [
+        632.3763968738047,
+        -11.57113204451366
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          677.2396232599817,
+          -6.534191265408515
+        ],
+        "interpolationBranch": [
+          2.2236018127250277,
+          -0.15244712270025854
+        ],
+        "linkFractionBin": [
+          1.0751317653632173,
+          -0.9949269432985164
+        ],
+        "linkMeasureScale": [
+          -86.10546649589017,
+          -0.48626140440841015
+        ],
+        "partOccupancy": [
+          -6.944206870706777,
+          -10.70008059789131
+        ],
+        "topologyClass": [
+          -0.15264850394797305,
+          0.07125853586677476
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.0002157081052382862,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          754.6467524187575,
+          10.159761235854361
+        ],
+        "interpolationBranch": [
+          4.168022412659411,
+          -0.37382268540831376
+        ],
+        "linkFractionBin": [
+          2.033327588841601,
+          -2.058144061434021
+        ],
+        "linkMeasureScale": [
+          -9.22932777087243,
+          -1.4805978373163668
+        ],
+        "partOccupancy": [
+          -10.393674733810784,
+          6.548897533486027
+        ],
+        "topologyClass": [
+          -0.1621939451285641,
+          0.06388084100679237
+        ]
+      },
+      "sourceTimeSeconds": 0.0265,
+      "targetSampleIndex": 53
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        597.227714639274,
+        -40.572593007550225
+      ],
+      "d28CompositionStateNewtons": [
+        54.68866535634605,
+        3.4403437887935837
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 126587,
+      "d32CompositionStateNewtons": [
+        651.9163799956201,
+        -37.13224921875664
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          691.4273017920967,
+          -34.38686794733391
+        ],
+        "interpolationBranch": [
+          1.073227231342953,
+          -0.29444550401865416
+        ],
+        "linkFractionBin": [
+          0.7487316076114313,
+          -0.9242039926433354
+        ],
+        "linkMeasureScale": [
+          -90.79956234608824,
+          3.5522511351167827
+        ],
+        "partOccupancy": [
+          -4.962873675229026,
+          -8.246299574536726
+        ],
+        "topologyClass": [
+          -0.2591099704597487,
+          -0.27302712413438446
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.00023699116022972343,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          770.2184706788893,
+          -25.210582767258742
+        ],
+        "interpolationBranch": [
+          2.1401540301975075,
+          -0.6380164937618531
+        ],
+        "linkFractionBin": [
+          1.3776913485605888,
+          -1.9230551152312785
+        ],
+        "linkMeasureScale": [
+          -11.334165557807538,
+          -0.7130074545408078
+        ],
+        "partOccupancy": [
+          -8.256138139196906,
+          5.119531737965801
+        ],
+        "topologyClass": [
+          -0.32405350738912375,
+          -0.3388257323727544
+        ]
+      },
+      "sourceTimeSeconds": 0.027,
+      "targetSampleIndex": 54
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        642.2083345586908,
+        -51.76730825560384
+      ],
+      "d28CompositionStateNewtons": [
+        61.13296945039199,
+        0.8404545597851296
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 126931,
+      "d32CompositionStateNewtons": [
+        703.3413040090828,
+        -50.92685369581871
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          745.3879862088818,
+          -44.89384180498638
+        ],
+        "interpolationBranch": [
+          0.9906823294616678,
+          -0.6425492319266749
+        ],
+        "linkFractionBin": [
+          0.7667998978092312,
+          -1.0736340083567508
+        ],
+        "linkMeasureScale": [
+          -99.59020464580658,
+          5.571021751387871
+        ],
+        "partOccupancy": [
+          -5.453601384351514,
+          -10.891771677665055
+        ],
+        "topologyClass": [
+          0.10667215269619892,
+          0.1634667159431525
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.00019731979608395193,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          833.1922427813813,
+          -35.160895154319576
+        ],
+        "interpolationBranch": [
+          1.9984872136502148,
+          -1.237238368702151
+        ],
+        "linkFractionBin": [
+          1.3621244856922274,
+          -2.1646468996094086
+        ],
+        "linkMeasureScale": [
+          -12.801082308826786,
+          -0.17598896460216196
+        ],
+        "partOccupancy": [
+          -7.158187159612552,
+          4.2174235000266265
+        ],
+        "topologyClass": [
+          0.1941758935558653,
+          0.11778127427862728
+        ]
+      },
+      "sourceTimeSeconds": 0.0275,
+      "targetSampleIndex": 55
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        641.1205688358525,
+        -74.11334152438694
+      ],
+      "d28CompositionStateNewtons": [
+        59.68047474621744,
+        0.8752951757798826
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 126936,
+      "d32CompositionStateNewtons": [
+        700.80104358207,
+        -73.23804634860706
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          740.7747675820057,
+          -73.41375608908527
+        ],
+        "interpolationBranch": [
+          1.1243264755855553,
+          -0.18128846320452557
+        ],
+        "linkFractionBin": [
+          1.2566223242538395,
+          -0.7304511938749161
+        ],
+        "linkMeasureScale": [
+          -99.02046442670479,
+          8.730905750010951
+        ],
+        "partOccupancy": [
+          -3.5549524125856595,
+          -8.852966447425736
+        ],
+        "topologyClass": [
+          0.5402692932978669,
+          0.33421491919257323
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.0002314183750179437,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          826.6321939752842,
+          -69.88533747190833
+        ],
+        "interpolationBranch": [
+          1.8033112610794788,
+          -0.6422601090353055
+        ],
+        "linkFractionBin": [
+          2.228447105956249,
+          -1.6393887387572335
+        ],
+        "linkMeasureScale": [
+          -12.498792311126437,
+          -0.18331175580492953
+        ],
+        "partOccupancy": [
+          -6.404950541674353,
+          3.411030860497121
+        ],
+        "topologyClass": [
+          0.6549178293289941,
+          0.35098955689005606
+        ]
+      },
+      "sourceTimeSeconds": 0.028,
+      "targetSampleIndex": 56
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        630.5431717849578,
+        -11.663183657767036
+      ],
+      "d28CompositionStateNewtons": [
+        60.078987526556354,
+        4.300480447901776
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 126995,
+      "d32CompositionStateNewtons": [
+        690.6221593115142,
+        -7.362703209865259
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          728.7089864589586,
+          3.370938190342749
+        ],
+        "interpolationBranch": [
+          1.1564794292977365,
+          0.03230234518458536
+        ],
+        "linkFractionBin": [
+          1.5291718957639198,
+          -0.9545548316369193
+        ],
+        "linkMeasureScale": [
+          -97.97155493742372,
+          -0.7145339576099206
+        ],
+        "partOccupancy": [
+          -3.291483772554481,
+          -13.372372829652416
+        ],
+        "topologyClass": [
+          0.4115727109156596,
+          -0.02496257439511709
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.0002665106614963776,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          813.9808993060076,
+          20.82241832049513
+        ],
+        "interpolationBranch": [
+          2.228809410691561,
+          0.058010044604131394
+        ],
+        "linkFractionBin": [
+          3.1254760916578093,
+          -1.8054949662476218
+        ],
+        "linkMeasureScale": [
+          -12.604318526186766,
+          -0.9022226840464285
+        ],
+        "partOccupancy": [
+          -6.212336427982592,
+          2.942002754423342
+        ],
+        "topologyClass": [
+          0.47987498184158994,
+          -0.13130731207942858
+        ]
+      },
+      "sourceTimeSeconds": 0.0285,
+      "targetSampleIndex": 57
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        621.9826990408369,
+        -49.703432069437355
+      ],
+      "d28CompositionStateNewtons": [
+        52.990313388451625,
+        2.2621924117480887
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 127058,
+      "d32CompositionStateNewtons": [
+        674.9730124292886,
+        -47.441239657689266
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          714.4971849914685,
+          -43.795190103607084
+        ],
+        "interpolationBranch": [
+          0.8238337513762097,
+          -0.42696134296807353
+        ],
+        "linkFractionBin": [
+          1.5722050132183525,
+          -0.6184257374532829
+        ],
+        "linkMeasureScale": [
+          -95.2424349222335,
+          5.142983093142059
+        ],
+        "partOccupancy": [
+          0.15715336440441474,
+          -10.172808571490027
+        ],
+        "topologyClass": [
+          0.17475684260285862,
+          0.1669705929390493
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.0003418967580303751,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          796.5540453363519,
+          -36.14708677731396
+        ],
+        "interpolationBranch": [
+          1.370993128231106,
+          -0.9667523161700018
+        ],
+        "linkFractionBin": [
+          3.0069775327487207,
+          -1.2390490777410292
+        ],
+        "linkMeasureScale": [
+          -11.137906797454903,
+          -0.4754847938955393
+        ],
+        "partOccupancy": [
+          -4.056172268919632,
+          2.4623475129743184
+        ],
+        "topologyClass": [
+          0.442101833102015,
+          0.03795620816021028
+        ]
+      },
+      "sourceTimeSeconds": 0.029,
+      "targetSampleIndex": 58
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        621.5728071268256,
+        -44.89995838025291
+      ],
+      "d28CompositionStateNewtons": [
+        51.39683076526619,
+        3.14846860360565
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 127798,
+      "d32CompositionStateNewtons": [
+        672.9696378920918,
+        -41.75148977664726
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          714.5465611598665,
+          -35.59716142171598
+        ],
+        "interpolationBranch": [
+          0.5765963316547207,
+          -0.5109220101119132
+        ],
+        "linkFractionBin": [
+          2.004580595134667,
+          -1.20291325402795
+        ],
+        "linkMeasureScale": [
+          -97.34840530002029,
+          4.3752687734507765
+        ],
+        "partOccupancy": [
+          1.7267437383627662,
+          -11.81024803542373
+        ],
+        "topologyClass": [
+          0.0667306018270947,
+          -0.15398243242411375
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.0007433606159720809,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          797.8568681782008,
+          -26.405262089628266
+        ],
+        "interpolationBranch": [
+          1.128850456846287,
+          -1.1806337408571608
+        ],
+        "linkFractionBin": [
+          4.033989226581184,
+          -2.5853179876853716
+        ],
+        "linkMeasureScale": [
+          -11.03803067392488,
+          -0.6761680147401563
+        ],
+        "partOccupancy": [
+          -3.208386932541238,
+          2.1496292903169802
+        ],
+        "topologyClass": [
+          0.0887417503841732,
+          -0.7023041340404461
+        ]
+      },
+      "sourceTimeSeconds": 0.0295,
+      "targetSampleIndex": 59
+    },
+    {
+      "compositionD32MinusD28Newtons": [
+        633.9906938261751,
+        -56.65392517622341
+      ],
+      "d28CompositionStateNewtons": [
+        50.59250107105884,
+        1.9746974942766116
+      ],
+      "d28PhysicalPerLinkForceScale": 0.9863835573196411,
+      "d28SelectedLinkCount": 128926,
+      "d32CompositionStateNewtons": [
+        684.5831948972339,
+        -54.6792276819468
+      ],
+      "d32PhysicalPerLinkForceScale": 0.7551997900009155,
+      "d32SelectedLinkCount": 131072,
+      "factorShapleyD32MinusD28Newtons": {
+        "directionComposition": [
+          731.6517591152826,
+          -49.56563538216676
+        ],
+        "interpolationBranch": [
+          0.7670520782724234,
+          -0.5272582222325914
+        ],
+        "linkFractionBin": [
+          0.8740014038221294,
+          -0.6690463028668286
+        ],
+        "linkMeasureScale": [
+          -102.73746282057172,
+          6.468500903955009
+        ],
+        "partOccupancy": [
+          3.565337328769554,
+          -12.522225242595951
+        ],
+        "topologyClass": [
+          -0.12999327940017125,
+          0.16173906968371818
+        ]
+      },
+      "maximumPooledFallbackProbabilityMass": 0.0005307952901859079,
+      "oneFactorFromD28CounterfactualNewtons": {
+        "directionComposition": [
+          818.5494150344982,
+          -41.492408292251056
+        ],
+        "interpolationBranch": [
+          1.3844249577200927,
+          -1.0504049959099717
+        ],
+        "linkFractionBin": [
+          1.7164522122699921,
+          -1.4423507416116905
+        ],
+        "linkMeasureScale": [
+          -11.21287358288452,
+          -0.43765445271558434
+        ],
+        "partOccupancy": [
+          -1.7998712125475151,
+          1.2697330676313356
+        ],
+        "topologyClass": [
+          -0.11570217953902784,
+          0.13216042997922273
+        ]
+      },
+      "sourceTimeSeconds": 0.03,
+      "targetSampleIndex": 60
+    }
+  ],
+  "energyClosureRelativeError": 1.1690051069490397e-16,
+  "experimentalAgreementGateApplied": false,
+  "factorOrder": [
+    "linkMeasureScale",
+    "partOccupancy",
+    "directionComposition",
+    "interpolationBranch",
+    "topologyClass",
+    "linkFractionBin"
+  ],
+  "factorShapleyD32MinusD28Newtons": {
+    "directionComposition": [
+      [
+        621.5009487912671,
+        -51.4413562780026
+      ],
+      [
+        621.6203286063214,
+        11.459325014078678
+      ],
+      [
+        628.2801628757604,
+        -1.3716659795721546
+      ],
+      [
+        677.2396232599817,
+        -6.534191265408515
+      ],
+      [
+        691.4273017920967,
+        -34.38686794733391
+      ],
+      [
+        745.3879862088818,
+        -44.89384180498638
+      ],
+      [
+        740.7747675820057,
+        -73.41375608908527
+      ],
+      [
+        728.7089864589586,
+        3.370938190342749
+      ],
+      [
+        714.4971849914685,
+        -43.795190103607084
+      ],
+      [
+        714.5465611598665,
+        -35.59716142171598
+      ],
+      [
+        731.6517591152826,
+        -49.56563538216676
+      ]
+    ],
+    "interpolationBranch": [
+      [
+        1.090285150878258,
+        -0.9065826927735008
+      ],
+      [
+        1.06750975880557,
+        -4.421859415173362
+      ],
+      [
+        1.486616471592657,
+        -0.5118211950917748
+      ],
+      [
+        2.2236018127250277,
+        -0.15244712270025854
+      ],
+      [
+        1.073227231342953,
+        -0.29444550401865416
+      ],
+      [
+        0.9906823294616678,
+        -0.6425492319266749
+      ],
+      [
+        1.1243264755855553,
+        -0.18128846320452557
+      ],
+      [
+        1.1564794292977365,
+        0.03230234518458536
+      ],
+      [
+        0.8238337513762097,
+        -0.42696134296807353
+      ],
+      [
+        0.5765963316547207,
+        -0.5109220101119132
+      ],
+      [
+        0.7670520782724234,
+        -0.5272582222325914
+      ]
+    ],
+    "linkFractionBin": [
+      [
+        0.8887130927223582,
+        -1.065703902451429
+      ],
+      [
+        0.4471927319874294,
+        -0.8778975354316437
+      ],
+      [
+        0.8177449332318943,
+        -1.2993266104141565
+      ],
+      [
+        1.0751317653632173,
+        -0.9949269432985164
+      ],
+      [
+        0.7487316076114313,
+        -0.9242039926433354
+      ],
+      [
+        0.7667998978092312,
+        -1.0736340083567508
+      ],
+      [
+        1.2566223242538395,
+        -0.7304511938749161
+      ],
+      [
+        1.5291718957639198,
+        -0.9545548316369193
+      ],
+      [
+        1.5722050132183525,
+        -0.6184257374532829
+      ],
+      [
+        2.004580595134667,
+        -1.20291325402795
+      ],
+      [
+        0.8740014038221294,
+        -0.6690463028668286
+      ]
+    ],
+    "linkMeasureScale": [
+      [
+        -84.11354552604968,
+        5.190820547555429
+      ],
+      [
+        -81.74324297506489,
+        -0.8185265813967082
+      ],
+      [
+        -82.11653341379484,
+        -1.1323056058966716
+      ],
+      [
+        -86.10546649589017,
+        -0.48626140440841015
+      ],
+      [
+        -90.79956234608824,
+        3.5522511351167827
+      ],
+      [
+        -99.59020464580658,
+        5.571021751387871
+      ],
+      [
+        -99.02046442670479,
+        8.730905750010951
+      ],
+      [
+        -97.97155493742372,
+        -0.7145339576099206
+      ],
+      [
+        -95.2424349222335,
+        5.142983093142059
+      ],
+      [
+        -97.34840530002029,
+        4.3752687734507765
+      ],
+      [
+        -102.73746282057172,
+        6.468500903955009
+      ]
+    ],
+    "partOccupancy": [
+      [
+        -7.39155211770963,
+        -5.057101241203776
+      ],
+      [
+        -5.387350798995547,
+        -11.970842494114681
+      ],
+      [
+        -6.168418871770706,
+        -7.956753311299621
+      ],
+      [
+        -6.944206870706777,
+        -10.70008059789131
+      ],
+      [
+        -4.962873675229026,
+        -8.246299574536726
+      ],
+      [
+        -5.453601384351514,
+        -10.891771677665055
+      ],
+      [
+        -3.5549524125856595,
+        -8.852966447425736
+      ],
+      [
+        -3.291483772554481,
+        -13.372372829652416
+      ],
+      [
+        0.15715336440441474,
+        -10.172808571490027
+      ],
+      [
+        1.7267437383627662,
+        -11.81024803542373
+      ],
+      [
+        3.565337328769554,
+        -12.522225242595951
+      ]
+    ],
+    "topologyClass": [
+      [
+        0.003017726125965934,
+        -0.16271620961247305
+      ],
+      [
+        0.028151107782325133,
+        -0.08278558511894255
+      ],
+      [
+        0.060988908520501955,
+        -0.0021106905298770157
+      ],
+      [
+        -0.15264850394797305,
+        0.07125853586677476
+      ],
+      [
+        -0.2591099704597487,
+        -0.27302712413438446
+      ],
+      [
+        0.10667215269619892,
+        0.1634667159431525
+      ],
+      [
+        0.5402692932978669,
+        0.33421491919257323
+      ],
+      [
+        0.4115727109156596,
+        -0.02496257439511709
+      ],
+      [
+        0.17475684260285862,
+        0.1669705929390493
+      ],
+      [
+        0.0667306018270947,
+        -0.15398243242411375
+      ],
+      [
+        -0.12999327940017125,
+        0.16173906968371818
+      ]
+    ]
+  },
+  "fluidEvolutionExecuted": false,
+  "gates": {
+    "conditionalNormalization": true,
+    "endpointStateReconstruction": true,
+    "energyClosure": true,
+    "forceScaleConsistency": true,
+    "pooledFallbackBound": true,
+    "shapleyForceClosure": true,
+    "sourceCompositionDifferenceReproduction": true
+  },
+  "generatedBy": "Scripts/analyze-dove-link-composition-discriminator.py",
+  "gridConvergenceGateApplied": false,
+  "lateContributionLedger": [
+    {
+      "fractionOfAbsoluteLedger": 0.8778796581033445,
+      "fractionOfSignedTotal": 1.1523924857360766,
+      "name": "directionComposition",
+      "signedSquaredDifferenceContribution": 2779819.6254211185
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.11869373213096629,
+      "fractionOfSignedTotal": -0.15580924304273405,
+      "name": "linkMeasureScale",
+      "signedSquaredDifferenceContribution": -375845.5534839329
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0016686441343722453,
+      "fractionOfSignedTotal": 0.0021904288863152893,
+      "name": "linkFractionBin",
+      "signedSquaredDifferenceContribution": 5283.787669249937
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.001125441975863705,
+      "fractionOfSignedTotal": 0.001477367500369417,
+      "name": "interpolationBranch",
+      "signedSquaredDifferenceContribution": 3563.729564639663
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.00041188120414254473,
+      "fractionOfSignedTotal": -0.0005406763903098887,
+      "name": "partOccupancy",
+      "signedSquaredDifferenceContribution": -1304.2282550334971
+    },
+    {
+      "fractionOfAbsoluteLedger": 0.0002206424513108535,
+      "fractionOfSignedTotal": 0.000289637310282776,
+      "name": "topologyClass",
+      "signedSquaredDifferenceContribution": 698.6677623674141
+    }
+  ],
+  "maximumConditionalNormalizationError": 1.1102230246251565e-16,
+  "maximumForceScaleRelativeSpread": 0.0,
+  "maximumPooledFallbackProbabilityMass": 0.0007433606159720809,
+  "minimalCanonicalAuthorized": true,
+  "nextAction": "Preregister one minimal canonical that isolates directionComposition; do not modify production physics.",
+  "preregistrationSHA256": "d8c04b85ff1835cd912afc3c928a6f0558903ce53fed4340fea616c9fd07233f",
+  "productionModificationAuthorized": false,
+  "schemaVersion": 1,
+  "scientificVerdict": "The frozen conditional Shapley ledger identifies directionComposition as a temporally stable >=50% link-composition factor.",
+  "shapleyForceClosureRelativeRMS": 1.808119628658816e-16,
+  "signedLedgerTotal": 3983398.2293119165,
+  "sourceCompositionDifferenceReproductionRelativeRMS": 5.63187790528064e-16,
+  "sourceD28ProvenanceSHA256": "80b9dc99f84413d2ce0ff6c7438a4b90a7b976685c40a0acb47973989ebd3226",
+  "sourceD32ProvenanceSHA256": "fbcdeede0384a87c1f17cd05baab6a1bf19422c94c335c725872fa3a12abeda0",
+  "sourceProvenanceAttributionSHA256": "04f6f1c23b5cee590428609cac10298ae0e4f1c8e0e120bed4e26172f7edb08e",
+  "squaredDifferenceEnergy": 3983398.229311916,
+  "targetSampleIndices": [
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+  ]
+}

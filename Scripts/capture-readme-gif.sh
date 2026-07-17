@@ -56,7 +56,13 @@ swift build -c release --product birdflow-viewer
   --capture-dove-reflected-provenance-attribution \
     "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance.json" \
   --capture-dove-reflected-provenance-audit \
-    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-audit.json"
+    "$ROOT/ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-audit.json" \
+  --capture-dove-link-composition-preregistration \
+    "$ROOT/ValidationArtifacts/deetjen-dove-link-composition-discriminator-preregistration.json" \
+  --capture-dove-link-composition-attribution \
+    "$ROOT/ValidationArtifacts/deetjen-dove-link-composition-discriminator.json" \
+  --capture-dove-link-composition-audit \
+    "$ROOT/ValidationArtifacts/deetjen-dove-link-composition-discriminator-audit.json"
 
 ffmpeg -v error -y \
   -framerate 24 \

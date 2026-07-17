@@ -524,14 +524,23 @@ temporally stable `91.12%` absolute-ledger self contribution. Bulk population
 history contributes only `0.216%`; the interaction contributes a cancelling
 `8.659%`.
 
-The highest-return next step is therefore a zero-fluid, frozen-population
-composition cross-application using the committed endpoint strata. It should
-separately substitute link count/occupancy, direction, interpolation branch,
-topology class, and link-fraction-bin coefficients, then preregister a tiny
-prescribed-surface canonical for only the leading factor. This prevents another
-long fluid ladder or broad boundary edit from being spent on a mechanism the
-data do not support. D36, convergence, experimental agreement, production
-promotion, and free flight remain unauthorized.
+The zero-fluid, frozen-population composition cross-application is now
+complete. Its preregistered six-factor conditional model evaluates all 64
+D28/D32 hybrid states and applies exact Shapley attribution. Endpoint,
+source-composition, force-ledger, and energy closures are all below
+`5.64e-16`; maximum pooled fallback mass is `0.0743%`. Direction composition
+leads both temporal halves and supplies `87.66%` of the absolute ledger.
+Link-measure scale is second at `11.71%` with a cancelling sign; each remaining
+factor is below `0.34%`. The independent audit passes all 18 checks.
+
+The highest-return next step is therefore one preregistered oblique
+planar/slab canonical isolating D3Q19 direction composition across two grids
+and several subcell phases. Wall motion, interpolation branch, topology,
+populations, and physical area must remain fixed. This tiny experiment can
+distinguish legitimate quadrature sensitivity from erroneous direction
+weighting before another long fluid ladder or broad boundary edit. D36,
+convergence, experimental agreement, production promotion, and free flight
+remain unauthorized.
 
 ## Claim after a successful ladder
 

@@ -31,18 +31,20 @@ chart is decoded from the committed D32 RR3 source-viscosity full-window
 artifact and remains explicitly descriptive. The D32 rail node is locked to
 its audit: 15,104 positive finite steps, all 187 registered force bins, closed
 momentum ledgers, and negligible correction intrusion. The top status and
-`PROVENANCE` node additionally require the V2 reflected-population
+`DIRECTION` node additionally require the V2 reflected-population
 preregistration, both passing selected-link D28/D32 cases, the exact
-population/composition attribution, and its independent 16-check audit. They
-report near-wall link composition as the stable `91.1%` absolute-ledger
-leader, with `100.0%/83.45%` D28/D32 X/Z score coverage and zero capture
-overflow or detail mismatch.
+population/composition attribution and 16-check audit, plus the zero-fluid
+conditioned-factor preregistration, Shapley result, and independent 18-check
+audit. They report lattice direction composition as the stable `87.7%`
+factor-ledger leader in both temporal halves. The underlying selected links
+retain `100.0%/83.45%` D28/D32 X/Z score coverage and zero capture overflow or
+detail mismatch.
 The scientific-boundary panel is separately locked to the failed D28/D32
 `5.632% > 5%` refinement result. The chart's amber
 `25...30 ms` band is locked to the independently audited archive-only phase
 localization, not selected by the renderer. Capture rejects a surface, D32
 window, refinement, localization, targeted case, provenance preregistration or
-case, attribution, or audit that no
+case, conditioned-factor contract, attribution, or audit that no
 longer matches the locked hashes, the `144 / 2,157 / 3,968`
 frame/vertex/triangle contract, the 187-bin force window, or the explicit
 no-D36/no-convergence boundary. It also rejects

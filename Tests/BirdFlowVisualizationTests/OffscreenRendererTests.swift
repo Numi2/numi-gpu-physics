@@ -185,6 +185,18 @@ func measuredDoveShowcaseCaptureClosesLoop() throws {
     root.appendingPathComponent(
       "ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-audit.json"
     ).path,
+    "--capture-dove-link-composition-preregistration",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-link-composition-discriminator-preregistration.json"
+    ).path,
+    "--capture-dove-link-composition-attribution",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-link-composition-discriminator.json"
+    ).path,
+    "--capture-dove-link-composition-audit",
+    root.appendingPathComponent(
+      "ValidationArtifacts/deetjen-dove-link-composition-discriminator-audit.json"
+    ).path,
   ])
   try ReadmeShowcaseCapture.run(arguments)
   let firstData = try Data(

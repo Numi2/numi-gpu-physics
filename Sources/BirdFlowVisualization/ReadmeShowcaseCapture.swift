@@ -27,6 +27,9 @@ public enum ReadmeShowcaseCapture {
     let doveReflectedProvenanceD32URL: URL?
     let doveReflectedProvenanceAttributionURL: URL?
     let doveReflectedProvenanceAuditURL: URL?
+    let doveLinkCompositionPreregistrationURL: URL?
+    let doveLinkCompositionAttributionURL: URL?
+    let doveLinkCompositionAuditURL: URL?
 
     public init(commandLine: [String]) throws {
       guard
@@ -111,6 +114,15 @@ public enum ReadmeShowcaseCapture {
       doveReflectedProvenanceAuditURL = try fileURL(
         after: "--capture-dove-reflected-provenance-audit"
       )
+      doveLinkCompositionPreregistrationURL = try fileURL(
+        after: "--capture-dove-link-composition-preregistration"
+      )
+      doveLinkCompositionAttributionURL = try fileURL(
+        after: "--capture-dove-link-composition-attribution"
+      )
+      doveLinkCompositionAuditURL = try fileURL(
+        after: "--capture-dove-link-composition-audit"
+      )
       let doveInputs = [
         doveManifestURL,
         doveD32FullWindowArtifactURL,
@@ -127,6 +139,9 @@ public enum ReadmeShowcaseCapture {
         doveReflectedProvenanceD32URL,
         doveReflectedProvenanceAttributionURL,
         doveReflectedProvenanceAuditURL,
+        doveLinkCompositionPreregistrationURL,
+        doveLinkCompositionAttributionURL,
+        doveLinkCompositionAuditURL,
       ]
       guard
         doveInputs.allSatisfy({ $0 == nil })
@@ -138,6 +153,8 @@ public enum ReadmeShowcaseCapture {
             + "refinement, and the phase-localization report and audit"
             + ", plus both targeted cases and their attribution/audit"
             + ", plus the reflected-provenance preregistration, both cases, "
+            + "attribution, and audit"
+            + ", plus the conditioned link-composition preregistration, "
             + "attribution, and audit"
         )
       }
@@ -184,7 +201,12 @@ public enum ReadmeShowcaseCapture {
       let reflectedD32URL = arguments.doveReflectedProvenanceD32URL,
       let reflectedAttributionURL =
         arguments.doveReflectedProvenanceAttributionURL,
-      let reflectedAuditURL = arguments.doveReflectedProvenanceAuditURL
+      let reflectedAuditURL = arguments.doveReflectedProvenanceAuditURL,
+      let linkCompositionPreregistrationURL =
+        arguments.doveLinkCompositionPreregistrationURL,
+      let linkCompositionAttributionURL =
+        arguments.doveLinkCompositionAttributionURL,
+      let linkCompositionAuditURL = arguments.doveLinkCompositionAuditURL
     {
       try MeasuredDoveShowcaseCapture.run(
         arguments: arguments,
@@ -202,7 +224,11 @@ public enum ReadmeShowcaseCapture {
         reflectedD28URL: reflectedD28URL,
         reflectedD32URL: reflectedD32URL,
         reflectedAttributionURL: reflectedAttributionURL,
-        reflectedAuditURL: reflectedAuditURL
+        reflectedAuditURL: reflectedAuditURL,
+        linkCompositionPreregistrationURL:
+          linkCompositionPreregistrationURL,
+        linkCompositionAttributionURL: linkCompositionAttributionURL,
+        linkCompositionAuditURL: linkCompositionAuditURL
       )
       return
     }

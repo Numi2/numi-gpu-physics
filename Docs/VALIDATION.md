@@ -2619,14 +2619,36 @@ is the stable dominant self term at `91.125%` of the absolute ledger;
 population history is `0.216%`, and their negative interaction is `8.659%`.
 
 This clears bulk collision/transport population history as the primary cause
-of the localized D28/D32 reflected-force change. It does not prove which
-near-wall compositional feature is responsible and does not authorize a
-boundary edit. The next admissible discriminator is zero-fluid cross-application
-of the captured D28/D32 population means and coefficients, conditioned in turn
-on occupancy/count, direction, interpolation branch, topology, and q-bin. Only
-the leading frozen substitution may advance to a minimal prescribed-surface
-canonical; D36, production changes, grid convergence, experimental agreement,
-quantitative bird-load acceptance, and free flight remain unauthorized.
+of the localized D28/D32 reflected-force change. It does not by itself prove a
+boundary defect or authorize a boundary edit.
+
+The follow-on conditioned-factor discriminator was preregistered before its
+outcome and executes no fluid steps. For each endpoint it reconstructs selected
+reflected force as total selected-link count times the physical per-link force
+scale, then conditions successively on part occupancy, lattice direction,
+interpolation branch, topology class, and link-fraction bin. All `2^6 = 64`
+D28/D32 hybrid states are evaluated, with pooled D28+D32 conditionals used only
+when a chosen source has zero support for the parent context. Exact six-factor
+Shapley values close the signed force difference and its squared-energy ledger.
+
+Endpoint reconstruction closes at `5.627e-16` relative RMS, source-composition
+reproduction at `5.632e-16`, Shapley force closure at `1.808e-16`, energy
+closure at `1.169e-16`, and conditional normalization at `1.110e-16`. Maximum
+pooled fallback mass is `0.07434%` against the frozen `5%` gate. Lattice
+direction composition leads both temporal halves and supplies `87.6607%` of
+the absolute factor ledger. Link-measure scale contributes `11.7052%` with a
+cancelling sign; part occupancy, link-fraction bin, interpolation branch, and
+topology class contribute `0.3341%`, `0.1459%`, `0.1443%`, and `0.0100%`.
+The independent audit reconstructs the 64 states, factor Shapley values,
+temporal leaders, fallbacks, hashes, and safety boundary with all 18 checks
+passing.
+
+This authorizes one minimal canonical only: an oblique planar/slab surface that
+changes direction composition across resolution and subcell phase while wall
+motion, interpolation branch, topology, populations, and physical area remain
+fixed. It does not authorize D36, a production boundary change, grid
+convergence, experimental agreement, quantitative bird-load acceptance, or
+free flight.
 
 ## 8. Complete measured bird
 

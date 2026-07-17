@@ -2426,6 +2426,79 @@ func sourceViscosityArtifactsRetainLockedD16AndD28Boundaries() throws {
             == CheckpointArchive.sha256(provenanceReportData)
     )
 
+    let compositionPreregistrationData = try data(
+        "deetjen-dove-link-composition-discriminator-preregistration.json"
+    )
+    let compositionReportData = try data(
+        "deetjen-dove-link-composition-discriminator.json"
+    )
+    let compositionAuditData = try data(
+        "deetjen-dove-link-composition-discriminator-audit.json"
+    )
+    let compositionPreregistration = try #require(
+        JSONSerialization.jsonObject(with: compositionPreregistrationData)
+            as? [String: Any]
+    )
+    let compositionReport = try #require(
+        JSONSerialization.jsonObject(with: compositionReportData)
+            as? [String: Any]
+    )
+    let compositionAudit = try #require(
+        JSONSerialization.jsonObject(with: compositionAuditData)
+            as? [String: Any]
+    )
+    let compositionAttribution = try #require(
+        compositionReport["attribution"] as? [String: Any]
+    )
+    #expect(compositionPreregistration["schemaVersion"] as? Int == 1)
+    #expect(compositionPreregistration["passed"] as? Bool == true)
+    #expect(
+        compositionPreregistration["sourceD28ProvenanceSHA256"] as? String
+            == CheckpointArchive.sha256(provenanceD28Data)
+    )
+    #expect(
+        compositionPreregistration["sourceD32ProvenanceSHA256"] as? String
+            == CheckpointArchive.sha256(provenanceD32Data)
+    )
+    #expect(
+        compositionPreregistration["sourceProvenanceAttributionSHA256"]
+            as? String == CheckpointArchive.sha256(provenanceReportData)
+    )
+    #expect(compositionReport["analysisPassed"] as? Bool == true)
+    #expect(compositionReport["fluidEvolutionExecuted"] as? Bool == false)
+    #expect(
+        compositionReport["preregistrationSHA256"] as? String
+            == CheckpointArchive.sha256(compositionPreregistrationData)
+    )
+    #expect(
+        compositionAttribution["classification"] as? String
+            == "dominant-conditioned-factor:directionComposition"
+    )
+    #expect(
+        compositionAttribution["leadingFactor"] as? String
+            == "directionComposition"
+    )
+    #expect(
+        compositionAttribution["sameLeaderInBothTemporalHalves"] as? Bool
+            == true
+    )
+    #expect(
+        (compositionAttribution["leadingAbsoluteLedgerFraction"]
+            as? Double ?? 0) > 0.876
+    )
+    #expect(
+        (compositionReport["maximumPooledFallbackProbabilityMass"]
+            as? Double ?? 1) < 0.001
+    )
+    #expect(compositionReport["productionModificationAuthorized"] as? Bool == false)
+    #expect(compositionReport["d36RunAuthorized"] as? Bool == false)
+    #expect(compositionAudit["allChecksPassed"] as? Bool == true)
+    #expect(compositionAudit["checkCount"] as? Int == 18)
+    #expect(
+        compositionAudit["reportSHA256"] as? String
+            == CheckpointArchive.sha256(compositionReportData)
+    )
+
     let invalidRunnerPreregistration = try #require(
         JSONSerialization.jsonObject(with: data(
             "deetjen-dove-source-viscosity-targeted-boundary-preregistration-v1-invalid-runner.json"

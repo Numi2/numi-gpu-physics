@@ -12,9 +12,9 @@
   <img alt="BSD 3-Clause" src="https://img.shields.io/badge/License-BSD--3--Clause-blue">
 </p>
 
-![BirdFlowMetal native Metal viewer showing a continuous forward wingbeat of the reconstructed Deetjen dove, source-locked kinematics, the audited reflected-link provenance result, and the open D28/D32 refinement boundary](Docs/Media/birdflow-metal-native-viewer.gif)
+![BirdFlowMetal native Metal viewer showing a continuous forward wingbeat of the reconstructed Deetjen dove, source-locked kinematics, the audited direction-composition discriminator, and the open D28/D32 refinement boundary](Docs/Media/birdflow-metal-native-viewer.gif)
 
-<p align="center"><em>Native Metal rendering of the forward, body-following 27–121 ms repeated-pose interval, with a labeled 14 ms presentation-only closure for a continuous loop. Trails show surface kinematics, not CFD streamlines. The overlay is SHA-locked through the audited D32 RR3 window, exact D28/D32 component replay, and selected-link provenance: near-wall link composition supplies 91.12% of the absolute population/composition ledger and leads both temporal halves. The D28/D32 force-history change remains 5.632% against the frozen 5% limit, so grid convergence and experimental agreement remain open.</em></p>
+<p align="center"><em>Native Metal rendering of the forward, body-following 27–121 ms repeated-pose interval, with a labeled 14 ms presentation-only closure for a continuous loop. Trails show surface kinematics, not CFD streamlines. The overlay is SHA-locked through the audited D32 RR3 window, selected-link provenance, and the exact zero-fluid six-factor Shapley discriminator: lattice-direction composition explains 87.66% of the absolute conditioned-factor ledger and leads both temporal halves. The D28/D32 force-history change remains 5.632% against the frozen 5% limit, so grid convergence and experimental agreement remain open.</em></p>
 
 <p align="center"><a href="Docs/Media/Progress/README.md">Explore the visual progress archive →</a></p>
 
@@ -46,7 +46,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
-| Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; targeted provenance covers `100.0%/83.45%` of D28/D32 reflected X/Z score and attributes `91.12%` of the ledger to near-wall link composition, but the force-history change remains `5.632%` against `5%`, so convergence and experimental agreement remain open |
+| Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; targeted provenance covers `100.0%/83.45%` of D28/D32 reflected X/Z score, and zero-fluid conditioned cross-application attributes `87.66%` of its factor ledger to lattice direction composition; force-history change remains `5.632%` against `5%`, so convergence and experimental agreement remain open |
 | Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
@@ -582,15 +582,27 @@ their interaction contributes `8.659%` with a cancelling sign. See the
 [`attribution`](ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance.json),
 and [`audit`](ValidationArtifacts/deetjen-dove-source-viscosity-reflected-provenance-audit.json).
 
-Highest-ROI next experiment: a frozen-population, geometry-only link-composition
-canonical on the already captured D28/D32 endpoint strata. Why: the new audit
-rules out bulk population history as the primary source of the grid trend and
-localizes `91.12%` to changes in link count/direction/branch/topology/q-bin
-coefficients. ROI: cross-apply D28 populations to D32 coefficients and vice
-versa, then isolate occupancy, direction, interpolation branch, topology, and
-q-bin substitutions without another fluid run. Only the leading substitution
-would advance to a tiny prescribed-surface canonical. D36, grid convergence,
-experimental agreement, and production promotion remain blocked.
+The frozen-population, zero-fluid conditioned cross-application is complete.
+It reconstructs all 64 D28/D32 hybrid states, applies the fixed six-factor
+ordering, and uses exact Shapley attribution. Endpoint reconstruction closes at
+`5.63e-16`, Shapley force closure at `1.81e-16`, energy closure at `1.17e-16`,
+and the largest pooled conditional fallback is only `0.0743%`. Lattice
+direction composition is the stable leader in both temporal halves and supplies
+`87.66%` of the absolute factor ledger; link-measure scale is the next term at
+`11.71%` with a cancelling sign, and every other factor is below `0.34%`. The
+[`contract`](ValidationArtifacts/deetjen-dove-link-composition-discriminator-preregistration.json),
+[`result`](ValidationArtifacts/deetjen-dove-link-composition-discriminator.json),
+and [`18-check audit`](ValidationArtifacts/deetjen-dove-link-composition-discriminator-audit.json)
+are retained in the repository.
+
+Highest-ROI next experiment: one preregistered oblique planar/slab canonical
+that varies only D3Q19 direction composition across two resolutions and several
+subcell phases while holding wall motion, interpolation branch, topology,
+populations, and physical area fixed. Why: direction mix now owns `87.66%` of
+the independently reconstructed ledger. ROI: a tiny no-fluid or minimal-step
+case can distinguish a legitimate lattice quadrature effect from erroneous
+direction weighting before any production edit or D36 allocation. D36, grid
+convergence, experimental agreement, and production promotion remain blocked.
 
 ## Latest high-Re result
 

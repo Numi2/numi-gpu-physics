@@ -1,0 +1,61 @@
+{
+  "claimBoundary": "This zero-fluid diagnostic can identify which conditioned selected-link composition factor explains the accepted majority-coverage D28/D32 reflected-force composition term. It cannot establish a boundary defect, whole-boundary causality, grid convergence, experimental agreement, production promotion, quantitative bird loads, or free flight. A dominant factor authorizes only one frozen minimal canonical for that factor.",
+  "conditionalFactorization": [
+    "total selected link count times physical per-link force scale",
+    "P(part)",
+    "P(direction | part)",
+    "P(branch | part, direction)",
+    "P(topology | part, direction, branch)",
+    "P(q-bin | part, direction, branch, topology)"
+  ],
+  "crossApplicationRule": "For every endpoint and each of the 64 factor subsets, use the D32 total-scale or conditional table for selected factors and D28 for unselected factors. If a chosen source has zero parent-context count, use the frozen pooled D28+D32 conditional and record its hybrid probability mass. Reconstruct X/Z force from the fixed midpoint population, D3Q19 direction, hybrid probability, and hybrid total link-measure scale. Empty/all subsets must reproduce the direct D28/D32 composition states.",
+  "d36RunAuthorized": false,
+  "dominanceRule": "Name one factor only when its absolute signed-energy contribution is at least 50% of the total absolute six-factor ledger and it is also the largest factor in both temporal halves; otherwise classify the result as mixed.",
+  "experimentalAgreementGateApplied": false,
+  "factorOrder": [
+    "linkMeasureScale",
+    "partOccupancy",
+    "directionComposition",
+    "interpolationBranch",
+    "topologyClass",
+    "linkFractionBin"
+  ],
+  "fixedInputs": "SHA-locked V2 D28/D32 selected-link provenance endpoints 50...60, their exact population/composition attribution and 16-check audit, the published D3Q19 direction table, no fluid evolution, no new geometry, and no production parameter or physics change",
+  "fluidEvolutionAuthorized": false,
+  "gridConvergenceGateApplied": false,
+  "maximumConditionalNormalizationError": 1e-12,
+  "maximumEndpointStateReconstructionRelativeRMS": 1e-10,
+  "maximumEnergyClosureRelativeError": 1e-12,
+  "maximumPooledFallbackProbabilityMass": 0.05,
+  "maximumShapleyForceClosureRelativeRMS": 1e-12,
+  "minimalCanonicalAuthorizedOnlyAfterDominantFactor": true,
+  "minimumDominantContributionFraction": 0.5,
+  "passed": true,
+  "populationField": "Freeze every union-stratum reflected-population mean to the D28/D32 midpoint; an absent-grid mean is zero, exactly matching the accepted population-versus-composition midpoint identity.",
+  "preregistrationIdentifier": "deetjen-ob-f03-link-composition-shapley-discriminator-v1",
+  "productionModificationAuthorized": false,
+  "referenceLengthCells": [
+    28,
+    32
+  ],
+  "schemaVersion": 1,
+  "shapleyRule": "Average every factor's force increment over all subset orders with the exact |S|!(6-|S|-1)!/6! weight. The six endpoint vectors must sum to the full D32-minus-D28 link-composition vector. Allocate squared-difference energy by dot(phi_factor, total_delta); these six signed contributions must sum exactly to total energy.",
+  "sourceD28ProvenanceSHA256": "80b9dc99f84413d2ce0ff6c7438a4b90a7b976685c40a0acb47973989ebd3226",
+  "sourceD32ProvenanceSHA256": "fbcdeede0384a87c1f17cd05baab6a1bf19422c94c335c725872fa3a12abeda0",
+  "sourceProvenanceAttributionSHA256": "04f6f1c23b5cee590428609cac10298ae0e4f1c8e0e120bed4e26172f7edb08e",
+  "sourceProvenanceAuditSHA256": "0df7a08aaea90fcbc3a390084acb165f725a4a776889a8baafdb9982be9e65ea",
+  "sourceProvenancePreregistrationSHA256": "11fe85a50dffe584f1af0aff2de8caf893d7b50bc6e14b94122cef1fb6fa5820",
+  "targetSampleIndices": [
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+  ]
+}
