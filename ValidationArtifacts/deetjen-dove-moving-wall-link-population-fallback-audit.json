@@ -1,0 +1,59 @@
+{
+  "allChecksPassed": true,
+  "auditor": "independent-python-fallback-aware-link-population-reconstruction",
+  "checks": {
+    "aggregateMetrics": true,
+    "captureProvenance": true,
+    "classification": true,
+    "fixedContract": true,
+    "numericalLedger": true,
+    "safetyBoundary": true,
+    "sampleReconstruction": true,
+    "sourceHashes": true,
+    "sourcePreconditions": true,
+    "sourceReproduction": true,
+    "stepReduction": true,
+    "transparentRevision": true
+  },
+  "classification": "realized-population-insensitive",
+  "independentMetrics": {
+    "capturedSampleCount": 4608,
+    "deltaForceImpulseNewtonSeconds": [
+      -6.739258044533994e-05,
+      0.00010078392439649715,
+      7.469920140526498e-08
+    ],
+    "deltaForceRMSNewtons": 0.010115671954789757,
+    "deltaForceToGlobalAerodynamicForceRMSRatio": 0.0010850766960007968,
+    "deltaImpulseToGlobalAerodynamicImpulseRatio": 0.004427883014368038,
+    "deltaTorqueRMSNewtonMeters": 0.0007021740129602576,
+    "exactGlobalFallbackLinkCount": 1,
+    "globalAerodynamicForceImpulseNewtonSeconds": [
+      -0.023926226280629632,
+      -0.008703683855632941,
+      -0.010074909845987955
+    ],
+    "globalAerodynamicForceRMSNewtons": 9.32254097067285,
+    "maximumProductionFractionDifference": 2.0324224248025047e-09,
+    "maximumProductionReconstructionDifference": 3.314679142274457e-09,
+    "maximumStepDeltaForceToAerodynamicForceRatio": 0.03333265404266316,
+    "minimumPreStepLocalDensity": 0.8814477920532227,
+    "outlierForceRelativeRMSDifference": 0.010944148463391703,
+    "outlierTorqueRelativeRMSDifference": 0.018073956365523055,
+    "populationRelativeRMSDifference": 0.018221661749951976,
+    "productionFallbackLinkCount": 4,
+    "sourceRecordMismatchCount": 0,
+    "uniqueBranchChangeCount": 3
+  },
+  "schemaVersion": 1,
+  "sourceSHA256": {
+    "coefficientPreregistration": "568550ab587a9d9d27fbabdf3a94950143a0c43693364c31b1b230112117d0a2",
+    "coefficientReport": "99e140b648852cd05a082ff3f055572d31bc313270f64cdf8f2e6109cdbc5442",
+    "durationPreregistration": "8a15ee4877ada2b5b20badf70e2de894832afe11bcd6e95384786076541e3a85",
+    "durationReport": "1257ddad7d5c78fbaf40876074fd847b9b1d410ac4d2ab04a947e6d0240842ae",
+    "fallbackPreregistration": "5c86f4445349f83aec032c23df1e9fe1900b0f4106c20b30465ec33af477a016",
+    "fallbackReport": "2313f6dd15766584abe4fb3b4b23854df08c38d0c1890d31f5655fac80802ef4",
+    "initialPopulationPreregistration": "02fa11644bf317985724faf597f8fb4d1b4f3501dccfba044100ec8c3ef0be33",
+    "initialPopulationReport": "5c8676148b698faf3cb0d370dad38a69f93b1314051c259b78495079cae045be"
+  }
+}

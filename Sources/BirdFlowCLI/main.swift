@@ -2812,6 +2812,18 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
             print("runtime_seconds: \(report.runtimeSeconds)")
             print("captured_samples: \(report.metrics.capturedSampleCount)")
             print(
+                "production_fallback_links: "
+                    + String(report.metrics.productionFallbackLinkCount)
+            )
+            print(
+                "exact_global_fallback_links: "
+                    + String(report.metrics.exactGlobalFallbackLinkCount)
+            )
+            print(
+                "source_record_mismatches: "
+                    + String(report.metrics.sourceRecordMismatchCount)
+            )
+            print(
                 "population_relative_rms_difference: "
                     + String(report.metrics.populationRelativeRMSDifference)
             )
@@ -2831,6 +2843,10 @@ private func runMeasuredBirdSurfaceReplay(_ values: [String]) throws {
                         .deltaImpulseToGlobalAerodynamicImpulseRatio)
             )
             print("classification: \(report.classification)")
+            print(
+                "source_reproduction_passed: "
+                    + String(report.sourceReproductionPassed)
+            )
             print(
                 "boundary_ab_authorized: "
                     + String(report.validationOnlyBoundaryABAuthorized)

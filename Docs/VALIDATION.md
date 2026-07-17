@@ -2035,6 +2035,79 @@ ROI: one short source-state capture and 30 local evaluations can accept or
 reject a boundary fluid A/B before changing the kernel or paying for a full
 refinement run.
 
+The production-primitive discriminator is frozen and run with:
+
+```bash
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-population-preregister \
+  --link-coefficient-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-preregistration.json \
+  --link-coefficient ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient.json \
+  --temporal-duration-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json \
+  --temporal-duration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-preregistration.json
+
+.build/release/birdflow replay measured-bird-surface \
+  --input ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json \
+  --force-target ValidationInputs/deetjen-ob-f03-force-v1.json \
+  --collision-grid-moving-wall-link-population \
+  --link-coefficient-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-preregistration.json \
+  --link-coefficient ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient.json \
+  --temporal-duration-preregistration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration-preregistration.json \
+  --temporal-duration ValidationArtifacts/deetjen-dove-moving-wall-temporal-duration.json \
+  --link-population-preregistration ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-preregistration.json \
+  --archive ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback.json
+
+python3 Scripts/audit-dove-moving-wall-link-population-fallback.py
+```
+
+The full `576`-step D12 window captures reflected, farther-outgoing,
+previous-incoming, pre-step density, and both endpoint wall-projection
+primitives on all eight D12 outliers. This is `4,608` link-step samples, not a
+selected snapshot. The diagnostic never writes geometry or populations. It
+reconstructs conventional mode-6 link force and torque from the captured state
+and substitutes exact global-union `q` offline.
+
+The initial schema-1 replay is retained as failed evidence. Its production
+population algebra closed within `3.32e-9`, but its production-`q` provenance
+failed by `0.4928`: four links had correctly fallen back to halfway because
+their near-wall branch required a farther node that was solid. Applying exact
+`q` to the unavailable farther population would invent state. Revision 2 was
+therefore frozen before rerun, retained the original `10%` population,
+`10%` outlier-force, `1%` global-force, and `1%` global-impulse gates, and
+recorded four expected production fallbacks. Three exact roots exceed `0.5`
+and can use the far-wall branch; the remaining exact root is below `0.5` and
+must retain halfway fallback. This changes feasibility, not a science limit.
+
+The fallback-aware replay completes in `10.02 s`. It records zero source
+mismatches, a `2.03e-9` maximum effective-`q` difference, a `3.32e-9` maximum
+production-population difference, minimum population `0.00753`, zero limiter
+activation, and near-wing/global momentum residuals `2.86e-4`/`5.93e-4` under
+the unchanged `0.005` gate. Exact `q` changes population by `1.822%` relative
+RMS and the eight-link force by `1.094%` relative RMS, both below `10%`.
+The delta is `0.01012 N` RMS, only `0.1085%` of the `9.323 N` global force RMS;
+its impulse is `0.4428%` of global impulse, both below `1%`.
+
+The independent standard-library Python audit does not consume Swift summary
+logic. It reconstructs all `4,608` populations, wall corrections, link forces,
+link torques, `576` step reductions, RMS values, and impulses from the raw
+primitives and D3Q19 constants. It verifies every source hash, numerical gate,
+fallback branch, original failed archive, revision rationale, classification,
+and safety field; all 12 checks pass. The locked result is
+`realized-population-insensitive`. It rejects both a D12 exact-root boundary
+A/B and a D16 sparse-link replay, leaves D20 blocked, and makes no production
+change or experimental-agreement claim.
+
+Highest-ROI next step: preregister a distributed full-link decomposition over
+the existing D12/D16 fixed-phase histories, binning reflected and moving-wall
+force by component, lattice direction, and `q`. Why: the sparse geometric
+outliers are now quantitatively cleared, while the remaining discrepancy is
+broadband and the prior geometry audit still shows a distributed left-wing
+velocity-moment residual. ROI: aggregate counters can localize the force-bearing
+population class without storing the full lattice, modifying the boundary, or
+paying for D20.
+
 ## 8. Complete measured bird
 
 The first ingestion/replay tier is implemented:

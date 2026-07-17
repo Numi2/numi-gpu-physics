@@ -378,12 +378,38 @@ global-union `q` changes the `q=0.5` stencil branch on `3/8` D12 links and all
 `7/7` D16 links. The measure-weighted coefficient-vector L1 change reaches
 `1.723` on D12 and `2.782` on D16, with a `3.189` maximum against frozen
 `0.10` RMS and `0.25` maximum limits. The independently reproduced result is
-`branch-changing-coefficient-sensitive`. This clears only a narrow captured-
-population replay of those links; it does not yet establish a force correction
-or authorize production or D20. Evidence is the
+`branch-changing-coefficient-sensitive`. This historically cleared only the
+narrow captured-population replay resolved immediately below; by itself it did
+not establish a force correction or authorize production or D20. Evidence is the
 [`coefficient preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-preregistration.json),
 [`15-link coefficient archive`](ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient.json),
 and [`independent 12-check audit`](ValidationArtifacts/deetjen-dove-moving-wall-link-coefficient-audit.json).
+
+The decisive follow-up captures the actual production primitives on all eight
+D12 outliers at every one of the `576` fixed-phase steps: `4,608` link-step
+records in `10.02 s`. The first diagnostic archive is intentionally retained:
+it exposed four production halfway fallbacks and failed source reproduction
+because it attempted a near-wall counterfactual where the required farther
+fluid node was solid. Contract revision 2 preserves every `10%` local and `1%`
+global materiality threshold while applying the same feasibility rule to exact
+`q`. Only three links can actually change branches; one exact root must retain
+halfway fallback. Production then reconstructs within `3.32e-9`, with zero
+source-record mismatches, positive populations, and both momentum ledgers below
+`5.94e-4` relative RMS.
+
+The realized exact-`q` effect is small: `1.822%` population RMS, `1.094%`
+outlier-force RMS, `0.1085%` of global force RMS, and `0.4428%` of global
+impulse. A separate Python implementation rebuilds all populations, forces,
+torques, step reductions, impulses, hashes, and the transparent revision with
+all 12 checks passing. The locked classification is
+`realized-population-insensitive`; it rejects a boundary-law A/B and D16 replay
+for these sparse links and leaves production unchanged. Evidence is the
+[`fallback-aware preregistration`](ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-preregistration.json),
+[`4,608-sample Metal archive`](ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback.json),
+and [`independent audit`](ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-audit.json).
+The highest-ROI next experiment is therefore a distributed, full-link
+component/direction/`q`-bin decomposition of reflected and moving-wall force
+over the existing fixed-phase histories—not another sparse-root or D20 run.
 
 ## Latest high-Re result
 

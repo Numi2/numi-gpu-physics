@@ -1821,6 +1821,14 @@ public struct MetalIndexedBirdSurfaceLinkPopulationSample:
     public let directionIndex: Int
     public let solidCellCoordinate: SIMD3<Int>
     public let fluidCellCoordinate: SIMD3<Int>
+    public let capturedDirectionIndex: Int
+    public let capturedSourceLinearIndex: Int
+    public let capturedPartIdentifier: Int
+    public let capturedBranchCode: Int
+    public let capturedSourceIsSolid: Bool
+    public let capturedInterpolatedBoundary: Bool
+    public let capturedOutsideDomain: Bool
+    public let captureRecordMatched: Bool
     public let rasterFluidToIntersectionFraction: Double
     public let productionFluidToIntersectionFraction: Double
     public let exactGlobalFluidToIntersectionFraction: Double
@@ -1871,6 +1879,7 @@ public struct MetalIndexedBirdSurfaceLinkPopulationMetrics:
     public let uniqueBranchChangeCount: Int
     public let productionFallbackLinkCount: Int
     public let exactGlobalFallbackLinkCount: Int
+    public let sourceRecordMismatchCount: Int
     public let capturedSampleCount: Int
     public let populationRelativeRMSDifference: Double
     public let outlierForceRelativeRMSDifference: Double
@@ -1915,6 +1924,13 @@ public struct MetalIndexedBirdSurfaceLinkPopulationReport:
     public let requestedSteps: Int
     public let completedSteps: Int
     public let runtimeSeconds: Double
+    public let momentumClosurePassed: Bool
+    public let sampledPopulationPositivityPassed: Bool
+    public let allValuesFinite: Bool
+    public let relativeRMSRawControlVolumeClosureResidual: Double
+    public let relativeRMSGlobalFluidClosureResidual: Double
+    public let collisionLimiterActivationFractionOfCellSteps: Double
+    public let minimumPopulation: Double
     public let samples: [MetalIndexedBirdSurfaceLinkPopulationSample]
     public let steps: [MetalIndexedBirdSurfaceLinkPopulationStep]
     public let metrics: MetalIndexedBirdSurfaceLinkPopulationMetrics
@@ -6877,13 +6893,19 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                 let productionBranchCodeMatches = productionFallback
                     ? raw.branch.x == 1
                     : raw.branch.x == 2
-                sourceRecordsMatched = sourceRecordsMatched
-                    && Int(raw.metadata.x) == source.directionIndex
+                let interpolationStateMatches = productionFallback
+                    ? raw.branch.y == 0
+                    : raw.branch.y == 1
+                let captureRecordMatched =
+                    Int(raw.metadata.x) == source.directionIndex
                     && sourceCoordinate == expectedSource
                     && Int(raw.metadata.w) == source.partIdentifier
-                    && productionBranchCodeMatches && raw.branch.y == 1
+                    && productionBranchCodeMatches
+                    && interpolationStateMatches
                     && raw.branch.z == 1 && raw.branch.w == 0
                     && productionQ <= preregistration.branchThreshold
+                sourceRecordsMatched = sourceRecordsMatched
+                    && captureRecordMatched
                 samples.append(
                     MetalIndexedBirdSurfaceLinkPopulationSample(
                         step: step,
@@ -6893,6 +6915,14 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                         directionIndex: source.directionIndex,
                         solidCellCoordinate: source.cellCoordinate,
                         fluidCellCoordinate: fluidCoordinate,
+                        capturedDirectionIndex: Int(raw.metadata.x),
+                        capturedSourceLinearIndex: sourceCoordinate,
+                        capturedPartIdentifier: Int(raw.metadata.w),
+                        capturedBranchCode: Int(raw.branch.x),
+                        capturedSourceIsSolid: raw.branch.z != 0,
+                        capturedInterpolatedBoundary: raw.branch.y != 0,
+                        capturedOutsideDomain: raw.branch.w != 0,
+                        captureRecordMatched: captureRecordMatched,
                         rasterFluidToIntersectionFraction:
                             source.productionFluidToIntersectionFraction,
                         productionFluidToIntersectionFraction: productionQ,
@@ -6995,6 +7025,9 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             exactGlobalFallbackLinkCount: firstStepSamples.filter(
                 \.exactGlobalFallbackApplied
             ).count,
+            sourceRecordMismatchCount: samples.filter {
+                !$0.captureRecordMatched
+            }.count,
             capturedSampleCount: samples.count,
             populationRelativeRMSDifference: sqrt(
                 populationDifferenceEnergy
@@ -7041,6 +7074,7 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                 == preregistration.expectedProductionFallbackLinkCount
             && metrics.exactGlobalFallbackLinkCount
                 == preregistration.expectedExactGlobalFallbackLinkCount
+            && metrics.sourceRecordMismatchCount == 0
             && metrics.maximumProductionFractionDifference
                 <= preregistration.maximumAllowedProductionFractionDifference
             && metrics.maximumProductionReconstructionDifference
@@ -7124,6 +7158,17 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             requestedSteps: preregistration.captureEndStep,
             completedSteps: result.completedSteps,
             runtimeSeconds: result.runtimeSeconds,
+            momentumClosurePassed: result.momentumClosurePassed,
+            sampledPopulationPositivityPassed:
+                result.sampledPopulationPositivityPassed,
+            allValuesFinite: result.allValuesFinite,
+            relativeRMSRawControlVolumeClosureResidual:
+                result.relativeRMSRawControlVolumeClosureResidual,
+            relativeRMSGlobalFluidClosureResidual:
+                result.relativeRMSGlobalFluidClosureResidual,
+            collisionLimiterActivationFractionOfCellSteps:
+                result.collisionLimiterActivationFractionOfCellSteps,
+            minimumPopulation: result.minimumPopulation,
             samples: samples,
             steps: steps,
             metrics: metrics,

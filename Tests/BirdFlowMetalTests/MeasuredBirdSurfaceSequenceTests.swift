@@ -1360,6 +1360,104 @@ func measuredBirdMovingWallLinkCoefficientLocksBranchSensitivity() throws {
     #expect(audit["allChecksPassed"] as? Bool == true)
 }
 
+@Test
+func measuredBirdMovingWallLinkPopulationRejectsSparseQAsDominant() throws {
+    func decode<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
+        try JSONDecoder().decode(
+            type,
+            from: Data(contentsOf: repositoryRootURL.appendingPathComponent(
+                "ValidationArtifacts/\(name)"
+            ))
+        )
+    }
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let coefficientPreregistration = try decode(
+        "deetjen-dove-moving-wall-link-coefficient-preregistration.json",
+        as: MetalIndexedBirdSurfaceLinkCoefficientPreregistration.self
+    )
+    let coefficient = try decode(
+        "deetjen-dove-moving-wall-link-coefficient.json",
+        as: MetalIndexedBirdSurfaceLinkCoefficientReport.self
+    )
+    let durationPreregistration = try decode(
+        "deetjen-dove-moving-wall-temporal-duration-preregistration.json",
+        as: MetalIndexedBirdSurfaceMovingWallTemporalDurationPreregistration.self
+    )
+    let duration = try decode(
+        "deetjen-dove-moving-wall-temporal-duration.json",
+        as: MetalIndexedBirdSurfaceMovingWallTemporalDurationReport.self
+    )
+    let preregistration = try decode(
+        "deetjen-dove-moving-wall-link-population-fallback-preregistration.json",
+        as: MetalIndexedBirdSurfaceLinkPopulationPreregistration.self
+    )
+    let rebuilt = try MetalIndexedBirdSurfacePilotValidator
+        .collisionGridMovingWallLinkPopulationPreregistration(
+            surface: surface,
+            target: target,
+            linkCoefficientPreregistration: coefficientPreregistration,
+            sourceLinkCoefficientPreregistrationSHA256:
+                "568550ab587a9d9d27fbabdf3a94950143a0c43693364c31b1b230112117d0a2",
+            linkCoefficientReport: coefficient,
+            sourceLinkCoefficientReportSHA256:
+                "99e140b648852cd05a082ff3f055572d31bc313270f64cdf8f2e6109cdbc5442",
+            temporalDurationPreregistration: durationPreregistration,
+            sourceTemporalDurationPreregistrationSHA256:
+                "8a15ee4877ada2b5b20badf70e2de894832afe11bcd6e95384786076541e3a85",
+            temporalDurationReport: duration,
+            sourceTemporalDurationReportSHA256:
+                "1257ddad7d5c78fbaf40876074fd847b9b1d410ac4d2ab04a947e6d0240842ae"
+        )
+    #expect(preregistration == rebuilt)
+    #expect(preregistration.contractRevision == 2)
+    #expect(preregistration.expectedProductionFallbackLinkCount == 4)
+    #expect(preregistration.expectedExactGlobalFallbackLinkCount == 1)
+
+    let report = try decode(
+        "deetjen-dove-moving-wall-link-population-fallback.json",
+        as: MetalIndexedBirdSurfaceLinkPopulationReport.self
+    )
+    let auditData = try Data(contentsOf: repositoryRootURL
+        .appendingPathComponent(
+            "ValidationArtifacts/deetjen-dove-moving-wall-link-population-fallback-audit.json"
+        ))
+    let audit = try #require(
+        JSONSerialization.jsonObject(with: auditData) as? [String: Any]
+    )
+    #expect(report.schemaVersion == 2)
+    #expect(report.sourceReproductionPassed)
+    #expect(report.momentumClosurePassed)
+    #expect(report.sampledPopulationPositivityPassed)
+    #expect(report.allValuesFinite)
+    #expect(report.metrics.capturedSampleCount == 4_608)
+    #expect(report.metrics.productionFallbackLinkCount == 4)
+    #expect(report.metrics.exactGlobalFallbackLinkCount == 1)
+    #expect(report.metrics.uniqueBranchChangeCount == 3)
+    #expect(report.metrics.sourceRecordMismatchCount == 0)
+    #expect(report.metrics.maximumProductionFractionDifference < 1e-6)
+    #expect(report.metrics.maximumProductionReconstructionDifference < 1e-6)
+    #expect(report.metrics.populationRelativeRMSDifference < 0.10)
+    #expect(report.metrics.outlierForceRelativeRMSDifference < 0.10)
+    #expect(
+        report.metrics.deltaForceToGlobalAerodynamicForceRMSRatio < 0.01
+    )
+    #expect(report.metrics.deltaImpulseToGlobalAerodynamicImpulseRatio < 0.01)
+    #expect(report.classification == "realized-population-insensitive")
+    #expect(!report.validationOnlyBoundaryABAuthorized)
+    #expect(!report.d16CaptureAuthorized)
+    #expect(!report.d20DiagnosticAuthorized)
+    #expect(!report.productionModificationAuthorized)
+    #expect(!report.rawSpatialGateModified)
+    #expect(!report.experimentalAgreementGateApplied)
+    #expect(audit["allChecksPassed"] as? Bool == true)
+}
+
 #if canImport(Metal)
 @Test
 func productionMetalD16PopulationProvenanceCloses() throws {
