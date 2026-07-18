@@ -1,0 +1,286 @@
+{
+  "candidateCount": 64,
+  "claimBoundary": "This deterministic geometry-derived selection fixes one representative common lattice phase before any translated fluid run. It does not measure aerodynamic convergence or formation benefit.",
+  "inputEnsemble": {
+    "path": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble.json",
+    "sha256": "b32ed2bb99d83b3b47dce660035e89edb494185837eb4e59b1b6d71d111dd17b"
+  },
+  "inputSummary": {
+    "path": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+    "sha256": "4f4619be6655164741b8fad77d684bab23f932c162109e88125eb244360140f2"
+  },
+  "legacyZeroOffset": {
+    "offsetCells": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "resolutionContributions": {
+      "c16": {
+        "leaderArealLinkDensity": 33.7265625,
+        "squaredScoreContribution": 0.548260549358069,
+        "standardizedMedianDistance": 0.740446182621039
+      },
+      "c18": {
+        "leaderArealLinkDensity": 33.111111111111114,
+        "squaredScoreContribution": 0.9283289004275934,
+        "standardizedMedianDistance": -0.9634982617667732
+      },
+      "c20": {
+        "leaderArealLinkDensity": 33.265,
+        "squaredScoreContribution": 0.16427052607145243,
+        "standardizedMedianDistance": 0.4053030052583529
+      }
+    },
+    "selectionScore": 1.640859975857115
+  },
+  "passed": true,
+  "resolutionStatistics": {
+    "c16": {
+      "mean": 33.4671630859375,
+      "median": 33.5,
+      "sampleStandardDeviation": 0.3059810494234864
+    },
+    "c18": {
+      "mean": 33.312403549382715,
+      "median": 33.348765432098766,
+      "sampleStandardDeviation": 0.24665775789970112
+    },
+    "c20": {
+      "mean": 33.222109375,
+      "median": 33.182500000000005,
+      "sampleStandardDeviation": 0.20355141444709476
+    }
+  },
+  "schemaVersion": 1,
+  "selected": {
+    "offsetCells": [
+      0.25,
+      0.25,
+      0.75
+    ],
+    "resolutionContributions": {
+      "c16": {
+        "leaderArealLinkDensity": 33.578125,
+        "squaredScoreContribution": 0.06519150408538278,
+        "standardizedMedianDistance": 0.25532626986932383
+      },
+      "c18": {
+        "leaderArealLinkDensity": 33.34567901234568,
+        "squaredScoreContribution": 0.00015657427904015723,
+        "standardizedMedianDistance": -0.012512964438539623
+      },
+      "c20": {
+        "leaderArealLinkDensity": 33.005,
+        "squaredScoreContribution": 0.7604111312454456,
+        "standardizedMedianDistance": -0.8720155567680232
+      }
+    },
+    "selectionScore": 0.8257592096098685
+  },
+  "selectedToLegacyScoreRatio": 0.5032478223368982,
+  "selectionRule": "Minimize the sum over c16/c18/c20 of squared sample-SD-normalized distance from each resolution's leader areal-link-density median; break exact ties lexicographically by x, y, z.",
+  "title": "Common median-density subcell phase selection",
+  "topEightCandidates": [
+    {
+      "offsetCells": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.578125,
+          "squaredScoreContribution": 0.06519150408538278,
+          "standardizedMedianDistance": 0.25532626986932383
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.34567901234568,
+          "squaredScoreContribution": 0.00015657427904015723,
+          "standardizedMedianDistance": -0.012512964438539623
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.005,
+          "squaredScoreContribution": 0.7604111312454456,
+          "standardizedMedianDistance": -0.8720155567680232
+        }
+      },
+      "selectionScore": 0.8257592096098685
+    },
+    {
+      "offsetCells": [
+        0.5,
+        0.75,
+        0.5
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.390625,
+          "squaredScoreContribution": 0.12777534800735021,
+          "standardizedMedianDistance": -0.3574567778170533
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.54938271604938,
+          "squaredScoreContribution": 0.6615263289435865,
+          "standardizedMedianDistance": 0.8133426885044129
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.135,
+          "squaredScoreContribution": 0.05445515143417482,
+          "standardizedMedianDistance": -0.23335627575485263
+        }
+      },
+      "selectionScore": 0.8437568283851116
+    },
+    {
+      "offsetCells": [
+        0.25,
+        0.0,
+        0.5
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.2421875,
+          "squaredScoreContribution": 0.7099354794898184,
+          "standardizedMedianDistance": -0.8425766905687686
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.41358024691358,
+          "squaredScoreContribution": 0.06904925705660336,
+          "standardizedMedianDistance": 0.26277225320913045
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.245,
+          "squaredScoreContribution": 0.09427830926964585,
+          "standardizedMedianDistance": 0.30704773125630785
+        }
+      },
+      "selectionScore": 0.8732630458160676
+    },
+    {
+      "offsetCells": [
+        0.75,
+        0.0,
+        0.75
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.671875,
+          "squaredScoreContribution": 0.31552687977325267,
+          "standardizedMedianDistance": 0.5617177937125124
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.41975308641975,
+          "squaredScoreContribution": 0.08282779361211051,
+          "standardizedMedianDistance": 0.28779818208618085
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.035,
+          "squaredScoreContribution": 0.5250924713083956,
+          "standardizedMedianDistance": -0.7246326457650081
+        }
+      },
+      "selectionScore": 0.9234471446937589
+    },
+    {
+      "offsetCells": [
+        0.5,
+        0.0,
+        0.5
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.2890625,
+          "squaredScoreContribution": 0.47524606478244036,
+          "standardizedMedianDistance": -0.6893809286471743
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.51234567901235,
+          "squaredScoreContribution": 0.43981714982311393,
+          "standardizedMedianDistance": 0.6631871152420815
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.16,
+          "squaredScoreContribution": 0.012218468881357525,
+          "standardizedMedianDistance": -0.1105371832523225
+        }
+      },
+      "selectionScore": 0.9272816834869118
+    },
+    {
+      "offsetCells": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.4140625,
+          "squaredScoreContribution": 0.07888171994331317,
+          "standardizedMedianDistance": -0.2808588968562562
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.58024691358025,
+          "squaredScoreContribution": 0.8807303195994786,
+          "standardizedMedianDistance": 0.9384723328897228
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.155,
+          "squaredScoreContribution": 0.018252280674612112,
+          "standardizedMedianDistance": -0.13510100175280756
+        }
+      },
+      "selectionScore": 0.9778643202174039
+    },
+    {
+      "offsetCells": [
+        0.25,
+        0.75,
+        0.5
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.3359375,
+          "squaredScoreContribution": 0.28749453301653805,
+          "standardizedMedianDistance": -0.53618516672558
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.53703703703704,
+          "squaredScoreContribution": 0.5826128923075015,
+          "standardizedMedianDistance": 0.763290830750312
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.105,
+          "squaredScoreContribution": 0.14496232833306916,
+          "standardizedMedianDistance": -0.38073918675790275
+        }
+      },
+      "selectionScore": 1.0150697536571087
+    },
+    {
+      "offsetCells": [
+        0.75,
+        0.25,
+        0.75
+      ],
+      "resolutionContributions": {
+        "c16": {
+          "leaderArealLinkDensity": 33.703125,
+          "squaredScoreContribution": 0.4406945676171875,
+          "standardizedMedianDistance": 0.6638483016602419
+        },
+        "c18": {
+          "leaderArealLinkDensity": 33.351851851851855,
+          "squaredScoreContribution": 0.00015657427904015723,
+          "standardizedMedianDistance": 0.012512964438539623
+        },
+        "c20": {
+          "leaderArealLinkDensity": 33.0,
+          "squaredScoreContribution": 0.8038545761569313,
+          "standardizedMedianDistance": -0.8965793752685433
+        }
+      },
+      "selectionScore": 1.2447057180531589
+    }
+  ]
+}

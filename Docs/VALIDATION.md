@@ -2945,6 +2945,14 @@ and agrees with the retired CPU slice reconstruction to `1e-9` maximum
 vorticity difference. The decision, report SHA, index SHA, and every slice SHA
 are retained in
 `ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json`.
+The native Metal V4 presentation applies a sagittal `(-x,y,z)` reflection to
+the presentation-only partner wing and shares one phase between both wings of
+each flyer; the leader/follower `Δφ=0.25` remains intentional. Its capture-side
+audit compares 36,864 vertex pairs across two flyers and 48 phases with zero
+position, normal, and within-flyer phase residual. The separate V4 visual audit
+locks the renderer, source evidence, archived fields, output, and claim boundary
+and passes `41/41`. The previous `(-x,-y,z)` presentation is archived as an
+invalid visual negative control; it never entered CFD or force accounting.
 The phase-aligned c16/c20 maximum-selector normalized-power residual has RMS
 `0.0313`, maximum `0.1122` at follower phase `0.055`, and only `23.15%` of
 its absolute magnitude in the prior midstroke bands. Absolute residual tracks
@@ -3067,6 +3075,92 @@ passes `521/521`. The next admissible allocation is one geometry-only c18
 bridge at the primary phase retaining both pathways. Production edits, the
 stopped c20 minimum, a global c24 ladder, and quantitative formation effect
 remain unauthorized.
+
+The c18 bridge is complete under
+`ValidationInputs/formation-flight-geometry-c18-bridge-v1.json`. It runs the
+production Metal prescribed-pose preparation and two-owner voxelization at
+c16/c18/c20, then performs only ownership-mask readback and CPU D3Q19 link
+counting. No population initialization, collision, streaming, force kernel,
+sponge update, or fluid timestep executes. A retained wrapper amendment
+replaces byte equality with parsed-JSON equality after the canonical and stdout
+reports differed only by the CLI's terminal newline; it changes no report
+value, implementation, metric, threshold, or decision rule.
+
+The geometry harness exactly reproduces all c16/c20 primary-phase direction
+counts for both owners: leader/follower totals are `8,634/8,854` at c16 and
+`13,306/13,626` at c20. The three prescribed poses complete in
+`0.072/0.090/0.118 s` on Apple M4 with positive support, finite values, and
+zero overlap. Primary-leader areal density is `33.7265625`, `33.1111111`, and
+`33.265` at c16/c18/c20. c18 lies below both endpoints, so the frozen result is
+`latticePhaseAliasingSuspected`; normalized density, direction-TV, and
+direction-length-weighted joint-profile midpoint curvatures are
+`0.83341/0.50345/0.76820`. The independent audit passes `105/105` checks.
+
+This rejects a smooth-refinement interpretation of a single c18 fluid result.
+The next admissible allocation is a no-fluid subcell-offset ensemble at
+c16/c18/c20 and the same phase, retaining both density and direction metrics.
+No force correction, production boundary change, quantitative formation
+benefit, grid-convergence claim, or biological claim is authorized.
+
+The preregistered subcell ensemble under
+`ValidationInputs/formation-flight-geometry-subcell-ensemble-v1.json` then
+executes the complete `4 × 4 × 4` global-translation tensor at each of
+c16/c18/c20. All 192 cases preserve the physical two-flyer configuration and
+advance zero fluid timesteps. Their zero-offset direction counts reproduce the
+c18 bridge exactly for both owners. Recorded Metal pose, readback, and counting
+work totals `3.7104 s`; every case has positive support, finite output, and zero
+overlap.
+
+Across global lattice phase, leader-density 95% intervals are
+`[32.9811,33.9596]`, `[32.8801,33.7185]`, and `[32.9273,33.5814]` for
+c16/c18/c20. Ensemble means are `33.4672/33.3124/33.2221`; c18 lies between
+the endpoint means. The normalized ensemble-mean density, direction-TV, and
+direction-length-weighted areal-profile midpoint curvatures are
+`0.13153/0.09259/0.13145`. All fall below the frozen `0.5` rule, producing
+`aliasingAveragedOut`; the independent audit passes `334/334` checks. A narrow
+post-classification reporting amendment replaces a signed coefficient of
+variation with standard deviation divided by mean magnitude and changes no raw
+value, metric, threshold, classification, or next action.
+
+This establishes smooth refinement of the subcell-averaged geometry measure,
+not force convergence. The next admissible experiment is one phase-locked
+c16/c18/c20 boundary-source census using matched median-density offsets. A full
+fluid ladder, production correction, quantitative formation benefit, and
+biological claim remain unauthorized.
+
+That phase-locked source census is complete under
+`ValidationInputs/formation-flight-subcell-source-census-v1.json`. The
+deterministic selector chooses the common translation
+`[0.25,0.25,0.75]` cells with normalized-median score `0.825759`, versus
+`1.640860` for zero offset. The translated diagnostic advances only the coupled
+production-TRT pair for five cycles and captures one exact source phase for
+both owners at c16/c18/c20; it does not rerun isolated controls or change any
+production default.
+
+The c16/c18/c20 cases run in `1016.72/1367.68/2544.79 s` on Apple M4. Every
+case is finite, overlap-free, complete, and inside unchanged owner-closure,
+periodicity, branch-count, and population-reconstruction gates. Maximum source
+reconstruction residual is `8.06e-8`; maximum force/torque closure is
+`7.47e-7/3.19e-6`; maximum periodic difference is `2.395%`.
+
+Using h-linear c18 interpolation with `h=1/chordCells`, selected geometry
+density curvature is `0.14998`. Direction-resolved areal links, conditional
+population, and exact population-weighted source have curvatures
+`0.78497/0.58733/0.88415`. Component curvatures are `0.92415` reflected,
+`0.99675` interpolation auxiliary, and `0.56016` moving wall. The preregistered
+classification is `mixedPopulationWeightedSource`: the scalar geometry trend
+is smooth and the source norm decreases monotonically, but the c18 directional
+profile does not clear the frozen `0.5` smooth boundary.
+
+The independent audit caught the first analyzer using the decomposed incoming
+sum instead of the preregistered exact production incoming value. Its `62/64`
+failure is preserved at
+`ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit-failed-decomposed-source.json`.
+The documented post-run correction changes the headline curvature by about
+`1.2e-7`, leaves raw CFD, thresholds, and classification unchanged, and passes
+`66/66`. The result authorizes only the next two deterministic median-offset
+candidates to test phase robustness; it does not authorize a full power ladder,
+production edit, quantitative formation benefit, or biological claim.
 
 ## 9. Free flight
 

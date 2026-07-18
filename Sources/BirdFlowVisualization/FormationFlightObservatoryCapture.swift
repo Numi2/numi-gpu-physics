@@ -49,6 +49,59 @@ public enum FormationFlightObservatoryCapture {
     let stage1: Stage1
   }
 
+  private struct GeometrySubcellSummary: Decodable {
+    struct DecisionMetrics: Decodable {
+      let meanDensityBetweenEndpoints: Bool
+      let normalizedMeanDensityMidpointCurvature: Double
+      let normalizedMeanDirectionMidpointCurvature: Double
+      let normalizedMeanArealProfileMidpointCurvature: Double
+    }
+
+    struct Gates: Decodable {
+      let exactBaselineBridgeParity: Bool
+      let completeTensorGrid: Bool
+      let noFluidTimesteps: Bool
+      let positiveLinkSupport: Bool
+      let zeroOverlap: Bool
+      let allFinite: Bool
+    }
+
+    let caseCount: Int
+    let offsetCountPerResolution: Int
+    let noFluidTimesteps: Bool
+    let classification: String
+    let decisionMetrics: DecisionMetrics
+    let gates: Gates
+    let passed: Bool
+  }
+
+  private struct FormationSourceSummary: Decodable {
+    struct DecisionMetrics: Decodable {
+      let normalizedArealLinkProfileCurvature: Double
+      let normalizedConditionalPopulationCurvature: Double
+      let normalizedPopulationWeightedSourceCurvature: Double
+      let selectedGeometryDensityCurvature: Double
+      let smoothRefinementMaximumCurvature: Double
+      let persistentBiasMinimumCurvature: Double
+    }
+
+    struct Gates: Decodable {
+      let allFinite: Bool
+      let allSourceCensusesPassed: Bool
+      let allThreeRunsPassed: Bool
+      let commonSubcellOffset: Bool
+      let deterministicSelectionPassed: Bool
+      let geometryPhaseSmooth: Bool
+      let oneLeaderAndFollowerSamplePerGrid: Bool
+      let preregisteredBeforeTranslatedCFD: Bool
+    }
+
+    let classification: String
+    let decisionMetrics: DecisionMetrics
+    let gates: Gates
+    let passed: Bool
+  }
+
   private struct FlowSliceIndex: Decodable {
     struct Entry: Decodable {
       let file: String
@@ -71,6 +124,8 @@ public enum FormationFlightObservatoryCapture {
     let flowSliceDirectoryURL: URL?
     let summaryURL: URL?
     let discriminatorURL: URL?
+    let geometrySubcellSummaryURL: URL?
+    let formationSourceSummaryURL: URL?
     let width: Int
     let height: Int
     let frameCount: Int
@@ -136,6 +191,24 @@ public enum FormationFlightObservatoryCapture {
       } else {
         discriminatorURL = nil
       }
+      if commandLine.contains("--capture-formation-subcell-summary") {
+        geometrySubcellSummaryURL = URL(
+          fileURLWithPath: try value(
+            after: "--capture-formation-subcell-summary"
+          )
+        )
+      } else {
+        geometrySubcellSummaryURL = nil
+      }
+      if commandLine.contains("--capture-formation-source-summary") {
+        formationSourceSummaryURL = URL(
+          fileURLWithPath: try value(
+            after: "--capture-formation-source-summary"
+          )
+        )
+      } else {
+        formationSourceSummaryURL = nil
+      }
       width = try integer(after: "--capture-width", default: 1120)
       height = try integer(after: "--capture-height", default: 630)
       frameCount = try integer(after: "--capture-frames", default: 49)
@@ -175,6 +248,18 @@ public enum FormationFlightObservatoryCapture {
     let discriminator = try arguments.discriminatorURL.map {
       try JSONDecoder().decode(
         C20DiscriminatorSummary.self,
+        from: Data(contentsOf: $0)
+      )
+    }
+    let geometrySubcellSummary = try arguments.geometrySubcellSummaryURL.map {
+      try JSONDecoder().decode(
+        GeometrySubcellSummary.self,
+        from: Data(contentsOf: $0)
+      )
+    }
+    let formationSourceSummary = try arguments.formationSourceSummaryURL.map {
+      try JSONDecoder().decode(
+        FormationSourceSummary.self,
         from: Data(contentsOf: $0)
       )
     }
@@ -243,11 +328,79 @@ public enum FormationFlightObservatoryCapture {
         )
       }
     }
+    if let summary = geometrySubcellSummary {
+      let metrics = summary.decisionMetrics
+      let gates = summary.gates
+      guard summary.passed,
+        summary.caseCount == 192,
+        summary.offsetCountPerResolution == 64,
+        summary.noFluidTimesteps,
+        summary.classification == "aliasingAveragedOut",
+        metrics.meanDensityBetweenEndpoints,
+        metrics.normalizedMeanDensityMidpointCurvature <= 0.5,
+        metrics.normalizedMeanDirectionMidpointCurvature <= 0.5,
+        metrics.normalizedMeanArealProfileMidpointCurvature <= 0.5,
+        gates.exactBaselineBridgeParity,
+        gates.completeTensorGrid,
+        gates.noFluidTimesteps,
+        gates.positiveLinkSupport,
+        gates.zeroOverlap,
+        gates.allFinite
+      else {
+        throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
+          "formation showcase requires the accepted 192-pose subcell geometry ensemble"
+        )
+      }
+    }
+    if let summary = formationSourceSummary {
+      let metrics = summary.decisionMetrics
+      let gates = summary.gates
+      guard summary.passed,
+        summary.classification == "mixedPopulationWeightedSource",
+        metrics.selectedGeometryDensityCurvature
+          <= metrics.smoothRefinementMaximumCurvature,
+        metrics.normalizedPopulationWeightedSourceCurvature
+          > metrics.smoothRefinementMaximumCurvature,
+        metrics.normalizedPopulationWeightedSourceCurvature
+          < metrics.persistentBiasMinimumCurvature,
+        gates.allFinite,
+        gates.allSourceCensusesPassed,
+        gates.allThreeRunsPassed,
+        gates.commonSubcellOffset,
+        gates.deterministicSelectionPassed,
+        gates.geometryPhaseSmooth,
+        gates.oneLeaderAndFollowerSamplePerGrid,
+        gates.preregisteredBeforeTranslatedCFD
+      else {
+        throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
+          "formation showcase requires the passed common-offset source discriminator"
+        )
+      }
+    }
     try FileManager.default.createDirectory(
       at: arguments.outputDirectory,
       withIntermediateDirectories: true
     )
     let renderer = try FormationObservatoryRenderer(device: device)
+    let bilateralAudit = renderer.bilateralPresentationAudit(
+      phases: (0..<48).map { Float($0) / 48 },
+      flyerPairPhaseOffsetCycles: Float(
+        report.configuration.followerPhaseOffsetCycles
+      )
+    )
+    guard bilateralAudit.passed else {
+      throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
+        "formation presentation failed bilateral wing synchrony"
+      )
+    }
+    let auditEncoder = JSONEncoder()
+    auditEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    try auditEncoder.encode(bilateralAudit).write(
+      to: arguments.outputDirectory.appendingPathComponent(
+        "presentation-geometry-audit.json"
+      ),
+      options: .atomic
+    )
     for frameIndex in 0..<arguments.frameCount {
       let phase = frameIndex + 1 == arguments.frameCount
         ? Float.zero
@@ -293,7 +446,9 @@ public enum FormationFlightObservatoryCapture {
           displayedFlowPhase: phaseFlow.map { ($0.entry.leaderPhase, $0.entry.followerPhase) },
           hasFlowSlice: displayedFlowSlice != nil,
           scoutSummary: scoutSummary,
-          discriminator: discriminator
+          discriminator: discriminator,
+          geometrySubcellSummary: geometrySubcellSummary,
+          formationSourceSummary: formationSourceSummary
         )
       }
       try png.write(
@@ -383,7 +538,9 @@ public enum FormationFlightObservatoryCapture {
     displayedFlowPhase: (leader: Double, follower: Double)?,
     hasFlowSlice: Bool,
     scoutSummary: ScoutSummary?,
-    discriminator: C20DiscriminatorSummary?
+    discriminator: C20DiscriminatorSummary?,
+    geometrySubcellSummary: GeometrySubcellSummary?,
+    formationSourceSummary: FormationSourceSummary?
   ) {
     context.saveGState()
     let scale = CGFloat(width) / 1120
@@ -414,7 +571,10 @@ public enum FormationFlightObservatoryCapture {
     drawText(
       discriminator == nil
         ? "ONE FLUID  •  TWO OWNERS  •  MATCHED ISOLATED CONTROLS"
-        : "c20  •  FIVE CYCLES  •  PHASE-RESOLVED GPU FIELDS  •  MATCHED CONTROLS",
+        : String(
+          format: "BILATERAL WINGS L/R SYNC  •  FLYER PAIR Δφ %.2f  •  FORCE OWNER: BRIGHT PRESCRIBED WING",
+          report.configuration.followerPhaseOffsetCycles
+        ),
       font: labelFont,
       color: NSColor(calibratedRed: 0.30, green: 0.72, blue: 0.94, alpha: 1)
         .cgColor,
@@ -529,7 +689,7 @@ public enum FormationFlightObservatoryCapture {
       )
     }
     drawText(
-      "LEADER",
+      "LEADER  •  L/R SYNC",
       font: valueFont,
       color: NSColor(calibratedRed: 0.18, green: 0.78, blue: 1, alpha: 1)
         .cgColor,
@@ -537,7 +697,7 @@ public enum FormationFlightObservatoryCapture {
       context: context
     )
     drawText(
-      "FOLLOWER",
+      "FOLLOWER  •  L/R SYNC",
       font: valueFont,
       color: NSColor(calibratedRed: 1, green: 0.44, blue: 0.20, alpha: 1)
         .cgColor,
@@ -564,7 +724,163 @@ public enum FormationFlightObservatoryCapture {
         context: context
       )
     }
+    if let formationSourceSummary {
+      drawFormationSourceDecision(
+        formationSourceSummary,
+        scale: scale,
+        labelFont: labelFont,
+        valueFont: valueFont,
+        context: context
+      )
+    } else if let geometrySubcellSummary {
+      drawGeometrySubcellDecision(
+        geometrySubcellSummary,
+        scale: scale,
+        labelFont: labelFont,
+        valueFont: valueFont,
+        context: context
+      )
+    }
     context.restoreGState()
+  }
+
+  private static func drawFormationSourceDecision(
+    _ summary: FormationSourceSummary,
+    scale: CGFloat,
+    labelFont: CTFont,
+    valueFont: CTFont,
+    context: CGContext
+  ) {
+    let panel = CGRect(
+      x: 520 * scale,
+      y: 28 * scale,
+      width: 278 * scale,
+      height: 112 * scale
+    )
+    context.setFillColor(
+      NSColor(calibratedRed: 0.006, green: 0.016, blue: 0.035, alpha: 0.88)
+        .cgColor
+    )
+    context.addPath(
+      CGPath(
+        roundedRect: panel,
+        cornerWidth: 15 * scale,
+        cornerHeight: 15 * scale,
+        transform: nil
+      )
+    )
+    context.fillPath()
+    context.setStrokeColor(
+      NSColor(calibratedRed: 0.98, green: 0.73, blue: 0.29, alpha: 0.78)
+        .cgColor
+    )
+    context.setLineWidth(1.2 * scale)
+    context.stroke(panel.insetBy(dx: 0.6 * scale, dy: 0.6 * scale))
+    let metrics = summary.decisionMetrics
+    drawText(
+      "c16/c18/c20 SOURCE CONVERGENCE",
+      font: valueFont,
+      color: NSColor(calibratedRed: 1, green: 0.91, blue: 0.70, alpha: 1)
+        .cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 28 * scale),
+      context: context
+    )
+    drawText(
+      String(
+        format: "geometry C %.3f  •  source C %.3f",
+        metrics.selectedGeometryDensityCurvature,
+        metrics.normalizedPopulationWeightedSourceCurvature
+      ),
+      font: labelFont,
+      color: NSColor(calibratedWhite: 0.82, alpha: 1).cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 54 * scale),
+      context: context
+    )
+    drawText(
+      "MIXED SOURCE  •  0.5 < C < 1.0",
+      font: labelFont,
+      color: NSColor(calibratedRed: 1, green: 0.74, blue: 0.31, alpha: 1)
+        .cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 78 * scale),
+      context: context
+    )
+    drawText(
+      "gates pass  •  power convergence open",
+      font: labelFont,
+      color: NSColor(calibratedWhite: 0.56, alpha: 1).cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 100 * scale),
+      context: context
+    )
+  }
+
+  private static func drawGeometrySubcellDecision(
+    _ summary: GeometrySubcellSummary,
+    scale: CGFloat,
+    labelFont: CTFont,
+    valueFont: CTFont,
+    context: CGContext
+  ) {
+    let panel = CGRect(
+      x: 520 * scale,
+      y: 28 * scale,
+      width: 278 * scale,
+      height: 112 * scale
+    )
+    context.setFillColor(
+      NSColor(calibratedRed: 0.006, green: 0.016, blue: 0.035, alpha: 0.84)
+        .cgColor
+    )
+    context.addPath(
+      CGPath(
+        roundedRect: panel,
+        cornerWidth: 15 * scale,
+        cornerHeight: 15 * scale,
+        transform: nil
+      )
+    )
+    context.fillPath()
+    context.setStrokeColor(
+      NSColor(calibratedRed: 0.31, green: 0.92, blue: 0.78, alpha: 0.65)
+        .cgColor
+    )
+    context.setLineWidth(1.1 * scale)
+    context.stroke(panel.insetBy(dx: 0.6 * scale, dy: 0.6 * scale))
+    drawText(
+      "192-POSE GEOMETRY ENSEMBLE",
+      font: valueFont,
+      color: NSColor(calibratedRed: 0.82, green: 1, blue: 0.94, alpha: 1)
+        .cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 28 * scale),
+      context: context
+    )
+    let metrics = summary.decisionMetrics
+    drawText(
+      String(
+        format: "mean curvature  D %.3f  p %.3f  a %.3f",
+        metrics.normalizedMeanDensityMidpointCurvature,
+        metrics.normalizedMeanDirectionMidpointCurvature,
+        metrics.normalizedMeanArealProfileMidpointCurvature
+      ),
+      font: labelFont,
+      color: NSColor(calibratedWhite: 0.78, alpha: 1).cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 54 * scale),
+      context: context
+    )
+    drawText(
+      "SUBCELL AVERAGING RESTORES SMOOTH GEOMETRY",
+      font: labelFont,
+      color: NSColor(calibratedRed: 0.33, green: 0.96, blue: 0.72, alpha: 1)
+        .cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 78 * scale),
+      context: context
+    )
+    drawText(
+      "zero CFD steps  •  force convergence remains open",
+      font: labelFont,
+      color: NSColor(calibratedWhite: 0.53, alpha: 1).cgColor,
+      at: CGPoint(x: panel.minX + 15 * scale, y: panel.maxY - 100 * scale),
+      context: context
+    )
   }
 
   private static func drawC20Decision(
@@ -811,7 +1127,19 @@ public enum FormationFlightObservatoryCapture {
   }
 }
 
-private final class FormationObservatoryRenderer {
+struct FormationPresentationBilateralAudit: Codable, Sendable {
+  let schemaVersion: Int
+  let phaseCountPerFlyer: Int
+  let flyerCount: Int
+  let vertexPairsCompared: Int
+  let maximumPositionReflectionResidual: Float
+  let maximumNormalReflectionResidual: Float
+  let maximumWithinFlyerPhaseDifferenceCycles: Float
+  let flyerPairPhaseOffsetCycles: Float
+  let passed: Bool
+}
+
+final class FormationObservatoryRenderer {
   private let backend: VisualizationBackend
   private let surfacePipeline: MTLRenderPipelineState
   private let trailPipeline: MTLRenderPipelineState
@@ -865,12 +1193,12 @@ private final class FormationObservatoryRenderer {
   ) throws -> MTLTexture {
     let leaderRoot = -0.5 * followerOffsetChords
     let followerRoot = 0.5 * followerOffsetChords
-    let leader = wingVertices(
+    let leader = birdVertices(
       root: leaderRoot,
       phase: phase,
       color: SIMD3<Float>(0.08, 0.68, 1)
     )
-    let follower = wingVertices(
+    let follower = birdVertices(
       root: followerRoot,
       phase: phase + phaseOffset,
       color: SIMD3<Float>(1, 0.34, 0.12)
@@ -878,10 +1206,10 @@ private final class FormationObservatoryRenderer {
     let surfaces = leader + follower
     let orbit = 2 * Float.pi * phase
     var camera = CameraState()
-    camera.target = SIMD3<Float>(0.6, 0, -1.0)
-    camera.distance = 12.6 + 0.25 * sin(orbit)
-    camera.yaw = -0.76 + 0.10 * sin(orbit)
-    camera.pitch = 0.22 + 0.035 * cos(orbit)
+    camera.target = SIMD3<Float>(0, 0, -0.15)
+    camera.distance = 11.9 + 0.12 * sin(orbit)
+    camera.yaw = -1.02 + 0.035 * sin(orbit)
+    camera.pitch = 0.36 + 0.018 * cos(orbit)
     let trails = wakeTrails(
       root: leaderRoot,
       phase: phase,
@@ -1009,6 +1337,164 @@ private final class FormationObservatoryRenderer {
     return color
   }
 
+  private func birdVertices(
+    root: SIMD3<Float>,
+    phase: Float,
+    color: SIMD3<Float>
+  ) -> [ColoredVertex] {
+    let canonicalWing = wingVertices(
+      root: root,
+      phase: phase,
+      color: color
+    )
+    let shellColor = SIMD3<Float>(
+      0.24 + 0.64 * color.x,
+      0.26 + 0.62 * color.y,
+      0.30 + 0.58 * color.z
+    )
+    let mirroredWing = mirrored(
+      canonicalWing,
+      root: root,
+      color: SIMD4<Float>(shellColor, 0.96)
+    )
+    let canonicalFeathers = wingFeatherVertices(
+      root: root,
+      phase: phase,
+      color: SIMD4<Float>(0.82 * shellColor, 0.98)
+    )
+    let mirroredFeathers = mirrored(
+      canonicalFeathers,
+      root: root,
+      color: SIMD4<Float>(0.82 * shellColor, 0.98)
+    )
+    var result = canonicalWing + mirroredWing
+      + canonicalFeathers + mirroredFeathers
+    appendEllipsoid(
+      center: root + SIMD3<Float>(0, 0.02, 0.02),
+      radii: SIMD3<Float>(0.43, 0.92, 0.39),
+      color: SIMD4<Float>(shellColor, 0.99),
+      latitudeCount: 14,
+      longitudeCount: 24,
+      to: &result
+    )
+    appendEllipsoid(
+      center: root + SIMD3<Float>(0, 0.39, 0.08),
+      radii: SIMD3<Float>(0.35, 0.46, 0.33),
+      color: SIMD4<Float>(min(shellColor + 0.045, 1), 0.99),
+      latitudeCount: 11,
+      longitudeCount: 20,
+      to: &result
+    )
+    for side in [Float(-1), Float(1)] {
+      appendEllipsoid(
+        center: root + SIMD3<Float>(0.27 * side, 0.05, 0.07),
+        radii: SIMD3<Float>(0.22, 0.31, 0.18),
+        color: SIMD4<Float>(0.93 * shellColor, 0.99),
+        latitudeCount: 8,
+        longitudeCount: 14,
+        to: &result
+      )
+    }
+    appendEllipsoid(
+      center: root + SIMD3<Float>(0, 0.69, 0.14),
+      radii: SIMD3<Float>(0.28, 0.34, 0.28),
+      color: SIMD4<Float>(min(shellColor + 0.08, 1), 0.99),
+      latitudeCount: 10,
+      longitudeCount: 18,
+      to: &result
+    )
+    appendEllipsoid(
+      center: root + SIMD3<Float>(-0.21, 0.78, 0.19),
+      radii: SIMD3<Float>(0.035, 0.035, 0.041),
+      color: SIMD4<Float>(0.012, 0.018, 0.026, 1),
+      latitudeCount: 6,
+      longitudeCount: 10,
+      to: &result
+    )
+    appendEllipsoid(
+      center: root + SIMD3<Float>(0.21, 0.78, 0.19),
+      radii: SIMD3<Float>(0.035, 0.035, 0.041),
+      color: SIMD4<Float>(0.012, 0.018, 0.026, 1),
+      latitudeCount: 6,
+      longitudeCount: 10,
+      to: &result
+    )
+    appendCone(
+      baseCenter: root + SIMD3<Float>(0, 0.91, 0.12),
+      tip: root + SIMD3<Float>(0, 1.25, 0.09),
+      radius: 0.085,
+      color: SIMD4<Float>(0.98, 0.69, 0.20, 1),
+      segments: 16,
+      to: &result
+    )
+    appendTailFan(
+      root: root,
+      color: SIMD4<Float>(0.86 * shellColor, 0.98),
+      to: &result
+    )
+    return result
+  }
+
+  private func wingFeatherVertices(
+    root: SIMD3<Float>,
+    phase: Float,
+    color: SIMD4<Float>
+  ) -> [ColoredVertex] {
+    let state = MetalFlappingWingValidator.kinematicState(
+      phase: Double(wrapped(phase))
+    )
+    let stroke = Float(state.strokeAngleRadians)
+    let pitch = Float(state.pitchAngleRadians)
+    let span = SIMD3<Float>(cos(stroke), sin(stroke), 0)
+    let tangent = SIMD3<Float>(-sin(stroke), cos(stroke), 0)
+    let chord = rotate(tangent, axis: span, angle: -pitch)
+    let normal = simd_normalize(simd_cross(span, chord))
+    var result: [ColoredVertex] = []
+    for index in 0..<9 {
+      let fraction = 0.22 + 0.083 * Float(index)
+      let beta = max(fraction * (1 - fraction), 0)
+      let localChord = Float(MetalFlappingWingValidator.betaNormalization)
+        * pow(beta, Float(MetalFlappingWingValidator.betaShape - 1))
+      let radial = 3 * fraction
+      let trailing = root + radial * span + (localChord - 0.25) * chord
+      let featherDirection = simd_normalize(
+        (0.45 + 0.22 * fraction) * chord
+          + (0.13 + 0.30 * fraction) * span
+      )
+      let lateral = simd_normalize(simd_cross(normal, featherDirection))
+      let halfWidth = 0.075 + 0.025 * (1 - fraction)
+      let base = trailing - 0.18 * featherDirection
+      let tip = trailing
+        + (0.38 + 0.42 * fraction) * featherDirection
+      let featherShade = 0.78 + 0.18 * fraction
+      let featherColor = SIMD4<Float>(
+        color.x * featherShade,
+        color.y * featherShade,
+        color.z * featherShade,
+        color.w
+      )
+      appendQuad(
+        base - halfWidth * lateral + 0.018 * normal,
+        base + halfWidth * lateral + 0.018 * normal,
+        tip + 0.22 * halfWidth * lateral + 0.018 * normal,
+        tip - 0.22 * halfWidth * lateral + 0.018 * normal,
+        normal: normal,
+        color: featherColor,
+        to: &result
+      )
+      appendQuad(
+        base + halfWidth * lateral - 0.018 * normal,
+        base - halfWidth * lateral - 0.018 * normal,
+        tip - 0.22 * halfWidth * lateral - 0.018 * normal,
+        tip + 0.22 * halfWidth * lateral - 0.018 * normal,
+        normal: -normal,
+        color: 0.88 * featherColor,
+        to: &result
+      )
+    }
+    return result
+  }
+
   private func wingVertices(
     root: SIMD3<Float>,
     phase: Float,
@@ -1064,6 +1550,114 @@ private final class FormationObservatoryRenderer {
       )
     }
     return result
+  }
+
+  private func appendEllipsoid(
+    center: SIMD3<Float>,
+    radii: SIMD3<Float>,
+    color: SIMD4<Float>,
+    latitudeCount: Int,
+    longitudeCount: Int,
+    to result: inout [ColoredVertex]
+  ) {
+    func sample(_ latitude: Int, _ longitude: Int) -> ColoredVertex {
+      let v = Float(latitude) / Float(latitudeCount)
+      let u = Float(longitude) / Float(longitudeCount)
+      let phi = (v - 0.5) * Float.pi
+      let theta = u * 2 * Float.pi
+      let unit = SIMD3<Float>(
+        cos(phi) * cos(theta),
+        cos(phi) * sin(theta),
+        sin(phi)
+      )
+      return ColoredVertex(
+        position: SIMD4<Float>(center + unit * radii, 1),
+        normal: SIMD4<Float>(simd_normalize(unit / radii), 0),
+        color: color
+      )
+    }
+    for latitude in 0..<latitudeCount {
+      for longitude in 0..<longitudeCount {
+        let a = sample(latitude, longitude)
+        let b = sample(latitude, longitude + 1)
+        let c = sample(latitude + 1, longitude + 1)
+        let d = sample(latitude + 1, longitude)
+        result.append(contentsOf: [a, b, c, a, c, d])
+      }
+    }
+  }
+
+  private func appendCone(
+    baseCenter: SIMD3<Float>,
+    tip: SIMD3<Float>,
+    radius: Float,
+    color: SIMD4<Float>,
+    segments: Int,
+    to result: inout [ColoredVertex]
+  ) {
+    for index in 0..<segments {
+      let a = 2 * Float.pi * Float(index) / Float(segments)
+      let b = 2 * Float.pi * Float(index + 1) / Float(segments)
+      let pa = baseCenter + SIMD3<Float>(radius * cos(a), 0, radius * sin(a))
+      let pb = baseCenter + SIMD3<Float>(radius * cos(b), 0, radius * sin(b))
+      appendTriangle(pa, pb, tip, color: color, to: &result)
+    }
+  }
+
+  private func appendTailFan(
+    root: SIMD3<Float>,
+    color: SIMD4<Float>,
+    to result: inout [ColoredVertex]
+  ) {
+    for index in -3...3 {
+      let fraction = Float(index) / 3
+      let baseX = 0.11 * fraction
+      let tipX = 0.62 * fraction
+      let base = root + SIMD3<Float>(baseX, -0.53, -0.06)
+      let tip = root + SIMD3<Float>(tipX, -1.55 + 0.10 * abs(fraction), -0.10)
+      let width: Float = 0.13
+      let direction = simd_normalize(tip - base)
+      let lateral = simd_normalize(
+        simd_cross(SIMD3<Float>(0, 0, 1), direction)
+      ) * width
+      appendQuad(
+        base - lateral,
+        base + lateral,
+        tip + 0.42 * lateral,
+        tip - 0.42 * lateral,
+        normal: SIMD3<Float>(0, 0, 1),
+        color: color,
+        to: &result
+      )
+      appendQuad(
+        base + lateral - SIMD3<Float>(0, 0, 0.035),
+        base - lateral - SIMD3<Float>(0, 0, 0.035),
+        tip - 0.42 * lateral - SIMD3<Float>(0, 0, 0.035),
+        tip + 0.42 * lateral - SIMD3<Float>(0, 0, 0.035),
+        normal: SIMD3<Float>(0, 0, -1),
+        color: 0.86 * color,
+        to: &result
+      )
+    }
+  }
+
+  private func appendTriangle(
+    _ a: SIMD3<Float>,
+    _ b: SIMD3<Float>,
+    _ c: SIMD3<Float>,
+    color: SIMD4<Float>,
+    to result: inout [ColoredVertex]
+  ) {
+    let normal = simd_normalize(simd_cross(b - a, c - a))
+    for point in [a, b, c] {
+      result.append(
+        ColoredVertex(
+          position: SIMD4<Float>(point, 1),
+          normal: SIMD4<Float>(normal, 0),
+          color: color
+        )
+      )
+    }
   }
 
   private func flowSliceVertices(
@@ -1138,8 +1732,8 @@ private final class FormationObservatoryRenderer {
     color: SIMD3<Float>,
     camera: CameraState
   ) -> [[ColoredVertex]] {
-    (0..<5).flatMap { ribbon in
-      let radial = 0.65 + 0.52 * Float(ribbon)
+    (0..<4).flatMap { ribbon in
+      let radial = 0.72 + 0.59 * Float(ribbon)
       var points: [SIMD3<Float>] = []
       for sample in 0..<42 {
         let age = Float(sample) / 41
@@ -1155,23 +1749,148 @@ private final class FormationObservatoryRenderer {
             + SIMD3<Float>(0.28 * age, 0, -5.2 * age)
         )
       }
-      return [
-        trailVertices(
-          points: points,
-          color: color,
-          camera: camera,
-          width: 0.035,
-          alpha: 0.24
-        ),
-        trailVertices(
-          points: points,
-          color: min(color + SIMD3<Float>(0.28, 0.28, 0.28), 1),
-          camera: camera,
-          width: 0.012,
-          alpha: 0.72
-        ),
-      ]
+      let mirroredPoints = points.map {
+        root + Self.bilateralReflection($0 - root)
+      }
+      return [points, mirroredPoints].flatMap { sidePoints in
+        [
+          trailVertices(
+            points: sidePoints,
+            color: color,
+            camera: camera,
+            width: 0.032,
+            alpha: 0.16
+          ),
+          trailVertices(
+            points: sidePoints,
+            color: min(color + SIMD3<Float>(0.28, 0.28, 0.28), 1),
+            camera: camera,
+            width: 0.010,
+            alpha: 0.54
+          ),
+        ]
+      }
     }
+  }
+
+  static func bilateralReflection(
+    _ relative: SIMD3<Float>
+  ) -> SIMD3<Float> {
+    SIMD3<Float>(-relative.x, relative.y, relative.z)
+  }
+
+  private func mirrored(
+    _ vertices: [ColoredVertex],
+    root: SIMD3<Float>,
+    color: SIMD4<Float>
+  ) -> [ColoredVertex] {
+    vertices.map { vertex in
+      let position = SIMD3<Float>(
+        vertex.position.x,
+        vertex.position.y,
+        vertex.position.z
+      )
+      let normal = SIMD3<Float>(
+        vertex.normal.x,
+        vertex.normal.y,
+        vertex.normal.z
+      )
+      let relative = position - root
+      let reflectedNormal = Self.bilateralReflection(normal)
+      return ColoredVertex(
+        position: SIMD4<Float>(
+          root + Self.bilateralReflection(relative),
+          1
+        ),
+        normal: SIMD4<Float>(reflectedNormal, 0),
+        color: color
+      )
+    }
+  }
+
+  func bilateralPresentationAudit(
+    phases: [Float],
+    flyerPairPhaseOffsetCycles: Float
+  ) -> FormationPresentationBilateralAudit {
+    let root = SIMD3<Float>.zero
+    var maximumPositionResidual: Float = 0
+    var maximumNormalResidual: Float = 0
+    var pairs = 0
+    for flyerOffset in [Float.zero, flyerPairPhaseOffsetCycles] {
+      for phase in phases {
+        let canonical = wingVertices(
+          root: root,
+          phase: phase + flyerOffset,
+          color: SIMD3<Float>(0.08, 0.68, 1)
+        )
+        let partner = mirrored(
+          canonical,
+          root: root,
+          color: SIMD4<Float>(0.62, 0.82, 0.94, 1)
+        )
+        for (right, left) in zip(canonical, partner) {
+          let rightPosition = SIMD3<Float>(
+            right.position.x,
+            right.position.y,
+            right.position.z
+          )
+          let leftPosition = SIMD3<Float>(
+            left.position.x,
+            left.position.y,
+            left.position.z
+          )
+          let positionResidual = max(
+            abs(leftPosition.x + rightPosition.x),
+            max(
+              abs(leftPosition.y - rightPosition.y),
+              abs(leftPosition.z - rightPosition.z)
+            )
+          )
+          maximumPositionResidual = max(
+            maximumPositionResidual,
+            positionResidual
+          )
+          let rightNormal = SIMD3<Float>(
+            right.normal.x,
+            right.normal.y,
+            right.normal.z
+          )
+          let leftNormal = SIMD3<Float>(
+            left.normal.x,
+            left.normal.y,
+            left.normal.z
+          )
+          let normalResidual = max(
+            abs(leftNormal.x + rightNormal.x),
+            max(
+              abs(leftNormal.y - rightNormal.y),
+              abs(leftNormal.z - rightNormal.z)
+            )
+          )
+          maximumNormalResidual = max(
+            maximumNormalResidual,
+            normalResidual
+          )
+          pairs += 1
+        }
+      }
+    }
+    let passed = !phases.isEmpty
+      && pairs > 0
+      && maximumPositionResidual <= 1e-6
+      && maximumNormalResidual <= 1e-6
+      && flyerPairPhaseOffsetCycles.isFinite
+    return FormationPresentationBilateralAudit(
+      schemaVersion: 1,
+      phaseCountPerFlyer: phases.count,
+      flyerCount: 2,
+      vertexPairsCompared: pairs,
+      maximumPositionReflectionResidual: maximumPositionResidual,
+      maximumNormalReflectionResidual: maximumNormalResidual,
+      maximumWithinFlyerPhaseDifferenceCycles: 0,
+      flyerPairPhaseOffsetCycles: flyerPairPhaseOffsetCycles,
+      passed: passed
+    )
   }
 
   private func trailVertices(

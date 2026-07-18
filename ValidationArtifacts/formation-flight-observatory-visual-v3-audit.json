@@ -1,0 +1,131 @@
+{
+  "checkCount": 23,
+  "checks": [
+    {
+      "detail": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6",
+      "name": "locked hash ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "passed": true
+    },
+    {
+      "detail": "6a9b74712f57c0b75d1c5c9d3cbbcfdad2c314d66637d112acb9e5c2b7e56493",
+      "name": "locked hash ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json",
+      "passed": true
+    },
+    {
+      "detail": "ece938ab03b0be4b7613c84cac9de936d1c833bef93174083e35017363bffb6f",
+      "name": "locked hash ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/index.json",
+      "passed": true
+    },
+    {
+      "detail": "19a783e72b9d579e157dff5ff7583f16bfa970f3cb33f047db5781c375882e5f",
+      "name": "locked hash ValidationInputs/formation-flight-geometry-subcell-ensemble-v1.json",
+      "passed": true
+    },
+    {
+      "detail": "4f4619be6655164741b8fad77d684bab23f932c162109e88125eb244360140f2",
+      "name": "locked hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+      "passed": true
+    },
+    {
+      "detail": "4e80126b6051907674e9cdc7161190c0b8ffe99f0890e06b84b8008ae98e743a",
+      "name": "locked hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-audit.json",
+      "passed": true
+    },
+    {
+      "detail": "f79d47ebd0b32d7278d6dccbbfefc0f2535e6cd0fe59ce4c5c6d7431c1711d15",
+      "name": "locked hash Sources/BirdFlowVisualization/FormationFlightObservatoryCapture.swift",
+      "passed": true
+    },
+    {
+      "detail": "309a1f4164fab2b9d2088275b2039ef403dfcc5d431ff7ecc8f1a5a21f591475",
+      "name": "locked hash Scripts/capture-formation-observatory-gif.sh",
+      "passed": true
+    },
+    {
+      "detail": "d467769cddc097c9b698067ee056dfee9341b81905410132058fd24b963a6242",
+      "name": "locked hash Scripts/audit-formation-observatory-visual.py",
+      "passed": true
+    },
+    {
+      "detail": 21,
+      "name": "exact flow slice count",
+      "passed": true
+    },
+    {
+      "detail": "96b855ede56603caa23e5bd8d56f907a14f718b25edd240f78368bf27d094cff",
+      "name": "combined flow slice archive hash",
+      "passed": true
+    },
+    {
+      "detail": "3d9fce8bc5f04c93c3b4e1c0e3d9b68f619424b5f19d13b69fbe4f2c28a0aa9c",
+      "name": "GIF hash",
+      "passed": true
+    },
+    {
+      "detail": 7155013,
+      "name": "GIF byte budget",
+      "passed": true
+    },
+    {
+      "detail": [
+        1120,
+        630
+      ],
+      "name": "GIF dimensions",
+      "passed": true
+    },
+    {
+      "detail": 48,
+      "name": "GIF frame count",
+      "passed": true
+    },
+    {
+      "detail": 0.9969199765431814,
+      "name": "encoded seam remains ordinary motion",
+      "passed": true
+    },
+    {
+      "detail": 0.9969199765431814,
+      "name": "recorded seam ratio",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "subcell ensemble passed",
+      "passed": true
+    },
+    {
+      "detail": "aliasingAveragedOut",
+      "name": "subcell classification",
+      "passed": true
+    },
+    {
+      "detail": 192,
+      "name": "subcell case count",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "subcell no-fluid boundary",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "quantitative force claim remains open",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "archived predecessor hash",
+      "passed": true
+    }
+  ],
+  "claimBoundary": "The complete birds are explicitly labeled presentation shells. Only the bright prescribed wing per owner corresponds to archived force-bearing geometry. The 192-pose geometry ensemble executes zero fluid timesteps and does not clear the failed c16-to-c20 force convergence boundary, authorize a quantitative formation benefit, or support a biological claim.",
+  "encodedMedianAdjacentRMS": 12.681604385375977,
+  "encodedSeamRMS": 12.642544746398926,
+  "encodedSeamToMedianAdjacentRMSRatio": 0.9969199765431814,
+  "passed": true,
+  "passedCheckCount": 23,
+  "schemaVersion": 1,
+  "title": "Native Metal whole-bird Formation Observatory visual audit"
+}

@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 4,
+  "title": "Synchronized native Metal whole-bird Formation Flight Observatory",
+  "renderer": "BirdFlowVisualization deterministic offscreen Metal rasterizer",
+  "presentationGeometry": {
+    "leaderAndFollower": "procedural complete-bird presentation shells with sagittally reflected bilateral wings, body, chest, shoulder fairings, head, eyes, beak, tail fan, and feather layers",
+    "bilateralTransform": "relative position and normal (-x, y, z) about each flyer root; both wings use the same within-flyer phase",
+    "bilateralAuditPath": "ValidationArtifacts/formation-flight-observatory-bilateral-v4.json",
+    "maximumReflectionResidual": 1e-06,
+    "flyerPairPhaseOffsetCycles": 0.25,
+    "forceBearingGeometry": "one bright Li-Nabawy prescribed beta-planform wing per owner, unchanged from the archived c20 Formation Flight solver",
+    "presentationOnlyParts": "reflected partner wing, body, chest, shoulders, head, eyes, beak, tail, and feather layers never enter voxelization, fluid stepping, load accounting, or reported power"
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "sha256": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json",
+      "sha256": "6a9b74712f57c0b75d1c5c9d3cbbcfdad2c314d66637d112acb9e5c2b7e56493"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/index.json",
+      "sha256": "ece938ab03b0be4b7613c84cac9de936d1c833bef93174083e35017363bffb6f"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-geometry-subcell-ensemble-v1.json",
+      "sha256": "19a783e72b9d579e157dff5ff7583f16bfa970f3cb33f047db5781c375882e5f"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+      "sha256": "4f4619be6655164741b8fad77d684bab23f932c162109e88125eb244360140f2"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-audit.json",
+      "sha256": "4e80126b6051907674e9cdc7161190c0b8ffe99f0890e06b84b8008ae98e743a"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-subcell-source-census-v1.json",
+      "sha256": "fddf385caf345c3e3dac8d21df6482adfdbf4f656fd654c189634b2303058a56"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+      "sha256": "8a464b91fe1488a39d0334cb00eefc8056a43ff00467b0d4e6331165c7f59c0c"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+      "sha256": "98f07499f56d630cdc65de4a6da867e12b6bdb80b52aaaff2df82c1e05c37bd1"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-observatory-bilateral-v4.json",
+      "sha256": "20fb7fdf9e6f0a31f4d78f8fac5530ce5590d1509e608edbb2699fcad6c6a483"
+    }
+  ],
+  "lockedImplementation": [
+    {
+      "path": "Sources/BirdFlowVisualization/FormationFlightObservatoryCapture.swift",
+      "sha256": "146190e63b9f3f25093b4a4efa31a6bb6b7af3ee3d7697268895b7a7955aedf0"
+    },
+    {
+      "path": "Scripts/capture-formation-observatory-gif.sh",
+      "sha256": "0fd82f36b38dea0b3de59e6b7ce5a80bdd2dd2cd45a6b1f22c36387a134f509a"
+    },
+    {
+      "path": "Scripts/audit-formation-observatory-visual.py",
+      "sha256": "1a39132fb8254d3a1d2ff821da9d998539fcb8e8ead9e1f4cd43e3f04c0c844c"
+    },
+    {
+      "path": "Tests/BirdFlowVisualizationTests/FormationFlightObservatoryPresentationTests.swift",
+      "sha256": "9d3c5bbcf15b7d9816f54472dc4c8ce8580b76d2d6de151478c96c5ae7d102fa"
+    }
+  ],
+  "flowSliceArchive": {
+    "indexPath": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/index.json",
+    "entryCount": 21,
+    "combinedSHA256": "96b855ede56603caa23e5bd8d56f907a14f718b25edd240f78368bf27d094cff"
+  },
+  "scientificStatus": {
+    "subcellSummaryPath": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+    "subcellClassification": "aliasingAveragedOut",
+    "subcellCaseCount": 192,
+    "meanDensityCurvature": 0.1315331278303195,
+    "meanDirectionCurvature": 0.09259323511106857,
+    "meanArealProfileCurvature": 0.13145275271256526,
+    "sourceSummaryPath": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+    "sourceAuditPath": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+    "sourceClassification": "mixedPopulationWeightedSource",
+    "selectedGeometryDensityCurvature": 0.14997913216742337,
+    "populationWeightedSourceCurvature": 0.8841533797492038,
+    "c20FinePairChange": 0.1068,
+    "c20FinePairLimit": 0.05,
+    "quantitativeFormationClaimAuthorized": false
+  },
+  "output": {
+    "path": "Docs/Media/formation-flight-observatory.gif",
+    "sha256": "98a25ce0f167a16cbb66124740cf8d317a827529d1402994dea24fa4b31004e2",
+    "bytes": 7318268,
+    "dimensions": [1120, 630],
+    "frameCount": 48,
+    "framesPerSecond": 24,
+    "loopMode": "forward-only seamless loop; no reversed frames",
+    "sourceEndpointProbePixelIdentical": true,
+    "encodedMedianAdjacentRMS": 12.58576488494873,
+    "encodedSeamRMS": 11.972004890441895,
+    "seamToMedianAdjacentRMSRatio": 0.9512337946785555,
+    "maximumSeamToMedianAdjacentRMSRatio": 1.1
+  },
+  "predecessor": {
+    "path": "Docs/Media/Progress/2026-07-18-v3-whole-bird-bilateral-bug.gif",
+    "sha256": "3d9fce8bc5f04c93c3b4e1c0e3d9b68f619424b5f19d13b69fbe4f2c28a0aa9c",
+    "description": "exact prior whole-bird binary archived as a known-invalid presentation transform: its partner wing used a 180-degree z rotation instead of sagittal reflection; CFD and archived loads were unaffected"
+  },
+  "auditPath": "ValidationArtifacts/formation-flight-observatory-visual-v4-audit.json",
+  "claimBoundary": "The complete birds are explicitly labeled presentation shells. Only the bright prescribed wing per owner corresponds to archived force-bearing geometry; its synchronized reflected partner is presentation-only. The mixed c16/c18/c20 population-weighted source result and failed c16-to-c20 force convergence boundary keep quantitative power convergence open and do not authorize a formation benefit or biological claim."
+}

@@ -1,0 +1,2042 @@
+{
+  "checkCount": 334,
+  "checks": [
+    {
+      "detail": null,
+      "name": "preregistered before ensemble execution",
+      "passed": true
+    },
+    {
+      "detail": "5daf2f9fd41d17b96347a175f2ea453821a945a34cf7b2f4560bfe33db54bb27",
+      "name": "locked hash ValidationInputs/formation-flight-geometry-c18-bridge-v1.json",
+      "passed": true
+    },
+    {
+      "detail": "2333c62354014a5f55990d57ea000e826079fddb2b87f9aa81c86aa989e46495",
+      "name": "locked hash ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-c18-bridge-summary.json",
+      "passed": true
+    },
+    {
+      "detail": "879cdad3814d086c94775cc5b39364e6bbc73129c2158b29baac5a931216ae27",
+      "name": "locked hash ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-c18-bridge-audit.json",
+      "passed": true
+    },
+    {
+      "detail": "c5881a99a19cd240fa882d369271152a8a4817234b4f582b8d7e7cfccb4d97f9",
+      "name": "locked hash ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-census.json",
+      "passed": true
+    },
+    {
+      "detail": "d579fa2ef15ff0adcfedd66f9f945d57e748731e35f0edca072dd86929da8370",
+      "name": "locked hash Sources/BirdFlowMetal/MetalFormationGeometrySubcellEnsemble.swift",
+      "passed": true
+    },
+    {
+      "detail": "7786880f1b2a2cf6e2b3a2b9cebfcecff89a812cf7813d103c65f0788d593be0",
+      "name": "locked hash Tests/BirdFlowMetalTests/FormationGeometrySubcellEnsembleTests.swift",
+      "passed": true
+    },
+    {
+      "detail": "2b98c16e67335f0a98ef9f2d551f77f8afd1e52f26cf48a335c0c027d9ebc1da",
+      "name": "locked hash Tools/FormationGeometrySubcell/Package.swift",
+      "passed": true
+    },
+    {
+      "detail": "c84cb21dd4180771b27ca01de7749c9cf28223427bdaf9da057295b1982ca1ef",
+      "name": "locked hash Tools/FormationGeometrySubcell/Sources/FormationGeometrySubcellCLI/main.swift",
+      "passed": true
+    },
+    {
+      "detail": "bf5f3b5981012163d0e625f15871d1fee7138e851ab85fbd1ada74f3dc2622e9",
+      "name": "locked hash Scripts/run-formation-geometry-subcell-ensemble.sh",
+      "passed": true
+    },
+    {
+      "detail": "87bd23b58caef9563dab7f84ac07425a4ce4f1dcb2825ea1ebb19d7cd8a8c2cb",
+      "name": "locked hash Scripts/analyze-formation-geometry-subcell-ensemble.py",
+      "passed": true
+    },
+    {
+      "detail": "b2e5ec3601e63618f3b6cb0c66a5b357207d22ec2baac7267fe614d67fd7ed75",
+      "name": "locked hash Scripts/audit-formation-geometry-subcell-ensemble.py",
+      "passed": true
+    },
+    {
+      "detail": 192,
+      "name": "exact 192-case tensor grid",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw report passed",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw gate noFluidTimesteps",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw gate completeTensorGrid",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw gate positiveLinkSupport",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw gate zeroOverlap",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw gate allFinite",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 0,
+        "ensemble": 0
+      },
+      "name": "c16 leader q0 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 146,
+        "ensemble": 146
+      },
+      "name": "c16 leader q1 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 146,
+        "ensemble": 146
+      },
+      "name": "c16 leader q2 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 541,
+        "ensemble": 541
+      },
+      "name": "c16 leader q3 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 541,
+        "ensemble": 541
+      },
+      "name": "c16 leader q4 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 562,
+        "ensemble": 562
+      },
+      "name": "c16 leader q5 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 562,
+        "ensemble": 562
+      },
+      "name": "c16 leader q6 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 418,
+        "ensemble": 418
+      },
+      "name": "c16 leader q7 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 418,
+        "ensemble": 418
+      },
+      "name": "c16 leader q8 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 668,
+        "ensemble": 668
+      },
+      "name": "c16 leader q9 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 668,
+        "ensemble": 668
+      },
+      "name": "c16 leader q10 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 683,
+        "ensemble": 683
+      },
+      "name": "c16 leader q11 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 683,
+        "ensemble": 683
+      },
+      "name": "c16 leader q12 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 445,
+        "ensemble": 445
+      },
+      "name": "c16 leader q13 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 445,
+        "ensemble": 445
+      },
+      "name": "c16 leader q14 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 80,
+        "ensemble": 80
+      },
+      "name": "c16 leader q15 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 80,
+        "ensemble": 80
+      },
+      "name": "c16 leader q16 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 774,
+        "ensemble": 774
+      },
+      "name": "c16 leader q17 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 774,
+        "ensemble": 774
+      },
+      "name": "c16 leader q18 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 0,
+        "ensemble": 0
+      },
+      "name": "c16 follower q0 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 701,
+        "ensemble": 701
+      },
+      "name": "c16 follower q1 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 701,
+        "ensemble": 701
+      },
+      "name": "c16 follower q2 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 177,
+        "ensemble": 177
+      },
+      "name": "c16 follower q3 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 177,
+        "ensemble": 177
+      },
+      "name": "c16 follower q4 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 340,
+        "ensemble": 340
+      },
+      "name": "c16 follower q5 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 340,
+        "ensemble": 340
+      },
+      "name": "c16 follower q6 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 546,
+        "ensemble": 546
+      },
+      "name": "c16 follower q7 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 546,
+        "ensemble": 546
+      },
+      "name": "c16 follower q8 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 779,
+        "ensemble": 779
+      },
+      "name": "c16 follower q9 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 779,
+        "ensemble": 779
+      },
+      "name": "c16 follower q10 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 416,
+        "ensemble": 416
+      },
+      "name": "c16 follower q11 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 416,
+        "ensemble": 416
+      },
+      "name": "c16 follower q12 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 779,
+        "ensemble": 779
+      },
+      "name": "c16 follower q13 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 779,
+        "ensemble": 779
+      },
+      "name": "c16 follower q14 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 494,
+        "ensemble": 494
+      },
+      "name": "c16 follower q15 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 494,
+        "ensemble": 494
+      },
+      "name": "c16 follower q16 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 195,
+        "ensemble": 195
+      },
+      "name": "c16 follower q17 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 195,
+        "ensemble": 195
+      },
+      "name": "c16 follower q18 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 0,
+        "ensemble": 0
+      },
+      "name": "c18 leader q0 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 186,
+        "ensemble": 186
+      },
+      "name": "c18 leader q1 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 186,
+        "ensemble": 186
+      },
+      "name": "c18 leader q2 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 670,
+        "ensemble": 670
+      },
+      "name": "c18 leader q3 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 670,
+        "ensemble": 670
+      },
+      "name": "c18 leader q4 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 696,
+        "ensemble": 696
+      },
+      "name": "c18 leader q5 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 696,
+        "ensemble": 696
+      },
+      "name": "c18 leader q6 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 519,
+        "ensemble": 519
+      },
+      "name": "c18 leader q7 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 519,
+        "ensemble": 519
+      },
+      "name": "c18 leader q8 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 830,
+        "ensemble": 830
+      },
+      "name": "c18 leader q9 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 830,
+        "ensemble": 830
+      },
+      "name": "c18 leader q10 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 847,
+        "ensemble": 847
+      },
+      "name": "c18 leader q11 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 847,
+        "ensemble": 847
+      },
+      "name": "c18 leader q12 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 553,
+        "ensemble": 553
+      },
+      "name": "c18 leader q13 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 553,
+        "ensemble": 553
+      },
+      "name": "c18 leader q14 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 94,
+        "ensemble": 94
+      },
+      "name": "c18 leader q15 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 94,
+        "ensemble": 94
+      },
+      "name": "c18 leader q16 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 969,
+        "ensemble": 969
+      },
+      "name": "c18 leader q17 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 969,
+        "ensemble": 969
+      },
+      "name": "c18 leader q18 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 0,
+        "ensemble": 0
+      },
+      "name": "c18 follower q0 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 866,
+        "ensemble": 866
+      },
+      "name": "c18 follower q1 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 866,
+        "ensemble": 866
+      },
+      "name": "c18 follower q2 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 215,
+        "ensemble": 215
+      },
+      "name": "c18 follower q3 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 215,
+        "ensemble": 215
+      },
+      "name": "c18 follower q4 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 416,
+        "ensemble": 416
+      },
+      "name": "c18 follower q5 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 416,
+        "ensemble": 416
+      },
+      "name": "c18 follower q6 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 676,
+        "ensemble": 676
+      },
+      "name": "c18 follower q7 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 676,
+        "ensemble": 676
+      },
+      "name": "c18 follower q8 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 964,
+        "ensemble": 964
+      },
+      "name": "c18 follower q9 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 964,
+        "ensemble": 964
+      },
+      "name": "c18 follower q10 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 510,
+        "ensemble": 510
+      },
+      "name": "c18 follower q11 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 510,
+        "ensemble": 510
+      },
+      "name": "c18 follower q12 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 964,
+        "ensemble": 964
+      },
+      "name": "c18 follower q13 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 964,
+        "ensemble": 964
+      },
+      "name": "c18 follower q14 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 608,
+        "ensemble": 608
+      },
+      "name": "c18 follower q15 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 608,
+        "ensemble": 608
+      },
+      "name": "c18 follower q16 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 238,
+        "ensemble": 238
+      },
+      "name": "c18 follower q17 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 238,
+        "ensemble": 238
+      },
+      "name": "c18 follower q18 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 0,
+        "ensemble": 0
+      },
+      "name": "c20 leader q0 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 226,
+        "ensemble": 226
+      },
+      "name": "c20 leader q1 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 226,
+        "ensemble": 226
+      },
+      "name": "c20 leader q2 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 849,
+        "ensemble": 849
+      },
+      "name": "c20 leader q3 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 849,
+        "ensemble": 849
+      },
+      "name": "c20 leader q4 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 856,
+        "ensemble": 856
+      },
+      "name": "c20 leader q5 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 856,
+        "ensemble": 856
+      },
+      "name": "c20 leader q6 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 661,
+        "ensemble": 661
+      },
+      "name": "c20 leader q7 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 661,
+        "ensemble": 661
+      },
+      "name": "c20 leader q8 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1038,
+        "ensemble": 1038
+      },
+      "name": "c20 leader q9 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1038,
+        "ensemble": 1038
+      },
+      "name": "c20 leader q10 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1053,
+        "ensemble": 1053
+      },
+      "name": "c20 leader q11 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1053,
+        "ensemble": 1053
+      },
+      "name": "c20 leader q12 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 664,
+        "ensemble": 664
+      },
+      "name": "c20 leader q13 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 664,
+        "ensemble": 664
+      },
+      "name": "c20 leader q14 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 104,
+        "ensemble": 104
+      },
+      "name": "c20 leader q15 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 104,
+        "ensemble": 104
+      },
+      "name": "c20 leader q16 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1202,
+        "ensemble": 1202
+      },
+      "name": "c20 leader q17 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1202,
+        "ensemble": 1202
+      },
+      "name": "c20 leader q18 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 0,
+        "ensemble": 0
+      },
+      "name": "c20 follower q0 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1085,
+        "ensemble": 1085
+      },
+      "name": "c20 follower q1 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1085,
+        "ensemble": 1085
+      },
+      "name": "c20 follower q2 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 273,
+        "ensemble": 273
+      },
+      "name": "c20 follower q3 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 273,
+        "ensemble": 273
+      },
+      "name": "c20 follower q4 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 510,
+        "ensemble": 510
+      },
+      "name": "c20 follower q5 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 510,
+        "ensemble": 510
+      },
+      "name": "c20 follower q6 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 852,
+        "ensemble": 852
+      },
+      "name": "c20 follower q7 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 852,
+        "ensemble": 852
+      },
+      "name": "c20 follower q8 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1207,
+        "ensemble": 1207
+      },
+      "name": "c20 follower q9 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1207,
+        "ensemble": 1207
+      },
+      "name": "c20 follower q10 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 643,
+        "ensemble": 643
+      },
+      "name": "c20 follower q11 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 643,
+        "ensemble": 643
+      },
+      "name": "c20 follower q12 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1207,
+        "ensemble": 1207
+      },
+      "name": "c20 follower q13 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 1207,
+        "ensemble": 1207
+      },
+      "name": "c20 follower q14 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 752,
+        "ensemble": 752
+      },
+      "name": "c20 follower q15 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 752,
+        "ensemble": 752
+      },
+      "name": "c20 follower q16 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 284,
+        "ensemble": 284
+      },
+      "name": "c20 follower q17 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bridge": 284,
+        "ensemble": 284
+      },
+      "name": "c20 follower q18 bridge parity",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.25, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.5, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 offset (0.75, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.25, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.5, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 offset (0.75, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.25, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.5, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.75, 0) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.25, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.5, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.75, 0.25) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.25, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.5, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.75, 0.5) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.25, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.5, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.25, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.5, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 offset (0.75, 0.75, 0.75) leader total closure",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": 0.1315331278303195,
+        "summary": 0.1315331278303195
+      },
+      "name": "normalizedMeanDensityMidpointCurvature",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": 0.09259323511106857,
+        "summary": 0.09259323511106857
+      },
+      "name": "normalizedMeanDirectionMidpointCurvature",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": 0.13145275271256526,
+        "summary": 0.13145275271256526
+      },
+      "name": "normalizedMeanArealProfileMidpointCurvature",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "mean density interval",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": "aliasingAveragedOut",
+        "summary": "aliasingAveragedOut"
+      },
+      "name": "classification",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "baseline matched residual",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "artifact exists ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-cases.csv",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "artifact exists Docs/Media/formation-flight-geometry-subcell-ensemble.png",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "artifact exists Docs/Media/formation-flight-geometry-subcell-ensemble.svg",
+      "passed": true
+    }
+  ],
+  "claimBoundary": "This no-fluid ensemble may quantify lattice-phase uncertainty and select the next geometry diagnostic. It cannot validate force convergence, authorize a boundary or geometry correction, establish a quantitative formation-flight benefit, or support a biological claim.",
+  "classification": "aliasingAveragedOut",
+  "independentMetrics": {
+    "baselineMatchedMidpointResidual": -0.384670138888886,
+    "meanDensityBetweenEndpoints": true,
+    "normalizedMeanArealProfileMidpointCurvature": 0.13145275271256526,
+    "normalizedMeanDensityMidpointCurvature": 0.1315331278303195,
+    "normalizedMeanDirectionMidpointCurvature": 0.09259323511106857
+  },
+  "passed": true,
+  "passedCheckCount": 334,
+  "schemaVersion": 1,
+  "title": "Independent Formation Flight subcell geometry ensemble audit"
+}

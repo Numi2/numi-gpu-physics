@@ -1,0 +1,786 @@
+{
+  "checkCount": 105,
+  "checks": [
+    {
+      "detail": null,
+      "name": "preregistered before c18 execution",
+      "passed": true
+    },
+    {
+      "detail": "dd4dac9ca2f4db67ffab90099b9d3ff655e335e3cc04567765801a6ca27a8bc1",
+      "name": "locked hash ValidationArtifacts/formation-flight-link-sampling-subdecomposition/formation-flight-link-sampling-subdecomposition-summary.json",
+      "passed": true
+    },
+    {
+      "detail": "1f427a1d643599175876def124e431cae16561d24edb4762b1774f9d8bd8a71e",
+      "name": "locked hash ValidationArtifacts/formation-flight-link-sampling-subdecomposition/formation-flight-link-sampling-subdecomposition-audit.json",
+      "passed": true
+    },
+    {
+      "detail": "fb71609083acb947efa7610e0dc30658b0f4689e2918b1bc6b545b9af2e75891",
+      "name": "locked hash ValidationArtifacts/formation-flight-boundary-source-census/c16-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "passed": true
+    },
+    {
+      "detail": "88ced4bd4e20be9b3ca61510a2b36aef2181a3cb3330b5e7a608c072d82ce7b0",
+      "name": "locked hash ValidationArtifacts/formation-flight-boundary-source-census/c20-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "passed": true
+    },
+    {
+      "detail": "f3558260ce7a949125518a177f7479e5a97344f742680556bb23ae3eba7d2475",
+      "name": "locked hash Package.swift",
+      "passed": true
+    },
+    {
+      "detail": "007d68a753ea16063fe84af76b085e516c31aba9bc101aece0f927bfc57567e5",
+      "name": "locked hash Sources/BirdFlowMetal/MetalFormationGeometryCensus.swift",
+      "passed": true
+    },
+    {
+      "detail": "a64cf15dbf11469eea04da6da9a48556d881b910a8c7644c369571d5fcf0c656",
+      "name": "locked hash Sources/FormationGeometryBridgeCLI/main.swift",
+      "passed": true
+    },
+    {
+      "detail": "f3741e87b31d94d5d27f07181aa6fd39166ea79419480e886a0c1c9c0c0b75dd",
+      "name": "locked hash Tests/BirdFlowMetalTests/FormationGeometryBridgeTests.swift",
+      "passed": true
+    },
+    {
+      "detail": "cd7f101f0b890948ee5031f4a2359f901fac9982575d2b4484a1378cb7908e9b",
+      "name": "locked hash Scripts/run-formation-geometry-c18-bridge.sh",
+      "passed": true
+    },
+    {
+      "detail": "e10a359e9dbcfa1e1ee3eaf2029b312b7e7f9eed97cf6a0e27efd35882a1988b",
+      "name": "locked hash Scripts/analyze-formation-geometry-c18-bridge.py",
+      "passed": true
+    },
+    {
+      "detail": "07f40c01167dffaaf8410802e062a1bc313aa2c4da6339112dd6fb99957fd29d",
+      "name": "locked hash Scripts/audit-formation-geometry-c18-bridge.py",
+      "passed": true
+    },
+    {
+      "detail": [
+        16,
+        18,
+        20
+      ],
+      "name": "exact locked resolution set",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw report passed",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "no fluid timesteps",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "positive link support",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "zero overlap",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "raw values finite",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 0,
+        "observed": 0
+      },
+      "name": "c16 leader q0 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 146,
+        "observed": 146
+      },
+      "name": "c16 leader q1 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 146,
+        "observed": 146
+      },
+      "name": "c16 leader q2 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 541,
+        "observed": 541
+      },
+      "name": "c16 leader q3 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 541,
+        "observed": 541
+      },
+      "name": "c16 leader q4 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 562,
+        "observed": 562
+      },
+      "name": "c16 leader q5 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 562,
+        "observed": 562
+      },
+      "name": "c16 leader q6 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 418,
+        "observed": 418
+      },
+      "name": "c16 leader q7 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 418,
+        "observed": 418
+      },
+      "name": "c16 leader q8 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 668,
+        "observed": 668
+      },
+      "name": "c16 leader q9 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 668,
+        "observed": 668
+      },
+      "name": "c16 leader q10 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 683,
+        "observed": 683
+      },
+      "name": "c16 leader q11 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 683,
+        "observed": 683
+      },
+      "name": "c16 leader q12 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 445,
+        "observed": 445
+      },
+      "name": "c16 leader q13 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 445,
+        "observed": 445
+      },
+      "name": "c16 leader q14 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 80,
+        "observed": 80
+      },
+      "name": "c16 leader q15 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 80,
+        "observed": 80
+      },
+      "name": "c16 leader q16 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 774,
+        "observed": 774
+      },
+      "name": "c16 leader q17 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 774,
+        "observed": 774
+      },
+      "name": "c16 leader q18 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 0,
+        "observed": 0
+      },
+      "name": "c16 follower q0 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 701,
+        "observed": 701
+      },
+      "name": "c16 follower q1 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 701,
+        "observed": 701
+      },
+      "name": "c16 follower q2 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 177,
+        "observed": 177
+      },
+      "name": "c16 follower q3 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 177,
+        "observed": 177
+      },
+      "name": "c16 follower q4 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 340,
+        "observed": 340
+      },
+      "name": "c16 follower q5 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 340,
+        "observed": 340
+      },
+      "name": "c16 follower q6 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 546,
+        "observed": 546
+      },
+      "name": "c16 follower q7 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 546,
+        "observed": 546
+      },
+      "name": "c16 follower q8 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 779,
+        "observed": 779
+      },
+      "name": "c16 follower q9 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 779,
+        "observed": 779
+      },
+      "name": "c16 follower q10 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 416,
+        "observed": 416
+      },
+      "name": "c16 follower q11 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 416,
+        "observed": 416
+      },
+      "name": "c16 follower q12 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 779,
+        "observed": 779
+      },
+      "name": "c16 follower q13 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 779,
+        "observed": 779
+      },
+      "name": "c16 follower q14 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 494,
+        "observed": 494
+      },
+      "name": "c16 follower q15 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 494,
+        "observed": 494
+      },
+      "name": "c16 follower q16 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 195,
+        "observed": 195
+      },
+      "name": "c16 follower q17 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 195,
+        "observed": 195
+      },
+      "name": "c16 follower q18 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 0,
+        "observed": 0
+      },
+      "name": "c20 leader q0 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 226,
+        "observed": 226
+      },
+      "name": "c20 leader q1 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 226,
+        "observed": 226
+      },
+      "name": "c20 leader q2 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 849,
+        "observed": 849
+      },
+      "name": "c20 leader q3 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 849,
+        "observed": 849
+      },
+      "name": "c20 leader q4 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 856,
+        "observed": 856
+      },
+      "name": "c20 leader q5 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 856,
+        "observed": 856
+      },
+      "name": "c20 leader q6 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 661,
+        "observed": 661
+      },
+      "name": "c20 leader q7 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 661,
+        "observed": 661
+      },
+      "name": "c20 leader q8 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1038,
+        "observed": 1038
+      },
+      "name": "c20 leader q9 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1038,
+        "observed": 1038
+      },
+      "name": "c20 leader q10 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1053,
+        "observed": 1053
+      },
+      "name": "c20 leader q11 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1053,
+        "observed": 1053
+      },
+      "name": "c20 leader q12 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 664,
+        "observed": 664
+      },
+      "name": "c20 leader q13 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 664,
+        "observed": 664
+      },
+      "name": "c20 leader q14 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 104,
+        "observed": 104
+      },
+      "name": "c20 leader q15 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 104,
+        "observed": 104
+      },
+      "name": "c20 leader q16 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1202,
+        "observed": 1202
+      },
+      "name": "c20 leader q17 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1202,
+        "observed": 1202
+      },
+      "name": "c20 leader q18 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 0,
+        "observed": 0
+      },
+      "name": "c20 follower q0 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1085,
+        "observed": 1085
+      },
+      "name": "c20 follower q1 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1085,
+        "observed": 1085
+      },
+      "name": "c20 follower q2 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 273,
+        "observed": 273
+      },
+      "name": "c20 follower q3 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 273,
+        "observed": 273
+      },
+      "name": "c20 follower q4 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 510,
+        "observed": 510
+      },
+      "name": "c20 follower q5 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 510,
+        "observed": 510
+      },
+      "name": "c20 follower q6 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 852,
+        "observed": 852
+      },
+      "name": "c20 follower q7 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 852,
+        "observed": 852
+      },
+      "name": "c20 follower q8 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1207,
+        "observed": 1207
+      },
+      "name": "c20 follower q9 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1207,
+        "observed": 1207
+      },
+      "name": "c20 follower q10 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 643,
+        "observed": 643
+      },
+      "name": "c20 follower q11 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 643,
+        "observed": 643
+      },
+      "name": "c20 follower q12 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1207,
+        "observed": 1207
+      },
+      "name": "c20 follower q13 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 1207,
+        "observed": 1207
+      },
+      "name": "c20 follower q14 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 752,
+        "observed": 752
+      },
+      "name": "c20 follower q15 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 752,
+        "observed": 752
+      },
+      "name": "c20 follower q16 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 284,
+        "observed": 284
+      },
+      "name": "c20 follower q17 archive parity",
+      "passed": true
+    },
+    {
+      "detail": {
+        "expected": 284,
+        "observed": 284
+      },
+      "name": "c20 follower q18 archive parity",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c16 leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c18 leader total closure",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "c20 leader total closure",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": 0.8334085608967073,
+        "summary": 0.8334085608967073
+      },
+      "name": "independent metric normalizedDensityMidpointCurvature",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": 0.50344755764246,
+        "summary": 0.50344755764246
+      },
+      "name": "independent metric normalizedDirectionMidpointCurvature",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": 0.7681951949202434,
+        "summary": 0.7681951949202434
+      },
+      "name": "independent metric normalizedArealProfileMidpointCurvature",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "independent density interval decision",
+      "passed": true
+    },
+    {
+      "detail": {
+        "audit": "latticePhaseAliasingSuspected",
+        "summary": "latticePhaseAliasingSuspected"
+      },
+      "name": "independent classification",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "artifact exists ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-c18-bridge-directions.csv",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "artifact exists Docs/Media/formation-flight-geometry-c18-bridge.png",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "artifact exists Docs/Media/formation-flight-geometry-c18-bridge.svg",
+      "passed": true
+    }
+  ],
+  "claimBoundary": "This no-fluid geometry bridge may classify the refinement behavior of boundary-link realization and select the next diagnostic. It cannot authorize a production geometry or boundary change, establish a quantitative formation-flight benefit, validate a force law, or support a biological claim.",
+  "classification": "latticePhaseAliasingSuspected",
+  "independentMetrics": {
+    "densityBetweenEndpoints": false,
+    "normalizedArealProfileMidpointCurvature": 0.7681951949202434,
+    "normalizedDensityMidpointCurvature": 0.8334085608967073,
+    "normalizedDirectionMidpointCurvature": 0.50344755764246
+  },
+  "passed": true,
+  "passedCheckCount": 105,
+  "schemaVersion": 1,
+  "title": "Independent Formation Flight geometry-only c18 bridge audit"
+}

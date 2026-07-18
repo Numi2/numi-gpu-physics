@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight geometry-only subcell-offset ensemble",
+  "preregisteredBeforeEnsembleExecution": true,
+  "reportingAmendment": {
+    "priorPreregistrationSHA256": "d64e2498762a326afa05546ce299a8f5c2b3a7680739adbdd52b7ac7e0c3f50d",
+    "priorSummarySHA256": "f6b607706c283a780a4089a749e1feeddd805ab00f0f3d91f849e81b778c36b5",
+    "reason": "The first summary labeled standard deviation divided by a signed matched-residual mean as coefficientOfVariation, yielding a negative descriptive value for a distribution whose mean is negative.",
+    "scope": "Rename the descriptive field to relativeStandardDeviationToMeanMagnitude and divide by abs(mean). No raw report, implementation, selected case, decision metric, threshold, classification, figure values, or next-action rule changed.",
+    "amendedAfterClassificationBeforePresentationPromotion": true
+  },
+  "scientificQuestion": "Does averaging a complete tensor grid of global subcell translations remove the c18 boundary-link excursion, or does a resolution-dependent density/direction bias persist independently of lattice phase?",
+  "lockedInputs": [
+    {
+      "path": "ValidationInputs/formation-flight-geometry-c18-bridge-v1.json",
+      "sha256": "5daf2f9fd41d17b96347a175f2ea453821a945a34cf7b2f4560bfe33db54bb27"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-c18-bridge-summary.json",
+      "sha256": "2333c62354014a5f55990d57ea000e826079fddb2b87f9aa81c86aa989e46495"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-c18-bridge-audit.json",
+      "sha256": "879cdad3814d086c94775cc5b39364e6bbc73129c2158b29baac5a931216ae27"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-census.json",
+      "sha256": "c5881a99a19cd240fa882d369271152a8a4817234b4f582b8d7e7cfccb4d97f9"
+    }
+  ],
+  "lockedImplementation": [
+    {
+      "path": "Sources/BirdFlowMetal/MetalFormationGeometrySubcellEnsemble.swift",
+      "sha256": "d579fa2ef15ff0adcfedd66f9f945d57e748731e35f0edca072dd86929da8370"
+    },
+    {
+      "path": "Tests/BirdFlowMetalTests/FormationGeometrySubcellEnsembleTests.swift",
+      "sha256": "7786880f1b2a2cf6e2b3a2b9cebfcecff89a812cf7813d103c65f0788d593be0"
+    },
+    {
+      "path": "Tools/FormationGeometrySubcell/Package.swift",
+      "sha256": "2b98c16e67335f0a98ef9f2d551f77f8afd1e52f26cf48a335c0c027d9ebc1da"
+    },
+    {
+      "path": "Tools/FormationGeometrySubcell/Sources/FormationGeometrySubcellCLI/main.swift",
+      "sha256": "c84cb21dd4180771b27ca01de7749c9cf28223427bdaf9da057295b1982ca1ef"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-geometry-subcell-ensemble.sh",
+      "sha256": "bf5f3b5981012163d0e625f15871d1fee7138e851ab85fbd1ada74f3dc2622e9"
+    },
+    {
+      "path": "Scripts/analyze-formation-geometry-subcell-ensemble.py",
+      "sha256": "87bd23b58caef9563dab7f84ac07425a4ce4f1dcb2825ea1ebb19d7cd8a8c2cb"
+    },
+    {
+      "path": "Scripts/audit-formation-geometry-subcell-ensemble.py",
+      "sha256": "b2e5ec3601e63618f3b6cb0c66a5b357207d22ec2baac7267fe614d67fd7ed75"
+    }
+  ],
+  "lockedConfiguration": {
+    "chordCells": [16, 18, 20],
+    "offsetDivisionsPerAxis": 4,
+    "offsetValuesCells": [0, 0.25, 0.5, 0.75],
+    "offsetOrdering": "z-major, then y, then x",
+    "offsetCountPerResolution": 64,
+    "totalCaseCount": 192,
+    "leaderPhase": 0.785,
+    "followerPhase": 0.035,
+    "followerOffsetChords": [0, 0, -3],
+    "followerPhaseOffsetCycles": 0.25,
+    "selectedPrimaryFlyer": "leader",
+    "translationDefinition": "add the same offsetCells * cellSize vector to both flyer roots while holding separation, phase, grid dimensions, thickness, and every kinematic parameter fixed",
+    "executionScope": "preparePrescribedFlappingWing plus buildPrescribedFormationWings plus owner-mask readback and CPU D3Q19 link counting; no population initialization, collision, streaming, force evaluation, sponge update, or fluid timestep"
+  },
+  "gates": {
+    "requireExactZeroOffsetParityWithC18BridgeForAllThreeResolutionsAndBothOwners": true,
+    "requireCompleteTensorGrid": true,
+    "requireNoFluidTimesteps": true,
+    "requirePositiveLinkSupport": true,
+    "requireZeroOverlap": true,
+    "requireFinite": true
+  },
+  "decisionMetrics": {
+    "perOffsetArealLinkDensity": "D_r(o) = sum_q N_r(q,o) / r^2",
+    "ensembleMeanDirectionProbability": "mean_o p_r(q,o), where p_r(q,o)=N_r(q,o)/sum_q N_r(q,o)",
+    "ensembleMeanArealProfile": "mean_o a_r(q,o), where a_r(q,o)=N_r(q,o)/r^2",
+    "meanDensityMidpointCurvature": "abs(mean(D_18)-0.5*(mean(D_16)+mean(D_20))) / max(abs(mean(D_20)-mean(D_16)), epsilon)",
+    "meanDirectionMidpointCurvature": "TV(mean(p_18),0.5*(mean(p_16)+mean(p_20))) / max(TV(mean(p_16),mean(p_20)),epsilon)",
+    "meanArealProfileMidpointCurvature": "direction-length-weighted L1 midpoint residual divided by the c16-to-c20 ensemble-mean profile difference",
+    "matchedOffsetResidual": "R_D(o)=D_18(o)-0.5*(D_16(o)+D_20(o))"
+  },
+  "decisionRule": {
+    "denominatorFloor": 1e-12,
+    "smoothRefinementMaximumCurvature": 0.5,
+    "persistentBiasMinimumCurvature": 1.0,
+    "aliasingAveragedOut": "ensemble-mean c18 density lies between the c16/c20 means and all three ensemble-mean normalized curvatures are at most 0.5",
+    "persistentResolutionBias": "ensemble-mean c18 density lies outside the c16/c20 mean interval or at least one ensemble-mean normalized curvature is at least 1.0",
+    "mixedSubcellSensitivity": "neither the averaged-out nor persistent-bias rule is satisfied",
+    "nextActions": {
+      "aliasingAveragedOut": "Freeze the ensemble uncertainty and select matched median-density offsets for one phase-locked c16/c18/c20 boundary-source census before any full fluid ladder.",
+      "persistentResolutionBias": "Extend the same no-fluid 64-offset ensemble to c22 and fit the ensemble-mean density and direction profiles versus inverse resolution before any fluid allocation or production correction.",
+      "mixedSubcellSensitivity": "Extend the same no-fluid ensemble to c22 while retaining density, direction, and matched-offset residual metrics; do not select a production correction."
+    }
+  },
+  "claimBoundary": "This no-fluid ensemble may quantify lattice-phase uncertainty and select the next geometry diagnostic. It cannot validate force convergence, authorize a boundary or geometry correction, establish a quantitative formation-flight benefit, or support a biological claim."
+}

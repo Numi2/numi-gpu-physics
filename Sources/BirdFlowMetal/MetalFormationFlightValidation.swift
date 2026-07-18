@@ -208,6 +208,44 @@ public struct FormationFlightBoundarySourceCensusReport: Codable, Sendable {
     public let scientificVerdict: String
 }
 
+public struct FormationFlightSubcellBoundarySourceGateReport: Codable, Sendable {
+    public let finite: Bool
+    public let noGeometryOverlap: Bool
+    public let ownerForceClosurePassed: Bool
+    public let ownerTorqueClosurePassed: Bool
+    public let periodicPowerPassed: Bool
+    public let boundarySourceCensusPassed: Bool
+    public let expectedSampleCountPassed: Bool
+    public let maximumRelativeForceClosureResidual: Double
+    public let maximumRelativeTorqueClosureResidual: Double
+    public let maximumRelativePeriodicPowerDifference: Double
+    public let maximumAllowedRelativeClosureResidual: Double
+    public let maximumAllowedRelativePeriodicPowerDifference: Double
+    public let passed: Bool
+}
+
+public struct FormationFlightSubcellBoundarySourceReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let scientificScope: String
+    public let deviceName: String
+    public let configuration: FormationFlightConfiguration
+    public let subcellOffsetCells: SIMD3<Double>
+    public let requestedLeaderPhase: Double
+    public let actualLeaderPhase: Double
+    public let actualFollowerPhase: Double
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let cycleSteps: Int
+    public let runtimeSeconds: Double
+    public let coupledLeader: FormationFlyerPowerSummary
+    public let coupledFollower: FormationFlyerPowerSummary
+    public let overlapVoxelSamples: Int
+    public let boundarySourceCensus: FormationFlightBoundarySourceCensusReport
+    public let gates: FormationFlightSubcellBoundarySourceGateReport
+    public let scientificVerdict: String
+}
+
 public struct FormationFlightFieldReplayGateReport: Codable, Sendable {
     public let finite: Bool
     public let noGeometryOverlap: Bool
@@ -917,6 +955,156 @@ public enum MetalFormationFlightValidator {
         #endif
     }
 
+    public static func runSubcellBoundarySourceCensus(
+        configuration: FormationFlightConfiguration,
+        subcellOffsetCells: SIMD3<Double>,
+        leaderPhase: Double,
+        archiveDirectory: URL
+    ) throws -> FormationFlightSubcellBoundarySourceReport {
+        #if canImport(Metal)
+        try validate(configuration)
+        let offsetComponents = [
+            subcellOffsetCells.x,
+            subcellOffsetCells.y,
+            subcellOffsetCells.z,
+        ]
+        guard offsetComponents.allSatisfy({
+            $0.isFinite && $0 >= 0 && $0 < 1
+        }) else {
+            throw FormationFlightValidationError.invalidRequest(
+                "subcell offsets must be finite values in [0, 1) lattice cells"
+            )
+        }
+        guard leaderPhase.isFinite,
+              abs(unitPhase(leaderPhase)) > 1.0e-12 else {
+            throw FormationFlightValidationError.invalidRequest(
+                "the boundary-source census requires a finite nonzero leader phase"
+            )
+        }
+        let layout = try makeLayout(
+            configuration,
+            subcellOffsetCells: SIMD3<Float>(subcellOffsetCells)
+        )
+        let captureTargets = try makeCaptureTargets(
+            phases: [leaderPhase],
+            configuration: configuration,
+            layout: layout
+        )
+        let start = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let coupled = try runCase(
+            backend: backend,
+            configuration: configuration,
+            layout: layout,
+            activeOwners: 3,
+            captureTargets: captureTargets,
+            captureMechanismProbes: false,
+            captureBoundarySourceCensus: true
+        )
+        let sourceCensus = boundarySourceCensusReport(
+            rawSamples: coupled.boundarySourceCensusSamples,
+            configuration: configuration,
+            layout: layout
+        )
+        let leader = summarize(
+            flyer: .leader,
+            loads: coupled.current.leader,
+            phaseOffset: 0,
+            layout: layout
+        )
+        let follower = summarize(
+            flyer: .follower,
+            loads: coupled.current.follower,
+            phaseOffset: configuration.followerPhaseOffsetCycles,
+            layout: layout
+        )
+        let closure = closureMetrics(run: coupled.current, layout: layout)
+        let maximumPeriodic = max(
+            periodicPowerDifference(
+                current: coupled.current.leader,
+                previous: coupled.previous.leader,
+                phaseOffset: 0,
+                layout: layout
+            ),
+            periodicPowerDifference(
+                current: coupled.current.follower,
+                previous: coupled.previous.follower,
+                phaseOffset: configuration.followerPhaseOffsetCycles,
+                layout: layout
+            )
+        )
+        let expectedSamples = sourceCensus.samples.count == 2
+            && Set(sourceCensus.samples.map(\.flyer))
+                == Set(FormationFlyerID.allCases)
+        let finite = summaryIsFinite(leader)
+            && summaryIsFinite(follower)
+            && closure.force.isFinite
+            && closure.torque.isFinite
+            && maximumPeriodic.isFinite
+            && sourceCensus.finite
+        let noOverlap = coupled.overlapVoxelSamples == 0
+        let forceClosure = closure.force <= maximumRelativeClosureResidual
+        let torqueClosure = closure.torque <= maximumRelativeClosureResidual
+        let periodic = maximumPeriodic
+            <= maximumRelativePeriodicPowerDifference
+        let passed = finite && noOverlap && forceClosure && torqueClosure
+            && periodic && sourceCensus.passed && expectedSamples
+        let actualLeaderPhase = sourceCensus.samples.first?.leaderPhase
+            ?? .nan
+        let actualFollowerPhase = sourceCensus.samples.first?.followerPhase
+            ?? .nan
+        let report = FormationFlightSubcellBoundarySourceReport(
+            schemaVersion: schemaVersion,
+            scientificScope: "coupled-only phase-locked source census at one preregistered common subcell translation; a grid-aliasing discriminator, not a formation-power or biological claim",
+            deviceName: backend.device.name,
+            configuration: configuration,
+            subcellOffsetCells: subcellOffsetCells,
+            requestedLeaderPhase: leaderPhase,
+            actualLeaderPhase: actualLeaderPhase,
+            actualFollowerPhase: actualFollowerPhase,
+            gridX: layout.grid.x,
+            gridY: layout.grid.y,
+            gridZ: layout.grid.z,
+            cycleSteps: layout.cycleSteps,
+            runtimeSeconds: Date().timeIntervalSince(start),
+            coupledLeader: leader,
+            coupledFollower: follower,
+            overlapVoxelSamples: coupled.overlapVoxelSamples,
+            boundarySourceCensus: sourceCensus,
+            gates: FormationFlightSubcellBoundarySourceGateReport(
+                finite: finite,
+                noGeometryOverlap: noOverlap,
+                ownerForceClosurePassed: forceClosure,
+                ownerTorqueClosurePassed: torqueClosure,
+                periodicPowerPassed: periodic,
+                boundarySourceCensusPassed: sourceCensus.passed,
+                expectedSampleCountPassed: expectedSamples,
+                maximumRelativeForceClosureResidual: closure.force,
+                maximumRelativeTorqueClosureResidual: closure.torque,
+                maximumRelativePeriodicPowerDifference: maximumPeriodic,
+                maximumAllowedRelativeClosureResidual:
+                    maximumRelativeClosureResidual,
+                maximumAllowedRelativePeriodicPowerDifference:
+                    maximumRelativePeriodicPowerDifference,
+                passed: passed
+            ),
+            scientificVerdict: passed
+                ? "the translated coupled replay and source reconstruction passed all unchanged numerical gates; cross-grid source convergence may be analyzed"
+                : "the translated source sample is rejected because an unchanged numerical or completeness gate failed"
+        )
+        try archiveSubcellBoundarySource(
+            report,
+            flowSlices: coupled.flowSlices,
+            directory: archiveDirectory
+        )
+        return report
+        #else
+        throw FormationFlightValidationError.unavailable(
+            "Metal is unavailable on this host"
+        )
+        #endif
+    }
+
     private static func validate(
         _ configuration: FormationFlightConfiguration
     ) throws {
@@ -1034,6 +1222,38 @@ public enum MetalFormationFlightValidator {
         try encoder.encode(report).write(
             to: directory.appendingPathComponent(
                 "formation-flight-collision-diagnostic-report.json"
+            ),
+            options: .atomic
+        )
+        try archiveFlowSlices(
+            flowSlices,
+            followerPhaseOffsetCycles:
+                report.configuration.followerPhaseOffsetCycles,
+            directory: directory,
+            encoder: encoder
+        )
+    }
+
+    private static func archiveSubcellBoundarySource(
+        _ report: FormationFlightSubcellBoundarySourceReport,
+        flowSlices: [FormationFlightFlowSlice],
+        directory: URL
+    ) throws {
+        try FileManager.default.createDirectory(
+            at: directory,
+            withIntermediateDirectories: true
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(report).write(
+            to: directory.appendingPathComponent(
+                "formation-flight-subcell-source-report.json"
+            ),
+            options: .atomic
+        )
+        try encoder.encode(report.boundarySourceCensus).write(
+            to: directory.appendingPathComponent(
+                "formation-flight-boundary-source-census.json"
             ),
             options: .atomic
         )
@@ -1188,7 +1408,8 @@ private extension MetalFormationFlightValidator {
     }
 
     static func makeLayout(
-        _ request: FormationFlightConfiguration
+        _ request: FormationFlightConfiguration,
+        subcellOffsetCells: SIMD3<Float> = .zero
     ) throws -> FormationLayout {
         let chord = request.chordCells
         func dimension(base: Double, offset: Double) throws -> Int {
@@ -1257,8 +1478,8 @@ private extension MetalFormationFlightValidator {
             grid: grid,
             chordCells: chord,
             cycleSteps: cycleSteps,
-            leaderRoot: midpoint - 0.5 * offset,
-            followerRoot: midpoint + 0.5 * offset,
+            leaderRoot: midpoint - 0.5 * offset + subcellOffsetCells,
+            followerRoot: midpoint + 0.5 * offset + subcellOffsetCells,
             scaling: scaling
         )
     }

@@ -1,0 +1,111 @@
+{
+  "c18EndpointInterpolationFraction": 0.5555555555555559,
+  "claimBoundary": "This one-phase three-grid experiment can determine whether the population-weighted boundary source follows the geometry trend at the selected representative common lattice phase. It cannot establish offset-ensemble robustness, quantitative formation-power convergence, a production solver promotion, or a biological bird-flight claim.",
+  "classification": "mixedPopulationWeightedSource",
+  "csvPath": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-directions.csv",
+  "decisionMetrics": {
+    "normalizedArealLinkProfileCurvature": 0.7849736455546932,
+    "normalizedComponentCurvatures": {
+      "interpolationAuxiliary": 0.9967488889206376,
+      "movingWall": 0.5601601309866759,
+      "reflectedMomentumExchange": 0.9241502394862351
+    },
+    "normalizedConditionalPopulationCurvature": 0.5873308564273788,
+    "normalizedPopulationWeightedSourceCurvature": 0.8841533797492038,
+    "persistentBiasMinimumCurvature": 1.0,
+    "selectedGeometryDensityCurvature": 0.14997913216742337,
+    "smoothRefinementMaximumCurvature": 0.5,
+    "sourceWeightedL1NormByResolution": {
+      "c16": 2.956517062222977,
+      "c18": 2.9348725377594453,
+      "c20": 2.906647228496839
+    }
+  },
+  "figurePaths": [
+    "Docs/Media/formation-flight-subcell-source-convergence.png",
+    "Docs/Media/formation-flight-subcell-source-convergence.svg"
+  ],
+  "gates": {
+    "allFinite": true,
+    "allSourceCensusesPassed": true,
+    "allThreeRunsPassed": true,
+    "commonSubcellOffset": true,
+    "deterministicSelectionPassed": true,
+    "geometryPhaseSmooth": true,
+    "oneLeaderAndFollowerSamplePerGrid": true,
+    "preregisteredBeforeTranslatedCFD": true
+  },
+  "inputs": {
+    "c16": {
+      "actualFollowerPhase": 0.03501400560224077,
+      "actualLeaderPhase": 0.7850140056022409,
+      "censusPath": "ValidationArtifacts/formation-flight-subcell-source-census/c16-median-phase/formation-flight-boundary-source-census.json",
+      "censusSHA256": "96b3095a4144e8881f1a6889d2c1e28475280f356c903119c435485a859e6225",
+      "deviceName": "Apple M4",
+      "reportPath": "ValidationArtifacts/formation-flight-subcell-source-census/c16-median-phase/formation-flight-subcell-source-report.json",
+      "reportSHA256": "d5b70df8a57f5f6ffc266e2dc50b9f4cd6e979039f3e1c5c0b6c51d728a3c16a",
+      "runtimeSeconds": 1016.7172250747681
+    },
+    "c18": {
+      "actualFollowerPhase": 0.03506224066390029,
+      "actualLeaderPhase": 0.7850622406639004,
+      "censusPath": "ValidationArtifacts/formation-flight-subcell-source-census/c18-median-phase/formation-flight-boundary-source-census.json",
+      "censusSHA256": "15309881c1f8cde31f72d0501fa7ab99b5dececbe789462c60208f1ccc8e6e1a",
+      "deviceName": "Apple M4",
+      "reportPath": "ValidationArtifacts/formation-flight-subcell-source-census/c18-median-phase/formation-flight-subcell-source-report.json",
+      "reportSHA256": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc",
+      "runtimeSeconds": 1367.6834870576859
+    },
+    "c20": {
+      "actualFollowerPhase": 0.03506069094304376,
+      "actualLeaderPhase": 0.7850606909430439,
+      "censusPath": "ValidationArtifacts/formation-flight-subcell-source-census/c20-median-phase/formation-flight-boundary-source-census.json",
+      "censusSHA256": "c248439277b56c1f45fbf74e0a91f3c4161269b635b649a1c8515d0fd0480bd0",
+      "deviceName": "Apple M4",
+      "reportPath": "ValidationArtifacts/formation-flight-subcell-source-census/c20-median-phase/formation-flight-subcell-source-report.json",
+      "reportSHA256": "428c37d9f5166207255c73232e17c9b55c701451458845c816921eb35a2e2722",
+      "runtimeSeconds": 2544.7938690185547
+    }
+  },
+  "interpolationCoordinate": "h = 1 / chordCells",
+  "nextAction": "run only the two next-best deterministic median-offset candidates to determine whether the residual is phase-local or systematic",
+  "passed": true,
+  "postRunAnalysisCorrection": {
+    "amendedAfterTranslatedCFD": true,
+    "classificationChangedByCorrection": false,
+    "decisionRuleChanged": false,
+    "failedAuditPath": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit-failed-decomposed-source.json",
+    "failedAuditSHA256": "985ade7da4d103c68f628d679883de7f58fa1412dd6959a695f4cc00d2eb39fe",
+    "failedCheckCount": 64,
+    "failedChecks": [
+      "normalizedConditionalPopulationCurvature",
+      "normalizedPopulationWeightedSourceCurvature"
+    ],
+    "failedChecksPassed": 62,
+    "priorPreregistrationSHA256": "e0dab35092721c554289f70bfb1af68576c888d5c48c5a5e000a9ae698bdba89",
+    "rawCFDChanged": false,
+    "reason": "The independent audit showed that the first plotting pass computed the primary profile from reflectedIncoming + interpolationAuxiliary + movingWall instead of the preregistered exact production reconstructedIncoming value. The reconstruction closed at approximately 1e-7, so the difference was tiny but correctly failed the 1e-10 analysis-parity check.",
+    "scope": "Use rawReflectedPopulationSum + reconstructedIncomingPopulationSum for the primary and conditional profiles exactly as preregistered. Preserve the decomposed sums for component attribution and closure only.",
+    "thresholdChanged": false
+  },
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-subcell-source-census-v1.json",
+    "preregisteredBeforeTranslatedCFD": true,
+    "sha256": "fddf385caf345c3e3dac8d21df6482adfdbf4f656fd654c189634b2303058a56"
+  },
+  "schemaVersion": 1,
+  "scientificQuestion": "At the deterministic common lattice offset nearest the c16/c18/c20 geometry medians, does the population-weighted near-wing boundary source follow the restored smooth geometry refinement trend?",
+  "selection": {
+    "legacyZeroOffsetScore": 1.640859975857115,
+    "path": "ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+    "selectionScore": 0.8257592096098685,
+    "sha256": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59",
+    "subcellOffsetCells": [
+      0.25,
+      0.25,
+      0.75
+    ]
+  },
+  "title": "Formation Flight median-phase boundary population source convergence",
+  "totalRecordedRuntimeSeconds": 4929.194581151009
+}

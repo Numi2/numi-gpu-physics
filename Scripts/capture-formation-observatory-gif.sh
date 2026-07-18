@@ -6,6 +6,9 @@ REPORT="${1:-$ROOT/ValidationArtifacts/formation-flight-promotion/c20-best-z3-ph
 OUTPUT="${2:-$ROOT/Docs/Media/formation-flight-observatory.gif}"
 SLICE_SOURCE="${3:-$(dirname "$REPORT")/formation-flight-flow-slices}"
 SUMMARY="${4:-$ROOT/ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json}"
+SUBCELL_SUMMARY="${5:-$ROOT/ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json}"
+SOURCE_SUMMARY="${6:-$ROOT/ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json}"
+GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-bilateral-v4.json"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "ffmpeg is required to encode the formation GIF" >&2
@@ -38,7 +41,10 @@ if grep -q '"caseCount"' "$SUMMARY"; then
 else
   CAPTURE_ARGS+=(--capture-formation-discriminator "$SUMMARY")
 fi
+CAPTURE_ARGS+=(--capture-formation-subcell-summary "$SUBCELL_SUMMARY")
+CAPTURE_ARGS+=(--capture-formation-source-summary "$SOURCE_SUMMARY")
 .build/release/birdflow-viewer "${CAPTURE_ARGS[@]}"
+cp "$FRAMES/presentation-geometry-audit.json" "$GEOMETRY_AUDIT"
 
 ffmpeg -v error -y \
   -framerate 24 \
@@ -75,5 +81,19 @@ if (( BYTES >= 10000000 )); then
   echo "formation GIF exceeds the 10 MB budget: $BYTES bytes" >&2
   exit 1
 fi
+
+python3 - "$GEOMETRY_AUDIT" <<'PY'
+import json, sys
+audit = json.load(open(sys.argv[1]))
+if not audit["passed"]:
+    raise SystemExit("bilateral presentation audit failed")
+if audit["maximumWithinFlyerPhaseDifferenceCycles"] != 0:
+    raise SystemExit("presentation wings are not phase synchronized")
+if audit["maximumPositionReflectionResidual"] > 1e-6:
+    raise SystemExit("presentation wing positions are not sagittal reflections")
+if audit["maximumNormalReflectionResidual"] > 1e-6:
+    raise SystemExit("presentation wing normals are not sagittal reflections")
+print("bilateral wing presentation audit passed")
+PY
 
 echo "Formation GIF: $OUTPUT (${DIMENSIONS}, ${FRAME_COUNT} frames, ${BYTES} bytes)"

@@ -497,6 +497,154 @@ retaining both density and direction pathways. No production boundary edit,
 bulk collision change, c20 minimum, global c24 ladder, quantitative formation
 benefit, or biological claim is authorized.
 
+## Geometry-only c18 bridge
+
+The frozen follow-up is complete under
+`ValidationInputs/formation-flight-geometry-c18-bridge-v1.json`. A dedicated
+`birdflow-formation-geometry` executable reuses the production prescribed-wing
+preparation and union voxelization, reads back only the ownership mask, and
+counts owner-resolved D3Q19 fluid-solid links on the host. It does not
+initialize populations or execute collision, streaming, moving-boundary force,
+or a fluid timestep.
+
+```bash
+./Scripts/run-formation-geometry-c18-bridge.sh
+```
+
+![Preregistered no-fluid c18 bridge retaining density and direction pathways](Media/formation-flight-geometry-c18-bridge.png)
+
+Before c18 is classified, the harness reproduces all primary-phase archived
+c16/c20 counts exactly for leader and follower. Total counts are
+`8,634/8,854` at c16 and `13,306/13,626` at c20. The three voxelizations take
+`0.072/0.090/0.118 s` on Apple M4 and have positive support, finite output, and
+zero overlap.
+
+For the frozen primary leader, `D=N/r²` is `33.7266`, `33.1111`, and `33.2650`
+at c16/c18/c20. Because c18 lies outside the endpoint interval, the
+preregistered verdict is `latticePhaseAliasingSuspected`. The normalized
+midpoint curvatures are `0.833` for density, `0.503` for direction
+distribution TV, and `0.768` for the direction-length-weighted areal profile.
+The independent implementation passes `105/105` checks.
+
+The scientific consequence is allocation control, not a solver correction:
+one geometry-only subcell-offset ensemble at c16/c18/c20 and the same phase is
+now selected to quantify lattice-phase uncertainty. A c18 fluid census, global
+refinement ladder, boundary change, quantitative formation advantage, and
+biological interpretation remain unauthorized.
+
+## Subcell-offset uncertainty ensemble
+
+The selected follow-up is complete under
+`ValidationInputs/formation-flight-geometry-subcell-ensemble-v1.json`. It
+translates both flyers together over the full `4 × 4 × 4` tensor
+`{0, 0.25, 0.5, 0.75}³` at c16, c18, and c20 while holding separation,
+kinematics, thickness, and grid dimensions fixed. All 192 cases reuse the
+production Metal pose preparation and union voxelizer; no population, fluid,
+force, or sponge step executes.
+
+```bash
+./Scripts/run-formation-geometry-subcell-ensemble.sh
+```
+
+![Complete 192-pose subcell-offset uncertainty ensemble](Media/formation-flight-geometry-subcell-ensemble.png)
+
+Every zero-offset case reproduces the earlier bridge exactly for both owners.
+The complete ensemble takes `3.71 s` of recorded pose/count work on Apple M4,
+has positive link support and zero overlap, and passes independent
+reconstruction `334/334`. Mean leader densities are `33.4672`, `33.3124`, and
+`33.2221` at c16/c18/c20. c18 now lies between the endpoint means; normalized
+mean density, direction-TV, and joint-profile curvatures are
+`0.1315/0.0926/0.1315`, below the frozen `0.5` threshold. The preregistered
+classification is `aliasingAveragedOut`.
+
+This resolves the isolated c18 excursion as lattice-phase sensitivity and
+provides explicit uncertainty distributions; it does not make a single-grid
+force history converged. The next scientific allocation is a phase-locked
+c16/c18/c20 boundary-source census at matched median-density offsets, before a
+full fluid ladder or any production boundary change.
+
+## Common median-phase population source
+
+That allocation is complete under
+`ValidationInputs/formation-flight-subcell-source-census-v1.json`. A
+deterministic archive-only selector minimizes the sum of squared,
+sample-SD-normalized distances from the c16/c18/c20 leader-density medians.
+It selects the common global translation `[0.25, 0.25, 0.75]` cells with score
+`0.82576`; the legacy zero offset scores `1.64086`. Selection occurred before
+any translated CFD.
+
+The new diagnostic path shifts both flyer roots together, preserving their
+separation and kinematics. It runs only the coupled production-TRT case for
+five cycles and captures one exact owner- and D3Q19-resolved pre-fluid boundary
+source at leader phase `0.785`. Production entry points retain a zero-offset
+default. The earlier implementation is exactly recoverable from the parent
+commit and hash recorded in the preregistration.
+
+```bash
+./Scripts/run-formation-subcell-source-census.sh
+```
+
+![Common median-phase geometry and population-weighted boundary-source convergence](Media/formation-flight-subcell-source-convergence.png)
+
+The c8 instrumentation smoke passes. c16/c18/c20 then complete locally on
+Apple M4 in `1016.72/1367.68/2544.79 s`. All three reports are finite and
+overlap-free, contain exactly one leader and one follower sample, and pass
+unchanged owner closure and periodicity. Worst reconstruction, force closure,
+torque closure, and periodic difference are `8.06e-8`, `7.47e-7`, `3.19e-6`,
+and `2.395%`.
+
+Refinement is evaluated at the correct c18 coordinate in `h=1/chordCells`,
+not an arithmetic cell-count midpoint. The selected scalar geometry density
+has normalized curvature `0.14998`, but the leader direction-resolved areal
+link profile is `0.78497`, conditional population is `0.58733`, and their
+exact production product is `0.88415`. The frozen result is
+`mixedPopulationWeightedSource`: it is below the `1.0` persistent-bias boundary
+but above the `0.5` smooth boundary. Source weighted-L1 norms decrease
+monotonically (`2.95652/2.93487/2.90665`), yet the directional c18 profile is
+not sufficiently h-linear. Component curvatures are `0.92415` reflected,
+`0.99675` interpolation auxiliary, and `0.56016` moving wall; none provides a
+clean single-mechanism promotion.
+
+The first plotting pass reconstructed the primary source from its decomposed
+terms rather than using the preregistered exact production incoming sum. The
+independent audit rejected the approximately `1.2e-7` headline mismatch
+`62/64`. That failed audit is preserved byte-for-byte. A transparent post-run
+amendment changes only the analysis expression, not CFD, thresholds, decision
+rule, or classification; the corrected audit passes `66/66`.
+
+This representative phase does not establish offset-ensemble source
+robustness or force convergence. The preregistered next action is limited to
+the two next-best median candidates, `[0.5,0.75,0.5]` and `[0.25,0,0.5]`, to
+decide whether the mixed residual is phase-local or systematic. A full
+formation-power ladder, production correction, quantitative benefit, and
+biological claim remain unauthorized.
+
+## Native Metal presentation integrity
+
+The complete birds in the README animation are presentation shells around the
+one force-bearing prescribed wing owned by each solver body. V4 constructs the
+partner wing with the sagittal reflection `(-x,y,z)` about that flyer's root and
+uses the exact same wingbeat phase on both sides. This is distinct from the
+intentional `Δφ=0.25` offset between leader and follower. Body, chest, shoulder,
+head, tail, feathers, and the reflected partner never enter voxelization, fluid
+stepping, loads, torque, or actuator power.
+
+Capture writes a machine-readable bilateral sidecar and refuses the GIF unless
+36,864 corresponding vertices over 48 phases and two flyers have position and
+normal reflection residuals at or below `1e-6` and zero within-flyer phase
+difference. The current sidecar is exact-zero on all three measures. The V4
+visual manifest then locks the renderer, inputs, 21 archived CFD fields, source
+result, sidecar, GIF hash, forward-only frame count, and loop seam; its audit
+passes `41/41`.
+
+The prior V3 binary is retained under `Docs/Media/Progress` as a documented
+negative visual control. It used `(-x,-y,z)`, so its partner wing was rotated
+instead of reflected. Archived CFD and quantitative reports were unaffected.
+The corrected V4 overlay also advances the visible scientific state: geometry
+curvature `0.150` is smooth, while exact population-weighted source curvature
+`0.884` is mixed. The original `10.68% > 5%` force-convergence stop remains
+visible, so the stronger visual does not imply a quantitative formation claim.
+
 ## Wider position-phase map
 
 The completed quick discriminator covers two vertical separations and four

@@ -206,11 +206,31 @@ single archived CFD slice. It is preserved before the presentation advanced to
 the c20 sequential result. The binary is `7,686,569` bytes with SHA-256
 `961b509463da2c949c80024f448c287714226eb3930d207b2a6c01e17738fde0`.
 
-The [current Formation Observatory animation](../formation-flight-observatory.gif)
-replaces the static slice and coarse map with a seamless scan of the 21 indexed
-c20 field captures and the preregistered `10.68% > 5%` stop decision. It keeps
-kinematic wake guides visually distinct from actual CFD and does not interpolate
-between archived field values. The encoding is 48 forward-only frames at
-`1120 × 630`, `6,550,458` bytes, with SHA-256
-`6f5f77409ca9afa0eedb37f0dbad675d689c2a18c5e7e13d0ad85b980a715ec6`;
-its 49th endpoint probe is pixel-identical to frame zero.
+V2 is preserved exactly as
+[`2026-07-18-v2-c20-phase-observatory.gif`](2026-07-18-v2-c20-phase-observatory.gif).
+It introduced the seamless scan of all 21 indexed c20 fields and the
+preregistered `10.68% > 5%` stop decision. The binary is `6,550,458` bytes with
+SHA-256 `6f5f77409ca9afa0eedb37f0dbad675d689c2a18c5e7e13d0ad85b980a715ec6`.
+
+V3 is preserved exactly as
+[`2026-07-18-v3-whole-bird-bilateral-bug.gif`](2026-07-18-v3-whole-bird-bilateral-bug.gif).
+It introduced the complete-bird presentation shells, but its partner-wing
+transform used `(-x,-y,z)`: a 180-degree z rotation rather than a sagittal
+reflection. That made the two presentation wings appear to occupy different
+stroke directions. The defect never entered CFD, voxelization, load, or power,
+but the binary is explicitly archived as visually invalid. It is `7,155,013`
+bytes with SHA-256
+`3d9fce8bc5f04c93c3b4e1c0e3d9b68f619424b5f19d13b69fbe4f2c28a0aa9c`.
+
+The [current V4 Formation Observatory animation](../formation-flight-observatory.gif)
+uses the correct sagittal `(-x,y,z)` partner transform and one shared phase for
+both wings of each flyer. The intentional leader/follower `Δφ=0.25` remains.
+It adds chest and shoulder shaping, paired bilateral wake guides, and a more
+symmetry-readable camera while carrying the common-offset mixed source result
+beside the open `10.68% > 5%` force boundary. It retains all 21 actual c20
+fields and uses 48 forward-only frames at `1120 × 630`. The binary is
+`7,318,268` bytes with SHA-256
+`98a25ce0f167a16cbb66124740cf8d317a827529d1402994dea24fa4b31004e2`;
+its endpoint probe is pixel-identical and encoded seam is `0.951x` the median
+adjacent-frame change. The independent V4 visual audit passes `41/41`, including
+36,864 exact bilateral vertex comparisons across both flyers and all phases.

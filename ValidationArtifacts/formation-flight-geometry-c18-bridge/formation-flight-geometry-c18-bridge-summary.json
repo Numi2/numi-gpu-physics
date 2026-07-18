@@ -1,0 +1,83 @@
+{
+  "claimBoundary": "This no-fluid geometry bridge may classify the refinement behavior of boundary-link realization and select the next diagnostic. It cannot authorize a production geometry or boundary change, establish a quantitative formation-flight benefit, validate a force law, or support a biological claim.",
+  "classification": "latticePhaseAliasingSuspected",
+  "csvPath": "ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-c18-bridge-directions.csv",
+  "decisionMetrics": {
+    "aliasingMinimumCurvature": 1.0,
+    "densityBetweenEndpoints": false,
+    "normalizedArealProfileMidpointCurvature": 0.7681951949202434,
+    "normalizedDensityMidpointCurvature": 0.8334085608967073,
+    "normalizedDirectionMidpointCurvature": 0.50344755764246,
+    "smoothRefinementMaximumCurvature": 0.5
+  },
+  "deviceName": "Apple M4",
+  "endpointParity": [
+    {
+      "chordCells": 16,
+      "exactDirectionCountParity": true,
+      "expectedTotalBoundaryLinkCount": 8634,
+      "flyer": "leader",
+      "mismatchedDirections": [],
+      "observedTotalBoundaryLinkCount": 8634
+    },
+    {
+      "chordCells": 16,
+      "exactDirectionCountParity": true,
+      "expectedTotalBoundaryLinkCount": 8854,
+      "flyer": "follower",
+      "mismatchedDirections": [],
+      "observedTotalBoundaryLinkCount": 8854
+    },
+    {
+      "chordCells": 20,
+      "exactDirectionCountParity": true,
+      "expectedTotalBoundaryLinkCount": 13306,
+      "flyer": "leader",
+      "mismatchedDirections": [],
+      "observedTotalBoundaryLinkCount": 13306
+    },
+    {
+      "chordCells": 20,
+      "exactDirectionCountParity": true,
+      "expectedTotalBoundaryLinkCount": 13626,
+      "flyer": "follower",
+      "mismatchedDirections": [],
+      "observedTotalBoundaryLinkCount": 13626
+    }
+  ],
+  "figurePaths": [
+    "Docs/Media/formation-flight-geometry-c18-bridge.png",
+    "Docs/Media/formation-flight-geometry-c18-bridge.svg"
+  ],
+  "gates": {
+    "allFinite": true,
+    "exactC16C20OwnerDirectionParity": true,
+    "noFluidTimesteps": true,
+    "positiveLinkSupport": true,
+    "preregisteredBeforeC18Execution": true,
+    "reportPassed": true,
+    "zeroOverlap": true
+  },
+  "leaderArealLinkDensity": {
+    "c16": 33.7265625,
+    "c18": 33.111111111111114,
+    "c20": 33.265
+  },
+  "nextAction": "Run a geometry-only subcell-offset ensemble at c16/c18/c20 and the same phase to quantify lattice-phase uncertainty before any additional fluid simulation.",
+  "noFluidTimesteps": true,
+  "passed": true,
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-geometry-c18-bridge-v1.json",
+    "preregisteredBeforeC18Execution": true,
+    "sha256": "5daf2f9fd41d17b96347a175f2ea453821a945a34cf7b2f4560bfe33db54bb27"
+  },
+  "primaryProbe": {
+    "flyer": "leader",
+    "followerPhase": 0.035,
+    "leaderPhase": 0.785
+  },
+  "rawGeometryReport": "ValidationArtifacts/formation-flight-geometry-c18-bridge/formation-flight-geometry-census.json",
+  "schemaVersion": 1,
+  "scientificQuestion": "At the primary Formation Flight pose, does the c18 boundary-link realization lie on a smooth c16-to-c20 refinement path, or does it expose lattice-phase aliasing in areal link density and D3Q19 direction redistribution?",
+  "title": "Formation Flight geometry-only c18 bridge"
+}

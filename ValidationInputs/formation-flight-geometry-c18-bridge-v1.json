@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight geometry-only c18 bridge",
+  "preregisteredBeforeC18Execution": true,
+  "wrapperAmendment": {
+    "priorPreregistrationSHA256": "d2682037318fe936054209ced0269649a83b0db8d502c22d5bfc5db219f085ff",
+    "reason": "The locked Metal execution completed and wrote the canonical report, but the wrapper's byte comparison rejected the stdout copy because the CLI deliberately appends one terminal newline after emitting the same JSON object.",
+    "scope": "Replace byte-for-byte cmp with parsed JSON equality. No Swift or Metal implementation, report value, selected phase, metric, threshold, decision rule, or analysis code changed.",
+    "amendedAfterGeometryExecutionBeforeAnalysis": true,
+    "canonicalReportSHA256": "c5881a99a19cd240fa882d369271152a8a4817234b4f582b8d7e7cfccb4d97f9",
+    "stdoutReportSHA256": "bbf11a66d3e80456ddb7b2de16f1bf0b5a5a2086ad1aa9831b390a76980e3b64"
+  },
+  "scientificQuestion": "At the primary Formation Flight pose, does the c18 boundary-link realization lie on a smooth c16-to-c20 refinement path, or does it expose lattice-phase aliasing in areal link density and D3Q19 direction redistribution?",
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-link-sampling-subdecomposition/formation-flight-link-sampling-subdecomposition-summary.json",
+      "sha256": "dd4dac9ca2f4db67ffab90099b9d3ff655e335e3cc04567765801a6ca27a8bc1"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-link-sampling-subdecomposition/formation-flight-link-sampling-subdecomposition-audit.json",
+      "sha256": "1f427a1d643599175876def124e431cae16561d24edb4762b1774f9d8bd8a71e"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-boundary-source-census/c16-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "sha256": "fb71609083acb947efa7610e0dc30658b0f4689e2918b1bc6b545b9af2e75891"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-boundary-source-census/c20-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "sha256": "88ced4bd4e20be9b3ca61510a2b36aef2181a3cb3330b5e7a608c072d82ce7b0"
+    }
+  ],
+  "lockedImplementation": [
+    {
+      "path": "Package.swift",
+      "sha256": "f3558260ce7a949125518a177f7479e5a97344f742680556bb23ae3eba7d2475"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/MetalFormationGeometryCensus.swift",
+      "sha256": "007d68a753ea16063fe84af76b085e516c31aba9bc101aece0f927bfc57567e5"
+    },
+    {
+      "path": "Sources/FormationGeometryBridgeCLI/main.swift",
+      "sha256": "a64cf15dbf11469eea04da6da9a48556d881b910a8c7644c369571d5fcf0c656"
+    },
+    {
+      "path": "Tests/BirdFlowMetalTests/FormationGeometryBridgeTests.swift",
+      "sha256": "f3741e87b31d94d5d27f07181aa6fd39166ea79419480e886a0c1c9c0c0b75dd"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-geometry-c18-bridge.sh",
+      "sha256": "cd7f101f0b890948ee5031f4a2359f901fac9982575d2b4484a1378cb7908e9b"
+    },
+    {
+      "path": "Scripts/analyze-formation-geometry-c18-bridge.py",
+      "sha256": "e10a359e9dbcfa1e1ee3eaf2029b312b7e7f9eed97cf6a0e27efd35882a1988b"
+    },
+    {
+      "path": "Scripts/audit-formation-geometry-c18-bridge.py",
+      "sha256": "07f40c01167dffaaf8410802e062a1bc313aa2c4da6339112dd6fb99957fd29d"
+    }
+  ],
+  "lockedConfiguration": {
+    "chordCells": [
+      16,
+      18,
+      20
+    ],
+    "leaderPhase": 0.785,
+    "followerPhase": 0.035,
+    "followerOffsetChords": [
+      0,
+      0,
+      -3
+    ],
+    "followerPhaseOffsetCycles": 0.25,
+    "activeOwners": [
+      "leader",
+      "follower"
+    ],
+    "selectedPrimaryProbe": {
+      "flyer": "leader",
+      "leaderPhase": 0.785,
+      "followerPhase": 0.035
+    },
+    "endpointArchives": {
+      "c16": "ValidationArtifacts/formation-flight-boundary-source-census/c16-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "c20": "ValidationArtifacts/formation-flight-boundary-source-census/c20-best-z3-phase025/formation-flight-boundary-source-census.json"
+    },
+    "executionScope": "preparePrescribedFlappingWing plus buildPrescribedFormationWings plus owner-mask readback and CPU D3Q19 link counting; no population initialization, collision, streaming, force evaluation, or fluid timestep"
+  },
+  "gates": {
+    "requireExactC16C20DirectionCountParityForBothOwners": true,
+    "requireNoFluidTimesteps": true,
+    "requirePositiveLinkSupport": true,
+    "requireZeroOverlap": true,
+    "requireFinite": true
+  },
+  "decisionMetrics": {
+    "arealLinkDensity": "D_r = sum_q N_r(q) / r^2",
+    "directionProbability": "p_r(q) = N_r(q) / sum_q N_r(q)",
+    "arealDirectionalProfile": "a_r(q) = N_r(q) / r^2 = D_r p_r(q)",
+    "densityMidpointCurvature": "abs(D_18 - 0.5*(D_16+D_20)) / max(abs(D_20-D_16), epsilon)",
+    "directionMidpointCurvature": "TV(p_18, 0.5*(p_16+p_20)) / max(TV(p_16,p_20), epsilon)",
+    "arealProfileMidpointCurvature": "weightedL1(a_18 - 0.5*(a_16+a_20)) / max(weightedL1(a_20-a_16), epsilon), weighted by D3Q19 direction length"
+  },
+  "decisionRule": {
+    "denominatorFloor": 1e-12,
+    "smoothRefinementMaximumCurvature": 0.5,
+    "aliasingMinimumCurvature": 1.0,
+    "monotonicGeometryBridge": "c18 density lies between endpoints and all three normalized midpoint curvatures are at most 0.5",
+    "latticePhaseAliasingSuspected": "c18 density lies outside the endpoint interval or at least one normalized midpoint curvature is at least 1.0",
+    "mixedGeometryBridge": "neither the monotonic nor aliasing rule is satisfied",
+    "nextActions": {
+      "monotonicGeometryBridge": "Use the locked c18 geometry profile to preregister one phase-locked c18 boundary-source census; compare its population-weighted source against the c16/c20 midpoint before any full fluid refinement ladder.",
+      "latticePhaseAliasingSuspected": "Run a geometry-only subcell-offset ensemble at c16/c18/c20 and the same phase to quantify lattice-phase uncertainty before any additional fluid simulation.",
+      "mixedGeometryBridge": "Run the same geometry-only subcell-offset ensemble while retaining both density and direction metrics; do not select a production correction."
+    }
+  },
+  "claimBoundary": "This no-fluid geometry bridge may classify the refinement behavior of boundary-link realization and select the next diagnostic. It cannot authorize a production geometry or boundary change, establish a quantitative formation-flight benefit, validate a force law, or support a biological claim."
+}

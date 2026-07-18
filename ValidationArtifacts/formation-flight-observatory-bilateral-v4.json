@@ -1,0 +1,11 @@
+{
+  "flyerCount" : 2,
+  "flyerPairPhaseOffsetCycles" : 0.25,
+  "maximumNormalReflectionResidual" : 0,
+  "maximumPositionReflectionResidual" : 0,
+  "maximumWithinFlyerPhaseDifferenceCycles" : 0,
+  "passed" : true,
+  "phaseCountPerFlyer" : 48,
+  "schemaVersion" : 1,
+  "vertexPairsCompared" : 36864
+}

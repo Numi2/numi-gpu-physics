@@ -1,0 +1,131 @@
+{
+  "baselineMatchedMidpointResidual": -0.384670138888886,
+  "baselineParity": [
+    {
+      "chordCells": 16,
+      "exactDirectionCountParity": true,
+      "expectedTotal": 8634,
+      "flyer": "leader",
+      "mismatchedDirections": [],
+      "observedTotal": 8634
+    },
+    {
+      "chordCells": 16,
+      "exactDirectionCountParity": true,
+      "expectedTotal": 8854,
+      "flyer": "follower",
+      "mismatchedDirections": [],
+      "observedTotal": 8854
+    },
+    {
+      "chordCells": 18,
+      "exactDirectionCountParity": true,
+      "expectedTotal": 10728,
+      "flyer": "leader",
+      "mismatchedDirections": [],
+      "observedTotal": 10728
+    },
+    {
+      "chordCells": 18,
+      "exactDirectionCountParity": true,
+      "expectedTotal": 10914,
+      "flyer": "follower",
+      "mismatchedDirections": [],
+      "observedTotal": 10914
+    },
+    {
+      "chordCells": 20,
+      "exactDirectionCountParity": true,
+      "expectedTotal": 13306,
+      "flyer": "leader",
+      "mismatchedDirections": [],
+      "observedTotal": 13306
+    },
+    {
+      "chordCells": 20,
+      "exactDirectionCountParity": true,
+      "expectedTotal": 13626,
+      "flyer": "follower",
+      "mismatchedDirections": [],
+      "observedTotal": 13626
+    }
+  ],
+  "caseCount": 192,
+  "claimBoundary": "This no-fluid ensemble may quantify lattice-phase uncertainty and select the next geometry diagnostic. It cannot validate force convergence, authorize a boundary or geometry correction, establish a quantitative formation-flight benefit, or support a biological claim.",
+  "classification": "aliasingAveragedOut",
+  "csvPath": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-cases.csv",
+  "decisionMetrics": {
+    "meanDensityBetweenEndpoints": true,
+    "normalizedMeanArealProfileMidpointCurvature": 0.13145275271256526,
+    "normalizedMeanDensityMidpointCurvature": 0.1315331278303195,
+    "normalizedMeanDirectionMidpointCurvature": 0.09259323511106857,
+    "persistentBiasMinimumCurvature": 1.0,
+    "smoothRefinementMaximumCurvature": 0.5
+  },
+  "deviceName": "Apple M4",
+  "figurePaths": [
+    "Docs/Media/formation-flight-geometry-subcell-ensemble.png",
+    "Docs/Media/formation-flight-geometry-subcell-ensemble.svg"
+  ],
+  "gates": {
+    "allFinite": true,
+    "completeTensorGrid": true,
+    "exactBaselineBridgeParity": true,
+    "noFluidTimesteps": true,
+    "positiveLinkSupport": true,
+    "preregisteredBeforeEnsembleExecution": true,
+    "reportPassed": true,
+    "zeroOverlap": true
+  },
+  "leaderDensityStatistics": {
+    "c16": {
+      "maximum": 34.0234375,
+      "mean": 33.4671630859375,
+      "minimum": 32.9453125,
+      "percentile2_5": 32.9810546875,
+      "percentile97_5": 33.9595703125,
+      "relativeStandardDeviationToMeanMagnitude": 0.009142724426261751,
+      "standardDeviation": 0.3059810494234864
+    },
+    "c18": {
+      "maximum": 33.81481481481482,
+      "mean": 33.312403549382715,
+      "minimum": 32.833333333333336,
+      "percentile2_5": 32.88009259259259,
+      "percentile97_5": 33.718518518518515,
+      "relativeStandardDeviationToMeanMagnitude": 0.007404381900394928,
+      "standardDeviation": 0.24665775789970112
+    },
+    "c20": {
+      "maximum": 33.72,
+      "mean": 33.222109375,
+      "minimum": 32.86,
+      "percentile2_5": 32.92725,
+      "percentile97_5": 33.581375,
+      "relativeStandardDeviationToMeanMagnitude": 0.006126986464028362,
+      "standardDeviation": 0.20355141444709476
+    }
+  },
+  "matchedMidpointResidualStatistics": {
+    "maximum": 0.7366898148148167,
+    "mean": -0.032232681086033055,
+    "minimum": -0.6769714506172804,
+    "percentile2_5": -0.6372083815586411,
+    "percentile97_5": 0.5215820794753055,
+    "relativeStandardDeviationToMeanMagnitude": 11.151556574523854,
+    "standardDeviation": 0.3594445666794826
+  },
+  "nextAction": "Freeze the ensemble uncertainty and select matched median-density offsets for one phase-locked c16/c18/c20 boundary-source census before any full fluid ladder.",
+  "noFluidTimesteps": true,
+  "offsetCountPerResolution": 64,
+  "passed": true,
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-geometry-subcell-ensemble-v1.json",
+    "preregisteredBeforeEnsembleExecution": true,
+    "sha256": "19a783e72b9d579e157dff5ff7583f16bfa970f3cb33f047db5781c375882e5f"
+  },
+  "rawReport": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble.json",
+  "schemaVersion": 1,
+  "scientificQuestion": "Does averaging a complete tensor grid of global subcell translations remove the c18 boundary-link excursion, or does a resolution-dependent density/direction bias persist independently of lattice phase?",
+  "title": "Formation Flight geometry-only subcell-offset ensemble"
+}

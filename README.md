@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Fixed sphere, Re=100 | **Accepted canonical** | drag, symmetry, torque leakage, refinement, batching |
 | Fixed finite wing, Re=100 | **Accepted canonical** | finest `CL=0.76135`, `CD=0.70711`; two-finest changes below `3%` |
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
-| Formation Flight Observatory | **Coupling/accounting accepted; near-wing directional link realization isolated; quantitative effect open** | Exact histories and population-source identities pass; RR3 is adverse and stopped before c20; the source census attributes `98.25%` of the primary c16-to-c20 change to areal D3Q19 link sampling, then an exact second identity splits that term `47.55%` link density / `52.45%` direction redistribution; independent audits pass `319/319` and `521/521` |
+| Formation Flight Observatory | **Coupling/accounting accepted; representative source phase remains mixed; quantitative effect open** | The 192-pose no-fluid ensemble clears mean geometry, but the common median-phase c16/c18/c20 production source has h-linear curvature `0.884` (`mixedPopulationWeightedSource`); all Metal gates pass and the corrected independent audit is `66/66` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; planar weighting plus D12/D16 and D28/D32 complete-dove direction censuses clear static direction redistribution at the locked 26.5 ms phase with exact Metal/CPU parity; force-history change remains `5.632%` against `5%`, so the full localized phase window, force-bearing wall/interpolation interaction, convergence, and experimental agreement remain open |
@@ -55,19 +55,32 @@ The most important accepted flapping result is committed as [`flapping-wing-fixe
 
 ## Formation Flight Observatory
 
-![Formation Flight Observatory native Metal presentation with independently phased leader and follower prescribed wings, phase-resolved c20 CFD, matched isolated-control power, owner-load closure, and the preregistered non-convergence decision](Docs/Media/formation-flight-observatory.gif)
+![Formation Flight Observatory native Metal presentation with synchronized bilateral wings on each complete-bird shell, an intentional quarter-cycle leader-follower offset, phase-resolved c20 CFD, and the mixed source-convergence result](Docs/Media/formation-flight-observatory.gif)
 
 BirdFlowMetal can now place a leader and follower in the same D3Q19 fluid,
 assign each an independent wingbeat phase, and resolve force, root torque, and
 actuator power per flyer. The first gate uses two copies of the accepted
 prescribed hovering-wing canonical, so it studies multi-body wake interaction
 without waiting for another bird dataset. The native Metal presentation now
+wraps each force-bearing wing in a complete-bird presentation shell with a
+same-phase partner wing reflected across the bird's sagittal plane, body,
+chest, shoulders, head, beak, layered feathers, and tail. The shell is
+explicitly labeled and never enters voxelization, CFD, loads, or power; the
+bright prescribed wing remains the exact scientific owner geometry. Left and
+right wings on each bird are synchronized; only the two flyers retain the
+intentional `Δφ=0.25` experimental offset. The scene
 scans the 21 archived c20 field states only inside their two measured phase
 windows and separates them from the lighter kinematic wake-history guides. Its
 upper-right decision panel is decoded from the preregistered c20 summary: the
 solver gates pass, but the `10.68%` c16-to-c20 change exceeds the frozen `5%`
-limit. The 48-frame forward loop is pixel-seamless; it does not reverse motion
-or interpolate CFD between measured states.
+limit. The second locked panel carries the later common-offset result: geometry
+curvature is smooth at `0.150`, while the exact population-weighted source is
+mixed at `0.884`; all Metal gates pass but power convergence remains open.
+The 48-frame forward loop is pixel-seamless, with an encoded seam `0.951x` the
+median adjacent-frame change; it does not reverse motion or interpolate CFD
+between measured states. A deterministic `41/41` visual audit checks 36,864
+bilateral vertex pairs across both flyers and all 48 phases with zero position,
+normal, or within-flyer phase residual.
 
 ```bash
 swift run birdflow validate formation-flight \
@@ -292,6 +305,81 @@ checks. The next justified allocation is therefore one **geometry-only c18
 bridge at the primary phase retaining both pathways**, not a bulk operator,
 stopped c20 minimum, blind global c24 ladder, or production edit. Quantitative
 formation benefit remains unauthorized.
+
+That bridge is now complete under a frozen before-execution contract. It uses
+the production Metal pose preparation and two-wing voxelizer, but executes
+**zero fluid timesteps**:
+
+```bash
+./Scripts/run-formation-geometry-c18-bridge.sh
+```
+
+![Preregistered geometry-only c18 bridge exposing lattice-phase sensitivity in Formation Flight boundary links](Docs/Media/formation-flight-geometry-c18-bridge.png)
+
+The cheap harness exactly reproduces every archived c16/c20 direction count
+for both owners (`76/76` D3Q19 records, including the four zero rest-direction
+records) before interpreting c18.
+The three prescribed poses take `0.072/0.090/0.118 s` on Apple M4. At the
+primary leader pose, areal link density is `33.7266`, `33.1111`, and `33.2650`
+for c16/c18/c20: c18 falls below both endpoints. The frozen classifier is
+therefore `latticePhaseAliasingSuspected`; normalized density, direction-TV,
+and joint-profile midpoint curvatures are `0.833`, `0.503`, and `0.768`.
+Independent reconstruction passes `105/105` checks. This result prevents an
+expensive c18 fluid run from being misrepresented as smooth refinement. It
+selected a geometry-only subcell-offset ensemble at c16/c18/c20 next.
+
+That ensemble is now complete: a full `4 × 4 × 4` tensor of global subcell
+translations at each resolution, or **192 Metal poses**, ran with zero fluid
+timesteps in `3.71 s` of recorded pose/count work:
+
+```bash
+./Scripts/run-formation-geometry-subcell-ensemble.sh
+```
+
+![Formation Flight 192-pose subcell ensemble showing geometry uncertainty and restored ensemble-mean refinement](Docs/Media/formation-flight-geometry-subcell-ensemble.png)
+
+The zero-offset cases reproduce all c16/c18/c20 bridge counts exactly. After
+averaging lattice phase, c18 mean density lies between c16 and c20, while the
+normalized density, direction, and joint-profile curvatures collapse to
+`0.132`, `0.093`, and `0.131`, all below the frozen `0.5` boundary. The locked
+classification is `aliasingAveragedOut`; independent reconstruction passes
+`334/334` checks. This quantifies geometry uncertainty and clears smooth
+**ensemble-mean geometry** refinement only. It does not authorize a force
+correction, production edit, quantitative formation benefit, force
+convergence, or biological claim.
+
+The selected population-weighted follow-up is also complete. One deterministic
+common offset, `[0.25, 0.25, 0.75]` cells, minimizes the summed
+sample-SD-normalized distance from the three resolution medians (`0.826`,
+versus `1.641` for the legacy zero offset). A new coupled-only diagnostic then
+advances the unchanged production TRT solver for five cycles and records one
+leader/follower D3Q19 boundary-source census per grid:
+
+```bash
+./Scripts/run-formation-subcell-source-census.sh
+```
+
+![Formation Flight common median-phase geometry and population-weighted boundary-source convergence](Docs/Media/formation-flight-subcell-source-convergence.png)
+
+c16/c18/c20 complete in `1016.72/1367.68/2544.79 s` locally on Apple M4.
+Every case is finite and overlap-free; worst source reconstruction, force
+closure, torque closure, and final-cycle periodic difference are
+`8.06e-8`, `7.47e-7`, `3.19e-6`, and `2.395%`. The selected scalar geometry
+curvature is smooth at `0.150`, but the direction-resolved areal-link,
+conditional-population, and full population-weighted-source curvatures are
+`0.785`, `0.587`, and `0.884`. The preregistered classification is therefore
+`mixedPopulationWeightedSource`, not convergence. Reflected, interpolation,
+and moving-wall component curvatures are `0.924`, `0.997`, and `0.560`, so no
+single component yet owns the residual.
+
+The first analysis pass used the decomposed incoming sum instead of the exact
+preregistered production incoming value. The independent audit rejected it
+`62/64`; that failed audit is preserved byte-for-byte. A documented narrow
+post-run correction changed the headline curvature by only `1.2e-7`, did not
+change thresholds or classification, and passes the corrected independent
+audit `66/66`. This result authorizes only the two next-best deterministic
+offsets (`[0.5,0.75,0.5]` and `[0.25,0,0.5]`) to test phase robustness before
+any quantitative formation-power ladder.
 
 See the [scientific contract and scouting matrix](Docs/FORMATION_FLIGHT_OBSERVATORY.md).
 

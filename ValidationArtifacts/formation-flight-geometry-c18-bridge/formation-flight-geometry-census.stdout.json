@@ -1,0 +1,651 @@
+{
+  "claimBoundary" : "This geometry-only bridge can distinguish smooth refinement from lattice-phase sensitivity in boundary-link realization. It cannot establish a quantitative formation-flight benefit, validate a force law, authorize a production correction, or support a biological claim.",
+  "deviceName" : "Apple M4",
+  "followerOffsetChords" : [
+    0,
+    0,
+    -3
+  ],
+  "followerPhaseOffsetCycles" : 0.25,
+  "gates" : {
+    "allFinite" : true,
+    "noFluidTimesteps" : true,
+    "positiveLinkSupport" : true,
+    "zeroOverlap" : true
+  },
+  "passed" : true,
+  "samples" : [
+    {
+      "actualFollowerPhase" : 0.03501400560224077,
+      "actualLeaderPhase" : 0.7850140056022409,
+      "chordCells" : 16,
+      "cycleSteps" : 4284,
+      "directions" : [
+        {
+          "direction" : [
+            0,
+            0,
+            0
+          ],
+          "directionIndex" : 0,
+          "followerLinkCount" : 0,
+          "leaderLinkCount" : 0
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            0
+          ],
+          "directionIndex" : 1,
+          "followerLinkCount" : 701,
+          "leaderLinkCount" : 146
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex" : 2,
+          "followerLinkCount" : 701,
+          "leaderLinkCount" : 146
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            0
+          ],
+          "directionIndex" : 3,
+          "followerLinkCount" : 177,
+          "leaderLinkCount" : 541
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex" : 4,
+          "followerLinkCount" : 177,
+          "leaderLinkCount" : 541
+        },
+        {
+          "direction" : [
+            0,
+            0,
+            1
+          ],
+          "directionIndex" : 5,
+          "followerLinkCount" : 340,
+          "leaderLinkCount" : 562
+        },
+        {
+          "direction" : [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex" : 6,
+          "followerLinkCount" : 340,
+          "leaderLinkCount" : 562
+        },
+        {
+          "direction" : [
+            1,
+            1,
+            0
+          ],
+          "directionIndex" : 7,
+          "followerLinkCount" : 546,
+          "leaderLinkCount" : 418
+        },
+        {
+          "direction" : [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex" : 8,
+          "followerLinkCount" : 546,
+          "leaderLinkCount" : 418
+        },
+        {
+          "direction" : [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex" : 9,
+          "followerLinkCount" : 779,
+          "leaderLinkCount" : 668
+        },
+        {
+          "direction" : [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex" : 10,
+          "followerLinkCount" : 779,
+          "leaderLinkCount" : 668
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            1
+          ],
+          "directionIndex" : 11,
+          "followerLinkCount" : 416,
+          "leaderLinkCount" : 683
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex" : 12,
+          "followerLinkCount" : 416,
+          "leaderLinkCount" : 683
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex" : 13,
+          "followerLinkCount" : 779,
+          "leaderLinkCount" : 445
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex" : 14,
+          "followerLinkCount" : 779,
+          "leaderLinkCount" : 445
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            1
+          ],
+          "directionIndex" : 15,
+          "followerLinkCount" : 494,
+          "leaderLinkCount" : 80
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex" : 16,
+          "followerLinkCount" : 494,
+          "leaderLinkCount" : 80
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex" : 17,
+          "followerLinkCount" : 195,
+          "leaderLinkCount" : 774
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex" : 18,
+          "followerLinkCount" : 195,
+          "leaderLinkCount" : 774
+        }
+      ],
+      "grid" : {
+        "x" : 160,
+        "y" : 160,
+        "z" : 208
+      },
+      "occupiedFollowerCells" : 779,
+      "occupiedLeaderCells" : 774,
+      "overlapVoxelCount" : 0,
+      "requestedLeaderPhase" : 0.785,
+      "runtimeSeconds" : 0.07184088230133057,
+      "totalFollowerBoundaryLinkCount" : 8854,
+      "totalLeaderBoundaryLinkCount" : 8634
+    },
+    {
+      "actualFollowerPhase" : 0.03506224066390029,
+      "actualLeaderPhase" : 0.7850622406639004,
+      "chordCells" : 18,
+      "cycleSteps" : 4820,
+      "directions" : [
+        {
+          "direction" : [
+            0,
+            0,
+            0
+          ],
+          "directionIndex" : 0,
+          "followerLinkCount" : 0,
+          "leaderLinkCount" : 0
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            0
+          ],
+          "directionIndex" : 1,
+          "followerLinkCount" : 866,
+          "leaderLinkCount" : 186
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex" : 2,
+          "followerLinkCount" : 866,
+          "leaderLinkCount" : 186
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            0
+          ],
+          "directionIndex" : 3,
+          "followerLinkCount" : 215,
+          "leaderLinkCount" : 670
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex" : 4,
+          "followerLinkCount" : 215,
+          "leaderLinkCount" : 670
+        },
+        {
+          "direction" : [
+            0,
+            0,
+            1
+          ],
+          "directionIndex" : 5,
+          "followerLinkCount" : 416,
+          "leaderLinkCount" : 696
+        },
+        {
+          "direction" : [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex" : 6,
+          "followerLinkCount" : 416,
+          "leaderLinkCount" : 696
+        },
+        {
+          "direction" : [
+            1,
+            1,
+            0
+          ],
+          "directionIndex" : 7,
+          "followerLinkCount" : 676,
+          "leaderLinkCount" : 519
+        },
+        {
+          "direction" : [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex" : 8,
+          "followerLinkCount" : 676,
+          "leaderLinkCount" : 519
+        },
+        {
+          "direction" : [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex" : 9,
+          "followerLinkCount" : 964,
+          "leaderLinkCount" : 830
+        },
+        {
+          "direction" : [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex" : 10,
+          "followerLinkCount" : 964,
+          "leaderLinkCount" : 830
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            1
+          ],
+          "directionIndex" : 11,
+          "followerLinkCount" : 510,
+          "leaderLinkCount" : 847
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex" : 12,
+          "followerLinkCount" : 510,
+          "leaderLinkCount" : 847
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex" : 13,
+          "followerLinkCount" : 964,
+          "leaderLinkCount" : 553
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex" : 14,
+          "followerLinkCount" : 964,
+          "leaderLinkCount" : 553
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            1
+          ],
+          "directionIndex" : 15,
+          "followerLinkCount" : 608,
+          "leaderLinkCount" : 94
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex" : 16,
+          "followerLinkCount" : 608,
+          "leaderLinkCount" : 94
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex" : 17,
+          "followerLinkCount" : 238,
+          "leaderLinkCount" : 969
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex" : 18,
+          "followerLinkCount" : 238,
+          "leaderLinkCount" : 969
+        }
+      ],
+      "grid" : {
+        "x" : 180,
+        "y" : 180,
+        "z" : 234
+      },
+      "occupiedFollowerCells" : 964,
+      "occupiedLeaderCells" : 969,
+      "overlapVoxelCount" : 0,
+      "requestedLeaderPhase" : 0.785,
+      "runtimeSeconds" : 0.09007596969604492,
+      "totalFollowerBoundaryLinkCount" : 10914,
+      "totalLeaderBoundaryLinkCount" : 10728
+    },
+    {
+      "actualFollowerPhase" : 0.03506069094304376,
+      "actualLeaderPhase" : 0.7850606909430439,
+      "chordCells" : 20,
+      "cycleSteps" : 5355,
+      "directions" : [
+        {
+          "direction" : [
+            0,
+            0,
+            0
+          ],
+          "directionIndex" : 0,
+          "followerLinkCount" : 0,
+          "leaderLinkCount" : 0
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            0
+          ],
+          "directionIndex" : 1,
+          "followerLinkCount" : 1085,
+          "leaderLinkCount" : 226
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex" : 2,
+          "followerLinkCount" : 1085,
+          "leaderLinkCount" : 226
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            0
+          ],
+          "directionIndex" : 3,
+          "followerLinkCount" : 273,
+          "leaderLinkCount" : 849
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex" : 4,
+          "followerLinkCount" : 273,
+          "leaderLinkCount" : 849
+        },
+        {
+          "direction" : [
+            0,
+            0,
+            1
+          ],
+          "directionIndex" : 5,
+          "followerLinkCount" : 510,
+          "leaderLinkCount" : 856
+        },
+        {
+          "direction" : [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex" : 6,
+          "followerLinkCount" : 510,
+          "leaderLinkCount" : 856
+        },
+        {
+          "direction" : [
+            1,
+            1,
+            0
+          ],
+          "directionIndex" : 7,
+          "followerLinkCount" : 852,
+          "leaderLinkCount" : 661
+        },
+        {
+          "direction" : [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex" : 8,
+          "followerLinkCount" : 852,
+          "leaderLinkCount" : 661
+        },
+        {
+          "direction" : [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex" : 9,
+          "followerLinkCount" : 1207,
+          "leaderLinkCount" : 1038
+        },
+        {
+          "direction" : [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex" : 10,
+          "followerLinkCount" : 1207,
+          "leaderLinkCount" : 1038
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            1
+          ],
+          "directionIndex" : 11,
+          "followerLinkCount" : 643,
+          "leaderLinkCount" : 1053
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex" : 12,
+          "followerLinkCount" : 643,
+          "leaderLinkCount" : 1053
+        },
+        {
+          "direction" : [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex" : 13,
+          "followerLinkCount" : 1207,
+          "leaderLinkCount" : 664
+        },
+        {
+          "direction" : [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex" : 14,
+          "followerLinkCount" : 1207,
+          "leaderLinkCount" : 664
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            1
+          ],
+          "directionIndex" : 15,
+          "followerLinkCount" : 752,
+          "leaderLinkCount" : 104
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex" : 16,
+          "followerLinkCount" : 752,
+          "leaderLinkCount" : 104
+        },
+        {
+          "direction" : [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex" : 17,
+          "followerLinkCount" : 284,
+          "leaderLinkCount" : 1202
+        },
+        {
+          "direction" : [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex" : 18,
+          "followerLinkCount" : 284,
+          "leaderLinkCount" : 1202
+        }
+      ],
+      "grid" : {
+        "x" : 200,
+        "y" : 200,
+        "z" : 260
+      },
+      "occupiedFollowerCells" : 1207,
+      "occupiedLeaderCells" : 1202,
+      "overlapVoxelCount" : 0,
+      "requestedLeaderPhase" : 0.785,
+      "runtimeSeconds" : 0.11781907081604004,
+      "totalFollowerBoundaryLinkCount" : 13626,
+      "totalLeaderBoundaryLinkCount" : 13306
+    }
+  ],
+  "schemaVersion" : 1,
+  "scientificScope" : "Prescribed-pose Metal voxelization and owner-resolved D3Q19 boundary-link counting only; no population initialization, collision, streaming, force evaluation, or fluid timestep is executed."
+}

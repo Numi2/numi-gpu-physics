@@ -1,0 +1,405 @@
+{
+  "checkCount": 64,
+  "checks": [
+    {
+      "evidence": true,
+      "name": "preregistered before translated CFD",
+      "passed": true
+    },
+    {
+      "evidence": "b32ed2bb99d83b3b47dce660035e89edb494185837eb4e59b1b6d71d111dd17b",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble.json",
+      "passed": true
+    },
+    {
+      "evidence": "4f4619be6655164741b8fad77d684bab23f932c162109e88125eb244360140f2",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "4e80126b6051907674e9cdc7161190c0b8ffe99f0890e06b84b8008ae98e743a",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+      "passed": true
+    },
+    {
+      "evidence": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "passed": true
+    },
+    {
+      "evidence": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/GPUData.swift",
+      "passed": true
+    },
+    {
+      "evidence": "214439c75fe66e1e76516ce59a11456ba6e291e6bdc3bd755f7e263357fe4974",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "passed": true
+    },
+    {
+      "evidence": "f3558260ce7a949125518a177f7479e5a97344f742680556bb23ae3eba7d2475",
+      "name": "lockedImplementation hash Package.swift",
+      "passed": true
+    },
+    {
+      "evidence": "3c3d4768c3a43237339d9df88935ea4b296124a6bdeab2bc413b44ca6a27eea1",
+      "name": "lockedImplementation hash Tools/FormationSubcellSourceCensus/Package.swift",
+      "passed": true
+    },
+    {
+      "evidence": "2115c3f5645b426390fd96cab6301ef39ba5d74b9706f599850509fde6d2c77c",
+      "name": "lockedImplementation hash Tools/FormationSubcellSourceCensus/Sources/FormationSubcellSourceCensusCLI/main.swift",
+      "passed": true
+    },
+    {
+      "evidence": "bcf3bd57d29678494bff0225884426ae4ba5180b9fd218b6cb1c0f8da30dfc86",
+      "name": "lockedImplementation hash Tests/BirdFlowMetalTests/FormationSubcellBoundarySourceTests.swift",
+      "passed": true
+    },
+    {
+      "evidence": "7807c9b221861d12032d128df5d7609dad734253e19ca58f6ebab461e44882a7",
+      "name": "lockedAnalysis hash Scripts/select-formation-source-median-offset.py",
+      "passed": true
+    },
+    {
+      "evidence": "ec18e81cfaf1ec2e5f088746573aae393aca83e191fcf33a2c0d4be9284a409d",
+      "name": "lockedAnalysis hash Scripts/run-formation-subcell-source-census.sh",
+      "passed": true
+    },
+    {
+      "evidence": "db4940754c1bcae8164f9bd786a03656cac8fd3e4624ac553075409dd3c1670b",
+      "name": "lockedAnalysis hash Scripts/analyze-formation-subcell-source-census.py",
+      "passed": true
+    },
+    {
+      "evidence": "d1e00e9c28ebdc8839e2e363388d7b3e4bf92931708a9422126b8760d95f8e8f",
+      "name": "lockedAnalysis hash Scripts/audit-formation-subcell-source-census.py",
+      "passed": true
+    },
+    {
+      "evidence": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59",
+      "name": "selection hash",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "selected offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.5032478223368982,
+      "name": "selected beats zero",
+      "passed": true
+    },
+    {
+      "evidence": "d5b70df8a57f5f6ffc266e2dc50b9f4cd6e979039f3e1c5c0b6c51d728a3c16a",
+      "name": "c16 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "96b3095a4144e8881f1a6889d2c1e28475280f356c903119c435485a859e6225",
+      "name": "c16 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 7.47267733913759e-07,
+        "maximumRelativePeriodicPowerDifference": 0.02300266961378248,
+        "maximumRelativeTorqueClosureResidual": 3.0772280297242105e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c16 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 6.47340482006083e-08,
+      "name": "c16 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "c16 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850140056022409,
+      "name": "c16 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c16 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c16 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 6.47340482006083e-08,
+      "name": "c16 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 2.86102294921875e-06,
+      "name": "c16 component identity",
+      "passed": true
+    },
+    {
+      "evidence": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc",
+      "name": "c18 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "15309881c1f8cde31f72d0501fa7ab99b5dececbe789462c60208f1ccc8e6e1a",
+      "name": "c18 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 6.833756742707919e-07,
+        "maximumRelativePeriodicPowerDifference": 0.022131328122489784,
+        "maximumRelativeTorqueClosureResidual": 3.188533355569234e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c18 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 7.450188031677835e-08,
+      "name": "c18 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "c18 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850622406639004,
+      "name": "c18 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c18 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c18 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c18 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 5.381260438695416e-08,
+      "name": "c18 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 2.86102294921875e-06,
+      "name": "c18 component identity",
+      "passed": true
+    },
+    {
+      "evidence": "428c37d9f5166207255c73232e17c9b55c701451458845c816921eb35a2e2722",
+      "name": "c20 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "c248439277b56c1f45fbf74e0a91f3c4161269b635b649a1c8515d0fd0480bd0",
+      "name": "c20 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 6.971583275117155e-07,
+        "maximumRelativePeriodicPowerDifference": 0.023948600411123174,
+        "maximumRelativeTorqueClosureResidual": 2.5210122203134233e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c20 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 8.060471116580536e-08,
+      "name": "c20 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "c20 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850606909430439,
+      "name": "c20 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c20 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c20 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 6.003325095467673e-08,
+      "name": "c20 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "c20 component identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.5555555555555559,
+      "name": "interpolation fraction",
+      "passed": true
+    },
+    {
+      "evidence": 0.7849736455546932,
+      "name": "normalizedArealLinkProfileCurvature",
+      "passed": true
+    },
+    {
+      "evidence": 0.5873308564273788,
+      "name": "normalizedConditionalPopulationCurvature",
+      "passed": false
+    },
+    {
+      "evidence": 0.8841533797492038,
+      "name": "normalizedPopulationWeightedSourceCurvature",
+      "passed": false
+    },
+    {
+      "evidence": 0.9241502394862351,
+      "name": "component curvature reflectedMomentumExchange",
+      "passed": true
+    },
+    {
+      "evidence": 0.9967488889206376,
+      "name": "component curvature interpolationAuxiliary",
+      "passed": true
+    },
+    {
+      "evidence": 0.5601601309866759,
+      "name": "component curvature movingWall",
+      "passed": true
+    },
+    {
+      "evidence": "mixedPopulationWeightedSource",
+      "name": "classification",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "allFinite": true,
+        "allSourceCensusesPassed": true,
+        "allThreeRunsPassed": true,
+        "commonSubcellOffset": true,
+        "deterministicSelectionPassed": true,
+        "geometryPhaseSmooth": true,
+        "oneLeaderAndFollowerSamplePerGrid": true,
+        "preregisteredBeforeTranslatedCFD": true
+      },
+      "name": "summary passed",
+      "passed": true
+    },
+    {
+      "evidence": "Docs/Media/formation-flight-subcell-source-convergence.png",
+      "name": "figure PNG exists",
+      "passed": true
+    },
+    {
+      "evidence": "Docs/Media/formation-flight-subcell-source-convergence.svg",
+      "name": "figure SVG exists",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "GitHub Actions absent",
+      "passed": true
+    }
+  ],
+  "checksPassed": 62,
+  "passed": false,
+  "recomputedClassification": "mixedPopulationWeightedSource",
+  "recomputedMetrics": {
+    "interpolationAuxiliary": 0.9967488889206376,
+    "movingWall": 0.5601601309866759,
+    "normalizedArealLinkProfileCurvature": 0.7849736455546932,
+    "normalizedConditionalPopulationCurvature": 0.5873308564273788,
+    "normalizedPopulationWeightedSourceCurvature": 0.8841533797492038,
+    "reflectedMomentumExchange": 0.9241502394862351
+  },
+  "schemaVersion": 1,
+  "title": "Formation subcell source census independent audit"
+}
