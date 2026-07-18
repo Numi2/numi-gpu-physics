@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed audit for the continuous-CFD dual-dove Formation Observatory."""
+"""Fail-closed audit for the seamless-field Formation Observatory."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image, ImageSequence
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v6.json"
+MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v9.json"
 
 
 def digest(path: Path) -> str:
@@ -122,6 +122,42 @@ check(
     f"{source_audit['checksPassed']}/{source_audit['checkCount']}",
 )
 
+focused = json.loads(
+    (ROOT / manifest["scientificStatus"]["focusedSourceTracePath"]).read_text()
+)
+check("focused source trace passed", focused["gates"]["passed"])
+check(
+    "focused source trace identity",
+    focused["configuration"]["chordCells"] == 18
+    and focused["configuration"]["cycles"] == 5
+    and focused["configuration"]["followerOffsetChords"] == [0, 0, -3]
+    and math.isclose(
+        focused["configuration"]["followerPhaseOffsetCycles"],
+        0.25,
+        abs_tol=1e-12,
+    )
+    and focused["subcellOffsetCells"] == [0.25, 0.25, 0.75]
+    and focused["flyer"] == "leader"
+    and focused["directionIndex"] == 5
+    and focused["direction"] == [0, 0, 1],
+)
+check(
+    "focused source trace complete",
+    focused["cycleSteps"] == 4_820
+    and len(focused["samples"]) == 4_820
+    and all(sample["branchCountClosurePassed"] for sample in focused["samples"]),
+    len(focused["samples"]),
+)
+focused_audit = json.loads(
+    (ROOT / manifest["scientificStatus"]["focusedSourceTraceAuditPath"]).read_text()
+)
+check(
+    "independent focused source audit",
+    focused_audit["passed"]
+    and focused_audit["checkCount"] == focused_audit["passedCheckCount"],
+    f"{focused_audit['passedCheckCount']}/{focused_audit['checkCount']}",
+)
+
 dove = json.loads(
     (ROOT / manifest["presentationGeometry"]["doveAuditPath"]).read_text()
 )
@@ -171,8 +207,9 @@ check(
     and not dove["quantitativeForceAcceptanceReady"],
 )
 check(
-    "nearest archived CFD held at every phase",
-    dove["flowDisplayMode"] == "nearest-archived-phase-hold"
+    "cyclic archived CFD interpolation visible at every phase",
+    dove["flowDisplayMode"]
+    == "cyclic-linear-interpolation-of-archived-c20-phases"
     and dove["archivedFlowSliceCount"] == 21
     and dove["capturePhaseCount"] == 48
     and dove["capturePhasesWithVisibleFlow"] == dove["capturePhaseCount"]
@@ -182,6 +219,35 @@ check(
         "phases": dove["capturePhaseCount"],
         "minimumOpacity": dove["minimumFlowOpacity"],
     },
+)
+check(
+    "presentation field seam suppression lock",
+    dove["flowSpatialFilterMode"]
+    == "gaussian-radius4-sigma2-with-solid-gap-fill-presentation-only"
+    and dove["flowOpacityMode"]
+    == "joint-vorticity-and-vertical-velocity-signal"
+    and math.isclose(dove["minimumDisplayedSignalOpacity"], 0.025, abs_tol=1e-9),
+)
+check(
+    "wake bridge evidence lock",
+    dove["wakeBridgeMode"]
+    == "archived-c20-vorticity-ridge+c18-q5-luminance"
+    and dove["focusedSourceTraceSampleCount"] == 4_820
+    and dove["focusedSourceTraceDirectionIndex"] == 5
+    and dove["wakeBridgePhaseCount"] == dove["capturePhaseCount"],
+)
+check(
+    "cinematic overlay lock",
+    dove["overlayMode"] == "none-cinematic",
+)
+check(
+    "seamless spherical figure-eight camera lock",
+    dove["cameraCompositionMode"]
+    == "spherical-figure-eight-dual-dove-wake-bridge"
+    and math.isclose(dove["cameraYawAmplitudeRadians"], 0.34, abs_tol=1e-9)
+    and math.isclose(dove["cameraPitchAmplitudeRadians"], 0.10, abs_tol=1e-9)
+    and math.isclose(dove["cameraDistanceAmplitudeChords"], 0.10, abs_tol=1e-9)
+    and dove["cameraEndpointParameterResidual"] <= 1e-7,
 )
 check(
     "quantitative force claim remains open",
@@ -197,8 +263,8 @@ check("GitHub Actions remain absent", not (ROOT / ".github").exists())
 
 passed = all(item["passed"] for item in checks)
 result = {
-    "schemaVersion": 4,
-    "title": "Continuous-CFD dual-dove Formation Observatory visual audit",
+    "schemaVersion": 7,
+    "title": "Seamless-field Formation Observatory visual audit",
     "passed": passed,
     "checkCount": len(checks),
     "passedCheckCount": sum(item["passed"] for item in checks),

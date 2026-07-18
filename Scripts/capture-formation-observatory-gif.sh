@@ -3,13 +3,22 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 REPORT="${1:-$ROOT/ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json}"
-OUTPUT="${2:-$ROOT/Docs/Media/formation-flight-observatory.gif}"
+DEFAULT_OUTPUT="$ROOT/Docs/Media/formation-flight-observatory.gif"
+OUTPUT="${2:-$DEFAULT_OUTPUT}"
 SLICE_SOURCE="${3:-$(dirname "$REPORT")/formation-flight-flow-slices}"
 SUMMARY="${4:-$ROOT/ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json}"
 SUBCELL_SUMMARY="${5:-$ROOT/ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json}"
 SOURCE_SUMMARY="${6:-$ROOT/ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json}"
 DOVE_MANIFEST="${7:-$ROOT/ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json}"
-GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-dove-v6.json"
+FOCUSED_SOURCE_TRACE="${8:-$ROOT/ValidationArtifacts/formation-flight-focused-source-trace/formation-flight-focused-source-trace-report.json}"
+GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-dove-v9.json"
+V6_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v6-dual-dove-continuous-cfd.gif"
+V6_SHA256="54255ff84b855f2124ec0d6fbff2449bab740c6d9f61cef70c1ba89ea5298b61"
+V7_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v7-cinematic-wake-bridge.gif"
+V7_SHA256="1d0dc0835512739e54e6f67352a76ed7de960ef913d38350e3744619d8800e09"
+V8_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v8-figure-eight-camera.gif"
+V8_SHA256="f4af3b62318d0fffd1d2e41fa157cf12e3a054400ba7ba6d4e9973448bde3564"
+V9_MANIFEST="$ROOT/ValidationArtifacts/formation-flight-observatory-visual-v9.json"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "ffmpeg is required to encode the formation GIF" >&2
@@ -23,6 +32,49 @@ cleanup() {
 trap cleanup EXIT
 
 mkdir -p "$(dirname "$OUTPUT")"
+if [[ "$OUTPUT" == "$DEFAULT_OUTPUT" ]]; then
+  CURRENT_SHA="$(shasum -a 256 "$DEFAULT_OUTPUT" | awk '{print $1}')"
+  LOCKED_V9_SHA=""
+  if [[ -f "$V9_MANIFEST" ]]; then
+    LOCKED_V9_SHA="$(python3 - "$V9_MANIFEST" <<'PY'
+import json, sys
+print(json.load(open(sys.argv[1]))["output"]["sha256"])
+PY
+)"
+  fi
+  if [[ "$CURRENT_SHA" != "$V8_SHA256" && "$CURRENT_SHA" != "$LOCKED_V9_SHA" ]]; then
+    echo "current Formation GIF is neither the locked V8 predecessor nor V9" >&2
+    exit 1
+  fi
+  if [[ ! -f "$V6_ARCHIVE" ]] \
+    || [[ "$(shasum -a 256 "$V6_ARCHIVE" | awk '{print $1}')" != "$V6_SHA256" ]]; then
+    echo "V6 progress archive is missing or invalid" >&2
+    exit 1
+  fi
+  if [[ -f "$V7_ARCHIVE" ]]; then
+    ARCHIVE_SHA="$(shasum -a 256 "$V7_ARCHIVE" | awk '{print $1}')"
+    if [[ "$ARCHIVE_SHA" != "$V7_SHA256" ]]; then
+      echo "V7 progress archive does not match its lock" >&2
+      exit 1
+    fi
+  else
+    echo "V7 progress archive is missing" >&2
+    exit 1
+  fi
+  if [[ -f "$V8_ARCHIVE" ]]; then
+    ARCHIVE_SHA="$(shasum -a 256 "$V8_ARCHIVE" | awk '{print $1}')"
+    if [[ "$ARCHIVE_SHA" != "$V8_SHA256" ]]; then
+      echo "V8 progress archive does not match the locked predecessor" >&2
+      exit 1
+    fi
+  else
+    if [[ "$CURRENT_SHA" != "$V8_SHA256" ]]; then
+      echo "V8 progress archive is missing and cannot be recovered from V9" >&2
+      exit 1
+    fi
+    cp "$DEFAULT_OUTPUT" "$V8_ARCHIVE"
+  fi
+fi
 cd "$ROOT"
 swift build -c release --product birdflow-viewer
 CAPTURE_ARGS=(
@@ -44,6 +96,7 @@ else
 fi
 CAPTURE_ARGS+=(--capture-formation-subcell-summary "$SUBCELL_SUMMARY")
 CAPTURE_ARGS+=(--capture-formation-source-summary "$SOURCE_SUMMARY")
+CAPTURE_ARGS+=(--capture-formation-focused-source-trace "$FOCUSED_SOURCE_TRACE")
 CAPTURE_ARGS+=(--capture-formation-dove-manifest "$DOVE_MANIFEST")
 .build/release/birdflow-viewer "${CAPTURE_ARGS[@]}"
 cp "$FRAMES/presentation-geometry-audit.json" "$GEOMETRY_AUDIT"
@@ -97,12 +150,38 @@ if audit["flyerPairPhaseOffsetCycles"] != 0.25:
     raise SystemExit("unexpected dual-dove phase offset")
 if audit["endpointMaximumPositionResidual"] > 1e-7:
     raise SystemExit("dual-dove presentation loop is not seamless")
-if audit["flowDisplayMode"] != "nearest-archived-phase-hold":
-    raise SystemExit("formation CFD display is not a labeled phase hold")
+if audit["flowDisplayMode"] != "cyclic-linear-interpolation-of-archived-c20-phases":
+    raise SystemExit("formation CFD display is not the locked cyclic phase interpolation")
 if audit["capturePhasesWithVisibleFlow"] != audit["capturePhaseCount"]:
     raise SystemExit("formation CFD is not visible at every encoded phase")
 if audit["minimumFlowOpacity"] != 1:
     raise SystemExit("formation CFD opacity is not constant")
+if audit["flowSpatialFilterMode"] != "gaussian-radius4-sigma2-with-solid-gap-fill-presentation-only":
+    raise SystemExit("formation flow spatial presentation filter changed")
+if audit["flowOpacityMode"] != "joint-vorticity-and-vertical-velocity-signal":
+    raise SystemExit("formation flow opacity signal contract changed")
+if audit["minimumDisplayedSignalOpacity"] != 0.025:
+    raise SystemExit("formation flow signal floor changed")
+if audit["wakeBridgeMode"] != "archived-c20-vorticity-ridge+c18-q5-luminance":
+    raise SystemExit("formation wake bridge does not preserve its two-source evidence contract")
+if audit["wakeIntersectionMarkerMode"] != "presentation-phase-ring-at-follower-plane":
+    raise SystemExit("formation wake intersection marker contract changed")
+if audit["focusedSourceTraceSampleCount"] != 4820 or audit["focusedSourceTraceDirectionIndex"] != 5:
+    raise SystemExit("formation wake bridge is not locked to the complete leader-q5 trace")
+if audit["wakeBridgePhaseCount"] != audit["capturePhaseCount"]:
+    raise SystemExit("formation wake bridge is not present at every encoded phase")
+if audit["overlayMode"] != "none-cinematic":
+    raise SystemExit("formation GIF contains a presentation overlay")
+if audit["cameraCompositionMode"] != "spherical-figure-eight-dual-dove-wake-bridge":
+    raise SystemExit("formation GIF camera composition contract changed")
+if audit["cameraYawAmplitudeRadians"] != 0.34:
+    raise SystemExit("formation GIF yaw amplitude changed")
+if audit["cameraPitchAmplitudeRadians"] != 0.1:
+    raise SystemExit("formation GIF pitch amplitude changed")
+if audit["cameraDistanceAmplitudeChords"] != 0.1:
+    raise SystemExit("formation GIF distance amplitude changed")
+if audit["cameraEndpointParameterResidual"] > 1e-7:
+    raise SystemExit("formation figure-eight camera path is not seamless")
 if audit["tailScale"][1] >= 0.5 * audit["bodyAndWingScale"][1]:
     raise SystemExit("dual-dove presentation tail is not laterally bounded")
 if not audit["presentationOnly"] or audit["quantitativeForceAcceptanceReady"]:

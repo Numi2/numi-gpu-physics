@@ -254,13 +254,55 @@ provenance. The 48-frame `1120 × 630` binary is `7,107,904` bytes with SHA-256
 its endpoint probe is pixel-identical and encoded seam is `0.993x` the median
 adjacent-frame change. The independent V5 visual audit passes `45/45`.
 
-The [current V6 Formation Observatory animation](../formation-flight-observatory.gif)
-keeps the V5 dual-dove geometry and scientific boundary but removes the visual
-CFD dropout. All `48/48` unique phases now display the nearest of the 21 real
-archived c20 slices at full opacity. The overlay prints the held slice's
-leader/follower phase and labels the mode `nearest archived c20 CFD (phase
-hold)`; no CFD values are interpolated or synthesized. The 48-frame
-`1120 × 630` binary is `8,144,140` bytes with SHA-256
+V6 is preserved exactly as
+[`2026-07-18-v6-dual-dove-continuous-cfd.gif`](2026-07-18-v6-dual-dove-continuous-cfd.gif).
+It keeps the V5 dual-dove geometry and removes the visual CFD dropout: all
+`48/48` unique phases display the nearest of 21 real archived c20 slices at
+full opacity, while the HUD names the held source phase and scientific stop.
+The 48-frame `1120 × 630` binary is `8,144,140` bytes with SHA-256
 `54255ff84b855f2124ec0d6fbff2449bab740c6d9f61cef70c1ba89ea5298b61`;
 its endpoint probe is pixel-identical and encoded seam is `1.005x` the median
 adjacent-frame change. The independent V6 visual audit passes `46/46`.
+
+V7 is preserved exactly as
+[`2026-07-18-v7-cinematic-wake-bridge.gif`](2026-07-18-v7-cinematic-wake-bridge.gif).
+It
+removes every HUD, label, and text box, tightens the camera, and makes the two
+doves and wake the complete composition. It introduces a three-ridge living
+wake bridge: geometry and opacity come from cyclic interpolation between the
+adjacent archived c20 vorticity/vertical-velocity fields, cyan-to-violet color
+encodes wake age, and luminance follows the passed 4,820-step c18 leader-q5
+reflected-population trace. The interpolation, wingtip guides, and subtle
+follower-plane ring remain presentation-only. The 48-frame `1120 × 630` binary
+is `7,638,548` bytes with SHA-256
+`1d0dc0835512739e54e6f67352a76ed7de960ef913d38350e3744619d8800e09`;
+its endpoint probe is pixel-identical and encoded seam is `0.931x` the median
+adjacent-frame change. The V7 audit passes `55/55`, and the c20 convergence stop
+and quantitative claim boundary remain unchanged.
+
+V8 is preserved exactly as
+[`2026-07-18-v8-figure-eight-camera.gif`](2026-07-18-v8-figure-eight-camera.gif).
+It
+retains the clean evidence view and replaces V7's restrained camera drift with
+a spherical figure-eight. One yaw cycle and two smaller pitch lobes expose
+upper, lower, left-quarter, and right-quarter silhouettes while a small radial
+variation preserves framing through both lobes. The wrapped path returns to
+exactly the frame-zero camera parameters. The 48-frame `1120 × 630` binary is
+`7,756,091` bytes with SHA-256
+`f4af3b62318d0fffd1d2e41fa157cf12e3a054400ba7ba6d4e9973448bde3564`;
+its endpoint probe is pixel-identical and encoded seam is `0.943x` the median
+adjacent-frame change. The V8 audit passes `56/56`; camera motion is
+presentation-only and the scientific claim boundary is unchanged.
+
+The [current V9 Formation Observatory animation](../formation-flight-observatory.gif)
+removes the diagonal dark beam that V8's wider camera path exposed in the flow
+plane. Isolation renders proved the stroke was not a wingtip guide or wake
+ridge. V9 applies a mask-aware radius-4, sigma-2 Gaussian presentation filter,
+fills the hidden canonical solid gap from surrounding archived fluid samples,
+and uses both vorticity and absolute vertical velocity for opacity. The source
+arrays and owner mask remain unchanged. The 48-frame `1120 × 630` binary is
+`7,581,213` bytes with SHA-256
+`b17a669ee923ad17281316577c28c704b4ae27d86f912d59b5ec29f533cbb65e`;
+its endpoint probe is pixel-identical and encoded seam is `0.960x` the median
+adjacent-frame change. The V9 audit passes `57/57`; the spatial filtering and
+gap fill are presentation-only and the scientific boundary is unchanged.

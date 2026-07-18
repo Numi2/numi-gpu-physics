@@ -55,39 +55,45 @@ The most important accepted flapping result is committed as [`flapping-wing-fixe
 
 ## Formation Flight Observatory
 
-![Formation Flight Observatory native Metal presentation with two phase-shifted measured-derived Deetjen dove surfaces, phase-resolved prescribed-wing c20 CFD, and the mixed source-convergence result](Docs/Media/formation-flight-observatory.gif)
+![Figure-eight cinematic Formation Flight Observatory with two phase-shifted measured-derived Deetjen doves and an evidence-bound c20 wake bridge](Docs/Media/formation-flight-observatory.gif)
 
 BirdFlowMetal can now place a leader and follower in the same D3Q19 fluid,
 assign each an independent wingbeat phase, and resolve force, root torque, and
 actuator power per flyer. The first gate uses two copies of the accepted
 prescribed hovering-wing canonical, so it studies multi-body wake interaction
-without waiting for another bird dataset. The native Metal presentation now
-uses two phase-shifted copies of the locked Deetjen OB F03 measured-derived
-complete dove surface: `2,157` vertices and `3,968` triangles per flyer over
-source frames `27...121`, followed by the existing velocity-matched `14 ms`
-presentation closure. The leader and follower retain the intentional
-`Δφ=0.25` offset. These dove surfaces and their wingtip guides are explicitly
-labeled presentation-only; the archived CFD, voxelization, loads, and power
-remain the accepted prescribed-wing canonical. The gradient now remains visible
-through the entire loop: every frame holds the nearest of the 21 real archived
-c20 fields at full opacity and prints that field's leader/follower source phase.
-No CFD values are interpolated or synthesized; uncaptured intervals are
-explicit nearest-phase holds. The scene separates those fields from the lighter
-dove wingtip guides. Its
-upper-right decision panel is decoded from the preregistered c20 summary: the
-solver gates pass, but the `10.68%` c16-to-c20 change exceeds the frozen `5%`
-limit. The second locked panel carries the later common-offset result: geometry
-curvature is smooth at `0.150`, while the exact population-weighted source is
-mixed at `0.884`; all Metal gates pass but power convergence remains open.
-The 48-frame forward loop is pixel-seamless, with an encoded seam `1.005x` the
-median adjacent-frame change; it does not reverse motion or interpolate CFD
-between measured CFD states. A deterministic `46/46` visual audit locks the
-dove manifest and binary streams, exact two-flyer topology, source evidence,
-phase offset, zero-residual endpoint, bounded presentation tail, continuous
-`48/48` full-opacity field visibility, CFD archive, and open quantitative claim.
-The right dove wing remains the source dataset's
-documented bilateral-reflection assumption, and the reconstructed tail is
-presentation-scaled so it does not dominate the formation view.
+without waiting for another bird dataset. The cinematic native Metal view uses
+two phase-shifted copies of the locked Deetjen OB F03 measured-derived complete
+dove surface: `2,157` vertices and `3,968` triangles per flyer over source
+frames `27...121`, followed by a velocity-matched `14 ms` presentation closure.
+The intentional `Δφ=0.25` leader/follower offset remains. V9 renders no HUD,
+label, or text panel and moves the camera through a smooth spherical
+figure-eight: one yaw cycle and two smaller pitch lobes expose multiple upper,
+lower, and side-quarter views without losing either bird or breaking the loop.
+
+The new living wake bridge is evidence-bound. Three ridges follow vorticity and
+vertical velocity from the archived c20 fields; cyan-to-violet color encodes
+wake age, while luminance follows all `4,820` samples of the passed c18 leader
+`q5 [0,0,+1]` reflected-population trace. A small follower-plane ring is only a
+presentation locator. All `48/48` phases keep the field at full opacity, with
+cyclic linear interpolation between adjacent members of the 21-state c20
+archive to remove visual stepping. That interpolation is for presentation
+continuity only and is never used for forces, power, or validation. V9 also
+removes the misleading diagonal dark seam left by the hidden canonical solid
+mask and low-vorticity centerline: a mask-aware Gaussian display filter fills
+only that invisible solid gap from surrounding archived fluid samples, while
+joint vorticity/vertical-velocity opacity keeps the blue jet continuous. These
+are presentation transforms; the archived c20 arrays remain unchanged.
+
+The dove surfaces, wingtip guides, wake ridges, and marker do not enter
+voxelization or fluid stepping; archived CFD and loads remain the prescribed
+wing canonical. The right wing remains a documented bilateral-reflection
+assumption and the tail retains its bounded presentation scale. The original
+scientific stop is unchanged: c16-to-c20 force change is `10.68%` against a
+frozen `5%` limit, while source curvature remains mixed at `0.884`. The
+48-frame forward-only loop is pixel-seamless, its encoded seam is `0.960x` the
+median adjacent-frame change, and the expanded deterministic visual audit
+passes `57/57` checks while keeping quantitative formation benefit and
+biological claims fail-closed.
 
 ```bash
 swift run birdflow validate formation-flight \

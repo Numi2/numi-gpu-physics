@@ -102,6 +102,14 @@ public enum FormationFlightObservatoryCapture {
     let passed: Bool
   }
 
+  private struct FocusedSourceDisplaySample {
+    let leaderPhase: Double
+    let reflectedMomentumExchange: Double
+    let normalizedIntensity: Float
+    let nearFraction: Double
+    let farFraction: Double
+  }
+
   private struct FlowSliceIndex: Decodable {
     struct Entry: Decodable {
       let file: String
@@ -126,6 +134,7 @@ public enum FormationFlightObservatoryCapture {
     let discriminatorURL: URL?
     let geometrySubcellSummaryURL: URL?
     let formationSourceSummaryURL: URL?
+    let focusedSourceTraceURL: URL?
     let doveManifestURL: URL?
     let width: Int
     let height: Int
@@ -210,6 +219,15 @@ public enum FormationFlightObservatoryCapture {
       } else {
         formationSourceSummaryURL = nil
       }
+      if commandLine.contains("--capture-formation-focused-source-trace") {
+        focusedSourceTraceURL = URL(
+          fileURLWithPath: try value(
+            after: "--capture-formation-focused-source-trace"
+          )
+        )
+      } else {
+        focusedSourceTraceURL = nil
+      }
       if commandLine.contains("--capture-formation-dove-manifest") {
         doveManifestURL = URL(
           fileURLWithPath: try value(
@@ -270,6 +288,12 @@ public enum FormationFlightObservatoryCapture {
     let formationSourceSummary = try arguments.formationSourceSummaryURL.map {
       try JSONDecoder().decode(
         FormationSourceSummary.self,
+        from: Data(contentsOf: $0)
+      )
+    }
+    let focusedSourceTrace = try arguments.focusedSourceTraceURL.map {
+      try JSONDecoder().decode(
+        FormationFlightFocusedBoundarySourceTraceReport.self,
         from: Data(contentsOf: $0)
       )
     }
@@ -390,6 +414,29 @@ public enum FormationFlightObservatoryCapture {
         )
       }
     }
+    if let trace = focusedSourceTrace {
+      guard trace.gates.passed,
+        trace.configuration.chordCells == 18,
+        trace.configuration.cycles == 5,
+        trace.configuration.followerOffsetChords == SIMD3<Double>(0, 0, -3),
+        abs(trace.configuration.followerPhaseOffsetCycles - 0.25) < 1e-12,
+        trace.subcellOffsetCells == SIMD3<Double>(0.25, 0.25, 0.75),
+        trace.flyer == .leader,
+        trace.directionIndex == 5,
+        trace.direction == SIMD3<Int32>(0, 0, 1),
+        trace.cycleSteps == 4_820,
+        trace.samples.count == trace.cycleSteps,
+        trace.samples.allSatisfy({
+          $0.source.directionIndex == 5
+            && $0.source.direction == SIMD3<Int32>(0, 0, 1)
+            && $0.branchCountClosurePassed
+        })
+      else {
+        throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
+          "formation wake bridge requires the passed complete c18 leader-q5 source trace"
+        )
+      }
+    }
     guard let doveDataset,
       doveDataset.datasetIdentifier
         == "deetjen-ob-2018-12-11-f03-complete-surface-v1",
@@ -420,7 +467,7 @@ public enum FormationFlightObservatoryCapture {
       Double($0) / Double(arguments.frameCount - 1)
     }
     let visibleFlowPhases = uniqueCapturePhases.filter {
-      nearestPhaseFlowSlice(phaseFlowSlices, leaderPhase: $0) != nil
+      interpolatedPhaseFlowSlice(phaseFlowSlices, leaderPhase: $0) != nil
         && phaseFlowOpacity(phaseFlowSlices, leaderPhase: $0) > 0
     }
     let minimumFlowOpacity = uniqueCapturePhases.map {
@@ -433,7 +480,23 @@ public enum FormationFlightObservatoryCapture {
       archivedFlowSliceCount: phaseFlowSlices.count,
       capturePhaseCount: uniqueCapturePhases.count,
       capturePhasesWithVisibleFlow: visibleFlowPhases.count,
-      minimumFlowOpacity: minimumFlowOpacity
+      minimumFlowOpacity: minimumFlowOpacity,
+      focusedSourceTraceSampleCount:
+        focusedSourceTrace?.samples.count ?? 0,
+      focusedSourceTraceDirectionIndex:
+        focusedSourceTrace?.directionIndex ?? -1,
+      wakeBridgePhaseCount: uniqueCapturePhases.filter { capturePhase in
+        interpolatedPhaseFlowSlice(
+          phaseFlowSlices,
+          leaderPhase: capturePhase
+        ) != nil
+          && (focusedSourceTrace.map { trace in
+            focusedSourceDisplaySample(
+              trace,
+              leaderPhase: capturePhase
+            ) != nil
+          } ?? false)
+      }.count
     )
     guard presentationAudit.passed else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
@@ -452,11 +515,17 @@ public enum FormationFlightObservatoryCapture {
       let phase = frameIndex + 1 == arguments.frameCount
         ? Float.zero
         : Float(frameIndex) / Float(arguments.frameCount - 1)
-      let phaseFlow = nearestPhaseFlowSlice(
+      let phaseFlow = interpolatedPhaseFlowSlice(
         phaseFlowSlices,
         leaderPhase: Double(phase)
       )
       let displayedFlowSlice = phaseFlow?.slice ?? flowSlice
+      let focusedSourceSample = focusedSourceTrace.flatMap {
+        focusedSourceDisplaySample(
+          $0,
+          leaderPhase: Double(phase)
+        )
+      }
       let texture = try renderer.render(
         phase: phase,
         phaseOffset: Float(
@@ -470,34 +539,16 @@ public enum FormationFlightObservatoryCapture {
           phaseFlowSlices,
           leaderPhase: Double(phase)
         ),
+        focusedSourceIntensity:
+          focusedSourceSample?.normalizedIntensity ?? 0,
         width: arguments.width,
         height: arguments.height
       )
-      let sampleIndex = min(
-        99,
-        Int(floor(Double(phase) * 100)) % 100
-      )
-      let sample = report.phaseSamples[sampleIndex]
       let png = try ReadmeShowcaseCapture.pngData(
         texture: texture,
         width: arguments.width,
         height: arguments.height
-      ) { context in
-        drawOverlay(
-          context: context,
-          width: arguments.width,
-          height: arguments.height,
-          report: report,
-          sample: sample,
-          phase: phase,
-          displayedFlowPhase: phaseFlow.map { ($0.entry.leaderPhase, $0.entry.followerPhase) },
-          hasFlowSlice: displayedFlowSlice != nil,
-          scoutSummary: scoutSummary,
-          discriminator: discriminator,
-          geometrySubcellSummary: geometrySubcellSummary,
-          formationSourceSummary: formationSourceSummary
-        )
-      }
+      ) { _ in }
       try png.write(
         to: arguments.outputDirectory.appendingPathComponent(
           String(format: "frame-%03d.png", frameIndex)
@@ -542,35 +593,153 @@ public enum FormationFlightObservatoryCapture {
     return min(direct, 1 - direct)
   }
 
-  private static func nearestPhaseFlowSlice(
+  private static func interpolatedPhaseFlowSlice(
     _ slices: [PhaseFlowSlice],
     leaderPhase: Double
   ) -> PhaseFlowSlice? {
-    // Reuse the real zero-phase capture on both sides of the encoded seam. The
-    // displayed field phase remains explicit in the overlay; no CFD values are
-    // synthesized or interpolated for presentation.
-    if circularDistance(leaderPhase, 0) <= 1.0 / 47.0 + 1e-6,
-      let seamAnchor = slices.first(where: {
-        abs($0.entry.leaderPhase) < 1e-12
+    guard let slice = interpolatedFlowSlice(
+      slices.map(\.slice),
+      leaderPhase: leaderPhase
+    ) else { return nil }
+    let phase = leaderPhase - floor(leaderPhase)
+    return PhaseFlowSlice(
+      entry: FlowSliceIndex.Entry(
+        file: "presentation-interpolation",
+        leaderPhase: phase,
+        followerPhase: (phase + 0.25).truncatingRemainder(dividingBy: 1)
+      ),
+      slice: slice
+    )
+  }
+
+  static func interpolatedFlowSlice(
+    _ slices: [FormationFlightFlowSlice],
+    leaderPhase: Double
+  ) -> FormationFlightFlowSlice? {
+    guard !slices.isEmpty else { return nil }
+    let phase = leaderPhase - floor(leaderPhase)
+    let ordered = slices.sorted { lhs, rhs in
+      lhs.phase < rhs.phase
+    }
+    if phase <= 1e-12,
+      let seam = ordered.first(where: {
+        abs($0.phase) <= 1e-12
       })
     {
-      return seamAnchor
+      return seam
     }
-    guard let nearest = slices.min(by: {
-      circularDistance($0.entry.leaderPhase, leaderPhase)
-        < circularDistance($1.entry.leaderPhase, leaderPhase)
-    })
+    let upperIndex = ordered.firstIndex {
+      $0.phase > phase
+    } ?? 0
+    let lowerIndex = upperIndex == 0 ? ordered.count - 1 : upperIndex - 1
+    let lower = ordered[lowerIndex]
+    let upper = ordered[upperIndex]
+    let lowerPhase = lower.phase
+    let upperPhase = upper.phase
+      + (upperIndex < lowerIndex ? 1 : 0)
+    let span = max(upperPhase - lowerPhase, 1e-12)
+    let fraction = Float(
+      min(max((phase - lowerPhase) / span, 0), 1)
+    )
+    if fraction <= 1e-7 { return lower }
+    if fraction >= 1 - 1e-7 { return upper }
+    let a = lower
+    let b = upper
+    guard a.schemaVersion == b.schemaVersion,
+      a.plane == b.plane,
+      a.planeIndex == b.planeIndex,
+      a.width == b.width,
+      a.height == b.height,
+      a.chordCells == b.chordCells,
+      a.velocityUnits == b.velocityUnits,
+      a.vorticityUnits == b.vorticityUnits,
+      a.vorticityMagnitudePerSecond.count
+        == b.vorticityMagnitudePerSecond.count,
+      a.verticalVelocityMetersPerSecond.count
+        == b.verticalVelocityMetersPerSecond.count,
+      a.ownerMask.count == b.ownerMask.count
     else { return nil }
-    return nearest
+    let vorticity = zip(
+      a.vorticityMagnitudePerSecond,
+      b.vorticityMagnitudePerSecond
+    ).map { (1 - fraction) * $0 + fraction * $1 }
+    let vertical = zip(
+      a.verticalVelocityMetersPerSecond,
+      b.verticalVelocityMetersPerSecond
+    ).map { (1 - fraction) * $0 + fraction * $1 }
+    let ownerMask = fraction < 0.5 ? a.ownerMask : b.ownerMask
+    return FormationFlightFlowSlice(
+      schemaVersion: a.schemaVersion,
+      plane: a.plane,
+      planeIndex: a.planeIndex,
+      width: a.width,
+      height: a.height,
+      chordCells: a.chordCells,
+      phase: phase,
+      velocityUnits: a.velocityUnits,
+      vorticityUnits: a.vorticityUnits,
+      maximumVorticityMagnitudePerSecond: vorticity.max() ?? 0,
+      maximumAbsoluteVerticalVelocityMetersPerSecond:
+        vertical.map(abs).max() ?? 0,
+      vorticityMagnitudePerSecond: vorticity,
+      verticalVelocityMetersPerSecond: vertical,
+      ownerMask: ownerMask
+    )
   }
 
   private static func phaseFlowOpacity(
     _ slices: [PhaseFlowSlice],
     leaderPhase: Double
   ) -> Float {
-    nearestPhaseFlowSlice(slices, leaderPhase: leaderPhase) == nil
+    interpolatedPhaseFlowSlice(slices, leaderPhase: leaderPhase) == nil
       ? (slices.isEmpty ? 1 : 0)
       : 1
+  }
+
+  static func focusedSourceIntensity(
+    _ report: FormationFlightFocusedBoundarySourceTraceReport,
+    leaderPhase: Double
+  ) -> Float {
+    guard !report.samples.isEmpty else { return 0 }
+    let values = report.samples.map {
+      $0.source.rawReflectedPopulationSum
+        + $0.source.reflectedIncomingPopulationSum
+    }
+    let minimum = values.min() ?? 0
+    let maximum = values.max() ?? minimum
+    let nearest = report.samples.min {
+      circularDistance($0.leaderPhase, leaderPhase)
+        < circularDistance($1.leaderPhase, leaderPhase)
+    }!
+    let value = nearest.source.rawReflectedPopulationSum
+      + nearest.source.reflectedIncomingPopulationSum
+    return Float((value - minimum) / max(maximum - minimum, 1e-12))
+  }
+
+  private static func focusedSourceDisplaySample(
+    _ report: FormationFlightFocusedBoundarySourceTraceReport,
+    leaderPhase: Double
+  ) -> FocusedSourceDisplaySample? {
+    guard let nearest = report.samples.min(by: {
+      circularDistance($0.leaderPhase, leaderPhase)
+        < circularDistance($1.leaderPhase, leaderPhase)
+    }) else { return nil }
+    let source = nearest.source
+    let links = max(source.linkCount, 1)
+    return FocusedSourceDisplaySample(
+      leaderPhase: nearest.leaderPhase,
+      reflectedMomentumExchange:
+        source.rawReflectedPopulationSum
+          + source.reflectedIncomingPopulationSum,
+      normalizedIntensity: focusedSourceIntensity(
+        report,
+        leaderPhase: leaderPhase
+      ),
+      nearFraction: Double(source.nearInterpolationLinkCount)
+        / Double(links),
+      farFraction: Double(source.farInterpolationLinkCount)
+        / Double(links)
+    )
   }
 
   private static func drawOverlay(
@@ -585,7 +754,8 @@ public enum FormationFlightObservatoryCapture {
     scoutSummary: ScoutSummary?,
     discriminator: C20DiscriminatorSummary?,
     geometrySubcellSummary: GeometrySubcellSummary?,
-    formationSourceSummary: FormationSourceSummary?
+    formationSourceSummary: FormationSourceSummary?,
+    focusedSourceSample: FocusedSourceDisplaySample?
   ) {
     context.saveGState()
     let scale = CGFloat(width) / 1120
@@ -706,7 +876,7 @@ public enum FormationFlightObservatoryCapture {
     drawText(
       displayedFlowPhase.map {
         String(
-          format: "nearest archived c20 CFD (phase hold)  •  L %.3f  F %.3f",
+          format: "held c20 CFD  •  |ω| ridge  •  L %.3f  F %.3f",
           $0.leader,
           $0.follower
         )
@@ -723,7 +893,12 @@ public enum FormationFlightObservatoryCapture {
     )
     if hasFlowSlice {
       drawText(
-        "blue: down w  •  orange: up w  •  opacity: |ω|",
+        focusedSourceSample.map {
+          String(
+            format: "age: cyan→violet  •  q5 luminance %.1f",
+            $0.reflectedMomentumExchange
+          )
+        } ?? "blue: down w  •  orange: up w  •  opacity: |ω|",
         font: labelFont,
         color: NSColor(calibratedWhite: 0.62, alpha: 1).cgColor,
         at: CGPoint(
@@ -749,6 +924,25 @@ public enum FormationFlightObservatoryCapture {
       at: CGPoint(x: CGFloat(width) - 214 * scale, y: 250 * scale),
       context: context
     )
+    if let focusedSourceSample {
+      drawText(
+        String(
+          format: "WAKE CROSSING  •  q5 φ %.3f  •  N/F %.0f/%.0f%%",
+          focusedSourceSample.leaderPhase,
+          100 * focusedSourceSample.nearFraction,
+          100 * focusedSourceSample.farFraction
+        ),
+        font: labelFont,
+        color: NSColor(
+          calibratedRed: 0.72,
+          green: 0.60,
+          blue: 1,
+          alpha: 1
+        ).cgColor,
+        at: CGPoint(x: CGFloat(width) - 314 * scale, y: 226 * scale),
+        context: context
+      )
+    }
     if let scoutSummary {
       drawScoutMap(
         scoutSummary,
@@ -1208,6 +1402,20 @@ struct FormationDovePresentationAudit: Codable, Sendable {
   let capturePhaseCount: Int
   let capturePhasesWithVisibleFlow: Int
   let minimumFlowOpacity: Float
+  let flowSpatialFilterMode: String
+  let flowOpacityMode: String
+  let minimumDisplayedSignalOpacity: Float
+  let wakeBridgeMode: String
+  let wakeIntersectionMarkerMode: String
+  let focusedSourceTraceSampleCount: Int
+  let focusedSourceTraceDirectionIndex: Int
+  let wakeBridgePhaseCount: Int
+  let overlayMode: String
+  let cameraCompositionMode: String
+  let cameraYawAmplitudeRadians: Float
+  let cameraPitchAmplitudeRadians: Float
+  let cameraDistanceAmplitudeChords: Float
+  let cameraEndpointParameterResidual: Float
   let bodyAndWingScale: [Float]
   let tailScale: [Float]
   let completeBirdSurfaceReady: Bool
@@ -1287,6 +1495,7 @@ final class FormationObservatoryRenderer {
     followerOffsetChords: SIMD3<Float>,
     flowSlice: FormationFlightFlowSlice?,
     flowOpacity: Float,
+    focusedSourceIntensity: Float,
     width: Int,
     height: Int
   ) throws -> MTLTexture {
@@ -1303,15 +1512,15 @@ final class FormationObservatoryRenderer {
       color: SIMD3<Float>(1, 0.34, 0.12)
     )
     let surfaces = leader + follower
-    let orbit = 2 * Float.pi * phase
+    let cameraParameters = Self.figureEightCameraParameters(phase: phase)
     var camera = CameraState()
     camera.target = SIMD3<Float>(0, 0, -0.15)
-    camera.distance = 11.9 + 0.12 * sin(orbit)
-    camera.yaw = -1.02 + 0.035 * sin(orbit)
-    camera.pitch = 0.36 + 0.018 * cos(orbit)
-    let trails: [[ColoredVertex]]
+    camera.yaw = cameraParameters.x
+    camera.pitch = cameraParameters.y
+    camera.distance = cameraParameters.z
+    let wingtipTrails: [[ColoredVertex]]
     if doveLoop != nil {
-      trails = doveWakeTrails(
+      wingtipTrails = doveWakeTrails(
         root: leaderRoot,
         phase: phase,
         color: SIMD3<Float>(0.08, 0.68, 1),
@@ -1323,7 +1532,7 @@ final class FormationObservatoryRenderer {
         camera: camera
       )
     } else {
-      trails = wakeTrails(
+      wingtipTrails = wakeTrails(
         root: leaderRoot,
         phase: phase,
         color: SIMD3<Float>(0.08, 0.68, 1),
@@ -1335,6 +1544,17 @@ final class FormationObservatoryRenderer {
         camera: camera
       )
     }
+    let wakeBridge = flowSlice.map {
+      wakeBridgeTrails(
+        slice: $0,
+        leaderRoot: leaderRoot,
+        followerRoot: followerRoot,
+        phase: phase,
+        focusedSourceIntensity: focusedSourceIntensity,
+        camera: camera
+      )
+    } ?? []
+    let trails = wakeBridge + wingtipTrails
     let slice = flowSlice.map {
       flowSliceVertices($0, opacity: flowOpacity)
     } ?? []
@@ -1876,13 +2096,15 @@ final class FormationObservatoryRenderer {
       slice.verticalVelocityMetersPerSecond.count == slice.width * slice.height,
       slice.ownerMask.count == slice.width * slice.height
     else { return [] }
+    guard let presentationValues = Self.presentationSmoothedFlowValues(slice)
+    else { return [] }
     let chord = Float(slice.chordCells)
     let maximumVorticity = max(
-      slice.maximumVorticityMagnitudePerSecond,
+      presentationValues.vorticity.max() ?? 0,
       1e-8
     )
     let maximumVertical = max(
-      slice.maximumAbsoluteVerticalVelocityMetersPerSecond,
+      presentationValues.verticalVelocity.map(abs).max() ?? 0,
       1e-8
     )
     var result: [ColoredVertex] = []
@@ -1890,15 +2112,15 @@ final class FormationObservatoryRenderer {
     for z in 0..<(slice.height - 1) {
       for x in 0..<(slice.width - 1) {
         let index = x + slice.width * z
-        guard slice.ownerMask[index] == 0 else { continue }
-        let vorticity = slice.vorticityMagnitudePerSecond[index]
+        let vorticity = presentationValues.vorticity[index]
         let normalizedVorticity = min(
           sqrt(max(vorticity, 0) / (0.35 * maximumVorticity)),
           1
         )
-        guard normalizedVorticity > 0.025 else { continue }
-        let vertical = slice.verticalVelocityMetersPerSecond[index]
+        let vertical = presentationValues.verticalVelocity[index]
         let normalizedVertical = min(abs(vertical) / maximumVertical, 1)
+        guard normalizedVorticity > 0.015 || normalizedVertical > 0.035
+        else { continue }
         let down = SIMD3<Float>(0.04, 0.66, 1.0)
         let up = SIMD3<Float>(1.0, 0.24, 0.10)
         let neutral = SIMD3<Float>(0.22, 0.36, 0.48)
@@ -1911,7 +2133,10 @@ final class FormationObservatoryRenderer {
         let color = SIMD4<Float>(
           rgb,
           max(0, min(opacity, 1))
-            * (0.035 + 0.24 * normalizedVorticity)
+            * Self.flowPresentationOpacity(
+              normalizedVorticity: normalizedVorticity,
+              normalizedVerticalVelocity: normalizedVertical
+            )
         )
         let x0 = (Float(x) - 0.5 * Float(slice.width)) / chord
         let x1 = (Float(x + 1) - 0.5 * Float(slice.width)) / chord
@@ -1929,6 +2154,302 @@ final class FormationObservatoryRenderer {
       }
     }
     return result
+  }
+
+  static func flowPresentationOpacity(
+    normalizedVorticity: Float,
+    normalizedVerticalVelocity: Float
+  ) -> Float {
+    0.025
+      + 0.18 * min(max(normalizedVorticity, 0), 1)
+      + 0.10 * min(max(normalizedVerticalVelocity, 0), 1)
+  }
+
+  static func presentationSmoothedFlowValues(
+    _ slice: FormationFlightFlowSlice
+  ) -> (vorticity: [Float], verticalVelocity: [Float])? {
+    let cellCount = slice.width * slice.height
+    guard slice.width > 0,
+      slice.height > 0,
+      slice.vorticityMagnitudePerSecond.count == cellCount,
+      slice.verticalVelocityMetersPerSecond.count == cellCount,
+      slice.ownerMask.count == cellCount
+    else { return nil }
+    let radius = 4
+    let sigma: Float = 2
+    let kernel = (-radius...radius).map { offset in
+      exp(-0.5 * Float(offset * offset) / (sigma * sigma))
+    }
+    func smooth(_ source: [Float]) -> [Float] {
+      var horizontal = source
+      for z in 0..<slice.height {
+        for x in 0..<slice.width {
+          let index = x + slice.width * z
+          guard slice.ownerMask[index] == 0 else { continue }
+          var sum: Float = 0
+          var weightSum: Float = 0
+          for offset in -radius...radius {
+            let sampleX = x + offset
+            guard sampleX >= 0, sampleX < slice.width else { continue }
+            let sampleIndex = sampleX + slice.width * z
+            guard slice.ownerMask[sampleIndex] == 0 else { continue }
+            let weight = kernel[offset + radius]
+            sum += weight * source[sampleIndex]
+            weightSum += weight
+          }
+          horizontal[index] = sum / max(weightSum, 1e-8)
+        }
+      }
+      var vertical = horizontal
+      for z in 0..<slice.height {
+        for x in 0..<slice.width {
+          let index = x + slice.width * z
+          guard slice.ownerMask[index] == 0 else { continue }
+          var sum: Float = 0
+          var weightSum: Float = 0
+          for offset in -radius...radius {
+            let sampleZ = z + offset
+            guard sampleZ >= 0, sampleZ < slice.height else { continue }
+            let sampleIndex = x + slice.width * sampleZ
+            guard slice.ownerMask[sampleIndex] == 0 else { continue }
+            let weight = kernel[offset + radius]
+            sum += weight * horizontal[sampleIndex]
+            weightSum += weight
+          }
+          vertical[index] = sum / max(weightSum, 1e-8)
+        }
+      }
+      var filled = vertical
+      for z in 0..<slice.height {
+        for x in 0..<slice.width {
+          let index = x + slice.width * z
+          guard slice.ownerMask[index] != 0 else { continue }
+          var sum: Float = 0
+          var weightSum: Float = 0
+          for offsetZ in -radius...radius {
+            let sampleZ = z + offsetZ
+            guard sampleZ >= 0, sampleZ < slice.height else { continue }
+            for offsetX in -radius...radius {
+              let sampleX = x + offsetX
+              guard sampleX >= 0, sampleX < slice.width else { continue }
+              let sampleIndex = sampleX + slice.width * sampleZ
+              guard slice.ownerMask[sampleIndex] == 0 else { continue }
+              let weight = kernel[offsetX + radius]
+                * kernel[offsetZ + radius]
+              sum += weight * vertical[sampleIndex]
+              weightSum += weight
+            }
+          }
+          filled[index] = sum / max(weightSum, 1e-8)
+        }
+      }
+      return filled
+    }
+    return (
+      smooth(slice.vorticityMagnitudePerSecond),
+      smooth(slice.verticalVelocityMetersPerSecond)
+    )
+  }
+
+  private func wakeBridgeTrails(
+    slice: FormationFlightFlowSlice,
+    leaderRoot: SIMD3<Float>,
+    followerRoot: SIMD3<Float>,
+    phase: Float,
+    focusedSourceIntensity: Float,
+    camera: CameraState
+  ) -> [[ColoredVertex]] {
+    guard slice.plane == "y",
+      slice.width > 2,
+      slice.height > 2,
+      slice.vorticityMagnitudePerSecond.count == slice.width * slice.height,
+      slice.verticalVelocityMetersPerSecond.count == slice.width * slice.height,
+      slice.ownerMask.count == slice.width * slice.height
+    else { return [] }
+    let chord = Float(slice.chordCells)
+    let maximumVorticity = max(
+      slice.maximumVorticityMagnitudePerSecond,
+      1e-8
+    )
+    let maximumVertical = max(
+      slice.maximumAbsoluteVerticalVelocityMetersPerSecond,
+      1e-8
+    )
+    let sampleCount = 56
+    let laneTargets: [Float] = [-1.45, 0, 1.45]
+    let sigma: Float = 0.82
+    var lanePoints: [[SIMD3<Float>]] = []
+    var laneStrengths: [[Float]] = []
+    for (laneIndex, targetX) in laneTargets.enumerated() {
+      var points: [SIMD3<Float>] = []
+      var strengths: [Float] = []
+      points.reserveCapacity(sampleCount)
+      strengths.reserveCapacity(sampleCount)
+      for sample in 0..<sampleCount {
+        let age = Float(sample) / Float(sampleCount - 1)
+        let startZ = leaderRoot.z - 0.16
+        let endZ = followerRoot.z + 0.08
+        let z = (1 - age) * startZ + age * endZ
+        let zIndex = min(
+          slice.height - 2,
+          max(1, Int((z * chord + 0.5 * Float(slice.height)).rounded()))
+        )
+        var weightedX: Float = 0
+        var weightedVertical: Float = 0
+        var ridgeWeight: Float = 0
+        var gaussianWeight: Float = 0
+        var vorticityWeight: Float = 0
+        for xIndex in 1..<(slice.width - 1) {
+          let index = xIndex + slice.width * zIndex
+          guard slice.ownerMask[index] == 0 else { continue }
+          let x = (Float(xIndex) - 0.5 * Float(slice.width)) / chord
+          let distance = x - targetX
+          let gaussian = exp(
+            -0.5 * distance * distance / (sigma * sigma)
+          )
+          let normalizedVorticity = min(
+            sqrt(
+              max(slice.vorticityMagnitudePerSecond[index], 0)
+                / maximumVorticity
+            ),
+            1
+          )
+          let weight = gaussian * (0.025 + normalizedVorticity * normalizedVorticity)
+          weightedX += weight * x
+          weightedVertical += weight
+            * slice.verticalVelocityMetersPerSecond[index]
+          ridgeWeight += weight
+          gaussianWeight += gaussian
+          vorticityWeight += gaussian * normalizedVorticity
+        }
+        let x = ridgeWeight > 1e-8
+          ? weightedX / ridgeWeight
+          : targetX
+        let vertical = ridgeWeight > 1e-8
+          ? weightedVertical / ridgeWeight
+          : 0
+        let strength = min(
+          max(vorticityWeight / max(gaussianWeight, 1e-8), 0),
+          1
+        )
+        let laneHeight = 0.065 * Float(laneIndex - 1)
+        points.append(
+          SIMD3<Float>(
+            x,
+            0.08 + laneHeight + 0.22 * vertical / maximumVertical,
+            z
+          )
+        )
+        strengths.append(strength)
+      }
+      lanePoints.append(points)
+      laneStrengths.append(strengths)
+    }
+
+    var ribbons: [[ColoredVertex]] = []
+    for laneIndex in lanePoints.indices {
+      ribbons.append(
+        gradientWakeTrailVertices(
+          points: lanePoints[laneIndex],
+          strengths: laneStrengths[laneIndex],
+          focusedSourceIntensity: focusedSourceIntensity,
+          camera: camera,
+          width: 0.082,
+          alpha: 0.17
+        )
+      )
+      ribbons.append(
+        gradientWakeTrailVertices(
+          points: lanePoints[laneIndex],
+          strengths: laneStrengths[laneIndex],
+          focusedSourceIntensity: focusedSourceIntensity,
+          camera: camera,
+          width: 0.021,
+          alpha: 0.66
+        )
+      )
+    }
+    let center = lanePoints.map { $0.last! }.reduce(.zero, +)
+      / Float(lanePoints.count)
+    ribbons.append(
+      wakeIntersectionRing(
+        center: center,
+        phase: phase,
+        focusedSourceIntensity: focusedSourceIntensity,
+        camera: camera
+      )
+    )
+    return ribbons
+  }
+
+  private func gradientWakeTrailVertices(
+    points: [SIMD3<Float>],
+    strengths: [Float],
+    focusedSourceIntensity: Float,
+    camera: CameraState,
+    width: Float,
+    alpha: Float
+  ) -> [ColoredVertex] {
+    let young = SIMD3<Float>(0.04, 0.88, 1)
+    let old = SIMD3<Float>(0.70, 0.34, 1)
+    let sourceLuminance = 0.56
+      + 0.44 * sqrt(min(max(focusedSourceIntensity, 0), 1))
+    return points.indices.flatMap { index -> [ColoredVertex] in
+      let previous = points[max(0, index - 1)]
+      let next = points[min(points.count - 1, index + 1)]
+      let tangent = simd_normalize(
+        next - previous + SIMD3<Float>(1e-8, 0, 0)
+      )
+      let view = simd_normalize(camera.eye - points[index])
+      let lateral = simd_normalize(
+        simd_cross(view, tangent) + SIMD3<Float>(1e-8, 0, 0)
+      )
+      let age = Float(index) / Float(points.count - 1)
+      let color = ((1 - age) * young + age * old) * sourceLuminance
+      let vorticityOpacity = 0.48 + 0.52 * strengths[index]
+      let value = ColoredVertex(
+        position: SIMD4<Float>(points[index] - width * lateral, 1),
+        normal: SIMD4<Float>(view, 0),
+        color: SIMD4<Float>(min(color, 1), alpha * vorticityOpacity)
+      )
+      let opposite = ColoredVertex(
+        position: SIMD4<Float>(points[index] + width * lateral, 1),
+        normal: SIMD4<Float>(view, 0),
+        color: value.color
+      )
+      return [value, opposite]
+    }
+  }
+
+  private func wakeIntersectionRing(
+    center: SIMD3<Float>,
+    phase: Float,
+    focusedSourceIntensity: Float,
+    camera: CameraState
+  ) -> [ColoredVertex] {
+    let view = simd_normalize(camera.eye - center)
+    var right = simd_cross(view, SIMD3<Float>(0, 1, 0))
+    if simd_length_squared(right) < 1e-8 {
+      right = SIMD3<Float>(1, 0, 0)
+    } else {
+      right = simd_normalize(right)
+    }
+    let up = simd_normalize(simd_cross(right, view))
+    let pulse = 0.5 + 0.5 * sin(2 * Float.pi * phase)
+    let radius = 0.17 + 0.025 * pulse
+    let points = (0...32).map { index in
+      let angle = 2 * Float.pi * Float(index) / 32
+      return center + radius * (cos(angle) * right + sin(angle) * up)
+    }
+    let intensity = 0.68
+      + 0.32 * sqrt(min(max(focusedSourceIntensity, 0), 1))
+    return trailVertices(
+      points: points,
+      color: intensity * SIMD3<Float>(0.76, 0.52, 1),
+      camera: camera,
+      width: 0.014,
+      alpha: 0.88
+    )
   }
 
   private func doveWakeTrails(
@@ -2024,16 +2545,31 @@ final class FormationObservatoryRenderer {
     SIMD3<Float>(-relative.x, relative.y, relative.z)
   }
 
+  static func figureEightCameraParameters(
+    phase: Float
+  ) -> SIMD3<Float> {
+    let wrappedPhase = phase - floor(phase)
+    let angle = 2 * Float.pi * wrappedPhase
+    return SIMD3<Float>(
+      -1.02 + 0.34 * sin(angle),
+      0.38 + 0.10 * sin(2 * angle),
+      10.75 + 0.10 * cos(angle)
+    )
+  }
+
   func dovePresentationAudit(
     flyerPairPhaseOffsetCycles: Float,
     archivedFlowSliceCount: Int,
     capturePhaseCount: Int,
     capturePhasesWithVisibleFlow: Int,
-    minimumFlowOpacity: Float
+    minimumFlowOpacity: Float,
+    focusedSourceTraceSampleCount: Int,
+    focusedSourceTraceDirectionIndex: Int,
+    wakeBridgePhaseCount: Int
   ) -> FormationDovePresentationAudit {
     guard let dataset = doveDataset, let loop = doveLoop else {
       return FormationDovePresentationAudit(
-        schemaVersion: 1,
+        schemaVersion: 5,
         datasetIdentifier: "missing",
         scientificTier: "missing",
         sourceDatasetDOI: "missing",
@@ -2051,11 +2587,31 @@ final class FormationObservatoryRenderer {
         closureDurationSeconds: 0,
         flyerPairPhaseOffsetCycles: flyerPairPhaseOffsetCycles,
         endpointMaximumPositionResidual: .infinity,
-        flowDisplayMode: "nearest-archived-phase-hold",
+        flowDisplayMode:
+          "cyclic-linear-interpolation-of-archived-c20-phases",
         archivedFlowSliceCount: archivedFlowSliceCount,
         capturePhaseCount: capturePhaseCount,
         capturePhasesWithVisibleFlow: capturePhasesWithVisibleFlow,
         minimumFlowOpacity: minimumFlowOpacity,
+        flowSpatialFilterMode:
+          "gaussian-radius4-sigma2-with-solid-gap-fill-presentation-only",
+        flowOpacityMode:
+          "joint-vorticity-and-vertical-velocity-signal",
+        minimumDisplayedSignalOpacity: 0.025,
+        wakeBridgeMode:
+          "archived-c20-vorticity-ridge+c18-q5-luminance",
+        wakeIntersectionMarkerMode:
+          "presentation-phase-ring-at-follower-plane",
+        focusedSourceTraceSampleCount: focusedSourceTraceSampleCount,
+        focusedSourceTraceDirectionIndex: focusedSourceTraceDirectionIndex,
+        wakeBridgePhaseCount: wakeBridgePhaseCount,
+        overlayMode: "none-cinematic",
+        cameraCompositionMode:
+          "spherical-figure-eight-dual-dove-wake-bridge",
+        cameraYawAmplitudeRadians: 0.34,
+        cameraPitchAmplitudeRadians: 0.10,
+        cameraDistanceAmplitudeChords: 0.10,
+        cameraEndpointParameterResidual: 0,
         bodyAndWingScale: [],
         tailScale: [],
         completeBirdSurfaceReady: false,
@@ -2076,6 +2632,10 @@ final class FormationObservatoryRenderer {
     }
     let names = dataset.components.map(\.name)
     let evidence = dataset.components.map(\.evidenceClass)
+    let cameraEndpointResidual = simd_distance(
+      Self.figureEightCameraParameters(phase: 0),
+      Self.figureEightCameraParameters(phase: 1)
+    )
     let passed = dataset.datasetIdentifier
       == "deetjen-ob-2018-12-11-f03-complete-surface-v1"
       && dataset.scientificTier == "derived-measured-complete-surface"
@@ -2100,9 +2660,13 @@ final class FormationObservatoryRenderer {
       && capturePhaseCount == 48
       && capturePhasesWithVisibleFlow == capturePhaseCount
       && minimumFlowOpacity == 1
+      && focusedSourceTraceSampleCount == 4_820
+      && focusedSourceTraceDirectionIndex == 5
+      && wakeBridgePhaseCount == capturePhaseCount
+      && cameraEndpointResidual <= 1e-7
       && Self.doveTailScale.y < 0.5 * Self.doveBodyAndWingScale.y
     return FormationDovePresentationAudit(
-      schemaVersion: 1,
+      schemaVersion: 5,
       datasetIdentifier: dataset.datasetIdentifier,
       scientificTier: dataset.scientificTier,
       sourceDatasetDOI: dataset.sourceDatasetDOI,
@@ -2121,11 +2685,31 @@ final class FormationObservatoryRenderer {
         MeasuredDovePresentationLoop.closureDurationSeconds,
       flyerPairPhaseOffsetCycles: flyerPairPhaseOffsetCycles,
       endpointMaximumPositionResidual: endpointResidual,
-      flowDisplayMode: "nearest-archived-phase-hold",
+      flowDisplayMode:
+        "cyclic-linear-interpolation-of-archived-c20-phases",
       archivedFlowSliceCount: archivedFlowSliceCount,
       capturePhaseCount: capturePhaseCount,
       capturePhasesWithVisibleFlow: capturePhasesWithVisibleFlow,
       minimumFlowOpacity: minimumFlowOpacity,
+      flowSpatialFilterMode:
+        "gaussian-radius4-sigma2-with-solid-gap-fill-presentation-only",
+      flowOpacityMode:
+        "joint-vorticity-and-vertical-velocity-signal",
+      minimumDisplayedSignalOpacity: 0.025,
+      wakeBridgeMode:
+        "archived-c20-vorticity-ridge+c18-q5-luminance",
+      wakeIntersectionMarkerMode:
+        "presentation-phase-ring-at-follower-plane",
+      focusedSourceTraceSampleCount: focusedSourceTraceSampleCount,
+      focusedSourceTraceDirectionIndex: focusedSourceTraceDirectionIndex,
+      wakeBridgePhaseCount: wakeBridgePhaseCount,
+      overlayMode: "none-cinematic",
+      cameraCompositionMode:
+        "spherical-figure-eight-dual-dove-wake-bridge",
+      cameraYawAmplitudeRadians: 0.34,
+      cameraPitchAmplitudeRadians: 0.10,
+      cameraDistanceAmplitudeChords: 0.10,
+      cameraEndpointParameterResidual: cameraEndpointResidual,
       bodyAndWingScale: [
         Self.doveBodyAndWingScale.x,
         Self.doveBodyAndWingScale.y,

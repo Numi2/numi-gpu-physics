@@ -107,6 +107,40 @@ public struct FormationFlightFlowSlice: Codable, Sendable {
     public let vorticityMagnitudePerSecond: [Float]
     public let verticalVelocityMetersPerSecond: [Float]
     public let ownerMask: [UInt8]
+
+    public init(
+        schemaVersion: Int,
+        plane: String,
+        planeIndex: Int,
+        width: Int,
+        height: Int,
+        chordCells: Int,
+        phase: Double,
+        velocityUnits: String,
+        vorticityUnits: String,
+        maximumVorticityMagnitudePerSecond: Float,
+        maximumAbsoluteVerticalVelocityMetersPerSecond: Float,
+        vorticityMagnitudePerSecond: [Float],
+        verticalVelocityMetersPerSecond: [Float],
+        ownerMask: [UInt8]
+    ) {
+        self.schemaVersion = schemaVersion
+        self.plane = plane
+        self.planeIndex = planeIndex
+        self.width = width
+        self.height = height
+        self.chordCells = chordCells
+        self.phase = phase
+        self.velocityUnits = velocityUnits
+        self.vorticityUnits = vorticityUnits
+        self.maximumVorticityMagnitudePerSecond =
+            maximumVorticityMagnitudePerSecond
+        self.maximumAbsoluteVerticalVelocityMetersPerSecond =
+            maximumAbsoluteVerticalVelocityMetersPerSecond
+        self.vorticityMagnitudePerSecond = vorticityMagnitudePerSecond
+        self.verticalVelocityMetersPerSecond = verticalVelocityMetersPerSecond
+        self.ownerMask = ownerMask
+    }
 }
 
 public struct FormationFlightFlowSliceIndexEntry: Codable, Sendable {

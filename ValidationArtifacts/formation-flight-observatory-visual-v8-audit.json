@@ -1,0 +1,325 @@
+{
+  "checkCount": 56,
+  "checks": [
+    {
+      "detail": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6",
+      "name": "locked hash ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "passed": true
+    },
+    {
+      "detail": "6a9b74712f57c0b75d1c5c9d3cbbcfdad2c314d66637d112acb9e5c2b7e56493",
+      "name": "locked hash ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json",
+      "passed": true
+    },
+    {
+      "detail": "ece938ab03b0be4b7613c84cac9de936d1c833bef93174083e35017363bffb6f",
+      "name": "locked hash ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices/index.json",
+      "passed": true
+    },
+    {
+      "detail": "19a783e72b9d579e157dff5ff7583f16bfa970f3cb33f047db5781c375882e5f",
+      "name": "locked hash ValidationInputs/formation-flight-geometry-subcell-ensemble-v1.json",
+      "passed": true
+    },
+    {
+      "detail": "4f4619be6655164741b8fad77d684bab23f932c162109e88125eb244360140f2",
+      "name": "locked hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+      "passed": true
+    },
+    {
+      "detail": "4e80126b6051907674e9cdc7161190c0b8ffe99f0890e06b84b8008ae98e743a",
+      "name": "locked hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-audit.json",
+      "passed": true
+    },
+    {
+      "detail": "fddf385caf345c3e3dac8d21df6482adfdbf4f656fd654c189634b2303058a56",
+      "name": "locked hash ValidationInputs/formation-flight-subcell-source-census-v1.json",
+      "passed": true
+    },
+    {
+      "detail": "8a464b91fe1488a39d0334cb00eefc8056a43ff00467b0d4e6331165c7f59c0c",
+      "name": "locked hash ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+      "passed": true
+    },
+    {
+      "detail": "98f07499f56d630cdc65de4a6da867e12b6bdb80b52aaaff2df82c1e05c37bd1",
+      "name": "locked hash ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+      "passed": true
+    },
+    {
+      "detail": "3a85b018760ad63be6d3daac6b50ff8554c110df5dee7778cfd25c22b951c40a",
+      "name": "locked hash ValidationArtifacts/formation-flight-focused-source-trace/formation-flight-focused-source-trace-report.json",
+      "passed": true
+    },
+    {
+      "detail": "a70d03b35a0e937aaff955704bbb92e0593cd0e1721e2ebc1c39b683fb45b6fa",
+      "name": "locked hash ValidationArtifacts/formation-flight-focused-source-trace/formation-flight-focused-source-trace-audit.json",
+      "passed": true
+    },
+    {
+      "detail": "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+      "name": "locked hash ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json",
+      "passed": true
+    },
+    {
+      "detail": "690b6dd2a24d593a512d799b7fe5f3f756ca7ae3ce1cd1cdc4bb12b2531567a6",
+      "name": "locked hash ValidationInputs/deetjen-ob-f03-surface-v1/positions.f32le",
+      "passed": true
+    },
+    {
+      "detail": "9d832ff22ecedc15e47c454378146a1006ae7f6974512ce222994e2f12f43d61",
+      "name": "locked hash ValidationInputs/deetjen-ob-f03-surface-v1/triangles.u16le",
+      "passed": true
+    },
+    {
+      "detail": "b75732a72a3303163e1c00211f201d8727bd07d7cbfbb4915f03c2e3d0d13074",
+      "name": "locked hash ValidationArtifacts/formation-flight-observatory-dove-v8.json",
+      "passed": true
+    },
+    {
+      "detail": "7daa8c8289e6d4723c93f3d41e0b1772015ab14f6a2c84362e7e7784c4d809c7",
+      "name": "locked hash Sources/BirdFlowVisualization/FormationFlightObservatoryCapture.swift",
+      "passed": true
+    },
+    {
+      "detail": "d685ba991dc8790055baa1383b8c2b002a0f1ef41abe065d343c95d52bd809b7",
+      "name": "locked hash Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "passed": true
+    },
+    {
+      "detail": "d908afdc182b566ffc80ea2fcbe18bb02af2fec7cb99db864584334aed6e25a3",
+      "name": "locked hash Scripts/capture-formation-observatory-gif.sh",
+      "passed": true
+    },
+    {
+      "detail": "634ad9166d8f04bba762793157a3b9e17bfd5ac08a3c37fd31dd424b4f8bb075",
+      "name": "locked hash Scripts/audit-formation-observatory-visual.py",
+      "passed": true
+    },
+    {
+      "detail": "459f5b9462f087ec0e495aa79fd86d3105025922f0a38dee55847b9c14a21252",
+      "name": "locked hash Tests/BirdFlowVisualizationTests/FormationFlightObservatoryPresentationTests.swift",
+      "passed": true
+    },
+    {
+      "detail": 21,
+      "name": "exact flow slice count",
+      "passed": true
+    },
+    {
+      "detail": "96b855ede56603caa23e5bd8d56f907a14f718b25edd240f78368bf27d094cff",
+      "name": "combined flow slice archive hash",
+      "passed": true
+    },
+    {
+      "detail": "f4af3b62318d0fffd1d2e41fa157cf12e3a054400ba7ba6d4e9973448bde3564",
+      "name": "GIF hash",
+      "passed": true
+    },
+    {
+      "detail": 7756091,
+      "name": "GIF byte budget",
+      "passed": true
+    },
+    {
+      "detail": [
+        1120,
+        630
+      ],
+      "name": "GIF dimensions",
+      "passed": true
+    },
+    {
+      "detail": 48,
+      "name": "GIF frame count",
+      "passed": true
+    },
+    {
+      "detail": 0.9425261998289349,
+      "name": "encoded seam remains ordinary motion",
+      "passed": true
+    },
+    {
+      "detail": 0.9425261998289349,
+      "name": "recorded seam ratio",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "subcell ensemble passed",
+      "passed": true
+    },
+    {
+      "detail": "aliasingAveragedOut",
+      "name": "subcell classification",
+      "passed": true
+    },
+    {
+      "detail": 192,
+      "name": "subcell case count",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "subcell no-fluid boundary",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "source discriminator passed",
+      "passed": true
+    },
+    {
+      "detail": "mixedPopulationWeightedSource",
+      "name": "mixed population-weighted source classification",
+      "passed": true
+    },
+    {
+      "detail": {
+        "allFinite": true,
+        "allSourceCensusesPassed": true,
+        "allThreeRunsPassed": true,
+        "commonSubcellOffset": true,
+        "deterministicSelectionPassed": true,
+        "geometryPhaseSmooth": true,
+        "oneLeaderAndFollowerSamplePerGrid": true,
+        "preregisteredBeforeTranslatedCFD": true
+      },
+      "name": "all source gates pass",
+      "passed": true
+    },
+    {
+      "detail": 0.14997913216742337,
+      "name": "geometry curvature remains smooth",
+      "passed": true
+    },
+    {
+      "detail": 0.8841533797492038,
+      "name": "population-weighted source curvature is mixed",
+      "passed": true
+    },
+    {
+      "detail": "66/66",
+      "name": "independent source audit",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "focused source trace passed",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "focused source trace identity",
+      "passed": true
+    },
+    {
+      "detail": 4820,
+      "name": "focused source trace complete",
+      "passed": true
+    },
+    {
+      "detail": "59/59",
+      "name": "independent focused source audit",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "dual-dove presentation audit passed",
+      "passed": true
+    },
+    {
+      "detail": "2 x 2157 vertices",
+      "name": "locked dove identity and topology",
+      "passed": true
+    },
+    {
+      "detail": [
+        "measured-processed-surface",
+        "measured-outline-derived-gap-filled-surface",
+        "bilateral-reflection-assumption",
+        "measured-processed-surface-derived-fixed-parameterization"
+      ],
+      "name": "dove component evidence disclosed",
+      "passed": true
+    },
+    {
+      "detail": 0,
+      "name": "measured loop and Hermite closure locked",
+      "passed": true
+    },
+    {
+      "detail": 0.25,
+      "name": "intentional flyer-pair phase offset",
+      "passed": true
+    },
+    {
+      "detail": {
+        "bodyAndWing": [
+          16,
+          16,
+          7
+        ],
+        "tail": [
+          14,
+          6,
+          6
+        ]
+      },
+      "name": "tail presentation scale bounded",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "dove surface remains presentation-only",
+      "passed": true
+    },
+    {
+      "detail": {
+        "minimumOpacity": 1,
+        "phases": 48,
+        "visible": 48
+      },
+      "name": "cyclic archived CFD interpolation visible at every phase",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "wake bridge evidence lock",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "cinematic overlay lock",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "seamless spherical figure-eight camera lock",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "quantitative force claim remains open",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "archived procedural predecessor hash",
+      "passed": true
+    },
+    {
+      "detail": null,
+      "name": "GitHub Actions remain absent",
+      "passed": true
+    }
+  ],
+  "claimBoundary": "The spherical figure-eight camera path changes presentation only. The c20 field is linearly interpolated in time only for continuous display between 21 real archived states. Wake-ridge geometry and opacity derive from those displayed c20 fields; luminance derives from the passed 4,820-step c18 leader-q5 trace; the follower-plane ring is a presentation marker. The dual Deetjen dove surfaces remain measured-derived presentation replays and do not replace prescribed-wing CFD, voxelization, loads, or power. The source result remains mixed and failed c16-to-c20 force convergence does not authorize a quantitative formation benefit or biological claim.",
+  "encodedMedianAdjacentRMS": 11.844475746154785,
+  "encodedSeamRMS": 11.163728713989258,
+  "encodedSeamToMedianAdjacentRMSRatio": 0.9425261998289349,
+  "passed": true,
+  "passedCheckCount": 56,
+  "schemaVersion": 6,
+  "title": "Figure-eight cinematic Formation Observatory visual audit"
+}

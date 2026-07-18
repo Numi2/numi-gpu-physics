@@ -831,34 +831,55 @@ of the locked Deetjen OB F03 measured-derived surface sequence. Each contains
 segment to close the forward-only presentation loop. The intentional
 leader/follower `Δφ=0.25` is applied to this normalized dove presentation phase.
 
-Evidence boundaries remain visible and machine-audited. The body is a processed
-measured surface; the left wing is measured-outline-derived and gap-filled; the
-right wing is a documented bilateral-reflection assumption; and the tail is a
-fixed parameterization derived from the processed surface. A first native-Metal
-pass revealed that scaling the reconstructed tail with full wing span made its
-fan dominate the scene. V6 records the promoted part-aware presentation scales:
-`[16,16,7]` for body/wings and `[14,6,6]` for the tail. The audit requires tail
-lateral scale to stay below half the body/wing value.
+Evidence boundaries remain documented and machine-audited without occupying
+the cinematic frame. The body is a processed measured surface; the left wing
+is measured-outline-derived and gap-filled; the right wing is a documented
+bilateral-reflection assumption; and the tail is a fixed parameterization
+derived from the processed surface. A first native-Metal pass revealed that
+scaling the reconstructed tail with full wing span made its fan dominate the
+scene. V9 retains the promoted part-aware presentation scales: `[16,16,7]` for
+body/wings and `[14,6,6]` for the tail. The audit requires tail lateral scale to
+stay below half the body/wing value.
 
 Capture writes a machine-readable dove sidecar and refuses the GIF unless the
 dataset identity, Dryad/eLife DOI, CC0 license, exact topology, component
 evidence, two-flyer phase offset, loop window, closure duration, zero endpoint
 residual, and presentation-only claim boundary all match. It also requires all
-`48/48` unique phases to select a real archived CFD slice at full opacity. The
-renderer uses a labeled nearest-phase hold outside the captured windows: field
-values are never interpolated or synthesized, and the held source phase remains
-visible in the overlay. The V6 visual
-manifest additionally locks the renderer, dove binaries, 21 archived CFD
-fields, mixed source result, GIF hash, frame count, and loop seam; its audit
-passes `46/46`.
+`48/48` unique phases to show the archived c20 field at full opacity. V9 uses
+cyclic linear interpolation between adjacent members of the 21-state archive
+to remove visual stepping. This is a presentation transform only: no
+interpolated field enters force, power, convergence, or any solver claim.
+The field plane additionally uses a mask-aware radius-4, sigma-2 Gaussian
+display filter. Hidden canonical solid cells are filled from surrounding
+archived fluid samples so their unmatched silhouette does not form a dark
+diagonal beam behind the dove shell. Opacity combines vorticity and absolute
+vertical velocity, eliminating the remaining low-vorticity seam through the
+blue jet. These pixels are explicitly presentation-only; the source arrays and
+owner mask remain unchanged.
+
+The living wake bridge adds three vorticity ridges reconstructed at each frame
+from the displayed c20 vorticity and vertical-velocity arrays. Ridge color runs
+from cyan to violet with downstream wake age; its luminance follows the
+normalized reflected-population exchange from every sample of the passed c18
+leader `q5 [0,0,+1]` focused trace. The follower-plane ring is explicitly a
+presentation-phase locator, not a measured vortex boundary. The V9 camera
+follows a spherical figure-eight: yaw varies as `0.34 sin(2πφ)`, pitch as
+`0.10 sin(4πφ)`, and distance as `0.10 cos(2πφ)`. This produces two viewing
+lobes and several distinct upper/lower side-quarter angles while returning to
+identical parameters at the loop endpoint. The V9 manifest
+locks the renderer, dove binaries, all 21 CFD fields, the complete 4,820-step
+q5 trace and its independent audit, the no-overlay figure-eight camera
+contract, spatial-display contract, GIF hash, frame count, and loop seam. Its
+visual audit passes `57/57`.
 
 The two doves and their wingtip guides do not enter voxelization, fluid
 stepping, loads, torque, or actuator power. Those remain the archived
-prescribed-wing canonical, as stated in the overlay. Geometry curvature `0.150`
-is smooth, exact population-weighted source curvature `0.884` is mixed, and the
-original `10.68% > 5%` force-convergence stop remains visible. V4's synchronized
-procedural birds and V3's invalid rotated partner-wing presentation are both
-retained under `Docs/Media/Progress`.
+prescribed-wing canonical. Geometry curvature `0.150` is smooth, exact
+population-weighted source curvature `0.884` is mixed, and the original
+`10.68% > 5%` force-convergence stop remains governing even though the HUD is
+gone. The exact V8 unsmoothed-field binary, V7 restrained-camera binary, V6 HUD
+binary, V4 synchronized procedural birds, and V3 invalid rotated partner-wing
+presentation are retained under `Docs/Media/Progress`.
 
 ## Wider position-phase map
 
