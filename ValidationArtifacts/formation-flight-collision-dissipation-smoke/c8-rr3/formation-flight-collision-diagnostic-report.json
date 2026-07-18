@@ -1,0 +1,2080 @@
+{
+  "capturedFollowerPhases" : [
+    0.054855275443510765,
+    0.06512605042016806,
+    0.07492997198879547,
+    0.08520074696545299,
+    0.0950046685340804,
+    0.25
+  ],
+  "capturedLeaderPhases" : [
+    0.8048552754435108,
+    0.8151260504201681,
+    0.8249299719887955,
+    0.8352007469654529,
+    0.8450046685340803,
+    0
+  ],
+  "collisionCorrectionActivationCellSteps" : 0,
+  "collisionOperator" : "positivity-preserving-recursive-regularized-bgk",
+  "configuration" : {
+    "chordCells" : 8,
+    "cycles" : 1,
+    "followerOffsetChords" : [
+      0,
+      0,
+      -3
+    ],
+    "followerPhaseOffsetCycles" : 0.25
+  },
+  "coupledFollower" : {
+    "flyer" : "follower",
+    "maximumPositivePowerWatts" : 0.3931556899800454,
+    "meanDragCoefficient" : 2.599046602317852,
+    "meanLiftCoefficient" : 1.3780537328296019,
+    "meanPositivePowerWatts" : 0.01347012939312169,
+    "meanSignedPowerWatts" : 0.01310917518304856,
+    "rmsPowerWatts" : 0.021113477688106452
+  },
+  "coupledLeader" : {
+    "flyer" : "leader",
+    "maximumPositivePowerWatts" : 0.13279222136660945,
+    "meanDragCoefficient" : 2.4275767041733416,
+    "meanLiftCoefficient" : 1.372571381324874,
+    "meanPositivePowerWatts" : 0.01299788096366837,
+    "meanSignedPowerWatts" : 0.012645500811267602,
+    "rmsPowerWatts" : 0.016585871775560673
+  },
+  "cycleSteps" : 2142,
+  "deviceName" : "Apple M4",
+  "gates" : {
+    "collisionCorrectionActivationFraction" : 0,
+    "collisionCorrectionNonIntrusivePassed" : true,
+    "finite" : true,
+    "maximumAllowedCollisionCorrectionActivationFraction" : 0.05,
+    "maximumAllowedRelativeClosureResidual" : 0.0002,
+    "maximumAllowedRelativePeriodicPowerDifference" : 0.2,
+    "maximumRelativeForceClosureResidual" : 7.849829586348278e-08,
+    "maximumRelativePeriodicPowerDifference" : 0,
+    "maximumRelativeTorqueClosureResidual" : 2.1201637991907774e-06,
+    "maximumStepCollisionCorrectionActivationFraction" : 0,
+    "minimumPopulation" : 0.0150831937789917,
+    "noGeometryOverlap" : true,
+    "ownerForceClosurePassed" : true,
+    "ownerTorqueClosurePassed" : true,
+    "passed" : true,
+    "periodicPowerPassed" : true,
+    "populationPositivityPassed" : true
+  },
+  "gridX" : 80,
+  "gridY" : 80,
+  "gridZ" : 104,
+  "observedCellSteps" : 1425715200,
+  "overlapVoxelSamples" : 0,
+  "phaseSamples" : [
+    {
+      "followerDragCoefficient" : 20.32713473254761,
+      "followerForceNewtons" : [
+        0.05118538,
+        2.3902576,
+        1.6576368
+      ],
+      "followerLiftCoefficient" : 14.094717636829609,
+      "followerPhase" : 0.255,
+      "followerSignedPowerWatts" : 0.11091023839465931,
+      "leaderDragCoefficient" : -8.999084246112854,
+      "leaderForceNewtons" : [
+        1.0419679,
+        -0.18552187,
+        -0.08651815
+      ],
+      "leaderLiftCoefficient" : -0.7356551042564964,
+      "leaderPhase" : 0.005,
+      "leaderSignedPowerWatts" : 0.025981820621621566
+    },
+    {
+      "followerDragCoefficient" : 0.5105943712107295,
+      "followerForceNewtons" : [
+        0.064961895,
+        0.053691603,
+        -0.14828655
+      ],
+      "followerLiftCoefficient" : -1.2608655390379404,
+      "followerPhase" : 0.265,
+      "followerSignedPowerWatts" : 0.006238105774381745,
+      "leaderDragCoefficient" : 4.749485494212309,
+      "leaderForceNewtons" : [
+        -0.55197096,
+        0.08701927,
+        0.0029421307
+      ],
+      "leaderLiftCoefficient" : 0.025016639336417158,
+      "leaderPhase" : 0.015,
+      "leaderSignedPowerWatts" : -0.0008649786325161513
+    },
+    {
+      "followerDragCoefficient" : 2.4094981939033406,
+      "followerForceNewtons" : [
+        0.11247787,
+        0.26816913,
+        0.14933309
+      ],
+      "followerLiftCoefficient" : 1.2697641487468332,
+      "followerPhase" : 0.275,
+      "followerSignedPowerWatts" : 0.01405869381746095,
+      "leaderDragCoefficient" : 2.3114311055421624,
+      "leaderForceNewtons" : [
+        -0.26493987,
+        0.0612754,
+        0.039309934
+      ],
+      "leaderLiftCoefficient" : 0.3342483889038627,
+      "leaderPhase" : 0.025,
+      "leaderSignedPowerWatts" : 0.0005742138839109171
+    },
+    {
+      "followerDragCoefficient" : 2.4087539578385835,
+      "followerForceNewtons" : [
+        0.11741602,
+        0.26297137,
+        0.15762779
+      ],
+      "followerLiftCoefficient" : 1.3402931568519099,
+      "followerPhase" : 0.28500000000000003,
+      "followerSignedPowerWatts" : 0.01428124858688464,
+      "leaderDragCoefficient" : 3.9115331955595565,
+      "leaderForceNewtons" : [
+        -0.4506495,
+        0.09298469,
+        0.12741439
+      ],
+      "leaderLiftCoefficient" : 1.083391668017407,
+      "leaderPhase" : 0.035,
+      "leaderSignedPowerWatts" : 0.005254394189190954
+    },
+    {
+      "followerDragCoefficient" : 2.5551835447798275,
+      "followerForceNewtons" : [
+        0.15141493,
+        0.26723623,
+        0.1765611
+      ],
+      "followerLiftCoefficient" : 1.5012811851844539,
+      "followerPhase" : 0.295,
+      "followerSignedPowerWatts" : 0.015297817028315742,
+      "leaderDragCoefficient" : 2.9022677234080767,
+      "leaderForceNewtons" : [
+        -0.32875773,
+        0.091888525,
+        0.11842515
+      ],
+      "leaderLiftCoefficient" : 1.0069570933724816,
+      "leaderPhase" : 0.045,
+      "leaderSignedPowerWatts" : 0.005711541285637101
+    },
+    {
+      "followerDragCoefficient" : 2.418716656812622,
+      "followerForceNewtons" : [
+        0.16613957,
+        0.24027765,
+        0.18747126
+      ],
+      "followerLiftCoefficient" : 1.5940491153778218,
+      "followerPhase" : 0.305,
+      "followerSignedPowerWatts" : 0.014348914723425225,
+      "leaderDragCoefficient" : 3.1556249295051924,
+      "leaderForceNewtons" : [
+        -0.35204104,
+        0.11780223,
+        0.15773982
+      ],
+      "leaderLiftCoefficient" : 1.341245710499698,
+      "leaderPhase" : 0.055,
+      "leaderSignedPowerWatts" : 0.008169971927817545
+    },
+    {
+      "followerDragCoefficient" : 2.4940628954098307,
+      "followerForceNewtons" : [
+        0.18381807,
+        0.23740096,
+        0.19059736
+      ],
+      "followerLiftCoefficient" : 1.6206300248239276,
+      "followerPhase" : 0.315,
+      "followerSignedPowerWatts" : 0.014757537717132356,
+      "leaderDragCoefficient" : 3.0485888291453698,
+      "leaderForceNewtons" : [
+        -0.33209747,
+        0.13599503,
+        0.1685642
+      ],
+      "leaderLiftCoefficient" : 1.4332843378470075,
+      "leaderPhase" : 0.065,
+      "leaderSignedPowerWatts" : 0.010143406232512822
+    },
+    {
+      "followerDragCoefficient" : 2.3924764969364176,
+      "followerForceNewtons" : [
+        0.19617079,
+        0.21252407,
+        0.1950678
+      ],
+      "followerLiftCoefficient" : 1.6586417047465567,
+      "followerPhase" : 0.325,
+      "followerSignedPowerWatts" : 0.014256738635937188,
+      "leaderDragCoefficient" : 3.167231682223048,
+      "leaderForceNewtons" : [
+        -0.33259824,
+        0.16996747,
+        0.18477063
+      ],
+      "leaderLiftCoefficient" : 1.5710859585660992,
+      "leaderPhase" : 0.075,
+      "leaderSignedPowerWatts" : 0.013220878967222476
+    },
+    {
+      "followerDragCoefficient" : 2.4598695633097876,
+      "followerForceNewtons" : [
+        0.21556056,
+        0.20461914,
+        0.21133982
+      ],
+      "followerLiftCoefficient" : 1.7970010723607754,
+      "followerPhase" : 0.335,
+      "followerSignedPowerWatts" : 0.014312338273059177,
+      "leaderDragCoefficient" : 2.9888557597993946,
+      "leaderForceNewtons" : [
+        -0.29959983,
+        0.18739872,
+        0.19260211
+      ],
+      "leaderLiftCoefficient" : 1.6376762751714233,
+      "leaderPhase" : 0.085,
+      "leaderSignedPowerWatts" : 0.013909325923588114
+    },
+    {
+      "followerDragCoefficient" : 2.4439991478879293,
+      "followerForceNewtons" : [
+        0.22796735,
+        0.18789272,
+        0.21078812
+      ],
+      "followerLiftCoefficient" : 1.7923100180570102,
+      "followerPhase" : 0.345,
+      "followerSignedPowerWatts" : 0.014203621597218113,
+      "leaderDragCoefficient" : 3.0957367589168028,
+      "leaderForceNewtons" : [
+        -0.29662722,
+        0.21484327,
+        0.18875846
+      ],
+      "leaderLiftCoefficient" : 1.6049941063005249,
+      "leaderPhase" : 0.095,
+      "leaderSignedPowerWatts" : 0.0158746405906246
+    },
+    {
+      "followerDragCoefficient" : 2.4780766130787026,
+      "followerForceNewtons" : [
+        0.24116173,
+        0.17642972,
+        0.21825917
+      ],
+      "followerLiftCoefficient" : 1.8558356409096473,
+      "followerPhase" : 0.355,
+      "followerSignedPowerWatts" : 0.014200893060106967,
+      "leaderDragCoefficient" : 3.0039759378314184,
+      "leaderForceNewtons" : [
+        -0.26445553,
+        0.24074927,
+        0.19765632
+      ],
+      "leaderLiftCoefficient" : 1.6806516743951627,
+      "leaderPhase" : 0.105,
+      "leaderSignedPowerWatts" : 0.016317640399089273
+    },
+    {
+      "followerDragCoefficient" : 2.452725987023791,
+      "followerForceNewtons" : [
+        0.24883224,
+        0.1591543,
+        0.2133783
+      ],
+      "followerLiftCoefficient" : 1.8143340517459066,
+      "followerPhase" : 0.365,
+      "followerSignedPowerWatts" : 0.014235422800150497,
+      "leaderDragCoefficient" : 2.7705753356377714,
+      "leaderForceNewtons" : [
+        -0.22467579,
+        0.24290358,
+        0.17439824
+      ],
+      "leaderLiftCoefficient" : 1.4828906153100851,
+      "leaderPhase" : 0.115,
+      "leaderSignedPowerWatts" : 0.015842974503781544
+    },
+    {
+      "followerDragCoefficient" : 2.4506284453787988,
+      "followerForceNewtons" : [
+        0.26412815,
+        0.13568662,
+        0.23248668
+      ],
+      "followerLiftCoefficient" : 1.976810714397134,
+      "followerPhase" : 0.375,
+      "followerSignedPowerWatts" : 0.013814555542012724,
+      "leaderDragCoefficient" : 2.4550822234829734,
+      "leaderForceNewtons" : [
+        -0.17827299,
+        0.2348357,
+        0.15842229
+      ],
+      "leaderLiftCoefficient" : 1.347048710907878,
+      "leaderPhase" : 0.125,
+      "leaderSignedPowerWatts" : 0.014334187343503632
+    },
+    {
+      "followerDragCoefficient" : 2.492775193235128,
+      "followerForceNewtons" : [
+        0.27725118,
+        0.11966979,
+        0.23825309
+      ],
+      "followerLiftCoefficient" : 2.0258418866450865,
+      "followerPhase" : 0.385,
+      "followerSignedPowerWatts" : 0.013858162954623396,
+      "leaderDragCoefficient" : 2.3091795383352305,
+      "leaderForceNewtons" : [
+        -0.15008381,
+        0.23393926,
+        0.15638879
+      ],
+      "leaderLiftCoefficient" : 1.3297580503466842,
+      "leaderPhase" : 0.135,
+      "leaderSignedPowerWatts" : 0.013586624645402088
+    },
+    {
+      "followerDragCoefficient" : 2.508985893653439,
+      "followerForceNewtons" : [
+        0.28558248,
+        0.10287586,
+        0.24500114
+      ],
+      "followerLiftCoefficient" : 2.083219876750892,
+      "followerPhase" : 0.395,
+      "followerSignedPowerWatts" : 0.013595590220150356,
+      "leaderDragCoefficient" : 2.385411121536082,
+      "leaderForceNewtons" : [
+        -0.1346495,
+        0.25476283,
+        0.18026195
+      ],
+      "leaderLiftCoefficient" : 1.5327491585769333,
+      "leaderPhase" : 0.145,
+      "leaderSignedPowerWatts" : 0.013699289153171172
+    },
+    {
+      "followerDragCoefficient" : 2.541367250578377,
+      "followerForceNewtons" : [
+        0.29489243,
+        0.086150184,
+        0.2500826
+      ],
+      "followerLiftCoefficient" : 2.1264271425848276,
+      "followerPhase" : 0.405,
+      "followerSignedPowerWatts" : 0.013397205938480861,
+      "leaderDragCoefficient" : 2.4296764326898255,
+      "leaderForceNewtons" : [
+        -0.11897079,
+        0.2683617,
+        0.1875377
+      ],
+      "leaderLiftCoefficient" : 1.5946140843476924,
+      "leaderPhase" : 0.155,
+      "leaderSignedPowerWatts" : 0.014188557318577192
+    },
+    {
+      "followerDragCoefficient" : 2.411247459266416,
+      "followerForceNewtons" : [
+        0.28138095,
+        0.07028341,
+        0.23981051
+      ],
+      "followerLiftCoefficient" : 2.039084510960845,
+      "followerPhase" : 0.41500000000000004,
+      "followerSignedPowerWatts" : 0.01187279532895661,
+      "leaderDragCoefficient" : 2.423714688156002,
+      "leaderForceNewtons" : [
+        -0.09947328,
+        0.2756143,
+        0.19794351
+      ],
+      "leaderLiftCoefficient" : 1.6830936225800286,
+      "leaderPhase" : 0.165,
+      "leaderSignedPowerWatts" : 0.014004283459609867
+    },
+    {
+      "followerDragCoefficient" : 2.215099219888952,
+      "followerForceNewtons" : [
+        0.2629657,
+        0.046762075,
+        0.21988124
+      ],
+      "followerLiftCoefficient" : 1.869627903124329,
+      "followerPhase" : 0.425,
+      "followerSignedPowerWatts" : 0.010423217193152099,
+      "leaderDragCoefficient" : 2.5222991767521696,
+      "leaderForceNewtons" : [
+        -0.08538666,
+        0.2922791,
+        0.2007374
+      ],
+      "leaderLiftCoefficient" : 1.7068498138798471,
+      "leaderPhase" : 0.175,
+      "leaderSignedPowerWatts" : 0.01473821075739717
+    },
+    {
+      "followerDragCoefficient" : 2.1978029368111685,
+      "followerForceNewtons" : [
+        0.26029056,
+        0.040116712,
+        0.19054681
+      ],
+      "followerLiftCoefficient" : 1.6202002480251385,
+      "followerPhase" : 0.435,
+      "followerSignedPowerWatts" : 0.010183061288891609,
+      "leaderDragCoefficient" : 2.3680356773728977,
+      "leaderForceNewtons" : [
+        -0.062438447,
+        0.2786734,
+        0.20259117
+      ],
+      "leaderLiftCoefficient" : 1.7226121820627993,
+      "leaderPhase" : 0.185,
+      "leaderSignedPowerWatts" : 0.013228553448133583
+    },
+    {
+      "followerDragCoefficient" : 1.8901224017202047,
+      "followerForceNewtons" : [
+        0.2252131,
+        0.02402969,
+        0.14493547
+      ],
+      "followerLiftCoefficient" : 1.232371666706186,
+      "followerPhase" : 0.445,
+      "followerSignedPowerWatts" : 0.008321295196329216,
+      "leaderDragCoefficient" : 2.6027694950765246,
+      "leaderForceNewtons" : [
+        -0.05499424,
+        0.30734226,
+        0.2123495
+      ],
+      "leaderLiftCoefficient" : 1.8055863453882397,
+      "leaderPhase" : 0.195,
+      "leaderSignedPowerWatts" : 0.014969739734386938
+    },
+    {
+      "followerDragCoefficient" : 1.5011386050498547,
+      "followerForceNewtons" : [
+        0.17983854,
+        0.010569422,
+        0.09073966
+      ],
+      "followerLiftCoefficient" : 0.7715501461153953,
+      "followerPhase" : 0.45499999999999996,
+      "followerSignedPowerWatts" : 0.006529837177778249,
+      "leaderDragCoefficient" : 2.5531741796539182,
+      "leaderForceNewtons" : [
+        -0.026589703,
+        0.3065786,
+        0.21583267
+      ],
+      "leaderLiftCoefficient" : 1.8352033136941885,
+      "leaderPhase" : 0.205,
+      "leaderSignedPowerWatts" : 0.01444604917389588
+    },
+    {
+      "followerDragCoefficient" : 0.7383499551829238,
+      "followerForceNewtons" : [
+        0.09005373,
+        -0.004119973,
+        0.026243037
+      ],
+      "followerLiftCoefficient" : 0.22314188460670484,
+      "followerPhase" : 0.46499999999999997,
+      "followerSignedPowerWatts" : 0.0036976335319334375,
+      "leaderDragCoefficient" : 2.5457045534720244,
+      "leaderForceNewtons" : [
+        -0.0055969236,
+        0.3067796,
+        0.22066502
+      ],
+      "leaderLiftCoefficient" : 1.8762923576760726,
+      "leaderPhase" : 0.215,
+      "leaderSignedPowerWatts" : 0.014280488828859801
+    },
+    {
+      "followerDragCoefficient" : 0.10724342961832446,
+      "followerForceNewtons" : [
+        0.015504116,
+        -0.012910585,
+        -0.01493018
+      ],
+      "followerLiftCoefficient" : -0.1269498119822553,
+      "followerPhase" : 0.475,
+      "followerSignedPowerWatts" : 0.001695214275421559,
+      "leaderDragCoefficient" : 2.7624316510193223,
+      "leaderForceNewtons" : [
+        0.009791391,
+        0.33135557,
+        0.222245
+      ],
+      "leaderLiftCoefficient" : 1.889726683730206,
+      "leaderPhase" : 0.225,
+      "leaderSignedPowerWatts" : 0.015989129614118858
+    },
+    {
+      "followerDragCoefficient" : -0.6866267345107595,
+      "followerForceNewtons" : [
+        -0.07729396,
+        -0.026022172,
+        -0.038058456
+      ],
+      "followerLiftCoefficient" : -0.3236072002568957,
+      "followerPhase" : 0.485,
+      "followerSignedPowerWatts" : -0.0003497543553013949,
+      "leaderDragCoefficient" : 2.5382505475223924,
+      "leaderForceNewtons" : [
+        0.034380414,
+        0.30361924,
+        0.22721499
+      ],
+      "leaderLiftCoefficient" : 1.9319860839297835,
+      "leaderPhase" : 0.235,
+      "leaderSignedPowerWatts" : 0.013601125423028902
+    },
+    {
+      "followerDragCoefficient" : -1.4719780438782009,
+      "followerForceNewtons" : [
+        -0.16988364,
+        -0.033450022,
+        -0.033753257
+      ],
+      "followerLiftCoefficient" : -0.28700053062960074,
+      "followerPhase" : 0.495,
+      "followerSignedPowerWatts" : -0.0012181523746419177,
+      "leaderDragCoefficient" : 3.5267732347041574,
+      "leaderForceNewtons" : [
+        0.033273704,
+        0.4161506,
+        0.2125805
+      ],
+      "leaderLiftCoefficient" : 1.8075504963124231,
+      "leaderPhase" : 0.245,
+      "leaderSignedPowerWatts" : 0.020330797813033246
+    },
+    {
+      "followerDragCoefficient" : 2.0210644538429228,
+      "followerForceNewtons" : [
+        -0.23258173,
+        -0.049720507,
+        -0.011675562
+      ],
+      "followerLiftCoefficient" : -0.09927612027041906,
+      "followerPhase" : 0.505,
+      "followerSignedPowerWatts" : -0.0012020487774299776,
+      "leaderDragCoefficient" : 1.844294706758302,
+      "leaderForceNewtons" : [
+        0.079159774,
+        0.21432582,
+        0.2392377
+      ],
+      "leaderLiftCoefficient" : 2.03421391841301,
+      "leaderPhase" : 0.255,
+      "leaderSignedPowerWatts" : 0.009662177849968225
+    },
+    {
+      "followerDragCoefficient" : 2.330892381164993,
+      "followerForceNewtons" : [
+        -0.26836163,
+        -0.056276742,
+        0.011088588
+      ],
+      "followerLiftCoefficient" : 0.0942851439723041,
+      "followerPhase" : 0.515,
+      "followerSignedPowerWatts" : 6.0782611880165854e-05,
+      "leaderDragCoefficient" : 2.7319998327776265,
+      "leaderForceNewtons" : [
+        0.08386586,
+        0.3143773,
+        0.22728282
+      ],
+      "leaderLiftCoefficient" : 1.9325628362847624,
+      "leaderPhase" : 0.265,
+      "leaderSignedPowerWatts" : 0.015490607906156145
+    },
+    {
+      "followerDragCoefficient" : 2.688766544138667,
+      "followerForceNewtons" : [
+        -0.30436862,
+        -0.09002577,
+        0.046178136
+      ],
+      "followerLiftCoefficient" : 0.3926480175040189,
+      "followerPhase" : 0.525,
+      "followerSignedPowerWatts" : 0.0018250704173980057,
+      "leaderDragCoefficient" : 2.48802448713759,
+      "leaderForceNewtons" : [
+        0.107994884,
+        0.2783129,
+        0.22679833
+      ],
+      "leaderLiftCoefficient" : 1.9284432128072173,
+      "leaderPhase" : 0.275,
+      "leaderSignedPowerWatts" : 0.013378492541493026
+    },
+    {
+      "followerDragCoefficient" : 2.916952468687988,
+      "followerForceNewtons" : [
+        -0.32632923,
+        -0.111634016,
+        0.07136042
+      ],
+      "followerLiftCoefficient" : 0.6067704018392882,
+      "followerPhase" : 0.5349999999999999,
+      "followerSignedPowerWatts" : 0.0044548323507956735,
+      "leaderDragCoefficient" : 2.670998239399647,
+      "leaderForceNewtons" : [
+        0.12938997,
+        0.2917985,
+        0.230152
+      ],
+      "leaderLiftCoefficient" : 1.9569591314724002,
+      "leaderPhase" : 0.285,
+      "leaderSignedPowerWatts" : 0.014652371912937485
+    },
+    {
+      "followerDragCoefficient" : 2.9789240756662325,
+      "followerForceNewtons" : [
+        -0.32590288,
+        -0.13784945,
+        0.072214626
+      ],
+      "followerLiftCoefficient" : 0.6140336550794392,
+      "followerPhase" : 0.5449999999999999,
+      "followerSignedPowerWatts" : 0.007194981525727958,
+      "leaderDragCoefficient" : 2.754004019630665,
+      "leaderForceNewtons" : [
+        0.15298587,
+        0.29126856,
+        0.23972666
+      ],
+      "leaderLiftCoefficient" : 2.0383715528102595,
+      "leaderPhase" : 0.295,
+      "leaderSignedPowerWatts" : 0.015211376666000555
+    },
+    {
+      "followerDragCoefficient" : 2.9256264884851415,
+      "followerForceNewtons" : [
+        -0.31330678,
+        -0.15161043,
+        0.061576065
+      ],
+      "followerLiftCoefficient" : 0.5235750466369355,
+      "followerPhase" : 0.5549999999999999,
+      "followerSignedPowerWatts" : 0.009062455437132714,
+      "leaderDragCoefficient" : 2.735981209164743,
+      "leaderForceNewtons" : [
+        0.17665055,
+        0.27624074,
+        0.23513265
+      ],
+      "leaderLiftCoefficient" : 1.9993091243639394,
+      "leaderPhase" : 0.305,
+      "leaderSignedPowerWatts" : 0.01512964293006258
+    },
+    {
+      "followerDragCoefficient" : 2.867395196763803,
+      "followerForceNewtons" : [
+        -0.2988626,
+        -0.16536644,
+        0.059412867
+      ],
+      "followerLiftCoefficient" : 0.5051815942678226,
+      "followerPhase" : 0.565,
+      "followerSignedPowerWatts" : 0.010740185421944276,
+      "leaderDragCoefficient" : 2.7535670375076093,
+      "leaderForceNewtons" : [
+        0.19307712,
+        0.26679128,
+        0.23802236
+      ],
+      "leaderLiftCoefficient" : 2.0238800163760855,
+      "leaderPhase" : 0.315,
+      "leaderSignedPowerWatts" : 0.015145794220697844
+    },
+    {
+      "followerDragCoefficient" : 3.0572814375228243,
+      "followerForceNewtons" : [
+        -0.3106436,
+        -0.18879454,
+        0.06780488
+      ],
+      "followerLiftCoefficient" : 0.5765380367433278,
+      "followerPhase" : 0.575,
+      "followerSignedPowerWatts" : 0.013852880873014289,
+      "leaderDragCoefficient" : 2.77358767917999,
+      "leaderForceNewtons" : [
+        0.2129172,
+        0.25452638,
+        0.24108922
+      ],
+      "leaderLiftCoefficient" : 2.04995728113611,
+      "leaderPhase" : 0.325,
+      "leaderSignedPowerWatts" : 0.015435479973846361
+    },
+    {
+      "followerDragCoefficient" : 3.0747700208783857,
+      "followerForceNewtons" : [
+        -0.3025954,
+        -0.20423616,
+        0.07980017
+      ],
+      "followerLiftCoefficient" : 0.6785328009372347,
+      "followerPhase" : 0.585,
+      "followerSignedPowerWatts" : 0.014979811750783943,
+      "leaderDragCoefficient" : 2.6999117409987896,
+      "leaderForceNewtons" : [
+        0.22853023,
+        0.22987232,
+        0.24045129
+      ],
+      "leaderLiftCoefficient" : 2.04453299619125,
+      "leaderPhase" : 0.335,
+      "leaderSignedPowerWatts" : 0.01483269238215137
+    },
+    {
+      "followerDragCoefficient" : 3.2438008400694813,
+      "followerForceNewtons" : [
+        -0.3090178,
+        -0.22827339,
+        0.09103062
+      ],
+      "followerLiftCoefficient" : 0.7740241501758782,
+      "followerPhase" : 0.595,
+      "followerSignedPowerWatts" : 0.016924747180318903,
+      "leaderDragCoefficient" : 2.689651378208494,
+      "leaderForceNewtons" : [
+        0.24098033,
+        0.21427953,
+        0.2370551
+      ],
+      "leaderLiftCoefficient" : 2.0156554669766145,
+      "leaderPhase" : 0.345,
+      "leaderSignedPowerWatts" : 0.014861855403744007
+    },
+    {
+      "followerDragCoefficient" : 3.199998467147383,
+      "followerForceNewtons" : [
+        -0.2849337,
+        -0.25157014,
+        0.106972344
+      ],
+      "followerLiftCoefficient" : 0.9095750176362166,
+      "followerPhase" : 0.605,
+      "followerSignedPowerWatts" : 0.017534783149038145,
+      "leaderDragCoefficient" : 2.700008855867925,
+      "leaderForceNewtons" : [
+        0.2553189,
+        0.19871244,
+        0.23726745
+      ],
+      "leaderLiftCoefficient" : 2.017461112365631,
+      "leaderPhase" : 0.355,
+      "leaderSignedPowerWatts" : 0.01486841221705202
+    },
+    {
+      "followerDragCoefficient" : 3.0014984626022607,
+      "followerForceNewtons" : [
+        -0.24997248,
+        -0.25449896,
+        0.10919462
+      ],
+      "followerLiftCoefficient" : 0.9284708159849874,
+      "followerPhase" : 0.615,
+      "followerSignedPowerWatts" : 0.016956097703875517,
+      "leaderDragCoefficient" : 2.607647347394177,
+      "leaderForceNewtons" : [
+        0.25933444,
+        0.1744164,
+        0.23241837
+      ],
+      "leaderLiftCoefficient" : 1.9762299075440533,
+      "leaderPhase" : 0.365,
+      "leaderSignedPowerWatts" : 0.014394767072618537
+    },
+    {
+      "followerDragCoefficient" : 2.8060309296806873,
+      "followerForceNewtons" : [
+        -0.21360749,
+        -0.25712028,
+        0.109787576
+      ],
+      "followerLiftCoefficient" : 0.93351264772609,
+      "followerPhase" : 0.625,
+      "followerSignedPowerWatts" : 0.016036653988918965,
+      "leaderDragCoefficient" : 2.6972086417175807,
+      "leaderForceNewtons" : [
+        0.2815171,
+        0.15986407,
+        0.23871835
+      ],
+      "leaderLiftCoefficient" : 2.0297979364648375,
+      "leaderPhase" : 0.375,
+      "leaderSignedPowerWatts" : 0.014708939260080949
+    },
+    {
+      "followerDragCoefficient" : 2.7391967302299585,
+      "followerForceNewtons" : [
+        -0.19102292,
+        -0.2645265,
+        0.12451224
+      ],
+      "followerLiftCoefficient" : 1.0587149789454176,
+      "followerPhase" : 0.635,
+      "followerSignedPowerWatts" : 0.015798285537289406,
+      "leaderDragCoefficient" : 2.5593210324200144,
+      "leaderForceNewtons" : [
+        0.28111014,
+        0.12752824,
+        0.2419034
+      ],
+      "leaderLiftCoefficient" : 2.056880083238777,
+      "leaderPhase" : 0.385,
+      "leaderSignedPowerWatts" : 0.013692144617815124
+    },
+    {
+      "followerDragCoefficient" : 2.7588464046739745,
+      "followerForceNewtons" : [
+        -0.16849254,
+        -0.28352696,
+        0.15636708
+      ],
+      "followerLiftCoefficient" : 1.3295734439799871,
+      "followerPhase" : 0.645,
+      "followerSignedPowerWatts" : 0.015616852128332248,
+      "leaderDragCoefficient" : 2.6835964971639803,
+      "leaderForceNewtons" : [
+        0.30074105,
+        0.11719352,
+        0.24735038
+      ],
+      "leaderLiftCoefficient" : 2.1031952485707963,
+      "leaderPhase" : 0.395,
+      "leaderSignedPowerWatts" : 0.01413817850146155
+    },
+    {
+      "followerDragCoefficient" : 2.8384692372036735,
+      "followerForceNewtons" : [
+        -0.15215616,
+        -0.30353624,
+        0.17446032
+      ],
+      "followerLiftCoefficient" : 1.4834184602817113,
+      "followerPhase" : 0.655,
+      "followerSignedPowerWatts" : 0.01626062285178463,
+      "leaderDragCoefficient" : 2.614127930015094,
+      "leaderForceNewtons" : [
+        0.30084422,
+        0.09299066,
+        0.2457415
+      ],
+      "leaderLiftCoefficient" : 2.089515118569242,
+      "leaderPhase" : 0.405,
+      "leaderSignedPowerWatts" : 0.013359279057230335
+    },
+    {
+      "followerDragCoefficient" : 2.852939295052292,
+      "followerForceNewtons" : [
+        -0.12995985,
+        -0.31598905,
+        0.18911912
+      ],
+      "followerLiftCoefficient" : 1.608060700599197,
+      "followerPhase" : 0.665,
+      "followerSignedPowerWatts" : 0.01617429727007485,
+      "leaderDragCoefficient" : 2.4688121844303454,
+      "leaderForceNewtons" : [
+        0.2864407,
+        0.0753412,
+        0.23634833
+      ],
+      "leaderLiftCoefficient" : 2.009645940571375,
+      "leaderPhase" : 0.415,
+      "leaderSignedPowerWatts" : 0.011822634937591845
+    },
+    {
+      "followerDragCoefficient" : 2.990872631142518,
+      "followerForceNewtons" : [
+        -0.11746835,
+        -0.33746397,
+        0.19844948
+      ],
+      "followerLiftCoefficient" : 1.6873958251752195,
+      "followerPhase" : 0.675,
+      "followerSignedPowerWatts" : 0.017445838197980217,
+      "leaderDragCoefficient" : 2.414163427145524,
+      "leaderForceNewtons" : [
+        0.28288957,
+        0.05977368,
+        0.21653895
+      ],
+      "leaderLiftCoefficient" : 1.8412087856013262,
+      "leaderPhase" : 0.425,
+      "leaderSignedPowerWatts" : 0.011191790820864168
+    },
+    {
+      "followerDragCoefficient" : 2.7594640554349072,
+      "followerForceNewtons" : [
+        -0.08375869,
+        -0.31951,
+        0.20813791
+      ],
+      "followerLiftCoefficient" : 1.7697756244195513,
+      "followerPhase" : 0.685,
+      "followerSignedPowerWatts" : 0.015116586874625243,
+      "leaderDragCoefficient" : 2.290132839757143,
+      "leaderForceNewtons" : [
+        0.2696158,
+        0.046268802,
+        0.19024563
+      ],
+      "leaderLiftCoefficient" : 1.6176393256615984,
+      "leaderPhase" : 0.435,
+      "leaderSignedPowerWatts" : 0.010272806623191874
+    },
+    {
+      "followerDragCoefficient" : 2.979184220630867,
+      "followerForceNewtons" : [
+        -0.073929265,
+        -0.34746283,
+        0.20969932
+      ],
+      "followerLiftCoefficient" : 1.7830520784538466,
+      "followerPhase" : 0.6950000000000001,
+      "followerSignedPowerWatts" : 0.017094558492376306,
+      "leaderDragCoefficient" : 2.1301488075718544,
+      "leaderForceNewtons" : [
+        0.25144508,
+        0.034758136,
+        0.14510377
+      ],
+      "leaderLiftCoefficient" : 1.2338026511299847,
+      "leaderPhase" : 0.445,
+      "leaderSignedPowerWatts" : 0.00920756054048288
+    },
+    {
+      "followerDragCoefficient" : 2.9118052065818802,
+      "followerForceNewtons" : [
+        -0.04228377,
+        -0.34584907,
+        0.21766472
+      ],
+      "followerLiftCoefficient" : 1.850781075510444,
+      "followerPhase" : 0.7050000000000001,
+      "followerSignedPowerWatts" : 0.01649428985186666,
+      "leaderDragCoefficient" : 1.733039835973909,
+      "leaderForceNewtons" : [
+        0.20528768,
+        0.021004528,
+        0.09217327
+      ],
+      "leaderLiftCoefficient" : 0.783739994658412,
+      "leaderPhase" : 0.455,
+      "leaderSignedPowerWatts" : 0.007396011208933931
+    },
+    {
+      "followerDragCoefficient" : 2.8335758537206126,
+      "followerForceNewtons" : [
+        -0.015009264,
+        -0.33933255,
+        0.2212028
+      ],
+      "followerLiftCoefficient" : 1.880865071316492,
+      "followerPhase" : 0.7150000000000001,
+      "followerSignedPowerWatts" : 0.015863291303941034,
+      "leaderDragCoefficient" : 0.9399710652287611,
+      "leaderForceNewtons" : [
+        0.11256935,
+        0.0037717961,
+        0.023904983
+      ],
+      "leaderLiftCoefficient" : 0.20326165095124396,
+      "leaderPhase" : 0.465,
+      "leaderSignedPowerWatts" : 0.004277024429359508
+    },
+    {
+      "followerDragCoefficient" : 2.960733464089153,
+      "followerForceNewtons" : [
+        0.0020479898,
+        -0.3536867,
+        0.22412725
+      ],
+      "followerLiftCoefficient" : 1.9057313081747398,
+      "followerPhase" : 0.725,
+      "followerSignedPowerWatts" : 0.016853707016330672,
+      "leaderDragCoefficient" : 0.3688823216286592,
+      "leaderForceNewtons" : [
+        0.045225654,
+        -0.0046604276,
+        -0.017031236
+      ],
+      "leaderLiftCoefficient" : -0.14481487297277135,
+      "leaderPhase" : 0.475,
+      "leaderSignedPowerWatts" : 0.002519704924276103
+    },
+    {
+      "followerDragCoefficient" : 2.6353747929724345,
+      "followerForceNewtons" : [
+        0.03174776,
+        -0.31483138,
+        0.22380097
+      ],
+      "followerLiftCoefficient" : 1.9029570178485935,
+      "followerPhase" : 0.735,
+      "followerSignedPowerWatts" : 0.014065105775421808,
+      "leaderDragCoefficient" : -0.4550900644967053,
+      "leaderForceNewtons" : [
+        -0.05106981,
+        -0.01810592,
+        -0.04151626
+      ],
+      "leaderLiftCoefficient" : -0.3530085516208223,
+      "leaderPhase" : 0.485,
+      "leaderSignedPowerWatts" : 0.00041395466885925977
+    },
+    {
+      "followerDragCoefficient" : 3.7078574082213387,
+      "followerForceNewtons" : [
+        0.02735153,
+        -0.4372576,
+        0.20485249
+      ],
+      "followerLiftCoefficient" : 1.7418400057951866,
+      "followerPhase" : 0.745,
+      "followerSignedPowerWatts" : 0.021580538233176596,
+      "leaderDragCoefficient" : -1.2557847270879798,
+      "leaderForceNewtons" : [
+        -0.14534259,
+        -0.026225204,
+        -0.040229537
+      ],
+      "leaderLiftCoefficient" : -0.3420676785477538,
+      "leaderPhase" : 0.495,
+      "leaderSignedPowerWatts" : -0.0006076840750019147
+    },
+    {
+      "followerDragCoefficient" : 1.8027191495667836,
+      "followerForceNewtons" : [
+        0.07557449,
+        -0.20955579,
+        0.23199774
+      ],
+      "followerLiftCoefficient" : 1.9726533334060161,
+      "followerPhase" : 0.755,
+      "followerSignedPowerWatts" : 0.009318142411348115,
+      "leaderDragCoefficient" : 1.8487580275332625,
+      "leaderForceNewtons" : [
+        -0.21326573,
+        -0.042591345,
+        -0.016082037
+      ],
+      "leaderLiftCoefficient" : -0.13674393520255507,
+      "leaderPhase" : 0.505,
+      "leaderSignedPowerWatts" : -0.0005591341924365866
+    },
+    {
+      "followerDragCoefficient" : 2.899075207091234,
+      "followerForceNewtons" : [
+        0.08119558,
+        -0.3344043,
+        0.21382263
+      ],
+      "followerLiftCoefficient" : 1.818112210461442,
+      "followerPhase" : 0.765,
+      "followerSignedPowerWatts" : 0.016708130861974393,
+      "leaderDragCoefficient" : 2.211466465991185,
+      "leaderForceNewtons" : [
+        -0.25645795,
+        -0.0434819,
+        0.0058132354
+      ],
+      "leaderLiftCoefficient" : 0.04942935246973766,
+      "leaderPhase" : 0.515,
+      "leaderSignedPowerWatts" : 0.0004890096768371947
+    },
+    {
+      "followerDragCoefficient" : 2.4469543504444435,
+      "followerForceNewtons" : [
+        0.10263651,
+        -0.27433485,
+        0.21270622
+      ],
+      "followerLiftCoefficient" : 1.8086194900775718,
+      "followerPhase" : 0.775,
+      "followerSignedPowerWatts" : 0.013222878369030988,
+      "leaderDragCoefficient" : 2.6121527760885566,
+      "leaderForceNewtons" : [
+        -0.29801583,
+        -0.07608133,
+        0.045107797
+      ],
+      "leaderLiftCoefficient" : 0.38354703132346746,
+      "leaderPhase" : 0.525,
+      "leaderSignedPowerWatts" : 0.002291562689613517
+    },
+    {
+      "followerDragCoefficient" : 2.595755111016505,
+      "followerForceNewtons" : [
+        0.12075688,
+        -0.28479317,
+        0.21673797
+      ],
+      "followerLiftCoefficient" : 1.8429010317465588,
+      "followerPhase" : 0.785,
+      "followerSignedPowerWatts" : 0.014314740812466682,
+      "leaderDragCoefficient" : 2.8331527589181036,
+      "leaderForceNewtons" : [
+        -0.3204771,
+        -0.09312121,
+        0.07132571
+      ],
+      "leaderLiftCoefficient" : 0.6064753103993177,
+      "leaderPhase" : 0.535,
+      "leaderSignedPowerWatts" : 0.004847254715148028
+    },
+    {
+      "followerDragCoefficient" : 2.703071816240771,
+      "followerForceNewtons" : [
+        0.15047576,
+        -0.28578064,
+        0.22333974
+      ],
+      "followerLiftCoefficient" : 1.8990351778565762,
+      "followerPhase" : 0.795,
+      "followerSignedPowerWatts" : 0.015029388286798033,
+      "leaderDragCoefficient" : 2.935183455348522,
+      "leaderForceNewtons" : [
+        -0.32525873,
+        -0.120200485,
+        0.07844977
+      ],
+      "leaderLiftCoefficient" : 0.6670504623129794,
+      "leaderPhase" : 0.545,
+      "leaderSignedPowerWatts" : 0.007406078532007828
+    },
+    {
+      "followerDragCoefficient" : 2.564854320626371,
+      "followerForceNewtons" : [
+        0.16705158,
+        -0.25839138,
+        0.22465923
+      ],
+      "followerLiftCoefficient" : 1.9102547343226095,
+      "followerPhase" : 0.805,
+      "followerSignedPowerWatts" : 0.014281370352591355,
+      "leaderDragCoefficient" : 2.8417732253187427,
+      "leaderForceNewtons" : [
+        -0.30800873,
+        -0.13532768,
+        0.070237525
+      ],
+      "leaderLiftCoefficient" : 0.5972225656218472,
+      "leaderPhase" : 0.555,
+      "leaderSignedPowerWatts" : 0.00897804347399859
+    },
+    {
+      "followerDragCoefficient" : 2.638902239503076,
+      "followerForceNewtons" : [
+        0.18604329,
+        -0.25520325,
+        0.22730428
+      ],
+      "followerLiftCoefficient" : 1.9327452886993426,
+      "followerPhase" : 0.815,
+      "followerSignedPowerWatts" : 0.014688023606925176,
+      "leaderDragCoefficient" : 2.8350963159196456,
+      "leaderForceNewtons" : [
+        -0.29792458,
+        -0.15676463,
+        0.06711969
+      ],
+      "leaderLiftCoefficient" : 0.5707119130256613,
+      "leaderPhase" : 0.565,
+      "leaderSignedPowerWatts" : 0.010856392599510637
+    },
+    {
+      "followerDragCoefficient" : 2.674570091479599,
+      "followerForceNewtons" : [
+        0.20589767,
+        -0.24511294,
+        0.23821111
+      ],
+      "followerLiftCoefficient" : 2.0254849641090638,
+      "followerPhase" : 0.825,
+      "followerSignedPowerWatts" : 0.014926378494633354,
+      "leaderDragCoefficient" : 3.1184028716036236,
+      "leaderForceNewtons" : [
+        -0.31624874,
+        -0.1940069,
+        0.07651364
+      ],
+      "leaderLiftCoefficient" : 0.6505877429344766,
+      "leaderPhase" : 0.575,
+      "leaderSignedPowerWatts" : 0.014619585236923006
+    },
+    {
+      "followerDragCoefficient" : 2.5798031603001013,
+      "followerForceNewtons" : [
+        0.21930882,
+        -0.21902686,
+        0.23645379
+      ],
+      "followerLiftCoefficient" : 2.0105426181671975,
+      "followerPhase" : 0.835,
+      "followerSignedPowerWatts" : 0.01426965834377553,
+      "leaderDragCoefficient" : 3.0661638291062987,
+      "leaderForceNewtons" : [
+        -0.29893014,
+        -0.2094105,
+        0.08744036
+      ],
+      "leaderLiftCoefficient" : 0.7434965035853488,
+      "leaderPhase" : 0.585,
+      "leaderSignedPowerWatts" : 0.015436374702270066
+    },
+    {
+      "followerDragCoefficient" : 2.6220943205090306,
+      "followerForceNewtons" : [
+        0.23577172,
+        -0.20825778,
+        0.23956303
+      ],
+      "followerLiftCoefficient" : 2.0369802264460186,
+      "followerPhase" : 0.845,
+      "followerSignedPowerWatts" : 0.01459692859869949,
+      "leaderDragCoefficient" : 3.280834113469231,
+      "leaderForceNewtons" : [
+        -0.30734223,
+        -0.24001588,
+        0.095166855
+      ],
+      "leaderLiftCoefficient" : 0.8091941337414188,
+      "leaderPhase" : 0.595,
+      "leaderSignedPowerWatts" : 0.017858422808489302
+    },
+    {
+      "followerDragCoefficient" : 2.651230329705719,
+      "followerForceNewtons" : [
+        0.25105232,
+        -0.19482106,
+        0.24245925
+      ],
+      "followerLiftCoefficient" : 2.0616064876978673,
+      "followerPhase" : 0.855,
+      "followerSignedPowerWatts" : 0.014603647279562305,
+      "leaderDragCoefficient" : 3.3145400872270625,
+      "leaderForceNewtons" : [
+        -0.28777108,
+        -0.27174792,
+        0.11122068
+      ],
+      "leaderLiftCoefficient" : 0.9456981883648737,
+      "leaderPhase" : 0.605,
+      "leaderSignedPowerWatts" : 0.01922290768847757
+    },
+    {
+      "followerDragCoefficient" : 2.6331368656620726,
+      "followerForceNewtons" : [
+        0.2604941,
+        -0.1774952,
+        0.23998378
+      ],
+      "followerLiftCoefficient" : 2.040557814208581,
+      "followerPhase" : 0.865,
+      "followerSignedPowerWatts" : 0.01478037003682964,
+      "leaderDragCoefficient" : 3.1495664571748865,
+      "leaderForceNewtons" : [
+        -0.25539577,
+        -0.27614883,
+        0.111137696
+      ],
+      "leaderLiftCoefficient" : 0.9449925789920974,
+      "leaderPhase" : 0.615,
+      "leaderSignedPowerWatts" : 0.01894931005200658
+    },
+    {
+      "followerDragCoefficient" : 2.603424738588933,
+      "followerForceNewtons" : [
+        0.27450442,
+        -0.15112552,
+        0.25203547
+      ],
+      "followerLiftCoefficient" : 2.143032086154557,
+      "followerPhase" : 0.875,
+      "followerSignedPowerWatts" : 0.014239456338176849,
+      "leaderDragCoefficient" : 2.8447346393315947,
+      "leaderForceNewtons" : [
+        -0.20961857,
+        -0.2686115,
+        0.108044535
+      ],
+      "leaderLiftCoefficient" : 0.9186917466726788,
+      "leaderPhase" : 0.625,
+      "leaderSignedPowerWatts" : 0.017377385760901698
+    },
+    {
+      "followerDragCoefficient" : 2.630836596456958,
+      "followerForceNewtons" : [
+        0.2877218,
+        -0.13272884,
+        0.25597033
+      ],
+      "followerLiftCoefficient" : 2.1764898044904872,
+      "followerPhase" : 0.885,
+      "followerSignedPowerWatts" : 0.01422017811356767,
+      "leaderDragCoefficient" : 2.7459487391485027,
+      "leaderForceNewtons" : [
+        -0.18404579,
+        -0.27261892,
+        0.11579214
+      ],
+      "leaderLiftCoefficient" : 0.9845688517212857,
+      "leaderPhase" : 0.635,
+      "leaderSignedPowerWatts" : 0.016800173364332874
+    },
+    {
+      "followerDragCoefficient" : 2.63909639914046,
+      "followerForceNewtons" : [
+        0.29648027,
+        -0.11414802,
+        0.2615761
+      ],
+      "followerLiftCoefficient" : 2.2241549909873353,
+      "followerPhase" : 0.895,
+      "followerSignedPowerWatts" : 0.013965803478304147,
+      "leaderDragCoefficient" : 2.7820062487379564,
+      "leaderForceNewtons" : [
+        -0.16394253,
+        -0.29110295,
+        0.14328432
+      ],
+      "leaderLiftCoefficient" : 1.2183320801072954,
+      "leaderPhase" : 0.645,
+      "leaderSignedPowerWatts" : 0.016692267197026718
+    },
+    {
+      "followerDragCoefficient" : 2.6590646657717087,
+      "followerForceNewtons" : [
+        0.30556342,
+        -0.09538332,
+        0.26418883
+      ],
+      "followerLiftCoefficient" : 2.2463708531176727,
+      "followerPhase" : 0.905,
+      "followerSignedPowerWatts" : 0.013743926298000373,
+      "leaderDragCoefficient" : 2.861022949082574,
+      "leaderForceNewtons" : [
+        -0.14593731,
+        -0.31157583,
+        0.15471604
+      ],
+      "leaderLiftCoefficient" : 1.315534871005622,
+      "leaderPhase" : 0.655,
+      "leaderSignedPowerWatts" : 0.017344901839741276
+    },
+    {
+      "followerDragCoefficient" : 2.517035175914057,
+      "followerForceNewtons" : [
+        0.29143566,
+        -0.07803622,
+        0.25166112
+      ],
+      "followerLiftCoefficient" : 2.1398490517385245,
+      "followerPhase" : 0.915,
+      "followerSignedPowerWatts" : 0.012223568880222878,
+      "leaderDragCoefficient" : 2.858108322697207,
+      "leaderForceNewtons" : [
+        -0.12377281,
+        -0.32077062,
+        0.16509277
+      ],
+      "leaderLiftCoefficient" : 1.4037670848537493,
+      "leaderPhase" : 0.665,
+      "leaderSignedPowerWatts" : 0.017018692327042714
+    },
+    {
+      "followerDragCoefficient" : 2.296863507877685,
+      "followerForceNewtons" : [
+        0.27089182,
+        -0.05271822,
+        0.22803679
+      ],
+      "followerLiftCoefficient" : 1.9389737580020787,
+      "followerPhase" : 0.925,
+      "followerSignedPowerWatts" : 0.010658845479136389,
+      "leaderDragCoefficient" : 2.957120174006072,
+      "leaderForceNewtons" : [
+        -0.10608603,
+        -0.33930582,
+        0.1670688
+      ],
+      "leaderLiftCoefficient" : 1.4205690516906124,
+      "leaderPhase" : 0.675,
+      "leaderSignedPowerWatts" : 0.01774178496973235
+    },
+    {
+      "followerDragCoefficient" : 2.2901598675692276,
+      "followerForceNewtons" : [
+        0.2698025,
+        -0.045760036,
+        0.20031561
+      ],
+      "followerLiftCoefficient" : 1.7032633569026867,
+      "followerPhase" : 0.935,
+      "followerSignedPowerWatts" : 0.010487913404972259,
+      "leaderDragCoefficient" : 2.8039881878279447,
+      "leaderForceNewtons" : [
+        -0.078884825,
+        -0.32762375,
+        0.16726194
+      ],
+      "leaderLiftCoefficient" : 1.4222113768279667,
+      "leaderPhase" : 0.685,
+      "leaderSignedPowerWatts" : 0.016039803899768095
+    },
+    {
+      "followerDragCoefficient" : 1.9642267888819556,
+      "followerForceNewtons" : [
+        0.23288189,
+        -0.028735833,
+        0.1518109
+      ],
+      "followerLiftCoefficient" : 1.2908327146174308,
+      "followerPhase" : 0.945,
+      "followerSignedPowerWatts" : 0.008591399928188448,
+      "leaderDragCoefficient" : 3.0278679121660743,
+      "leaderForceNewtons" : [
+        -0.0683304,
+        -0.35582322,
+        0.17680784
+      ],
+      "leaderLiftCoefficient" : 1.5033791345459961,
+      "leaderPhase" : 0.695,
+      "leaderSignedPowerWatts" : 0.01774388482470512
+    },
+    {
+      "followerDragCoefficient" : 1.5414907623263685,
+      "followerForceNewtons" : [
+        0.18382965,
+        -0.014034705,
+        0.09535122
+      ],
+      "followerLiftCoefficient" : 0.8107617674215543,
+      "followerPhase" : 0.955,
+      "followerSignedPowerWatts" : 0.006679801951305385,
+      "leaderDragCoefficient" : 2.9794955762390383,
+      "leaderForceNewtons" : [
+        -0.03724536,
+        -0.35579875,
+        0.17833951
+      ],
+      "leaderLiftCoefficient" : 1.5164028159642582,
+      "leaderPhase" : 0.705,
+      "leaderSignedPowerWatts" : 0.01715785321834077
+    },
+    {
+      "followerDragCoefficient" : 0.7629321602155484,
+      "followerForceNewtons" : [
+        0.092335016,
+        0.0011423473,
+        0.029325875
+      ],
+      "followerLiftCoefficient" : 0.24935494337737302,
+      "followerPhase" : 0.965,
+      "followerSignedPowerWatts" : 0.0038622588356065305,
+      "leaderDragCoefficient" : 2.965623935301915,
+      "leaderForceNewtons" : [
+        -0.01322062,
+        -0.35575178,
+        0.18248281
+      ],
+      "leaderLiftCoefficient" : 1.5516328567829314,
+      "leaderPhase" : 0.715,
+      "leaderSignedPowerWatts" : 0.016910454354269775
+    },
+    {
+      "followerDragCoefficient" : 0.10499453644065125,
+      "followerForceNewtons" : [
+        0.014787289,
+        0.010718513,
+        -0.013433002
+      ],
+      "followerLiftCoefficient" : -0.11421945607998586,
+      "followerPhase" : 0.975,
+      "followerSignedPowerWatts" : 0.0017848406256217913,
+      "leaderDragCoefficient" : 3.149771821471821,
+      "leaderForceNewtons" : [
+        0.0062442324,
+        -0.37696955,
+        0.18413167
+      ],
+      "leaderLiftCoefficient" : 1.5656529311097072,
+      "leaderPhase" : 0.725,
+      "leaderSignedPowerWatts" : 0.018350198501460364
+    },
+    {
+      "followerDragCoefficient" : -0.7197534042042769,
+      "followerForceNewtons" : [
+        -0.08140383,
+        0.025233323,
+        -0.036637306
+      ],
+      "followerLiftCoefficient" : -0.31152330715255444,
+      "followerPhase" : 0.985,
+      "followerSignedPowerWatts" : -0.00032828150465312363,
+      "leaderDragCoefficient" : 2.9167701225775287,
+      "leaderForceNewtons" : [
+        0.03259575,
+        -0.34818673,
+        0.18761544
+      ],
+      "leaderLiftCoefficient" : 1.595275094241349,
+      "leaderPhase" : 0.735,
+      "leaderSignedPowerWatts" : 0.015854371816290527
+    },
+    {
+      "followerDragCoefficient" : -1.5458281829101987,
+      "followerForceNewtons" : [
+        -0.17878786,
+        0.032980703,
+        -0.03110586
+      ],
+      "followerLiftCoefficient" : -0.2644899730063732,
+      "followerPhase" : 0.995,
+      "followerSignedPowerWatts" : -0.0012575477908417568,
+      "leaderDragCoefficient" : 3.8304157327621633,
+      "leaderForceNewtons" : [
+        0.033978608,
+        -0.45190594,
+        0.17696294
+      ],
+      "leaderLiftCoefficient" : 1.5046979867566674,
+      "leaderPhase" : 0.745,
+      "leaderSignedPowerWatts" : 0.022098663174128147
+    },
+    {
+      "followerDragCoefficient" : 2.119717779207406,
+      "followerForceNewtons" : [
+        -0.24449526,
+        0.0489879,
+        -0.006950197
+      ],
+      "followerLiftCoefficient" : -0.05909682013800627,
+      "followerPhase" : 0.004999999999999893,
+      "followerSignedPowerWatts" : -0.001220089598431412,
+      "leaderDragCoefficient" : 2.207008867204407,
+      "leaderForceNewtons" : [
+        0.08206238,
+        -0.25690928,
+        0.20231646
+      ],
+      "leaderLiftCoefficient" : 1.720276411046974,
+      "leaderPhase" : 0.755,
+      "leaderSignedPowerWatts" : 0.011756790234542439
+    },
+    {
+      "followerDragCoefficient" : 2.4375105020993946,
+      "followerForceNewtons" : [
+        -0.28151077,
+        0.054159045,
+        0.018627167
+      ],
+      "followerLiftCoefficient" : 0.15838491384813216,
+      "followerPhase" : 0.015000000000000124,
+      "followerSignedPowerWatts" : 7.824089531263835e-05,
+      "leaderDragCoefficient" : 3.0451323838443525,
+      "leaderForceNewtons" : [
+        0.08989778,
+        -0.350778,
+        0.19784632
+      ],
+      "leaderLiftCoefficient" : 1.6822672651856585,
+      "leaderPhase" : 0.765,
+      "leaderSignedPowerWatts" : 0.017257695520288274
+    },
+    {
+      "followerDragCoefficient" : 2.821053527891161,
+      "followerForceNewtons" : [
+        -0.32107988,
+        0.08593806,
+        0.05684362
+      ],
+      "followerLiftCoefficient" : 0.4833355467104412,
+      "followerPhase" : 0.02499999999999991,
+      "followerSignedPowerWatts" : 0.0019273107562606858,
+      "leaderDragCoefficient" : 2.790345085135072,
+      "leaderForceNewtons" : [
+        0.11630426,
+        -0.3129601,
+        0.20120934
+      ],
+      "leaderLiftCoefficient" : 1.7108626266730231,
+      "leaderPhase" : 0.775,
+      "leaderSignedPowerWatts" : 0.015076207181297345
+    },
+    {
+      "followerDragCoefficient" : 3.06489989436289,
+      "followerForceNewtons" : [
+        -0.34491846,
+        0.108442135,
+        0.08837288
+      ],
+      "followerLiftCoefficient" : 0.751425644787185,
+      "followerPhase" : 0.03500000000000014,
+      "followerSignedPowerWatts" : 0.00463811962043669,
+      "leaderDragCoefficient" : 2.9727011397948826,
+      "leaderForceNewtons" : [
+        0.13987115,
+        -0.3257654,
+        0.20906566
+      ],
+      "leaderLiftCoefficient" : 1.777664157288837,
+      "leaderPhase" : 0.785,
+      "leaderSignedPowerWatts" : 0.016384743021071083
+    },
+    {
+      "followerDragCoefficient" : 3.1402739710629923,
+      "followerForceNewtons" : [
+        -0.3453834,
+        0.13841736,
+        0.095526606
+      ],
+      "followerLiftCoefficient" : 0.812253062504617,
+      "followerPhase" : 0.04499999999999993,
+      "followerSignedPowerWatts" : 0.007547033318906988,
+      "leaderDragCoefficient" : 3.0530479305208873,
+      "leaderForceNewtons" : [
+        0.1647938,
+        -0.32441968,
+        0.2238617
+      ],
+      "leaderLiftCoefficient" : 1.9034733328412425,
+      "leaderPhase" : 0.795,
+      "leaderSignedPowerWatts" : 0.016929815351574888
+    },
+    {
+      "followerDragCoefficient" : 3.0974894010175484,
+      "followerForceNewtons" : [
+        -0.3327329,
+        0.1572056,
+        0.088801734
+      ],
+      "followerLiftCoefficient" : 0.7550721590174779,
+      "followerPhase" : 0.05500000000000016,
+      "followerSignedPowerWatts" : 0.009572582030737683,
+      "leaderDragCoefficient" : 3.023033639994908,
+      "leaderForceNewtons" : [
+        0.1900992,
+        -0.3072271,
+        0.22317275
+      ],
+      "leaderLiftCoefficient" : 1.8976153433025573,
+      "leaderPhase" : 0.805,
+      "leaderSignedPowerWatts" : 0.016810718571828573
+    },
+    {
+      "followerDragCoefficient" : 3.0729994238241356,
+      "followerForceNewtons" : [
+        -0.31939644,
+        0.17971003,
+        0.08896574
+      ],
+      "followerLiftCoefficient" : 0.7564666529583607,
+      "followerPhase" : 0.06499999999999995,
+      "followerSignedPowerWatts" : 0.011640472821592614,
+      "leaderDragCoefficient" : 3.0191884745241793,
+      "leaderForceNewtons" : [
+        0.20688799,
+        -0.294815,
+        0.2297192
+      ],
+      "leaderLiftCoefficient" : 1.9532791676327674,
+      "leaderPhase" : 0.815,
+      "leaderSignedPowerWatts" : 0.016676263698506714
+    },
+    {
+      "followerDragCoefficient" : 3.328038743595653,
+      "followerForceNewtons" : [
+        -0.33438304,
+        0.21447471,
+        0.099396385
+      ],
+      "followerLiftCoefficient" : 0.8451574052011867,
+      "followerPhase" : 0.07499999999999996,
+      "followerSignedPowerWatts" : 0.015399432094092539,
+      "leaderDragCoefficient" : 3.0176890083255534,
+      "leaderForceNewtons" : [
+        0.22677065,
+        -0.27967173,
+        0.23580755
+      ],
+      "leaderLiftCoefficient" : 2.0050477596147536,
+      "leaderPhase" : 0.825,
+      "leaderSignedPowerWatts" : 0.016858849313737104
+    },
+    {
+      "followerDragCoefficient" : 3.358328374718297,
+      "followerForceNewtons" : [
+        -0.32489738,
+        0.23449583,
+        0.10529527
+      ],
+      "followerLiftCoefficient" : 0.8953150310545743,
+      "followerPhase" : 0.08499999999999996,
+      "followerSignedPowerWatts" : 0.01688668295109814,
+      "leaderDragCoefficient" : 2.921924961251203,
+      "leaderForceNewtons" : [
+        0.24202937,
+        -0.2522434,
+        0.23638773
+      ],
+      "leaderLiftCoefficient" : 2.009980943477035,
+      "leaderPhase" : 0.835,
+      "leaderSignedPowerWatts" : 0.016113827090189332
+    },
+    {
+      "followerDragCoefficient" : 3.523701554692744,
+      "followerForceNewtons" : [
+        -0.32774416,
+        0.26190847,
+        0.110438935
+      ],
+      "followerLiftCoefficient" : 0.9390510921331284,
+      "followerPhase" : 0.09499999999999997,
+      "followerSignedPowerWatts" : 0.01911548846068874,
+      "leaderDragCoefficient" : 2.8859149536888444,
+      "leaderForceNewtons" : [
+        0.25434,
+        -0.23311633,
+        0.23531328
+      ],
+      "leaderLiftCoefficient" : 2.000845018926122,
+      "leaderPhase" : 0.845,
+      "leaderSignedPowerWatts" : 0.015987995160000462
+    },
+    {
+      "followerDragCoefficient" : 3.476563514610809,
+      "followerForceNewtons" : [
+        -0.29896787,
+        0.2893879,
+        0.11812999
+      ],
+      "followerLiftCoefficient" : 1.0044473590474767,
+      "followerPhase" : 0.10499999999999998,
+      "followerSignedPowerWatts" : 0.02012959672745405,
+      "leaderDragCoefficient" : 2.866641938298699,
+      "leaderForceNewtons" : [
+        0.26725733,
+        -0.2143028,
+        0.23676547
+      ],
+      "leaderLiftCoefficient" : 2.0131928661920426,
+      "leaderPhase" : 0.855,
+      "leaderSignedPowerWatts" : 0.015829902276324654
+    },
+    {
+      "followerDragCoefficient" : 3.185257014710621,
+      "followerForceNewtons" : [
+        -0.2558148,
+        0.28253675,
+        0.11633001
+      ],
+      "followerLiftCoefficient" : 0.9891423255800993,
+      "followerPhase" : 0.11499999999999999,
+      "followerSignedPowerWatts" : 0.019071085758623516,
+      "leaderDragCoefficient" : 2.759922608253163,
+      "leaderForceNewtons" : [
+        0.27119014,
+        -0.1878865,
+        0.23373222
+      ],
+      "leaderLiftCoefficient" : 1.9874014435481937,
+      "leaderPhase" : 0.865,
+      "leaderSignedPowerWatts" : 0.015271891328221427
+    },
+    {
+      "followerDragCoefficient" : 2.9134869141760227,
+      "followerForceNewtons" : [
+        -0.21362981,
+        0.27631178,
+        0.11335777
+      ],
+      "followerLiftCoefficient" : 0.9638696252871475,
+      "followerPhase" : 0.125,
+      "followerSignedPowerWatts" : 0.017716086971742876,
+      "leaderDragCoefficient" : 2.8355844373655876,
+      "leaderForceNewtons" : [
+        0.2930053,
+        -0.17145027,
+        0.24186662
+      ],
+      "leaderLiftCoefficient" : 2.0565673800726767,
+      "leaderPhase" : 0.875,
+      "leaderSignedPowerWatts" : 0.015498331694103074
+    },
+    {
+      "followerDragCoefficient" : 2.7957390953638472,
+      "followerForceNewtons" : [
+        -0.18868369,
+        0.27626273,
+        0.1273108
+      ],
+      "followerLiftCoefficient" : 1.0825108283047942,
+      "followerPhase" : 0.135,
+      "followerSignedPowerWatts" : 0.017129624398141058,
+      "leaderDragCoefficient" : 2.6898840291861426,
+      "leaderForceNewtons" : [
+        0.2926985,
+        -0.13765775,
+        0.24699068
+      ],
+      "leaderLiftCoefficient" : 2.1001367632683277,
+      "leaderPhase" : 0.885,
+      "leaderSignedPowerWatts" : 0.014435999917029863
+    },
+    {
+      "followerDragCoefficient" : 2.7758767387405325,
+      "followerForceNewtons" : [
+        -0.16369066,
+        0.29036632,
+        0.15793346
+      ],
+      "followerLiftCoefficient" : 1.3428922168382198,
+      "followerPhase" : 0.14500000000000002,
+      "followerSignedPowerWatts" : 0.016737015887058632,
+      "leaderDragCoefficient" : 2.815831160997046,
+      "leaderForceNewtons" : [
+        0.31310716,
+        -0.12669119,
+        0.25501484
+      ],
+      "leaderLiftCoefficient" : 2.168365350512904,
+      "leaderPhase" : 0.895,
+      "leaderSignedPowerWatts" : 0.014845478301840933
+    },
+    {
+      "followerDragCoefficient" : 2.828895598004816,
+      "followerForceNewtons" : [
+        -0.14615856,
+        0.30666777,
+        0.1733871
+      ],
+      "followerLiftCoefficient" : 1.4742929253821841,
+      "followerPhase" : 0.15500000000000003,
+      "followerSignedPowerWatts" : 0.017128289227596964,
+      "leaderDragCoefficient" : 2.7524334574075056,
+      "leaderForceNewtons" : [
+        0.31446922,
+        -0.10193439,
+        0.25579175
+      ],
+      "leaderLiftCoefficient" : 2.1749713949513687,
+      "leaderPhase" : 0.905,
+      "leaderSignedPowerWatts" : 0.014062979170081265
+    },
+    {
+      "followerDragCoefficient" : 2.8140206406173687,
+      "followerForceNewtons" : [
+        -0.124013886,
+        0.31441334,
+        0.1828947
+      ],
+      "followerLiftCoefficient" : 1.5551351829244797,
+      "followerPhase" : 0.16500000000000004,
+      "followerSignedPowerWatts" : 0.016762145926891292,
+      "leaderDragCoefficient" : 2.6064609829308454,
+      "leaderForceNewtons" : [
+        0.3003233,
+        -0.08379871,
+        0.2483267
+      ],
+      "leaderLiftCoefficient" : 2.111496833434201,
+      "leaderPhase" : 0.915,
+      "leaderSignedPowerWatts" : 0.012452937003351988
+    },
+    {
+      "followerDragCoefficient" : 2.9328207041607395,
+      "followerForceNewtons" : [
+        -0.11142273,
+        0.33302954,
+        0.18711138
+      ],
+      "followerLiftCoefficient" : 1.590989109638565,
+      "followerPhase" : 0.17500000000000004,
+      "followerSignedPowerWatts" : 0.017825672566920733,
+      "leaderDragCoefficient" : 2.5723846685370617,
+      "leaderForceNewtons" : [
+        0.2993987,
+        -0.068516485,
+        0.23016028
+      ],
+      "leaderLiftCoefficient" : 1.9570295783769187,
+      "leaderPhase" : 0.925,
+      "leaderSignedPowerWatts" : 0.01186866229224389
+    },
+    {
+      "followerDragCoefficient" : 2.656392330166298,
+      "followerForceNewtons" : [
+        -0.07641715,
+        0.30957776,
+        0.1908726
+      ],
+      "followerLiftCoefficient" : 1.6229703571501175,
+      "followerPhase" : 0.18500000000000005,
+      "followerSignedPowerWatts" : 0.015058874198316186,
+      "leaderDragCoefficient" : 2.4568513724729177,
+      "leaderForceNewtons" : [
+        0.28738973,
+        -0.054781403,
+        0.2043333
+      ],
+      "leaderLiftCoefficient" : 1.7374254175807367,
+      "leaderPhase" : 0.935,
+      "leaderSignedPowerWatts" : 0.010946361215422985
+    },
+    {
+      "followerDragCoefficient" : 2.852951570708612,
+      "followerForceNewtons" : [
+        -0.06650116,
+        0.33443305,
+        0.1859886
+      ],
+      "followerLiftCoefficient" : 1.5814422870456495,
+      "followerPhase" : 0.19499999999999984,
+      "followerSignedPowerWatts" : 0.016796457303591222,
+      "leaderDragCoefficient" : 2.2967261870843823,
+      "leaderForceNewtons" : [
+        0.26944524,
+        -0.042867452,
+        0.15856484
+      ],
+      "leaderLiftCoefficient" : 1.3482607524341803,
+      "leaderPhase" : 0.945,
+      "leaderSignedPowerWatts" : 0.00981204765306548
+    },
+    {
+      "followerDragCoefficient" : 2.752898426163858,
+      "followerForceNewtons" : [
+        -0.033645123,
+        0.32898295,
+        0.18569206
+      ],
+      "followerLiftCoefficient" : 1.5789207693355363,
+      "followerPhase" : 0.20500000000000007,
+      "followerSignedPowerWatts" : 0.015871458380419957,
+      "leaderDragCoefficient" : 1.895502013719656,
+      "leaderForceNewtons" : [
+        0.2231916,
+        -0.028031604,
+        0.10465661
+      ],
+      "leaderLiftCoefficient" : 0.8898845376594959,
+      "leaderPhase" : 0.955,
+      "leaderSignedPowerWatts" : 0.007947645729800909
+    },
+    {
+      "followerDragCoefficient" : 2.642269042128572,
+      "followerForceNewtons" : [
+        -0.0051314207,
+        0.31858152,
+        0.18082206
+      ],
+      "followerLiftCoefficient" : 1.5375116734097425,
+      "followerPhase" : 0.21499999999999986,
+      "followerSignedPowerWatts" : 0.014925744415813605,
+      "leaderDragCoefficient" : 1.0914002880720852,
+      "leaderForceNewtons" : [
+        0.1292143,
+        -0.010852886,
+        0.034092538
+      ],
+      "leaderLiftCoefficient" : 0.2898854010563201,
+      "leaderPhase" : 0.965,
+      "leaderSignedPowerWatts" : 0.004729622028697049
+    },
+    {
+      "followerDragCoefficient" : 2.7398586380169627,
+      "followerForceNewtons" : [
+        0.012283814,
+        0.32909116,
+        0.17433318
+      ],
+      "followerLiftCoefficient" : 1.4823374297253227,
+      "followerPhase" : 0.2250000000000001,
+      "followerSignedPowerWatts" : 0.015608679924841579,
+      "leaderDragCoefficient" : 0.490801944506847,
+      "leaderForceNewtons" : [
+        0.058637377,
+        -0.0013326623,
+        -0.009104382
+      ],
+      "leaderLiftCoefficient" : -0.07741364090920715,
+      "leaderPhase" : 0.975,
+      "leaderSignedPowerWatts" : 0.002814623148597116
+    },
+    {
+      "followerDragCoefficient" : 2.3906101704360605,
+      "followerForceNewtons" : [
+        0.040256463,
+        0.286768,
+        0.16279551
+      ],
+      "followerLiftCoefficient" : 1.3842337800300057,
+      "followerPhase" : 0.23499999999999988,
+      "followerSignedPowerWatts" : 0.012594632858689558,
+      "leaderDragCoefficient" : -0.3497394758035363,
+      "leaderForceNewtons" : [
+        -0.039505698,
+        0.012528096,
+        -0.035205342
+      ],
+      "leaderLiftCoefficient" : -0.2993474592982953,
+      "leaderPhase" : 0.985,
+      "leaderSignedPowerWatts" : 0.0005987887717877771
+    },
+    {
+      "followerDragCoefficient" : 3.4348989851818694,
+      "followerForceNewtons" : [
+        0.03293022,
+        0.40532753,
+        0.13648105
+      ],
+      "followerLiftCoefficient" : 1.1604845284400769,
+      "followerPhase" : 0.2450000000000001,
+      "followerSignedPowerWatts" : 0.019860905665859945,
+      "leaderDragCoefficient" : -1.160583325956217,
+      "leaderForceNewtons" : [
+        -0.13481589,
+        0.021465518,
+        -0.035563644
+      ],
+      "leaderLiftCoefficient" : -0.3023940661883562,
+      "leaderPhase" : 0.995,
+      "leaderSignedPowerWatts" : -0.0005300992140079348
+    }
+  ],
+  "runtimeSeconds" : 22.230826020240784,
+  "schemaVersion" : 1,
+  "scientificScope" : "diagnostic-only coupled formation replay with geometry, kinematics, boundary treatment, load estimator, grid, and gates fixed while changing only the bulk collision operator; not a formation-benefit measurement or production-operator promotion",
+  "scientificVerdict" : "the collision candidate completed the coupled formation replay with positive populations and all unchanged numerical gates; model selection still requires the preregistered c16-to-locked-c20 discriminator"
+}

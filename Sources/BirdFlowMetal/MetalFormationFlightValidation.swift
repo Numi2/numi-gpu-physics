@@ -121,6 +121,185 @@ public struct FormationFlightFlowSliceIndex: Codable, Sendable {
     public let entries: [FormationFlightFlowSliceIndexEntry]
 }
 
+public struct FormationFlightMechanismComponentSample: Codable, Sendable {
+    public let load: ForceTorque
+    public let actuatorPowerWatts: Double
+}
+
+public struct FormationFlightMechanismComponentBreakdown: Codable, Sendable {
+    public let reflectedPopulation: FormationFlightMechanismComponentSample
+    public let interpolationAuxiliary: FormationFlightMechanismComponentSample
+    public let movingWall: FormationFlightMechanismComponentSample
+    public let coverImpulse: FormationFlightMechanismComponentSample
+    public let uncoverImpulse: FormationFlightMechanismComponentSample
+}
+
+public struct FormationFlightMechanismProbeSample: Codable, Sendable {
+    public let leaderPhase: Double
+    public let followerPhase: Double
+    public let flyer: FormationFlyerID
+    public let production: FormationFlightMechanismComponentSample
+    public let reconstructed: FormationFlightMechanismComponentSample
+    public let components: FormationFlightMechanismComponentBreakdown
+    public let relativeForceClosureResidual: Double
+    public let relativeTorqueClosureResidual: Double
+    public let relativePowerClosureResidual: Double
+}
+
+public struct FormationFlightMechanismProbeReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let scientificScope: String
+    public let componentOrder: [String]
+    public let samples: [FormationFlightMechanismProbeSample]
+    public let maximumRelativeForceClosureResidual: Double
+    public let maximumRelativeTorqueClosureResidual: Double
+    public let maximumRelativePowerClosureResidual: Double
+    public let maximumAllowedRelativeClosureResidual: Double
+    public let finite: Bool
+    public let closurePassed: Bool
+    public let passed: Bool
+    public let scientificVerdict: String
+}
+
+public struct FormationFlightBoundarySourceDirectionSample: Codable, Sendable {
+    public let directionIndex: Int
+    public let direction: SIMD3<Int32>
+    public let linkCount: Int
+    public let rawReflectedPopulationSum: Double
+    public let reflectedIncomingPopulationSum: Double
+    public let interpolationAuxiliaryPopulationSum: Double
+    public let movingWallPopulationSum: Double
+    public let reconstructedIncomingPopulationSum: Double
+    public let absoluteIncomingPopulationSum: Double
+    public let squaredIncomingPopulationSum: Double
+    public let linkFractionSum: Double
+    public let squaredLinkFractionSum: Double
+    public let wallProjectionSum: Double
+    public let absoluteWallProjectionSum: Double
+    public let wallSpeedSum: Double
+    public let nearInterpolationLinkCount: Int
+    public let farInterpolationLinkCount: Int
+    public let halfwayFallbackLinkCount: Int
+}
+
+public struct FormationFlightBoundarySourceCensusSample: Codable, Sendable {
+    public let leaderPhase: Double
+    public let followerPhase: Double
+    public let flyer: FormationFlyerID
+    public let wingChordAxis: SIMD3<Double>
+    public let wingSpanAxis: SIMD3<Double>
+    public let wingNormalAxis: SIMD3<Double>
+    public let totalBoundaryLinkCount: Int
+    public let relativeReconstructionClosureResidual: Double
+    public let branchCountClosurePassed: Bool
+    public let directions: [FormationFlightBoundarySourceDirectionSample]
+}
+
+public struct FormationFlightBoundarySourceCensusReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let scientificScope: String
+    public let samples: [FormationFlightBoundarySourceCensusSample]
+    public let maximumRelativeReconstructionClosureResidual: Double
+    public let maximumAllowedRelativeReconstructionClosureResidual: Double
+    public let finite: Bool
+    public let reconstructionClosurePassed: Bool
+    public let branchCountClosurePassed: Bool
+    public let passed: Bool
+    public let scientificVerdict: String
+}
+
+public struct FormationFlightFieldReplayGateReport: Codable, Sendable {
+    public let finite: Bool
+    public let noGeometryOverlap: Bool
+    public let ownerForceClosurePassed: Bool
+    public let ownerTorqueClosurePassed: Bool
+    public let periodicPowerPassed: Bool
+    public let referenceCoupledHistoryPassed: Bool
+    public let maximumRelativeForceClosureResidual: Double
+    public let maximumRelativeTorqueClosureResidual: Double
+    public let maximumRelativePeriodicPowerDifference: Double
+    public let maximumRelativeReferenceCoupledHistoryDifference: Double
+    public let maximumAllowedRelativeClosureResidual: Double
+    public let maximumAllowedRelativePeriodicPowerDifference: Double
+    public let maximumAllowedRelativeReferenceCoupledHistoryDifference: Double
+    public let mechanismProbePassed: Bool?
+    public let maximumRelativeMechanismForceClosureResidual: Double?
+    public let maximumRelativeMechanismTorqueClosureResidual: Double?
+    public let maximumRelativeMechanismPowerClosureResidual: Double?
+    public let boundarySourceCensusPassed: Bool?
+    public let maximumRelativeBoundarySourceReconstructionClosureResidual:
+        Double?
+    public let passed: Bool
+}
+
+public struct FormationFlightFieldReplayReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let scientificScope: String
+    public let deviceName: String
+    public let referenceReportSHA256: String
+    public let configuration: FormationFlightConfiguration
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let cycleSteps: Int
+    public let runtimeSeconds: Double
+    public let coupledLeader: FormationFlyerPowerSummary
+    public let coupledFollower: FormationFlyerPowerSummary
+    public let overlapVoxelSamples: Int
+    public let phaseSamples: [FormationFlightPhaseSample]
+    public let capturedLeaderPhases: [Double]
+    public let capturedFollowerPhases: [Double]
+    public let capturedMechanismProbeSampleCount: Int?
+    public let capturedBoundarySourceCensusSampleCount: Int?
+    public let gates: FormationFlightFieldReplayGateReport
+    public let scientificVerdict: String
+}
+
+public struct FormationFlightCollisionDiagnosticGateReport: Codable, Sendable {
+    public let finite: Bool
+    public let noGeometryOverlap: Bool
+    public let ownerForceClosurePassed: Bool
+    public let ownerTorqueClosurePassed: Bool
+    public let periodicPowerPassed: Bool
+    public let populationPositivityPassed: Bool
+    public let collisionCorrectionNonIntrusivePassed: Bool
+    public let maximumRelativeForceClosureResidual: Double
+    public let maximumRelativeTorqueClosureResidual: Double
+    public let maximumRelativePeriodicPowerDifference: Double
+    public let minimumPopulation: Double
+    public let collisionCorrectionActivationFraction: Double
+    public let maximumStepCollisionCorrectionActivationFraction: Double
+    public let maximumAllowedRelativeClosureResidual: Double
+    public let maximumAllowedRelativePeriodicPowerDifference: Double
+    public let maximumAllowedCollisionCorrectionActivationFraction: Double
+    public let passed: Bool
+}
+
+/// A validation-only coupled replay in which the bulk collision operator is
+/// the sole solver change. Production formation flight continues to use TRT.
+public struct FormationFlightCollisionDiagnosticReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let scientificScope: String
+    public let deviceName: String
+    public let collisionOperator: String
+    public let configuration: FormationFlightConfiguration
+    public let gridX: Int
+    public let gridY: Int
+    public let gridZ: Int
+    public let cycleSteps: Int
+    public let runtimeSeconds: Double
+    public let coupledLeader: FormationFlyerPowerSummary
+    public let coupledFollower: FormationFlyerPowerSummary
+    public let overlapVoxelSamples: Int
+    public let phaseSamples: [FormationFlightPhaseSample]
+    public let capturedLeaderPhases: [Double]
+    public let capturedFollowerPhases: [Double]
+    public let collisionCorrectionActivationCellSteps: Double
+    public let observedCellSteps: Double
+    public let gates: FormationFlightCollisionDiagnosticGateReport
+    public let scientificVerdict: String
+}
+
 public enum FormationFlightValidationError: Error, CustomStringConvertible {
     case invalidRequest(String)
     case unavailable(String)
@@ -142,6 +321,10 @@ public enum MetalFormationFlightValidator {
     public static let schemaVersion = 1
     public static let maximumRelativeClosureResidual = 2.0e-4
     public static let maximumRelativePeriodicPowerDifference = 0.20
+    public static let maximumRelativeReferenceCoupledHistoryDifference = 1.0e-6
+    public static let maximumCollisionCorrectionActivationFraction = 0.05
+    public static let maximumBoundarySourceReconstructionClosureResidual =
+        2.0e-6
 
     public static func run(
         configuration: FormationFlightConfiguration = .init(),
@@ -176,21 +359,24 @@ public enum MetalFormationFlightValidator {
             configuration: configuration,
             layout: layout,
             activeOwners: 3,
-            captureTargets: captureTargets
+            captureTargets: captureTargets,
+            captureMechanismProbes: false
         )
         let isolatedLeader = try runCase(
             backend: backend,
             configuration: configuration,
             layout: layout,
             activeOwners: 1,
-            captureTargets: []
+            captureTargets: [],
+            captureMechanismProbes: false
         )
         let isolatedFollower = try runCase(
             backend: backend,
             configuration: configuration,
             layout: layout,
             activeOwners: 2,
-            captureTargets: []
+            captureTargets: [],
+            captureMechanismProbes: false
         )
 
         let coupledLeader = summarize(
@@ -356,6 +542,381 @@ public enum MetalFormationFlightValidator {
         #endif
     }
 
+    public static func replayFields(
+        configuration: FormationFlightConfiguration,
+        referenceReport: FormationFlightReport,
+        referenceReportSHA256: String,
+        archiveDirectory: URL,
+        fieldCapturePhases: [Double],
+        captureMechanismProbes: Bool = false,
+        captureBoundarySourceCensus: Bool = false
+    ) throws -> FormationFlightFieldReplayReport {
+        #if canImport(Metal)
+        try validate(configuration)
+        guard !fieldCapturePhases.isEmpty,
+              fieldCapturePhases.allSatisfy(\.isFinite) else {
+            throw FormationFlightValidationError.invalidRequest(
+                "field replay requires at least one finite capture phase"
+            )
+        }
+        let lowercaseSHA = referenceReportSHA256.lowercased()
+        guard lowercaseSHA.count == 64,
+              lowercaseSHA.allSatisfy({ $0.isHexDigit }) else {
+            throw FormationFlightValidationError.invalidRequest(
+                "field replay requires the 64-digit SHA-256 of its reference report"
+            )
+        }
+        guard referenceReport.schemaVersion == schemaVersion,
+              referenceReport.gates.passed,
+              referenceReport.phaseSamples.count == 100,
+              referenceReport.configuration.chordCells
+                == configuration.chordCells,
+              referenceReport.configuration.cycles == configuration.cycles,
+              referenceReport.configuration.followerOffsetChords
+                == configuration.followerOffsetChords,
+              referenceReport.configuration.followerPhaseOffsetCycles
+                == configuration.followerPhaseOffsetCycles else {
+            throw FormationFlightValidationError.invalidRequest(
+                "field replay reference must be a passed report with the exact requested configuration and 100 phase bins"
+            )
+        }
+
+        let layout = try makeLayout(configuration)
+        guard referenceReport.gridX == layout.grid.x,
+              referenceReport.gridY == layout.grid.y,
+              referenceReport.gridZ == layout.grid.z,
+              referenceReport.cycleSteps == layout.cycleSteps else {
+            throw FormationFlightValidationError.invalidRequest(
+                "field replay reference grid or cycle length does not match the current solver layout"
+            )
+        }
+        let captureTargets = try makeCaptureTargets(
+            phases: [0] + fieldCapturePhases,
+            configuration: configuration,
+            layout: layout
+        )
+        let start = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let coupled = try runCase(
+            backend: backend,
+            configuration: configuration,
+            layout: layout,
+            activeOwners: 3,
+            captureTargets: captureTargets,
+            captureMechanismProbes: captureMechanismProbes,
+            captureBoundarySourceCensus: captureBoundarySourceCensus
+        )
+        let coupledLeader = summarize(
+            flyer: .leader,
+            loads: coupled.current.leader,
+            phaseOffset: 0,
+            layout: layout
+        )
+        let coupledFollower = summarize(
+            flyer: .follower,
+            loads: coupled.current.follower,
+            phaseOffset: configuration.followerPhaseOffsetCycles,
+            layout: layout
+        )
+        let phaseSamples = phaseBinnedSamples(
+            leader: coupled.current.leader,
+            follower: coupled.current.follower,
+            layout: layout,
+            followerPhaseOffset: configuration.followerPhaseOffsetCycles
+        )
+        let closure = closureMetrics(run: coupled.current, layout: layout)
+        let maximumPeriodic = max(
+            periodicPowerDifference(
+                current: coupled.current.leader,
+                previous: coupled.previous.leader,
+                phaseOffset: 0,
+                layout: layout
+            ),
+            periodicPowerDifference(
+                current: coupled.current.follower,
+                previous: coupled.previous.follower,
+                phaseOffset: configuration.followerPhaseOffsetCycles,
+                layout: layout
+            )
+        )
+        let referenceDifference = relativeReferenceDifference(
+            leader: coupledLeader,
+            follower: coupledFollower,
+            phaseSamples: phaseSamples,
+            reference: referenceReport
+        )
+        let mechanismReport = captureMechanismProbes
+            ? mechanismProbeReport(
+                rawSamples: coupled.mechanismProbeComponents,
+                production: coupled.current,
+                configuration: configuration,
+                layout: layout
+            )
+            : nil
+        let boundarySourceReport = captureBoundarySourceCensus
+            ? boundarySourceCensusReport(
+                rawSamples: coupled.boundarySourceCensusSamples,
+                configuration: configuration,
+                layout: layout
+            )
+            : nil
+        let finite = summaryIsFinite(coupledLeader)
+            && summaryIsFinite(coupledFollower)
+            && phaseSamples.allSatisfy(phaseSampleIsFinite)
+            && closure.force.isFinite
+            && closure.torque.isFinite
+            && maximumPeriodic.isFinite
+            && referenceDifference.isFinite
+            && (mechanismReport?.finite ?? true)
+            && (boundarySourceReport?.finite ?? true)
+        let noOverlap = coupled.overlapVoxelSamples == 0
+        let forceClosure = closure.force <= maximumRelativeClosureResidual
+        let torqueClosure = closure.torque <= maximumRelativeClosureResidual
+        let periodicPassed = maximumPeriodic
+            <= maximumRelativePeriodicPowerDifference
+        let referencePassed = referenceDifference
+            <= maximumRelativeReferenceCoupledHistoryDifference
+        let mechanismPassed = mechanismReport?.passed ?? true
+        let boundarySourcePassed = boundarySourceReport?.passed ?? true
+        let passed = finite && noOverlap && forceClosure && torqueClosure
+            && periodicPassed && referencePassed && mechanismPassed
+            && boundarySourcePassed
+        let leaderPhases = coupled.flowSlices.map(\.phase)
+        let followerPhases = leaderPhases.map {
+            unitPhase($0 + configuration.followerPhaseOffsetCycles)
+        }
+        let report = FormationFlightFieldReplayReport(
+            schemaVersion: schemaVersion,
+            scientificScope: "coupled-only sparse field replay locked to a previously passed complete formation report; diagnostic flow localization, not a new formation-benefit measurement",
+            deviceName: backend.device.name,
+            referenceReportSHA256: lowercaseSHA,
+            configuration: configuration,
+            gridX: layout.grid.x,
+            gridY: layout.grid.y,
+            gridZ: layout.grid.z,
+            cycleSteps: layout.cycleSteps,
+            runtimeSeconds: Date().timeIntervalSince(start),
+            coupledLeader: coupledLeader,
+            coupledFollower: coupledFollower,
+            overlapVoxelSamples: coupled.overlapVoxelSamples,
+            phaseSamples: phaseSamples,
+            capturedLeaderPhases: leaderPhases,
+            capturedFollowerPhases: followerPhases,
+            capturedMechanismProbeSampleCount:
+                mechanismReport?.samples.count,
+            capturedBoundarySourceCensusSampleCount:
+                boundarySourceReport?.samples.count,
+            gates: FormationFlightFieldReplayGateReport(
+                finite: finite,
+                noGeometryOverlap: noOverlap,
+                ownerForceClosurePassed: forceClosure,
+                ownerTorqueClosurePassed: torqueClosure,
+                periodicPowerPassed: periodicPassed,
+                referenceCoupledHistoryPassed: referencePassed,
+                maximumRelativeForceClosureResidual: closure.force,
+                maximumRelativeTorqueClosureResidual: closure.torque,
+                maximumRelativePeriodicPowerDifference: maximumPeriodic,
+                maximumRelativeReferenceCoupledHistoryDifference:
+                    referenceDifference,
+                maximumAllowedRelativeClosureResidual:
+                    maximumRelativeClosureResidual,
+                maximumAllowedRelativePeriodicPowerDifference:
+                    maximumRelativePeriodicPowerDifference,
+                maximumAllowedRelativeReferenceCoupledHistoryDifference:
+                    maximumRelativeReferenceCoupledHistoryDifference,
+                mechanismProbePassed: mechanismReport?.passed,
+                maximumRelativeMechanismForceClosureResidual:
+                    mechanismReport?.maximumRelativeForceClosureResidual,
+                maximumRelativeMechanismTorqueClosureResidual:
+                    mechanismReport?.maximumRelativeTorqueClosureResidual,
+                maximumRelativeMechanismPowerClosureResidual:
+                    mechanismReport?.maximumRelativePowerClosureResidual,
+                boundarySourceCensusPassed: boundarySourceReport?.passed,
+                maximumRelativeBoundarySourceReconstructionClosureResidual:
+                    boundarySourceReport?
+                        .maximumRelativeReconstructionClosureResidual,
+                passed: passed
+            ),
+            scientificVerdict: passed
+                ? "coupled replay reproduces the archived load history and passes unchanged overlap, owner-closure, and repeatability gates; captured fields are diagnostic only"
+                : "field replay is rejected because it failed reference reproduction or an unchanged solver gate"
+        )
+        try archiveFieldReplay(
+            report,
+            flowSlices: coupled.flowSlices,
+            mechanismProbeReport: mechanismReport,
+            boundarySourceCensusReport: boundarySourceReport,
+            directory: archiveDirectory
+        )
+        return report
+        #else
+        throw FormationFlightValidationError.unavailable(
+            "Metal is unavailable on this host"
+        )
+        #endif
+    }
+
+    public static func runCollisionDiagnostic(
+        configuration: FormationFlightConfiguration,
+        collisionOperator: MetalIndexedBirdSurfaceCollisionOperator,
+        archiveDirectory: URL,
+        fieldCapturePhases: [Double]
+    ) throws -> FormationFlightCollisionDiagnosticReport {
+        #if canImport(Metal)
+        try validate(configuration)
+        guard collisionOperator != .productionTRT else {
+            throw FormationFlightValidationError.invalidRequest(
+                "collision diagnostic requires a non-production candidate; the locked TRT archive is the control"
+            )
+        }
+        guard !fieldCapturePhases.isEmpty,
+              fieldCapturePhases.allSatisfy(\.isFinite) else {
+            throw FormationFlightValidationError.invalidRequest(
+                "collision diagnostic requires at least one finite capture phase"
+            )
+        }
+        let layout = try makeLayout(configuration)
+        let captureTargets = try makeCaptureTargets(
+            phases: [0] + fieldCapturePhases,
+            configuration: configuration,
+            layout: layout
+        )
+        let start = Date()
+        let backend = try MetalBackend(fastMath: false)
+        let coupled = try runCase(
+            backend: backend,
+            configuration: configuration,
+            layout: layout,
+            activeOwners: 3,
+            captureTargets: captureTargets,
+            captureMechanismProbes: false,
+            collisionOperator: collisionOperator,
+            captureCollisionDiagnostics: true
+        )
+        guard let collision = coupled.collisionDiagnostics else {
+            throw FormationFlightValidationError.failed(
+                "collision diagnostic history was not captured"
+            )
+        }
+        let leader = summarize(
+            flyer: .leader,
+            loads: coupled.current.leader,
+            phaseOffset: 0,
+            layout: layout
+        )
+        let follower = summarize(
+            flyer: .follower,
+            loads: coupled.current.follower,
+            phaseOffset: configuration.followerPhaseOffsetCycles,
+            layout: layout
+        )
+        let phaseSamples = phaseBinnedSamples(
+            leader: coupled.current.leader,
+            follower: coupled.current.follower,
+            layout: layout,
+            followerPhaseOffset: configuration.followerPhaseOffsetCycles
+        )
+        let closure = closureMetrics(run: coupled.current, layout: layout)
+        let maximumPeriodic = max(
+            periodicPowerDifference(
+                current: coupled.current.leader,
+                previous: coupled.previous.leader,
+                phaseOffset: 0,
+                layout: layout
+            ),
+            periodicPowerDifference(
+                current: coupled.current.follower,
+                previous: coupled.previous.follower,
+                phaseOffset: configuration.followerPhaseOffsetCycles,
+                layout: layout
+            )
+        )
+        let activationFraction = collision.observedCellSteps > 0
+            ? collision.activationCellSteps / collision.observedCellSteps
+            : .infinity
+        let finite = summaryIsFinite(leader)
+            && summaryIsFinite(follower)
+            && phaseSamples.allSatisfy(phaseSampleIsFinite)
+            && closure.force.isFinite
+            && closure.torque.isFinite
+            && maximumPeriodic.isFinite
+            && collision.allFinite
+            && collision.minimumPopulation.isFinite
+            && activationFraction.isFinite
+            && collision.maximumStepActivationFraction.isFinite
+        let noOverlap = coupled.overlapVoxelSamples == 0
+        let forceClosure = closure.force <= maximumRelativeClosureResidual
+        let torqueClosure = closure.torque <= maximumRelativeClosureResidual
+        let periodic = maximumPeriodic
+            <= maximumRelativePeriodicPowerDifference
+        let positive = collision.minimumPopulation > 0
+        let nonIntrusive = activationFraction
+            <= maximumCollisionCorrectionActivationFraction
+        let passed = finite && noOverlap && forceClosure && torqueClosure
+            && periodic && positive && nonIntrusive
+        let leaderPhases = coupled.flowSlices.map(\.phase)
+        let report = FormationFlightCollisionDiagnosticReport(
+            schemaVersion: schemaVersion,
+            scientificScope: "diagnostic-only coupled formation replay with geometry, kinematics, boundary treatment, load estimator, grid, and gates fixed while changing only the bulk collision operator; not a formation-benefit measurement or production-operator promotion",
+            deviceName: backend.device.name,
+            collisionOperator: collisionOperator.rawValue,
+            configuration: configuration,
+            gridX: layout.grid.x,
+            gridY: layout.grid.y,
+            gridZ: layout.grid.z,
+            cycleSteps: layout.cycleSteps,
+            runtimeSeconds: Date().timeIntervalSince(start),
+            coupledLeader: leader,
+            coupledFollower: follower,
+            overlapVoxelSamples: coupled.overlapVoxelSamples,
+            phaseSamples: phaseSamples,
+            capturedLeaderPhases: leaderPhases,
+            capturedFollowerPhases: leaderPhases.map {
+                unitPhase($0 + configuration.followerPhaseOffsetCycles)
+            },
+            collisionCorrectionActivationCellSteps:
+                collision.activationCellSteps,
+            observedCellSteps: collision.observedCellSteps,
+            gates: FormationFlightCollisionDiagnosticGateReport(
+                finite: finite,
+                noGeometryOverlap: noOverlap,
+                ownerForceClosurePassed: forceClosure,
+                ownerTorqueClosurePassed: torqueClosure,
+                periodicPowerPassed: periodic,
+                populationPositivityPassed: positive,
+                collisionCorrectionNonIntrusivePassed: nonIntrusive,
+                maximumRelativeForceClosureResidual: closure.force,
+                maximumRelativeTorqueClosureResidual: closure.torque,
+                maximumRelativePeriodicPowerDifference: maximumPeriodic,
+                minimumPopulation: collision.minimumPopulation,
+                collisionCorrectionActivationFraction: activationFraction,
+                maximumStepCollisionCorrectionActivationFraction:
+                    collision.maximumStepActivationFraction,
+                maximumAllowedRelativeClosureResidual:
+                    maximumRelativeClosureResidual,
+                maximumAllowedRelativePeriodicPowerDifference:
+                    maximumRelativePeriodicPowerDifference,
+                maximumAllowedCollisionCorrectionActivationFraction:
+                    maximumCollisionCorrectionActivationFraction,
+                passed: passed
+            ),
+            scientificVerdict: passed
+                ? "the collision candidate completed the coupled formation replay with positive populations and all unchanged numerical gates; model selection still requires the preregistered c16-to-locked-c20 discriminator"
+                : "the collision candidate is rejected because positivity, correction intrusion, or an unchanged coupled-formation gate failed"
+        )
+        try archiveCollisionDiagnostic(
+            report,
+            flowSlices: coupled.flowSlices,
+            directory: archiveDirectory
+        )
+        return report
+        #else
+        throw FormationFlightValidationError.unavailable(
+            "Metal is unavailable on this host"
+        )
+        #endif
+    }
+
     private static func validate(
         _ configuration: FormationFlightConfiguration
     ) throws {
@@ -405,6 +966,92 @@ public enum MetalFormationFlightValidator {
             ),
             options: .atomic
         )
+        try archiveFlowSlices(
+            flowSlices,
+            followerPhaseOffsetCycles:
+                report.configuration.followerPhaseOffsetCycles,
+            directory: directory,
+            encoder: encoder
+        )
+    }
+
+    private static func archiveFieldReplay(
+        _ report: FormationFlightFieldReplayReport,
+        flowSlices: [FormationFlightFlowSlice],
+        mechanismProbeReport: FormationFlightMechanismProbeReport?,
+        boundarySourceCensusReport:
+            FormationFlightBoundarySourceCensusReport?,
+        directory: URL
+    ) throws {
+        try FileManager.default.createDirectory(
+            at: directory,
+            withIntermediateDirectories: true
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(report).write(
+            to: directory.appendingPathComponent(
+                "formation-flight-field-replay-report.json"
+            ),
+            options: .atomic
+        )
+        if let mechanismProbeReport {
+            try encoder.encode(mechanismProbeReport).write(
+                to: directory.appendingPathComponent(
+                    "formation-flight-mechanism-probes.json"
+                ),
+                options: .atomic
+            )
+        }
+        if let boundarySourceCensusReport {
+            try encoder.encode(boundarySourceCensusReport).write(
+                to: directory.appendingPathComponent(
+                    "formation-flight-boundary-source-census.json"
+                ),
+                options: .atomic
+            )
+        }
+        try archiveFlowSlices(
+            flowSlices,
+            followerPhaseOffsetCycles:
+                report.configuration.followerPhaseOffsetCycles,
+            directory: directory,
+            encoder: encoder
+        )
+    }
+
+    private static func archiveCollisionDiagnostic(
+        _ report: FormationFlightCollisionDiagnosticReport,
+        flowSlices: [FormationFlightFlowSlice],
+        directory: URL
+    ) throws {
+        try FileManager.default.createDirectory(
+            at: directory,
+            withIntermediateDirectories: true
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(report).write(
+            to: directory.appendingPathComponent(
+                "formation-flight-collision-diagnostic-report.json"
+            ),
+            options: .atomic
+        )
+        try archiveFlowSlices(
+            flowSlices,
+            followerPhaseOffsetCycles:
+                report.configuration.followerPhaseOffsetCycles,
+            directory: directory,
+            encoder: encoder
+        )
+    }
+
+    private static func archiveFlowSlices(
+        _ flowSlices: [FormationFlightFlowSlice],
+        followerPhaseOffsetCycles: Double,
+        directory: URL,
+        encoder: JSONEncoder
+    ) throws {
         if let finalSlice = flowSlices.first(where: { $0.phase == 0 }) {
             let sliceData = try encoder.encode(finalSlice)
             try sliceData.write(
@@ -434,7 +1081,7 @@ public enum MetalFormationFlightValidator {
                 leaderPhase: slice.phase,
                 followerPhase: unitPhase(
                     slice.phase
-                        + report.configuration.followerPhaseOffsetCycles
+                        + followerPhaseOffsetCycles
                 ),
                 file: file
             )
@@ -472,12 +1119,35 @@ private struct FormationRawRun {
     let current: FormationCycleLoads
     let overlapVoxelSamples: Int
     let flowSlices: [FormationFlightFlowSlice]
+    let mechanismProbeComponents: [FormationRawMechanismProbeSample]
+    let collisionDiagnostics: FormationRawCollisionDiagnostics?
+    let boundarySourceCensusSamples: [FormationRawBoundarySourceCensusSample]
+}
+
+private struct FormationRawCollisionDiagnostics {
+    let minimumPopulation: Double
+    let activationCellSteps: Double
+    let observedCellSteps: Double
+    let maximumStepActivationFraction: Double
+    let allFinite: Bool
 }
 
 private struct FormationCaptureTarget {
     let phase: Double
     let absoluteStep: Int
     let slot: Int
+}
+
+private struct FormationRawMechanismProbeSample {
+    let target: FormationCaptureTarget
+    let flyer: FormationFlyerID
+    let components: [ForceTorque]
+}
+
+private struct FormationRawBoundarySourceCensusSample {
+    let target: FormationCaptureTarget
+    let flyer: FormationFlyerID
+    let directions: [GPUFormationBoundarySourceCensus]
 }
 
 private extension MetalFormationFlightValidator {
@@ -598,14 +1268,23 @@ private extension MetalFormationFlightValidator {
         configuration: FormationFlightConfiguration,
         layout: FormationLayout,
         activeOwners: UInt32,
-        captureTargets: [FormationCaptureTarget]
+        captureTargets: [FormationCaptureTarget],
+        captureMechanismProbes: Bool,
+        captureBoundarySourceCensus: Bool = false,
+        collisionOperator: MetalIndexedBirdSurfaceCollisionOperator =
+            .productionTRT,
+        captureCollisionDiagnostics: Bool = false
     ) throws -> FormationRawRun {
         let simulation = try MetalFormationFlightSimulation(
             backend: backend,
             request: configuration,
             layout: layout,
             activeOwners: activeOwners,
-            captureTargets: captureTargets
+            captureTargets: captureTargets,
+            captureMechanismProbes: captureMechanismProbes,
+            captureBoundarySourceCensus: captureBoundarySourceCensus,
+            collisionOperator: collisionOperator,
+            captureCollisionDiagnostics: captureCollisionDiagnostics
         )
         if configuration.cycles > 2 {
             try simulation.advance(
@@ -628,7 +1307,345 @@ private extension MetalFormationFlightValidator {
             previous: previous,
             current: simulation.copyRecordedLoads(),
             overlapVoxelSamples: simulation.overlapVoxelSamples,
-            flowSlices: try simulation.copyFlowSlices()
+            flowSlices: try simulation.copyFlowSlices(),
+            mechanismProbeComponents:
+                simulation.copyMechanismProbeComponents(),
+            collisionDiagnostics: simulation.copyCollisionDiagnostics(),
+            boundarySourceCensusSamples:
+                simulation.copyBoundarySourceCensusSamples()
+        )
+    }
+
+    static func mechanismProbeReport(
+        rawSamples: [FormationRawMechanismProbeSample],
+        production: FormationCycleLoads,
+        configuration: FormationFlightConfiguration,
+        layout: FormationLayout
+    ) -> FormationFlightMechanismProbeReport {
+        func add(_ values: [ForceTorque]) -> ForceTorque {
+            ForceTorque(
+                forceNewtons: values.reduce(.zero) {
+                    $0 + $1.forceNewtons
+                },
+                torqueNewtonMeters: values.reduce(.zero) {
+                    $0 + $1.torqueNewtonMeters
+                }
+            )
+        }
+        func finite(_ load: ForceTorque) -> Bool {
+            let values = [
+                load.forceNewtons.x,
+                load.forceNewtons.y,
+                load.forceNewtons.z,
+                load.torqueNewtonMeters.x,
+                load.torqueNewtonMeters.y,
+                load.torqueNewtonMeters.z,
+            ]
+            return values.allSatisfy(\.isFinite)
+        }
+        func component(
+            load: ForceTorque,
+            phase: Double
+        ) -> FormationFlightMechanismComponentSample {
+            let omega = angularVelocity(phase: phase, layout: layout)
+            let torque = SIMD3<Double>(
+                Double(load.torqueNewtonMeters.x),
+                Double(load.torqueNewtonMeters.y),
+                Double(load.torqueNewtonMeters.z)
+            )
+            return FormationFlightMechanismComponentSample(
+                load: load,
+                actuatorPowerWatts: scalarDot(-torque, omega)
+            )
+        }
+
+        var maximumForce = 0.0
+        var maximumTorque = 0.0
+        var maximumPower = 0.0
+        var allFinite = true
+        let samples = rawSamples.map { raw in
+            precondition(raw.components.count == 5)
+            let leaderPhase = raw.target.phase
+            let followerPhase = unitPhase(
+                leaderPhase + configuration.followerPhaseOffsetCycles
+            )
+            let phase = raw.flyer == .leader
+                ? leaderPhase
+                : followerPhase
+            let sampleIndex = (raw.target.absoluteStep - 1)
+                % layout.cycleSteps
+            let productionLoad = raw.flyer == .leader
+                ? production.leader[sampleIndex]
+                : production.follower[sampleIndex]
+            let reconstructedLoad = add(raw.components)
+            let productionSample = component(
+                load: productionLoad,
+                phase: phase
+            )
+            let reconstructedSample = component(
+                load: reconstructedLoad,
+                phase: phase
+            )
+            let componentSamples = raw.components.map {
+                component(load: $0, phase: phase)
+            }
+            let forceResidual = vectorNorm(
+                reconstructedLoad.forceNewtons
+                    - productionLoad.forceNewtons
+            )
+            let forceScale = max(
+                vectorNorm(productionLoad.forceNewtons),
+                raw.components.reduce(0) {
+                    $0 + vectorNorm($1.forceNewtons)
+                },
+                1.0e-12
+            )
+            let torqueResidual = vectorNorm(
+                reconstructedLoad.torqueNewtonMeters
+                    - productionLoad.torqueNewtonMeters
+            )
+            let torqueScale = max(
+                vectorNorm(productionLoad.torqueNewtonMeters),
+                raw.components.reduce(0) {
+                    $0 + vectorNorm($1.torqueNewtonMeters)
+                },
+                1.0e-12
+            )
+            let powerResidual = abs(
+                reconstructedSample.actuatorPowerWatts
+                    - productionSample.actuatorPowerWatts
+            )
+            let powerScale = max(
+                abs(productionSample.actuatorPowerWatts),
+                componentSamples.reduce(0) {
+                    $0 + abs($1.actuatorPowerWatts)
+                },
+                1.0e-12
+            )
+            let relativeForce = Double(forceResidual) / Double(forceScale)
+            let relativeTorque = Double(torqueResidual)
+                / Double(torqueScale)
+            let relativePower = powerResidual / powerScale
+            maximumForce = max(maximumForce, relativeForce)
+            maximumTorque = max(maximumTorque, relativeTorque)
+            maximumPower = max(maximumPower, relativePower)
+            allFinite = allFinite
+                && finite(productionLoad)
+                && finite(reconstructedLoad)
+                && raw.components.allSatisfy(finite)
+                && productionSample.actuatorPowerWatts.isFinite
+                && reconstructedSample.actuatorPowerWatts.isFinite
+                && componentSamples.allSatisfy {
+                    $0.actuatorPowerWatts.isFinite
+                }
+                && relativeForce.isFinite
+                && relativeTorque.isFinite
+                && relativePower.isFinite
+            return FormationFlightMechanismProbeSample(
+                leaderPhase: leaderPhase,
+                followerPhase: followerPhase,
+                flyer: raw.flyer,
+                production: productionSample,
+                reconstructed: reconstructedSample,
+                components: FormationFlightMechanismComponentBreakdown(
+                    reflectedPopulation: componentSamples[0],
+                    interpolationAuxiliary: componentSamples[1],
+                    movingWall: componentSamples[2],
+                    coverImpulse: componentSamples[3],
+                    uncoverImpulse: componentSamples[4]
+                ),
+                relativeForceClosureResidual: relativeForce,
+                relativeTorqueClosureResidual: relativeTorque,
+                relativePowerClosureResidual: relativePower
+            )
+        }
+        let closurePassed = maximumForce <= maximumRelativeClosureResidual
+            && maximumTorque <= maximumRelativeClosureResidual
+            && maximumPower <= maximumRelativeClosureResidual
+        let passed = !samples.isEmpty && allFinite && closurePassed
+        return FormationFlightMechanismProbeReport(
+            schemaVersion: 1,
+            scientificScope: "read-only decomposition of the exact production formation-owner load at preregistered phases; numerical-mechanism localization, not a new biological or formation-benefit claim",
+            componentOrder: [
+                "reflectedPopulation",
+                "interpolationAuxiliary",
+                "movingWall",
+                "coverImpulse",
+                "uncoverImpulse",
+            ],
+            samples: samples,
+            maximumRelativeForceClosureResidual: maximumForce,
+            maximumRelativeTorqueClosureResidual: maximumTorque,
+            maximumRelativePowerClosureResidual: maximumPower,
+            maximumAllowedRelativeClosureResidual:
+                maximumRelativeClosureResidual,
+            finite: allFinite,
+            closurePassed: closurePassed,
+            passed: passed,
+            scientificVerdict: passed
+                ? "all five causal terms close linearly to the unchanged production owner load"
+                : "mechanism attribution rejected because component closure or finiteness failed"
+        )
+    }
+
+    static func boundarySourceCensusReport(
+        rawSamples: [FormationRawBoundarySourceCensusSample],
+        configuration: FormationFlightConfiguration,
+        layout: FormationLayout
+    ) -> FormationFlightBoundarySourceCensusReport {
+        func cross(
+            _ a: SIMD3<Double>,
+            _ b: SIMD3<Double>
+        ) -> SIMD3<Double> {
+            SIMD3<Double>(
+                a.y * b.z - a.z * b.y,
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x
+            )
+        }
+        let samples: [FormationFlightBoundarySourceCensusSample] = rawSamples.map { raw in
+            let flyerPhase = unitPhase(
+                raw.target.phase
+                    + (raw.flyer == .follower
+                        ? configuration.followerPhaseOffsetCycles : 0)
+            )
+            let state = MetalFlappingWingValidator.kinematicState(
+                phase: flyerPhase
+            )
+            let span = SIMD3<Double>(
+                cos(state.strokeAngleRadians),
+                sin(state.strokeAngleRadians),
+                0
+            )
+            let tangent = cross(SIMD3<Double>(0, 0, 1), span)
+            let pitch = -state.pitchAngleRadians
+            let chord = tangent * cos(pitch)
+                + cross(span, tangent) * sin(pitch)
+            let normal = cross(span, chord)
+            let directions = raw.directions.enumerated().map { index, value in
+                FormationFlightBoundarySourceDirectionSample(
+                    directionIndex: index,
+                    direction: D3Q19.directions[index],
+                    linkCount: Int(value.populations.x.rounded()),
+                    rawReflectedPopulationSum:
+                        Double(value.populations.y),
+                    reflectedIncomingPopulationSum:
+                        Double(value.populations.z),
+                    interpolationAuxiliaryPopulationSum:
+                        Double(value.populations.w),
+                    movingWallPopulationSum:
+                        Double(value.reconstruction.x),
+                    reconstructedIncomingPopulationSum:
+                        Double(value.reconstruction.y),
+                    absoluteIncomingPopulationSum:
+                        Double(value.branches.w),
+                    squaredIncomingPopulationSum:
+                        Double(value.wallKinematics.w),
+                    linkFractionSum: Double(value.reconstruction.z),
+                    squaredLinkFractionSum:
+                        Double(value.reconstruction.w),
+                    wallProjectionSum:
+                        Double(value.wallKinematics.x),
+                    absoluteWallProjectionSum:
+                        Double(value.wallKinematics.y),
+                    wallSpeedSum: Double(value.wallKinematics.z),
+                    nearInterpolationLinkCount:
+                        Int(value.branches.x.rounded()),
+                    farInterpolationLinkCount:
+                        Int(value.branches.y.rounded()),
+                    halfwayFallbackLinkCount:
+                        Int(value.branches.z.rounded())
+                )
+            }
+            let numerator = sqrt(directions.reduce(0.0) { sum, value in
+                let reconstructed = value.reflectedIncomingPopulationSum
+                    + value.interpolationAuxiliaryPopulationSum
+                    + value.movingWallPopulationSum
+                let difference = value.reconstructedIncomingPopulationSum
+                    - reconstructed
+                return sum + difference * difference
+            })
+            let denominator = max(
+                sqrt(directions.reduce(0.0) {
+                    $0 + $1.reconstructedIncomingPopulationSum
+                        * $1.reconstructedIncomingPopulationSum
+                }),
+                1.0e-12
+            )
+            let branchClosure = directions.allSatisfy {
+                $0.linkCount == $0.nearInterpolationLinkCount
+                    + $0.farInterpolationLinkCount
+                    + $0.halfwayFallbackLinkCount
+            }
+            return FormationFlightBoundarySourceCensusSample(
+                leaderPhase: raw.target.phase,
+                followerPhase: unitPhase(
+                    raw.target.phase
+                        + configuration.followerPhaseOffsetCycles
+                ),
+                flyer: raw.flyer,
+                wingChordAxis: chord,
+                wingSpanAxis: span,
+                wingNormalAxis: normal,
+                totalBoundaryLinkCount: directions.reduce(0) {
+                    $0 + $1.linkCount
+                },
+                relativeReconstructionClosureResidual:
+                    numerator / denominator,
+                branchCountClosurePassed: branchClosure,
+                directions: directions
+            )
+        }
+        let maximumClosure = samples.map {
+            $0.relativeReconstructionClosureResidual
+        }.max() ?? .infinity
+        let finite = samples.allSatisfy { sample in
+            let vectors: [SIMD3<Double>] = [
+                sample.wingChordAxis,
+                sample.wingSpanAxis,
+                sample.wingNormalAxis,
+            ]
+            let axes = vectors.flatMap { [$0.x, $0.y, $0.z] }
+            return sample.totalBoundaryLinkCount > 0
+                && sample.relativeReconstructionClosureResidual.isFinite
+                && axes.allSatisfy(\.isFinite)
+                && sample.directions.allSatisfy { direction in
+                    [
+                        direction.rawReflectedPopulationSum,
+                        direction.reflectedIncomingPopulationSum,
+                        direction.interpolationAuxiliaryPopulationSum,
+                        direction.movingWallPopulationSum,
+                        direction.reconstructedIncomingPopulationSum,
+                        direction.absoluteIncomingPopulationSum,
+                        direction.squaredIncomingPopulationSum,
+                        direction.linkFractionSum,
+                        direction.squaredLinkFractionSum,
+                        direction.wallProjectionSum,
+                        direction.absoluteWallProjectionSum,
+                        direction.wallSpeedSum,
+                    ].allSatisfy(\.isFinite)
+                }
+        }
+        let reconstructionPassed = maximumClosure
+            <= maximumBoundarySourceReconstructionClosureResidual
+        let branchPassed = samples.allSatisfy {
+            $0.branchCountClosurePassed
+        }
+        let passed = finite && reconstructionPassed && branchPassed
+        return FormationFlightBoundarySourceCensusReport(
+            schemaVersion: schemaVersion,
+            scientificScope: "read-only owner- and D3Q19-direction-resolved census of the exact interpolated formation boundary reconstruction; diagnostic source attribution, not a force or formation-benefit measurement",
+            samples: samples,
+            maximumRelativeReconstructionClosureResidual: maximumClosure,
+            maximumAllowedRelativeReconstructionClosureResidual:
+                maximumBoundarySourceReconstructionClosureResidual,
+            finite: finite,
+            reconstructionClosurePassed: reconstructionPassed,
+            branchCountClosurePassed: branchPassed,
+            passed: passed,
+            scientificVerdict: passed
+                ? "every direction closes reconstructed incoming population to reflected, interpolation, and moving-wall source terms with exact branch accounting"
+                : "boundary source census is rejected because reconstruction, branch accounting, support, or finiteness failed"
         )
     }
 
@@ -866,6 +1883,88 @@ private extension MetalFormationFlightValidator {
         ].allSatisfy(\.isFinite)
     }
 
+    static func phaseSampleIsFinite(
+        _ value: FormationFlightPhaseSample
+    ) -> Bool {
+        [
+            value.leaderPhase,
+            value.followerPhase,
+            value.leaderLiftCoefficient,
+            value.followerLiftCoefficient,
+            value.leaderDragCoefficient,
+            value.followerDragCoefficient,
+            value.leaderSignedPowerWatts,
+            value.followerSignedPowerWatts,
+            Double(value.leaderForceNewtons.x),
+            Double(value.leaderForceNewtons.y),
+            Double(value.leaderForceNewtons.z),
+            Double(value.followerForceNewtons.x),
+            Double(value.followerForceNewtons.y),
+            Double(value.followerForceNewtons.z),
+        ].allSatisfy(\.isFinite)
+    }
+
+    static func relativeReferenceDifference(
+        leader: FormationFlyerPowerSummary,
+        follower: FormationFlyerPowerSummary,
+        phaseSamples: [FormationFlightPhaseSample],
+        reference: FormationFlightReport
+    ) -> Double {
+        func summaryValues(_ value: FormationFlyerPowerSummary) -> [Double] {
+            [
+                value.meanSignedPowerWatts,
+                value.meanPositivePowerWatts,
+                value.rmsPowerWatts,
+                value.maximumPositivePowerWatts,
+                value.meanLiftCoefficient,
+                value.meanDragCoefficient,
+            ]
+        }
+        func phaseValues(_ values: [FormationFlightPhaseSample]) -> [Double] {
+            values.flatMap { value in
+                [
+                    value.leaderLiftCoefficient,
+                    value.followerLiftCoefficient,
+                    value.leaderDragCoefficient,
+                    value.followerDragCoefficient,
+                    value.leaderSignedPowerWatts,
+                    value.followerSignedPowerWatts,
+                    Double(value.leaderForceNewtons.x),
+                    Double(value.leaderForceNewtons.y),
+                    Double(value.leaderForceNewtons.z),
+                    Double(value.followerForceNewtons.x),
+                    Double(value.followerForceNewtons.y),
+                    Double(value.followerForceNewtons.z),
+                ]
+            }
+        }
+        func relativeRMS(_ values: [Double], _ baseline: [Double]) -> Double {
+            guard values.count == baseline.count, !values.isEmpty else {
+                return .infinity
+            }
+            let numerator = sqrt(average(zip(values, baseline).map {
+                let difference = $0.0 - $0.1
+                return difference * difference
+            }))
+            let denominator = max(
+                sqrt(average(baseline.map { $0 * $0 })),
+                1.0e-12
+            )
+            return numerator / denominator
+        }
+        return max(
+            relativeRMS(summaryValues(leader), summaryValues(reference.coupledLeader)),
+            relativeRMS(
+                summaryValues(follower),
+                summaryValues(reference.coupledFollower)
+            ),
+            relativeRMS(
+                phaseValues(phaseSamples),
+                phaseValues(reference.phaseSamples)
+            )
+        )
+    }
+
     static func average(_ values: [Double]) -> Double {
         values.isEmpty ? 0 : values.reduce(0, +) / Double(values.count)
     }
@@ -940,18 +2039,32 @@ private final class MetalFormationFlightSimulation {
     private let followerHistory: MTLBuffer
     private let flowFieldHistory: MTLBuffer?
     private let flowOwnerHistory: MTLBuffer?
+    private let mechanismProbeHistory: MTLBuffer?
+    private let collisionDiagnosticHistory: MTLBuffer?
+    private let boundarySourceReductionA: MTLBuffer?
+    private let boundarySourceReductionB: MTLBuffer?
+    private let boundarySourceCensusHistory: MTLBuffer?
     private let bodyState: MTLBuffer
     private let preparePipeline: MTLComputePipelineState
     private let geometryPipeline: MTLComputePipelineState
     private let initializePipeline: MTLComputePipelineState
     private let fluidPipeline: MTLComputePipelineState
     private let ownerLoadPipeline: MTLComputePipelineState
+    private let mechanismComponentPipeline: MTLComputePipelineState?
+    private let boundarySourceCensusPipeline: MTLComputePipelineState?
+    private let boundarySourceReductionPipeline: MTLComputePipelineState?
+    private let boundarySourceStorePipeline: MTLComputePipelineState?
     private let reductionPipeline: MTLComputePipelineState
     private let storePipeline: MTLComputePipelineState
     private let captureFlowSlicePipeline: MTLComputePipelineState?
     private let partialLoadCount: Int
     private let captureTargets: [FormationCaptureTarget]
     private let captureSlotsByStep: [Int: Int]
+    private let boundarySourceCaptureSlots: Set<Int>
+    private let captureMechanismProbes: Bool
+    private let captureBoundarySourceCensus: Bool
+    private let collisionOperator: MetalIndexedBirdSurfaceCollisionOperator
+    private let captureCollisionDiagnostics: Bool
     private var currentPopulations: MTLBuffer
     private var nextPopulations: MTLBuffer
     private var currentSolid: MTLBuffer
@@ -963,16 +2076,29 @@ private final class MetalFormationFlightSimulation {
         request: FormationFlightConfiguration,
         layout: FormationLayout,
         activeOwners: UInt32,
-        captureTargets: [FormationCaptureTarget]
+        captureTargets: [FormationCaptureTarget],
+        captureMechanismProbes: Bool,
+        captureBoundarySourceCensus: Bool,
+        collisionOperator: MetalIndexedBirdSurfaceCollisionOperator,
+        captureCollisionDiagnostics: Bool
     ) throws {
         self.backend = backend
         self.request = request
         self.layout = layout
         self.activeOwners = activeOwners
         self.captureTargets = captureTargets
+        self.captureMechanismProbes = captureMechanismProbes
+        self.captureBoundarySourceCensus = captureBoundarySourceCensus
+        self.collisionOperator = collisionOperator
+        self.captureCollisionDiagnostics = captureCollisionDiagnostics
         captureSlotsByStep = Dictionary(
             uniqueKeysWithValues: captureTargets.map {
                 ($0.absoluteStep, $0.slot)
+            }
+        )
+        boundarySourceCaptureSlots = Set(
+            captureTargets.compactMap {
+                abs($0.phase) > 1.0e-12 ? $0.slot : nil
             }
         )
         configuration = try SimulationConfiguration(
@@ -1051,6 +2177,26 @@ private final class MetalFormationFlightSimulation {
         ownerLoadPipeline = try backend.pipeline(
             named: "capturePrescribedFormationLoad"
         )
+        mechanismComponentPipeline = captureMechanismProbes
+            ? try backend.pipeline(
+                named: "capturePrescribedFormationLoadComponent"
+            )
+            : nil
+        boundarySourceCensusPipeline = captureBoundarySourceCensus
+            ? try backend.pipeline(
+                named: "capturePrescribedFormationBoundarySourceCensus"
+            )
+            : nil
+        boundarySourceReductionPipeline = captureBoundarySourceCensus
+            ? try backend.pipeline(
+                named: "reduceFormationBoundarySourceCensus"
+            )
+            : nil
+        boundarySourceStorePipeline = captureBoundarySourceCensus
+            ? try backend.pipeline(
+                named: "storeFormationBoundarySourceCensus"
+            )
+            : nil
         reductionPipeline = try backend.pipeline(named: "reduceForceTorque")
         storePipeline = try backend.pipeline(named: "storeForceTorqueSample")
         captureFlowSlicePipeline = captureTargets.isEmpty
@@ -1074,6 +2220,15 @@ private final class MetalFormationFlightSimulation {
             * MemoryLayout<SIMD2<Float>>.stride
         let flowOwnerHistoryBytes = captureTargets.count * sliceCells
             * MemoryLayout<UInt8>.stride
+        let mechanismProbeHistoryBytes = captureTargets.count * 2 * 5
+            * MemoryLayout<GPUForceTorque>.stride
+        let collisionDiagnosticHistoryBytes = request.cycles
+            * layout.cycleSteps * MemoryLayout<GPUForceTorque>.stride
+        let boundarySourceReductionBytes = partialLoadCount
+            * MemoryLayout<GPUFormationBoundarySourceCensus>.stride
+        let boundarySourceCensusHistoryBytes = captureTargets.count * 2
+            * (D3Q19.count - 1)
+            * MemoryLayout<GPUFormationBoundarySourceCensus>.stride
         var allocationLengths = [
             leaderParameters.length,
             followerParameters.length,
@@ -1099,6 +2254,17 @@ private final class MetalFormationFlightSimulation {
             allocationLengths.append(flowFieldHistoryBytes)
             allocationLengths.append(flowOwnerHistoryBytes)
         }
+        if captureMechanismProbes {
+            allocationLengths.append(mechanismProbeHistoryBytes)
+        }
+        if captureCollisionDiagnostics {
+            allocationLengths.append(collisionDiagnosticHistoryBytes)
+        }
+        if captureBoundarySourceCensus {
+            allocationLengths.append(boundarySourceReductionBytes)
+            allocationLengths.append(boundarySourceReductionBytes)
+            allocationLengths.append(boundarySourceCensusHistoryBytes)
+        }
         try backend.validateAllocationPlan(bufferLengths: allocationLengths)
         populationsA = try backend.makePrivateBuffer(length: populationBytes)
         populationsB = try backend.makePrivateBuffer(length: populationBytes)
@@ -1118,6 +2284,25 @@ private final class MetalFormationFlightSimulation {
         flowOwnerHistory = captureTargets.isEmpty
             ? nil
             : try backend.makeSharedBuffer(length: flowOwnerHistoryBytes)
+        mechanismProbeHistory = captureMechanismProbes
+            ? try backend.makeSharedBuffer(length: mechanismProbeHistoryBytes)
+            : nil
+        collisionDiagnosticHistory = captureCollisionDiagnostics
+            ? try backend.makeSharedBuffer(
+                length: collisionDiagnosticHistoryBytes
+            )
+            : nil
+        boundarySourceReductionA = captureBoundarySourceCensus
+            ? try backend.makeSharedBuffer(length: boundarySourceReductionBytes)
+            : nil
+        boundarySourceReductionB = captureBoundarySourceCensus
+            ? try backend.makeSharedBuffer(length: boundarySourceReductionBytes)
+            : nil
+        boundarySourceCensusHistory = captureBoundarySourceCensus
+            ? try backend.makeSharedBuffer(
+                length: boundarySourceCensusHistoryBytes
+            )
+            : nil
         bodyState = try backend.makeSharedBuffer(
             value: GPUBirdBodyState(BirdBodyState(positionMeters: .zero))
         )
@@ -1214,6 +2399,22 @@ private final class MetalFormationFlightSimulation {
                         history: followerHistory,
                         sampleIndex: sample
                     )
+                    if let captureSlot, captureMechanismProbes {
+                        try encodeMechanismProbe(
+                            commandBuffer: commandBuffer,
+                            uniforms: &leaderUniforms,
+                            slot: captureSlot
+                        )
+                    }
+                    if let captureSlot,
+                       captureBoundarySourceCensus,
+                       boundarySourceCaptureSlots.contains(captureSlot) {
+                        try encodeBoundarySourceCensus(
+                            commandBuffer: commandBuffer,
+                            uniforms: &leaderUniforms,
+                            slot: captureSlot
+                        )
+                    }
                 }
                 try encodeFluid(
                     commandBuffer: commandBuffer,
@@ -1227,17 +2428,27 @@ private final class MetalFormationFlightSimulation {
                         slot: captureSlot
                     )
                 }
-                if recordLoads {
+                if recordLoads || captureCollisionDiagnostics {
                     let sample = (absoluteStep - 1) % layout.cycleSteps
                     let total = try encodeReduction(
                         commandBuffer: commandBuffer
                     )
-                    try encodeStore(
-                        commandBuffer: commandBuffer,
-                        load: total,
-                        history: totalHistory,
-                        sampleIndex: sample
-                    )
+                    if recordLoads {
+                        try encodeStore(
+                            commandBuffer: commandBuffer,
+                            load: total,
+                            history: totalHistory,
+                            sampleIndex: sample
+                        )
+                    }
+                    if let collisionDiagnosticHistory {
+                        try encodeStore(
+                            commandBuffer: commandBuffer,
+                            load: total,
+                            history: collisionDiagnosticHistory,
+                            sampleIndex: absoluteStep - 1
+                        )
+                    }
                 }
                 swap(&currentPopulations, &nextPopulations)
                 swap(&currentSolid, &nextSolid)
@@ -1259,6 +2470,84 @@ private final class MetalFormationFlightSimulation {
             total: copy(totalHistory),
             leader: copy(leaderHistory),
             follower: copy(followerHistory)
+        )
+    }
+
+    func copyMechanismProbeComponents()
+        -> [FormationRawMechanismProbeSample] {
+        guard captureMechanismProbes,
+              let history = mechanismProbeHistory else { return [] }
+        let pointer = history.contents()
+            .assumingMemoryBound(to: GPUForceTorque.self)
+        return captureTargets.flatMap { target in
+            FormationFlyerID.allCases.enumerated().map { flyerIndex, flyer in
+                let base = (target.slot * 2 + flyerIndex) * 5
+                return FormationRawMechanismProbeSample(
+                    target: target,
+                    flyer: flyer,
+                    components: (0..<5).map {
+                        pointer[base + $0].coreValue
+                    }
+                )
+            }
+        }
+    }
+
+    func copyBoundarySourceCensusSamples()
+        -> [FormationRawBoundarySourceCensusSample] {
+        guard captureBoundarySourceCensus,
+              let history = boundarySourceCensusHistory else { return [] }
+        let pointer = history.contents()
+            .assumingMemoryBound(
+                to: GPUFormationBoundarySourceCensus.self
+            )
+        return captureTargets.filter {
+            boundarySourceCaptureSlots.contains($0.slot)
+        }.flatMap { target in
+            FormationFlyerID.allCases.enumerated().map { ownerIndex, flyer in
+                let base = (target.slot * 2 + ownerIndex)
+                    * (D3Q19.count - 1)
+                var directions = [GPUFormationBoundarySourceCensus.zero]
+                directions.append(contentsOf: (1..<D3Q19.count).map {
+                    pointer[base + $0 - 1]
+                })
+                return FormationRawBoundarySourceCensusSample(
+                    target: target,
+                    flyer: flyer,
+                    directions: directions
+                )
+            }
+        }
+    }
+
+    func copyCollisionDiagnostics() -> FormationRawCollisionDiagnostics? {
+        guard captureCollisionDiagnostics,
+              let history = collisionDiagnosticHistory else { return nil }
+        let sampleCount = request.cycles * layout.cycleSteps
+        let pointer = history.contents()
+            .assumingMemoryBound(to: GPUForceTorque.self)
+        let cellCount = Double(layout.grid.cellCount)
+        var minimumPopulation = Double.infinity
+        var activationCellSteps = 0.0
+        var maximumStepActivationFraction = 0.0
+        var finite = true
+        for index in 0..<sampleCount {
+            let minimum = 1 - Double(pointer[index].torque.w)
+            let activations = Double(pointer[index].force.w)
+            finite = finite && minimum.isFinite && activations.isFinite
+            minimumPopulation = min(minimumPopulation, minimum)
+            activationCellSteps += activations
+            maximumStepActivationFraction = max(
+                maximumStepActivationFraction,
+                activations / cellCount
+            )
+        }
+        return FormationRawCollisionDiagnostics(
+            minimumPopulation: minimumPopulation,
+            activationCellSteps: activationCellSteps,
+            observedCellSteps: cellCount * Double(sampleCount),
+            maximumStepActivationFraction: maximumStepActivationFraction,
+            allFinite: finite
         )
     }
 
@@ -1338,15 +2627,23 @@ private final class MetalFormationFlightSimulation {
         hasPreviousGeometry: Bool,
         captureFields: Bool = false
     ) -> GPUUniforms {
-        GPUUniforms(
+        var uniforms = GPUUniforms(
             configuration: configuration,
             time: time,
             captureMacroscopicFields: captureFields,
-            accumulateLoads: accumulateLoads,
+            accumulateLoads:
+                accumulateLoads || captureCollisionDiagnostics,
             hasPreviousGeometry: hasPreviousGeometry,
             periodicBoundaries: false,
-            caseParameters: SIMD4<Float>(0, 6, 0, -1)
+            caseParameters: SIMD4<Float>(
+                0,
+                6,
+                0,
+                collisionOperator.caseParameterW
+            )
         )
+        uniforms.integration.z = captureCollisionDiagnostics ? 1 : 0
+        return uniforms
     }
 
     private func initialize() throws {
@@ -1549,6 +2846,190 @@ private final class MetalFormationFlightSimulation {
             count: layout.grid.x * layout.grid.z
         )
         encoder.endEncoding()
+    }
+
+    private func encodeBoundarySourceCensus(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        slot: Int
+    ) throws {
+        guard let pipeline = boundarySourceCensusPipeline,
+              let partials = boundarySourceReductionA,
+              let history = boundarySourceCensusHistory else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to capture a formation boundary-source census."
+            )
+        }
+        for ownerIndex in 0..<2 {
+            for direction in 1..<D3Q19.count {
+                guard let encoder = commandBuffer.makeComputeCommandEncoder()
+                else {
+                    throw BirdFlowError.commandBufferFailed(
+                        "Unable to encode a formation boundary-source direction."
+                    )
+                }
+                var selection = SIMD2<UInt32>(
+                    UInt32(ownerIndex + 1),
+                    UInt32(direction)
+                )
+                encoder.setBuffer(currentPopulations, offset: 0, index: 0)
+                encoder.setBuffer(nextSolid, offset: 0, index: 1)
+                encoder.setBuffer(wallVelocity, offset: 0, index: 2)
+                encoder.setBuffer(partials, offset: 0, index: 3)
+                encoder.setBytes(
+                    &uniforms,
+                    length: MemoryLayout<GPUUniforms>.stride,
+                    index: 4
+                )
+                encoder.setBytes(
+                    &selection,
+                    length: MemoryLayout<SIMD2<UInt32>>.stride,
+                    index: 5
+                )
+                backend.dispatch1DPadded(
+                    encoder: encoder,
+                    pipeline: pipeline,
+                    count: layout.grid.cellCount,
+                    threadsPerThreadgroup: 256
+                )
+                encoder.endEncoding()
+                let total = try encodeBoundarySourceReduction(
+                    commandBuffer: commandBuffer
+                )
+                try encodeBoundarySourceStore(
+                    commandBuffer: commandBuffer,
+                    total: total,
+                    history: history,
+                    sampleIndex: (slot * 2 + ownerIndex)
+                        * (D3Q19.count - 1) + direction - 1
+                )
+            }
+        }
+    }
+
+    private func encodeBoundarySourceReduction(
+        commandBuffer: MTLCommandBuffer
+    ) throws -> MTLBuffer {
+        guard let pipeline = boundarySourceReductionPipeline,
+              let first = boundarySourceReductionA,
+              let second = boundarySourceReductionB else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to reduce a formation boundary-source census."
+            )
+        }
+        var input = first
+        var output = second
+        var count = partialLoadCount
+        while count > 1 {
+            let outputCount = (count + 255) / 256
+            var count32 = UInt32(count)
+            guard let encoder = commandBuffer.makeComputeCommandEncoder()
+            else {
+                throw BirdFlowError.commandBufferFailed(
+                    "Unable to encode formation boundary-source reduction."
+                )
+            }
+            encoder.setBuffer(input, offset: 0, index: 0)
+            encoder.setBuffer(output, offset: 0, index: 1)
+            encoder.setBytes(
+                &count32,
+                length: MemoryLayout<UInt32>.stride,
+                index: 2
+            )
+            backend.dispatch1D(
+                encoder: encoder,
+                pipeline: pipeline,
+                count: outputCount
+            )
+            encoder.endEncoding()
+            count = outputCount
+            input = output
+            output = output === first ? second : first
+        }
+        return input
+    }
+
+    private func encodeBoundarySourceStore(
+        commandBuffer: MTLCommandBuffer,
+        total: MTLBuffer,
+        history: MTLBuffer,
+        sampleIndex: Int
+    ) throws {
+        guard let pipeline = boundarySourceStorePipeline,
+              let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to store a formation boundary-source census."
+            )
+        }
+        var index = UInt32(sampleIndex)
+        encoder.setBuffer(total, offset: 0, index: 0)
+        encoder.setBuffer(history, offset: 0, index: 1)
+        encoder.setBytes(
+            &index,
+            length: MemoryLayout<UInt32>.stride,
+            index: 2
+        )
+        backend.dispatch1D(encoder: encoder, pipeline: pipeline, count: 1)
+        encoder.endEncoding()
+    }
+
+    private func encodeMechanismProbe(
+        commandBuffer: MTLCommandBuffer,
+        uniforms: inout GPUUniforms,
+        slot: Int
+    ) throws {
+        guard let pipeline = mechanismComponentPipeline,
+              let history = mechanismProbeHistory else {
+            throw BirdFlowError.commandBufferFailed(
+                "Unable to capture a formation mechanism probe."
+            )
+        }
+        for ownerIndex in 0..<2 {
+            for component in 0..<5 {
+                guard let encoder = commandBuffer.makeComputeCommandEncoder()
+                else {
+                    throw BirdFlowError.commandBufferFailed(
+                        "Unable to encode a formation mechanism component."
+                    )
+                }
+                var selection = SIMD2<UInt32>(
+                    UInt32(ownerIndex + 1),
+                    UInt32(component)
+                )
+                encoder.setBuffer(currentPopulations, offset: 0, index: 0)
+                encoder.setBuffer(currentSolid, offset: 0, index: 1)
+                encoder.setBuffer(nextSolid, offset: 0, index: 2)
+                encoder.setBuffer(wallVelocity, offset: 0, index: 3)
+                encoder.setBuffer(reductionA, offset: 0, index: 4)
+                encoder.setBuffer(leaderPrepared, offset: 0, index: 5)
+                encoder.setBuffer(followerPrepared, offset: 0, index: 6)
+                encoder.setBytes(
+                    &uniforms,
+                    length: MemoryLayout<GPUUniforms>.stride,
+                    index: 7
+                )
+                encoder.setBytes(
+                    &selection,
+                    length: MemoryLayout<SIMD2<UInt32>>.stride,
+                    index: 8
+                )
+                encoder.setBuffer(velocity, offset: 0, index: 9)
+                backend.dispatch1DPadded(
+                    encoder: encoder,
+                    pipeline: pipeline,
+                    count: layout.grid.cellCount,
+                    threadsPerThreadgroup: 256
+                )
+                encoder.endEncoding()
+                let load = try encodeReduction(commandBuffer: commandBuffer)
+                try encodeStore(
+                    commandBuffer: commandBuffer,
+                    load: load,
+                    history: history,
+                    sampleIndex: (slot * 2 + ownerIndex) * 5 + component
+                )
+            }
+        }
     }
 
     private func encodeOwnerLoad(

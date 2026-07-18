@@ -1,0 +1,179 @@
+{
+  "cases": {
+    "c16": {
+      "mechanismClosure": {
+        "force": 2.3154537222092334e-07,
+        "power": 6.137125474829496e-08,
+        "torque": 1.3418201695709867e-07
+      },
+      "mechanismPath": "ValidationArtifacts/formation-flight-mechanism-probe/c16-best-z3-phase025/formation-flight-mechanism-probes.json",
+      "mechanismSHA256": "d8c2b69a8249900c200adcce8195233791d99bfa496308c793a20444a00ee12b",
+      "referenceHistoryRelativeDifference": 0,
+      "replayPath": "ValidationArtifacts/formation-flight-mechanism-probe/c16-best-z3-phase025/formation-flight-field-replay-report.json",
+      "replaySHA256": "20808d0a8f5f0108b79aaf5ac904925c1adee882b7b06b22e7e3672efd7868b9",
+      "runtimeSeconds": 864.6970399618149
+    },
+    "c20": {
+      "mechanismClosure": {
+        "force": 1.8779576944233189e-07,
+        "power": 8.15055502784035e-08,
+        "torque": 1.2023354187871327e-07
+      },
+      "mechanismPath": "ValidationArtifacts/formation-flight-mechanism-probe/c20-best-z3-phase025/formation-flight-mechanism-probes.json",
+      "mechanismSHA256": "dd91c9aa89323bee2bd7a02b98b11a12a55ff6b1df1429875ec2a2c2f10a7b8a",
+      "referenceHistoryRelativeDifference": 0,
+      "replayPath": "ValidationArtifacts/formation-flight-mechanism-probe/c20-best-z3-phase025/formation-flight-field-replay-report.json",
+      "replaySHA256": "400b1f0b7bc7361de819f322ffebeeb3d01babc46ad306635a19b3ff79f68cb6",
+      "runtimeSeconds": 2210.352303981781
+    }
+  },
+  "claimBoundary": "This probe can localize the numerical mechanism behind the stopped refinement ladder. It cannot authorize a quantitative formation-power benefit or a biological bird claim.",
+  "classification": "wakeTransportDominated",
+  "nextAction": "test wake-core transport with a localized refinement or advection discriminator",
+  "phaseResults": [
+    {
+      "componentAttributionFraction": {
+        "coverImpulse": 0.02568359872702708,
+        "interpolationAuxiliary": 0.34685404879245596,
+        "movingWall": 0.5043081714915325,
+        "reflectedPopulation": 0.000888256694234338,
+        "uncoverImpulse": 0.12226592429475015
+      },
+      "componentDifferenceCancellationConditionNumber": 16.670671829511477,
+      "componentDifferenceL1": 0.5801224081566045,
+      "differenceClosureAbsolute": 1.1860258821022596e-06,
+      "dominantComponent": "movingWall",
+      "dominantComponentAttributionFraction": 0.5043081714915325,
+      "label": "nearBoundary",
+      "nearBoundaryResidualEnergyFraction": 0.6003601432444668,
+      "normalizedComponentPowerDifferenceC20MinusC16": {
+        "coverImpulse": -0.014899631143650852,
+        "interpolationAuxiliary": 0.20121780606434797,
+        "movingWall": -0.2925604708987217,
+        "reflectedPopulation": 0.0005152976125204489,
+        "uncoverImpulse": 0.07092920243736356
+      },
+      "normalizedProductionPowerDifferenceC20MinusC16": -0.0347989819540227,
+      "normalizedReconstructedPowerDifferenceC20MinusC16": -0.0347977959281406,
+      "outsideBoundaryResidualEnergyFraction": 0.39963985675553315,
+      "resolutions": {
+        "c16": {
+          "actualFollowerPhase": 0.03501400560224077,
+          "actualLeaderPhase": 0.7850140056022409,
+          "componentCancellationConditionNumber": 42.06413716994236,
+          "componentNormalizedPower": {
+            "coverImpulse": -0.08107617501466916,
+            "interpolationAuxiliary": 0.3587033031994628,
+            "movingWall": 7.430432960537641,
+            "reflectedPopulation": -6.183954094969437,
+            "uncoverImpulse": -1.16236059451095
+          },
+          "componentPowerL1": 15.21652712823216,
+          "normalizationWatts": 0.042497516304485894,
+          "productionNormalizedPower": 0.36174585173959983,
+          "reconstructedNormalizedPower": 0.3617454662091126,
+          "relativeForceClosureResidual": 1.6931808043569223e-07,
+          "relativePowerClosureResidual": 2.5336299409296728e-08,
+          "relativeTorqueClosureResidual": 4.819177125070732e-08
+        },
+        "c20": {
+          "actualFollowerPhase": 0.03506069094304376,
+          "actualLeaderPhase": 0.7850606909430439,
+          "componentCancellationConditionNumber": 46.08895507815713,
+          "componentNormalizedPower": {
+            "coverImpulse": -0.09597580615832,
+            "interpolationAuxiliary": 0.5599211092638108,
+            "movingWall": 7.137872489638919,
+            "reflectedPopulation": -6.183438797356916,
+            "uncoverImpulse": -1.0914313920735865
+          },
+          "componentPowerL1": 15.068639594491552,
+          "normalizationWatts": 0.06739361686158332,
+          "productionNormalizedPower": 0.32694686978557713,
+          "reconstructedNormalizedPower": 0.3269475151496974,
+          "relativeForceClosureResidual": 1.5337907302740815e-07,
+          "relativePowerClosureResidual": 4.2828293569532906e-08,
+          "relativeTorqueClosureResidual": 1.2023354187871327e-07
+        }
+      },
+      "targetFollowerPhase": 0.035,
+      "verticalVelocityNormalizedRMSDifference": 0.07391157464835113,
+      "vorticityNormalizedRMSDifference": 0.2300568991804648
+    },
+    {
+      "componentAttributionFraction": {
+        "coverImpulse": 0.01987659919912777,
+        "interpolationAuxiliary": 0.05154002403947881,
+        "movingWall": 0.4195174211563478,
+        "reflectedPopulation": 0.4819401680292671,
+        "uncoverImpulse": 0.027125787575778628
+      },
+      "componentDifferenceCancellationConditionNumber": 14.934308891214098,
+      "componentDifferenceL1": 2.2277655872162954,
+      "differenceClosureAbsolute": 1.0531745590069974e-06,
+      "dominantComponent": "reflectedPopulation",
+      "dominantComponentAttributionFraction": 0.4819401680292671,
+      "label": "wake",
+      "nearBoundaryResidualEnergyFraction": 0.25284921847653435,
+      "normalizedComponentPowerDifferenceC20MinusC16": {
+        "coverImpulse": -0.044280403686707825,
+        "interpolationAuxiliary": 0.1148190919194515,
+        "movingWall": -0.9345864740898371,
+        "reflectedPopulation": 1.0736497214328402,
+        "uncoverImpulse": -0.06042989608745897
+      },
+      "normalizedProductionPowerDifferenceC20MinusC16": 0.14917098631372872,
+      "normalizedReconstructedPowerDifferenceC20MinusC16": 0.14917203948828772,
+      "outsideBoundaryResidualEnergyFraction": 0.7471507815234657,
+      "resolutions": {
+        "c16": {
+          "actualFollowerPhase": 0.0950046685340804,
+          "actualLeaderPhase": 0.8450046685340803,
+          "componentCancellationConditionNumber": 64.2789513601065,
+          "componentNormalizedPower": {
+            "coverImpulse": -0.9826145426573046,
+            "interpolationAuxiliary": 0.9386497042337166,
+            "movingWall": 31.35133684013536,
+            "reflectedPopulation": -27.97553598570228,
+            "uncoverImpulse": -2.342541808784253
+          },
+          "componentPowerL1": 63.590678881512915,
+          "normalizationWatts": 0.042497516304485894,
+          "productionNormalizedPower": 0.9892924127722975,
+          "reconstructedNormalizedPower": 0.9892949070862487,
+          "relativeForceClosureResidual": 2.2656416630378997e-08,
+          "relativePowerClosureResidual": 3.9224521503266464e-08,
+          "relativeTorqueClosureResidual": 3.829749505370186e-08
+        },
+        "c20": {
+          "actualFollowerPhase": 0.0950046685340804,
+          "actualLeaderPhase": 0.8450046685340803,
+          "componentCancellationConditionNumber": 54.285427293753415,
+          "componentNormalizedPower": {
+            "coverImpulse": -1.0268949463440125,
+            "interpolationAuxiliary": 1.0534687961531681,
+            "movingWall": 30.416750366045523,
+            "reflectedPopulation": -26.90188626426944,
+            "uncoverImpulse": -2.402971704871712
+          },
+          "componentPowerL1": 61.80197207768386,
+          "normalizationWatts": 0.06739361686158332,
+          "productionNormalizedPower": 1.1384633990860262,
+          "reconstructedNormalizedPower": 1.138467248822407,
+          "relativeForceClosureResidual": 5.376722450851429e-08,
+          "relativePowerClosureResidual": 6.229148118306568e-08,
+          "relativeTorqueClosureResidual": 6.165306101210196e-08
+        }
+      },
+      "targetFollowerPhase": 0.095,
+      "verticalVelocityNormalizedRMSDifference": 0.07414474810698538,
+      "vorticityNormalizedRMSDifference": 0.23161358000151033
+    }
+  ],
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-mechanism-probe-v1.json",
+    "sha256": "ad443105541dd034b440c92ff026badb225f9d30f131f4cfc5ecf8084a1ca6f0"
+  },
+  "quantitativeFormationClaimAuthorized": false,
+  "schemaVersion": 1
+}

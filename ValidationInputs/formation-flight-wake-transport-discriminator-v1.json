@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight wake-core transport versus amplitude discriminator",
+  "preregisteredBeforeAnalysis": true,
+  "scientificQuestion": "Does a bounded spatial displacement of the c16 wake explain the late early-cycle c20 field difference, or does a substantial amplitude/diffusion residual remain after alignment?",
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-summary.json",
+      "sha256": "508ab84e94736777c0f040b16f951c4cc9eaee29594b6e5fa5aff13cff15e67a"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-audit.json",
+      "sha256": "fb30bc56d97d842c9f39c38e8f0d6213a98df115a1b7bf44aafc9a8e14f6e091"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-early-cycle-replay/formation-flight-early-cycle-field-summary.json",
+      "sha256": "48f50242359611d68608128d99fd1b73981764f9f546964b91db78b0a2420cd5"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-mechanism-probe-v1.json",
+      "sha256": "ad443105541dd034b440c92ff026badb225f9d30f131f4cfc5ecf8084a1ca6f0"
+    }
+  ],
+  "sourceClassificationRequired": "wakeTransportDominated",
+  "followerLocalPhases": [
+    0.055,
+    0.065,
+    0.075,
+    0.085,
+    0.095
+  ],
+  "wakeRegionChords": {
+    "centerX": 2.322078935781556,
+    "centerZ": -1.134601139923286,
+    "halfWidthX": 1.5,
+    "halfWidthZ": 2.25,
+    "selectionSource": "locked phase-0.095 outside-boundary residual centroid"
+  },
+  "commonGrid": {
+    "targetResolution": 20,
+    "coarseScalarInterpolation": "bilinear cell-center mapping",
+    "coarseOwnerInterpolation": "nearest cell-center mapping",
+    "solidExclusion": "union of either-grid owner masks plus one c20-cell dilation"
+  },
+  "alignmentSearch": {
+    "shiftedField": "mapped c16",
+    "maximumAbsoluteShiftChords": 0.5,
+    "shiftIncrementChords": 0.05,
+    "interpolation": "bilinear with invalid edge fill",
+    "objective": "minimum combined normalized squared residual energy of signed vertical velocity and vorticity magnitude in the locked wake region",
+    "normalization": "each signal divided by the larger unshifted c16/c20 RMS over the common valid wake region"
+  },
+  "decisionRule": {
+    "aggregateDefinition": "sum unshifted and optimally shifted normalized residual energy across all five locked phases before taking the reduction fraction",
+    "displacementDominatedMinimumReductionFraction": 0.5,
+    "amplitudeDiffusionDominatedMaximumReductionFraction": 0.25,
+    "ifDisplacementDominated": "promote a localized wake-following refinement centered on the measured displacement path",
+    "ifAmplitudeDiffusionDominated": "test collision/advection dissipation in the locked wake region before spatial refinement",
+    "ifMixed": "retain both spatial transport and amplitude pathways in one localized discriminator"
+  },
+  "claimBoundary": "Spatial registration is a numerical mechanism diagnostic. It cannot authorize the formation-power magnitude, establish biological formation benefit, or replace a refinement study."
+}

@@ -1,0 +1,1187 @@
+{
+  "csvPath": "ValidationArtifacts/formation-flight-link-sampling-subdecomposition/formation-flight-link-sampling-subdecomposition-directions.csv",
+  "figurePaths": [
+    "Docs/Media/formation-flight-link-sampling-subdecomposition.png",
+    "Docs/Media/formation-flight-link-sampling-subdecomposition.svg"
+  ],
+  "maximumAbsoluteIdentityResidual": 3.7730235602495554e-17,
+  "newFluidSimulationRequired": false,
+  "nextAction": "run one geometry-only c18 bridge at the primary phase and retain both geometric pathways",
+  "parentAudit": {
+    "path": "ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-audit.json",
+    "sha256": "6d5c0849db58f3d38e4612f54682d9f303ea52d5e0d64080ec3f35b2f17464cc"
+  },
+  "parentSummary": {
+    "path": "ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-summary.json",
+    "sha256": "e2820ecabaaf831fd31dfa657bef6408da679ca3ee89afa18e8959db12700bfc"
+  },
+  "passed": true,
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-link-sampling-subdecomposition-v1.json",
+    "sha256": "f4cf8959fbf2987bce479b2e594a8cb0d6630f3fa5f392d30dfd275258b6ea9b"
+  },
+  "primaryClassification": "mixedDensityAndDirection",
+  "probeResults": [
+    {
+      "arealLinkDensityPerChordSquared": {
+        "c16": 33.7265625,
+        "c20": 33.265
+      },
+      "attributionFraction": {
+        "arealLinkDensity": 0.47549535255331704,
+        "directionRedistribution": 0.524504647446683
+      },
+      "classification": "mixedDensityAndDirection",
+      "directionDistributionTotalVariation": 0.007694822335753552,
+      "directions": [
+        {
+          "arealLinkDensityTerm": -0.0,
+          "c16DirectionProbability": 0.0,
+          "c20DirectionProbability": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "directionRedistributionTerm": 0.0,
+          "identityResidual": 0.0,
+          "parentLinkSamplingTerm": 0.0
+        },
+        {
+          "arealLinkDensityTerm": -0.0008635621034295686,
+          "c16DirectionProbability": 0.016909891128098216,
+          "c20DirectionProbability": 0.016984818878701336,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "directionRedistributionTerm": 0.00027707282845094224,
+          "identityResidual": -2.710505431213761e-18,
+          "parentLinkSamplingTerm": -0.0005864892749786291
+        },
+        {
+          "arealLinkDensityTerm": -0.0008700832430754,
+          "c16DirectionProbability": 0.016909891128098216,
+          "c20DirectionProbability": 0.016984818878701336,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "directionRedistributionTerm": 0.0002791651280078802,
+          "identityResidual": -2.8189256484623115e-18,
+          "parentLinkSamplingTerm": -0.0005909181150675226
+        },
+        {
+          "arealLinkDensityTerm": -0.0032649980786224704,
+          "c16DirectionProbability": 0.06265925411165162,
+          "c20DirectionProbability": 0.06380580189388246,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "directionRedistributionTerm": 0.004296295437849264,
+          "identityResidual": 8.673617379884035e-18,
+          "parentLinkSamplingTerm": 0.0010312973592268028
+        },
+        {
+          "arealLinkDensityTerm": -0.00324883796180813,
+          "c16DirectionProbability": 0.06265925411165162,
+          "c20DirectionProbability": 0.06380580189388246,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "directionRedistributionTerm": 0.004275030911968179,
+          "identityResidual": 8.673617379884035e-18,
+          "parentLinkSamplingTerm": 0.0010261929501600578
+        },
+        {
+          "arealLinkDensityTerm": -0.0032969508548290247,
+          "c16DirectionProbability": 0.0650914987259671,
+          "c20DirectionProbability": 0.0643318803547272,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "directionRedistributionTerm": -0.002808567000977505,
+          "identityResidual": -3.686287386450715e-17,
+          "parentLinkSamplingTerm": -0.006105517855806567
+        },
+        {
+          "arealLinkDensityTerm": -0.003313523949688639,
+          "c16DirectionProbability": 0.0650914987259671,
+          "c20DirectionProbability": 0.0643318803547272,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "directionRedistributionTerm": -0.0028226850905021354,
+          "identityResidual": -3.729655473350135e-17,
+          "parentLinkSamplingTerm": -0.006136209040190812
+        },
+        {
+          "arealLinkDensityTerm": -0.001264944275707596,
+          "c16DirectionProbability": 0.04841324994208941,
+          "c20DirectionProbability": 0.04967683751690967,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "directionRedistributionTerm": 0.0023650548068265475,
+          "identityResidual": -9.540979117872439e-18,
+          "parentLinkSamplingTerm": 0.0011001105311189423
+        },
+        {
+          "arealLinkDensityTerm": -0.0012588236164376187,
+          "c16DirectionProbability": 0.04841324994208941,
+          "c20DirectionProbability": 0.04967683751690967,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "directionRedistributionTerm": 0.0023536110658607177,
+          "identityResidual": -9.540979117872439e-18,
+          "parentLinkSamplingTerm": 0.0010947874494230895
+        },
+        {
+          "arealLinkDensityTerm": -0.001997114493406006,
+          "c16DirectionProbability": 0.07736854296965485,
+          "c20DirectionProbability": 0.07800992033669021,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "directionRedistributionTerm": 0.001196507326523806,
+          "identityResidual": 1.452830911130576e-17,
+          "parentLinkSamplingTerm": -0.0008006071668821858
+        },
+        {
+          "arealLinkDensityTerm": -0.002008177253742362,
+          "c16DirectionProbability": 0.07736854296965485,
+          "c20DirectionProbability": 0.07800992033669021,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "directionRedistributionTerm": 0.0012031352258444162,
+          "identityResidual": 1.474514954580286e-17,
+          "parentLinkSamplingTerm": -0.0008050420278979312
+        },
+        {
+          "arealLinkDensityTerm": -0.002014827748126107,
+          "c16DirectionProbability": 0.07910586055130878,
+          "c20DirectionProbability": 0.07913723132421463,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "directionRedistributionTerm": 5.797329336415724e-05,
+          "identityResidual": 2.7714918034160707e-18,
+          "parentLinkSamplingTerm": -0.001956854454761947
+        },
+        {
+          "arealLinkDensityTerm": -0.002027926256075593,
+          "c16DirectionProbability": 0.07910586055130878,
+          "c20DirectionProbability": 0.07913723132421463,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "directionRedistributionTerm": 5.835018098876662e-05,
+          "identityResidual": 2.473336205982557e-18,
+          "parentLinkSamplingTerm": -0.0019695760750868237
+        },
+        {
+          "arealLinkDensityTerm": -0.0012971440088461338,
+          "c16DirectionProbability": 0.05154042158906648,
+          "c20DirectionProbability": 0.049902299714414546,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "directionRedistributionTerm": -0.003040206639018121,
+          "identityResidual": -2.168404344971009e-18,
+          "parentLinkSamplingTerm": -0.004337350647864257
+        },
+        {
+          "arealLinkDensityTerm": -0.001293101819820547,
+          "c16DirectionProbability": 0.05154042158906648,
+          "c20DirectionProbability": 0.049902299714414546,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "directionRedistributionTerm": -0.003030732679436188,
+          "identityResidual": -2.168404344971009e-18,
+          "parentLinkSamplingTerm": -0.004323834499256737
+        },
+        {
+          "arealLinkDensityTerm": -0.00021924430605482442,
+          "c16DirectionProbability": 0.009265693768820941,
+          "c20DirectionProbability": 0.007816022846836013,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "directionRedistributionTerm": -0.0027005724236294658,
+          "identityResidual": 2.168404344971009e-18,
+          "parentLinkSamplingTerm": -0.002919816729684288
+        },
+        {
+          "arealLinkDensityTerm": -0.00021773110971545388,
+          "c16DirectionProbability": 0.009265693768820941,
+          "c20DirectionProbability": 0.007816022846836013,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "directionRedistributionTerm": -0.002681933415943587,
+          "identityResidual": 2.6020852139652106e-18,
+          "parentLinkSamplingTerm": -0.002899664525659038
+        },
+        {
+          "arealLinkDensityTerm": -0.0023245351953724382,
+          "c16DirectionProbability": 0.08964558721334259,
+          "c20DirectionProbability": 0.09033518713362393,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "directionRedistributionTerm": 0.0012926971850480801,
+          "identityResidual": -2.0599841277224584e-17,
+          "parentLinkSamplingTerm": -0.0010318380103243787
+        },
+        {
+          "arealLinkDensityTerm": -0.0023091083170986813,
+          "c16DirectionProbability": 0.08964558721334259,
+          "c20DirectionProbability": 0.09033518713362393,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "directionRedistributionTerm": 0.0012841181443184473,
+          "identityResidual": -2.0383000842727483e-17,
+          "parentLinkSamplingTerm": -0.0010249901727802544
+        }
+      ],
+      "flyer": "leader",
+      "maximumAbsoluteIdentityResidual": 3.729655473350135e-17,
+      "relativeArealLinkDensityChangeC20FromC16": -0.013685429696548512,
+      "targetFollowerPhase": 0.035,
+      "targetLeaderPhase": 0.785,
+      "weightedL1": {
+        "arealLinkDensity": 0.04064285726369065,
+        "directionRedistribution": 0.04483191561357609
+      }
+    },
+    {
+      "arealLinkDensityPerChordSquared": {
+        "c16": 34.5859375,
+        "c20": 34.065000000000005
+      },
+      "attributionFraction": {
+        "arealLinkDensity": 0.5798313892590284,
+        "directionRedistribution": 0.4201686107409715
+      },
+      "classification": "mixedDensityAndDirection",
+      "directionDistributionTotalVariation": 0.0055181912653134504,
+      "directions": [
+        {
+          "arealLinkDensityTerm": -0.0,
+          "c16DirectionProbability": 0.0,
+          "c20DirectionProbability": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "directionRedistributionTerm": 0.0,
+          "identityResidual": 0.0,
+          "parentLinkSamplingTerm": 0.0
+        },
+        {
+          "arealLinkDensityTerm": -0.004602400369993298,
+          "c16DirectionProbability": 0.07917325502597695,
+          "c20DirectionProbability": 0.0796271833259944,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "directionRedistributionTerm": 0.0017337273861430418,
+          "identityResidual": 4.9873299934333204e-18,
+          "parentLinkSamplingTerm": -0.002868672983850251
+        },
+        {
+          "arealLinkDensityTerm": -0.004584210024448789,
+          "c16DirectionProbability": 0.07917325502597695,
+          "c20DirectionProbability": 0.0796271833259944,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "directionRedistributionTerm": 0.0017268750704602226,
+          "identityResidual": 4.553649124439119e-18,
+          "parentLinkSamplingTerm": -0.002857334953988562
+        },
+        {
+          "arealLinkDensityTerm": -0.0011535720650700334,
+          "c16DirectionProbability": 0.019990964535803027,
+          "c20DirectionProbability": 0.02003522677234698,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "directionRedistributionTerm": 0.00016811043404520274,
+          "identityResidual": -1.734723475976807e-18,
+          "parentLinkSamplingTerm": -0.0009854616310248324
+        },
+        {
+          "arealLinkDensityTerm": -0.0011588290280782104,
+          "c16DirectionProbability": 0.019990964535803027,
+          "c20DirectionProbability": 0.02003522677234698,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "directionRedistributionTerm": 0.00016887653298242915,
+          "identityResidual": -1.7618285302889447e-18,
+          "parentLinkSamplingTerm": -0.000989952495095783
+        },
+        {
+          "arealLinkDensityTerm": -0.002188013710174011,
+          "c16DirectionProbability": 0.038400722837135755,
+          "c20DirectionProbability": 0.03742844561867018,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "directionRedistributionTerm": -0.003697129867878504,
+          "identityResidual": -1.5178830414797062e-17,
+          "parentLinkSamplingTerm": -0.00588514357805253
+        },
+        {
+          "arealLinkDensityTerm": -0.002192383787958151,
+          "c16DirectionProbability": 0.038400722837135755,
+          "c20DirectionProbability": 0.03742844561867018,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "directionRedistributionTerm": -0.0037045140743967577,
+          "identityResidual": -1.5612511283791264e-17,
+          "parentLinkSamplingTerm": -0.005896897862354924
+        },
+        {
+          "arealLinkDensityTerm": -0.001798193178444882,
+          "c16DirectionProbability": 0.06166704314434154,
+          "c20DirectionProbability": 0.06252752091589607,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "directionRedistributionTerm": 0.001641852978263599,
+          "identityResidual": 3.0357660829594124e-18,
+          "parentLinkSamplingTerm": -0.00015634020018127974
+        },
+        {
+          "arealLinkDensityTerm": -0.0017922731209483896,
+          "c16DirectionProbability": 0.06166704314434154,
+          "c20DirectionProbability": 0.06252752091589607,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "directionRedistributionTerm": 0.0016364476279660779,
+          "identityResidual": 3.0357660829594124e-18,
+          "parentLinkSamplingTerm": -0.00015582549298230865
+        },
+        {
+          "arealLinkDensityTerm": -0.0025612671658150387,
+          "c16DirectionProbability": 0.08798283261802575,
+          "c20DirectionProbability": 0.08858065463085277,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "directionRedistributionTerm": 0.0011428434342107285,
+          "identityResidual": 9.107298248878237e-18,
+          "parentLinkSamplingTerm": -0.001418423731604301
+        },
+        {
+          "arealLinkDensityTerm": -0.0025487304639327606,
+          "c16DirectionProbability": 0.08798283261802575,
+          "c20DirectionProbability": 0.08858065463085277,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "directionRedistributionTerm": 0.0011372495283409909,
+          "identityResidual": 9.324138683375338e-18,
+          "parentLinkSamplingTerm": -0.0014114809355917604
+        },
+        {
+          "arealLinkDensityTerm": -0.0013645081268248132,
+          "c16DirectionProbability": 0.04698441382426022,
+          "c20DirectionProbability": 0.04718919712314692,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "directionRedistributionTerm": 0.0003910229872174342,
+          "identityResidual": -9.86623976961809e-18,
+          "parentLinkSamplingTerm": -0.0009734851396073889
+        },
+        {
+          "arealLinkDensityTerm": -0.0013588023654319418,
+          "c16DirectionProbability": 0.04698441382426022,
+          "c20DirectionProbability": 0.04718919712314692,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "directionRedistributionTerm": 0.0003893879043474024,
+          "identityResidual": -9.920449878242366e-18,
+          "parentLinkSamplingTerm": -0.0009694144610845493
+        },
+        {
+          "arealLinkDensityTerm": -0.002557352771145314,
+          "c16DirectionProbability": 0.08798283261802575,
+          "c20DirectionProbability": 0.08858065463085277,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "directionRedistributionTerm": 0.001141096822101335,
+          "identityResidual": 9.324138683375338e-18,
+          "parentLinkSamplingTerm": -0.0014162559490439697
+        },
+        {
+          "arealLinkDensityTerm": -0.002549725759193914,
+          "c16DirectionProbability": 0.08798283261802575,
+          "c20DirectionProbability": 0.08858065463085277,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "directionRedistributionTerm": 0.0011376936314277334,
+          "identityResidual": 8.890457814381136e-18,
+          "parentLinkSamplingTerm": -0.0014120321277661717
+        },
+        {
+          "arealLinkDensityTerm": -0.0016010038168571042,
+          "c16DirectionProbability": 0.055793991416309016,
+          "c20DirectionProbability": 0.05518861001027446,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "directionRedistributionTerm": -0.0011508729840227182,
+          "identityResidual": 1.2576745200831851e-17,
+          "parentLinkSamplingTerm": -0.00275187680087981
+        },
+        {
+          "arealLinkDensityTerm": -0.0016058321700013263,
+          "c16DirectionProbability": 0.055793991416309016,
+          "c20DirectionProbability": 0.05518861001027446,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "directionRedistributionTerm": -0.0011543438197149872,
+          "identityResidual": 1.235990476633475e-17,
+          "parentLinkSamplingTerm": -0.0027601759897163012
+        },
+        {
+          "arealLinkDensityTerm": -0.000618746094400193,
+          "c16DirectionProbability": 0.022023943980121977,
+          "c20DirectionProbability": 0.020842506971965356,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "directionRedistributionTerm": -0.002247327488520568,
+          "identityResidual": -1.734723475976807e-18,
+          "parentLinkSamplingTerm": -0.002866073582920763
+        },
+        {
+          "arealLinkDensityTerm": -0.0006185697307995024,
+          "c16DirectionProbability": 0.022023943980121977,
+          "c20DirectionProbability": 0.020842506971965356,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "directionRedistributionTerm": -0.002246686924044455,
+          "identityResidual": -1.734723475976807e-18,
+          "parentLinkSamplingTerm": -0.002865256654843959
+        }
+      ],
+      "flyer": "follower",
+      "maximumAbsoluteIdentityResidual": 1.5612511283791264e-17,
+      "relativeArealLinkDensityChangeC20FromC16": -0.015062118816353998,
+      "targetFollowerPhase": 0.035,
+      "targetLeaderPhase": 0.785,
+      "weightedL1": {
+        "arealLinkDensity": 0.04554254519352191,
+        "directionRedistribution": 0.03300191796795184
+      }
+    },
+    {
+      "arealLinkDensityPerChordSquared": {
+        "c16": 33.2578125,
+        "c20": 32.575
+      },
+      "attributionFraction": {
+        "arealLinkDensity": 0.5242509642135862,
+        "directionRedistribution": 0.47574903578641387
+      },
+      "classification": "mixedDensityAndDirection",
+      "directionDistributionTotalVariation": 0.009041529900370845,
+      "directions": [
+        {
+          "arealLinkDensityTerm": -0.0,
+          "c16DirectionProbability": 0.0,
+          "c20DirectionProbability": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "directionRedistributionTerm": 0.0,
+          "identityResidual": 0.0,
+          "parentLinkSamplingTerm": 0.0
+        },
+        {
+          "arealLinkDensityTerm": -0.003094142095540515,
+          "c16DirectionProbability": 0.0402865867982147,
+          "c20DirectionProbability": 0.04167306216423637,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "directionRedistributionTerm": 0.005046534758560429,
+          "identityResidual": -1.0408340855860843e-17,
+          "parentLinkSamplingTerm": 0.0019523926630199034
+        },
+        {
+          "arealLinkDensityTerm": -0.003114064365350303,
+          "c16DirectionProbability": 0.0402865867982147,
+          "c20DirectionProbability": 0.04167306216423637,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "directionRedistributionTerm": 0.005079027909799158,
+          "identityResidual": -1.0408340855860843e-17,
+          "parentLinkSamplingTerm": 0.0019649635444488438
+        },
+        {
+          "arealLinkDensityTerm": -0.004093386885081611,
+          "c16DirectionProbability": 0.05297157622739018,
+          "c20DirectionProbability": 0.05441289332310053,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "directionRedistributionTerm": 0.005297144277036667,
+          "identityResidual": 1.3877787807814457e-17,
+          "parentLinkSamplingTerm": 0.0012037573919550697
+        },
+        {
+          "arealLinkDensityTerm": -0.0040746968989008045,
+          "c16DirectionProbability": 0.05297157622739018,
+          "c20DirectionProbability": 0.05441289332310053,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "directionRedistributionTerm": 0.005272958057625946,
+          "identityResidual": 1.3010426069826053e-17,
+          "parentLinkSamplingTerm": 0.0011982611587251547
+        },
+        {
+          "arealLinkDensityTerm": -0.0049753888148857586,
+          "c16DirectionProbability": 0.06659619450317125,
+          "c20DirectionProbability": 0.065464313123561,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "directionRedistributionTerm": -0.004111458633060289,
+          "identityResidual": 9.540979117872439e-18,
+          "parentLinkSamplingTerm": -0.009086847447946038
+        },
+        {
+          "arealLinkDensityTerm": -0.004999974525715725,
+          "c16DirectionProbability": 0.06659619450317125,
+          "c20DirectionProbability": 0.065464313123561,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "directionRedistributionTerm": -0.0041317752629364025,
+          "identityResidual": 8.673617379884035e-18,
+          "parentLinkSamplingTerm": -0.009131749788652119
+        },
+        {
+          "arealLinkDensityTerm": -0.0005885673825784288,
+          "c16DirectionProbability": 0.015621329574817946,
+          "c20DirectionProbability": 0.015425940138142745,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "directionRedistributionTerm": -0.0003571205183089671,
+          "identityResidual": -9.75781955236954e-19,
+          "parentLinkSamplingTerm": -0.0009456879008873969
+        },
+        {
+          "arealLinkDensityTerm": -0.0005875442270423546,
+          "c16DirectionProbability": 0.015621329574817946,
+          "c20DirectionProbability": 0.015425940138142745,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "directionRedistributionTerm": -0.0003564997060686544,
+          "identityResidual": -9.75781955236954e-19,
+          "parentLinkSamplingTerm": -0.00094404393311101
+        },
+        {
+          "arealLinkDensityTerm": -0.003482301163100663,
+          "c16DirectionProbability": 0.09067418369743951,
+          "c20DirectionProbability": 0.09140445126630851,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "directionRedistributionTerm": 0.0013465742318332376,
+          "identityResidual": 8.673617379884035e-19,
+          "parentLinkSamplingTerm": -0.0021357269312674244
+        },
+        {
+          "arealLinkDensityTerm": -0.0034903785559105734,
+          "c16DirectionProbability": 0.09067418369743951,
+          "c20DirectionProbability": 0.09140445126630851,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "directionRedistributionTerm": 0.0013496976862700546,
+          "identityResidual": 1.3010426069826053e-18,
+          "parentLinkSamplingTerm": -0.0021406808696405174
+        },
+        {
+          "arealLinkDensityTerm": -0.00346342571845064,
+          "c16DirectionProbability": 0.0916138125440451,
+          "c20DirectionProbability": 0.09209516500383728,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "directionRedistributionTerm": 0.0008749427550995236,
+          "identityResidual": 1.3660947373317356e-17,
+          "parentLinkSamplingTerm": -0.002588482963351103
+        },
+        {
+          "arealLinkDensityTerm": -0.003492085053235908,
+          "c16DirectionProbability": 0.0916138125440451,
+          "c20DirectionProbability": 0.09209516500383728,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "directionRedistributionTerm": 0.0008821827767932931,
+          "identityResidual": 1.3660947373317356e-17,
+          "parentLinkSamplingTerm": -0.0026099022764426013
+        },
+        {
+          "arealLinkDensityTerm": -0.0011377521037295888,
+          "c16DirectionProbability": 0.031007751937984496,
+          "c20DirectionProbability": 0.02931696085955487,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "directionRedistributionTerm": -0.0030745621627555173,
+          "identityResidual": -3.903127820947816e-18,
+          "parentLinkSamplingTerm": -0.00421231426648511
+        },
+        {
+          "arealLinkDensityTerm": -0.001140159411962991,
+          "c16DirectionProbability": 0.031007751937984496,
+          "c20DirectionProbability": 0.02931696085955487,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "directionRedistributionTerm": -0.0030810674627978073,
+          "identityResidual": -3.469446951953614e-18,
+          "parentLinkSamplingTerm": -0.004221226874760802
+        },
+        {
+          "arealLinkDensityTerm": -0.0007159039736620238,
+          "c16DirectionProbability": 0.019614752172891707,
+          "c20DirectionProbability": 0.01811204911742133,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "directionRedistributionTerm": -0.002749279566194513,
+          "identityResidual": 1.3010426069826053e-18,
+          "parentLinkSamplingTerm": -0.0034651835398565355
+        },
+        {
+          "arealLinkDensityTerm": -0.0007131904971359011,
+          "c16DirectionProbability": 0.019614752172891707,
+          "c20DirectionProbability": 0.01811204911742133,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "directionRedistributionTerm": -0.002738859026791082,
+          "identityResidual": 1.734723475976807e-18,
+          "parentLinkSamplingTerm": -0.0034520495239269817
+        },
+        {
+          "arealLinkDensityTerm": -0.0035054864246354383,
+          "c16DirectionProbability": 0.0916138125440451,
+          "c20DirectionProbability": 0.09209516500383728,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "directionRedistributionTerm": 0.0008855682782498285,
+          "identityResidual": 1.3660947373317356e-17,
+          "parentLinkSamplingTerm": -0.002619918146385596
+        },
+        {
+          "arealLinkDensityTerm": -0.0034831427256508856,
+          "c16DirectionProbability": 0.0916138125440451,
+          "c20DirectionProbability": 0.09209516500383728,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "directionRedistributionTerm": 0.0008799237346280285,
+          "identityResidual": 1.3444106938820255e-17,
+          "parentLinkSamplingTerm": -0.0026032189910228437
+        }
+      ],
+      "flyer": "leader",
+      "maximumAbsoluteIdentityResidual": 1.3877787807814457e-17,
+      "relativeArealLinkDensityChangeC20FromC16": -0.020530890298332105,
+      "targetFollowerPhase": 0.095,
+      "targetLeaderPhase": 0.845,
+      "weightedL1": {
+        "arealLinkDensity": 0.06083827473454967,
+        "directionRedistribution": 0.05520972305179951
+      }
+    },
+    {
+      "arealLinkDensityPerChordSquared": {
+        "c16": 33.8671875,
+        "c20": 33.06999999999999
+      },
+      "attributionFraction": {
+        "arealLinkDensity": 0.5445375719821742,
+        "directionRedistribution": 0.4554624280178259
+      },
+      "classification": "mixedDensityAndDirection",
+      "directionDistributionTotalVariation": 0.009897742337476433,
+      "directions": [
+        {
+          "arealLinkDensityTerm": -0.0,
+          "c16DirectionProbability": 0.0,
+          "c20DirectionProbability": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "directionRedistributionTerm": 0.0,
+          "identityResidual": 0.0,
+          "parentLinkSamplingTerm": 0.0
+        },
+        {
+          "arealLinkDensityTerm": -0.0051527131768312135,
+          "c16DirectionProbability": 0.05709342560553633,
+          "c20DirectionProbability": 0.05866344118536439,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "directionRedistributionTerm": 0.005868135691230923,
+          "identityResidual": 8.673617379884035e-18,
+          "parentLinkSamplingTerm": 0.0007154225143997184
+        },
+        {
+          "arealLinkDensityTerm": -0.005127007941227864,
+          "c16DirectionProbability": 0.05709342560553633,
+          "c20DirectionProbability": 0.05866344118536439,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "directionRedistributionTerm": 0.005838861441856097,
+          "identityResidual": 7.806255641895632e-18,
+          "parentLinkSamplingTerm": 0.0007118535006282407
+        },
+        {
+          "arealLinkDensityTerm": -0.0029937605628168884,
+          "c16DirectionProbability": 0.03344867358708189,
+          "c20DirectionProbability": 0.034472331418203814,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "directionRedistributionTerm": 0.0037885650910462823,
+          "identityResidual": -1.0842021724855044e-17,
+          "parentLinkSamplingTerm": 0.0007948045282293831
+        },
+        {
+          "arealLinkDensityTerm": -0.0030133461510957102,
+          "c16DirectionProbability": 0.03344867358708189,
+          "c20DirectionProbability": 0.034472331418203814,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "directionRedistributionTerm": 0.0038133503985162067,
+          "identityResidual": -1.1275702593849246e-17,
+          "parentLinkSamplingTerm": 0.0008000042474204852
+        },
+        {
+          "arealLinkDensityTerm": -0.005661667656007908,
+          "c16DirectionProbability": 0.06459054209919261,
+          "c20DirectionProbability": 0.06387964922890839,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "directionRedistributionTerm": -0.0026305898521716167,
+          "identityResidual": -3.686287386450715e-17,
+          "parentLinkSamplingTerm": -0.008292257508179562
+        },
+        {
+          "arealLinkDensityTerm": -0.005675337072910269,
+          "c16DirectionProbability": 0.06459054209919261,
+          "c20DirectionProbability": 0.06387964922890839,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "directionRedistributionTerm": -0.0026369410955813734,
+          "identityResidual": -3.7730235602495554e-17,
+          "parentLinkSamplingTerm": -0.00831227816849168
+        },
+        {
+          "arealLinkDensityTerm": -0.001186768544869645,
+          "c16DirectionProbability": 0.026643598615916954,
+          "c20DirectionProbability": 0.026761415179921384,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "directionRedistributionTerm": 0.00021983524841050493,
+          "identityResidual": 5.421010862427522e-20,
+          "parentLinkSamplingTerm": -0.00096693329645914
+        },
+        {
+          "arealLinkDensityTerm": -0.001179636947576266,
+          "c16DirectionProbability": 0.026643598615916954,
+          "c20DirectionProbability": 0.026761415179921384,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "directionRedistributionTerm": 0.00021851420188518953,
+          "identityResidual": 8.131516293641283e-20,
+          "parentLinkSamplingTerm": -0.0009611227456910763
+        },
+        {
+          "arealLinkDensityTerm": -0.003959706617824596,
+          "c16DirectionProbability": 0.08823529411764706,
+          "c20DirectionProbability": 0.08912912004838223,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "directionRedistributionTerm": 0.0016755463683306466,
+          "identityResidual": 4.553649124439119e-18,
+          "parentLinkSamplingTerm": -0.0022841602494939445
+        },
+        {
+          "arealLinkDensityTerm": -0.003944731938512044,
+          "c16DirectionProbability": 0.08823529411764706,
+          "c20DirectionProbability": 0.08912912004838223,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "directionRedistributionTerm": 0.0016692098459665614,
+          "identityResidual": 4.553649124439119e-18,
+          "parentLinkSamplingTerm": -0.002275522092545478
+        },
+        {
+          "arealLinkDensityTerm": -0.00057263749578794,
+          "c16DirectionProbability": 0.01384083044982699,
+          "c20DirectionProbability": 0.011944360447535534,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "directionRedistributionTerm": -0.0035364081987981533,
+          "identityResidual": 4.336808689942018e-19,
+          "parentLinkSamplingTerm": -0.004109045694586093
+        },
+        {
+          "arealLinkDensityTerm": -0.0005637469301817867,
+          "c16DirectionProbability": 0.01384083044982699,
+          "c20DirectionProbability": 0.011944360447535534,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "directionRedistributionTerm": -0.0034815031858836717,
+          "identityResidual": 4.336808689942018e-19,
+          "parentLinkSamplingTerm": -0.004045250116065458
+        },
+        {
+          "arealLinkDensityTerm": -0.00402678764059774,
+          "c16DirectionProbability": 0.09019607843137255,
+          "c20DirectionProbability": 0.0908678560628969,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "directionRedistributionTerm": 0.0012544671491291307,
+          "identityResidual": -1.3660947373317356e-17,
+          "parentLinkSamplingTerm": -0.002772320491468623
+        },
+        {
+          "arealLinkDensityTerm": -0.004007545323565934,
+          "c16DirectionProbability": 0.09019607843137255,
+          "c20DirectionProbability": 0.0908678560628969,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "directionRedistributionTerm": 0.0012484725805687817,
+          "identityResidual": -1.3227266504323154e-17,
+          "parentLinkSamplingTerm": -0.0027590727429971655
+        },
+        {
+          "arealLinkDensityTerm": -0.003990398985730699,
+          "c16DirectionProbability": 0.09019607843137255,
+          "c20DirectionProbability": 0.0908678560628969,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "directionRedistributionTerm": 0.0012431309734461924,
+          "identityResidual": -1.3010426069826053e-17,
+          "parentLinkSamplingTerm": -0.00274726801228452
+        },
+        {
+          "arealLinkDensityTerm": -0.004015764948914376,
+          "c16DirectionProbability": 0.09019607843137255,
+          "c20DirectionProbability": 0.0908678560628969,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "directionRedistributionTerm": 0.0012510332445267744,
+          "identityResidual": -1.3227266504323154e-17,
+          "parentLinkSamplingTerm": -0.0027647317043876145
+        },
+        {
+          "arealLinkDensityTerm": -0.0015231512379446713,
+          "c16DirectionProbability": 0.03575547866205306,
+          "c20DirectionProbability": 0.03341397036589054,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "directionRedistributionTerm": -0.004329436684429747,
+          "identityResidual": 4.336808689942018e-18,
+          "parentLinkSamplingTerm": -0.005852587922374414
+        },
+        {
+          "arealLinkDensityTerm": -0.0015273738036480553,
+          "c16DirectionProbability": 0.03575547866205306,
+          "c20DirectionProbability": 0.03341397036589054,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "directionRedistributionTerm": -0.004341438992804137,
+          "identityResidual": 4.336808689942018e-18,
+          "parentLinkSamplingTerm": -0.005868812796452188
+        }
+      ],
+      "flyer": "follower",
+      "maximumAbsoluteIdentityResidual": 3.7730235602495554e-17,
+      "relativeArealLinkDensityChangeC20FromC16": -0.023538638985005966,
+      "targetFollowerPhase": 0.095,
+      "targetLeaderPhase": 0.845,
+      "weightedL1": {
+        "arealLinkDensity": 0.07075487192665117,
+        "directionRedistribution": 0.059180830524689296
+      }
+    }
+  ],
+  "productionSolverChanged": false,
+  "quantitativeFormationClaimAuthorized": false,
+  "schemaVersion": 1,
+  "scientificVerdict": "the dominant parent link-sampling discrepancy is mixedDensityAndDirection; this selects a geometry-only follow-up without changing production physics",
+  "title": "Formation Flight link-sampling density/direction subdecomposition"
+}

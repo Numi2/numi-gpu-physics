@@ -2857,6 +2857,10 @@ private struct FormationFlightArguments {
     var offset = SIMD3<Double>(0, 0, -4)
     var phaseOffset = 0.25
     var fieldCapturePhases: [Double] = []
+    var fieldReplayReferencePath: String?
+    var mechanismProbes = false
+    var boundarySourceCensus = false
+    var collisionOperator: MetalIndexedBirdSurfaceCollisionOperator?
     var json = false
     var archivePath: String?
 
@@ -2925,6 +2929,30 @@ private struct FormationFlightArguments {
                     )
                 }
                 fieldCapturePhases.append(contentsOf: parsed)
+            case "--field-replay-reference":
+                index += 1
+                guard index < values.count, !values[index].isEmpty else {
+                    throw CLIError.invalidArgument(
+                        "--field-replay-reference requires a passed formation-flight report"
+                    )
+                }
+                fieldReplayReferencePath = values[index]
+            case "--mechanism-probes":
+                mechanismProbes = true
+            case "--boundary-source-census":
+                boundarySourceCensus = true
+            case "--collision-operator":
+                index += 1
+                guard index < values.count,
+                      let value = MetalIndexedBirdSurfaceCollisionOperator(
+                        rawValue: values[index]
+                      ),
+                      value != .productionTRT else {
+                    throw CLIError.invalidArgument(
+                        "--collision-operator requires positivity-preserving-regularized-bgk or positivity-preserving-recursive-regularized-bgk"
+                    )
+                }
+                collisionOperator = value
             case "--json":
                 json = true
             case "--archive":
@@ -2957,6 +2985,20 @@ private struct FormationFlightArguments {
       --offset-z C       Follower z offset in chords (default: -4)
       --phase-offset C   Follower wingbeat phase in cycles (default: 0.25)
       --field-phases CSV Final-cycle CFD slice phases; requires --archive
+      --field-replay-reference FILE
+                         Run only the coupled case and require exact-history
+                         agreement with this passed complete report
+      --mechanism-probes Decompose reflected, interpolation, moving-wall,
+                         cover, and uncover owner loads at captured phases;
+                         requires --field-replay-reference
+      --boundary-source-census
+                         Capture owner- and D3Q19-direction-resolved reflected,
+                         interpolation, moving-wall, link, and branch totals;
+                         requires --field-replay-reference
+      --collision-operator NAME
+                         Diagnostic-only coupled replay with a qualified
+                         regularized collision candidate; requires --archive
+                         and --field-phases; production remains TRT
       --archive DIR      Save the complete machine-readable report
       --json             Emit machine-readable JSON
       --help             Show this help
@@ -2965,6 +3007,9 @@ private struct FormationFlightArguments {
     canonical in one fluid, resolves leader/follower loads and positive
     actuator power, runs matched isolated controls, and fails on geometry
     overlap, owner-load nonclosure, nonfinite output, or cycle nonrepeatability.
+    Field replay skips the two isolated controls only after locking the exact
+    configuration and requiring the new coupled 100-bin history to reproduce a
+    passed reference within 1e-6 relative RMS.
     """
 }
 
@@ -8030,13 +8075,179 @@ private func runFormationFlightValidation(_ values: [String]) throws {
     let archive = arguments.archivePath.map {
         URL(fileURLWithPath: $0, isDirectory: true)
     }
+    let configuration = FormationFlightConfiguration(
+        chordCells: arguments.chordCells,
+        cycles: arguments.cycles,
+        followerOffsetChords: arguments.offset,
+        followerPhaseOffsetCycles: arguments.phaseOffset
+    )
+    if let collisionOperator = arguments.collisionOperator {
+        guard let archive else {
+            throw CLIError.invalidArgument(
+                "--collision-operator requires --archive"
+            )
+        }
+        guard arguments.fieldReplayReferencePath == nil,
+              !arguments.mechanismProbes,
+              !arguments.boundarySourceCensus else {
+            throw CLIError.invalidArgument(
+                "--collision-operator cannot be combined with field reference replay, mechanism probes, or a boundary-source census"
+            )
+        }
+        let report = try MetalFormationFlightValidator.runCollisionDiagnostic(
+            configuration: configuration,
+            collisionOperator: collisionOperator,
+            archiveDirectory: archive,
+            fieldCapturePhases: arguments.fieldCapturePhases
+        )
+        if arguments.json {
+            try printJSON(report)
+        } else {
+            print("device: \(report.deviceName)")
+            print("collision_operator: \(report.collisionOperator)")
+            print(
+                "grid: \(report.gridX)x\(report.gridY)x\(report.gridZ) "
+                    + "cycle_steps: \(report.cycleSteps)"
+            )
+            print("runtime_seconds: \(report.runtimeSeconds)")
+            print("minimum_population: \(report.gates.minimumPopulation)")
+            print(
+                "collision_correction_activation_fraction: "
+                    + String(
+                        report.gates
+                            .collisionCorrectionActivationFraction
+                    )
+            )
+            print(
+                "owner_force_closure: "
+                    + String(
+                        report.gates.maximumRelativeForceClosureResidual
+                    )
+                    + " owner_torque_closure: "
+                    + String(
+                        report.gates.maximumRelativeTorqueClosureResidual
+                    )
+            )
+            print("classification: \(report.scientificVerdict)")
+            print("passed: \(report.gates.passed)")
+        }
+        guard report.gates.passed else {
+            throw CLIError.acceptanceFailed(
+                "formation collision diagnostic exceeded a frozen numerical gate"
+            )
+        }
+        return
+    }
+    if let referencePath = arguments.fieldReplayReferencePath {
+        guard let archive else {
+            throw CLIError.invalidArgument(
+                "--field-replay-reference requires --archive"
+            )
+        }
+        let referenceData = try Data(
+            contentsOf: URL(fileURLWithPath: referencePath)
+        )
+        let reference = try JSONDecoder().decode(
+            FormationFlightReport.self,
+            from: referenceData
+        )
+        let replay = try MetalFormationFlightValidator.replayFields(
+            configuration: configuration,
+            referenceReport: reference,
+            referenceReportSHA256: sha256Hex(referenceData),
+            archiveDirectory: archive,
+            fieldCapturePhases: arguments.fieldCapturePhases,
+            captureMechanismProbes: arguments.mechanismProbes,
+            captureBoundarySourceCensus:
+                arguments.boundarySourceCensus
+        )
+        if arguments.json {
+            try printJSON(replay)
+        } else {
+            print("device: \(replay.deviceName)")
+            print(
+                "grid: \(replay.gridX)x\(replay.gridY)x\(replay.gridZ) "
+                    + "cycle_steps: \(replay.cycleSteps)"
+            )
+            print("runtime_seconds: \(replay.runtimeSeconds)")
+            print(
+                "captured_field_phases: "
+                    + String(replay.capturedLeaderPhases.count)
+            )
+            print(
+                "reference_history_relative_difference: "
+                    + String(
+                        replay.gates
+                            .maximumRelativeReferenceCoupledHistoryDifference
+                    )
+            )
+            if let probeCount = replay.capturedMechanismProbeSampleCount {
+                print("mechanism_probe_samples: \(probeCount)")
+                print(
+                    "mechanism_component_closure: force="
+                        + String(
+                            replay.gates
+                                .maximumRelativeMechanismForceClosureResidual
+                                ?? .infinity
+                        )
+                        + " torque="
+                        + String(
+                            replay.gates
+                                .maximumRelativeMechanismTorqueClosureResidual
+                                ?? .infinity
+                        )
+                        + " power="
+                        + String(
+                            replay.gates
+                                .maximumRelativeMechanismPowerClosureResidual
+                                ?? .infinity
+                        )
+                )
+            }
+            if let sampleCount =
+                replay.capturedBoundarySourceCensusSampleCount {
+                print("boundary_source_census_samples: \(sampleCount)")
+                print(
+                    "boundary_source_reconstruction_closure: "
+                        + String(
+                            replay.gates
+                                .maximumRelativeBoundarySourceReconstructionClosureResidual
+                                ?? .infinity
+                        )
+                )
+            }
+            print(
+                "owner_force_closure: "
+                    + String(
+                        replay.gates.maximumRelativeForceClosureResidual
+                    )
+                    + " owner_torque_closure: "
+                    + String(
+                        replay.gates.maximumRelativeTorqueClosureResidual
+                    )
+            )
+            print("classification: \(replay.scientificVerdict)")
+            print("passed: \(replay.gates.passed)")
+        }
+        guard replay.gates.passed else {
+            throw CLIError.acceptanceFailed(
+                "formation field replay failed reference reproduction or an unchanged solver gate"
+            )
+        }
+        return
+    }
+    guard !arguments.mechanismProbes else {
+        throw CLIError.invalidArgument(
+            "--mechanism-probes requires --field-replay-reference"
+        )
+    }
+    guard !arguments.boundarySourceCensus else {
+        throw CLIError.invalidArgument(
+            "--boundary-source-census requires --field-replay-reference"
+        )
+    }
     let report = try MetalFormationFlightValidator.run(
-        configuration: FormationFlightConfiguration(
-            chordCells: arguments.chordCells,
-            cycles: arguments.cycles,
-            followerOffsetChords: arguments.offset,
-            followerPhaseOffsetCycles: arguments.phaseOffset
-        ),
+        configuration: configuration,
         archiveDirectory: archive,
         fieldCapturePhases: arguments.fieldCapturePhases
     )

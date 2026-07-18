@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Fixed sphere, Re=100 | **Accepted canonical** | drag, symmetry, torque leakage, refinement, batching |
 | Fixed finite wing, Re=100 | **Accepted canonical** | finest `CL=0.76135`, `CD=0.70711`; two-finest changes below `3%` |
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
-| Formation Flight Observatory | **Coupling/accounting accepted; quantitative effect open** | The c20 maximum passes every solver gate but changes `10.68%` from c16 against the preregistered `5%` continuation limit; stage 2 stops and grid convergence remains open |
+| Formation Flight Observatory | **Coupling/accounting accepted; near-wing directional link realization isolated; quantitative effect open** | Exact histories and population-source identities pass; RR3 is adverse and stopped before c20; the source census attributes `98.25%` of the primary c16-to-c20 change to areal D3Q19 link sampling, then an exact second identity splits that term `47.55%` link density / `52.45%` direction redistribution; independent audits pass `319/319` and `521/521` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; planar weighting plus D12/D16 and D28/D32 complete-dove direction censuses clear static direction redistribution at the locked 26.5 ms phase with exact Metal/CPU parity; force-history change remains `5.632%` against `5%`, so the full localized phase window, force-bearing wall/interpolation interaction, convergence, and experimental agreement remain open |
@@ -150,6 +150,148 @@ with magnitude `0.112`; only `23.15%` lies in the earlier midstroke bands and
 its absolute magnitude tracks drag residual (`r=0.683`) rather than lift.
 This redirects the next diagnostic toward an early-cycle coupled-only field
 comparison instead of another full refinement ladder.
+
+That preregistered early-cycle comparison is now complete. A fail-closed field
+replay runs only the coupled case, but accepts its fields only if the exact
+configuration, grid, cycle length, owner closure, periodicity, and complete
+100-bin coupled history reproduce a passed full report. Both c16 and c20
+histories reproduce exactly. Their combined runtime falls from `9139.12 s` to
+`3861.10 s`—a measured `2.37x` speedup saving `87.97 min` without reducing
+cycles or field phases.
+
+![Early-cycle c16/c20 Formation Observatory spatial discriminator showing signed vertical velocity, the common-grid residual, phase metrics, and the mixed mechanism classification](Docs/Media/formation-flight-early-cycle-field-discriminator.png)
+
+Across follower phase `0.005...0.095`, signed vertical velocity changes only
+`7.26...7.62%` normalized RMS and remains correlated at `r≥0.9972`, while
+vorticity changes `19.15...23.64%`. The normalized residual evolves from
+near-boundary dominated early in the window to wake dominated late; its
+aggregate near-boundary fraction is `45.04%`, inside the preregistered mixed
+band. The strongest absolute near-boundary probe is phase `0.035` around
+`(x/c,z/c)=(1.82,1.02)`; the strongest wake probe is phase `0.095` around
+`(2.32,-1.13)`. An independent implementation passes `99/99` checks. This
+localizes the next instrumentation but does not authorize a quantitative
+formation-benefit claim.
+
+That instrumentation is now complete. A read-only Metal diagnostic decomposes
+the exact production owner load at the two selected phases into
+reflected-population, interpolation-auxiliary, moving-wall, cover, and uncover
+work. The c8 smoke and promoted c16/c20 replays reproduce their locked coupled
+histories exactly; maximum component closure remains below `2.32e-7` force,
+`1.34e-7` torque, and `8.16e-8` actuator power.
+
+![Formation Flight causal mechanism atlas with exact work decomposition and selected c16/c20 wake residuals](Docs/Media/formation-flight-causal-mechanism-atlas.png)
+
+At follower phase `0.035`, moving-wall work accounts for `50.43%` of the
+normalized c20-minus-c16 component change and interpolation for an opposing
+`34.69%`; neither reaches the preregistered `60%` dominance threshold. At
+phase `0.095`, `74.72%` of residual energy is outside the half-chord boundary
+band. The frozen result is therefore wake-transport dominated, with an
+independent `106/106` audit. Strong cancellation is explicit: the two
+grid-difference condition numbers are `16.67` and `14.93`, so this localizes
+the mechanism without declaring an individual large work term defective.
+
+The follow-up asks whether that wake difference is merely displaced. It
+requires no new CFD: `441` bounded shifts at each of five locked phases compare
+mapped c16 signed vertical velocity and vorticity against c20 in the selected
+wake region.
+
+![Formation wake transport discriminator comparing unshifted and optimally aligned residual fields](Docs/Media/formation-flight-wake-transport-atlas.png)
+
+Across all `2,205` alignments, registration removes only `0.852%` of residual
+energy. Four phases choose zero displacement; the fifth chooses `-0.05` chord
+in `x`, giving a mean `(-0.01,0.00)`-chord shift. The independently reproduced
+`41/41` result is **amplitude/diffusion dominated**, not a wake-position or
+phase-lag error.
+
+The preregistered one-variable collision discriminator is now complete. A new
+diagnostic-only CLI path keeps geometry, kinematics, interpolated boundary,
+load estimator, grid, sponge, and gates fixed while replacing production TRT
+with the previously qualified positivity-preserving RR3 operator. Population
+minimum and limiter activations are fused into the existing load reduction, so
+every D3Q19 population is observed on every step without a second population
+memory pass. Production remains TRT.
+
+```bash
+./Scripts/run-formation-collision-dissipation.sh
+```
+
+The c8 smoke completes in `22.23 s`, stays positive at `0.01508`, and needs no
+positivity correction. The five-cycle c16 RR3 run completes in `1075.62 s`,
+also with zero correction activations, minimum population `0.01560`, force
+closure `1.10e-6`, and torque closure `3.70e-6`. It is numerically clean—but
+it moves the wrong way: relative to the locked c20 TRT discriminator, RR3
+increases aggregate wake residual energy by `28.98%` and dimensionless
+force-history residual energy by `84.82%`. The `51/51` independent audit
+therefore stops c20 RR3 exactly as preregistered. This rules out positivity
+repair as the missing formation-convergence mechanism; it does not treat c20
+TRT as truth or promote either operator. A fresh production-TRT c8 replay also
+reproduces its pre-instrumentation 100-bin history exactly (`0.0` relative
+difference), proving the fused diagnostic is dormant when not requested.
+
+![Collision/dissipation A/B comparing c16 TRT and RR3 residuals against the locked c20 discriminator](Docs/Media/formation-flight-collision-dissipation-atlas.png)
+
+A second preregistered analysis uses no new CFD and divides the locked wake ROI
+into three one-chord streamwise bands. The c16-to-c20 TRT residual is already
+largest in the upstream band and decreases downstream: downstream/upstream
+normalized residual density is `0.818`, below the frozen `1.15`
+source-dominated boundary. The result is **source-amplitude dominated**, with
+`94/94` independent checks—not accumulating downstream numerical attenuation.
+
+![Streamwise wake residual localization showing upstream, middle, and downstream discrepancy density](Docs/Media/formation-flight-streamwise-attenuation-atlas.png)
+
+The phase-resolved boundary-population source census is now complete. It uses
+the exact production pre-step populations and solid mask, resolves both owners
+and all D3Q19 directions at the locked follower phases `0.035` and `0.095`,
+and records raw reflection, reconstructed incoming population, interpolation,
+moving-wall, link-fraction, wall-kinematic, and branch totals. The diagnostic
+is read-only and excludes the automatic phase-zero field capture.
+
+```bash
+./Scripts/run-formation-boundary-source-census.sh
+```
+
+The first c8 qualification deliberately failed because the host report copied
+the intentionally uncaptured phase-zero slot as two zero-support samples. That
+negative control is preserved and SHA-locked. The amendment changed only the
+report filter, before either discriminating grid ran. The corrected c8 gate
+passes with exact history replay and `1.24e-7` reconstruction residual. c16 and
+c20 complete in `890.86 s` and `2293.58 s`; both reproduce their locked
+histories exactly. Their maximum source-reconstruction residuals are
+`9.28e-8`/`9.09e-8`, with force closure `1.14e-6`/`7.17e-7` and torque closure
+`4.23e-6`/`4.42e-6`.
+
+![Owner-, phase-, and D3Q19-resolved boundary population source census with exact c16-to-c20 product attribution](Docs/Media/formation-flight-boundary-source-atlas.png)
+
+The preregistered primary leader sample at follower phase `0.035` attributes
+`98.25%` of the c16-to-c20 source change to the areal directional link measure
+and only `1.75%` to conditional per-link population amplitude. Every secondary
+owner/phase sample agrees: link-sampling attribution spans
+`98.08%...98.85%`. The directionwise symmetric identity closes to
+`1.68e-17`; the independent raw-artifact audit passes `319/319`. This rules
+out another broad collision or force-law change as the next allocation. It
+does not imply a large geometric error: direction-distribution TV is only
+`0.55%...0.99%`, while grid-normalized link density falls
+`1.37%...2.35%`; those small changes dominate because conditional population
+change is smaller still.
+
+An immediate archive-only second identity factors the dominant link measure as
+total areal link density times D3Q19 direction probability. It executes with no
+new fluid solve:
+
+```bash
+./Scripts/run-formation-link-sampling-subdecomposition.sh
+```
+
+![Exact link-sampling microscope separating grid-normalized boundary-link density from D3Q19 direction redistribution](Docs/Media/formation-flight-link-sampling-subdecomposition.png)
+
+At the frozen primary sample, areal link density supplies `47.55%` and
+direction redistribution `52.45%` of the parent sampling term. Neither reaches
+the frozen `60%` threshold; all four samples remain mixed. The exact identity
+closes below `3.78e-17`, and an independent reconstruction passes `521/521`
+checks. The next justified allocation is therefore one **geometry-only c18
+bridge at the primary phase retaining both pathways**, not a bulk operator,
+stopped c20 minimum, blind global c24 ladder, or production edit. Quantitative
+formation benefit remains unauthorized.
 
 See the [scientific contract and scouting matrix](Docs/FORMATION_FLIGHT_OBSERVATORY.md).
 

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight link-sampling density versus direction subdecomposition",
+  "preregisteredBeforeSubdecompositionExecution": true,
+  "scientificQuestion": "Within the boundary-source census's dominant c16-to-c20 link-sampling term, is the discrepancy generated primarily by total areal boundary-link density or by redistribution among D3Q19 directions?",
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-summary.json",
+      "sha256": "e2820ecabaaf831fd31dfa657bef6408da679ca3ee89afa18e8959db12700bfc"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-audit.json",
+      "sha256": "6d5c0849db58f3d38e4612f54682d9f303ea52d5e0d64080ec3f35b2f17464cc"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-boundary-source-census-v1.json",
+      "sha256": "711aab4cc253fd6a2e78499ba6332eaecbb1f068f304423c9017e9094a7565ff"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-boundary-source-census/c16-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "sha256": "fb71609083acb947efa7610e0dc30658b0f4689e2918b1bc6b545b9af2e75891"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-boundary-source-census/c20-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "sha256": "88ced4bd4e20be9b3ca61510a2b36aef2181a3cb3330b5e7a608c072d82ce7b0"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-link-sampling-subdecomposition.sh",
+      "sha256": "0c2920745d18f4c6b262bf3bfc417f4d1fbb2aa1b96cb9ed12dad535c2f40767"
+    },
+    {
+      "path": "Scripts/analyze-formation-link-sampling-subdecomposition.py",
+      "sha256": "b0b7b1758c05840a59a9828e2380f2e49184205b9cbfecb1c3cc1cd474ab8c93"
+    },
+    {
+      "path": "Scripts/audit-formation-link-sampling-subdecomposition.py",
+      "sha256": "a8b1235c64f1126ff7c2f12f86ca45de527d7af8a0b397b7713d930fa461d400"
+    }
+  ],
+  "selectedPrimaryProbe": {
+    "flyer": "leader",
+    "leaderPhase": 0.785,
+    "followerPhase": 0.035
+  },
+  "secondaryProbes": "the other owner at follower phase 0.035 and both owners at follower phase 0.095; context only, never substitutes for the primary decision",
+  "exactSubdecomposition": {
+    "arealDirectionalLinkMeasure": "a_r(q) = D_r * p_r(q)",
+    "totalArealLinkDensity": "D_r = sum_q linkCount_r(q) / chordCells_r^2",
+    "directionProbability": "p_r(q) = linkCount_r(q) / sum_q linkCount_r(q)",
+    "conditionalMomentumExchangeMean": "m_r(q) is the already audited raw-reflected-plus-reconstructed-incoming population sum divided by link count",
+    "parentLinkSamplingTerm": "L(q) = 0.5*(a_20(q)-a_16(q))*(m_20(q)+m_16(q))",
+    "densityTerm": "L_D(q) = 0.25*(D_20-D_16)*(p_20(q)+p_16(q))*(m_20(q)+m_16(q))",
+    "directionRedistributionTerm": "L_p(q) = 0.25*(p_20(q)-p_16(q))*(D_20+D_16)*(m_20(q)+m_16(q))",
+    "identity": "L(q) = L_D(q) + L_p(q) exactly for every direction",
+    "attributionNorm": "sum_q abs(term(q))*length(c_q)"
+  },
+  "gates": {
+    "requireParentBoundarySourceAuditPassed": true,
+    "requireParentPrimaryClassification": "directionalLinkSamplingDominated",
+    "maximumAbsoluteDirectionIdentityResidual": 1e-12,
+    "requireFinite": true,
+    "requirePositiveLinkSupport": true
+  },
+  "decisionRule": {
+    "dominanceThreshold": 0.6,
+    "arealLinkDensityDominated": "density-term weighted-L1 share is at least 0.6 at the primary probe",
+    "directionRedistributionDominated": "direction-redistribution weighted-L1 share is at least 0.6 at the primary probe",
+    "mixedDensityAndDirection": "neither share reaches 0.6",
+    "nextIfArealLinkDensityDominated": "run a geometry-only subcell-offset ensemble at the two locked phases to distinguish lattice-phase aliasing from a systematic curved-surface link-density bias before changing fluid physics",
+    "nextIfDirectionRedistributionDominated": "run a source-locked fixed-density direction cross-application on the dominant D3Q19 pairs before changing interpolation or collision",
+    "nextIfMixedDensityAndDirection": "run one geometry-only c18 bridge at the primary phase and retain both geometric pathways"
+  },
+  "claimBoundary": "This archive-only identity can select the next geometry diagnostic. It cannot authorize a production geometry/boundary change, a quantitative formation benefit, or a biological claim."
+}

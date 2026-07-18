@@ -438,6 +438,22 @@ struct GPUForceTorque {
     }
 }
 
+/// Read-only formation boundary-source census. Every lane is reduced by sum;
+/// the four float4 groups intentionally mirror the Metal record exactly.
+struct GPUFormationBoundarySourceCensus {
+    var populations: SIMD4<Float>
+    var reconstruction: SIMD4<Float>
+    var wallKinematics: SIMD4<Float>
+    var branches: SIMD4<Float>
+
+    static let zero = GPUFormationBoundarySourceCensus(
+        populations: .zero,
+        reconstruction: .zero,
+        wallKinematics: .zero,
+        branches: .zero
+    )
+}
+
 struct GPURunSample {
     var timeAndPosition: SIMD4<Float>
     var orientation: SIMD4<Float>

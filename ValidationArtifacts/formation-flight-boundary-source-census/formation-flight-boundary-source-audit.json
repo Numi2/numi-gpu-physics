@@ -1,0 +1,1607 @@
+{
+  "checkCount": 319,
+  "checks": [
+    {
+      "evidence": true,
+      "name": "preregistered before CFD execution",
+      "passed": true
+    },
+    {
+      "evidence": "508ab84e94736777c0f040b16f951c4cc9eaee29594b6e5fa5aff13cff15e67a",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "fb30bc56d97d842c9f39c38e8f0d6213a98df115a1b7bf44aafc9a8e14f6e091",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "343cd013a291a31270eefa3954258232aded219d1f9882a9b9435867b7d4f4bd",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-streamwise-attenuation/formation-flight-streamwise-attenuation-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "2db9c4583c3159ad9760d3fbf0030908289368e11d510d32c3f458442d5da1fe",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-streamwise-attenuation/formation-flight-streamwise-attenuation-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "passed": true
+    },
+    {
+      "evidence": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "passed": true
+    },
+    {
+      "evidence": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "passed": true
+    },
+    {
+      "evidence": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/GPUData.swift",
+      "passed": true
+    },
+    {
+      "evidence": "7585c72fb2a83391b246e40f22528c25fc892f14b2d93fde630acdc38422c832",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "passed": true
+    },
+    {
+      "evidence": "76a6e2d6237ff1cb95cb8b221705ee8df25a012f81d8e93d1b9a23e1f1fb45fe",
+      "name": "lockedImplementation hash Sources/BirdFlowCLI/main.swift",
+      "passed": true
+    },
+    {
+      "evidence": "f4cfd0788ba1e9c5cd8c19013815e8e53d043f89c1b8e3ff4402143abfc63cdc",
+      "name": "lockedImplementation hash Scripts/static-audit.py",
+      "passed": true
+    },
+    {
+      "evidence": "3c91e17f7915468db2fc6fda494907975b01d97940ed4d6ab19dac60239971de",
+      "name": "lockedImplementation hash Tests/BirdFlowMetalTests/FormationFlightObservatoryTests.swift",
+      "passed": true
+    },
+    {
+      "evidence": "25b221b03dd62265e069c6cd6a7c4b77265aa6482edf9dc347b19a1fdebac052",
+      "name": "lockedAnalysis hash Scripts/run-formation-boundary-source-census.sh",
+      "passed": true
+    },
+    {
+      "evidence": "ea435b9d53d759c239cd6ea4ffaaf612834200e87f258f5edd4af561800ec3e9",
+      "name": "lockedAnalysis hash Scripts/analyze-formation-boundary-source-census.py",
+      "passed": true
+    },
+    {
+      "evidence": "91ae7829f1139262e3afada14d827f6c4ae3059f0b0b4fa4343e05d8b4596aa7",
+      "name": "lockedAnalysis hash Scripts/audit-formation-boundary-source-census.py",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "amendment precedes discriminating runs",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "failed smoke excluded",
+      "passed": true
+    },
+    {
+      "evidence": "9acbfee2af5afa8ac20d5ce7003d0f6a4909aaedebecfacd11f695a55c0e0c55",
+      "name": "failed smoke evidence hash ValidationArtifacts/formation-flight-boundary-source-census/c8-instrumentation-smoke-failed-phase0-report/formation-flight-field-replay-report.json",
+      "passed": true
+    },
+    {
+      "evidence": "3ff5525cd5f7c1aa9eaeda5a753926750b376df67702b8fa82d110a58af6f674",
+      "name": "failed smoke evidence hash ValidationArtifacts/formation-flight-boundary-source-census/c8-instrumentation-smoke-failed-phase0-report/formation-flight-boundary-source-census.json",
+      "passed": true
+    },
+    {
+      "evidence": "711aab4cc253fd6a2e78499ba6332eaecbb1f068f304423c9017e9094a7565ff",
+      "name": "summary preregistration hash",
+      "passed": true
+    },
+    {
+      "evidence": 4,
+      "name": "four preregistered probes",
+      "passed": true
+    },
+    {
+      "evidence": "605bcbae0a69daff2acb5fbcabbbec6320b007ff0d851fee1b14db6502c0be83",
+      "name": "c16 replay hash",
+      "passed": true
+    },
+    {
+      "evidence": "fb71609083acb947efa7610e0dc30658b0f4689e2918b1bc6b545b9af2e75891",
+      "name": "c16 census hash",
+      "passed": true
+    },
+    {
+      "evidence": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415",
+      "name": "c16 reference hash",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c16 replay passed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c16 census passed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c16 census finite",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c16 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 4,
+      "name": "c16 sample count",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "c16 exact history",
+      "passed": true
+    },
+    {
+      "evidence": 9.27860803792147e-08,
+      "name": "c16 source closure",
+      "passed": true
+    },
+    {
+      "evidence": "36735eaf3311a21bedeab15ef651969c5f06995b19f4ab859ba62b78492f9139",
+      "name": "c20 replay hash",
+      "passed": true
+    },
+    {
+      "evidence": "88ced4bd4e20be9b3ca61510a2b36aef2181a3cb3330b5e7a608c072d82ce7b0",
+      "name": "c20 census hash",
+      "passed": true
+    },
+    {
+      "evidence": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6",
+      "name": "c20 reference hash",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c20 replay passed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c20 census passed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c20 census finite",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "c20 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 4,
+      "name": "c20 sample count",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "c20 exact history",
+      "passed": true
+    },
+    {
+      "evidence": 9.085942099249523e-08,
+      "name": "c20 source closure",
+      "passed": true
+    },
+    {
+      "evidence": "leader",
+      "name": "probe 0 leader phase 0.035 identity",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 0 leader phase 0.035 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 0 leader phase 0.035 c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 1.9073486328125e-06,
+      "name": "probe 0 leader phase 0.035 c16 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 0 leader phase 0.035 c16 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 1.9073486328125e-06,
+      "name": "probe 0 leader phase 0.035 c16 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 8634,
+      "name": "probe 0 leader phase 0.035 c16 total links",
+      "passed": true
+    },
+    {
+      "evidence": 33.7265625,
+      "name": "probe 0 leader phase 0.035 c16 link density",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 0 leader phase 0.035 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 0 leader phase 0.035 c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "probe 0 leader phase 0.035 c20 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 0 leader phase 0.035 c20 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "probe 0 leader phase 0.035 c20 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 13306,
+      "name": "probe 0 leader phase 0.035 c20 total links",
+      "passed": true
+    },
+    {
+      "evidence": 33.265,
+      "name": "probe 0 leader phase 0.035 c20 link density",
+      "passed": true
+    },
+    {
+      "evidence": 1.677802861921318e-17,
+      "name": "probe 0 leader phase 0.035 exact symmetric identity",
+      "passed": true
+    },
+    {
+      "evidence": 1.511615601643818e-08,
+      "name": "probe 0 leader phase 0.035 amplitude component identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.04979177039282088,
+      "name": "probe 0 leader phase 0.035 sampling L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.0008864953496365834,
+      "name": "probe 0 leader phase 0.035 amplitude L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.9825073858260723,
+      "name": "probe 0 leader phase 0.035 sampling share",
+      "passed": true
+    },
+    {
+      "evidence": 0.01749261417392765,
+      "name": "probe 0 leader phase 0.035 amplitude share",
+      "passed": true
+    },
+    {
+      "evidence": 0.012932532266413565,
+      "name": "probe 0 leader phase 0.035 reflectedMomentumExchange L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.4953386810922577,
+      "name": "probe 0 leader phase 0.035 reflectedMomentumExchange share",
+      "passed": true
+    },
+    {
+      "evidence": 0.011628295844701052,
+      "name": "probe 0 leader phase 0.035 interpolationAuxiliary L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.445384137337408,
+      "name": "probe 0 leader phase 0.035 interpolationAuxiliary share",
+      "passed": true
+    },
+    {
+      "evidence": 0.0015476361782003102,
+      "name": "probe 0 leader phase 0.035 movingWall L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.059277181570334306,
+      "name": "probe 0 leader phase 0.035 movingWall share",
+      "passed": true
+    },
+    {
+      "evidence": 0.007694822335753552,
+      "name": "probe 0 leader phase 0.035 direction TV",
+      "passed": true
+    },
+    {
+      "evidence": "directionalLinkSamplingDominated",
+      "name": "probe 0 leader phase 0.035 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 0 leader phase 0.035 q0 delta",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 0 leader phase 0.035 q0 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005780920386314475,
+      "name": "probe 0 leader phase 0.035 q1 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.7969027918336997e-18,
+      "name": "probe 0 leader phase 0.035 q1 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005801598727703111,
+      "name": "probe 0 leader phase 0.035 q2 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.926152922056279e-18,
+      "name": "probe 0 leader phase 0.035 q2 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0010939440131187417,
+      "name": "probe 0 leader phase 0.035 q3 delta",
+      "passed": true
+    },
+    {
+      "evidence": 4.4181238528784306e-18,
+      "name": "probe 0 leader phase 0.035 q3 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0009980434179306108,
+      "name": "probe 0 leader phase 0.035 q4 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.2705494208814505e-18,
+      "name": "probe 0 leader phase 0.035 q4 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.006205551326274872,
+      "name": "probe 0 leader phase 0.035 q5 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.677802861921318e-17,
+      "name": "probe 0 leader phase 0.035 q5 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.006154788434505454,
+      "name": "probe 0 leader phase 0.035 q6 delta",
+      "passed": true
+    },
+    {
+      "evidence": -5.824198545320569e-18,
+      "name": "probe 0 leader phase 0.035 q6 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.001101377457380287,
+      "name": "probe 0 leader phase 0.035 q7 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.1608586542120186e-17,
+      "name": "probe 0 leader phase 0.035 q7 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0010684387385845318,
+      "name": "probe 0 leader phase 0.035 q8 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.0821692934120941e-17,
+      "name": "probe 0 leader phase 0.035 q8 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0008027619123458785,
+      "name": "probe 0 leader phase 0.035 q9 delta",
+      "passed": true
+    },
+    {
+      "evidence": 2.5178054357134078e-18,
+      "name": "probe 0 leader phase 0.035 q9 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.000739591419696789,
+      "name": "probe 0 leader phase 0.035 q10 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.9651164376299768e-18,
+      "name": "probe 0 leader phase 0.035 q10 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.002031306922435777,
+      "name": "probe 0 leader phase 0.035 q11 delta",
+      "passed": true
+    },
+    {
+      "evidence": -3.4423418976414766e-18,
+      "name": "probe 0 leader phase 0.035 q11 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0019805997610092274,
+      "name": "probe 0 leader phase 0.035 q12 delta",
+      "passed": true
+    },
+    {
+      "evidence": -9.56469604039556e-18,
+      "name": "probe 0 leader phase 0.035 q12 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.004354529529809956,
+      "name": "probe 0 leader phase 0.035 q13 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.202285662861181e-19,
+      "name": "probe 0 leader phase 0.035 q13 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.004366646111011507,
+      "name": "probe 0 leader phase 0.035 q14 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.1819568721270777e-18,
+      "name": "probe 0 leader phase 0.035 q14 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0029069014824926864,
+      "name": "probe 0 leader phase 0.035 q15 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.395910297075087e-18,
+      "name": "probe 0 leader phase 0.035 q15 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0029116871766746034,
+      "name": "probe 0 leader phase 0.035 q16 delta",
+      "passed": true
+    },
+    {
+      "evidence": -8.419507495707745e-19,
+      "name": "probe 0 leader phase 0.035 q16 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009404447674751237,
+      "name": "probe 0 leader phase 0.035 q17 delta",
+      "passed": true
+    },
+    {
+      "evidence": 9.75781955236954e-19,
+      "name": "probe 0 leader phase 0.035 q17 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.00113319873809814,
+      "name": "probe 0 leader phase 0.035 q18 delta",
+      "passed": true
+    },
+    {
+      "evidence": 9.31058615621927e-18,
+      "name": "probe 0 leader phase 0.035 q18 identity",
+      "passed": true
+    },
+    {
+      "evidence": "follower",
+      "name": "probe 1 follower phase 0.035 identity",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 1 follower phase 0.035 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 1 follower phase 0.035 c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 1.7285346984863281e-06,
+      "name": "probe 1 follower phase 0.035 c16 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 1 follower phase 0.035 c16 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 1.7285346984863281e-06,
+      "name": "probe 1 follower phase 0.035 c16 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 8854,
+      "name": "probe 1 follower phase 0.035 c16 total links",
+      "passed": true
+    },
+    {
+      "evidence": 34.5859375,
+      "name": "probe 1 follower phase 0.035 c16 link density",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 1 follower phase 0.035 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 1 follower phase 0.035 c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "probe 1 follower phase 0.035 c20 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 1 follower phase 0.035 c20 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "probe 1 follower phase 0.035 c20 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 13626,
+      "name": "probe 1 follower phase 0.035 c20 total links",
+      "passed": true
+    },
+    {
+      "evidence": 34.065000000000005,
+      "name": "probe 1 follower phase 0.035 c20 link density",
+      "passed": true
+    },
+    {
+      "evidence": 1.8106176280507924e-17,
+      "name": "probe 1 follower phase 0.035 exact symmetric identity",
+      "passed": true
+    },
+    {
+      "evidence": 1.0488310509315294e-08,
+      "name": "probe 1 follower phase 0.035 amplitude component identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.046575045109732226,
+      "name": "probe 1 follower phase 0.035 sampling L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.0005436423435924485,
+      "name": "probe 1 follower phase 0.035 amplitude L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.9884622774322613,
+      "name": "probe 1 follower phase 0.035 sampling share",
+      "passed": true
+    },
+    {
+      "evidence": 0.01153772256773866,
+      "name": "probe 1 follower phase 0.035 amplitude share",
+      "passed": true
+    },
+    {
+      "evidence": 0.0044563966885050365,
+      "name": "probe 1 follower phase 0.035 reflectedMomentumExchange L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.44659098082461496,
+      "name": "probe 1 follower phase 0.035 reflectedMomentumExchange share",
+      "passed": true
+    },
+    {
+      "evidence": 0.004538173234972815,
+      "name": "probe 1 follower phase 0.035 interpolationAuxiliary L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.454786092402024,
+      "name": "probe 1 follower phase 0.035 interpolationAuxiliary share",
+      "passed": true
+    },
+    {
+      "evidence": 0.000984128437775331,
+      "name": "probe 1 follower phase 0.035 movingWall L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.09862292677336112,
+      "name": "probe 1 follower phase 0.035 movingWall share",
+      "passed": true
+    },
+    {
+      "evidence": 0.0055181912653134504,
+      "name": "probe 1 follower phase 0.035 direction TV",
+      "passed": true
+    },
+    {
+      "evidence": "directionalLinkSamplingDominated",
+      "name": "probe 1 follower phase 0.035 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q0 delta",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q0 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0028980088233948043,
+      "name": "probe 1 follower phase 0.035 q1 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.7015197844444385e-17,
+      "name": "probe 1 follower phase 0.035 q1 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.002872193455696115,
+      "name": "probe 1 follower phase 0.035 q2 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.2891841457210451e-17,
+      "name": "probe 1 follower phase 0.035 q2 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009520964324474246,
+      "name": "probe 1 follower phase 0.035 q3 delta",
+      "passed": true
+    },
+    {
+      "evidence": 7.09474796620202e-18,
+      "name": "probe 1 follower phase 0.035 q3 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0010079063475132016,
+      "name": "probe 1 follower phase 0.035 q4 delta",
+      "passed": true
+    },
+    {
+      "evidence": 5.319366908757006e-19,
+      "name": "probe 1 follower phase 0.035 q4 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.005838194489479059,
+      "name": "probe 1 follower phase 0.035 q5 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.8106176280507924e-17,
+      "name": "probe 1 follower phase 0.035 q5 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0059389719367027305,
+      "name": "probe 1 follower phase 0.035 q6 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.6872896309305663e-18,
+      "name": "probe 1 follower phase 0.035 q6 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.00016089841723442022,
+      "name": "probe 1 follower phase 0.035 q7 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.1849990932087662e-18,
+      "name": "probe 1 follower phase 0.035 q7 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.00016155734658240828,
+      "name": "probe 1 follower phase 0.035 q8 delta",
+      "passed": true
+    },
+    {
+      "evidence": 7.139640712406498e-18,
+      "name": "probe 1 follower phase 0.035 q8 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0014579305052757063,
+      "name": "probe 1 follower phase 0.035 q9 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.0144066576317501e-17,
+      "name": "probe 1 follower phase 0.035 q9 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.00144127756357193,
+      "name": "probe 1 follower phase 0.035 q10 delta",
+      "passed": true
+    },
+    {
+      "evidence": -7.74865740148234e-18,
+      "name": "probe 1 follower phase 0.035 q10 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009540688991546697,
+      "name": "probe 1 follower phase 0.035 q11 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.8019849895172255e-18,
+      "name": "probe 1 follower phase 0.035 q11 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.000985400527715688,
+      "name": "probe 1 follower phase 0.035 q12 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.9989977555201488e-19,
+      "name": "probe 1 follower phase 0.035 q12 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0014410108327865545,
+      "name": "probe 1 follower phase 0.035 q13 delta",
+      "passed": true
+    },
+    {
+      "evidence": 9.791700870259712e-18,
+      "name": "probe 1 follower phase 0.035 q13 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0013821768760681197,
+      "name": "probe 1 follower phase 0.035 q14 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.2600462123354972e-17,
+      "name": "probe 1 follower phase 0.035 q14 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.002747023254632955,
+      "name": "probe 1 follower phase 0.035 q15 delta",
+      "passed": true
+    },
+    {
+      "evidence": -4.097945398816305e-18,
+      "name": "probe 1 follower phase 0.035 q15 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0028054828941822124,
+      "name": "probe 1 follower phase 0.035 q16 delta",
+      "passed": true
+    },
+    {
+      "evidence": 2.642742795433417e-19,
+      "name": "probe 1 follower phase 0.035 q16 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0028986958414316186,
+      "name": "probe 1 follower phase 0.035 q17 delta",
+      "passed": true
+    },
+    {
+      "evidence": 4.607859233063394e-19,
+      "name": "probe 1 follower phase 0.035 q17 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0028667941689491244,
+      "name": "probe 1 follower phase 0.035 q18 delta",
+      "passed": true
+    },
+    {
+      "evidence": 3.144186300207963e-18,
+      "name": "probe 1 follower phase 0.035 q18 identity",
+      "passed": true
+    },
+    {
+      "evidence": "leader",
+      "name": "probe 2 leader phase 0.095 identity",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 2 leader phase 0.095 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 2 leader phase 0.095 c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "probe 2 leader phase 0.095 c16 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 2 leader phase 0.095 c16 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "probe 2 leader phase 0.095 c16 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 8514,
+      "name": "probe 2 leader phase 0.095 c16 total links",
+      "passed": true
+    },
+    {
+      "evidence": 33.2578125,
+      "name": "probe 2 leader phase 0.095 c16 link density",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 2 leader phase 0.095 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 2 leader phase 0.095 c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 5.0067901611328125e-06,
+      "name": "probe 2 leader phase 0.095 c20 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 2 leader phase 0.095 c20 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 5.0067901611328125e-06,
+      "name": "probe 2 leader phase 0.095 c20 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 13030,
+      "name": "probe 2 leader phase 0.095 c20 total links",
+      "passed": true
+    },
+    {
+      "evidence": 32.575,
+      "name": "probe 2 leader phase 0.095 c20 link density",
+      "passed": true
+    },
+    {
+      "evidence": 2.131812521649623e-17,
+      "name": "probe 2 leader phase 0.095 exact symmetric identity",
+      "passed": true
+    },
+    {
+      "evidence": 1.9605866914649563e-08,
+      "name": "probe 2 leader phase 0.095 amplitude component identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.06970574165401162,
+      "name": "probe 2 leader phase 0.095 sampling L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.0013633349089039566,
+      "name": "probe 2 leader phase 0.095 amplitude L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.9808167634245671,
+      "name": "probe 2 leader phase 0.095 sampling share",
+      "passed": true
+    },
+    {
+      "evidence": 0.019183236575432805,
+      "name": "probe 2 leader phase 0.095 amplitude share",
+      "passed": true
+    },
+    {
+      "evidence": 0.011319808783735707,
+      "name": "probe 2 leader phase 0.095 reflectedMomentumExchange L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.43429343068724824,
+      "name": "probe 2 leader phase 0.095 reflectedMomentumExchange share",
+      "passed": true
+    },
+    {
+      "evidence": 0.012073911179698674,
+      "name": "probe 2 leader phase 0.095 interpolationAuxiliary L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.4632251664514411,
+      "name": "probe 2 leader phase 0.095 interpolationAuxiliary share",
+      "passed": true
+    },
+    {
+      "evidence": 0.0026711660879679172,
+      "name": "probe 2 leader phase 0.095 movingWall L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.10248140286131072,
+      "name": "probe 2 leader phase 0.095 movingWall share",
+      "passed": true
+    },
+    {
+      "evidence": 0.009041529900370845,
+      "name": "probe 2 leader phase 0.095 direction TV",
+      "passed": true
+    },
+    {
+      "evidence": "directionalLinkSamplingDominated",
+      "name": "probe 2 leader phase 0.095 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 2 leader phase 0.095 q0 delta",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 2 leader phase 0.095 q0 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.001848940849304176,
+      "name": "probe 2 leader phase 0.095 q1 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.131812521649623e-17,
+      "name": "probe 2 leader phase 0.095 q1 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.002143240869045243,
+      "name": "probe 2 leader phase 0.095 q2 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.7647155398380363e-18,
+      "name": "probe 2 leader phase 0.095 q2 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.001264736354351037,
+      "name": "probe 2 leader phase 0.095 q3 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.6940658945086007e-19,
+      "name": "probe 2 leader phase 0.095 q3 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0010927909612655773,
+      "name": "probe 2 leader phase 0.095 q4 delta",
+      "passed": true
+    },
+    {
+      "evidence": 7.860465750519907e-18,
+      "name": "probe 2 leader phase 0.095 q4 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.00912993937730791,
+      "name": "probe 2 leader phase 0.095 q5 delta",
+      "passed": true
+    },
+    {
+      "evidence": -7.230273237762708e-18,
+      "name": "probe 2 leader phase 0.095 q5 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.009194860756397277,
+      "name": "probe 2 leader phase 0.095 q6 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.4352126258276865e-17,
+      "name": "probe 2 leader phase 0.095 q6 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009852766245603585,
+      "name": "probe 2 leader phase 0.095 q7 delta",
+      "passed": true
+    },
+    {
+      "evidence": -7.589415207398531e-19,
+      "name": "probe 2 leader phase 0.095 q7 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009687514975667035,
+      "name": "probe 2 leader phase 0.095 q8 delta",
+      "passed": true
+    },
+    {
+      "evidence": 4.438452643612534e-19,
+      "name": "probe 2 leader phase 0.095 q8 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0021380633115768433,
+      "name": "probe 2 leader phase 0.095 q9 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.2636955515371177e-18,
+      "name": "probe 2 leader phase 0.095 q9 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.002051969170570378,
+      "name": "probe 2 leader phase 0.095 q10 delta",
+      "passed": true
+    },
+    {
+      "evidence": -7.426784881525705e-18,
+      "name": "probe 2 leader phase 0.095 q10 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0025939443707466148,
+      "name": "probe 2 leader phase 0.095 q11 delta",
+      "passed": true
+    },
+    {
+      "evidence": 5.421010862427522e-20,
+      "name": "probe 2 leader phase 0.095 q11 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0026613742113113514,
+      "name": "probe 2 leader phase 0.095 q12 delta",
+      "passed": true
+    },
+    {
+      "evidence": -4.662069341687669e-18,
+      "name": "probe 2 leader phase 0.095 q12 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.00431405976414681,
+      "name": "probe 2 leader phase 0.095 q13 delta",
+      "passed": true
+    },
+    {
+      "evidence": -4.472333961502706e-19,
+      "name": "probe 2 leader phase 0.095 q13 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.004232830852270129,
+      "name": "probe 2 leader phase 0.095 q14 delta",
+      "passed": true
+    },
+    {
+      "evidence": 2.0481256664608982e-18,
+      "name": "probe 2 leader phase 0.095 q14 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.003453429043293002,
+      "name": "probe 2 leader phase 0.095 q15 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.358139725155972e-18,
+      "name": "probe 2 leader phase 0.095 q15 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0036485348641872445,
+      "name": "probe 2 leader phase 0.095 q16 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.032879073410321e-18,
+      "name": "probe 2 leader phase 0.095 q16 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.002640900611877439,
+      "name": "probe 2 leader phase 0.095 q17 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.3310346708438345e-18,
+      "name": "probe 2 leader phase 0.095 q17 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.002586051821708679,
+      "name": "probe 2 leader phase 0.095 q18 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.8431436932253575e-18,
+      "name": "probe 2 leader phase 0.095 q18 identity",
+      "passed": true
+    },
+    {
+      "evidence": "follower",
+      "name": "probe 3 follower phase 0.095 identity",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 3 follower phase 0.095 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 3 follower phase 0.095 c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 3.3080577850341797e-06,
+      "name": "probe 3 follower phase 0.095 c16 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 3 follower phase 0.095 c16 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 3.3080577850341797e-06,
+      "name": "probe 3 follower phase 0.095 c16 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 8670,
+      "name": "probe 3 follower phase 0.095 c16 total links",
+      "passed": true
+    },
+    {
+      "evidence": 33.8671875,
+      "name": "probe 3 follower phase 0.095 c16 link density",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 3 follower phase 0.095 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "probe 3 follower phase 0.095 c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 7.62939453125e-06,
+      "name": "probe 3 follower phase 0.095 c20 incoming reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "probe 3 follower phase 0.095 c20 direction branch counts",
+      "passed": true
+    },
+    {
+      "evidence": 7.62939453125e-06,
+      "name": "probe 3 follower phase 0.095 c20 momentum component sum",
+      "passed": true
+    },
+    {
+      "evidence": 13228,
+      "name": "probe 3 follower phase 0.095 c20 total links",
+      "passed": true
+    },
+    {
+      "evidence": 33.06999999999999,
+      "name": "probe 3 follower phase 0.095 c20 link density",
+      "passed": true
+    },
+    {
+      "evidence": 1.9519027236528097e-17,
+      "name": "probe 3 follower phase 0.095 exact symmetric identity",
+      "passed": true
+    },
+    {
+      "evidence": 2.11175307352038e-08,
+      "name": "probe 3 follower phase 0.095 amplitude component identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.07252786375911313,
+      "name": "probe 3 follower phase 0.095 sampling L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.0011049548477918992,
+      "name": "probe 3 follower phase 0.095 amplitude L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.9849937179005629,
+      "name": "probe 3 follower phase 0.095 sampling share",
+      "passed": true
+    },
+    {
+      "evidence": 0.015006282099437118,
+      "name": "probe 3 follower phase 0.095 amplitude share",
+      "passed": true
+    },
+    {
+      "evidence": 0.010470216987079969,
+      "name": "probe 3 follower phase 0.095 reflectedMomentumExchange L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.4597712776239563,
+      "name": "probe 3 follower phase 0.095 reflectedMomentumExchange share",
+      "passed": true
+    },
+    {
+      "evidence": 0.010992544820232406,
+      "name": "probe 3 follower phase 0.095 interpolationAuxiliary L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.48270789254639684,
+      "name": "probe 3 follower phase 0.095 interpolationAuxiliary share",
+      "passed": true
+    },
+    {
+      "evidence": 0.0013099025513418155,
+      "name": "probe 3 follower phase 0.095 movingWall L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.05752082982964703,
+      "name": "probe 3 follower phase 0.095 movingWall share",
+      "passed": true
+    },
+    {
+      "evidence": 0.009897742337476433,
+      "name": "probe 3 follower phase 0.095 direction TV",
+      "passed": true
+    },
+    {
+      "evidence": "directionalLinkSamplingDominated",
+      "name": "probe 3 follower phase 0.095 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 3 follower phase 0.095 q0 delta",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 3 follower phase 0.095 q0 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0007794997096061684,
+      "name": "probe 3 follower phase 0.095 q1 delta",
+      "passed": true
+    },
+    {
+      "evidence": -7.060866648311848e-18,
+      "name": "probe 3 follower phase 0.095 q1 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0007025292515754622,
+      "name": "probe 3 follower phase 0.095 q2 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.079797601159782e-17,
+      "name": "probe 3 follower phase 0.095 q2 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0007886224985122481,
+      "name": "probe 3 follower phase 0.095 q3 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.9519027236528097e-17,
+      "name": "probe 3 follower phase 0.095 q3 identity",
+      "passed": true
+    },
+    {
+      "evidence": 0.0008244103193283114,
+      "name": "probe 3 follower phase 0.095 q4 delta",
+      "passed": true
+    },
+    {
+      "evidence": 6.142682933488186e-18,
+      "name": "probe 3 follower phase 0.095 q4 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.008317102789878877,
+      "name": "probe 3 follower phase 0.095 q5 delta",
+      "passed": true
+    },
+    {
+      "evidence": 2.0803129184565616e-18,
+      "name": "probe 3 follower phase 0.095 q5 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.008443633615970642,
+      "name": "probe 3 follower phase 0.095 q6 delta",
+      "passed": true
+    },
+    {
+      "evidence": -6.5865281978494394e-18,
+      "name": "probe 3 follower phase 0.095 q6 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009823960065841672,
+      "name": "probe 3 follower phase 0.095 q7 delta",
+      "passed": true
+    },
+    {
+      "evidence": -2.6495190590114515e-18,
+      "name": "probe 3 follower phase 0.095 q7 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009703543782234175,
+      "name": "probe 3 follower phase 0.095 q8 delta",
+      "passed": true
+    },
+    {
+      "evidence": -9.33430307874239e-19,
+      "name": "probe 3 follower phase 0.095 q8 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0021916976571083324,
+      "name": "probe 3 follower phase 0.095 q9 delta",
+      "passed": true
+    },
+    {
+      "evidence": -1.3457659465976324e-17,
+      "name": "probe 3 follower phase 0.095 q9 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0023131999373436074,
+      "name": "probe 3 follower phase 0.095 q10 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.98544522836408e-18,
+      "name": "probe 3 follower phase 0.095 q10 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.004027424603700636,
+      "name": "probe 3 follower phase 0.095 q11 delta",
+      "passed": true
+    },
+    {
+      "evidence": 2.3174821436877657e-18,
+      "name": "probe 3 follower phase 0.095 q11 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.004122706614434719,
+      "name": "probe 3 follower phase 0.095 q12 delta",
+      "passed": true
+    },
+    {
+      "evidence": -6.776263578034403e-19,
+      "name": "probe 3 follower phase 0.095 q12 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0028025671839713995,
+      "name": "probe 3 follower phase 0.095 q13 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.6154612370034016e-17,
+      "name": "probe 3 follower phase 0.095 q13 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0026934114098549067,
+      "name": "probe 3 follower phase 0.095 q14 delta",
+      "passed": true
+    },
+    {
+      "evidence": 2.588532686809142e-18,
+      "name": "probe 3 follower phase 0.095 q14 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.002719797790050521,
+      "name": "probe 3 follower phase 0.095 q15 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.1519648082658485e-18,
+      "name": "probe 3 follower phase 0.095 q15 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.0028944829106330727,
+      "name": "probe 3 follower phase 0.095 q16 delta",
+      "passed": true
+    },
+    {
+      "evidence": 1.3715157481941631e-17,
+      "name": "probe 3 follower phase 0.095 q16 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.005876105129718777,
+      "name": "probe 3 follower phase 0.095 q17 delta",
+      "passed": true
+    },
+    {
+      "evidence": -5.082197683525802e-19,
+      "name": "probe 3 follower phase 0.095 q17 identity",
+      "passed": true
+    },
+    {
+      "evidence": -0.005862033069133764,
+      "name": "probe 3 follower phase 0.095 q18 delta",
+      "passed": true
+    },
+    {
+      "evidence": -5.1567365828841805e-18,
+      "name": "probe 3 follower phase 0.095 q18 identity",
+      "passed": true
+    },
+    {
+      "evidence": "directionalLinkSamplingDominated",
+      "name": "primary classification",
+      "passed": true
+    },
+    {
+      "evidence": "test localized near-wing geometric refinement or improved link-quadrature realization before changing population reconstruction",
+      "name": "next action follows frozen rule",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "production unchanged",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "quantitative claim closed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "new CFD disclosed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "analysis passed",
+      "passed": true
+    },
+    {
+      "evidence": 23923,
+      "name": "artifact exists ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-directions.csv",
+      "passed": true
+    },
+    {
+      "evidence": 342761,
+      "name": "artifact exists Docs/Media/formation-flight-boundary-source-atlas.png",
+      "passed": true
+    },
+    {
+      "evidence": 181996,
+      "name": "artifact exists Docs/Media/formation-flight-boundary-source-atlas.svg",
+      "passed": true
+    }
+  ],
+  "checksPassed": 319,
+  "passed": true,
+  "preregistrationPath": "ValidationInputs/formation-flight-boundary-source-census-v1.json",
+  "preregistrationSHA256": "711aab4cc253fd6a2e78499ba6332eaecbb1f068f304423c9017e9094a7565ff",
+  "schemaVersion": 1,
+  "summaryPath": "ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-summary.json",
+  "summarySHA256": "e2820ecabaaf831fd31dfa657bef6408da679ca3ee89afa18e8959db12700bfc"
+}

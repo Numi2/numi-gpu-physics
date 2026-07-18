@@ -1,0 +1,686 @@
+{
+  "allChecksPassed": true,
+  "checkCount": 106,
+  "checks": [
+    {
+      "evidence": true,
+      "name": "preregistered before execution",
+      "passed": true
+    },
+    {
+      "evidence": "ad443105541dd034b440c92ff026badb225f9d30f131f4cfc5ecf8084a1ca6f0",
+      "name": "summary locks preregistration",
+      "passed": true
+    },
+    {
+      "evidence": "48f50242359611d68608128d99fd1b73981764f9f546964b91db78b0a2420cd5",
+      "name": "locked input ValidationArtifacts/formation-flight-early-cycle-replay/formation-flight-early-cycle-field-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415",
+      "name": "locked input ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "passed": true
+    },
+    {
+      "evidence": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6",
+      "name": "locked input ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "passed": true
+    },
+    {
+      "evidence": "84cacb9da1498acc018e8c284a585697acd36a6c2fab41d1094f563448d425be",
+      "name": "locked input ValidationInputs/formation-flight-early-cycle-field-replay-v1.json",
+      "passed": true
+    },
+    {
+      "evidence": "20808d0a8f5f0108b79aaf5ac904925c1adee882b7b06b22e7e3672efd7868b9",
+      "name": "c16 replay SHA",
+      "passed": true
+    },
+    {
+      "evidence": "d8c2b69a8249900c200adcce8195233791d99bfa496308c793a20444a00ee12b",
+      "name": "c16 mechanism SHA",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumAllowedRelativeReferenceCoupledHistoryDifference": 1e-06,
+        "maximumRelativeForceClosureResidual": 1.1357720950400108e-06,
+        "maximumRelativeMechanismForceClosureResidual": 2.3154537222092334e-07,
+        "maximumRelativeMechanismPowerClosureResidual": 6.137125474829496e-08,
+        "maximumRelativeMechanismTorqueClosureResidual": 1.3418201695709867e-07,
+        "maximumRelativePeriodicPowerDifference": 0.023424908531560838,
+        "maximumRelativeReferenceCoupledHistoryDifference": 0,
+        "maximumRelativeTorqueClosureResidual": 4.227761564834509e-06,
+        "mechanismProbePassed": true,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true,
+        "referenceCoupledHistoryPassed": true
+      },
+      "name": "c16 replay gate",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "c16 exact history",
+      "passed": true
+    },
+    {
+      "evidence": "all five causal terms close linearly to the unchanged production owner load",
+      "name": "c16 mechanism gate",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "reflectedPopulation",
+        "interpolationAuxiliary",
+        "movingWall",
+        "coverImpulse",
+        "uncoverImpulse"
+      ],
+      "name": "c16 component order",
+      "passed": true
+    },
+    {
+      "evidence": 6,
+      "name": "c16 sample count",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.3637428283691406,
+        -1.3273909091949463,
+        0.8590621948242188
+      ],
+      "name": "c16 sample 0 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.4011354446411133,
+        -24.40460205078125,
+        -42.453956604003906
+      ],
+      "name": "c16 sample 0 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.06763607451935141,
+      "name": "c16 sample 0 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -0.9089242815971375,
+        0.3298183083534241,
+        0.28399747610092163
+      ],
+      "name": "c16 sample 1 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        11.654672622680664,
+        -0.028598785400390625,
+        31.807754516601562
+      ],
+      "name": "c16 sample 1 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.015373281002361697,
+      "name": "c16 sample 1 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.7765039205551147,
+        -0.8356945514678955,
+        1.056023120880127
+      ],
+      "name": "c16 sample 2 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        16.263912200927734,
+        -27.601730346679688,
+        -32.37030792236328
+      ],
+      "name": "c16 sample 2 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.05157114065210108,
+      "name": "c16 sample 2 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -0.7694826126098633,
+        0.6102743744850159,
+        0.6160657405853271
+      ],
+      "name": "c16 sample 3 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        19.479690551757812,
+        -9.739307403564453,
+        28.697914123535156
+      ],
+      "name": "c16 sample 3 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.042042546701488034,
+      "name": "c16 sample 3 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -0.1732044219970703,
+        0.049906015396118164,
+        -0.10943695902824402
+      ],
+      "name": "c16 sample 4 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -2.7186508178710938,
+        -2.070770263671875,
+        11.091705322265625
+      ],
+      "name": "c16 sample 4 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.007366752549002195,
+      "name": "c16 sample 4 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.06519420444965363,
+        0.6014736890792847,
+        0.35901543498039246
+      ],
+      "name": "c16 sample 5 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        2.2838423252105713,
+        -10.067176818847656,
+        16.999691009521484
+      ],
+      "name": "c16 sample 5 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.027083245423477887,
+      "name": "c16 sample 5 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 2.3154537222092334e-07,
+      "name": "c16 maximum force closure",
+      "passed": true
+    },
+    {
+      "evidence": 1.3418201695709867e-07,
+      "name": "c16 maximum torque closure",
+      "passed": true
+    },
+    {
+      "evidence": 6.137125474829496e-08,
+      "name": "c16 maximum power closure",
+      "passed": true
+    },
+    {
+      "evidence": 2.3154537222092334e-07,
+      "name": "c16 closure within gate",
+      "passed": true
+    },
+    {
+      "evidence": "400b1f0b7bc7361de819f322ffebeeb3d01babc46ad306635a19b3ff79f68cb6",
+      "name": "c20 replay SHA",
+      "passed": true
+    },
+    {
+      "evidence": "dd91c9aa89323bee2bd7a02b98b11a12a55ff6b1df1429875ec2a2c2f10a7b8a",
+      "name": "c20 mechanism SHA",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumAllowedRelativeReferenceCoupledHistoryDifference": 1e-06,
+        "maximumRelativeForceClosureResidual": 7.174681968535879e-07,
+        "maximumRelativeMechanismForceClosureResidual": 1.8779576944233189e-07,
+        "maximumRelativeMechanismPowerClosureResidual": 8.15055502784035e-08,
+        "maximumRelativeMechanismTorqueClosureResidual": 1.2023354187871327e-07,
+        "maximumRelativePeriodicPowerDifference": 0.023664134168891238,
+        "maximumRelativeReferenceCoupledHistoryDifference": 0,
+        "maximumRelativeTorqueClosureResidual": 4.415661805978743e-06,
+        "mechanismProbePassed": true,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true,
+        "referenceCoupledHistoryPassed": true
+      },
+      "name": "c20 replay gate",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "c20 exact history",
+      "passed": true
+    },
+    {
+      "evidence": "all five causal terms close linearly to the unchanged production owner load",
+      "name": "c20 mechanism gate",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "reflectedPopulation",
+        "interpolationAuxiliary",
+        "movingWall",
+        "coverImpulse",
+        "uncoverImpulse"
+      ],
+      "name": "c20 component order",
+      "passed": true
+    },
+    {
+      "evidence": 6,
+      "name": "c20 sample count",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.6076169013977051,
+        -1.6440348625183105,
+        1.5057096481323242
+      ],
+      "name": "c20 sample 0 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        8.841623306274414,
+        -55.651123046875,
+        -60.03028869628906
+      ],
+      "name": "c20 sample 0 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.07651041539745573,
+      "name": "c20 sample 0 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -1.4058538675308228,
+        0.4376659393310547,
+        0.23507893085479736
+      ],
+      "name": "c20 sample 1 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        13.463470458984375,
+        2.281606674194336,
+        59.06541442871094
+      ],
+      "name": "c20 sample 1 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.022034181511550427,
+      "name": "c20 sample 1 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        1.3327820301055908,
+        -1.3566346168518066,
+        1.3439216613769531
+      ],
+      "name": "c20 sample 2 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        22.42184829711914,
+        -42.75413513183594,
+        -67.92924499511719
+      ],
+      "name": "c20 sample 2 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.08657783715956721,
+      "name": "c20 sample 2 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -1.4418480396270752,
+        0.9789782762527466,
+        0.6433706283569336
+      ],
+      "name": "c20 sample 3 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        24.612594604492188,
+        -7.108894348144531,
+        66.35491943359375
+      ],
+      "name": "c20 sample 3 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.07672535804085623,
+      "name": "c20 sample 3 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -0.21675491333007812,
+        0.023252487182617188,
+        -0.1262403130531311
+      ],
+      "name": "c20 sample 4 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        -3.7257118225097656,
+        -6.088356018066406,
+        21.908302307128906
+      ],
+      "name": "c20 sample 4 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.015588477789270666,
+      "name": "c20 sample 4 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.1201588362455368,
+        0.8410589098930359,
+        0.7639480829238892
+      ],
+      "name": "c20 sample 5 force reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        5.076168537139893,
+        -26.09103012084961,
+        23.695720672607422
+      ],
+      "name": "c20 sample 5 torque reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 0.030200868540345358,
+      "name": "c20 sample 5 power reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 1.8779576944233189e-07,
+      "name": "c20 maximum force closure",
+      "passed": true
+    },
+    {
+      "evidence": 1.2023354187871327e-07,
+      "name": "c20 maximum torque closure",
+      "passed": true
+    },
+    {
+      "evidence": 8.15055502784035e-08,
+      "name": "c20 maximum power closure",
+      "passed": true
+    },
+    {
+      "evidence": 1.8779576944233189e-07,
+      "name": "c20 closure within gate",
+      "passed": true
+    },
+    {
+      "evidence": 0.042497516304485894,
+      "name": "nearBoundary c16 positive denominator",
+      "passed": true
+    },
+    {
+      "evidence": 0.03501400560224077,
+      "name": "nearBoundary c16 half-step phase",
+      "passed": true
+    },
+    {
+      "evidence": 0.06739361686158332,
+      "name": "nearBoundary c20 positive denominator",
+      "passed": true
+    },
+    {
+      "evidence": 0.03506069094304376,
+      "name": "nearBoundary c20 half-step phase",
+      "passed": true
+    },
+    {
+      "evidence": 0.0005152976125204489,
+      "name": "nearBoundary reflectedPopulation difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.000888256694234338,
+      "name": "nearBoundary reflectedPopulation attribution",
+      "passed": true
+    },
+    {
+      "evidence": 0.20121780606434797,
+      "name": "nearBoundary interpolationAuxiliary difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.34685404879245596,
+      "name": "nearBoundary interpolationAuxiliary attribution",
+      "passed": true
+    },
+    {
+      "evidence": -0.2925604708987217,
+      "name": "nearBoundary movingWall difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.5043081714915325,
+      "name": "nearBoundary movingWall attribution",
+      "passed": true
+    },
+    {
+      "evidence": -0.014899631143650852,
+      "name": "nearBoundary coverImpulse difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.02568359872702708,
+      "name": "nearBoundary coverImpulse attribution",
+      "passed": true
+    },
+    {
+      "evidence": 0.07092920243736356,
+      "name": "nearBoundary uncoverImpulse difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.12226592429475015,
+      "name": "nearBoundary uncoverImpulse attribution",
+      "passed": true
+    },
+    {
+      "evidence": "movingWall",
+      "name": "nearBoundary dominant component",
+      "passed": true
+    },
+    {
+      "evidence": -0.0347989819540227,
+      "name": "nearBoundary production difference",
+      "passed": true
+    },
+    {
+      "evidence": 16.670671829511477,
+      "name": "nearBoundary difference conditioning",
+      "passed": true
+    },
+    {
+      "evidence": 42.06413716994236,
+      "name": "nearBoundary c16 component conditioning",
+      "passed": true
+    },
+    {
+      "evidence": 46.08895507815713,
+      "name": "nearBoundary c20 component conditioning",
+      "passed": true
+    },
+    {
+      "evidence": 0.6003601432444668,
+      "name": "nearBoundary field fraction",
+      "passed": true
+    },
+    {
+      "evidence": 0.042497516304485894,
+      "name": "wake c16 positive denominator",
+      "passed": true
+    },
+    {
+      "evidence": 0.0950046685340804,
+      "name": "wake c16 half-step phase",
+      "passed": true
+    },
+    {
+      "evidence": 0.06739361686158332,
+      "name": "wake c20 positive denominator",
+      "passed": true
+    },
+    {
+      "evidence": 0.0950046685340804,
+      "name": "wake c20 half-step phase",
+      "passed": true
+    },
+    {
+      "evidence": 1.0736497214328402,
+      "name": "wake reflectedPopulation difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.4819401680292671,
+      "name": "wake reflectedPopulation attribution",
+      "passed": true
+    },
+    {
+      "evidence": 0.1148190919194515,
+      "name": "wake interpolationAuxiliary difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.05154002403947881,
+      "name": "wake interpolationAuxiliary attribution",
+      "passed": true
+    },
+    {
+      "evidence": -0.9345864740898371,
+      "name": "wake movingWall difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.4195174211563478,
+      "name": "wake movingWall attribution",
+      "passed": true
+    },
+    {
+      "evidence": -0.044280403686707825,
+      "name": "wake coverImpulse difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.01987659919912777,
+      "name": "wake coverImpulse attribution",
+      "passed": true
+    },
+    {
+      "evidence": -0.06042989608745897,
+      "name": "wake uncoverImpulse difference",
+      "passed": true
+    },
+    {
+      "evidence": 0.027125787575778628,
+      "name": "wake uncoverImpulse attribution",
+      "passed": true
+    },
+    {
+      "evidence": "reflectedPopulation",
+      "name": "wake dominant component",
+      "passed": true
+    },
+    {
+      "evidence": 0.14917098631372872,
+      "name": "wake production difference",
+      "passed": true
+    },
+    {
+      "evidence": 14.934308891214098,
+      "name": "wake difference conditioning",
+      "passed": true
+    },
+    {
+      "evidence": 64.2789513601065,
+      "name": "wake c16 component conditioning",
+      "passed": true
+    },
+    {
+      "evidence": 54.285427293753415,
+      "name": "wake c20 component conditioning",
+      "passed": true
+    },
+    {
+      "evidence": 0.25284921847653435,
+      "name": "wake field fraction",
+      "passed": true
+    },
+    {
+      "evidence": "wakeTransportDominated",
+      "name": "classification",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "quantitative claim remains unauthorized",
+      "passed": true
+    }
+  ],
+  "classification": "wakeTransportDominated",
+  "schemaVersion": 1,
+  "summaryPath": "ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-summary.json",
+  "summarySHA256": "508ab84e94736777c0f040b16f951c4cc9eaee29594b6e5fa5aff13cff15e67a"
+}

@@ -85,6 +85,10 @@ REQUIRED_KERNELS = {
     "updateWingInertialReaction",
     "captureBirdPartLoad",
     "capturePrescribedFormationLoad",
+    "capturePrescribedFormationLoadComponent",
+    "capturePrescribedFormationBoundarySourceCensus",
+    "reduceFormationBoundarySourceCensus",
+    "storeFormationBoundarySourceCensus",
     "captureFormationFlowSlice",
     "measureObliquePlaneDirectionComposition",
 }
@@ -358,6 +362,9 @@ def main() -> int:
         ],
         "GPUPreparedMeasuredWingPoint": ["position", "velocity"],
         "GPUForceTorque": ["force", "torque"],
+        "GPUFormationBoundarySourceCensus": [
+            "populations", "reconstruction", "wallKinematics", "branches",
+        ],
         "GPURuntimeSafetyRecord": ["metrics", "event"],
         "GPUWingMomentumState": [
             "leftLinear", "leftAngular", "rightLinear", "rightAngular",
@@ -447,6 +454,9 @@ def main() -> int:
         "private func encodeBodyIntegration(": 5,
         "private func encodeWingInertialReaction(": 6,
         "private func encodeRuntimeSafetyMonitor(": 5,
+        "private func encodeBoundarySourceCensus(": 6,
+        "private func encodeBoundarySourceReduction(": 3,
+        "private func encodeBoundarySourceStore(": 3,
         "private func encodeRunSample(": 6,
         "private func encodeExtractedMacroscopicFields(": 4,
         "func encodeBefore(\n        commandBuffer: MTLCommandBuffer,\n        step: Int,": 7,
@@ -530,6 +540,10 @@ def main() -> int:
         "updateWingInertialReaction": 6,
         "captureBirdPartLoad": 8,
         "capturePrescribedFormationLoad": 10,
+        "capturePrescribedFormationLoadComponent": 10,
+        "capturePrescribedFormationBoundarySourceCensus": 6,
+        "reduceFormationBoundarySourceCensus": 3,
+        "storeFormationBoundarySourceCensus": 3,
         "measureObliquePlaneDirectionComposition": 2,
     }
     for kernel, count in expected_buffers.items():
@@ -599,6 +613,26 @@ def main() -> int:
             "private func encodeOwnerLoad(",
             ["currentPopulations", "currentSolid", "nextSolid", "wallVelocity", "reductionA", "leaderPrepared", "followerPrepared", "uniforms", "owner", "velocity"],
             ["populationsIn", "solidPrevious", "solidCurrent", "wallVelocity", "partialLoads", "leaderPrepared", "followerPrepared", "uniforms", "selectedOwner", "coveredFluidMomentum"],
+        ),
+        "capturePrescribedFormationLoadComponent": (
+            "private func encodeMechanismProbe(",
+            ["currentPopulations", "currentSolid", "nextSolid", "wallVelocity", "reductionA", "leaderPrepared", "followerPrepared", "uniforms", "selection", "velocity"],
+            ["populationsIn", "solidPrevious", "solidCurrent", "wallVelocity", "partialLoads", "leaderPrepared", "followerPrepared", "uniforms", "selection", "coveredFluidMomentum"],
+        ),
+        "capturePrescribedFormationBoundarySourceCensus": (
+            "private func encodeBoundarySourceCensus(",
+            ["currentPopulations", "nextSolid", "wallVelocity", "partials", "uniforms", "selection"],
+            ["populationsIn", "solidCurrent", "wallVelocity", "partials", "uniforms", "selection"],
+        ),
+        "reduceFormationBoundarySourceCensus": (
+            "private func encodeBoundarySourceReduction(",
+            ["input", "output", "count32"],
+            ["input", "output", "inputCount"],
+        ),
+        "storeFormationBoundarySourceCensus": (
+            "private func encodeBoundarySourceStore(",
+            ["total", "history", "index"],
+            ["total", "history", "sampleIndex"],
         ),
         "buildMeasuredWingSurfaceLinks": (
             "private func encodeMeasuredLinks(",

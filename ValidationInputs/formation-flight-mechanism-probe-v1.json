@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight early-cycle causal mechanism probe",
+  "preregisteredBeforeMechanismReplayExecution": true,
+  "scientificQuestion": "Is the unresolved c16-to-c20 follower-power change generated primarily by near-wing momentum-exchange realization or by transported wake structure?",
+  "lockedConfiguration": {
+    "cycles": 5,
+    "followerOffsetChords": [
+      0,
+      0,
+      -3
+    ],
+    "followerPhaseOffsetCycles": 0.25,
+    "resolutions": [
+      16,
+      20
+    ]
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-early-cycle-replay/formation-flight-early-cycle-field-summary.json",
+      "sha256": "48f50242359611d68608128d99fd1b73981764f9f546964b91db78b0a2420cd5"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "sha256": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "sha256": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-early-cycle-field-replay-v1.json",
+      "sha256": "84cacb9da1498acc018e8c284a585697acd36a6c2fab41d1094f563448d425be"
+    }
+  ],
+  "selectedProbes": {
+    "nearBoundary": {
+      "selectionSource": "locked early-cycle field summary",
+      "selectionRule": "maximum absolute near-boundary normalized residual energy",
+      "followerPhase": 0.035,
+      "leaderPhase": 0.785,
+      "centroidChords": [
+        1.8215324226280873,
+        0,
+        1.0229261089822532
+      ],
+      "lockedNearBoundaryResidualEnergyFraction": 0.6003601432444668
+    },
+    "wake": {
+      "selectionSource": "locked early-cycle field summary",
+      "selectionRule": "maximum absolute outside-band normalized residual energy",
+      "followerPhase": 0.095,
+      "leaderPhase": 0.845,
+      "centroidChords": [
+        2.322078935781556,
+        0,
+        -1.134601139923286
+      ],
+      "lockedOutsideBoundaryResidualEnergyFraction": 0.7471507815234657
+    }
+  },
+  "momentumExchangeDecomposition": {
+    "components": [
+      "reflectedPopulation",
+      "interpolationAuxiliary",
+      "movingWall",
+      "coverImpulse",
+      "uncoverImpulse"
+    ],
+    "persistentLinkIdentity": "force = -(reflectedContribution + reflectedPopulation + interpolationAuxiliary + movingWallContribution) * latticeDirection",
+    "topologyIdentity": "production force equals persistent-link terms plus conservative cover and uncover impulses",
+    "powerIdentity": "each component actuator power is minus root-referenced aerodynamic torque dotted with the prescribed angular velocity"
+  },
+  "gates": {
+    "maximumRelativeReferenceCoupledHistoryDifference": 1e-6,
+    "maximumRelativeOwnerClosureResidual": 0.0002,
+    "maximumRelativeComponentForceClosureResidual": 0.0002,
+    "maximumRelativeComponentTorqueClosureResidual": 0.0002,
+    "maximumRelativeComponentPowerClosureResidual": 0.0002,
+    "requireFinite": true,
+    "requireNoOverlap": true,
+    "requireCaptureNonPerturbing": true
+  },
+  "decisionRule": {
+    "normalization": "at each resolution, divide production and all five component actuator powers by the matched isolated-follower mean-positive-power scalar in the locked complete report",
+    "differenceDefinition": "normalized c20 component actuator power minus normalized c16 component actuator power at each grid's nearest representable phase; each actual phase must lie within half a timestep of the locked target",
+    "componentAttribution": "absolute component power difference divided by the L1 sum of all five absolute component differences",
+    "dominantComponentThreshold": 0.6,
+    "boundaryOperatorDominated": "near-boundary probe has a dominant interpolationAuxiliary, movingWall, coverImpulse, or uncoverImpulse component",
+    "resolvedPopulationDominated": "near-boundary probe has dominant reflectedPopulation contribution",
+    "wakeTransportDominated": "no near-boundary component is dominant and the wake probe retains at least 0.6 outside-boundary residual energy",
+    "mixed": "none of the preceding frozen rules applies",
+    "nextIfBoundaryOperatorDominated": "target the identified boundary subterm before any c24 ladder",
+    "nextIfResolvedPopulationDominated": "test localized boundary resolution or adaptive refinement before changing force accounting",
+    "nextIfWakeTransportDominated": "test wake-core transport with a localized refinement or advection discriminator",
+    "nextIfMixed": "retain both pathways and promote only a localized dual-region refinement"
+  },
+  "claimBoundary": "This probe can localize the numerical mechanism behind the stopped refinement ladder. It cannot authorize a quantitative formation-power benefit or a biological bird claim."
+}

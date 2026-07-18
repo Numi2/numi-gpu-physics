@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "study": "formation-flight early-cycle c16/c20 coupled-field discriminator",
+  "preregisteredBeforeReplayExecution": true,
+  "scientificPurpose": "localize the drag-aligned c16/c20 load residual that peaks at follower phase 0.055 without recomputing unchanged isolated controls",
+  "lockedConfiguration": {
+    "chordCells": [16, 20],
+    "cycles": 5,
+    "followerOffsetChords": [0, 0, -3],
+    "followerPhaseOffsetCycles": 0.25
+  },
+  "fieldCapture": {
+    "plane": "center y plane",
+    "followerLocalTargetPhases": [
+      0.005,
+      0.015,
+      0.025,
+      0.035,
+      0.045,
+      0.055,
+      0.065,
+      0.075,
+      0.085,
+      0.095
+    ],
+    "requestedLeaderPhases": [
+      0.755,
+      0.765,
+      0.775,
+      0.785,
+      0.795,
+      0.805,
+      0.815,
+      0.825,
+      0.835,
+      0.845
+    ],
+    "observationRule": "capture is GPU-resident and does not modify populations, geometry, loads, or gate thresholds"
+  },
+  "coupledOnlyReplayRule": {
+    "allowedOptimization": "rerun the coupled two-owner case only; do not recompute isolated leader or follower controls",
+    "referenceContract": "the exact configuration, grid, cycle length, passed status, and 100-bin coupled history are loaded from the locked complete report",
+    "maximumRelativeReferenceCoupledHistoryDifference": 1e-06,
+    "referenceDifferenceDefinition": "maximum of relative RMS differences for leader summary, follower summary, and the complete 100-bin coupled power, lift, drag, and force history",
+    "failureAction": "reject every captured field if reference reproduction or any unchanged solver gate fails"
+  },
+  "unchangedGates": {
+    "maximumRelativeOwnerForceOrTorqueClosureResidual": 0.0002,
+    "maximumRelativeFinalCyclePowerDifference": 0.2,
+    "maximumOverlapVoxelSamples": 0,
+    "allReportedValuesFinite": true
+  },
+  "spatialAnalysis": {
+    "commonCoordinates": "x/chord and z/chord over the shared 10 by 13 chord domain",
+    "commonGrid": [200, 260],
+    "coarseToFineRule": "bilinear interpolation of c16 scalar fields onto c20 cell-center coordinates; nearest-neighbor interpolation for owner masks",
+    "comparisonMask": "cells fluid at both resolutions after a one-c20-cell dilation of either owner mask",
+    "primaryMetrics": [
+      "normalized RMS signed-vertical-velocity difference",
+      "normalized RMS vorticity-magnitude difference",
+      "signed-vertical-velocity spatial correlation",
+      "vorticity-magnitude spatial correlation",
+      "fraction of squared field residual within 0.5 chord of either wing"
+    ],
+    "phaseAggregation": "report every captured phase and an equal-weight aggregate across all ten phases",
+    "mechanismClassification": {
+      "nearBoundary": "at least 60 percent of aggregate squared field residual lies within 0.5 chord of either wing",
+      "wakeTransport": "at most 40 percent lies within 0.5 chord of either wing",
+      "mixed": "otherwise"
+    }
+  },
+  "decisionRule": {
+    "scope": "diagnostic classification only; this replay cannot authorize a quantitative formation-saving claim",
+    "nextRunIfNearBoundary": "instrument moving-wall interpolation and realized reflected populations near follower phase 0.055",
+    "nextRunIfWakeTransport": "measure downstream wake-core position and dissipation at the same phases",
+    "nextRunIfMixed": "retain both mechanisms and use the phase-resolved residual atlas to select one local probe of each",
+    "stopRule": "do not launch a c24 ladder or the stopped c20 minimum selector from this diagnostic"
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "sha256": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "sha256": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json",
+      "sha256": "6a9b74712f57c0b75d1c5c9d3cbbcfdad2c314d66637d112acb9e5c2b7e56493"
+    }
+  ]
+}

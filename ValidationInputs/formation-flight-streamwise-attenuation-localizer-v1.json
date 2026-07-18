@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight streamwise wake attenuation localizer",
+  "preregisteredBeforeAnalysis": true,
+  "scientificQuestion": "Is the c16-to-c20 wake-amplitude discrepancy already present at the upstream edge of the locked wake ROI, or does it amplify as the wake travels downstream?",
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-collision-dissipation/formation-flight-collision-dissipation-summary.json",
+      "sha256": "56b8307233c90244b9ac6600272046326d8d79abac86c87201a4d939dd8d42ca"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-collision-dissipation/formation-flight-collision-dissipation-audit.json",
+      "sha256": "ad0eda16c22e3f32eb0440898be10da55f3a52f8714739d17d87e5e694c564e2"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-collision-dissipation-discriminator-v1.json",
+      "sha256": "de1fda2f88d2ce182b2c9615254f16af2e9b15e5ccbf6cd01fd6556182ab42d3"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-wake-transport/formation-flight-wake-transport-summary.json",
+      "sha256": "02ea9650bdfabe52bf6e1bb2d3e22271d15e72c05a406b5ea3171e9faafdf446"
+    }
+  ],
+  "requiredCollisionClassification": "collisionChangeAdverseOrUnsupported",
+  "followerLocalPhases": [0.055, 0.065, 0.075, 0.085, 0.095],
+  "lockedWakeRegionChords": {
+    "minimumX": 0.822078935781556,
+    "maximumX": 3.822078935781556,
+    "minimumZ": -3.384601139923286,
+    "maximumZ": 1.115398860076714
+  },
+  "streamwiseBands": [
+    {"name": "upstream", "minimumX": 0.822078935781556, "maximumX": 1.822078935781556},
+    {"name": "middle", "minimumX": 1.822078935781556, "maximumX": 2.822078935781556},
+    {"name": "downstream", "minimumX": 2.822078935781556, "maximumX": 3.822078935781556}
+  ],
+  "signals": ["signed vertical velocity", "vorticity magnitude"],
+  "commonGridAndMask": "map c16 to c20 cell centers; exclude the union of either solid mask plus one c20-cell dilation; use the exact locked phase files",
+  "metric": "for each phase and band, sum squared c20-c16 signal residual normalized by the larger whole-ROI c16/c20 RMS; divide aggregate band energy by aggregate valid cell count",
+  "decisionRule": {
+    "downstreamToUpstreamResidualDensityRatioAtLeastForTransportDominated": 1.5,
+    "downstreamToUpstreamResidualDensityRatioAtMostForSourceDominated": 1.15,
+    "ifTransportDominated": "test a distinct bulk transport model or localized downstream refinement",
+    "ifSourceDominated": "return to near-wing population generation and boundary-source refinement",
+    "ifMixed": "measure the phase-resolved source-to-wake transfer across an intermediate control surface"
+  },
+  "claimBoundary": "This center-plane localization is a mechanism selector, not a three-dimensional energy budget. It cannot validate formation benefit or authorize a production solver change."
+}

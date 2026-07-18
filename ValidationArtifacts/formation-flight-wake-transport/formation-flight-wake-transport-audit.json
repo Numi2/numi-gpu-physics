@@ -1,0 +1,215 @@
+{
+  "allChecksPassed": true,
+  "checkCount": 41,
+  "checks": [
+    {
+      "evidence": true,
+      "name": "preregistered",
+      "passed": true
+    },
+    {
+      "evidence": "5e54446d31e0a933a1d2aace2f77ea81bb6042fa2c01e0133614cdc6211753da",
+      "name": "summary preregistration SHA",
+      "passed": true
+    },
+    {
+      "evidence": "508ab84e94736777c0f040b16f951c4cc9eaee29594b6e5fa5aff13cff15e67a",
+      "name": "locked input ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "fb30bc56d97d842c9f39c38e8f0d6213a98df115a1b7bf44aafc9a8e14f6e091",
+      "name": "locked input ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "48f50242359611d68608128d99fd1b73981764f9f546964b91db78b0a2420cd5",
+      "name": "locked input ValidationArtifacts/formation-flight-early-cycle-replay/formation-flight-early-cycle-field-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "ad443105541dd034b440c92ff026badb225f9d30f131f4cfc5ecf8084a1ca6f0",
+      "name": "locked input ValidationInputs/formation-flight-mechanism-probe-v1.json",
+      "passed": true
+    },
+    {
+      "evidence": 4821,
+      "name": "phase 0.055 common cells",
+      "passed": true
+    },
+    {
+      "evidence": 232.02217882109028,
+      "name": "phase 0.055 base energy",
+      "passed": true
+    },
+    {
+      "evidence": 220.05047156997168,
+      "name": "phase 0.055 aligned energy",
+      "passed": true
+    },
+    {
+      "evidence": -1,
+      "name": "phase 0.055 x shift",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.055 z shift",
+      "passed": true
+    },
+    {
+      "evidence": 0.05159725381404099,
+      "name": "phase 0.055 reduction",
+      "passed": true
+    },
+    {
+      "evidence": 4868,
+      "name": "phase 0.065 common cells",
+      "passed": true
+    },
+    {
+      "evidence": 260.2943328974026,
+      "name": "phase 0.065 base energy",
+      "passed": true
+    },
+    {
+      "evidence": 260.2943328974026,
+      "name": "phase 0.065 aligned energy",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.065 x shift",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.065 z shift",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "phase 0.065 reduction",
+      "passed": true
+    },
+    {
+      "evidence": 4952,
+      "name": "phase 0.075 common cells",
+      "passed": true
+    },
+    {
+      "evidence": 302.1743465448065,
+      "name": "phase 0.075 base energy",
+      "passed": true
+    },
+    {
+      "evidence": 302.1743465448065,
+      "name": "phase 0.075 aligned energy",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.075 x shift",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.075 z shift",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "phase 0.075 reduction",
+      "passed": true
+    },
+    {
+      "evidence": 5043,
+      "name": "phase 0.085 common cells",
+      "passed": true
+    },
+    {
+      "evidence": 307.851420975556,
+      "name": "phase 0.085 base energy",
+      "passed": true
+    },
+    {
+      "evidence": 307.851420975556,
+      "name": "phase 0.085 aligned energy",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.085 x shift",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.085 z shift",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "phase 0.085 reduction",
+      "passed": true
+    },
+    {
+      "evidence": 5128,
+      "name": "phase 0.095 common cells",
+      "passed": true
+    },
+    {
+      "evidence": 303.0451249515546,
+      "name": "phase 0.095 base energy",
+      "passed": true
+    },
+    {
+      "evidence": 303.0451249515546,
+      "name": "phase 0.095 aligned energy",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.095 x shift",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "phase 0.095 z shift",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "phase 0.095 reduction",
+      "passed": true
+    },
+    {
+      "evidence": 1405.38740419041,
+      "name": "aggregate unshifted",
+      "passed": true
+    },
+    {
+      "evidence": 1393.4156969392916,
+      "name": "aggregate aligned",
+      "passed": true
+    },
+    {
+      "evidence": 0.008518439268363091,
+      "name": "aggregate reduction",
+      "passed": true
+    },
+    {
+      "evidence": "amplitudeDiffusionDominated",
+      "name": "classification",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "quantitative claim unauthorized",
+      "passed": true
+    }
+  ],
+  "classification": "amplitudeDiffusionDominated",
+  "schemaVersion": 1,
+  "summaryPath": "ValidationArtifacts/formation-flight-wake-transport/formation-flight-wake-transport-summary.json",
+  "summarySHA256": "02ea9650bdfabe52bf6e1bb2d3e22271d15e72c05a406b5ea3171e9faafdf446"
+}

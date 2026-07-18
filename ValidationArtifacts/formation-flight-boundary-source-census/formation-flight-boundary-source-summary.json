@@ -1,0 +1,2333 @@
+{
+  "csvPath": "ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-directions.csv",
+  "figurePaths": [
+    "Docs/Media/formation-flight-boundary-source-atlas.png",
+    "Docs/Media/formation-flight-boundary-source-atlas.svg"
+  ],
+  "inputs": {
+    "c16": {
+      "censusPath": "ValidationArtifacts/formation-flight-boundary-source-census/c16-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "censusSHA256": "fb71609083acb947efa7610e0dc30658b0f4689e2918b1bc6b545b9af2e75891",
+      "referencePath": "ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "referenceSHA256": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415",
+      "replayPath": "ValidationArtifacts/formation-flight-boundary-source-census/c16-best-z3-phase025/formation-flight-field-replay-report.json",
+      "replaySHA256": "605bcbae0a69daff2acb5fbcabbbec6320b007ff0d851fee1b14db6502c0be83"
+    },
+    "c20": {
+      "censusPath": "ValidationArtifacts/formation-flight-boundary-source-census/c20-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "censusSHA256": "88ced4bd4e20be9b3ca61510a2b36aef2181a3cb3330b5e7a608c072d82ce7b0",
+      "referencePath": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "referenceSHA256": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6",
+      "replayPath": "ValidationArtifacts/formation-flight-boundary-source-census/c20-best-z3-phase025/formation-flight-field-replay-report.json",
+      "replaySHA256": "36735eaf3311a21bedeab15ef651969c5f06995b19f4ab859ba62b78492f9139"
+    }
+  },
+  "newFluidSimulationRequired": true,
+  "nextAction": "test localized near-wing geometric refinement or improved link-quadrature realization before changing population reconstruction",
+  "passed": true,
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-boundary-source-census-v1.json",
+    "sha256": "711aab4cc253fd6a2e78499ba6332eaecbb1f068f304423c9017e9094a7565ff"
+  },
+  "primaryClassification": "directionalLinkSamplingDominated",
+  "probeResults": [
+    {
+      "actualPhases": {
+        "c16": {
+          "follower": 0.03501400560224077,
+          "leader": 0.7850140056022409
+        },
+        "c20": {
+          "follower": 0.03506069094304376,
+          "leader": 0.7850606909430439
+        }
+      },
+      "boundaryLinkDensityPerChordSquared": {
+        "c16": 33.7265625,
+        "c20": 33.265
+      },
+      "branchCounts": {
+        "c16": {
+          "far": 4734,
+          "halfwayFallback": 0,
+          "near": 3900
+        },
+        "c20": {
+          "far": 7288,
+          "halfwayFallback": 0,
+          "near": 6018
+        }
+      },
+      "classification": "directionalLinkSamplingDominated",
+      "conditionalAmplitudeComponentAttributionFraction": {
+        "interpolationAuxiliary": 0.445384137337408,
+        "movingWall": 0.059277181570334306,
+        "reflectedMomentumExchange": 0.4953386810922577
+      },
+      "conditionalAmplitudeComponentWeightedL1": {
+        "interpolationAuxiliary": 0.011628295844701052,
+        "movingWall": 0.0015476361782003102,
+        "reflectedMomentumExchange": 0.012932532266413565
+      },
+      "directionDistributionTotalVariation": 0.007694822335753552,
+      "directions": [
+        {
+          "amplitudeComponentResidual": 0.0,
+          "c16ArealLinkMeasure": 0.0,
+          "c16ConditionalMean": 0.0,
+          "c16LinkCount": 0,
+          "c16MomentumExchangeProfile": 0.0,
+          "c20ArealLinkMeasure": 0.0,
+          "c20ConditionalMean": 0.0,
+          "c20LinkCount": 0,
+          "c20MomentumExchangeProfile": 0.0,
+          "conditionalAmplitudeTerm": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "identityResidual": 0.0,
+          "interpolationAmplitudeTerm": 0.0,
+          "linkSamplingTerm": 0.0,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": 0.0,
+          "reflectedAmplitudeTerm": 0.0
+        },
+        {
+          "amplitudeComponentResidual": -8.186999448795473e-09,
+          "c16ArealLinkMeasure": 0.5703125,
+          "c16ConditionalMean": 0.11039058476278227,
+          "c16LinkCount": 146,
+          "c16MomentumExchangeProfile": 0.06295713037252426,
+          "c20ArealLinkMeasure": 0.565,
+          "c20ConditionalMean": 0.11040537758211119,
+          "c20LinkCount": 226,
+          "c20MomentumExchangeProfile": 0.062379038333892814,
+          "conditionalAmplitudeTerm": 8.397236347184363e-06,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "identityResidual": -2.7969027918336997e-18,
+          "interpolationAmplitudeTerm": -0.0006951063271155356,
+          "linkSamplingTerm": -0.0005864892749786291,
+          "movingWallAmplitudeTerm": -2.501656631781614e-05,
+          "profileDifferenceC20MinusC16": -0.0005780920386314475,
+          "reflectedAmplitudeTerm": 0.0007285283167799849
+        },
+        {
+          "amplitudeComponentResidual": 1.7365585676579453e-09,
+          "c16ArealLinkMeasure": 0.5703125,
+          "c16ConditionalMean": 0.11122216917064091,
+          "c16LinkCount": 146,
+          "c16MomentumExchangeProfile": 0.06343139335513115,
+          "c20ArealLinkMeasure": 0.565,
+          "c20ConditionalMean": 0.1112411212077183,
+          "c20LinkCount": 226,
+          "c20MomentumExchangeProfile": 0.06285123348236084,
+          "conditionalAmplitudeTerm": 1.0758242297209592e-05,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "identityResidual": 1.926152922056279e-18,
+          "interpolationAmplitudeTerm": -0.00011136067399847981,
+          "linkSamplingTerm": -0.0005909181150675226,
+          "movingWallAmplitudeTerm": 4.404925073740639e-05,
+          "profileDifferenceC20MinusC16": -0.0005801598727703111,
+          "reflectedAmplitudeTerm": 7.806792899971535e-05
+        },
+        {
+          "amplitudeComponentResidual": 1.511615601643818e-08,
+          "c16ArealLinkMeasure": 2.11328125,
+          "c16ConditionalMean": 0.11185475418175435,
+          "c16LinkCount": 541,
+          "c16MomentumExchangeProfile": 0.23638055473566055,
+          "c20ArealLinkMeasure": 2.1225,
+          "c20ConditionalMean": 0.11188433392168635,
+          "c20LinkCount": 849,
+          "c20MomentumExchangeProfile": 0.2374744987487793,
+          "conditionalAmplitudeTerm": 6.264665389193441e-05,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "identityResidual": 4.4181238528784306e-18,
+          "interpolationAmplitudeTerm": -0.0007229388449287762,
+          "linkSamplingTerm": 0.0010312973592268028,
+          "movingWallAmplitudeTerm": -0.0001970013155740648,
+          "profileDifferenceC20MinusC16": 0.0010939440131187417,
+          "reflectedAmplitudeTerm": 0.000982571698238759
+        },
+        {
+          "amplitudeComponentResidual": -1.2224847641064703e-08,
+          "c16ArealLinkMeasure": 2.11328125,
+          "c16ConditionalMean": 0.11132249109405687,
+          "c16LinkCount": 541,
+          "c16MomentumExchangeProfile": 0.23525573313236237,
+          "c20ArealLinkMeasure": 2.1225,
+          "c20ConditionalMean": 0.1113091997881239,
+          "c20LinkCount": 849,
+          "c20MomentumExchangeProfile": 0.23625377655029298,
+          "conditionalAmplitudeTerm": -2.81495322294483e-05,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "identityResidual": 1.2705494208814505e-18,
+          "interpolationAmplitudeTerm": 6.600119605904886e-05,
+          "linkSamplingTerm": 0.0010261929501600578,
+          "movingWallAmplitudeTerm": 3.100559963783209e-05,
+          "profileDifferenceC20MinusC16": 0.0009980434179306108,
+          "reflectedAmplitudeTerm": -0.00012514410307868818
+        },
+        {
+          "amplitudeComponentResidual": 9.659991096177536e-09,
+          "c16ArealLinkMeasure": 2.1953125,
+          "c16ConditionalMean": 0.1104053178291728,
+          "c16LinkCount": 562,
+          "c16MomentumExchangeProfile": 0.24237417429685593,
+          "c20ArealLinkMeasure": 2.14,
+          "c20ConditionalMean": 0.11035916961242105,
+          "c20LinkCount": 856,
+          "c20MomentumExchangeProfile": 0.23616862297058105,
+          "conditionalAmplitudeTerm": -0.0001000334704682884,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "identityResidual": -1.677802861921318e-17,
+          "interpolationAmplitudeTerm": 0.0015977158757884916,
+          "linkSamplingTerm": -0.006105517855806567,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": -0.006205551326274872,
+          "reflectedAmplitudeTerm": -0.0016977590062478762
+        },
+        {
+          "amplitudeComponentResidual": 1.2186714730857664e-08,
+          "c16ArealLinkMeasure": 2.1953125,
+          "c16ConditionalMean": 0.11094139818619154,
+          "c16LinkCount": 562,
+          "c16MomentumExchangeProfile": 0.24355103820562363,
+          "c20ArealLinkMeasure": 2.14,
+          "c20ConditionalMean": 0.11093282699584961,
+          "c20LinkCount": 856,
+          "c20MomentumExchangeProfile": 0.23739624977111817,
+          "conditionalAmplitudeTerm": -1.8579394314636216e-05,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "identityResidual": -5.824198545320569e-18,
+          "interpolationAmplitudeTerm": 0.001062026965798089,
+          "linkSamplingTerm": -0.006136209040190812,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": -0.006154788434505454,
+          "reflectedAmplitudeTerm": -0.0010806185468274561
+        },
+        {
+          "amplitudeComponentResidual": 4.4082826216634065e-10,
+          "c16ArealLinkMeasure": 1.6328125,
+          "c16ConditionalMean": 0.05587824451866332,
+          "c16LinkCount": 418,
+          "c16MomentumExchangeProfile": 0.09123869612812996,
+          "c20ArealLinkMeasure": 1.6525,
+          "c20ConditionalMean": 0.05587901578548275,
+          "c20LinkCount": 661,
+          "c20MomentumExchangeProfile": 0.09234007358551025,
+          "conditionalAmplitudeTerm": 1.2669262613563442e-06,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "identityResidual": -1.1608586542120186e-17,
+          "interpolationAmplitudeTerm": 7.415864260118345e-05,
+          "linkSamplingTerm": 0.0011001105311189423,
+          "movingWallAmplitudeTerm": -0.0001248611037574538,
+          "profileDifferenceC20MinusC16": 0.001101377457380287,
+          "reflectedAmplitudeTerm": 5.196894658936454e-05
+        },
+        {
+          "amplitudeComponentResidual": -9.369372520159262e-10,
+          "c16ArealLinkMeasure": 1.6328125,
+          "c16ConditionalMean": 0.05561627155285703,
+          "c16LinkCount": 418,
+          "c16MomentumExchangeProfile": 0.09081094339489937,
+          "c20ArealLinkMeasure": 1.6525,
+          "c20ConditionalMean": 0.0556002312456786,
+          "c20LinkCount": 661,
+          "c20MomentumExchangeProfile": 0.0918793821334839,
+          "conditionalAmplitudeTerm": -2.6348710838568582e-05,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "identityResidual": 1.0821692934120941e-17,
+          "interpolationAmplitudeTerm": 0.00011197499757819505,
+          "linkSamplingTerm": 0.0010947874494230895,
+          "movingWallAmplitudeTerm": -1.501386656955757e-05,
+          "profileDifferenceC20MinusC16": 0.0010684387385845318,
+          "reflectedAmplitudeTerm": -0.00012330890490995405
+        },
+        {
+          "amplitudeComponentResidual": -2.7862717738599543e-09,
+          "c16ArealLinkMeasure": 2.609375,
+          "c16ConditionalMean": 0.055694825634984915,
+          "c16LinkCount": 668,
+          "c16MomentumExchangeProfile": 0.14532868564128876,
+          "c20ArealLinkMeasure": 2.595,
+          "c20ConditionalMean": 0.05569399758340766,
+          "c20LinkCount": 1038,
+          "c20MomentumExchangeProfile": 0.14452592372894288,
+          "conditionalAmplitudeTerm": -2.1547454636952257e-06,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "identityResidual": 2.5178054357134078e-18,
+          "interpolationAmplitudeTerm": -0.00036228319850067773,
+          "linkSamplingTerm": -0.0008006071668821858,
+          "movingWallAmplitudeTerm": 7.173443125853804e-05,
+          "profileDifferenceC20MinusC16": -0.0008027619123458785,
+          "reflectedAmplitudeTerm": 0.0002883968080502183
+        },
+        {
+          "amplitudeComponentResidual": -1.377924894004805e-10,
+          "c16ArealLinkMeasure": 2.609375,
+          "c16ConditionalMean": 0.05599034760526554,
+          "c16LinkCount": 668,
+          "c16MomentumExchangeProfile": 0.14609981328248978,
+          "c20ArealLinkMeasure": 2.595,
+          "c20ConditionalMean": 0.05601549975444816,
+          "c20LinkCount": 1038,
+          "c20MomentumExchangeProfile": 0.145360221862793,
+          "conditionalAmplitudeTerm": 6.545060820114418e-05,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "identityResidual": -1.9651164376299768e-18,
+          "interpolationAmplitudeTerm": -0.00039188039090216545,
+          "linkSamplingTerm": -0.0008050420278979312,
+          "movingWallAmplitudeTerm": -0.0001143240858485604,
+          "profileDifferenceC20MinusC16": -0.000739591419696789,
+          "reflectedAmplitudeTerm": 0.0005716552227443594
+        },
+        {
+          "amplitudeComponentResidual": 3.3504184513425328e-09,
+          "c16ArealLinkMeasure": 2.66796875,
+          "c16ConditionalMean": 0.0551852733114977,
+          "c16LinkCount": 683,
+          "c16MomentumExchangeProfile": 0.14723258465528488,
+          "c20ArealLinkMeasure": 2.6325,
+          "c20ConditionalMean": 0.05515718052529881,
+          "c20LinkCount": 1053,
+          "c20MomentumExchangeProfile": 0.1452012777328491,
+          "conditionalAmplitudeTerm": -7.44524676738268e-05,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "identityResidual": -3.4423418976414766e-18,
+          "interpolationAmplitudeTerm": 0.0007576412412902149,
+          "linkSamplingTerm": -0.001956854454761947,
+          "movingWallAmplitudeTerm": 7.146168787676865e-05,
+          "profileDifferenceC20MinusC16": -0.002031306922435777,
+          "reflectedAmplitudeTerm": -0.0009035587472592617
+        },
+        {
+          "amplitudeComponentResidual": 1.7751463222045316e-09,
+          "c16ArealLinkMeasure": 2.66796875,
+          "c16ConditionalMean": 0.0555319779090267,
+          "c16LinkCount": 683,
+          "c16MomentumExchangeProfile": 0.14815758168697357,
+          "c20ArealLinkMeasure": 2.6325,
+          "c20ConditionalMean": 0.05552781839542806,
+          "c20LinkCount": 1053,
+          "c20MomentumExchangeProfile": 0.14617698192596434,
+          "conditionalAmplitudeTerm": -1.1023685922394143e-05,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "identityResidual": -9.56469604039556e-18,
+          "interpolationAmplitudeTerm": 0.0004412949087207538,
+          "linkSamplingTerm": -0.0019695760750868237,
+          "movingWallAmplitudeTerm": -8.100924847737363e-06,
+          "profileDifferenceC20MinusC16": -0.0019805997610092274,
+          "reflectedAmplitudeTerm": -0.0004442194449417328
+        },
+        {
+          "amplitudeComponentResidual": -5.742827480333996e-09,
+          "c16ArealLinkMeasure": 1.73828125,
+          "c16ConditionalMean": 0.055412328912970724,
+          "c16LinkCount": 445,
+          "c16MomentumExchangeProfile": 0.0963222123682499,
+          "c20ArealLinkMeasure": 1.66,
+          "c20ConditionalMean": 0.05540221857737346,
+          "c20LinkCount": 664,
+          "c20MomentumExchangeProfile": 0.09196768283843994,
+          "conditionalAmplitudeTerm": -1.717888194569818e-05,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "identityResidual": -2.202285662861181e-19,
+          "interpolationAmplitudeTerm": 0.000508606926614706,
+          "linkSamplingTerm": -0.004337350647864257,
+          "movingWallAmplitudeTerm": 7.304646047247945e-05,
+          "profileDifferenceC20MinusC16": -0.004354529529809956,
+          "reflectedAmplitudeTerm": -0.0005988265262054033
+        },
+        {
+          "amplitudeComponentResidual": -7.146401157474835e-11,
+          "c16ArealLinkMeasure": 1.73828125,
+          "c16ConditionalMean": 0.05524721038475465,
+          "c16LinkCount": 445,
+          "c16MomentumExchangeProfile": 0.0960351899266243,
+          "c20ArealLinkMeasure": 1.66,
+          "c20ConditionalMean": 0.055222014346754694,
+          "c20LinkCount": 664,
+          "c20MomentumExchangeProfile": 0.09166854381561279,
+          "conditionalAmplitudeTerm": -4.281161175476816e-05,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "identityResidual": -2.1819568721270777e-18,
+          "interpolationAmplitudeTerm": 0.0005305046434538825,
+          "linkSamplingTerm": -0.004323834499256737,
+          "movingWallAmplitudeTerm": -8.301062243406077e-05,
+          "profileDifferenceC20MinusC16": -0.004366646111011507,
+          "reflectedAmplitudeTerm": -0.0004903055613105783
+        },
+        {
+          "amplitudeComponentResidual": -1.6405606602756025e-11,
+          "c16ArealLinkMeasure": 0.3125,
+          "c16ConditionalMean": 0.05559299737215042,
+          "c16LinkCount": 80,
+          "c16MomentumExchangeProfile": 0.017372811678797007,
+          "c20ArealLinkMeasure": 0.26,
+          "c20ConditionalMean": 0.055638116139632,
+          "c20LinkCount": 104,
+          "c20MomentumExchangeProfile": 0.01446591019630432,
+          "conditionalAmplitudeTerm": 1.2915247191602847e-05,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "identityResidual": -1.395910297075087e-18,
+          "interpolationAmplitudeTerm": 0.0011251040272987807,
+          "linkSamplingTerm": -0.002919816729684288,
+          "movingWallAmplitudeTerm": 6.030170626651795e-05,
+          "profileDifferenceC20MinusC16": -0.0029069014824926864,
+          "reflectedAmplitudeTerm": -0.0011724904699680892
+        },
+        {
+          "amplitudeComponentResidual": 1.1237839684443844e-09,
+          "c16ArealLinkMeasure": 0.3125,
+          "c16ConditionalMean": 0.055252705514431,
+          "c16LinkCount": 80,
+          "c16MomentumExchangeProfile": 0.017266470473259687,
+          "c20ArealLinkMeasure": 0.26,
+          "c20ConditionalMean": 0.05521070498686571,
+          "c20LinkCount": 104,
+          "c20MomentumExchangeProfile": 0.014354783296585084,
+          "conditionalAmplitudeTerm": -1.2022651015564386e-05,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "identityResidual": -8.419507495707745e-19,
+          "interpolationAmplitudeTerm": -0.0003475471058717139,
+          "linkSamplingTerm": -0.002899664525659038,
+          "movingWallAmplitudeTerm": -0.00011449479358270769,
+          "profileDifferenceC20MinusC16": -0.0029116871766746034,
+          "reflectedAmplitudeTerm": 0.00045001812465488873
+        },
+        {
+          "amplitudeComponentResidual": 7.962397305282995e-09,
+          "c16ArealLinkMeasure": 3.0234375,
+          "c16ConditionalMean": 0.05594893512183689,
+          "c16LinkCount": 774,
+          "c16MomentumExchangeProfile": 0.16915810853242874,
+          "c20ArealLinkMeasure": 3.005,
+          "c20ConditionalMean": 0.05597925582860353,
+          "c20LinkCount": 1202,
+          "c20MomentumExchangeProfile": 0.16821766376495362,
+          "conditionalAmplitudeTerm": 9.1393242849254e-05,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "identityResidual": 9.75781955236954e-19,
+          "interpolationAmplitudeTerm": -0.0002007364636869128,
+          "linkSamplingTerm": -0.0010318380103243787,
+          "movingWallAmplitudeTerm": 8.92166008899933e-05,
+          "profileDifferenceC20MinusC16": -0.0009404447674751237,
+          "reflectedAmplitudeTerm": 0.00020290514324886822
+        },
+        {
+          "amplitudeComponentResidual": 1.5896986484755264e-09,
+          "c16ArealLinkMeasure": 3.0234375,
+          "c16ConditionalMean": 0.0556106370240835,
+          "c16LinkCount": 774,
+          "c16MomentumExchangeProfile": 0.16813528537750244,
+          "c20ArealLinkMeasure": 3.005,
+          "c20ConditionalMean": 0.05557473765038413,
+          "c20LinkCount": 1202,
+          "c20MomentumExchangeProfile": 0.1670020866394043,
+          "conditionalAmplitudeTerm": -0.00010820856531789496,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "identityResidual": 9.31058615621927e-18,
+          "interpolationAmplitudeTerm": 0.0003618689611910493,
+          "linkSamplingTerm": -0.0010249901727802544,
+          "movingWallAmplitudeTerm": 5.871560911900064e-05,
+          "profileDifferenceC20MinusC16": -0.00113319873809814,
+          "reflectedAmplitudeTerm": -0.0005287947253265933
+        }
+      ],
+      "flyer": "leader",
+      "maximumAbsoluteAmplitudeComponentResidual": 1.511615601643818e-08,
+      "maximumAbsoluteSymmetricIdentityResidual": 1.677802861921318e-17,
+      "populationMomentumVector": {
+        "c16": [
+          -0.0014556124806404114,
+          0.0034528663381934166,
+          -0.0033053653314709663
+        ],
+        "c20": [
+          -0.00152236700057988,
+          0.003842415809631322,
+          -0.0036069202423095748
+        ],
+        "conditionalAmplitude": [
+          -8.014677445730238e-05,
+          0.0004105568832604633,
+          -0.00034517949767413653
+        ],
+        "delta": [
+          -6.675451993946868e-05,
+          0.000389549471437909,
+          -0.0003015549108386188
+        ],
+        "linkSampling": [
+          1.3392254517848728e-05,
+          -2.10074118225218e-05,
+          4.362458683551673e-05
+        ]
+      },
+      "targetFollowerPhase": 0.035,
+      "targetLeaderPhase": 0.785,
+      "topLevelAttributionFraction": {
+        "conditionalAmplitude": 0.01749261417392765,
+        "linkSampling": 0.9825073858260723
+      },
+      "topLevelWeightedL1": {
+        "conditionalAmplitude": 0.0008864953496365834,
+        "linkSampling": 0.04979177039282088
+      },
+      "totalBoundaryLinks": {
+        "c16": 8634,
+        "c20": 13306
+      },
+      "wingFramePopulationMomentum": {
+        "c16": {
+          "chord": -0.0002786159860045526,
+          "normal": 0.00495310849603024,
+          "span": -0.0005963412962257405
+        },
+        "c20": {
+          "chord": -0.0003441795639203011,
+          "normal": 0.005445135121360243,
+          "span": -0.0005689271159672147
+        },
+        "conditionalAmplitude": {
+          "chord": -5.139112968101061e-05,
+          "normal": 0.00053954865984247,
+          "span": 1.9378859913459873e-05
+        },
+        "delta": {
+          "chord": -6.556357791574364e-05,
+          "normal": 0.0004920266253300138,
+          "span": 2.7414180258526644e-05
+        },
+        "linkSampling": {
+          "chord": -1.4172448234752184e-05,
+          "normal": -4.752203451243559e-05,
+          "span": 8.035320345089096e-06
+        }
+      }
+    },
+    {
+      "actualPhases": {
+        "c16": {
+          "follower": 0.03501400560224077,
+          "leader": 0.7850140056022409
+        },
+        "c20": {
+          "follower": 0.03506069094304376,
+          "leader": 0.7850606909430439
+        }
+      },
+      "boundaryLinkDensityPerChordSquared": {
+        "c16": 34.5859375,
+        "c20": 34.065000000000005
+      },
+      "branchCounts": {
+        "c16": {
+          "far": 4886,
+          "halfwayFallback": 0,
+          "near": 3968
+        },
+        "c20": {
+          "far": 7460,
+          "halfwayFallback": 0,
+          "near": 6166
+        }
+      },
+      "classification": "directionalLinkSamplingDominated",
+      "conditionalAmplitudeComponentAttributionFraction": {
+        "interpolationAuxiliary": 0.454786092402024,
+        "movingWall": 0.09862292677336112,
+        "reflectedMomentumExchange": 0.44659098082461496
+      },
+      "conditionalAmplitudeComponentWeightedL1": {
+        "interpolationAuxiliary": 0.004538173234972815,
+        "movingWall": 0.000984128437775331,
+        "reflectedMomentumExchange": 0.0044563966885050365
+      },
+      "directionDistributionTotalVariation": 0.0055181912653134504,
+      "directions": [
+        {
+          "amplitudeComponentResidual": 0.0,
+          "c16ArealLinkMeasure": 0.0,
+          "c16ConditionalMean": 0.0,
+          "c16LinkCount": 0,
+          "c16MomentumExchangeProfile": 0.0,
+          "c20ArealLinkMeasure": 0.0,
+          "c20ConditionalMean": 0.0,
+          "c20LinkCount": 0,
+          "c20MomentumExchangeProfile": 0.0,
+          "conditionalAmplitudeTerm": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "identityResidual": 0.0,
+          "interpolationAmplitudeTerm": 0.0,
+          "linkSamplingTerm": 0.0,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": 0.0,
+          "reflectedAmplitudeTerm": 0.0
+        },
+        {
+          "amplitudeComponentResidual": -9.019494280050296e-09,
+          "c16ArealLinkMeasure": 2.73828125,
+          "c16ConditionalMean": 0.11127512193100259,
+          "c16LinkCount": 701,
+          "c16MomentumExchangeProfile": 0.3047025799751282,
+          "c20ArealLinkMeasure": 2.7125,
+          "c20ConditionalMean": 0.11126435802828881,
+          "c20LinkCount": 1085,
+          "c20MomentumExchangeProfile": 0.30180457115173337,
+          "conditionalAmplitudeTerm": -2.9335839544536345e-05,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "identityResidual": -1.7015197844444385e-17,
+          "interpolationAmplitudeTerm": -0.0002297671394627977,
+          "linkSamplingTerm": -0.002868672983850251,
+          "movingWallAmplitudeTerm": -4.1180770380619915e-05,
+          "profileDifferenceC20MinusC16": -0.0028980088233948043,
+          "reflectedAmplitudeTerm": 0.00024162108979316132
+        },
+        {
+          "amplitudeComponentResidual": -9.582064683909681e-09,
+          "c16ArealLinkMeasure": 2.73828125,
+          "c16ConditionalMean": 0.110832687791506,
+          "c16LinkCount": 701,
+          "c16MomentumExchangeProfile": 0.3034910708665848,
+          "c20ArealLinkMeasure": 2.7125,
+          "c20ConditionalMean": 0.11082723591184836,
+          "c20LinkCount": 1085,
+          "c20MomentumExchangeProfile": 0.30061887741088866,
+          "conditionalAmplitudeTerm": -1.4858501707565536e-05,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "identityResidual": 1.2891841457210451e-17,
+          "interpolationAmplitudeTerm": -0.0004876068339636427,
+          "linkSamplingTerm": -0.002857334953988562,
+          "movingWallAmplitudeTerm": 0.00010711503382392209,
+          "profileDifferenceC20MinusC16": -0.002872193455696115,
+          "reflectedAmplitudeTerm": 0.00036564288049683897
+        },
+        {
+          "amplitudeComponentResidual": -1.5851579244911037e-09,
+          "c16ArealLinkMeasure": 0.69140625,
+          "c16ConditionalMean": 0.11062403856697729,
+          "c16LinkCount": 177,
+          "c16MomentumExchangeProfile": 0.07648615166544914,
+          "c20ArealLinkMeasure": 0.6825,
+          "c20ConditionalMean": 0.11067260840000251,
+          "c20LinkCount": 273,
+          "c20MomentumExchangeProfile": 0.07553405523300172,
+          "conditionalAmplitudeTerm": 3.336519857740072e-05,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "identityResidual": 7.09474796620202e-18,
+          "interpolationAmplitudeTerm": 9.482785710372196e-05,
+          "linkSamplingTerm": -0.0009854616310248324,
+          "movingWallAmplitudeTerm": 1.1472880427535588e-05,
+          "profileDifferenceC20MinusC16": -0.0009520964324474246,
+          "reflectedAmplitudeTerm": -7.293395379593233e-05
+        },
+        {
+          "amplitudeComponentResidual": -1.483950592056038e-09,
+          "c16ArealLinkMeasure": 0.69140625,
+          "c16ConditionalMean": 0.11116562859486726,
+          "c16LinkCount": 177,
+          "c16MomentumExchangeProfile": 0.07686061039566994,
+          "c20ArealLinkMeasure": 0.6825,
+          "c20ConditionalMean": 0.11113949311085236,
+          "c20LinkCount": 273,
+          "c20MomentumExchangeProfile": 0.07585270404815674,
+          "conditionalAmplitudeTerm": -1.7953852417419107e-05,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "identityResidual": 5.319366908757006e-19,
+          "interpolationAmplitudeTerm": -0.00022447273632677153,
+          "linkSamplingTerm": -0.000989952495095783,
+          "movingWallAmplitudeTerm": -7.094776695302778e-06,
+          "profileDifferenceC20MinusC16": -0.0010079063475132016,
+          "reflectedAmplitudeTerm": 0.00021361514455524726
+        },
+        {
+          "amplitudeComponentResidual": 3.916987538500323e-09,
+          "c16ArealLinkMeasure": 1.328125,
+          "c16ConditionalMean": 0.11076113756965189,
+          "c16LinkCount": 340,
+          "c16MomentumExchangeProfile": 0.1471046358346939,
+          "c20ArealLinkMeasure": 1.275,
+          "c20ConditionalMean": 0.11079720889820772,
+          "c20LinkCount": 510,
+          "c20MomentumExchangeProfile": 0.14126644134521485,
+          "conditionalAmplitudeTerm": 4.694908857345262e-05,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "identityResidual": 1.8106176280507924e-17,
+          "interpolationAmplitudeTerm": 7.525848845640662e-05,
+          "linkSamplingTerm": -0.00588514357805253,
+          "movingWallAmplitudeTerm": 5.5422293177495294e-05,
+          "profileDifferenceC20MinusC16": -0.005838194489479059,
+          "reflectedAmplitudeTerm": -8.373561004798779e-05
+        },
+        {
+          "amplitudeComponentResidual": 3.993045545858901e-09,
+          "c16ArealLinkMeasure": 1.328125,
+          "c16ConditionalMean": 0.1110165932599236,
+          "c16LinkCount": 340,
+          "c16MomentumExchangeProfile": 0.14744391292333603,
+          "c20ArealLinkMeasure": 1.275,
+          "c20ConditionalMean": 0.1109842674404967,
+          "c20LinkCount": 510,
+          "c20MomentumExchangeProfile": 0.1415049409866333,
+          "conditionalAmplitudeTerm": -4.207407434780783e-05,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "identityResidual": 1.6872896309305663e-18,
+          "interpolationAmplitudeTerm": 0.0010064573958516114,
+          "linkSamplingTerm": -0.005896897862354924,
+          "movingWallAmplitudeTerm": -7.460838261370851e-05,
+          "profileDifferenceC20MinusC16": -0.0059389719367027305,
+          "reflectedAmplitudeTerm": -0.0009739270806312565
+        },
+        {
+          "amplitudeComponentResidual": 6.415006764864892e-09,
+          "c16ArealLinkMeasure": 2.1328125,
+          "c16ConditionalMean": 0.05558869602916005,
+          "c16LinkCount": 546,
+          "c16MomentumExchangeProfile": 0.11856026574969292,
+          "c20ArealLinkMeasure": 2.13,
+          "c20ConditionalMean": 0.05558655743307911,
+          "c20LinkCount": 852,
+          "c20MomentumExchangeProfile": 0.1183993673324585,
+          "conditionalAmplitudeTerm": -4.558217053141667e-06,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "identityResidual": 1.1849990932087662e-18,
+          "interpolationAmplitudeTerm": 6.824515884486343e-05,
+          "linkSamplingTerm": -0.00015634020018127974,
+          "movingWallAmplitudeTerm": 3.051707525945868e-05,
+          "profileDifferenceC20MinusC16": -0.00016089841723442022,
+          "reflectedAmplitudeTerm": -0.00010332686616422865
+        },
+        {
+          "amplitudeComponentResidual": -2.5397855539673652e-09,
+          "c16ArealLinkMeasure": 2.1328125,
+          "c16ConditionalMean": 0.05540596434484908,
+          "c16LinkCount": 546,
+          "c16MomentumExchangeProfile": 0.11817053332924843,
+          "c20ArealLinkMeasure": 2.13,
+          "c20ConditionalMean": 0.055403275109232875,
+          "c20LinkCount": 852,
+          "c20MomentumExchangeProfile": 0.11800897598266602,
+          "conditionalAmplitudeTerm": -5.731853600106764e-06,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "identityResidual": 7.139640712406498e-18,
+          "interpolationAmplitudeTerm": -6.641300014297709e-06,
+          "linkSamplingTerm": -0.00015582549298230865,
+          "movingWallAmplitudeTerm": -1.3785185904259642e-05,
+          "profileDifferenceC20MinusC16": -0.00016155734658240828,
+          "reflectedAmplitudeTerm": 1.4697172104004554e-05
+        },
+        {
+          "amplitudeComponentResidual": -8.392928468676424e-09,
+          "c16ArealLinkMeasure": 3.04296875,
+          "c16ConditionalMean": 0.05569922969950332,
+          "c16LinkCount": 779,
+          "c16MomentumExchangeProfile": 0.1694910153746605,
+          "c20ArealLinkMeasure": 3.0175,
+          "c20ConditionalMean": 0.0556861921688102,
+          "c20LinkCount": 1207,
+          "c20MomentumExchangeProfile": 0.16803308486938479,
+          "conditionalAmplitudeTerm": -3.950677367141543e-05,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "identityResidual": 1.0144066576317501e-17,
+          "interpolationAmplitudeTerm": 9.260587310183563e-05,
+          "linkSamplingTerm": -0.001418423731604301,
+          "movingWallAmplitudeTerm": -7.34051094707279e-05,
+          "profileDifferenceC20MinusC16": -0.0014579305052757063,
+          "reflectedAmplitudeTerm": -5.869914437405449e-05
+        },
+        {
+          "amplitudeComponentResidual": -2.483762682050988e-10,
+          "c16ArealLinkMeasure": 3.04296875,
+          "c16ConditionalMean": 0.055425026909530696,
+          "c16LinkCount": 779,
+          "c16MomentumExchangeProfile": 0.168656624853611,
+          "c20ArealLinkMeasure": 3.0175,
+          "c20ConditionalMean": 0.055415193799515844,
+          "c20LinkCount": 1207,
+          "c20MomentumExchangeProfile": 0.16721534729003906,
+          "conditionalAmplitudeTerm": -2.9796627980161755e-05,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "identityResidual": -7.74865740148234e-18,
+          "interpolationAmplitudeTerm": -7.790645684059379e-05,
+          "linkSamplingTerm": -0.0014114809355917604,
+          "movingWallAmplitudeTerm": 0.00010921722601474611,
+          "profileDifferenceC20MinusC16": -0.00144127756357193,
+          "reflectedAmplitudeTerm": -6.110714877804588e-05
+        },
+        {
+          "amplitudeComponentResidual": 1.0488310509315294e-08,
+          "c16ArealLinkMeasure": 1.625,
+          "c16ConditionalMean": 0.055621715692373425,
+          "c16LinkCount": 416,
+          "c16MomentumExchangeProfile": 0.09038528800010681,
+          "c20ArealLinkMeasure": 1.6075,
+          "c20ConditionalMean": 0.055633728834184853,
+          "c20LinkCount": 643,
+          "c20MomentumExchangeProfile": 0.08943121910095214,
+          "conditionalAmplitudeTerm": 1.9416240452721917e-05,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "identityResidual": -2.8019849895172255e-18,
+          "interpolationAmplitudeTerm": 0.00048376154276873364,
+          "linkSamplingTerm": -0.0009734851396073889,
+          "movingWallAmplitudeTerm": 6.517042644611162e-05,
+          "profileDifferenceC20MinusC16": -0.0009540688991546697,
+          "reflectedAmplitudeTerm": -0.0005295262170726327
+        },
+        {
+          "amplitudeComponentResidual": 1.0876552810867011e-10,
+          "c16ArealLinkMeasure": 1.625,
+          "c16ConditionalMean": 0.05540005748088543,
+          "c16LinkCount": 416,
+          "c16MomentumExchangeProfile": 0.09002509340643883,
+          "c20ArealLinkMeasure": 1.6075,
+          "c20ConditionalMean": 0.05539016664306261,
+          "c20LinkCount": 643,
+          "c20MomentumExchangeProfile": 0.08903969287872314,
+          "conditionalAmplitudeTerm": -1.598606663113851e-05,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "identityResidual": -1.9989977555201488e-19,
+          "interpolationAmplitudeTerm": 9.645885598386603e-05,
+          "linkSamplingTerm": -0.0009694144610845493,
+          "movingWallAmplitudeTerm": 2.2003486457147465e-05,
+          "profileDifferenceC20MinusC16": -0.000985400527715688,
+          "reflectedAmplitudeTerm": -0.0001344485178376801
+        },
+        {
+          "amplitudeComponentResidual": -2.1064921227077478e-09,
+          "c16ArealLinkMeasure": 3.04296875,
+          "c16ConditionalMean": 0.0556116801936452,
+          "c16LinkCount": 779,
+          "c16MomentumExchangeProfile": 0.1692246049642563,
+          "c20ArealLinkMeasure": 3.0175,
+          "c20ConditionalMean": 0.055603510896924516,
+          "c20LinkCount": 1207,
+          "c20MomentumExchangeProfile": 0.16778359413146973,
+          "conditionalAmplitudeTerm": -2.475488374259464e-05,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "identityResidual": 9.791700870259712e-18,
+          "interpolationAmplitudeTerm": 7.266760057093894e-05,
+          "linkSamplingTerm": -0.0014162559490439697,
+          "movingWallAmplitudeTerm": -1.6937183599978337e-05,
+          "profileDifferenceC20MinusC16": -0.0014410108327865545,
+          "reflectedAmplitudeTerm": -8.048319422143254e-05
+        },
+        {
+          "amplitudeComponentResidual": 1.863110243851624e-09,
+          "c16ArealLinkMeasure": 3.04296875,
+          "c16ConditionalMean": 0.0554368260277098,
+          "c16LinkCount": 779,
+          "c16MomentumExchangeProfile": 0.16869252920150757,
+          "c20ArealLinkMeasure": 3.0175,
+          "c20ConditionalMean": 0.055446678483989875,
+          "c20LinkCount": 1207,
+          "c20MomentumExchangeProfile": 0.16731035232543945,
+          "conditionalAmplitudeTerm": 2.9855251698064614e-05,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "identityResidual": -1.2600462123354972e-17,
+          "interpolationAmplitudeTerm": -5.719194254061271e-05,
+          "linkSamplingTerm": -0.0014120321277661717,
+          "movingWallAmplitudeTerm": 6.449278316601353e-05,
+          "profileDifferenceC20MinusC16": -0.0013821768760681197,
+          "reflectedAmplitudeTerm": 2.2552547962419943e-05
+        },
+        {
+          "amplitudeComponentResidual": -8.975103514920053e-09,
+          "c16ArealLinkMeasure": 1.9296875,
+          "c16ConditionalMean": 0.055382410041716415,
+          "c16LinkCount": 494,
+          "c16MomentumExchangeProfile": 0.10687074437737465,
+          "c20ArealLinkMeasure": 1.88,
+          "c20ConditionalMean": 0.05538495804401154,
+          "c20LinkCount": 752,
+          "c20MomentumExchangeProfile": 0.1041237211227417,
+          "conditionalAmplitudeTerm": 4.853546246859114e-06,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "identityResidual": -4.097945398816305e-18,
+          "interpolationAmplitudeTerm": 2.9118627065758593e-05,
+          "linkSamplingTerm": -0.00275187680087981,
+          "movingWallAmplitudeTerm": 2.9903645744979788e-05,
+          "profileDifferenceC20MinusC16": -0.002747023254632955,
+          "reflectedAmplitudeTerm": -5.415975146036435e-05
+        },
+        {
+          "amplitudeComponentResidual": 1.6073033292366605e-09,
+          "c16ArealLinkMeasure": 1.9296875,
+          "c16ConditionalMean": 0.05556260429413212,
+          "c16LinkCount": 494,
+          "c16MomentumExchangeProfile": 0.10721846297383308,
+          "c20ArealLinkMeasure": 1.88,
+          "c20ConditionalMean": 0.05553881919130366,
+          "c20LinkCount": 752,
+          "c20MomentumExchangeProfile": 0.10441298007965087,
+          "conditionalAmplitudeTerm": -4.530690446591145e-05,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "identityResidual": 2.642742795433417e-19,
+          "interpolationAmplitudeTerm": 0.00025420899576418515,
+          "linkSamplingTerm": -0.0027601759897163012,
+          "movingWallAmplitudeTerm": -4.447117611563074e-05,
+          "profileDifferenceC20MinusC16": -0.0028054828941822124,
+          "reflectedAmplitudeTerm": -0.0002550463314177951
+        },
+        {
+          "amplitudeComponentResidual": 1.3681699406764038e-10,
+          "c16ArealLinkMeasure": 0.76171875,
+          "c16ConditionalMean": 0.05543869458712064,
+          "c16LinkCount": 195,
+          "c16MomentumExchangeProfile": 0.0422286931425333,
+          "c20ArealLinkMeasure": 0.71,
+          "c20ConditionalMean": 0.055394362395917864,
+          "c20LinkCount": 284,
+          "c20MomentumExchangeProfile": 0.039329997301101684,
+          "conditionalAmplitudeTerm": -3.2622258510855924e-05,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "identityResidual": 4.607859233063394e-19,
+          "interpolationAmplitudeTerm": -0.00014211350616973045,
+          "linkSamplingTerm": -0.002866073582920763,
+          "movingWallAmplitudeTerm": -6.412001163576863e-06,
+          "profileDifferenceC20MinusC16": -0.0028986958414316186,
+          "reflectedAmplitudeTerm": 0.00011590311200545732
+        },
+        {
+          "amplitudeComponentResidual": 1.3671799268363176e-09,
+          "c16ArealLinkMeasure": 0.76171875,
+          "c16ConditionalMean": 0.05540177760980068,
+          "c16LinkCount": 195,
+          "c16MomentumExchangeProfile": 0.04220057278871536,
+          "c20ArealLinkMeasure": 0.71,
+          "c20ConditionalMean": 0.055399688196853855,
+          "c20LinkCount": 284,
+          "c20MomentumExchangeProfile": 0.03933377861976624,
+          "conditionalAmplitudeTerm": -1.537514105168507e-06,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "identityResidual": 3.144186300207963e-18,
+          "interpolationAmplitudeTerm": 0.0003301249557635859,
+          "linkSamplingTerm": -0.002865256654843959,
+          "movingWallAmplitudeTerm": 9.63273491574965e-06,
+          "profileDifferenceC20MinusC16": -0.0028667941689491244,
+          "reflectedAmplitudeTerm": -0.0003412965719644309
+        }
+      ],
+      "flyer": "follower",
+      "maximumAbsoluteAmplitudeComponentResidual": 1.0488310509315294e-08,
+      "maximumAbsoluteSymmetricIdentityResidual": 1.8106176280507924e-17,
+      "populationMomentumVector": {
+        "c16": [
+          0.0033279024064540863,
+          -0.001138715073466301,
+          -0.0008869972079992294
+        ],
+        "c20": [
+          0.003258590698242192,
+          -0.001039035320281996,
+          -0.0006056928634643674
+        ],
+        "conditionalAmplitude": [
+          -4.2221675338058216e-05,
+          8.127853954012176e-05,
+          0.0002602808005642381
+        ],
+        "delta": [
+          -6.931170821189436e-05,
+          9.967975318430494e-05,
+          0.0002813043445348759
+        ],
+        "linkSampling": [
+          -2.7090032873837997e-05,
+          1.840121364420728e-05,
+          2.1023543970647828e-05
+        ]
+      },
+      "targetFollowerPhase": 0.035,
+      "targetLeaderPhase": 0.785,
+      "topLevelAttributionFraction": {
+        "conditionalAmplitude": 0.01153772256773866,
+        "linkSampling": 0.9884622774322613
+      },
+      "topLevelWeightedL1": {
+        "conditionalAmplitude": 0.0005436423435924485,
+        "linkSampling": 0.046575045109732226
+      },
+      "totalBoundaryLinks": {
+        "c16": 8854,
+        "c20": 13626
+      },
+      "wingFramePopulationMomentum": {
+        "c16": {
+          "chord": -0.0005914883842106704,
+          "normal": -0.0035604540776298967,
+          "span": -0.0003628756360278924
+        },
+        "c20": {
+          "chord": -0.0008130685316035241,
+          "normal": -0.0033652140997304245,
+          "span": -0.00028129200376026927
+        },
+        "conditionalAmplitude": {
+          "chord": -0.00021457434116159708,
+          "normal": 0.000158840879004904,
+          "span": 6.973085971333505e-05
+        },
+        "delta": {
+          "chord": -0.00022158014739286644,
+          "normal": 0.00019523997789947756,
+          "span": 8.158363226762328e-05
+        },
+        "linkSampling": {
+          "chord": -7.005806231275653e-06,
+          "normal": 3.639909889458418e-05,
+          "span": 1.185277255431129e-05
+        }
+      }
+    },
+    {
+      "actualPhases": {
+        "c16": {
+          "follower": 0.0950046685340804,
+          "leader": 0.8450046685340803
+        },
+        "c20": {
+          "follower": 0.0950046685340804,
+          "leader": 0.8450046685340803
+        }
+      },
+      "boundaryLinkDensityPerChordSquared": {
+        "c16": 33.2578125,
+        "c20": 32.575
+      },
+      "branchCounts": {
+        "c16": {
+          "far": 4715,
+          "halfwayFallback": 0,
+          "near": 3799
+        },
+        "c20": {
+          "far": 7148,
+          "halfwayFallback": 0,
+          "near": 5882
+        }
+      },
+      "classification": "directionalLinkSamplingDominated",
+      "conditionalAmplitudeComponentAttributionFraction": {
+        "interpolationAuxiliary": 0.4632251664514411,
+        "movingWall": 0.10248140286131072,
+        "reflectedMomentumExchange": 0.43429343068724824
+      },
+      "conditionalAmplitudeComponentWeightedL1": {
+        "interpolationAuxiliary": 0.012073911179698674,
+        "movingWall": 0.0026711660879679172,
+        "reflectedMomentumExchange": 0.011319808783735707
+      },
+      "directionDistributionTotalVariation": 0.009041529900370845,
+      "directions": [
+        {
+          "amplitudeComponentResidual": 0.0,
+          "c16ArealLinkMeasure": 0.0,
+          "c16ConditionalMean": 0.0,
+          "c16LinkCount": 0,
+          "c16MomentumExchangeProfile": 0.0,
+          "c20ArealLinkMeasure": 0.0,
+          "c20ConditionalMean": 0.0,
+          "c20LinkCount": 0,
+          "c20MomentumExchangeProfile": 0.0,
+          "conditionalAmplitudeTerm": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "identityResidual": 0.0,
+          "interpolationAmplitudeTerm": 0.0,
+          "linkSamplingTerm": 0.0,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": 0.0,
+          "reflectedAmplitudeTerm": 0.0
+        },
+        {
+          "amplitudeComponentResidual": -5.402905876994023e-09,
+          "c16ArealLinkMeasure": 1.33984375,
+          "c16ConditionalMean": 0.11061634475218658,
+          "c16LinkCount": 343,
+          "c16MomentumExchangeProfile": 0.1482086181640625,
+          "c20ArealLinkMeasure": 1.3575,
+          "c20ConditionalMean": 0.11053963831555558,
+          "c20LinkCount": 543,
+          "c20MomentumExchangeProfile": 0.15005755901336668,
+          "conditionalAmplitudeTerm": -0.00010345181371570614,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "identityResidual": -2.131812521649623e-17,
+          "interpolationAmplitudeTerm": -0.0009229603797375446,
+          "linkSamplingTerm": 0.0019523926630199034,
+          "movingWallAmplitudeTerm": 2.0996452770073746e-05,
+          "profileDifferenceC20MinusC16": 0.001848940849304176,
+          "reflectedAmplitudeTerm": 0.0007985175161576417
+        },
+        {
+          "amplitudeComponentResidual": 1.7591599127809825e-08,
+          "c16ArealLinkMeasure": 1.33984375,
+          "c16ConditionalMean": 0.11122387699761127,
+          "c16LinkCount": 343,
+          "c16MomentumExchangeProfile": 0.14902261644601822,
+          "c20ArealLinkMeasure": 1.3575,
+          "c20ConditionalMean": 0.11135606432048875,
+          "c20LinkCount": 543,
+          "c20MomentumExchangeProfile": 0.15116585731506346,
+          "conditionalAmplitudeTerm": 0.00017827732459640213,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "identityResidual": -2.7647155398380363e-18,
+          "interpolationAmplitudeTerm": 0.00017844685447221647,
+          "linkSamplingTerm": 0.0019649635444488438,
+          "movingWallAmplitudeTerm": 0.00027402846434298984,
+          "profileDifferenceC20MinusC16": 0.002143240869045243,
+          "reflectedAmplitudeTerm": -0.000274215585817932
+        },
+        {
+          "amplitudeComponentResidual": 8.833132699707805e-09,
+          "c16ArealLinkMeasure": 1.76171875,
+          "c16ConditionalMean": 0.11163560567039608,
+          "c16LinkCount": 451,
+          "c16MomentumExchangeProfile": 0.1966705396771431,
+          "c20ArealLinkMeasure": 1.7725,
+          "c20ConditionalMean": 0.11167011341692194,
+          "c20LinkCount": 709,
+          "c20MomentumExchangeProfile": 0.19793527603149413,
+          "conditionalAmplitudeTerm": 6.09789623959675e-05,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "identityResidual": -1.6940658945086007e-19,
+          "interpolationAmplitudeTerm": 0.000227045335599974,
+          "linkSamplingTerm": 0.0012037573919550697,
+          "movingWallAmplitudeTerm": 0.000144341336031655,
+          "profileDifferenceC20MinusC16": 0.001264736354351037,
+          "reflectedAmplitudeTerm": -0.0003104165423683612
+        },
+        {
+          "amplitudeComponentResidual": 4.41656635149037e-09,
+          "c16ArealLinkMeasure": 1.76171875,
+          "c16ConditionalMean": 0.11117290657534039,
+          "c16LinkCount": 451,
+          "c16MomentumExchangeProfile": 0.19585539400577545,
+          "c20ArealLinkMeasure": 1.7725,
+          "c20ConditionalMean": 0.11111322142005135,
+          "c20LinkCount": 709,
+          "c20MomentumExchangeProfile": 0.19694818496704103,
+          "conditionalAmplitudeTerm": -0.00010547019745958528,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "identityResidual": 7.860465750519907e-18,
+          "interpolationAmplitudeTerm": -0.0011220016179087128,
+          "linkSamplingTerm": 0.0011982611587251547,
+          "movingWallAmplitudeTerm": 0.0002156107451826942,
+          "profileDifferenceC20MinusC16": 0.0010927909612655773,
+          "reflectedAmplitudeTerm": 0.0008009162587000818
+        },
+        {
+          "amplitudeComponentResidual": -1.4624162530833872e-08,
+          "c16ArealLinkMeasure": 2.21484375,
+          "c16ConditionalMean": 0.11036251882186432,
+          "c16LinkCount": 567,
+          "c16MomentumExchangeProfile": 0.24443573504686356,
+          "c20ArealLinkMeasure": 2.1325,
+          "c20ConditionalMean": 0.11034269433507886,
+          "c20LinkCount": 853,
+          "c20MomentumExchangeProfile": 0.23530579566955565,
+          "conditionalAmplitudeTerm": -4.309192936186526e-05,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "identityResidual": -7.230273237762708e-18,
+          "interpolationAmplitudeTerm": 0.0008540702852459042,
+          "linkSamplingTerm": -0.009086847447946038,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": -0.00912993937730791,
+          "reflectedAmplitudeTerm": -0.0008971475904452386
+        },
+        {
+          "amplitudeComponentResidual": -9.720867689101621e-09,
+          "c16ArealLinkMeasure": 2.21484375,
+          "c16ConditionalMean": 0.11091242727989452,
+          "c16LinkCount": 567,
+          "c16MomentumExchangeProfile": 0.2456536963582039,
+          "c20ArealLinkMeasure": 2.1325,
+          "c20ConditionalMean": 0.11088339301374285,
+          "c20LinkCount": 853,
+          "c20MomentumExchangeProfile": 0.2364588356018066,
+          "conditionalAmplitudeTerm": -6.311096774514386e-05,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "identityResidual": -1.4352126258276865e-17,
+          "interpolationAmplitudeTerm": 0.001371451382398487,
+          "linkSamplingTerm": -0.009131749788652119,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": -0.009194860756397277,
+          "reflectedAmplitudeTerm": -0.0014345526292759419
+        },
+        {
+          "amplitudeComponentResidual": 3.3019079853871688e-09,
+          "c16ArealLinkMeasure": 0.51953125,
+          "c16ConditionalMean": 0.055565364378735535,
+          "c16LinkCount": 133,
+          "c16MomentumExchangeProfile": 0.028867943212389946,
+          "c20ArealLinkMeasure": 0.5025,
+          "c20ConditionalMean": 0.055487893707123565,
+          "c20LinkCount": 201,
+          "c20MomentumExchangeProfile": 0.027882666587829587,
+          "conditionalAmplitudeTerm": -3.958872367296087e-05,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "identityResidual": -7.589415207398531e-19,
+          "interpolationAmplitudeTerm": 0.00011338319963874962,
+          "linkSamplingTerm": -0.0009456879008873969,
+          "movingWallAmplitudeTerm": 4.9261078610904944e-05,
+          "profileDifferenceC20MinusC16": -0.0009852766245603585,
+          "reflectedAmplitudeTerm": -0.00020223630383060082
+        },
+        {
+          "amplitudeComponentResidual": -1.9363673619662218e-09,
+          "c16ArealLinkMeasure": 0.51953125,
+          "c16ConditionalMean": 0.05545427745446227,
+          "c16LinkCount": 133,
+          "c16MomentumExchangeProfile": 0.0288102300837636,
+          "c20ArealLinkMeasure": 0.5025,
+          "c20ConditionalMean": 0.0554059275347202,
+          "c20LinkCount": 201,
+          "c20MomentumExchangeProfile": 0.027841478586196896,
+          "conditionalAmplitudeTerm": -2.47075644556939e-05,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "identityResidual": 4.438452643612534e-19,
+          "interpolationAmplitudeTerm": -0.00048704706432087935,
+          "linkSamplingTerm": -0.00094404393311101,
+          "movingWallAmplitudeTerm": 2.4946609263002094e-05,
+          "profileDifferenceC20MinusC16": -0.0009687514975667035,
+          "reflectedAmplitudeTerm": 0.0004373948269695453
+        },
+        {
+          "amplitudeComponentResidual": 9.254354574179784e-09,
+          "c16ArealLinkMeasure": 3.015625,
+          "c16ConditionalMean": 0.056019456893051225,
+          "c16LinkCount": 772,
+          "c16MomentumExchangeProfile": 0.1689336746931076,
+          "c20ArealLinkMeasure": 2.9775,
+          "c20ConditionalMean": 0.0560186772062236,
+          "c20LinkCount": 1191,
+          "c20MomentumExchangeProfile": 0.16679561138153076,
+          "conditionalAmplitudeTerm": -2.336380309416594e-06,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "identityResidual": -2.2636955515371177e-18,
+          "interpolationAmplitudeTerm": -0.000884631319237232,
+          "linkSamplingTerm": -0.0021357269312674244,
+          "movingWallAmplitudeTerm": 0.00019929261286876824,
+          "profileDifferenceC20MinusC16": -0.0021380633115768433,
+          "reflectedAmplitudeTerm": 0.000682993071704473
+        },
+        {
+          "amplitudeComponentResidual": 1.9605866914649563e-08,
+          "c16ArealLinkMeasure": 3.015625,
+          "c16ConditionalMean": 0.05613420417271747,
+          "c16LinkCount": 772,
+          "c16MomentumExchangeProfile": 0.16927970945835114,
+          "c20ArealLinkMeasure": 2.9775,
+          "c20ConditionalMean": 0.056163808660883545,
+          "c20LinkCount": 1191,
+          "c20MomentumExchangeProfile": 0.16722774028778076,
+          "conditionalAmplitudeTerm": 8.871169907014687e-05,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "identityResidual": -7.426784881525705e-18,
+          "interpolationAmplitudeTerm": -0.00018218470840209428,
+          "linkSamplingTerm": -0.0021406808696405174,
+          "movingWallAmplitudeTerm": 7.235845108771238e-05,
+          "profileDifferenceC20MinusC16": -0.002051969170570378,
+          "reflectedAmplitudeTerm": 0.00019851835051761413
+        },
+        {
+          "amplitudeComponentResidual": 4.158713490004691e-09,
+          "c16ArealLinkMeasure": 3.046875,
+          "c16ConditionalMean": 0.055221873063307544,
+          "c16LinkCount": 780,
+          "c16MomentumExchangeProfile": 0.16825414448976517,
+          "c20ArealLinkMeasure": 3.0,
+          "c20ConditionalMean": 0.05522006670633952,
+          "c20LinkCount": 1200,
+          "c20MomentumExchangeProfile": 0.16566020011901855,
+          "conditionalAmplitudeTerm": -5.4614073955119185e-06,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "identityResidual": 5.421010862427522e-20,
+          "interpolationAmplitudeTerm": 0.00035610730974720004,
+          "linkSamplingTerm": -0.002588482963351103,
+          "movingWallAmplitudeTerm": 0.00015591968782246085,
+          "profileDifferenceC20MinusC16": -0.0025939443707466148,
+          "reflectedAmplitudeTerm": -0.0005174925636786628
+        },
+        {
+          "amplitudeComponentResidual": 1.5341031993124066e-08,
+          "c16ArealLinkMeasure": 3.046875,
+          "c16ConditionalMean": 0.05568642738537911,
+          "c16LinkCount": 780,
+          "c16MomentumExchangeProfile": 0.16966958343982697,
+          "c20ArealLinkMeasure": 3.0,
+          "c20ConditionalMean": 0.055669403076171874,
+          "c20LinkCount": 1200,
+          "c20MomentumExchangeProfile": 0.16700820922851561,
+          "conditionalAmplitudeTerm": -5.147193486874544e-05,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "identityResidual": -4.662069341687669e-18,
+          "interpolationAmplitudeTerm": -9.760611475660717e-05,
+          "linkSamplingTerm": -0.0026099022764426013,
+          "movingWallAmplitudeTerm": 0.00011224016547203084,
+          "profileDifferenceC20MinusC16": -0.0026613742113113514,
+          "reflectedAmplitudeTerm": -6.612132661616222e-05
+        },
+        {
+          "amplitudeComponentResidual": -1.932308911606318e-09,
+          "c16ArealLinkMeasure": 1.03125,
+          "c16ConditionalMean": 0.05529469071012555,
+          "c16LinkCount": 264,
+          "c16MomentumExchangeProfile": 0.05702264979481697,
+          "c20ArealLinkMeasure": 0.955,
+          "c20ConditionalMean": 0.05519224086981169,
+          "c20LinkCount": 382,
+          "c20MomentumExchangeProfile": 0.05270859003067016,
+          "conditionalAmplitudeTerm": -0.0001017454976616999,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "identityResidual": -4.472333961502706e-19,
+          "interpolationAmplitudeTerm": -3.116513265398086e-05,
+          "linkSamplingTerm": -0.00421231426648511,
+          "movingWallAmplitudeTerm": -4.7095155357598465e-05,
+          "profileDifferenceC20MinusC16": -0.00431405976414681,
+          "reflectedAmplitudeTerm": -2.348327734120896e-05
+        },
+        {
+          "amplitudeComponentResidual": 2.1037044653872595e-09,
+          "c16ArealLinkMeasure": 1.03125,
+          "c16ConditionalMean": 0.055366194609439735,
+          "c16LinkCount": 264,
+          "c16MomentumExchangeProfile": 0.057096388190984726,
+          "c20ArealLinkMeasure": 0.955,
+          "c20ConditionalMean": 0.05535451030231895,
+          "c20LinkCount": 382,
+          "c20MomentumExchangeProfile": 0.0528635573387146,
+          "conditionalAmplitudeTerm": -1.1603977509329657e-05,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "identityResidual": 2.0481256664608982e-18,
+          "interpolationAmplitudeTerm": 0.000997689893620223,
+          "linkSamplingTerm": -0.004221226874760802,
+          "movingWallAmplitudeTerm": -0.00013110272172030515,
+          "profileDifferenceC20MinusC16": -0.004232830852270129,
+          "reflectedAmplitudeTerm": -0.0008781932531137128
+        },
+        {
+          "amplitudeComponentResidual": 9.957934843325472e-10,
+          "c16ArealLinkMeasure": 0.65234375,
+          "c16ConditionalMean": 0.05557242981687991,
+          "c16LinkCount": 167,
+          "c16MomentumExchangeProfile": 0.036252327263355255,
+          "c20ArealLinkMeasure": 0.59,
+          "c20ConditionalMean": 0.05559135291535976,
+          "c20LinkCount": 236,
+          "c20MomentumExchangeProfile": 0.03279889822006225,
+          "conditionalAmplitudeTerm": 1.175449656353581e-05,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "identityResidual": -2.358139725155972e-18,
+          "interpolationAmplitudeTerm": 0.001132094765938463,
+          "linkSamplingTerm": -0.0034651835398565355,
+          "movingWallAmplitudeTerm": -9.388322906135161e-05,
+          "profileDifferenceC20MinusC16": -0.003453429043293002,
+          "reflectedAmplitudeTerm": -0.0010264580361070599
+        },
+        {
+          "amplitudeComponentResidual": -2.991138154084241e-09,
+          "c16ArealLinkMeasure": 0.65234375,
+          "c16ConditionalMean": 0.05552937741765005,
+          "c16LinkCount": 167,
+          "c16MomentumExchangeProfile": 0.03622424229979515,
+          "c20ArealLinkMeasure": 0.59,
+          "c20ConditionalMean": 0.0552130634501829,
+          "c20LinkCount": 236,
+          "c20MomentumExchangeProfile": 0.032575707435607906,
+          "conditionalAmplitudeTerm": -0.0001964853402602608,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "identityResidual": -2.032879073410321e-18,
+          "interpolationAmplitudeTerm": 0.00036731283269927673,
+          "linkSamplingTerm": -0.0034520495239269817,
+          "movingWallAmplitudeTerm": -0.0001819082088290202,
+          "profileDifferenceC20MinusC16": -0.0036485348641872445,
+          "reflectedAmplitudeTerm": -0.00038188697299236323
+        },
+        {
+          "amplitudeComponentResidual": -7.208436707999491e-09,
+          "c16ArealLinkMeasure": 3.046875,
+          "c16ConditionalMean": 0.05589505709134615,
+          "c16LinkCount": 780,
+          "c16MomentumExchangeProfile": 0.1703052520751953,
+          "c20ArealLinkMeasure": 3.0,
+          "c20ConditionalMean": 0.05588811715443929,
+          "c20LinkCount": 1200,
+          "c20MomentumExchangeProfile": 0.16766435146331787,
+          "conditionalAmplitudeTerm": -2.0982465491840776e-05,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "identityResidual": -2.3310346708438345e-18,
+          "interpolationAmplitudeTerm": -0.0003116977945543257,
+          "linkSamplingTerm": -0.002619918146385596,
+          "movingWallAmplitudeTerm": 0.00025250377563329853,
+          "profileDifferenceC20MinusC16": -0.002640900611877439,
+          "reflectedAmplitudeTerm": 3.821876186589439e-05
+        },
+        {
+          "amplitudeComponentResidual": -4.251129339473197e-09,
+          "c16ArealLinkMeasure": 3.046875,
+          "c16ConditionalMean": 0.05553249946007362,
+          "c16LinkCount": 780,
+          "c16MomentumExchangeProfile": 0.1692005842924118,
+          "c20ArealLinkMeasure": 3.0,
+          "c20ConditionalMean": 0.055538177490234375,
+          "c20LinkCount": 1200,
+          "c20MomentumExchangeProfile": 0.16661453247070312,
+          "conditionalAmplitudeTerm": 1.716716931416632e-05,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "identityResidual": -1.8431436932253575e-18,
+          "interpolationAmplitudeTerm": 0.00027021009904833833,
+          "linkSamplingTerm": -0.0026032189910228437,
+          "movingWallAmplitudeTerm": 0.0001051492817126796,
+          "profileDifferenceC20MinusC16": -0.002586051821708679,
+          "reflectedAmplitudeTerm": -0.00035818796031751213
+        }
+      ],
+      "flyer": "leader",
+      "maximumAbsoluteAmplitudeComponentResidual": 1.9605866914649563e-08,
+      "maximumAbsoluteSymmetricIdentityResidual": 2.131812521649623e-17,
+      "populationMomentumVector": {
+        "c16": [
+          -0.002591497264802456,
+          0.002351646311581135,
+          -0.003636244684457779
+        ],
+        "c20": [
+          -0.0030022156238555878,
+          0.0027334177494048872,
+          -0.0031727099418639992
+        ],
+        "conditionalAmplitude": [
+          -0.00043178936958807544,
+          0.0004127062820356387,
+          0.00040256055763868604
+        ],
+        "delta": [
+          -0.00041071835905313187,
+          0.00038177143782375245,
+          0.00046353474259378663
+        ],
+        "linkSampling": [
+          2.107101053495583e-05,
+          -3.093484421187124e-05,
+          6.09741849550865e-05
+        ]
+      },
+      "targetFollowerPhase": 0.095,
+      "targetLeaderPhase": 0.845,
+      "topLevelAttributionFraction": {
+        "conditionalAmplitude": 0.019183236575432805,
+        "linkSampling": 0.9808167634245671
+      },
+      "topLevelWeightedL1": {
+        "conditionalAmplitude": 0.0013633349089039566,
+        "linkSampling": 0.06970574165401162
+      },
+      "totalBoundaryLinks": {
+        "c16": 8514,
+        "c20": 13030
+      },
+      "wingFramePopulationMomentum": {
+        "c16": {
+          "chord": 0.00013916947426687682,
+          "normal": 0.005003257074600391,
+          "span": -0.0006453095043408609
+        },
+        "c20": {
+          "chord": -0.0005791558688678137,
+          "normal": 0.005066045298127837,
+          "span": -0.0007421072274002944
+        },
+        "conditionalAmplitude": {
+          "chord": -0.0007016429034408559,
+          "normal": 0.00013233630315175016,
+          "span": -9.490983303394538e-05
+        },
+        "delta": {
+          "chord": -0.0007183253431346955,
+          "normal": 6.27882235274409e-05,
+          "span": -9.67977230594334e-05
+        },
+        "linkSampling": {
+          "chord": -1.6682439693832786e-05,
+          "normal": -6.954807962429608e-05,
+          "span": -1.8878900254691884e-06
+        }
+      }
+    },
+    {
+      "actualPhases": {
+        "c16": {
+          "follower": 0.0950046685340804,
+          "leader": 0.8450046685340803
+        },
+        "c20": {
+          "follower": 0.0950046685340804,
+          "leader": 0.8450046685340803
+        }
+      },
+      "boundaryLinkDensityPerChordSquared": {
+        "c16": 33.8671875,
+        "c20": 33.06999999999999
+      },
+      "branchCounts": {
+        "c16": {
+          "far": 4772,
+          "halfwayFallback": 0,
+          "near": 3898
+        },
+        "c20": {
+          "far": 7236,
+          "halfwayFallback": 0,
+          "near": 5992
+        }
+      },
+      "classification": "directionalLinkSamplingDominated",
+      "conditionalAmplitudeComponentAttributionFraction": {
+        "interpolationAuxiliary": 0.48270789254639684,
+        "movingWall": 0.05752082982964703,
+        "reflectedMomentumExchange": 0.4597712776239563
+      },
+      "conditionalAmplitudeComponentWeightedL1": {
+        "interpolationAuxiliary": 0.010992544820232406,
+        "movingWall": 0.0013099025513418155,
+        "reflectedMomentumExchange": 0.010470216987079969
+      },
+      "directionDistributionTotalVariation": 0.009897742337476433,
+      "directions": [
+        {
+          "amplitudeComponentResidual": 0.0,
+          "c16ArealLinkMeasure": 0.0,
+          "c16ConditionalMean": 0.0,
+          "c16LinkCount": 0,
+          "c16MomentumExchangeProfile": 0.0,
+          "c20ArealLinkMeasure": 0.0,
+          "c20ConditionalMean": 0.0,
+          "c20LinkCount": 0,
+          "c20MomentumExchangeProfile": 0.0,
+          "conditionalAmplitudeTerm": 0.0,
+          "direction": [
+            0,
+            0,
+            0
+          ],
+          "directionIndex": 0,
+          "identityResidual": 0.0,
+          "interpolationAmplitudeTerm": 0.0,
+          "linkSamplingTerm": 0.0,
+          "movingWallAmplitudeTerm": 0.0,
+          "profileDifferenceC20MinusC16": 0.0,
+          "reflectedAmplitudeTerm": 0.0
+        },
+        {
+          "amplitudeComponentResidual": 1.0035515624927448e-08,
+          "c16ArealLinkMeasure": 1.93359375,
+          "c16ConditionalMean": 0.11165916751129458,
+          "c16LinkCount": 495,
+          "c16MomentumExchangeProfile": 0.21590346843004227,
+          "c20ArealLinkMeasure": 1.94,
+          "c20ConditionalMean": 0.11169225161837548,
+          "c20LinkCount": 776,
+          "c20MomentumExchangeProfile": 0.21668296813964844,
+          "conditionalAmplitudeTerm": 6.407719520645708e-05,
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "directionIndex": 1,
+          "identityResidual": -7.060866648311848e-18,
+          "interpolationAmplitudeTerm": 0.0004214090061489705,
+          "linkSamplingTerm": 0.0007154225143997184,
+          "movingWallAmplitudeTerm": 7.377544152730237e-05,
+          "profileDifferenceC20MinusC16": 0.0007794997096061684,
+          "reflectedAmplitudeTerm": -0.00043111728798544074
+        },
+        {
+          "amplitudeComponentResidual": 1.904199415589199e-08,
+          "c16ArealLinkMeasure": 1.93359375,
+          "c16ConditionalMean": 0.11112100235139481,
+          "c16LinkCount": 495,
+          "c16MomentumExchangeProfile": 0.2148628756403923,
+          "c20ArealLinkMeasure": 1.94,
+          "c20ConditionalMean": 0.11111618808864318,
+          "c20LinkCount": 776,
+          "c20MomentumExchangeProfile": 0.21556540489196777,
+          "conditionalAmplitudeTerm": -9.324249052789315e-06,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "directionIndex": 2,
+          "identityResidual": 1.079797601159782e-17,
+          "interpolationAmplitudeTerm": 0.0007134823931297102,
+          "linkSamplingTerm": 0.0007118535006282407,
+          "movingWallAmplitudeTerm": -0.00016183448485206878,
+          "profileDifferenceC20MinusC16": 0.0007025292515754622,
+          "reflectedAmplitudeTerm": -0.0005609911993245866
+        },
+        {
+          "amplitudeComponentResidual": 5.011495240686781e-09,
+          "c16ArealLinkMeasure": 1.1328125,
+          "c16ConditionalMean": 0.11058421957081761,
+          "c16LinkCount": 290,
+          "c16MomentumExchangeProfile": 0.12527118623256683,
+          "c20ArealLinkMeasure": 1.14,
+          "c20ConditionalMean": 0.11057877958866588,
+          "c20LinkCount": 456,
+          "c20MomentumExchangeProfile": 0.12605980873107908,
+          "conditionalAmplitudeTerm": -6.1820297171154595e-06,
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "directionIndex": 3,
+          "identityResidual": -1.9519027236528097e-17,
+          "interpolationAmplitudeTerm": 0.0002822135149873697,
+          "linkSamplingTerm": 0.0007948045282293831,
+          "movingWallAmplitudeTerm": -0.00011005651241554918,
+          "profileDifferenceC20MinusC16": 0.0007886224985122481,
+          "reflectedAmplitudeTerm": -0.00017834404378417668
+        },
+        {
+          "amplitudeComponentResidual": 1.954606070364741e-09,
+          "c16ArealLinkMeasure": 1.1328125,
+          "c16ConditionalMean": 0.11129420050259294,
+          "c16LinkCount": 290,
+          "c16MomentumExchangeProfile": 0.12607546150684357,
+          "c20ArealLinkMeasure": 1.14,
+          "c20ConditionalMean": 0.11131567704050165,
+          "c20LinkCount": 456,
+          "c20MomentumExchangeProfile": 0.12689987182617188,
+          "conditionalAmplitudeTerm": 2.440607190782005e-05,
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "directionIndex": 4,
+          "identityResidual": 6.142682933488186e-18,
+          "interpolationAmplitudeTerm": 0.00024332021431477884,
+          "linkSamplingTerm": 0.0008000042474204852,
+          "movingWallAmplitudeTerm": 7.50688670734954e-05,
+          "profileDifferenceC20MinusC16": 0.0008244103193283114,
+          "reflectedAmplitudeTerm": -0.00029398496408652454
+        },
+        {
+          "amplitudeComponentResidual": 3.954586153083939e-09,
+          "c16ArealLinkMeasure": 2.1875,
+          "c16ConditionalMean": 0.11056921141488212,
+          "c16LinkCount": 560,
+          "c16MomentumExchangeProfile": 0.24187014997005463,
+          "c20ArealLinkMeasure": 2.1125,
+          "c20ConditionalMean": 0.11055765546990569,
+          "c20LinkCount": 845,
+          "c20MomentumExchangeProfile": 0.23355304718017575,
+          "conditionalAmplitudeTerm": -2.4845281699317766e-05,
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "directionIndex": 5,
+          "identityResidual": 2.0803129184565616e-18,
+          "interpolationAmplitudeTerm": 0.0011805816943224268,
+          "linkSamplingTerm": -0.008292257508179562,
+          "movingWallAmplitudeTerm": 2.7560598326379273e-05,
+          "profileDifferenceC20MinusC16": -0.008317102789878877,
+          "reflectedAmplitudeTerm": -0.001232991528934277
+        },
+        {
+          "amplitudeComponentResidual": 2.11175307352038e-08,
+          "c16ArealLinkMeasure": 2.1875,
+          "c16ConditionalMean": 0.11086092335837228,
+          "c16LinkCount": 560,
+          "c16MomentumExchangeProfile": 0.24250826984643936,
+          "c20ArealLinkMeasure": 2.1125,
+          "c20ConditionalMean": 0.11079982780140532,
+          "c20LinkCount": 845,
+          "c20MomentumExchangeProfile": 0.23406463623046872,
+          "conditionalAmplitudeTerm": -0.00013135544747895495,
+          "direction": [
+            0,
+            0,
+            -1
+          ],
+          "directionIndex": 6,
+          "identityResidual": -6.5865281978494394e-18,
+          "interpolationAmplitudeTerm": 0.0008659430383527479,
+          "linkSamplingTerm": -0.00831227816849168,
+          "movingWallAmplitudeTerm": -1.8970568255786684e-05,
+          "profileDifferenceC20MinusC16": -0.008443633615970642,
+          "reflectedAmplitudeTerm": -0.0009783490351066514
+        },
+        {
+          "amplitudeComponentResidual": -4.6118609931954276e-10,
+          "c16ArealLinkMeasure": 0.90234375,
+          "c16ConditionalMean": 0.05575976020846016,
+          "c16LinkCount": 231,
+          "c16MomentumExchangeProfile": 0.05031447112560272,
+          "c20ArealLinkMeasure": 0.885,
+          "c20ConditionalMean": 0.05574245776160289,
+          "c20LinkCount": 354,
+          "c20MomentumExchangeProfile": 0.049332075119018555,
+          "conditionalAmplitudeTerm": -1.546271012502454e-05,
+          "direction": [
+            1,
+            1,
+            0
+          ],
+          "directionIndex": 7,
+          "identityResidual": -2.6495190590114515e-18,
+          "interpolationAmplitudeTerm": 0.00011525773087808852,
+          "linkSamplingTerm": -0.00096693329645914,
+          "movingWallAmplitudeTerm": -3.6482290663489385e-05,
+          "profileDifferenceC20MinusC16": -0.0009823960065841672,
+          "reflectedAmplitudeTerm": -9.423768915352435e-05
+        },
+        {
+          "amplitudeComponentResidual": 8.73517744362211e-10,
+          "c16ArealLinkMeasure": 0.90234375,
+          "c16ConditionalMean": 0.055421251239198624,
+          "c16LinkCount": 231,
+          "c16MomentumExchangeProfile": 0.050009019672870636,
+          "c20ArealLinkMeasure": 0.885,
+          "c20ConditionalMean": 0.05541092123688951,
+          "c20LinkCount": 354,
+          "c20MomentumExchangeProfile": 0.04903866529464722,
+          "conditionalAmplitudeTerm": -9.231632532340303e-06,
+          "direction": [
+            -1,
+            -1,
+            0
+          ],
+          "directionIndex": 8,
+          "identityResidual": -9.33430307874239e-19,
+          "interpolationAmplitudeTerm": 0.000329910149523505,
+          "linkSamplingTerm": -0.0009611227456910763,
+          "movingWallAmplitudeTerm": -3.845492822628012e-06,
+          "profileDifferenceC20MinusC16": -0.0009703543782234175,
+          "reflectedAmplitudeTerm": -0.00033529716275096166
+        },
+        {
+          "amplitudeComponentResidual": -1.0351164903045777e-08,
+          "c16ArealLinkMeasure": 2.98828125,
+          "c16ConditionalMean": 0.055994482601390165,
+          "c16LinkCount": 765,
+          "c16MomentumExchangeProfile": 0.16732726246118546,
+          "c20ArealLinkMeasure": 2.9475,
+          "c20ConditionalMean": 0.056025636914021085,
+          "c20LinkCount": 1179,
+          "c20MomentumExchangeProfile": 0.16513556480407712,
+          "conditionalAmplitudeTerm": 9.246259238562556e-05,
+          "direction": [
+            1,
+            -1,
+            0
+          ],
+          "directionIndex": 9,
+          "identityResidual": -1.3457659465976324e-17,
+          "interpolationAmplitudeTerm": -0.0003684340534011609,
+          "linkSamplingTerm": -0.0022841602494939445,
+          "movingWallAmplitudeTerm": -2.0377433124040704e-05,
+          "profileDifferenceC20MinusC16": -0.0021916976571083324,
+          "reflectedAmplitudeTerm": 0.0004812844300757302
+        },
+        {
+          "amplitudeComponentResidual": 5.507441071188443e-10,
+          "c16ArealLinkMeasure": 2.98828125,
+          "c16ConditionalMean": 0.055804590462080014,
+          "c16LinkCount": 765,
+          "c16MomentumExchangeProfile": 0.16675981134176254,
+          "c20ArealLinkMeasure": 2.9475,
+          "c20ConditionalMean": 0.05579189530260185,
+          "c20LinkCount": 1179,
+          "c20MomentumExchangeProfile": 0.16444661140441894,
+          "conditionalAmplitudeTerm": -3.767784479813129e-05,
+          "direction": [
+            -1,
+            1,
+            0
+          ],
+          "directionIndex": 10,
+          "identityResidual": 1.98544522836408e-18,
+          "interpolationAmplitudeTerm": -0.0002677655150310045,
+          "linkSamplingTerm": -0.002275522092545478,
+          "movingWallAmplitudeTerm": -2.9705061274069183e-05,
+          "profileDifferenceC20MinusC16": -0.0023131999373436074,
+          "reflectedAmplitudeTerm": 0.00025979218076283526
+        },
+        {
+          "amplitudeComponentResidual": -8.146125315370168e-10,
+          "c16ArealLinkMeasure": 0.46875,
+          "c16ConditionalMean": 0.05562137762705485,
+          "c16LinkCount": 120,
+          "c16MomentumExchangeProfile": 0.02607252076268196,
+          "c20ArealLinkMeasure": 0.395,
+          "c20ConditionalMean": 0.055810370022737525,
+          "c20LinkCount": 158,
+          "c20MomentumExchangeProfile": 0.022045096158981325,
+          "conditionalAmplitudeTerm": 8.162109088545443e-05,
+          "direction": [
+            1,
+            0,
+            1
+          ],
+          "directionIndex": 11,
+          "identityResidual": 2.3174821436877657e-18,
+          "interpolationAmplitudeTerm": 0.001362878462739823,
+          "linkSamplingTerm": -0.004109045694586093,
+          "movingWallAmplitudeTerm": -1.1389950416070501e-05,
+          "profileDifferenceC20MinusC16": -0.004027424603700636,
+          "reflectedAmplitudeTerm": -0.0012698666068257664
+        },
+        {
+          "amplitudeComponentResidual": 4.969136431541912e-10,
+          "c16ArealLinkMeasure": 0.46875,
+          "c16ConditionalMean": 0.054940523703893025,
+          "c16LinkCount": 120,
+          "c16MomentumExchangeProfile": 0.025753370486199856,
+          "c20ArealLinkMeasure": 0.395,
+          "c20ConditionalMean": 0.05476117435889908,
+          "c20LinkCount": 158,
+          "c20MomentumExchangeProfile": 0.021630663871765137,
+          "conditionalAmplitudeTerm": -7.745649836926017e-05,
+          "direction": [
+            -1,
+            0,
+            -1
+          ],
+          "directionIndex": 12,
+          "identityResidual": -6.776263578034403e-19,
+          "interpolationAmplitudeTerm": 0.0004470516287560578,
+          "linkSamplingTerm": -0.004045250116065458,
+          "movingWallAmplitudeTerm": -4.08699062578222e-05,
+          "profileDifferenceC20MinusC16": -0.004122706614434719,
+          "reflectedAmplitudeTerm": -0.00048363871778113894
+        },
+        {
+          "amplitudeComponentResidual": 3.416792172545452e-09,
+          "c16ArealLinkMeasure": 3.0546875,
+          "c16ConditionalMean": 0.05580012084882888,
+          "c16LinkCount": 782,
+          "c16MomentumExchangeProfile": 0.17045193165540695,
+          "c20ArealLinkMeasure": 3.005,
+          "c20ConditionalMean": 0.055790137927266406,
+          "c20LinkCount": 1202,
+          "c20MomentumExchangeProfile": 0.16764936447143555,
+          "conditionalAmplitudeTerm": -3.0246692502792463e-05,
+          "direction": [
+            1,
+            0,
+            -1
+          ],
+          "directionIndex": 13,
+          "identityResidual": 1.6154612370034016e-17,
+          "interpolationAmplitudeTerm": -0.0003316325032904472,
+          "linkSamplingTerm": -0.002772320491468623,
+          "movingWallAmplitudeTerm": 0.00014374868181413753,
+          "profileDifferenceC20MinusC16": -0.0028025671839713995,
+          "reflectedAmplitudeTerm": 0.00015763371218134465
+        },
+        {
+          "amplitudeComponentResidual": -5.998983327264564e-09,
+          "c16ArealLinkMeasure": 3.0546875,
+          "c16ConditionalMean": 0.05551767227289927,
+          "c16LinkCount": 782,
+          "c16MomentumExchangeProfile": 0.16958913952112198,
+          "c20ArealLinkMeasure": 3.005,
+          "c20ConditionalMean": 0.05553934379742665,
+          "c20LinkCount": 1202,
+          "c20MomentumExchangeProfile": 0.16689572811126707,
+          "conditionalAmplitudeTerm": 6.566133314225626e-05,
+          "direction": [
+            -1,
+            0,
+            1
+          ],
+          "directionIndex": 14,
+          "identityResidual": 2.588532686809142e-18,
+          "interpolationAmplitudeTerm": 0.00032875653873831994,
+          "linkSamplingTerm": -0.0027590727429971655,
+          "movingWallAmplitudeTerm": 3.3576174352808766e-05,
+          "profileDifferenceC20MinusC16": -0.0026934114098549067,
+          "reflectedAmplitudeTerm": -0.0002966653809655452
+        },
+        {
+          "amplitudeComponentResidual": 1.1535324045939296e-08,
+          "c16ArealLinkMeasure": 3.0546875,
+          "c16ConditionalMean": 0.05528639527537939,
+          "c16LinkCount": 782,
+          "c16MomentumExchangeProfile": 0.16888266056776047,
+          "c20ArealLinkMeasure": 3.005,
+          "c20ConditionalMean": 0.05529546182286521,
+          "c20LinkCount": 1202,
+          "c20MomentumExchangeProfile": 0.16616286277770995,
+          "conditionalAmplitudeTerm": 2.747022223399777e-05,
+          "direction": [
+            0,
+            1,
+            1
+          ],
+          "directionIndex": 15,
+          "identityResidual": 1.1519648082658485e-18,
+          "interpolationAmplitudeTerm": 0.0006280658743832416,
+          "linkSamplingTerm": -0.00274726801228452,
+          "movingWallAmplitudeTerm": 2.371330475349064e-05,
+          "profileDifferenceC20MinusC16": -0.002719797790050521,
+          "reflectedAmplitudeTerm": -0.0006243204922267804
+        },
+        {
+          "amplitudeComponentResidual": -7.579038340985948e-09,
+          "c16ArealLinkMeasure": 3.0546875,
+          "c16ConditionalMean": 0.05566381127633097,
+          "c16LinkCount": 782,
+          "c16MomentumExchangeProfile": 0.17003554850816727,
+          "c20ArealLinkMeasure": 3.005,
+          "c20ConditionalMean": 0.055620986887698565,
+          "c20LinkCount": 1202,
+          "c20MomentumExchangeProfile": 0.1671410655975342,
+          "conditionalAmplitudeTerm": -0.00012975120624547193,
+          "direction": [
+            0,
+            -1,
+            -1
+          ],
+          "directionIndex": 16,
+          "identityResidual": 1.3715157481941631e-17,
+          "interpolationAmplitudeTerm": -7.959291826366107e-05,
+          "linkSamplingTerm": -0.0027647317043876145,
+          "movingWallAmplitudeTerm": 7.062862504716786e-05,
+          "profileDifferenceC20MinusC16": -0.0028944829106330727,
+          "reflectedAmplitudeTerm": -0.00012077933399063774
+        },
+        {
+          "amplitudeComponentResidual": -2.718096807492168e-09,
+          "c16ArealLinkMeasure": 1.2109375,
+          "c16ConditionalMean": 0.05525582221246535,
+          "c16LinkCount": 310,
+          "c16MomentumExchangeProfile": 0.06691134721040726,
+          "c20ArealLinkMeasure": 1.105,
+          "c20ConditionalMean": 0.055235513195193195,
+          "c20LinkCount": 442,
+          "c20MomentumExchangeProfile": 0.06103524208068848,
+          "conditionalAmplitudeTerm": -2.3517207344362334e-05,
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "directionIndex": 17,
+          "identityResidual": -5.082197683525802e-19,
+          "interpolationAmplitudeTerm": -9.316767047241844e-05,
+          "linkSamplingTerm": -0.005852587922374414,
+          "movingWallAmplitudeTerm": 6.981489690323284e-05,
+          "profileDifferenceC20MinusC16": -0.005876105129718777,
+          "reflectedAmplitudeTerm": -1.6171567836924335e-07
+        },
+        {
+          "amplitudeComponentResidual": -2.541793270970777e-09,
+          "c16ArealLinkMeasure": 1.2109375,
+          "c16ConditionalMean": 0.055395895434964086,
+          "c16LinkCount": 310,
+          "c16MomentumExchangeProfile": 0.06708096712827682,
+          "c20ArealLinkMeasure": 1.105,
+          "c20ConditionalMean": 0.05540175027976748,
+          "c20LinkCount": 442,
+          "c20MomentumExchangeProfile": 0.06121893405914306,
+          "conditionalAmplitudeTerm": 6.779727318429554e-06,
+          "direction": [
+            0,
+            -1,
+            1
+          ],
+          "directionIndex": 18,
+          "identityResidual": -5.1567365828841805e-18,
+          "interpolationAmplitudeTerm": 0.0007991805549930116,
+          "linkSamplingTerm": -0.005868812796452188,
+          "movingWallAmplitudeTerm": -0.00011168186802747643,
+          "profileDifferenceC20MinusC16": -0.005862033069133764,
+          "reflectedAmplitudeTerm": -0.0006807164178538347
+        }
+      ],
+      "flyer": "follower",
+      "maximumAbsoluteAmplitudeComponentResidual": 2.11175307352038e-08,
+      "maximumAbsoluteSymmetricIdentityResidual": 1.9519027236528097e-17,
+      "populationMomentumVector": {
+        "c16": [
+          0.0030954377725720406,
+          -0.002388782799243927,
+          -0.0021650297567248344
+        ],
+        "c20": [
+          0.0032679951190948686,
+          -0.0023975014686584695,
+          -0.0016453039646149234
+        ],
+        "conditionalAmplitude": [
+          0.00026048036745998486,
+          -4.0035122584698786e-05,
+          0.0005490141438216621
+        ],
+        "delta": [
+          0.00017255734652282112,
+          -8.718669414549407e-06,
+          0.0005197257921099041
+        ],
+        "linkSampling": [
+          -8.792302093714541e-05,
+          3.1316453170169775e-05,
+          -2.9288351711738436e-05
+        ]
+      },
+      "targetFollowerPhase": 0.095,
+      "targetLeaderPhase": 0.845,
+      "topLevelAttributionFraction": {
+        "conditionalAmplitude": 0.015006282099437118,
+        "linkSampling": 0.9849937179005629
+      },
+      "topLevelWeightedL1": {
+        "conditionalAmplitude": 0.0011049548477918992,
+        "linkSampling": 0.07252786375911313
+      },
+      "totalBoundaryLinks": {
+        "c16": 8670,
+        "c20": 13228
+      },
+      "wingFramePopulationMomentum": {
+        "c16": {
+          "chord": -0.0011327683605368527,
+          "normal": -0.004289127601664091,
+          "span": -0.0005436840731006362
+        },
+        "c20": {
+          "chord": -0.0016137575611884373,
+          "normal": -0.004039009088559987,
+          "span": -0.0004658568909675534
+        },
+        "conditionalAmplitude": {
+          "chord": -0.0005659003850231982,
+          "normal": 0.00020436620035762094,
+          "span": 9.413061866724407e-05
+        },
+        "delta": {
+          "chord": -0.00048098920065157774,
+          "normal": 0.0002501185131041007,
+          "span": 7.782718213307339e-05
+        },
+        "linkSampling": {
+          "chord": 8.491118437160228e-05,
+          "normal": 4.575231274648906e-05,
+          "span": -1.6303436534143888e-05
+        }
+      }
+    }
+  ],
+  "productionSolverChanged": false,
+  "qualificationAmendment": {
+    "amendedBeforeC16OrC20DiscriminatingReplay": true,
+    "failedSmokeArtifacts": [
+      {
+        "path": "ValidationArtifacts/formation-flight-boundary-source-census/c8-instrumentation-smoke-failed-phase0-report/formation-flight-field-replay-report.json",
+        "sha256": "9acbfee2af5afa8ac20d5ce7003d0f6a4909aaedebecfacd11f695a55c0e0c55"
+      },
+      {
+        "path": "ValidationArtifacts/formation-flight-boundary-source-census/c8-instrumentation-smoke-failed-phase0-report/formation-flight-boundary-source-census.json",
+        "sha256": "3ff5525cd5f7c1aa9eaeda5a753926750b376df67702b8fa82d110a58af6f674"
+      }
+    ],
+    "failedSmokeExcludedFromDecision": true,
+    "priorPreregistrationSHA256": "981ee7280cf1b7c3376e91b7e1200fc5d7f2a7a698ecd1357b99f6d4ecb27e4f",
+    "reason": "The preregistered c8 instrumentation-only smoke proved exact history replay and 1.24e-7 population reconstruction, but exposed a host report filter that copied the intentionally uncaptured phase-0 slot as two zero-support samples.",
+    "scope": "Move the phase-0 exclusion from the mechanism-report copier to the boundary-source-report copier; no Metal arithmetic, solver state, selected phase, decomposition, threshold, or decision rule changed."
+  },
+  "quantitativeFormationClaimAuthorized": false,
+  "schemaVersion": 1,
+  "scientificVerdict": "the preregistered primary near-wing source is classified as directionalLinkSamplingDominated; this selects the next numerical discriminator without validating formation benefit",
+  "title": "Formation Flight boundary population source discriminator"
+}

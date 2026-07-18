@@ -2948,10 +2948,125 @@ are retained in
 The phase-aligned c16/c20 maximum-selector normalized-power residual has RMS
 `0.0313`, maximum `0.1122` at follower phase `0.055`, and only `23.15%` of
 its absolute magnitude in the prior midstroke bands. Absolute residual tracks
-drag (`r=0.683`) rather than lift (`r=-0.065`). The next high-ROI diagnostic is
-therefore a coupled-only c16/c20 field comparison around follower phase
-`0.00...0.10`, not the stopped minimum selector or a complete c24 ladder.
-See `Docs/FORMATION_FLIGHT_OBSERVATORY.md`.
+drag (`r=0.683`) rather than lift (`r=-0.065`).
+
+The preregistered coupled-only c16/c20 replay around follower phase
+`0.005...0.095` is now complete. Replay acceptance requires the exact source
+configuration/grid/cycle length, all unchanged coupled gates, and relative RMS
+difference no greater than `1e-6` across the source coupled summaries and full
+100-bin power/lift/drag/force history. Both c16 and c20 differences are exactly
+zero. Runtime is `1105.21 s`/`2755.89 s`, compared with `2370.26 s`/`6768.86 s`
+for the complete three-case measurements: `2.37x` combined speedup and
+`87.97 min` saved without changing cycles or requested phases.
+
+After mapping c16 scalars to the c20 `200 x 260` cell-center grid and excluding
+either-grid solids plus one fine-cell halo, signed vertical velocity differs by
+`7.26...7.62%` normalized RMS with correlation at least `0.9972`; vorticity
+differs by `19.15...23.64%`. Combined normalized residual energy within `0.5`
+chord of either wing falls across the phase window and aggregates to `45.04%`.
+That lies in the preregistered `40...60%` mixed band: neither boundary-local
+discretization nor wake transport alone explains the fine-grid residual. The
+selected local probes are phase `0.035` near `(x/c,z/c)=(1.822,1.023)` for the
+boundary contribution and phase `0.095` near `(2.322,-1.135)` for the wake
+contribution. The independent reconstruction passes `99/99` checks. Evidence
+is archived under
+`ValidationArtifacts/formation-flight-early-cycle-replay/`; quantitative
+formation benefit remains unauthorized. See
+`Docs/FORMATION_FLIGHT_OBSERVATORY.md`.
+
+The two selected early-cycle phases now have an exact microscopic
+momentum-exchange discriminator. A read-only Metal pass decomposes each owner
+load into reflected-population, interpolation-auxiliary, moving-wall, cover,
+and uncover terms. The c8 smoke and c16/c20 promoted replays reproduce their
+locked coupled histories exactly. Maximum c16/c20 component closure is
+`2.32e-7`/`1.88e-7` force, `1.34e-7`/`1.20e-7` torque, and
+`6.14e-8`/`8.15e-8` actuator power against the unchanged `2e-4` limit.
+
+After normalization by each grid's matched isolated-follower positive-power
+scalar, moving-wall work carries `50.43%` of the phase-`0.035` c20-minus-c16
+component change, below the frozen `60%` single-term threshold; interpolation
+carries an opposing `34.69%`. At phase `0.095`, reflected and moving-wall
+changes also oppose one another while `74.72%` of the field residual remains
+outside the half-chord boundary band. The preregistered classification is
+`wakeTransportDominated`. Component cancellation condition numbers are
+`16.67` and `14.93` for the two grid differences, so the result localizes the
+next experiment but does not identify any large individual work term as
+erroneous. The independent audit passes `106/106` checks.
+
+A second preregistered, no-new-CFD discriminator searches `441` bounded c16
+shifts at each of five follower phases `0.055...0.095` on the c20 common grid.
+The `2,205` candidate alignments remove only `0.852%` of combined signed-w and
+vorticity residual energy. Four phases select zero shift; the remaining phase
+selects `-0.05` chord in `x`, for a mean `(-0.01,0.00)`-chord displacement.
+The frozen and independently audited (`41/41`) result is
+`amplitudeDiffusionDominated`, not a spatial wake-position or phase-lag error.
+This authorizes only a localized collision/advection-dissipation discriminator
+in the locked wake region. The c20 minimum, global c24 ladder, quantitative
+formation effect, and biological claim remain unauthorized.
+
+The collision discriminator is executed locally with:
+
+```bash
+./Scripts/run-formation-collision-dissipation.sh
+```
+
+The preregistration allocates one five-cycle c16 RR3 candidate and requires
+strict population positivity, no overlap, the unchanged `2e-4` owner-closure
+and `20%` periodicity limits, correction activation below `5%` of cell-steps,
+at least `25%` wake-residual reduction, and at least `10%` dimensionless
+force-residual reduction before c20 is allowed. A fused per-step minimum uses
+the existing force reduction; it does not add a second full population pass or
+change the production TRT state.
+
+The candidate is numerically clean: c8/c16 minima are `0.01508`/`0.01560`,
+both have zero limiter activation, and c16 force/torque closure is
+`1.10e-6`/`3.70e-6`. Nevertheless, c16 RR3 increases the locked wake residual
+by `28.98%` and the coefficient-history residual by `84.82%`. The frozen
+classification is `collisionChangeAdverseOrUnsupported`; the `51/51` audit
+passes and confirms the c20 RR3 case was not allocated. RR3 is not promoted,
+production remains TRT, and the c20 TRT reference is not declared truth.
+
+An immediately following no-new-CFD localizer divides the exact wake ROI into
+three one-chord streamwise bands under
+`ValidationInputs/formation-flight-streamwise-attenuation-localizer-v1.json`.
+The downstream/upstream residual-density ratio is `0.818`, below the
+preregistered `1.15` source-dominated boundary. The `94/94` audit independently
+reconstructs the band and classification arithmetic. Thus the discrepancy is
+largest at the upstream edge and does not accumulate downstream. The next
+admissible experiment was a phase- and direction-resolved near-wing boundary
+population source census, not another bulk collision candidate or global
+refinement allocation.
+
+That census is now complete under
+`ValidationInputs/formation-flight-boundary-source-census-v1.json`. The first
+c8 reporting smoke is retained as a fail-closed negative control; it exposed an
+empty phase-zero host-report slot after proving exact solver-history replay.
+The narrow filter amendment was locked before c16/c20. Corrected c8 and the
+five-cycle c16/c20 replays contain four owner/phase samples, reproduce their
+reference histories exactly, and close reconstructed incoming population to
+reflected, interpolation, and moving-wall sources within
+`1.24e-7`, `9.28e-8`, and `9.09e-8`, respectively. c16/c20 owner force closure
+is `1.14e-6`/`7.17e-7`; torque closure is `4.23e-6`/`4.42e-6`.
+
+The preregistered exact product identity uses
+`a(q)=linkCount(q)/chordCells²`, conditional momentum-exchange population
+`m(q)`, and `s(q)=a(q)m(q)`. At the primary leader sample (follower phase
+`0.035`), `98.25%` of the c16-to-c20 weighted-L1 source change is link sampling
+and `1.75%` conditional population amplitude. The three secondary samples
+remain `98.08%...98.85%` link-sampling dominated. Direction identities close
+below `2.14e-17`; independent reconstruction passes `319/319` checks. This
+selects geometric link realization over collision or force-law modification.
+
+The immediate no-new-CFD subdecomposition under
+`ValidationInputs/formation-flight-link-sampling-subdecomposition-v1.json`
+factors `a(q)=D p(q)`. At the primary sample, total areal link density supplies
+`47.55%` and D3Q19 direction redistribution `52.45%` of the dominant parent
+term. Neither reaches the frozen `60%` threshold, and all owner/phase samples
+remain mixed. The identity closes below `3.78e-17`; the independent audit
+passes `521/521`. The next admissible allocation is one geometry-only c18
+bridge at the primary phase retaining both pathways. Production edits, the
+stopped c20 minimum, a global c24 ladder, and quantitative formation effect
+remain unauthorized.
 
 ## 9. Free flight
 

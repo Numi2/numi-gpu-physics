@@ -1,0 +1,512 @@
+{
+  "checkCount": 94,
+  "checks": [
+    {
+      "evidence": true,
+      "name": "preregistered before analysis",
+      "passed": true
+    },
+    {
+      "evidence": "56b8307233c90244b9ac6600272046326d8d79abac86c87201a4d939dd8d42ca",
+      "name": "locked input hash: ValidationArtifacts/formation-flight-collision-dissipation/formation-flight-collision-dissipation-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "ad0eda16c22e3f32eb0440898be10da55f3a52f8714739d17d87e5e694c564e2",
+      "name": "locked input hash: ValidationArtifacts/formation-flight-collision-dissipation/formation-flight-collision-dissipation-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "de1fda2f88d2ce182b2c9615254f16af2e9b15e5ccbf6cd01fd6556182ab42d3",
+      "name": "locked input hash: ValidationInputs/formation-flight-collision-dissipation-discriminator-v1.json",
+      "passed": true
+    },
+    {
+      "evidence": "02ea9650bdfabe52bf6e1bb2d3e22271d15e72c05a406b5ea3171e9faafdf446",
+      "name": "locked input hash: ValidationArtifacts/formation-flight-wake-transport/formation-flight-wake-transport-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "3bee21dfcd9d1060e1ca94e467c4b0d1756b25a3391b30fddb97dbd6e7c33937",
+      "name": "preregistration hash parity",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.055,
+        0.065,
+        0.075,
+        0.085,
+        0.095
+      ],
+      "name": "five exact phases",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "upstream",
+        "middle",
+        "downstream"
+      ],
+      "name": "three exact bands",
+      "passed": true
+    },
+    {
+      "evidence": "969f4eea3e05c0d4090568e5265cc3637d2ddb05ce7f4886eae2d45e2040d849",
+      "name": "slice hash trt16 phase 0.055",
+      "passed": true
+    },
+    {
+      "evidence": "0eab07524ee091d2c90f6c8be832589e679cae4738b3713b7716bbbe25e69ebe",
+      "name": "slice hash rr316 phase 0.055",
+      "passed": true
+    },
+    {
+      "evidence": "290f19ad973e74cc1c7da8b05dab52ac62410f437f7a2848bf6ba44323398760",
+      "name": "slice hash trt20 phase 0.055",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "upstream",
+        "middle",
+        "downstream"
+      ],
+      "name": "band order phase 0.055",
+      "passed": true
+    },
+    {
+      "evidence": 1736,
+      "name": "positive support 0.055 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.033116029161835606,
+      "name": "TRT density arithmetic 0.055 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.06227690471952163,
+      "name": "RR3 density arithmetic 0.055 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 1782,
+      "name": "positive support 0.055 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.08584148395508642,
+      "name": "TRT density arithmetic 0.055 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.14434785260626773,
+      "name": "RR3 density arithmetic 0.055 middle",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.055 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.04215257963445108,
+      "name": "TRT density arithmetic 0.055 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.038192827718740746,
+      "name": "RR3 density arithmetic 0.055 downstream",
+      "passed": true
+    },
+    {
+      "evidence": "d5003bc5fbeebdac31f5e8bbe68ce5b5bd77fc09b7910caf44917b04507c4785",
+      "name": "slice hash trt16 phase 0.065",
+      "passed": true
+    },
+    {
+      "evidence": "f1f967bc98cb12155b67463baa2b076ba7cfb22368f9230ade87bd11d897afa5",
+      "name": "slice hash rr316 phase 0.065",
+      "passed": true
+    },
+    {
+      "evidence": "9e06ae80313bc3bff6f44143d6459619bff702b8a41e9de702ae12bc57df0cbc",
+      "name": "slice hash trt20 phase 0.065",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "upstream",
+        "middle",
+        "downstream"
+      ],
+      "name": "band order phase 0.065",
+      "passed": true
+    },
+    {
+      "evidence": 1724,
+      "name": "positive support 0.065 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.04287507983352266,
+      "name": "TRT density arithmetic 0.065 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.07276421735143218,
+      "name": "RR3 density arithmetic 0.065 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.065 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.09095225460738625,
+      "name": "TRT density arithmetic 0.065 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.11041300365881511,
+      "name": "RR3 density arithmetic 0.065 middle",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.065 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.04250582442326096,
+      "name": "TRT density arithmetic 0.065 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.03405033560667003,
+      "name": "RR3 density arithmetic 0.065 downstream",
+      "passed": true
+    },
+    {
+      "evidence": "14a0509d90a919876b9ec863588a0d3d93f58b268b5c0a8df17b978c69adde0a",
+      "name": "slice hash trt16 phase 0.075",
+      "passed": true
+    },
+    {
+      "evidence": "b1255259a631d20059e2a8c1b6564bad3ade05d46e7039cbff76008780995413",
+      "name": "slice hash rr316 phase 0.075",
+      "passed": true
+    },
+    {
+      "evidence": "57601f87b373af5715d17da0edd8f8926b9e5287c843d02371fca4fa7c8a7b05",
+      "name": "slice hash trt20 phase 0.075",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "upstream",
+        "middle",
+        "downstream"
+      ],
+      "name": "band order phase 0.075",
+      "passed": true
+    },
+    {
+      "evidence": 1738,
+      "name": "positive support 0.075 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.05962160442926896,
+      "name": "TRT density arithmetic 0.075 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.08561383799613251,
+      "name": "RR3 density arithmetic 0.075 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.075 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.0884395267582578,
+      "name": "TRT density arithmetic 0.075 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.10739781087178146,
+      "name": "RR3 density arithmetic 0.075 middle",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.075 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.04334640234057161,
+      "name": "TRT density arithmetic 0.075 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.030772794836611238,
+      "name": "RR3 density arithmetic 0.075 downstream",
+      "passed": true
+    },
+    {
+      "evidence": "ce69163fe99226a8e2e7d8b93ebc1cf02f98c89ca1dbe16c7aa528b192032150",
+      "name": "slice hash trt16 phase 0.085",
+      "passed": true
+    },
+    {
+      "evidence": "3e30162f367e75560987019b88e259eeca75958fec1f806106b8e0d51826afc6",
+      "name": "slice hash rr316 phase 0.085",
+      "passed": true
+    },
+    {
+      "evidence": "e4b8214dece7f719d2c59a947cdfebd5917e8fad70ed922fb66be28f6389249d",
+      "name": "slice hash trt20 phase 0.085",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "upstream",
+        "middle",
+        "downstream"
+      ],
+      "name": "band order phase 0.085",
+      "passed": true
+    },
+    {
+      "evidence": 1749,
+      "name": "positive support 0.085 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.0656061206406739,
+      "name": "TRT density arithmetic 0.085 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.08962187802135906,
+      "name": "RR3 density arithmetic 0.085 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.085 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.07885875535301105,
+      "name": "TRT density arithmetic 0.085 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.11633955762695575,
+      "name": "RR3 density arithmetic 0.085 middle",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.085 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.04451098436231212,
+      "name": "TRT density arithmetic 0.085 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.027816242297307465,
+      "name": "RR3 density arithmetic 0.085 downstream",
+      "passed": true
+    },
+    {
+      "evidence": "985dc34d2f4abb50f210c816801a9a0fb44ba9f06cfc3095e2452ad617ef5ca4",
+      "name": "slice hash trt16 phase 0.095",
+      "passed": true
+    },
+    {
+      "evidence": "4e96dacea0166c6e55d3f57c94cd46c79ab7bc558580e66131bc0c0c8321be1d",
+      "name": "slice hash rr316 phase 0.095",
+      "passed": true
+    },
+    {
+      "evidence": "c946af2d981014b0a7f7ce6b7330ac3b22431e446146554a3511329a90fa33ad",
+      "name": "slice hash trt20 phase 0.095",
+      "passed": true
+    },
+    {
+      "evidence": [
+        "upstream",
+        "middle",
+        "downstream"
+      ],
+      "name": "band order phase 0.095",
+      "passed": true
+    },
+    {
+      "evidence": 1765,
+      "name": "positive support 0.095 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.06536135982410896,
+      "name": "TRT density arithmetic 0.095 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.09290589124300407,
+      "name": "RR3 density arithmetic 0.095 upstream",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.095 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.07092587876742244,
+      "name": "TRT density arithmetic 0.095 middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.12523472936329877,
+      "name": "RR3 density arithmetic 0.095 middle",
+      "passed": true
+    },
+    {
+      "evidence": 1800,
+      "name": "positive support 0.095 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.04588683198165617,
+      "name": "TRT density arithmetic 0.095 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.025476679005167285,
+      "name": "RR3 density arithmetic 0.095 downstream",
+      "passed": true
+    },
+    {
+      "evidence": 8712,
+      "name": "aggregate cells upstream",
+      "passed": true
+    },
+    {
+      "evidence": 465.1363178461001,
+      "name": "aggregate TRT energy upstream",
+      "passed": true
+    },
+    {
+      "evidence": 703.0826304474961,
+      "name": "aggregate RR3 energy upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.05339030278306934,
+      "name": "aggregate TRT density upstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.08070278127266943,
+      "name": "aggregate RR3 density upstream",
+      "passed": true
+    },
+    {
+      "evidence": 8982,
+      "name": "aggregate cells middle",
+      "passed": true
+    },
+    {
+      "evidence": 745.4870722829036,
+      "name": "aggregate TRT energy middle",
+      "passed": true
+    },
+    {
+      "evidence": 1084.121056081901,
+      "name": "aggregate RR3 energy middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.08299789270573409,
+      "name": "aggregate TRT density middle",
+      "passed": true
+    },
+    {
+      "evidence": 0.12069929370762648,
+      "name": "aggregate RR3 density middle",
+      "passed": true
+    },
+    {
+      "evidence": 9000,
+      "name": "aggregate cells downstream",
+      "passed": true
+    },
+    {
+      "evidence": 393.12472093605345,
+      "name": "aggregate TRT energy downstream",
+      "passed": true
+    },
+    {
+      "evidence": 281.35598303609413,
+      "name": "aggregate RR3 energy downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.04368052454845038,
+      "name": "aggregate TRT density downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.03126177589289935,
+      "name": "aggregate RR3 density downstream",
+      "passed": true
+    },
+    {
+      "evidence": 0.8181359211602367,
+      "name": "downstream ratio arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": "sourceAmplitudeDominated",
+      "name": "classification arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": "return to near-wing population generation and boundary-source refinement",
+      "name": "next action arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "no new CFD",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "production unchanged",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "quantitative claim closed",
+      "passed": true
+    }
+  ],
+  "checksPassed": 94,
+  "passed": true,
+  "preregistrationPath": "ValidationInputs/formation-flight-streamwise-attenuation-localizer-v1.json",
+  "preregistrationSHA256": "3bee21dfcd9d1060e1ca94e467c4b0d1756b25a3391b30fddb97dbd6e7c33937",
+  "schemaVersion": 1,
+  "summaryPath": "ValidationArtifacts/formation-flight-streamwise-attenuation/formation-flight-streamwise-attenuation-summary.json",
+  "summarySHA256": "343cd013a291a31270eefa3954258232aded219d1f9882a9b9435867b7d4f4bd"
+}

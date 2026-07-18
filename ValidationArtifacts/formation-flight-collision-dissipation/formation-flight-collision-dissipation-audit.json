@@ -1,0 +1,295 @@
+{
+  "checkCount": 51,
+  "checks": [
+    {
+      "evidence": true,
+      "name": "preregistered before execution",
+      "passed": true
+    },
+    {
+      "evidence": "02ea9650bdfabe52bf6e1bb2d3e22271d15e72c05a406b5ea3171e9faafdf446",
+      "name": "locked input hash: ValidationArtifacts/formation-flight-wake-transport/formation-flight-wake-transport-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "7d6810cda8e03a73afb4067edfd5fe5681cd2b01cf2ba9ebb3aec713f01630ce",
+      "name": "locked input hash: ValidationArtifacts/formation-flight-wake-transport/formation-flight-wake-transport-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "faf0d87e6a3a37e256f0b2a3894201fac2fb18c9e49c351085091b6f5444c536",
+      "name": "locked input hash: ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-field-replay-report.json",
+      "passed": true
+    },
+    {
+      "evidence": "09a40f7768c02fb57dd3bb778f949db8a575bd339e6e0965137fa5a779cca1c7",
+      "name": "locked input hash: ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-field-replay-report.json",
+      "passed": true
+    },
+    {
+      "evidence": "5e54446d31e0a933a1d2aace2f77ea81bb6042fa2c01e0133614cdc6211753da",
+      "name": "locked input hash: ValidationInputs/formation-flight-wake-transport-discriminator-v1.json",
+      "passed": true
+    },
+    {
+      "evidence": "1d56b6249a96f33c60792f85473100832bc6fbf33f83b34be378830d9c026105",
+      "name": "locked input hash: Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "passed": true
+    },
+    {
+      "evidence": "2a7fd1d06541991200b2abcc3625fb2460728a6da6a6ecb70b06ce49730f6da4",
+      "name": "locked input hash: Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "passed": true
+    },
+    {
+      "evidence": "408f26aa51f1ec8af4e64179cf6732dca018aecfee3e7334e3898bed26c1a8b4",
+      "name": "locked input hash: Sources/BirdFlowCLI/main.swift",
+      "passed": true
+    },
+    {
+      "evidence": "23a1235378bf773f231e34c2d1469d69ecf914c6896ef008c7c6001b84076582",
+      "name": "candidate report hash",
+      "passed": true
+    },
+    {
+      "evidence": "positivity-preserving-recursive-regularized-bgk",
+      "name": "candidate operator exact",
+      "passed": true
+    },
+    {
+      "evidence": 16,
+      "name": "candidate resolution exact",
+      "passed": true
+    },
+    {
+      "evidence": 5,
+      "name": "candidate cycles exact",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0,
+        0,
+        -3
+      ],
+      "name": "candidate offset exact",
+      "passed": true
+    },
+    {
+      "evidence": 0.25,
+      "name": "candidate phase exact",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "collisionCorrectionActivationFraction": 0,
+        "collisionCorrectionNonIntrusivePassed": true,
+        "finite": true,
+        "maximumAllowedCollisionCorrectionActivationFraction": 0.05,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 1.0952333013847237e-06,
+        "maximumRelativePeriodicPowerDifference": 0.024285510829540613,
+        "maximumRelativeTorqueClosureResidual": 3.698020691444981e-06,
+        "maximumStepCollisionCorrectionActivationFraction": 0,
+        "minimumPopulation": 0.015596508979797363,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true,
+        "populationPositivityPassed": true
+      },
+      "name": "candidate numerical gate parity",
+      "passed": true
+    },
+    {
+      "evidence": 0.015596508979797363,
+      "name": "strict population positivity",
+      "passed": true
+    },
+    {
+      "evidence": 0.015596508979797363,
+      "name": "all-population minimum parity",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "correction fraction parity",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "correction non-intrusive",
+      "passed": true
+    },
+    {
+      "evidence": 1.0952333013847237e-06,
+      "name": "owner force closure unchanged",
+      "passed": true
+    },
+    {
+      "evidence": 3.698020691444981e-06,
+      "name": "owner torque closure unchanged",
+      "passed": true
+    },
+    {
+      "evidence": 0.024285510829540613,
+      "name": "periodicity unchanged",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "zero geometry overlap",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.055,
+        0.065,
+        0.075,
+        0.085,
+        0.095
+      ],
+      "name": "five locked phases",
+      "passed": true
+    },
+    {
+      "evidence": "0eab07524ee091d2c90f6c8be832589e679cae4738b3713b7716bbbe25e69ebe",
+      "name": "candidate slice hash phase 0.055",
+      "passed": true
+    },
+    {
+      "evidence": 5318,
+      "name": "common wake support phase 0.055",
+      "passed": true
+    },
+    {
+      "evidence": -0.516020747683562,
+      "name": "phase reduction arithmetic 0.055",
+      "passed": true
+    },
+    {
+      "evidence": "f1f967bc98cb12155b67463baa2b076ba7cfb22368f9230ade87bd11d897afa5",
+      "name": "candidate slice hash phase 0.065",
+      "passed": true
+    },
+    {
+      "evidence": 5324,
+      "name": "common wake support phase 0.065",
+      "passed": true
+    },
+    {
+      "evidence": -0.22709006673045054,
+      "name": "phase reduction arithmetic 0.065",
+      "passed": true
+    },
+    {
+      "evidence": "b1255259a631d20059e2a8c1b6564bad3ade05d46e7039cbff76008780995413",
+      "name": "candidate slice hash phase 0.075",
+      "passed": true
+    },
+    {
+      "evidence": 5338,
+      "name": "common wake support phase 0.075",
+      "passed": true
+    },
+    {
+      "evidence": -0.1662581127214023,
+      "name": "phase reduction arithmetic 0.075",
+      "passed": true
+    },
+    {
+      "evidence": "3e30162f367e75560987019b88e259eeca75958fec1f806106b8e0d51826afc6",
+      "name": "candidate slice hash phase 0.085",
+      "passed": true
+    },
+    {
+      "evidence": 5349,
+      "name": "common wake support phase 0.085",
+      "passed": true
+    },
+    {
+      "evidence": -0.23579560569403718,
+      "name": "phase reduction arithmetic 0.085",
+      "passed": true
+    },
+    {
+      "evidence": "4e96dacea0166c6e55d3f57c94cd46c79ab7bc558580e66131bc0c0c8321be1d",
+      "name": "candidate slice hash phase 0.095",
+      "passed": true
+    },
+    {
+      "evidence": 5365,
+      "name": "common wake support phase 0.095",
+      "passed": true
+    },
+    {
+      "evidence": -0.3366864488651536,
+      "name": "phase reduction arithmetic 0.095",
+      "passed": true
+    },
+    {
+      "evidence": 1603.7481110650572,
+      "name": "aggregate baseline wake arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": 2068.5596695654913,
+      "name": "aggregate candidate wake arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": -0.28982828119544934,
+      "name": "aggregate wake reduction arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": 0.6498735096311767,
+      "name": "baseline force energy arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": 1.2011016736143763,
+      "name": "candidate force energy arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": -0.8482083910391093,
+      "name": "force reduction arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "promotion arithmetic",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "c20 allocation parity",
+      "passed": true
+    },
+    {
+      "evidence": "/Users/home/BirdFlowMetal/ValidationArtifacts/formation-flight-collision-dissipation/c20-rr3/formation-flight-collision-diagnostic-report.json",
+      "name": "no unauthorized c20 allocation",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "production default unchanged",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "quantitative claim remains closed",
+      "passed": true
+    }
+  ],
+  "checksPassed": 51,
+  "passed": true,
+  "preregistrationPath": "ValidationInputs/formation-flight-collision-dissipation-discriminator-v1.json",
+  "preregistrationSHA256": "de1fda2f88d2ce182b2c9615254f16af2e9b15e5ccbf6cd01fd6556182ab42d3",
+  "schemaVersion": 1,
+  "summaryPath": "ValidationArtifacts/formation-flight-collision-dissipation/formation-flight-collision-dissipation-summary.json",
+  "summarySHA256": "56b8307233c90244b9ac6600272046326d8d79abac86c87201a4d939dd8d42ca"
+}

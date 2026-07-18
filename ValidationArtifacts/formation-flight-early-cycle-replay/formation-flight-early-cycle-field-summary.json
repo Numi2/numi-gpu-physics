@@ -1,0 +1,384 @@
+{
+  "aggregate": {
+    "classification": "mixed",
+    "nearBoundaryResidualEnergyFraction": 0.4503897478154156
+  },
+  "nextAction": "retain both mechanisms and use the phase-resolved residual atlas to select one local probe of each",
+  "phaseResults": [
+    {
+      "actualFollowerPhase16": 0.004901960784313708,
+      "actualFollowerPhase20": 0.0049953314659196835,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-754902.json",
+      "c16SliceSHA256": "01ef220786eb6da7c8c94388d545be1def72f8d21f1923d6df3721de6d7dbdd9",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-754995.json",
+      "c20SliceSHA256": "78bcbae24ee16c43c954213efe5a6c7abaa7b1f58b7723756590409a2368d579",
+      "commonFluidCellCount": 51739,
+      "leaderPhase16": 0.7549019607843137,
+      "leaderPhase20": 0.7549953314659197,
+      "nearBoundaryFluidCellCount": 1764,
+      "nearBoundaryNormalizedResidualEnergy": 1249.7097169957194,
+      "nearBoundaryResidualEnergyFraction": 0.572198995801277,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.7755080394336091,
+        "centroidZChords": 1.1753529418731694,
+        "peakXChords": 3.0749999999999993,
+        "peakZChords": 1.4749999999999996
+      },
+      "normalizedResidualEnergy": 2184.0473789117586,
+      "targetFollowerPhase": 0.005,
+      "verticalVelocityNormalizedRMSDifference": 0.07432822108299048,
+      "verticalVelocitySpatialCorrelation": 0.9973348865633216,
+      "vorticityNormalizedRMSDifference": 0.19154138561203096,
+      "vorticitySpatialCorrelation": 0.9864216429055958,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.1695172536748246,
+        "centroidZChords": -2.949808985019265,
+        "peakXChords": 3.125,
+        "peakZChords": -2.675
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.014939309056956063,
+      "actualFollowerPhase20": 0.015079365079365026,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-764939.json",
+      "c16SliceSHA256": "eedf1bed78a4a2825c77ed01bfedbe665399a807a1cea72c187c99a8c3dcd593",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-765079.json",
+      "c20SliceSHA256": "75d7de20f08dc547bc962065640dc3d45a44816ef19295d47ea602a8aaf04986",
+      "commonFluidCellCount": 51737,
+      "leaderPhase16": 0.7649393090569561,
+      "leaderPhase20": 0.765079365079365,
+      "nearBoundaryFluidCellCount": 1710,
+      "nearBoundaryNormalizedResidualEnergy": 1684.1472798477612,
+      "nearBoundaryResidualEnergyFraction": 0.6469036322658224,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 2.0904065328474983,
+        "centroidZChords": 1.1643716468914884,
+        "peakXChords": 2.925,
+        "peakZChords": 1.2750000000000004
+      },
+      "normalizedResidualEnergy": 2603.3974704221787,
+      "targetFollowerPhase": 0.015,
+      "verticalVelocityNormalizedRMSDifference": 0.0731654470351276,
+      "verticalVelocitySpatialCorrelation": 0.9974099586382044,
+      "vorticityNormalizedRMSDifference": 0.21205342625984436,
+      "vorticitySpatialCorrelation": 0.9813853343448957,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.1843554808429144,
+        "centroidZChords": -2.9084247101033793,
+        "peakXChords": 3.125,
+        "peakZChords": -2.675
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.024976657329598417,
+      "actualFollowerPhase20": 0.024976657329598417,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-774977.json",
+      "c16SliceSHA256": "94990da08581ac40e018ab9fffa7a35c9b838dd564b3561c77615402bfb7a094",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-774977.json",
+      "c20SliceSHA256": "b7e1e9e68b543dab3b5ad7a6bbce2c30d3d4ee202b5a098a759e4c9d174944fd",
+      "commonFluidCellCount": 51739,
+      "leaderPhase16": 0.7749766573295985,
+      "leaderPhase20": 0.7749766573295985,
+      "nearBoundaryFluidCellCount": 1638,
+      "nearBoundaryNormalizedResidualEnergy": 1359.7954280570893,
+      "nearBoundaryResidualEnergyFraction": 0.5674110854604549,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.6930167618277976,
+        "centroidZChords": 1.1582288196388402,
+        "peakXChords": 1.1749999999999998,
+        "peakZChords": 1.4249999999999998
+      },
+      "normalizedResidualEnergy": 2396.4907681590557,
+      "targetFollowerPhase": 0.025,
+      "verticalVelocityNormalizedRMSDifference": 0.07258667119174841,
+      "verticalVelocitySpatialCorrelation": 0.9974471115031789,
+      "vorticityNormalizedRMSDifference": 0.20260804788553366,
+      "vorticitySpatialCorrelation": 0.9863603756144915,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.2660017726065087,
+        "centroidZChords": -2.31927815608774,
+        "peakXChords": 2.875,
+        "peakZChords": 1.6750000000000007
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.03501400560224077,
+      "actualFollowerPhase20": 0.03506069094304376,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-785014.json",
+      "c16SliceSHA256": "48027a7461d7cf88e0401059896e6ecb1e7511468fc8c4379151bf98138cabec",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-785061.json",
+      "c20SliceSHA256": "f5d132ea7133a04eddfd2a74874c3c6fb3ba1e1b963b4e516ca9ee091da946a4",
+      "commonFluidCellCount": 51757,
+      "leaderPhase16": 0.7850140056022409,
+      "leaderPhase20": 0.7850606909430439,
+      "nearBoundaryFluidCellCount": 1548,
+      "nearBoundaryNormalizedResidualEnergy": 1814.315087572589,
+      "nearBoundaryResidualEnergyFraction": 0.6003601432444668,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.8215324226280873,
+        "centroidZChords": 1.0229261089822532,
+        "peakXChords": 2.425,
+        "peakZChords": 0.875
+      },
+      "normalizedResidualEnergy": 3022.0445310837354,
+      "targetFollowerPhase": 0.035,
+      "verticalVelocityNormalizedRMSDifference": 0.07391157464835113,
+      "verticalVelocitySpatialCorrelation": 0.9973605738673303,
+      "vorticityNormalizedRMSDifference": 0.2300568991804648,
+      "vorticitySpatialCorrelation": 0.9775308164896158,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.323835262913934,
+        "centroidZChords": -1.7631062949517105,
+        "peakXChords": 2.925,
+        "peakZChords": 1.375
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.04505135387488313,
+      "actualFollowerPhase20": 0.04495798319327715,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-795051.json",
+      "c16SliceSHA256": "7e4546d5c89a55fb03e88b8fd8800a7b81331a60ba3a822f651d248055f97a35",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-794958.json",
+      "c20SliceSHA256": "3a0e52453177df67d9e1bad020abcca946215df47af7a3aba647fe5bab46dbc7",
+      "commonFluidCellCount": 51764,
+      "leaderPhase16": 0.7950513538748832,
+      "leaderPhase20": 0.7949579831932773,
+      "nearBoundaryFluidCellCount": 1485,
+      "nearBoundaryNormalizedResidualEnergy": 1278.1623993777785,
+      "nearBoundaryResidualEnergyFraction": 0.48748552881646046,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.54611355143043,
+        "centroidZChords": 1.0496720000395168,
+        "peakXChords": 1.5250000000000004,
+        "peakZChords": 1.1749999999999998
+      },
+      "normalizedResidualEnergy": 2621.9494196698706,
+      "targetFollowerPhase": 0.045,
+      "verticalVelocityNormalizedRMSDifference": 0.0750882910033744,
+      "verticalVelocitySpatialCorrelation": 0.9972949682181769,
+      "vorticityNormalizedRMSDifference": 0.2121644052859851,
+      "vorticitySpatialCorrelation": 0.9881704681454971,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.3450330609075074,
+        "centroidZChords": -1.52648213304749,
+        "peakXChords": 2.925,
+        "peakZChords": 1.375
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.0550887021475257,
+      "actualFollowerPhase20": 0.055042016806722716,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-805089.json",
+      "c16SliceSHA256": "969f4eea3e05c0d4090568e5265cc3637d2ddb05ce7f4886eae2d45e2040d849",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-805042.json",
+      "c20SliceSHA256": "290f19ad973e74cc1c7da8b05dab52ac62410f437f7a2848bf6ba44323398760",
+      "commonFluidCellCount": 51780,
+      "leaderPhase16": 0.8050887021475257,
+      "leaderPhase20": 0.8050420168067227,
+      "nearBoundaryFluidCellCount": 1422,
+      "nearBoundaryNormalizedResidualEnergy": 1325.086659975489,
+      "nearBoundaryResidualEnergyFraction": 0.4619569353608481,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.5225360804972168,
+        "centroidZChords": 1.026721497702406,
+        "peakXChords": 1.9249999999999998,
+        "peakZChords": 0.9249999999999998
+      },
+      "normalizedResidualEnergy": 2868.4203191806723,
+      "targetFollowerPhase": 0.055,
+      "verticalVelocityNormalizedRMSDifference": 0.07615090054472366,
+      "verticalVelocitySpatialCorrelation": 0.9972342104987533,
+      "vorticityNormalizedRMSDifference": 0.22270459922289804,
+      "vorticitySpatialCorrelation": 0.9877855673197915,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.359234965095279,
+        "centroidZChords": -1.2526222480474536,
+        "peakXChords": 2.4749999999999996,
+        "peakZChords": 0.9249999999999998
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.06489262371615312,
+      "actualFollowerPhase20": 0.06493930905695611,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-814893.json",
+      "c16SliceSHA256": "d5003bc5fbeebdac31f5e8bbe68ce5b5bd77fc09b7910caf44917b04507c4785",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-814939.json",
+      "c20SliceSHA256": "9e06ae80313bc3bff6f44143d6459619bff702b8a41e9de702ae12bc57df0cbc",
+      "commonFluidCellCount": 51800,
+      "leaderPhase16": 0.8148926237161531,
+      "leaderPhase20": 0.8149393090569561,
+      "nearBoundaryFluidCellCount": 1342,
+      "nearBoundaryNormalizedResidualEnergy": 1221.6303844263552,
+      "nearBoundaryResidualEnergyFraction": 0.39236652241743397,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.376373049899131,
+        "centroidZChords": 1.0154235091237873,
+        "peakXChords": 1.0750000000000002,
+        "peakZChords": 1.1749999999999998
+      },
+      "normalizedResidualEnergy": 3113.492906835404,
+      "targetFollowerPhase": 0.065,
+      "verticalVelocityNormalizedRMSDifference": 0.07620208252191266,
+      "verticalVelocitySpatialCorrelation": 0.9972393529545923,
+      "vorticityNormalizedRMSDifference": 0.23302206610495443,
+      "vorticitySpatialCorrelation": 0.9873142346846505,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.3607575026540926,
+        "centroidZChords": -0.9859192429221513,
+        "peakXChords": 2.375,
+        "peakZChords": 0.8250000000000002
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.07492997198879547,
+      "actualFollowerPhase20": 0.07502334267040145,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-824930.json",
+      "c16SliceSHA256": "14a0509d90a919876b9ec863588a0d3d93f58b268b5c0a8df17b978c69adde0a",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-825023.json",
+      "c20SliceSHA256": "57601f87b373af5715d17da0edd8f8926b9e5287c843d02371fca4fa7c8a7b05",
+      "commonFluidCellCount": 51825,
+      "leaderPhase16": 0.8249299719887955,
+      "leaderPhase20": 0.8250233426704014,
+      "nearBoundaryFluidCellCount": 1268,
+      "nearBoundaryNormalizedResidualEnergy": 1075.4991778131548,
+      "nearBoundaryResidualEnergyFraction": 0.33668824003899095,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.2236423559165854,
+        "centroidZChords": 1.0044277852683747,
+        "peakXChords": 1.4749999999999996,
+        "peakZChords": 0.9249999999999998
+      },
+      "normalizedResidualEnergy": 3194.3473216902503,
+      "targetFollowerPhase": 0.075,
+      "verticalVelocityNormalizedRMSDifference": 0.0757956590486264,
+      "verticalVelocitySpatialCorrelation": 0.9972659328497487,
+      "vorticityNormalizedRMSDifference": 0.2364153275560748,
+      "vorticitySpatialCorrelation": 0.9867159282289826,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.343549806879833,
+        "centroidZChords": -0.9457048777101821,
+        "peakXChords": 2.325,
+        "peakZChords": 0.7249999999999996
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.08496732026143805,
+      "actualFollowerPhase20": 0.08492063492063506,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-834967.json",
+      "c16SliceSHA256": "ce69163fe99226a8e2e7d8b93ebc1cf02f98c89ca1dbe16c7aa528b192032150",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-834921.json",
+      "c20SliceSHA256": "e4b8214dece7f719d2c59a947cdfebd5917e8fad70ed922fb66be28f6389249d",
+      "commonFluidCellCount": 51826,
+      "leaderPhase16": 0.8349673202614379,
+      "leaderPhase20": 0.834920634920635,
+      "nearBoundaryFluidCellCount": 1233,
+      "nearBoundaryNormalizedResidualEnergy": 910.281456227613,
+      "nearBoundaryResidualEnergyFraction": 0.2923203064254334,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 1.122019688406189,
+        "centroidZChords": 0.9737819530190042,
+        "peakXChords": -0.025000000000000355,
+        "peakZChords": 1.625
+      },
+      "normalizedResidualEnergy": 3113.98639170424,
+      "targetFollowerPhase": 0.085,
+      "verticalVelocityNormalizedRMSDifference": 0.07474901192247696,
+      "verticalVelocitySpatialCorrelation": 0.9973382545156271,
+      "vorticityNormalizedRMSDifference": 0.2334480540177614,
+      "vorticitySpatialCorrelation": 0.9882058953296914,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.334474653296748,
+        "centroidZChords": -1.042431619300636,
+        "peakXChords": 2.325,
+        "peakZChords": 0.6749999999999998
+      }
+    },
+    {
+      "actualFollowerPhase16": 0.0950046685340804,
+      "actualFollowerPhase20": 0.0950046685340804,
+      "c16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-845005.json",
+      "c16SliceSHA256": "985dc34d2f4abb50f210c816801a9a0fb44ba9f06cfc3095e2452ad617ef5ca4",
+      "c20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-845005.json",
+      "c20SliceSHA256": "c946af2d981014b0a7f7ce6b7330ac3b22431e446146554a3511329a90fa33ad",
+      "commonFluidCellCount": 51841,
+      "leaderPhase16": 0.8450046685340803,
+      "leaderPhase20": 0.8450046685340803,
+      "nearBoundaryFluidCellCount": 1182,
+      "nearBoundaryNormalizedResidualEnergy": 775.2346087869491,
+      "nearBoundaryResidualEnergyFraction": 0.25284921847653435,
+      "nearBoundaryResidualLocation": {
+        "centroidXChords": 0.9560213938487797,
+        "centroidZChords": 0.9818926129424517,
+        "peakXChords": 0.7750000000000004,
+        "peakZChords": 1.1749999999999998
+      },
+      "normalizedResidualEnergy": 3065.9956691101843,
+      "targetFollowerPhase": 0.095,
+      "verticalVelocityNormalizedRMSDifference": 0.07414474810698538,
+      "verticalVelocitySpatialCorrelation": 0.9973715098528886,
+      "vorticityNormalizedRMSDifference": 0.23161358000151033,
+      "vorticitySpatialCorrelation": 0.9876531319439109,
+      "wakeResidualLocation": {
+        "centroidXChords": 2.322078935781556,
+        "centroidZChords": -1.134601139923286,
+        "peakXChords": 2.375,
+        "peakZChords": 0.8250000000000002
+      }
+    }
+  ],
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-early-cycle-field-replay-v1.json",
+    "preregisteredBeforeReplayExecution": true,
+    "sha256": "84cacb9da1498acc018e8c284a585697acd36a6c2fab41d1094f563448d425be"
+  },
+  "quantitativeFormationClaimAuthorized": false,
+  "replays": {
+    "c16": {
+      "gatesPassed": true,
+      "indexPath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/index.json",
+      "indexSHA256": "1ed0085960a5b62c3e62437f56f375dc5379e86f0b440eb17c9cc42a41f40b7c",
+      "referenceCoupledHistoryRelativeDifference": 0,
+      "reportPath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-field-replay-report.json",
+      "reportSHA256": "faf0d87e6a3a37e256f0b2a3894201fac2fb18c9e49c351085091b6f5444c536",
+      "runtimeSeconds": 1105.2095589637756
+    },
+    "c20": {
+      "gatesPassed": true,
+      "indexPath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/index.json",
+      "indexSHA256": "0671190bf11fa9bd48b8ea950b7ba89b82463e608a363648e639a4a65112c9b1",
+      "referenceCoupledHistoryRelativeDifference": 0,
+      "reportPath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-field-replay-report.json",
+      "reportSHA256": "09a40f7768c02fb57dd3bb778f949db8a575bd339e6e0965137fa5a779cca1c7",
+      "runtimeSeconds": 2755.8908789157867
+    }
+  },
+  "schemaVersion": 1,
+  "selectedProbes": {
+    "nearBoundary": {
+      "actualFollowerPhase16": 0.03501400560224077,
+      "actualFollowerPhase20": 0.03506069094304376,
+      "location": {
+        "centroidXChords": 1.8215324226280873,
+        "centroidZChords": 1.0229261089822532,
+        "peakXChords": 2.425,
+        "peakZChords": 0.875
+      },
+      "normalizedResidualEnergy": 1814.315087572589,
+      "selectionRule": "maximum absolute near-boundary normalized residual energy across preregistered phases",
+      "targetFollowerPhase": 0.035
+    },
+    "wake": {
+      "actualFollowerPhase16": 0.0950046685340804,
+      "actualFollowerPhase20": 0.0950046685340804,
+      "location": {
+        "centroidXChords": 2.322078935781556,
+        "centroidZChords": -1.134601139923286,
+        "peakXChords": 2.375,
+        "peakZChords": 0.8250000000000002
+      },
+      "normalizedResidualEnergy": 2290.761060323235,
+      "selectionRule": "maximum absolute outside-band normalized residual energy across preregistered phases",
+      "targetFollowerPhase": 0.095
+    }
+  }
+}

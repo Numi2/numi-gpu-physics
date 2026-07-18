@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight collision/advection-dissipation sequential discriminator",
+  "preregisteredBeforeCandidateExecution": true,
+  "scientificQuestion": "Does the already-qualified RR3 bulk collision treatment materially reduce the c16-to-c20 wake-amplitude and force-history discrepancy when every formation input outside collision is fixed?",
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-wake-transport/formation-flight-wake-transport-summary.json",
+      "sha256": "02ea9650bdfabe52bf6e1bb2d3e22271d15e72c05a406b5ea3171e9faafdf446"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-wake-transport/formation-flight-wake-transport-audit.json",
+      "sha256": "7d6810cda8e03a73afb4067edfd5fe5681cd2b01cf2ba9ebb3aec713f01630ce"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-field-replay-report.json",
+      "sha256": "faf0d87e6a3a37e256f0b2a3894201fac2fb18c9e49c351085091b6f5444c536"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-field-replay-report.json",
+      "sha256": "09a40f7768c02fb57dd3bb778f949db8a575bd339e6e0965137fa5a779cca1c7"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-wake-transport-discriminator-v1.json",
+      "sha256": "5e54446d31e0a933a1d2aace2f77ea81bb6042fa2c01e0133614cdc6211753da"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "sha256": "1d56b6249a96f33c60792f85473100832bc6fbf33f83b34be378830d9c026105"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "sha256": "2a7fd1d06541991200b2abcc3625fb2460728a6da6a6ecb70b06ce49730f6da4"
+    },
+    {
+      "path": "Sources/BirdFlowCLI/main.swift",
+      "sha256": "408f26aa51f1ec8af4e64179cf6732dca018aecfee3e7334e3898bed26c1a8b4"
+    }
+  ],
+  "requiredSourceClassification": "amplitudeDiffusionDominated",
+  "controlOperator": "production-trt",
+  "candidateOperator": "positivity-preserving-recursive-regularized-bgk",
+  "fixedFormationConfiguration": {
+    "cycles": 5,
+    "followerOffsetChords": [0.0, 0.0, -3.0],
+    "followerPhaseOffsetCycles": 0.25,
+    "boundaryTreatment": "production interpolated moving boundary",
+    "loadEstimator": "production conservative moving-domain estimator",
+    "farFieldAndSponge": "unchanged formation canonical",
+    "fastMath": false
+  },
+  "screen": {
+    "resolution": 16,
+    "lockedReferenceResolution": 20,
+    "candidateRunsAllocated": 1,
+    "followerLocalPhases": [0.055, 0.065, 0.075, 0.085, 0.095],
+    "leaderCapturePhases": [0.805, 0.815, 0.825, 0.835, 0.845],
+    "wakeRegionAndCommonGrid": "exactly reuse the locked wake-transport discriminator ROI, mapping, normalization, and solid exclusion",
+    "forceSignals": [
+      "leaderLiftCoefficient",
+      "leaderDragCoefficient",
+      "followerLiftCoefficient",
+      "followerDragCoefficient"
+    ]
+  },
+  "unchangedNumericalGates": {
+    "maximumRelativeOwnerClosureResidual": 0.0002,
+    "maximumRelativePeriodicPowerDifference": 0.2,
+    "strictPopulationPositivity": true,
+    "maximumCollisionCorrectionActivationFraction": 0.05,
+    "zeroGeometryOverlap": true,
+    "finiteOutput": true
+  },
+  "promotionRule": {
+    "minimumAggregateWakeResidualEnergyReductionFraction": 0.25,
+    "minimumDimensionlessForceResidualEnergyReductionFraction": 0.10,
+    "requireEveryUnchangedNumericalGate": true,
+    "ifPassed": "allocate exactly one c20 RR3 run and evaluate same-operator c16-to-c20 convergence plus c20 TRT-to-RR3 sensitivity",
+    "ifFailed": "stop without a c20 RR3 allocation and classify whether collision is unsupported, adverse, or mixed"
+  },
+  "fineRunInterpretation": {
+    "maximumAcceptableSameOperatorC16ToC20ForceHistoryRelativeDifference": 0.05,
+    "maximumAcceptableC20TRTToRR3ForceHistoryRelativeDifference": 0.05,
+    "authorization": "both limits and every numerical gate must pass before RR3 may be considered for a formation refinement ladder; this experiment alone cannot authorize quantitative formation benefit"
+  },
+  "claimBoundary": "The locked c20 TRT case is a discriminator reference, not truth. A favorable c16 screen only authorizes one c20 RR3 run. No result here establishes biological benefit, validates power magnitude, or changes the production collision default."
+}

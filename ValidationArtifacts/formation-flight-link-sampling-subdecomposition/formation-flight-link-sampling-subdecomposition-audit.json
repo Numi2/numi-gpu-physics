@@ -1,0 +1,2617 @@
+{
+  "checkCount": 521,
+  "checks": [
+    {
+      "evidence": true,
+      "name": "preregistered before execution",
+      "passed": true
+    },
+    {
+      "evidence": "e2820ecabaaf831fd31dfa657bef6408da679ca3ee89afa18e8959db12700bfc",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "6d5c0849db58f3d38e4612f54682d9f303ea52d5e0d64080ec3f35b2f17464cc",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "711aab4cc253fd6a2e78499ba6332eaecbb1f068f304423c9017e9094a7565ff",
+      "name": "lockedInputs hash ValidationInputs/formation-flight-boundary-source-census-v1.json",
+      "passed": true
+    },
+    {
+      "evidence": "fb71609083acb947efa7610e0dc30658b0f4689e2918b1bc6b545b9af2e75891",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-boundary-source-census/c16-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "passed": true
+    },
+    {
+      "evidence": "88ced4bd4e20be9b3ca61510a2b36aef2181a3cb3330b5e7a608c072d82ce7b0",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-boundary-source-census/c20-best-z3-phase025/formation-flight-boundary-source-census.json",
+      "passed": true
+    },
+    {
+      "evidence": "0c2920745d18f4c6b262bf3bfc417f4d1fbb2aa1b96cb9ed12dad535c2f40767",
+      "name": "lockedAnalysis hash Scripts/run-formation-link-sampling-subdecomposition.sh",
+      "passed": true
+    },
+    {
+      "evidence": "b0b7b1758c05840a59a9828e2380f2e49184205b9cbfecb1c3cc1cd474ab8c93",
+      "name": "lockedAnalysis hash Scripts/analyze-formation-link-sampling-subdecomposition.py",
+      "passed": true
+    },
+    {
+      "evidence": "a8b1235c64f1126ff7c2f12f86ca45de527d7af8a0b397b7713d930fa461d400",
+      "name": "lockedAnalysis hash Scripts/audit-formation-link-sampling-subdecomposition.py",
+      "passed": true
+    },
+    {
+      "evidence": "f4cf8959fbf2987bce479b2e594a8cb0d6630f3fa5f392d30dfd275258b6ea9b",
+      "name": "summary preregistration hash",
+      "passed": true
+    },
+    {
+      "evidence": "ValidationArtifacts/formation-flight-boundary-source-census/formation-flight-boundary-source-audit.json",
+      "name": "parent audit passed",
+      "passed": true
+    },
+    {
+      "evidence": 4,
+      "name": "four probe results",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 0 leader phase 0.035 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 0 leader phase 0.035 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 33.7265625,
+      "name": "probe 0 leader phase 0.035 c16 density",
+      "passed": true
+    },
+    {
+      "evidence": 33.265,
+      "name": "probe 0 leader phase 0.035 c20 density",
+      "passed": true
+    },
+    {
+      "evidence": 2.2910547157334316e-17,
+      "name": "probe 0 leader phase 0.035 exact identity residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.04064285726369065,
+      "name": "probe 0 leader phase 0.035 density L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.044831915613576204,
+      "name": "probe 0 leader phase 0.035 direction L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.47549535255331643,
+      "name": "probe 0 leader phase 0.035 density share",
+      "passed": true
+    },
+    {
+      "evidence": 0.5245046474466837,
+      "name": "probe 0 leader phase 0.035 direction share",
+      "passed": true
+    },
+    {
+      "evidence": -0.013685429696548512,
+      "name": "probe 0 leader phase 0.035 relative density change",
+      "passed": true
+    },
+    {
+      "evidence": "mixedDensityAndDirection",
+      "name": "probe 0 leader phase 0.035 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 0 leader phase 0.035 q0 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 0 leader phase 0.035 q0 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 0 leader phase 0.035 q0 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0,
+      "name": "probe 0 leader phase 0.035 q0 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 0 leader phase 0.035 q0 direction",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 0 leader phase 0.035 q0 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.016909891128098216,
+      "name": "probe 0 leader phase 0.035 q1 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.016984818878701336,
+      "name": "probe 0 leader phase 0.035 q1 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005864892749786291,
+      "name": "probe 0 leader phase 0.035 q1 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0008635621034295686,
+      "name": "probe 0 leader phase 0.035 q1 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.00027707282845094224,
+      "name": "probe 0 leader phase 0.035 q1 direction",
+      "passed": true
+    },
+    {
+      "evidence": -2.710505431213761e-18,
+      "name": "probe 0 leader phase 0.035 q1 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.016909891128098216,
+      "name": "probe 0 leader phase 0.035 q2 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.016984818878701336,
+      "name": "probe 0 leader phase 0.035 q2 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005909181150675226,
+      "name": "probe 0 leader phase 0.035 q2 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0008700832430754,
+      "name": "probe 0 leader phase 0.035 q2 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0002791651280078802,
+      "name": "probe 0 leader phase 0.035 q2 direction",
+      "passed": true
+    },
+    {
+      "evidence": -2.8189256484623115e-18,
+      "name": "probe 0 leader phase 0.035 q2 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06265925411165162,
+      "name": "probe 0 leader phase 0.035 q3 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06380580189388246,
+      "name": "probe 0 leader phase 0.035 q3 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0010312973592268028,
+      "name": "probe 0 leader phase 0.035 q3 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0032649980786224704,
+      "name": "probe 0 leader phase 0.035 q3 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.004296295437849264,
+      "name": "probe 0 leader phase 0.035 q3 direction",
+      "passed": true
+    },
+    {
+      "evidence": 8.673617379884035e-18,
+      "name": "probe 0 leader phase 0.035 q3 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06265925411165162,
+      "name": "probe 0 leader phase 0.035 q4 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06380580189388246,
+      "name": "probe 0 leader phase 0.035 q4 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0010261929501600578,
+      "name": "probe 0 leader phase 0.035 q4 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.00324883796180813,
+      "name": "probe 0 leader phase 0.035 q4 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.004275030911968179,
+      "name": "probe 0 leader phase 0.035 q4 direction",
+      "passed": true
+    },
+    {
+      "evidence": 8.673617379884035e-18,
+      "name": "probe 0 leader phase 0.035 q4 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0650914987259671,
+      "name": "probe 0 leader phase 0.035 q5 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06433188035472719,
+      "name": "probe 0 leader phase 0.035 q5 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.006105517855806567,
+      "name": "probe 0 leader phase 0.035 q5 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0032969508548290247,
+      "name": "probe 0 leader phase 0.035 q5 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0028085670009775562,
+      "name": "probe 0 leader phase 0.035 q5 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.431146867680866e-17,
+      "name": "probe 0 leader phase 0.035 q5 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0650914987259671,
+      "name": "probe 0 leader phase 0.035 q6 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06433188035472719,
+      "name": "probe 0 leader phase 0.035 q6 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.006136209040190812,
+      "name": "probe 0 leader phase 0.035 q6 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.003313523949688639,
+      "name": "probe 0 leader phase 0.035 q6 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.002822685090502187,
+      "name": "probe 0 leader phase 0.035 q6 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.431146867680866e-17,
+      "name": "probe 0 leader phase 0.035 q6 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.04841324994208941,
+      "name": "probe 0 leader phase 0.035 q7 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.04967683751690966,
+      "name": "probe 0 leader phase 0.035 q7 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0011001105311189423,
+      "name": "probe 0 leader phase 0.035 q7 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.001264944275707596,
+      "name": "probe 0 leader phase 0.035 q7 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.002365054806826535,
+      "name": "probe 0 leader phase 0.035 q7 direction",
+      "passed": true
+    },
+    {
+      "evidence": 3.0357660829594124e-18,
+      "name": "probe 0 leader phase 0.035 q7 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.04841324994208941,
+      "name": "probe 0 leader phase 0.035 q8 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.04967683751690966,
+      "name": "probe 0 leader phase 0.035 q8 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0010947874494230895,
+      "name": "probe 0 leader phase 0.035 q8 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0012588236164376187,
+      "name": "probe 0 leader phase 0.035 q8 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0023536110658607047,
+      "name": "probe 0 leader phase 0.035 q8 direction",
+      "passed": true
+    },
+    {
+      "evidence": 3.469446951953614e-18,
+      "name": "probe 0 leader phase 0.035 q8 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.07736854296965485,
+      "name": "probe 0 leader phase 0.035 q9 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.07800992033669021,
+      "name": "probe 0 leader phase 0.035 q9 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0008006071668821858,
+      "name": "probe 0 leader phase 0.035 q9 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.001997114493406006,
+      "name": "probe 0 leader phase 0.035 q9 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.001196507326523806,
+      "name": "probe 0 leader phase 0.035 q9 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.452830911130576e-17,
+      "name": "probe 0 leader phase 0.035 q9 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.07736854296965485,
+      "name": "probe 0 leader phase 0.035 q10 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.07800992033669021,
+      "name": "probe 0 leader phase 0.035 q10 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0008050420278979312,
+      "name": "probe 0 leader phase 0.035 q10 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.002008177253742362,
+      "name": "probe 0 leader phase 0.035 q10 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0012031352258444162,
+      "name": "probe 0 leader phase 0.035 q10 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.474514954580286e-17,
+      "name": "probe 0 leader phase 0.035 q10 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.07910586055130878,
+      "name": "probe 0 leader phase 0.035 q11 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.07913723132421464,
+      "name": "probe 0 leader phase 0.035 q11 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.001956854454761947,
+      "name": "probe 0 leader phase 0.035 q11 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0020148277481261074,
+      "name": "probe 0 leader phase 0.035 q11 density",
+      "passed": true
+    },
+    {
+      "evidence": 5.79732933641829e-05,
+      "name": "probe 0 leader phase 0.035 q11 direction",
+      "passed": true
+    },
+    {
+      "evidence": -2.2449761234027976e-17,
+      "name": "probe 0 leader phase 0.035 q11 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.07910586055130878,
+      "name": "probe 0 leader phase 0.035 q12 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.07913723132421464,
+      "name": "probe 0 leader phase 0.035 q12 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0019695760750868237,
+      "name": "probe 0 leader phase 0.035 q12 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0020279262560755932,
+      "name": "probe 0 leader phase 0.035 q12 density",
+      "passed": true
+    },
+    {
+      "evidence": 5.835018098879244e-05,
+      "name": "probe 0 leader phase 0.035 q12 direction",
+      "passed": true
+    },
+    {
+      "evidence": -2.2910547157334316e-17,
+      "name": "probe 0 leader phase 0.035 q12 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.05154042158906648,
+      "name": "probe 0 leader phase 0.035 q13 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.04990229971441455,
+      "name": "probe 0 leader phase 0.035 q13 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.004337350647864257,
+      "name": "probe 0 leader phase 0.035 q13 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0012971440088461338,
+      "name": "probe 0 leader phase 0.035 q13 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0030402066390181086,
+      "name": "probe 0 leader phase 0.035 q13 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.474514954580286e-17,
+      "name": "probe 0 leader phase 0.035 q13 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.05154042158906648,
+      "name": "probe 0 leader phase 0.035 q14 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.04990229971441455,
+      "name": "probe 0 leader phase 0.035 q14 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.004323834499256737,
+      "name": "probe 0 leader phase 0.035 q14 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.001293101819820547,
+      "name": "probe 0 leader phase 0.035 q14 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0030307326794361752,
+      "name": "probe 0 leader phase 0.035 q14 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.474514954580286e-17,
+      "name": "probe 0 leader phase 0.035 q14 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.009265693768820941,
+      "name": "probe 0 leader phase 0.035 q15 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.007816022846836013,
+      "name": "probe 0 leader phase 0.035 q15 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002919816729684288,
+      "name": "probe 0 leader phase 0.035 q15 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.00021924430605482442,
+      "name": "probe 0 leader phase 0.035 q15 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0027005724236294658,
+      "name": "probe 0 leader phase 0.035 q15 direction",
+      "passed": true
+    },
+    {
+      "evidence": 2.168404344971009e-18,
+      "name": "probe 0 leader phase 0.035 q15 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.009265693768820941,
+      "name": "probe 0 leader phase 0.035 q16 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.007816022846836013,
+      "name": "probe 0 leader phase 0.035 q16 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002899664525659038,
+      "name": "probe 0 leader phase 0.035 q16 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.00021773110971545388,
+      "name": "probe 0 leader phase 0.035 q16 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.002681933415943587,
+      "name": "probe 0 leader phase 0.035 q16 direction",
+      "passed": true
+    },
+    {
+      "evidence": 2.6020852139652106e-18,
+      "name": "probe 0 leader phase 0.035 q16 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08964558721334259,
+      "name": "probe 0 leader phase 0.035 q17 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09033518713362393,
+      "name": "probe 0 leader phase 0.035 q17 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0010318380103243787,
+      "name": "probe 0 leader phase 0.035 q17 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0023245351953724382,
+      "name": "probe 0 leader phase 0.035 q17 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0012926971850480801,
+      "name": "probe 0 leader phase 0.035 q17 direction",
+      "passed": true
+    },
+    {
+      "evidence": -2.0599841277224584e-17,
+      "name": "probe 0 leader phase 0.035 q17 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08964558721334259,
+      "name": "probe 0 leader phase 0.035 q18 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09033518713362393,
+      "name": "probe 0 leader phase 0.035 q18 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0010249901727802544,
+      "name": "probe 0 leader phase 0.035 q18 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0023091083170986813,
+      "name": "probe 0 leader phase 0.035 q18 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0012841181443184473,
+      "name": "probe 0 leader phase 0.035 q18 direction",
+      "passed": true
+    },
+    {
+      "evidence": -2.0383000842727483e-17,
+      "name": "probe 0 leader phase 0.035 q18 residual",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 1 follower phase 0.035 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 1 follower phase 0.035 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 34.5859375,
+      "name": "probe 1 follower phase 0.035 c16 density",
+      "passed": true
+    },
+    {
+      "evidence": 34.065,
+      "name": "probe 1 follower phase 0.035 c20 density",
+      "passed": true
+    },
+    {
+      "evidence": 1.7997756063259374e-17,
+      "name": "probe 1 follower phase 0.035 exact identity residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.04554254519352255,
+      "name": "probe 1 follower phase 0.035 density L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.0330019179679521,
+      "name": "probe 1 follower phase 0.035 direction L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.57983138925903,
+      "name": "probe 1 follower phase 0.035 density share",
+      "passed": true
+    },
+    {
+      "evidence": 0.42016861074097,
+      "name": "probe 1 follower phase 0.035 direction share",
+      "passed": true
+    },
+    {
+      "evidence": -0.01506211881635422,
+      "name": "probe 1 follower phase 0.035 relative density change",
+      "passed": true
+    },
+    {
+      "evidence": "mixedDensityAndDirection",
+      "name": "probe 1 follower phase 0.035 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q0 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q0 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q0 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0,
+      "name": "probe 1 follower phase 0.035 q0 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q0 direction",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q0 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.07917325502597695,
+      "name": "probe 1 follower phase 0.035 q1 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.07962718332599442,
+      "name": "probe 1 follower phase 0.035 q1 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002868672983850251,
+      "name": "probe 1 follower phase 0.035 q1 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.004602400369993361,
+      "name": "probe 1 follower phase 0.035 q1 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0017337273861430947,
+      "name": "probe 1 follower phase 0.035 q1 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.5395670849294163e-17,
+      "name": "probe 1 follower phase 0.035 q1 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.07917325502597695,
+      "name": "probe 1 follower phase 0.035 q2 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.07962718332599442,
+      "name": "probe 1 follower phase 0.035 q2 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002857334953988562,
+      "name": "probe 1 follower phase 0.035 q2 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.004584210024448853,
+      "name": "probe 1 follower phase 0.035 q2 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0017268750704602753,
+      "name": "probe 1 follower phase 0.035 q2 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.5178830414797062e-17,
+      "name": "probe 1 follower phase 0.035 q2 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.019990964535803027,
+      "name": "probe 1 follower phase 0.035 q3 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.020035226772346985,
+      "name": "probe 1 follower phase 0.035 q3 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009854616310248324,
+      "name": "probe 1 follower phase 0.035 q3 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0011535720650700492,
+      "name": "probe 1 follower phase 0.035 q3 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0001681104340452159,
+      "name": "probe 1 follower phase 0.035 q3 direction",
+      "passed": true
+    },
+    {
+      "evidence": 9.215718466126788e-19,
+      "name": "probe 1 follower phase 0.035 q3 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.019990964535803027,
+      "name": "probe 1 follower phase 0.035 q4 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.020035226772346985,
+      "name": "probe 1 follower phase 0.035 q4 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.000989952495095783,
+      "name": "probe 1 follower phase 0.035 q4 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0011588290280782263,
+      "name": "probe 1 follower phase 0.035 q4 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.00016887653298244237,
+      "name": "probe 1 follower phase 0.035 q4 direction",
+      "passed": true
+    },
+    {
+      "evidence": 8.402566836762659e-19,
+      "name": "probe 1 follower phase 0.035 q4 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.038400722837135755,
+      "name": "probe 1 follower phase 0.035 q5 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.03742844561867019,
+      "name": "probe 1 follower phase 0.035 q5 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00588514357805253,
+      "name": "probe 1 follower phase 0.035 q5 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0021880137101740415,
+      "name": "probe 1 follower phase 0.035 q5 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.003697129867878478,
+      "name": "probe 1 follower phase 0.035 q5 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.0842021724855044e-17,
+      "name": "probe 1 follower phase 0.035 q5 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.038400722837135755,
+      "name": "probe 1 follower phase 0.035 q6 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.03742844561867019,
+      "name": "probe 1 follower phase 0.035 q6 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.005896897862354924,
+      "name": "probe 1 follower phase 0.035 q6 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0021923837879581813,
+      "name": "probe 1 follower phase 0.035 q6 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0037045140743967317,
+      "name": "probe 1 follower phase 0.035 q6 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.1275702593849246e-17,
+      "name": "probe 1 follower phase 0.035 q6 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06166704314434154,
+      "name": "probe 1 follower phase 0.035 q7 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06252752091589608,
+      "name": "probe 1 follower phase 0.035 q7 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00015634020018127974,
+      "name": "probe 1 follower phase 0.035 q7 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0017981931784449067,
+      "name": "probe 1 follower phase 0.035 q7 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0016418529782636256,
+      "name": "probe 1 follower phase 0.035 q7 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.3010426069826053e-18,
+      "name": "probe 1 follower phase 0.035 q7 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06166704314434154,
+      "name": "probe 1 follower phase 0.035 q8 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06252752091589608,
+      "name": "probe 1 follower phase 0.035 q8 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00015582549298230865,
+      "name": "probe 1 follower phase 0.035 q8 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0017922731209484143,
+      "name": "probe 1 follower phase 0.035 q8 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0016364476279661043,
+      "name": "probe 1 follower phase 0.035 q8 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.3010426069826053e-18,
+      "name": "probe 1 follower phase 0.035 q8 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08798283261802575,
+      "name": "probe 1 follower phase 0.035 q9 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.08858065463085278,
+      "name": "probe 1 follower phase 0.035 q9 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.001418423731604301,
+      "name": "probe 1 follower phase 0.035 q9 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.002561267165815074,
+      "name": "probe 1 follower phase 0.035 q9 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.001142843434210755,
+      "name": "probe 1 follower phase 0.035 q9 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.7780915628762273e-17,
+      "name": "probe 1 follower phase 0.035 q9 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08798283261802575,
+      "name": "probe 1 follower phase 0.035 q10 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.08858065463085278,
+      "name": "probe 1 follower phase 0.035 q10 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0014114809355917604,
+      "name": "probe 1 follower phase 0.035 q10 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0025487304639327957,
+      "name": "probe 1 follower phase 0.035 q10 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0011372495283410173,
+      "name": "probe 1 follower phase 0.035 q10 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.7997756063259374e-17,
+      "name": "probe 1 follower phase 0.035 q10 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.04698441382426022,
+      "name": "probe 1 follower phase 0.035 q11 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.047189197123146925,
+      "name": "probe 1 follower phase 0.035 q11 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009734851396073889,
+      "name": "probe 1 follower phase 0.035 q11 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0013645081268248316,
+      "name": "probe 1 follower phase 0.035 q11 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0003910229872174475,
+      "name": "probe 1 follower phase 0.035 q11 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.716279450311944e-18,
+      "name": "probe 1 follower phase 0.035 q11 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.04698441382426022,
+      "name": "probe 1 follower phase 0.035 q12 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.047189197123146925,
+      "name": "probe 1 follower phase 0.035 q12 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009694144610845493,
+      "name": "probe 1 follower phase 0.035 q12 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0013588023654319602,
+      "name": "probe 1 follower phase 0.035 q12 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0003893879043474156,
+      "name": "probe 1 follower phase 0.035 q12 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.662069341687669e-18,
+      "name": "probe 1 follower phase 0.035 q12 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08798283261802575,
+      "name": "probe 1 follower phase 0.035 q13 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.08858065463085278,
+      "name": "probe 1 follower phase 0.035 q13 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0014162559490439697,
+      "name": "probe 1 follower phase 0.035 q13 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.002557352771145349,
+      "name": "probe 1 follower phase 0.035 q13 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0011410968221013615,
+      "name": "probe 1 follower phase 0.035 q13 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.7997756063259374e-17,
+      "name": "probe 1 follower phase 0.035 q13 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08798283261802575,
+      "name": "probe 1 follower phase 0.035 q14 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.08858065463085278,
+      "name": "probe 1 follower phase 0.035 q14 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0014120321277661717,
+      "name": "probe 1 follower phase 0.035 q14 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.002549725759193949,
+      "name": "probe 1 follower phase 0.035 q14 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0011376936314277596,
+      "name": "probe 1 follower phase 0.035 q14 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.7780915628762273e-17,
+      "name": "probe 1 follower phase 0.035 q14 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.055793991416309016,
+      "name": "probe 1 follower phase 0.035 q15 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.055188610010274475,
+      "name": "probe 1 follower phase 0.035 q15 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00275187680087981,
+      "name": "probe 1 follower phase 0.035 q15 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0016010038168571264,
+      "name": "probe 1 follower phase 0.035 q15 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0011508729840226917,
+      "name": "probe 1 follower phase 0.035 q15 direction",
+      "passed": true
+    },
+    {
+      "evidence": 8.239936510889834e-18,
+      "name": "probe 1 follower phase 0.035 q15 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.055793991416309016,
+      "name": "probe 1 follower phase 0.035 q16 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.055188610010274475,
+      "name": "probe 1 follower phase 0.035 q16 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0027601759897163012,
+      "name": "probe 1 follower phase 0.035 q16 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0016058321700013487,
+      "name": "probe 1 follower phase 0.035 q16 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0011543438197149608,
+      "name": "probe 1 follower phase 0.035 q16 direction",
+      "passed": true
+    },
+    {
+      "evidence": 8.239936510889834e-18,
+      "name": "probe 1 follower phase 0.035 q16 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.022023943980121977,
+      "name": "probe 1 follower phase 0.035 q17 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.02084250697196536,
+      "name": "probe 1 follower phase 0.035 q17 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002866073582920763,
+      "name": "probe 1 follower phase 0.035 q17 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0006187460944002016,
+      "name": "probe 1 follower phase 0.035 q17 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0022473274885205616,
+      "name": "probe 1 follower phase 0.035 q17 direction",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 1 follower phase 0.035 q17 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.022023943980121977,
+      "name": "probe 1 follower phase 0.035 q18 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.02084250697196536,
+      "name": "probe 1 follower phase 0.035 q18 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002865256654843959,
+      "name": "probe 1 follower phase 0.035 q18 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.000618569730799511,
+      "name": "probe 1 follower phase 0.035 q18 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0022466869240444485,
+      "name": "probe 1 follower phase 0.035 q18 direction",
+      "passed": true
+    },
+    {
+      "evidence": 4.336808689942018e-19,
+      "name": "probe 1 follower phase 0.035 q18 residual",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 2 leader phase 0.095 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 2 leader phase 0.095 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 33.2578125,
+      "name": "probe 2 leader phase 0.095 c16 density",
+      "passed": true
+    },
+    {
+      "evidence": 32.575,
+      "name": "probe 2 leader phase 0.095 c20 density",
+      "passed": true
+    },
+    {
+      "evidence": 4.0766001685454967e-17,
+      "name": "probe 2 leader phase 0.095 exact identity residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06083827473454967,
+      "name": "probe 2 leader phase 0.095 density L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.055209723051799595,
+      "name": "probe 2 leader phase 0.095 direction L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.5242509642135857,
+      "name": "probe 2 leader phase 0.095 density share",
+      "passed": true
+    },
+    {
+      "evidence": 0.4757490357864142,
+      "name": "probe 2 leader phase 0.095 direction share",
+      "passed": true
+    },
+    {
+      "evidence": -0.020530890298332105,
+      "name": "probe 2 leader phase 0.095 relative density change",
+      "passed": true
+    },
+    {
+      "evidence": "mixedDensityAndDirection",
+      "name": "probe 2 leader phase 0.095 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 2 leader phase 0.095 q0 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 2 leader phase 0.095 q0 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 2 leader phase 0.095 q0 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0,
+      "name": "probe 2 leader phase 0.095 q0 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 2 leader phase 0.095 q0 direction",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 2 leader phase 0.095 q0 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0402865867982147,
+      "name": "probe 2 leader phase 0.095 q1 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.04167306216423638,
+      "name": "probe 2 leader phase 0.095 q1 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0019523926630199034,
+      "name": "probe 2 leader phase 0.095 q1 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0030941420955405154,
+      "name": "probe 2 leader phase 0.095 q1 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.005046534758560454,
+      "name": "probe 2 leader phase 0.095 q1 direction",
+      "passed": true
+    },
+    {
+      "evidence": -3.5561831257524545e-17,
+      "name": "probe 2 leader phase 0.095 q1 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0402865867982147,
+      "name": "probe 2 leader phase 0.095 q2 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.04167306216423638,
+      "name": "probe 2 leader phase 0.095 q2 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0019649635444488438,
+      "name": "probe 2 leader phase 0.095 q2 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0031140643653503036,
+      "name": "probe 2 leader phase 0.095 q2 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.005079027909799183,
+      "name": "probe 2 leader phase 0.095 q2 direction",
+      "passed": true
+    },
+    {
+      "evidence": -3.5561831257524545e-17,
+      "name": "probe 2 leader phase 0.095 q2 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.05297157622739018,
+      "name": "probe 2 leader phase 0.095 q3 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.054412893323100536,
+      "name": "probe 2 leader phase 0.095 q3 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0012037573919550697,
+      "name": "probe 2 leader phase 0.095 q3 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.004093386885081611,
+      "name": "probe 2 leader phase 0.095 q3 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.005297144277036693,
+      "name": "probe 2 leader phase 0.095 q3 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.214306433183765e-17,
+      "name": "probe 2 leader phase 0.095 q3 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.05297157622739018,
+      "name": "probe 2 leader phase 0.095 q4 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.054412893323100536,
+      "name": "probe 2 leader phase 0.095 q4 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0011982611587251547,
+      "name": "probe 2 leader phase 0.095 q4 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0040746968989008045,
+      "name": "probe 2 leader phase 0.095 q4 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.005272958057625971,
+      "name": "probe 2 leader phase 0.095 q4 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.214306433183765e-17,
+      "name": "probe 2 leader phase 0.095 q4 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06659619450317125,
+      "name": "probe 2 leader phase 0.095 q5 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06546431312356102,
+      "name": "probe 2 leader phase 0.095 q5 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.009086847447946038,
+      "name": "probe 2 leader phase 0.095 q5 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0049753888148857586,
+      "name": "probe 2 leader phase 0.095 q5 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.004111458633060239,
+      "name": "probe 2 leader phase 0.095 q5 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.0766001685454967e-17,
+      "name": "probe 2 leader phase 0.095 q5 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06659619450317125,
+      "name": "probe 2 leader phase 0.095 q6 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06546431312356102,
+      "name": "probe 2 leader phase 0.095 q6 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.009131749788652119,
+      "name": "probe 2 leader phase 0.095 q6 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.004999974525715725,
+      "name": "probe 2 leader phase 0.095 q6 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.004131775262936353,
+      "name": "probe 2 leader phase 0.095 q6 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.0766001685454967e-17,
+      "name": "probe 2 leader phase 0.095 q6 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.015621329574817946,
+      "name": "probe 2 leader phase 0.095 q7 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.015425940138142748,
+      "name": "probe 2 leader phase 0.095 q7 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009456879008873969,
+      "name": "probe 2 leader phase 0.095 q7 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005885673825784288,
+      "name": "probe 2 leader phase 0.095 q7 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0003571205183089608,
+      "name": "probe 2 leader phase 0.095 q7 direction",
+      "passed": true
+    },
+    {
+      "evidence": -7.26415455565288e-18,
+      "name": "probe 2 leader phase 0.095 q7 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.015621329574817946,
+      "name": "probe 2 leader phase 0.095 q8 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.015425940138142748,
+      "name": "probe 2 leader phase 0.095 q8 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00094404393311101,
+      "name": "probe 2 leader phase 0.095 q8 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005875442270423546,
+      "name": "probe 2 leader phase 0.095 q8 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.00035649970606864813,
+      "name": "probe 2 leader phase 0.095 q8 direction",
+      "passed": true
+    },
+    {
+      "evidence": -7.26415455565288e-18,
+      "name": "probe 2 leader phase 0.095 q8 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.09067418369743951,
+      "name": "probe 2 leader phase 0.095 q9 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09140445126630851,
+      "name": "probe 2 leader phase 0.095 q9 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0021357269312674244,
+      "name": "probe 2 leader phase 0.095 q9 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.003482301163100663,
+      "name": "probe 2 leader phase 0.095 q9 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0013465742318332376,
+      "name": "probe 2 leader phase 0.095 q9 direction",
+      "passed": true
+    },
+    {
+      "evidence": 8.673617379884035e-19,
+      "name": "probe 2 leader phase 0.095 q9 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.09067418369743951,
+      "name": "probe 2 leader phase 0.095 q10 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09140445126630851,
+      "name": "probe 2 leader phase 0.095 q10 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0021406808696405174,
+      "name": "probe 2 leader phase 0.095 q10 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0034903785559105734,
+      "name": "probe 2 leader phase 0.095 q10 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0013496976862700546,
+      "name": "probe 2 leader phase 0.095 q10 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.3010426069826053e-18,
+      "name": "probe 2 leader phase 0.095 q10 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0916138125440451,
+      "name": "probe 2 leader phase 0.095 q11 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0920951650038373,
+      "name": "probe 2 leader phase 0.095 q11 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002588482963351103,
+      "name": "probe 2 leader phase 0.095 q11 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.00346342571845064,
+      "name": "probe 2 leader phase 0.095 q11 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0008749427550995487,
+      "name": "probe 2 leader phase 0.095 q11 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.1492543028346347e-17,
+      "name": "probe 2 leader phase 0.095 q11 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0916138125440451,
+      "name": "probe 2 leader phase 0.095 q12 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0920951650038373,
+      "name": "probe 2 leader phase 0.095 q12 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0026099022764426013,
+      "name": "probe 2 leader phase 0.095 q12 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.003492085053235908,
+      "name": "probe 2 leader phase 0.095 q12 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0008821827767933184,
+      "name": "probe 2 leader phase 0.095 q12 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.1600963245594897e-17,
+      "name": "probe 2 leader phase 0.095 q12 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.031007751937984496,
+      "name": "probe 2 leader phase 0.095 q13 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.029316960859554875,
+      "name": "probe 2 leader phase 0.095 q13 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00421231426648511,
+      "name": "probe 2 leader phase 0.095 q13 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0011377521037295888,
+      "name": "probe 2 leader phase 0.095 q13 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0030745621627555108,
+      "name": "probe 2 leader phase 0.095 q13 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.0408340855860843e-17,
+      "name": "probe 2 leader phase 0.095 q13 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.031007751937984496,
+      "name": "probe 2 leader phase 0.095 q14 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.029316960859554875,
+      "name": "probe 2 leader phase 0.095 q14 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.004221226874760802,
+      "name": "probe 2 leader phase 0.095 q14 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.001140159411962991,
+      "name": "probe 2 leader phase 0.095 q14 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0030810674627978012,
+      "name": "probe 2 leader phase 0.095 q14 direction",
+      "passed": true
+    },
+    {
+      "evidence": -9.540979117872439e-18,
+      "name": "probe 2 leader phase 0.095 q14 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.019614752172891707,
+      "name": "probe 2 leader phase 0.095 q15 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.018112049117421335,
+      "name": "probe 2 leader phase 0.095 q15 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0034651835398565355,
+      "name": "probe 2 leader phase 0.095 q15 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0007159039736620238,
+      "name": "probe 2 leader phase 0.095 q15 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.002749279566194507,
+      "name": "probe 2 leader phase 0.095 q15 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.7704895589362195e-18,
+      "name": "probe 2 leader phase 0.095 q15 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.019614752172891707,
+      "name": "probe 2 leader phase 0.095 q16 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.018112049117421335,
+      "name": "probe 2 leader phase 0.095 q16 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0034520495239269817,
+      "name": "probe 2 leader phase 0.095 q16 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0007131904971359011,
+      "name": "probe 2 leader phase 0.095 q16 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.002738859026791076,
+      "name": "probe 2 leader phase 0.095 q16 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.336808689942018e-18,
+      "name": "probe 2 leader phase 0.095 q16 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0916138125440451,
+      "name": "probe 2 leader phase 0.095 q17 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0920951650038373,
+      "name": "probe 2 leader phase 0.095 q17 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002619918146385596,
+      "name": "probe 2 leader phase 0.095 q17 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0035054864246354383,
+      "name": "probe 2 leader phase 0.095 q17 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.000885568278249854,
+      "name": "probe 2 leader phase 0.095 q17 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.1817803680091998e-17,
+      "name": "probe 2 leader phase 0.095 q17 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.0916138125440451,
+      "name": "probe 2 leader phase 0.095 q18 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0920951650038373,
+      "name": "probe 2 leader phase 0.095 q18 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0026032189910228437,
+      "name": "probe 2 leader phase 0.095 q18 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0034831427256508856,
+      "name": "probe 2 leader phase 0.095 q18 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0008799237346280537,
+      "name": "probe 2 leader phase 0.095 q18 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.1817803680091998e-17,
+      "name": "probe 2 leader phase 0.095 q18 residual",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 3 follower phase 0.095 unique c16 sample",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "probe 3 follower phase 0.095 unique c20 sample",
+      "passed": true
+    },
+    {
+      "evidence": 33.8671875,
+      "name": "probe 3 follower phase 0.095 c16 density",
+      "passed": true
+    },
+    {
+      "evidence": 33.07,
+      "name": "probe 3 follower phase 0.095 c20 density",
+      "passed": true
+    },
+    {
+      "evidence": 3.642919299551295e-17,
+      "name": "probe 3 follower phase 0.095 exact identity residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.07075487192665054,
+      "name": "probe 3 follower phase 0.095 density L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.05918083052468897,
+      "name": "probe 3 follower phase 0.095 direction L1",
+      "passed": true
+    },
+    {
+      "evidence": 0.5445375719821733,
+      "name": "probe 3 follower phase 0.095 density share",
+      "passed": true
+    },
+    {
+      "evidence": 0.4554624280178267,
+      "name": "probe 3 follower phase 0.095 direction share",
+      "passed": true
+    },
+    {
+      "evidence": -0.023538638985005744,
+      "name": "probe 3 follower phase 0.095 relative density change",
+      "passed": true
+    },
+    {
+      "evidence": "mixedDensityAndDirection",
+      "name": "probe 3 follower phase 0.095 classification",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 3 follower phase 0.095 q0 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 3 follower phase 0.095 q0 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 3 follower phase 0.095 q0 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0,
+      "name": "probe 3 follower phase 0.095 q0 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 3 follower phase 0.095 q0 direction",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "probe 3 follower phase 0.095 q0 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.05709342560553633,
+      "name": "probe 3 follower phase 0.095 q1 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.05866344118536438,
+      "name": "probe 3 follower phase 0.095 q1 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0007154225143997184,
+      "name": "probe 3 follower phase 0.095 q1 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0051527131768311675,
+      "name": "probe 3 follower phase 0.095 q1 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.005868135691230898,
+      "name": "probe 3 follower phase 0.095 q1 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.214306433183765e-17,
+      "name": "probe 3 follower phase 0.095 q1 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.05709342560553633,
+      "name": "probe 3 follower phase 0.095 q2 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.05866344118536438,
+      "name": "probe 3 follower phase 0.095 q2 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0007118535006282407,
+      "name": "probe 3 follower phase 0.095 q2 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.005127007941227819,
+      "name": "probe 3 follower phase 0.095 q2 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.005838861441856072,
+      "name": "probe 3 follower phase 0.095 q2 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.214306433183765e-17,
+      "name": "probe 3 follower phase 0.095 q2 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.03344867358708189,
+      "name": "probe 3 follower phase 0.095 q3 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.03447233141820381,
+      "name": "probe 3 follower phase 0.095 q3 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0007948045282293831,
+      "name": "probe 3 follower phase 0.095 q3 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.002993760562816862,
+      "name": "probe 3 follower phase 0.095 q3 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.003788565091046257,
+      "name": "probe 3 follower phase 0.095 q3 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.214306433183765e-17,
+      "name": "probe 3 follower phase 0.095 q3 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.03344867358708189,
+      "name": "probe 3 follower phase 0.095 q4 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.03447233141820381,
+      "name": "probe 3 follower phase 0.095 q4 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": 0.0008000042474204852,
+      "name": "probe 3 follower phase 0.095 q4 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.003013346151095684,
+      "name": "probe 3 follower phase 0.095 q4 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.003813350398516181,
+      "name": "probe 3 follower phase 0.095 q4 direction",
+      "passed": true
+    },
+    {
+      "evidence": -1.214306433183765e-17,
+      "name": "probe 3 follower phase 0.095 q4 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06459054209919261,
+      "name": "probe 3 follower phase 0.095 q5 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06387964922890838,
+      "name": "probe 3 follower phase 0.095 q5 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.008292257508179562,
+      "name": "probe 3 follower phase 0.095 q5 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.005661667656007859,
+      "name": "probe 3 follower phase 0.095 q5 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0026305898521716683,
+      "name": "probe 3 follower phase 0.095 q5 direction",
+      "passed": true
+    },
+    {
+      "evidence": -3.469446951953614e-17,
+      "name": "probe 3 follower phase 0.095 q5 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.06459054209919261,
+      "name": "probe 3 follower phase 0.095 q6 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.06387964922890838,
+      "name": "probe 3 follower phase 0.095 q6 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00831227816849168,
+      "name": "probe 3 follower phase 0.095 q6 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.005675337072910219,
+      "name": "probe 3 follower phase 0.095 q6 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.002636941095581425,
+      "name": "probe 3 follower phase 0.095 q6 direction",
+      "passed": true
+    },
+    {
+      "evidence": -3.642919299551295e-17,
+      "name": "probe 3 follower phase 0.095 q6 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.026643598615916954,
+      "name": "probe 3 follower phase 0.095 q7 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.02676141517992138,
+      "name": "probe 3 follower phase 0.095 q7 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00096693329645914,
+      "name": "probe 3 follower phase 0.095 q7 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0011867685448696342,
+      "name": "probe 3 follower phase 0.095 q7 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.00021983524841049845,
+      "name": "probe 3 follower phase 0.095 q7 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.30970363562988e-18,
+      "name": "probe 3 follower phase 0.095 q7 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.026643598615916954,
+      "name": "probe 3 follower phase 0.095 q8 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.02676141517992138,
+      "name": "probe 3 follower phase 0.095 q8 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0009611227456910763,
+      "name": "probe 3 follower phase 0.095 q8 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.001179636947576255,
+      "name": "probe 3 follower phase 0.095 q8 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.00021851420188518308,
+      "name": "probe 3 follower phase 0.095 q8 direction",
+      "passed": true
+    },
+    {
+      "evidence": -4.30970363562988e-18,
+      "name": "probe 3 follower phase 0.095 q8 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08823529411764706,
+      "name": "probe 3 follower phase 0.095 q9 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.08912912004838222,
+      "name": "probe 3 follower phase 0.095 q9 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0022841602494939445,
+      "name": "probe 3 follower phase 0.095 q9 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.003959706617824559,
+      "name": "probe 3 follower phase 0.095 q9 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0016755463683306205,
+      "name": "probe 3 follower phase 0.095 q9 direction",
+      "passed": true
+    },
+    {
+      "evidence": -5.854691731421724e-18,
+      "name": "probe 3 follower phase 0.095 q9 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.08823529411764706,
+      "name": "probe 3 follower phase 0.095 q10 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.08912912004838222,
+      "name": "probe 3 follower phase 0.095 q10 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002275522092545478,
+      "name": "probe 3 follower phase 0.095 q10 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.003944731938512008,
+      "name": "probe 3 follower phase 0.095 q10 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0016692098459665354,
+      "name": "probe 3 follower phase 0.095 q10 direction",
+      "passed": true
+    },
+    {
+      "evidence": -5.854691731421724e-18,
+      "name": "probe 3 follower phase 0.095 q10 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.01384083044982699,
+      "name": "probe 3 follower phase 0.095 q11 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.01194436044753553,
+      "name": "probe 3 follower phase 0.095 q11 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.004109045694586093,
+      "name": "probe 3 follower phase 0.095 q11 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005726374957879348,
+      "name": "probe 3 follower phase 0.095 q11 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.00353640819879816,
+      "name": "probe 3 follower phase 0.095 q11 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.734723475976807e-18,
+      "name": "probe 3 follower phase 0.095 q11 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.01384083044982699,
+      "name": "probe 3 follower phase 0.095 q12 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.01194436044753553,
+      "name": "probe 3 follower phase 0.095 q12 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.004045250116065458,
+      "name": "probe 3 follower phase 0.095 q12 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0005637469301817815,
+      "name": "probe 3 follower phase 0.095 q12 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.0034815031858836777,
+      "name": "probe 3 follower phase 0.095 q12 direction",
+      "passed": true
+    },
+    {
+      "evidence": 1.3010426069826053e-18,
+      "name": "probe 3 follower phase 0.095 q12 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.09019607843137255,
+      "name": "probe 3 follower phase 0.095 q13 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09086785606289688,
+      "name": "probe 3 follower phase 0.095 q13 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.002772320491468623,
+      "name": "probe 3 follower phase 0.095 q13 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.004026787640597705,
+      "name": "probe 3 follower phase 0.095 q13 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.001254467149129079,
+      "name": "probe 3 follower phase 0.095 q13 direction",
+      "passed": true
+    },
+    {
+      "evidence": 2.3852447794681098e-18,
+      "name": "probe 3 follower phase 0.095 q13 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.09019607843137255,
+      "name": "probe 3 follower phase 0.095 q14 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09086785606289688,
+      "name": "probe 3 follower phase 0.095 q14 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0027590727429971655,
+      "name": "probe 3 follower phase 0.095 q14 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.004007545323565898,
+      "name": "probe 3 follower phase 0.095 q14 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.0012484725805687303,
+      "name": "probe 3 follower phase 0.095 q14 direction",
+      "passed": true
+    },
+    {
+      "evidence": 2.6020852139652106e-18,
+      "name": "probe 3 follower phase 0.095 q14 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.09019607843137255,
+      "name": "probe 3 follower phase 0.095 q15 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09086785606289688,
+      "name": "probe 3 follower phase 0.095 q15 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.00274726801228452,
+      "name": "probe 3 follower phase 0.095 q15 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.003990398985730664,
+      "name": "probe 3 follower phase 0.095 q15 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.001243130973446141,
+      "name": "probe 3 follower phase 0.095 q15 direction",
+      "passed": true
+    },
+    {
+      "evidence": 2.8189256484623115e-18,
+      "name": "probe 3 follower phase 0.095 q15 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.09019607843137255,
+      "name": "probe 3 follower phase 0.095 q16 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.09086785606289688,
+      "name": "probe 3 follower phase 0.095 q16 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.0027647317043876145,
+      "name": "probe 3 follower phase 0.095 q16 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.00401576494891434,
+      "name": "probe 3 follower phase 0.095 q16 density",
+      "passed": true
+    },
+    {
+      "evidence": 0.001251033244526723,
+      "name": "probe 3 follower phase 0.095 q16 direction",
+      "passed": true
+    },
+    {
+      "evidence": 2.6020852139652106e-18,
+      "name": "probe 3 follower phase 0.095 q16 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.03575547866205306,
+      "name": "probe 3 follower phase 0.095 q17 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.033413970365890534,
+      "name": "probe 3 follower phase 0.095 q17 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.005852587922374414,
+      "name": "probe 3 follower phase 0.095 q17 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0015231512379446574,
+      "name": "probe 3 follower phase 0.095 q17 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.00432943668442976,
+      "name": "probe 3 follower phase 0.095 q17 direction",
+      "passed": true
+    },
+    {
+      "evidence": 3.469446951953614e-18,
+      "name": "probe 3 follower phase 0.095 q17 residual",
+      "passed": true
+    },
+    {
+      "evidence": 0.03575547866205306,
+      "name": "probe 3 follower phase 0.095 q18 probability c16",
+      "passed": true
+    },
+    {
+      "evidence": 0.033413970365890534,
+      "name": "probe 3 follower phase 0.095 q18 probability c20",
+      "passed": true
+    },
+    {
+      "evidence": -0.005868812796452188,
+      "name": "probe 3 follower phase 0.095 q18 parent",
+      "passed": true
+    },
+    {
+      "evidence": -0.0015273738036480416,
+      "name": "probe 3 follower phase 0.095 q18 density",
+      "passed": true
+    },
+    {
+      "evidence": -0.00434143899280415,
+      "name": "probe 3 follower phase 0.095 q18 direction",
+      "passed": true
+    },
+    {
+      "evidence": 3.469446951953614e-18,
+      "name": "probe 3 follower phase 0.095 q18 residual",
+      "passed": true
+    },
+    {
+      "evidence": "mixedDensityAndDirection",
+      "name": "primary classification",
+      "passed": true
+    },
+    {
+      "evidence": "run one geometry-only c18 bridge at the primary phase and retain both geometric pathways",
+      "name": "next action follows preregistration",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "no new CFD",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "production unchanged",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "quantitative claim closed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "summary passed",
+      "passed": true
+    },
+    {
+      "evidence": 12414,
+      "name": "artifact exists ValidationArtifacts/formation-flight-link-sampling-subdecomposition/formation-flight-link-sampling-subdecomposition-directions.csv",
+      "passed": true
+    },
+    {
+      "evidence": 278740,
+      "name": "artifact exists Docs/Media/formation-flight-link-sampling-subdecomposition.png",
+      "passed": true
+    },
+    {
+      "evidence": 156936,
+      "name": "artifact exists Docs/Media/formation-flight-link-sampling-subdecomposition.svg",
+      "passed": true
+    }
+  ],
+  "checksPassed": 521,
+  "passed": true,
+  "preregistrationPath": "ValidationInputs/formation-flight-link-sampling-subdecomposition-v1.json",
+  "preregistrationSHA256": "f4cf8959fbf2987bce479b2e594a8cb0d6630f3fa5f392d30dfd275258b6ea9b",
+  "schemaVersion": 1,
+  "summaryPath": "ValidationArtifacts/formation-flight-link-sampling-subdecomposition/formation-flight-link-sampling-subdecomposition-summary.json",
+  "summarySHA256": "dd4dac9ca2f4db67ffab90099b9d3ff655e335e3cc04567765801a6ca27a8bc1"
+}

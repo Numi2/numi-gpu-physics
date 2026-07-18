@@ -1,0 +1,507 @@
+{
+  "checkCount": 99,
+  "checks": [
+    {
+      "detail": "84cacb9da1498acc018e8c284a585697acd36a6c2fab41d1094f563448d425be",
+      "name": "preregistration SHA",
+      "passed": true
+    },
+    {
+      "detail": "faf0d87e6a3a37e256f0b2a3894201fac2fb18c9e49c351085091b6f5444c536",
+      "name": "c16 replay report SHA",
+      "passed": true
+    },
+    {
+      "detail": "1ed0085960a5b62c3e62437f56f375dc5379e86f0b440eb17c9cc42a41f40b7c",
+      "name": "c16 field index SHA",
+      "passed": true
+    },
+    {
+      "detail": "{'finite': True, 'maximumAllowedRelativeClosureResidual': 0.0002, 'maximumAllowedRelativePeriodicPowerDifference': 0.2, 'maximumAllowedRelativeReferenceCoupledHistoryDifference': 1e-06, 'maximumRelativeForceClosureResidual': 1.1357720950400108e-06, 'maximumRelativePeriodicPowerDifference': 0.023424908531560838, 'maximumRelativeReferenceCoupledHistoryDifference': 0, 'maximumRelativeTorqueClosureResidual': 4.227761564834509e-06, 'noGeometryOverlap': True, 'ownerForceClosurePassed': True, 'ownerTorqueClosurePassed': True, 'passed': True, 'periodicPowerPassed': True, 'referenceCoupledHistoryPassed': True}",
+      "name": "c16 replay gates",
+      "passed": true
+    },
+    {
+      "detail": "09a40f7768c02fb57dd3bb778f949db8a575bd339e6e0965137fa5a779cca1c7",
+      "name": "c20 replay report SHA",
+      "passed": true
+    },
+    {
+      "detail": "0671190bf11fa9bd48b8ea950b7ba89b82463e608a363648e639a4a65112c9b1",
+      "name": "c20 field index SHA",
+      "passed": true
+    },
+    {
+      "detail": "{'finite': True, 'maximumAllowedRelativeClosureResidual': 0.0002, 'maximumAllowedRelativePeriodicPowerDifference': 0.2, 'maximumAllowedRelativeReferenceCoupledHistoryDifference': 1e-06, 'maximumRelativeForceClosureResidual': 7.174681968535879e-07, 'maximumRelativePeriodicPowerDifference': 0.023664134168891238, 'maximumRelativeReferenceCoupledHistoryDifference': 0, 'maximumRelativeTorqueClosureResidual': 4.415661805978743e-06, 'noGeometryOverlap': True, 'ownerForceClosurePassed': True, 'ownerTorqueClosurePassed': True, 'passed': True, 'periodicPowerPassed': True, 'referenceCoupledHistoryPassed': True}",
+      "name": "c20 replay gates",
+      "passed": true
+    },
+    {
+      "detail": "01ef220786eb6da7c8c94388d545be1def72f8d21f1923d6df3721de6d7dbdd9",
+      "name": "phase 0.005 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "78bcbae24ee16c43c954213efe5a6c7abaa7b1f58b7723756590409a2368d579",
+      "name": "phase 0.005 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.005 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07432822108299048 reported=0.07432822108299048 difference=0.000e+00",
+      "name": "phase 0.005 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.191541385612031 reported=0.191541385612031 difference=0.000e+00",
+      "name": "phase 0.005 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9973348865633216 reported=0.9973348865633216 difference=0.000e+00",
+      "name": "phase 0.005 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9864216429055958 reported=0.9864216429055958 difference=0.000e+00",
+      "name": "phase 0.005 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.5721989958012769 reported=0.572198995801277 difference=1.110e-16",
+      "name": "phase 0.005 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "eedf1bed78a4a2825c77ed01bfedbe665399a807a1cea72c187c99a8c3dcd593",
+      "name": "phase 0.015 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "75d7de20f08dc547bc962065640dc3d45a44816ef19295d47ea602a8aaf04986",
+      "name": "phase 0.015 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.015 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07316544703512759 reported=0.0731654470351276 difference=1.388e-17",
+      "name": "phase 0.015 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2120534262598444 reported=0.2120534262598444 difference=0.000e+00",
+      "name": "phase 0.015 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9974099586382044 reported=0.9974099586382044 difference=0.000e+00",
+      "name": "phase 0.015 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9813853343448957 reported=0.9813853343448957 difference=0.000e+00",
+      "name": "phase 0.015 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.6469036322658223 reported=0.6469036322658224 difference=1.110e-16",
+      "name": "phase 0.015 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "94990da08581ac40e018ab9fffa7a35c9b838dd564b3561c77615402bfb7a094",
+      "name": "phase 0.025 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "b7e1e9e68b543dab3b5ad7a6bbce2c30d3d4ee202b5a098a759e4c9d174944fd",
+      "name": "phase 0.025 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.025 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07258667119174841 reported=0.07258667119174841 difference=0.000e+00",
+      "name": "phase 0.025 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2026080478855337 reported=0.2026080478855337 difference=0.000e+00",
+      "name": "phase 0.025 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9974471115031789 reported=0.9974471115031789 difference=0.000e+00",
+      "name": "phase 0.025 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9863603756144915 reported=0.9863603756144915 difference=0.000e+00",
+      "name": "phase 0.025 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.5674110854604549 reported=0.5674110854604549 difference=0.000e+00",
+      "name": "phase 0.025 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "48027a7461d7cf88e0401059896e6ecb1e7511468fc8c4379151bf98138cabec",
+      "name": "phase 0.035 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "f5d132ea7133a04eddfd2a74874c3c6fb3ba1e1b963b4e516ca9ee091da946a4",
+      "name": "phase 0.035 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.035 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07391157464835112 reported=0.07391157464835113 difference=1.388e-17",
+      "name": "phase 0.035 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2300568991804648 reported=0.2300568991804648 difference=0.000e+00",
+      "name": "phase 0.035 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9973605738673303 reported=0.9973605738673303 difference=0.000e+00",
+      "name": "phase 0.035 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9775308164896158 reported=0.9775308164896158 difference=0.000e+00",
+      "name": "phase 0.035 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.6003601432444667 reported=0.6003601432444668 difference=1.110e-16",
+      "name": "phase 0.035 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "7e4546d5c89a55fb03e88b8fd8800a7b81331a60ba3a822f651d248055f97a35",
+      "name": "phase 0.045 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "3a0e52453177df67d9e1bad020abcca946215df47af7a3aba647fe5bab46dbc7",
+      "name": "phase 0.045 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.045 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07508829100337441 reported=0.0750882910033744 difference=1.388e-17",
+      "name": "phase 0.045 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2121644052859851 reported=0.2121644052859851 difference=0.000e+00",
+      "name": "phase 0.045 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.997294968218177 reported=0.9972949682181769 difference=1.110e-16",
+      "name": "phase 0.045 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9881704681454971 reported=0.9881704681454971 difference=0.000e+00",
+      "name": "phase 0.045 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.4874855288164603 reported=0.4874855288164605 difference=1.110e-16",
+      "name": "phase 0.045 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "969f4eea3e05c0d4090568e5265cc3637d2ddb05ce7f4886eae2d45e2040d849",
+      "name": "phase 0.055 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "290f19ad973e74cc1c7da8b05dab52ac62410f437f7a2848bf6ba44323398760",
+      "name": "phase 0.055 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.055 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07615090054472368 reported=0.07615090054472366 difference=1.388e-17",
+      "name": "phase 0.055 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.222704599222898 reported=0.222704599222898 difference=0.000e+00",
+      "name": "phase 0.055 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9972342104987533 reported=0.9972342104987533 difference=0.000e+00",
+      "name": "phase 0.055 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9877855673197915 reported=0.9877855673197915 difference=0.000e+00",
+      "name": "phase 0.055 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.4619569353608481 reported=0.4619569353608481 difference=0.000e+00",
+      "name": "phase 0.055 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "d5003bc5fbeebdac31f5e8bbe68ce5b5bd77fc09b7910caf44917b04507c4785",
+      "name": "phase 0.065 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "9e06ae80313bc3bff6f44143d6459619bff702b8a41e9de702ae12bc57df0cbc",
+      "name": "phase 0.065 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.065 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07620208252191266 reported=0.07620208252191266 difference=0.000e+00",
+      "name": "phase 0.065 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2330220661049544 reported=0.2330220661049544 difference=2.776e-17",
+      "name": "phase 0.065 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9972393529545923 reported=0.9972393529545923 difference=0.000e+00",
+      "name": "phase 0.065 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9873142346846505 reported=0.9873142346846505 difference=0.000e+00",
+      "name": "phase 0.065 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.3923665224174341 reported=0.392366522417434 difference=1.110e-16",
+      "name": "phase 0.065 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "14a0509d90a919876b9ec863588a0d3d93f58b268b5c0a8df17b978c69adde0a",
+      "name": "phase 0.075 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "57601f87b373af5715d17da0edd8f8926b9e5287c843d02371fca4fa7c8a7b05",
+      "name": "phase 0.075 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.075 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.0757956590486264 reported=0.0757956590486264 difference=0.000e+00",
+      "name": "phase 0.075 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2364153275560748 reported=0.2364153275560748 difference=0.000e+00",
+      "name": "phase 0.075 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9972659328497487 reported=0.9972659328497487 difference=0.000e+00",
+      "name": "phase 0.075 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9867159282289826 reported=0.9867159282289826 difference=0.000e+00",
+      "name": "phase 0.075 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.3366882400389909 reported=0.3366882400389909 difference=0.000e+00",
+      "name": "phase 0.075 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "ce69163fe99226a8e2e7d8b93ebc1cf02f98c89ca1dbe16c7aa528b192032150",
+      "name": "phase 0.085 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "e4b8214dece7f719d2c59a947cdfebd5917e8fad70ed922fb66be28f6389249d",
+      "name": "phase 0.085 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.085 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07474901192247696 reported=0.07474901192247696 difference=0.000e+00",
+      "name": "phase 0.085 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2334480540177614 reported=0.2334480540177614 difference=0.000e+00",
+      "name": "phase 0.085 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9973382545156271 reported=0.9973382545156271 difference=0.000e+00",
+      "name": "phase 0.085 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9882058953296914 reported=0.9882058953296914 difference=0.000e+00",
+      "name": "phase 0.085 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2923203064254334 reported=0.2923203064254334 difference=0.000e+00",
+      "name": "phase 0.085 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "985dc34d2f4abb50f210c816801a9a0fb44ba9f06cfc3095e2452ad617ef5ca4",
+      "name": "phase 0.095 c16 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c946af2d981014b0a7f7ce6b7330ac3b22431e446146554a3511329a90fa33ad",
+      "name": "phase 0.095 c20 slice SHA",
+      "passed": true
+    },
+    {
+      "detail": "c16/c20",
+      "name": "phase 0.095 finite fields",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.07414474810698538 reported=0.07414474810698538 difference=0.000e+00",
+      "name": "phase 0.095 verticalVelocityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2316135800015103 reported=0.2316135800015103 difference=0.000e+00",
+      "name": "phase 0.095 vorticityNormalizedRMSDifference",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.9973715098528886 reported=0.9973715098528886 difference=0.000e+00",
+      "name": "phase 0.095 verticalVelocitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.987653131943911 reported=0.9876531319439109 difference=1.110e-16",
+      "name": "phase 0.095 vorticitySpatialCorrelation",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.2528492184765343 reported=0.2528492184765344 difference=5.551e-17",
+      "name": "phase 0.095 nearBoundaryResidualEnergyFraction",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.4503897478154156",
+      "name": "aggregate near-boundary fraction",
+      "passed": true
+    },
+    {
+      "detail": "mixed",
+      "name": "mechanism classification",
+      "passed": true
+    },
+    {
+      "detail": "0.035",
+      "name": "nearBoundary probe phase",
+      "passed": true
+    },
+    {
+      "detail": "independent=1.821532422628087",
+      "name": "nearBoundary probe centroidXChords",
+      "passed": true
+    },
+    {
+      "detail": "independent=1.022926108982253",
+      "name": "nearBoundary probe centroidZChords",
+      "passed": true
+    },
+    {
+      "detail": "independent=2.425",
+      "name": "nearBoundary probe peakXChords",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.875",
+      "name": "nearBoundary probe peakZChords",
+      "passed": true
+    },
+    {
+      "detail": "0.095",
+      "name": "wake probe phase",
+      "passed": true
+    },
+    {
+      "detail": "independent=2.322078935781556",
+      "name": "wake probe centroidXChords",
+      "passed": true
+    },
+    {
+      "detail": "independent=-1.134601139923286",
+      "name": "wake probe centroidZChords",
+      "passed": true
+    },
+    {
+      "detail": "independent=2.375",
+      "name": "wake probe peakXChords",
+      "passed": true
+    },
+    {
+      "detail": "independent=0.8250000000000002",
+      "name": "wake probe peakZChords",
+      "passed": true
+    }
+  ],
+  "independentClassification": "mixed",
+  "independentNearBoundaryResidualEnergyFraction": 0.4503897478154156,
+  "method": "independent scipy map_coordinates and binary_dilation reconstruction from raw c16/c20 slice JSON",
+  "passed": true,
+  "schemaVersion": 1,
+  "sourceSummaryPath": "ValidationArtifacts/formation-flight-early-cycle-replay/formation-flight-early-cycle-field-summary.json",
+  "sourceSummarySHA256": "48f50242359611d68608128d99fd1b73981764f9f546964b91db78b0a2420cd5"
+}

@@ -1,0 +1,287 @@
+{
+  "aggregateBands": [
+    {
+      "band": "upstream",
+      "rr3ResidualDensity": 0.08070278127266943,
+      "rr3ResidualEnergy": 703.0826304474961,
+      "trtResidualDensity": 0.05339030278306934,
+      "trtResidualEnergy": 465.1363178461001,
+      "validCellSamples": 8712
+    },
+    {
+      "band": "middle",
+      "rr3ResidualDensity": 0.12069929370762648,
+      "rr3ResidualEnergy": 1084.121056081901,
+      "trtResidualDensity": 0.08299789270573409,
+      "trtResidualEnergy": 745.4870722829036,
+      "validCellSamples": 8982
+    },
+    {
+      "band": "downstream",
+      "rr3ResidualDensity": 0.03126177589289935,
+      "rr3ResidualEnergy": 281.35598303609413,
+      "trtResidualDensity": 0.04368052454845038,
+      "trtResidualEnergy": 393.12472093605345,
+      "validCellSamples": 9000
+    }
+  ],
+  "claimBoundary": "This center-plane localization is a mechanism selector, not a three-dimensional energy budget. It cannot validate formation benefit or authorize a production solver change.",
+  "classification": "sourceAmplitudeDominated",
+  "downstreamToUpstreamTRTResidualDensityRatio": 0.8181359211602367,
+  "newFluidSimulationRequired": false,
+  "nextAction": "return to near-wing population generation and boundary-source refinement",
+  "phaseResults": [
+    {
+      "bands": [
+        {
+          "band": "upstream",
+          "rr3ResidualDensity": 0.06227690471952163,
+          "rr3ResidualEnergy": 108.11270659308956,
+          "trtResidualDensity": 0.033116029161835606,
+          "trtResidualEnergy": 57.48942662494662,
+          "validCellCount": 1736,
+          "verticalVelocityTRT16RMS": 0.012271297423580685,
+          "verticalVelocityTRT20RMS": 0.012474344291260315,
+          "vorticityTRT16RMS": 0.0033236644933011678,
+          "vorticityTRT20RMS": 0.002791770234675374
+        },
+        {
+          "band": "middle",
+          "rr3ResidualDensity": 0.14434785260626773,
+          "rr3ResidualEnergy": 257.2278733443691,
+          "trtResidualDensity": 0.08584148395508642,
+          "trtResidualEnergy": 152.969524407964,
+          "validCellCount": 1782,
+          "verticalVelocityTRT16RMS": 0.023849482780792446,
+          "verticalVelocityTRT20RMS": 0.023916918111173864,
+          "vorticityTRT16RMS": 0.005206446567114007,
+          "vorticityTRT20RMS": 0.004326209248049184
+        },
+        {
+          "band": "downstream",
+          "rr3ResidualDensity": 0.038192827718740746,
+          "rr3ResidualEnergy": 68.74708989373335,
+          "trtResidualDensity": 0.04215257963445108,
+          "trtResidualEnergy": 75.87464334201194,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.008448208983524785,
+          "verticalVelocityTRT20RMS": 0.0076057824533753565,
+          "vorticityTRT16RMS": 0.002962053082180579,
+          "vorticityTRT20RMS": 0.002329801906689852
+        }
+      ],
+      "rr316SlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-805089.json",
+      "rr316SliceSHA256": "0eab07524ee091d2c90f6c8be832589e679cae4738b3713b7716bbbe25e69ebe",
+      "targetFollowerPhase": 0.055,
+      "trt16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-805089.json",
+      "trt16SliceSHA256": "969f4eea3e05c0d4090568e5265cc3637d2ddb05ce7f4886eae2d45e2040d849",
+      "trt20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-805042.json",
+      "trt20SliceSHA256": "290f19ad973e74cc1c7da8b05dab52ac62410f437f7a2848bf6ba44323398760",
+      "verticalVelocityScaleMetersPerSecond": 0.016245361901276754,
+      "vorticityScalePerSecond": 0.003957149729141823
+    },
+    {
+      "bands": [
+        {
+          "band": "upstream",
+          "rr3ResidualDensity": 0.07276421735143218,
+          "rr3ResidualEnergy": 125.44551071386908,
+          "trtResidualDensity": 0.04287507983352266,
+          "trtResidualEnergy": 73.91663763299306,
+          "validCellCount": 1724,
+          "verticalVelocityTRT16RMS": 0.011675969401182389,
+          "verticalVelocityTRT20RMS": 0.011943586152808482,
+          "vorticityTRT16RMS": 0.0035603236363870136,
+          "vorticityTRT20RMS": 0.002995248180870388
+        },
+        {
+          "band": "middle",
+          "rr3ResidualDensity": 0.11041300365881511,
+          "rr3ResidualEnergy": 198.7434065858672,
+          "trtResidualDensity": 0.09095225460738625,
+          "trtResidualEnergy": 163.71405829329524,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.023402654141683087,
+          "verticalVelocityTRT20RMS": 0.023514038979412896,
+          "vorticityTRT16RMS": 0.005105851286185739,
+          "vorticityTRT20RMS": 0.004097246563437214
+        },
+        {
+          "band": "downstream",
+          "rr3ResidualDensity": 0.03405033560667003,
+          "rr3ResidualEnergy": 61.29060409200605,
+          "trtResidualDensity": 0.04250582442326096,
+          "trtResidualEnergy": 76.51048396186972,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.008388712845950979,
+          "verticalVelocityTRT20RMS": 0.007539520192609386,
+          "vorticityTRT16RMS": 0.0029296841860493605,
+          "vorticityTRT20RMS": 0.0023022227953900876
+        }
+      ],
+      "rr316SlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-814893.json",
+      "rr316SliceSHA256": "f1f967bc98cb12155b67463baa2b076ba7cfb22368f9230ade87bd11d897afa5",
+      "targetFollowerPhase": 0.065,
+      "trt16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-814893.json",
+      "trt16SliceSHA256": "d5003bc5fbeebdac31f5e8bbe68ce5b5bd77fc09b7910caf44917b04507c4785",
+      "trt20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-814939.json",
+      "trt20SliceSHA256": "9e06ae80313bc3bff6f44143d6459619bff702b8a41e9de702ae12bc57df0cbc",
+      "verticalVelocityScaleMetersPerSecond": 0.015909258712864586,
+      "vorticityScalePerSecond": 0.00397749679166551
+    },
+    {
+      "bands": [
+        {
+          "band": "upstream",
+          "rr3ResidualDensity": 0.08561383799613251,
+          "rr3ResidualEnergy": 148.7968504372783,
+          "trtResidualDensity": 0.05962160442926896,
+          "trtResidualEnergy": 103.62234849806946,
+          "validCellCount": 1738,
+          "verticalVelocityTRT16RMS": 0.011120179658945444,
+          "verticalVelocityTRT20RMS": 0.011456855387778547,
+          "vorticityTRT16RMS": 0.0040767811402261205,
+          "vorticityTRT20RMS": 0.0033470435291840838
+        },
+        {
+          "band": "middle",
+          "rr3ResidualDensity": 0.10739781087178146,
+          "rr3ResidualEnergy": 193.31605956920663,
+          "trtResidualDensity": 0.0884395267582578,
+          "trtResidualEnergy": 159.19114816486402,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.023223155130298483,
+          "verticalVelocityTRT20RMS": 0.02338196764637779,
+          "vorticityTRT16RMS": 0.00461916811996828,
+          "vorticityTRT20RMS": 0.003658320057731357
+        },
+        {
+          "band": "downstream",
+          "rr3ResidualDensity": 0.030772794836611238,
+          "rr3ResidualEnergy": 55.39103070590023,
+          "trtResidualDensity": 0.04334640234057161,
+          "trtResidualEnergy": 78.0235242130289,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.008340512809256103,
+          "verticalVelocityTRT20RMS": 0.007494527167822626,
+          "vorticityTRT16RMS": 0.002875710705345693,
+          "vorticityTRT20RMS": 0.002260258189509709
+        }
+      ],
+      "rr316SlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-824930.json",
+      "rr316SliceSHA256": "b1255259a631d20059e2a8c1b6564bad3ade05d46e7039cbff76008780995413",
+      "targetFollowerPhase": 0.075,
+      "trt16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-824930.json",
+      "trt16SliceSHA256": "14a0509d90a919876b9ec863588a0d3d93f58b268b5c0a8df17b978c69adde0a",
+      "trt20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-825023.json",
+      "trt20SliceSHA256": "57601f87b373af5715d17da0edd8f8926b9e5287c843d02371fca4fa7c8a7b05",
+      "verticalVelocityScaleMetersPerSecond": 0.015685419674433074,
+      "vorticityScalePerSecond": 0.00392361924431588
+    },
+    {
+      "bands": [
+        {
+          "band": "upstream",
+          "rr3ResidualDensity": 0.08962187802135906,
+          "rr3ResidualEnergy": 156.748664659357,
+          "trtResidualDensity": 0.0656061206406739,
+          "trtResidualEnergy": 114.74510500053867,
+          "validCellCount": 1749,
+          "verticalVelocityTRT16RMS": 0.010786268837918288,
+          "verticalVelocityTRT20RMS": 0.011188295863724376,
+          "vorticityTRT16RMS": 0.004188229056103788,
+          "vorticityTRT20RMS": 0.0033387364762746995
+        },
+        {
+          "band": "middle",
+          "rr3ResidualDensity": 0.11633955762695575,
+          "rr3ResidualEnergy": 209.41120372852035,
+          "trtResidualDensity": 0.07885875535301105,
+          "trtResidualEnergy": 141.9457596354199,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.02313908253298568,
+          "verticalVelocityTRT20RMS": 0.02335899242478254,
+          "vorticityTRT16RMS": 0.004294921985428485,
+          "vorticityTRT20RMS": 0.0034327618328256837
+        },
+        {
+          "band": "downstream",
+          "rr3ResidualDensity": 0.027816242297307465,
+          "rr3ResidualEnergy": 50.06923613515344,
+          "trtResidualDensity": 0.04451098436231212,
+          "trtResidualEnergy": 80.11977185216182,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.008301245495743053,
+          "verticalVelocityTRT20RMS": 0.007454863288233736,
+          "vorticityTRT16RMS": 0.0028133921754258393,
+          "vorticityTRT20RMS": 0.002211620369547666
+        }
+      ],
+      "rr316SlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-834967.json",
+      "rr316SliceSHA256": "3e30162f367e75560987019b88e259eeca75958fec1f806106b8e0d51826afc6",
+      "targetFollowerPhase": 0.085,
+      "trt16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-834967.json",
+      "trt16SliceSHA256": "ce69163fe99226a8e2e7d8b93ebc1cf02f98c89ca1dbe16c7aa528b192032150",
+      "trt20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-834921.json",
+      "trt20SliceSHA256": "e4b8214dece7f719d2c59a947cdfebd5917e8fad70ed922fb66be28f6389249d",
+      "verticalVelocityScaleMetersPerSecond": 0.01559637527555594,
+      "vorticityScalePerSecond": 0.003821851329770392
+    },
+    {
+      "bands": [
+        {
+          "band": "upstream",
+          "rr3ResidualDensity": 0.09290589124300407,
+          "rr3ResidualEnergy": 163.97889804390218,
+          "trtResidualDensity": 0.06536135982410896,
+          "trtResidualEnergy": 115.36280008955231,
+          "validCellCount": 1765,
+          "verticalVelocityTRT16RMS": 0.010635791513318183,
+          "verticalVelocityTRT20RMS": 0.011035548017932212,
+          "vorticityTRT16RMS": 0.004083898345827674,
+          "vorticityTRT20RMS": 0.0032689987361325364
+        },
+        {
+          "band": "middle",
+          "rr3ResidualDensity": 0.12523472936329877,
+          "rr3ResidualEnergy": 225.4225128539378,
+          "trtResidualDensity": 0.07092587876742244,
+          "trtResidualEnergy": 127.66658178136039,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.023135210980681793,
+          "verticalVelocityTRT20RMS": 0.023406656528316548,
+          "vorticityTRT16RMS": 0.004087071092767713,
+          "vorticityTRT20RMS": 0.0033031356740380923
+        },
+        {
+          "band": "downstream",
+          "rr3ResidualDensity": 0.025476679005167285,
+          "rr3ResidualEnergy": 45.85802220930111,
+          "trtResidualDensity": 0.04588683198165617,
+          "trtResidualEnergy": 82.59629756698111,
+          "validCellCount": 1800,
+          "verticalVelocityTRT16RMS": 0.008267375127725494,
+          "verticalVelocityTRT20RMS": 0.007422184944649407,
+          "vorticityTRT16RMS": 0.0027449525848959604,
+          "vorticityTRT20RMS": 0.0021565648903600593
+        }
+      ],
+      "rr316SlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-845005.json",
+      "rr316SliceSHA256": "4e96dacea0166c6e55d3f57c94cd46c79ab7bc558580e66131bc0c0c8321be1d",
+      "targetFollowerPhase": 0.095,
+      "trt16SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c16-best-z3-phase025/formation-flight-flow-slices/phase-845005.json",
+      "trt16SliceSHA256": "985dc34d2f4abb50f210c816801a9a0fb44ba9f06cfc3095e2452ad617ef5ca4",
+      "trt20SlicePath": "ValidationArtifacts/formation-flight-early-cycle-replay/c20-best-z3-phase025/formation-flight-flow-slices/phase-845005.json",
+      "trt20SliceSHA256": "c946af2d981014b0a7f7ce6b7330ac3b22431e446146554a3511329a90fa33ad",
+      "verticalVelocityScaleMetersPerSecond": 0.015568004793184424,
+      "vorticityScalePerSecond": 0.003690422732891452
+    }
+  ],
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-streamwise-attenuation-localizer-v1.json",
+    "sha256": "3bee21dfcd9d1060e1ca94e467c4b0d1756b25a3391b30fddb97dbd6e7c33937"
+  },
+  "productionSolverChanged": false,
+  "quantitativeFormationClaimAuthorized": false,
+  "schemaVersion": 1
+}

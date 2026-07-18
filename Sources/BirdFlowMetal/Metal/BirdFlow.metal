@@ -199,6 +199,23 @@ struct GPUForceTorque {
     float4 torque;
 };
 
+/// Direction-selected, read-only formation boundary-source census. All lanes
+/// are additive so a compact generic reduction can preserve exact totals.
+struct GPUFormationBoundarySourceCensus {
+    // x=link count, y=raw reflected, z=reflected incoming contribution,
+    // w=interpolation auxiliary incoming contribution.
+    float4 populations;
+    // x=moving-wall incoming contribution, y=reconstructed incoming,
+    // z=sum(q), w=sum(q^2).
+    float4 reconstruction;
+    // x=sum(c dot wall), y=sum(abs(c dot wall)), z=sum(|wall|),
+    // w=sum(incoming^2).
+    float4 wallKinematics;
+    // x=interpolated q<=0.5, y=interpolated q>0.5,
+    // z=halfway fallback, w=sum(abs(incoming)).
+    float4 branches;
+};
+
 /// Diagnostic-only partial reduction record. `comparisonValue` maps every
 /// non-finite population to negative infinity so the host can locate the
 /// first invalid value without copying the direction-major population field.
@@ -2514,6 +2531,8 @@ kernel void stepFluidTRT(
     float3 cellTorquePhysical = float3(0);
     float limiterActivation = 0.0f;
     float limiterMaximumRestriction = 0.0f;
+    bool captureCollisionMinimum = uniforms.integration.z != 0u;
+    float minimumPostPopulation = as_type<float>(0x7f800000u);
 
     if (gid < uniforms.grid.w) {
         uint3 size = uniforms.grid.xyz;
@@ -2538,11 +2557,17 @@ kernel void stepFluidTRT(
         if (isSolid) {
             float3 wall = wallVelocity[gid].xyz;
             for (uint q = 0; q < Q; ++q) {
-                populationsOut[q * uniforms.grid.w + gid] = equilibrium(
+                float post = equilibrium(
                     q,
                     1.0f,
                     wall
                 );
+                populationsOut[q * uniforms.grid.w + gid] = post;
+                if (captureCollisionMinimum) {
+                    minimumPostPopulation = isfinite(post)
+                        ? min(minimumPostPopulation, post)
+                        : as_type<float>(0xff800000u);
+                }
             }
             // A newly covered node transfers the difference between its
             // previous fluid momentum and the moving-solid equilibrium.
@@ -3024,6 +3049,11 @@ kernel void stepFluidTRT(
                         post = mix(post, far, sponge);
                     }
                     populationsOut[q * uniforms.grid.w + gid] = post;
+                    if (captureCollisionMinimum) {
+                        minimumPostPopulation = isfinite(post)
+                            ? min(minimumPostPopulation, post)
+                            : as_type<float>(0xff800000u);
+                    }
                     if (captureFields) {
                         capturedDensity += post;
                         capturedMomentum += post * float3(C[q]);
@@ -3050,6 +3080,11 @@ kernel void stepFluidTRT(
                         post = mix(post, far, sponge);
                     }
                     populationsOut[q * uniforms.grid.w + gid] = post;
+                    if (captureCollisionMinimum) {
+                        minimumPostPopulation = isfinite(post)
+                            ? min(minimumPostPopulation, post)
+                            : as_type<float>(0xff800000u);
+                    }
                     if (captureFields) {
                         capturedDensity += post;
                         capturedMomentum += post * float3(C[q]);
@@ -3126,6 +3161,11 @@ kernel void stepFluidTRT(
                         post = mix(post, far, sponge);
                     }
                     populationsOut[q * uniforms.grid.w + gid] = post;
+                    if (captureCollisionMinimum) {
+                        minimumPostPopulation = isfinite(post)
+                            ? min(minimumPostPopulation, post)
+                            : as_type<float>(0xff800000u);
+                    }
                     if (captureFields) {
                         capturedDensity += post;
                         capturedMomentum += post * float3(C[q]);
@@ -3162,7 +3202,9 @@ kernel void stepFluidTRT(
     );
     groupTorques[threadIndex] = float4(
         cellTorquePhysical,
-        limiterMaximumRestriction
+        captureCollisionMinimum
+            ? 1.0f - minimumPostPopulation
+            : limiterMaximumRestriction
     );
     threadgroup_barrier(mem_flags::mem_threadgroup);
 
@@ -4716,6 +4758,434 @@ kernel void capturePrescribedFormationLoad(
         }
         partialLoads[threadgroupPosition].force = force;
         partialLoads[threadgroupPosition].torque = torque;
+    }
+}
+
+/// Read-only causal decomposition of the exact formation-owner load. The
+/// selected component is 0=reflected populations, 1=interpolation auxiliary,
+/// 2=moving wall, 3=cover impulse, or 4=uncover impulse. Five dispatches sum
+/// linearly to capturePrescribedFormationLoad without touching populations,
+/// geometry, macroscopic fields, or the production reduction.
+kernel void capturePrescribedFormationLoadComponent(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidPrevious [[buffer(1)]],
+    device const uchar* solidCurrent [[buffer(2)]],
+    device const float4* wallVelocity [[buffer(3)]],
+    device GPUForceTorque* partialLoads [[buffer(4)]],
+    device const GPUPreparedFlappingWing& leaderPrepared [[buffer(5)]],
+    device const GPUPreparedFlappingWing& followerPrepared [[buffer(6)]],
+    constant GPUUniforms& uniforms [[buffer(7)]],
+    constant uint2& selection [[buffer(8)]],
+    device const float4* coveredFluidMomentum [[buffer(9)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupForces[256];
+    threadgroup float4 groupTorques[256];
+    float3 cellForcePhysical = float3(0);
+    float3 cellTorquePhysical = float3(0);
+    uint selectedOwner = selection.x;
+    uint selectedComponent = selection.y;
+
+    if (gid < uniforms.grid.w && selectedComponent < 5u) {
+        uint3 size = uniforms.grid.xyz;
+        uint3 cell = unflatten(gid, size);
+        float3 world = cellPosition(cell, uniforms);
+        uchar previousOwner = solidPrevious[gid];
+        uchar currentOwner = solidCurrent[gid];
+        bool wasSolid = previousOwner != 0;
+        bool isSolid = currentOwner != 0;
+        float3 reference = selectedOwner == 2u
+            ? followerPrepared.root.xyz
+            : leaderPrepared.root.xyz;
+
+        if (isSolid) {
+            if (selectedComponent == 3u
+                && !wasSolid && uint(currentOwner) == selectedOwner) {
+                float3 previousMomentum = coveredFluidMomentum[gid].xyz;
+                cellForcePhysical = previousMomentum
+                    * uniforms.timeStepAndScales.w;
+                cellTorquePhysical = cross(
+                    world - reference,
+                    cellForcePhysical
+                );
+            }
+        }
+        else if (wasSolid) {
+            if (selectedComponent == 4u
+                && uint(previousOwner) == selectedOwner) {
+                float3 momentum = float3(0);
+                float3 refillVelocity = wallVelocity[gid].xyz;
+                for (uint q = 0u; q < Q; ++q) {
+                    float value = equilibrium(q, 1.0f, refillVelocity);
+                    momentum += value * float3(C[q]);
+                }
+                float3 topologyForceOnBody = -momentum;
+                for (uint q = 1u; q < Q; ++q) {
+                    int3 neighborCell = int3(cell) + C[q];
+                    if (!inside(neighborCell, size)) {
+                        continue;
+                    }
+                    uint neighbor = flatten(uint3(neighborCell), size);
+                    bool persistentFluidNeighbor =
+                        solidPrevious[neighbor] == 0
+                        && solidCurrent[neighbor] == 0;
+                    if (!persistentFluidNeighbor) {
+                        continue;
+                    }
+                    float oldSolidOutgoing = populationsIn[
+                        q * uniforms.grid.w + gid
+                    ];
+                    float suppressedNeighborIncoming = populationsIn[
+                        OPP[q] * uniforms.grid.w + neighbor
+                    ];
+                    topologyForceOnBody -= (
+                        oldSolidOutgoing + suppressedNeighborIncoming
+                    ) * float3(C[q]);
+                }
+                cellForcePhysical = topologyForceOnBody
+                    * uniforms.timeStepAndScales.w;
+                cellTorquePhysical = cross(
+                    world - reference,
+                    cellForcePhysical
+                );
+            }
+        }
+        else if (selectedComponent <= 2u) {
+            bool interiorDomain = cell.x > 0u
+                && cell.y > 0u
+                && cell.z > 0u
+                && cell.x + 1u < size.x
+                && cell.y + 1u < size.y
+                && cell.z + 1u < size.z;
+            float3 forceOnBodyLattice = float3(0);
+            for (uint q = 1u; q < Q; ++q) {
+                int3 sourceCell = int3(cell) - C[q];
+                if (!interiorDomain && !inside(sourceCell, size)) {
+                    if (uniforms.flags.w == 0u) {
+                        continue;
+                    }
+                    sourceCell.x = sourceCell.x < 0
+                        ? int(size.x) - 1
+                        : (sourceCell.x >= int(size.x)
+                            ? 0
+                            : sourceCell.x);
+                    sourceCell.y = sourceCell.y < 0
+                        ? int(size.y) - 1
+                        : (sourceCell.y >= int(size.y)
+                            ? 0
+                            : sourceCell.y);
+                    sourceCell.z = sourceCell.z < 0
+                        ? int(size.z) - 1
+                        : (sourceCell.z >= int(size.z)
+                            ? 0
+                            : sourceCell.z);
+                }
+                uint source = flatten(uint3(sourceCell), size);
+                if (uint(solidCurrent[source]) != selectedOwner) {
+                    continue;
+                }
+
+                float reflected = populationsIn[
+                    OPP[q] * uniforms.grid.w + gid
+                ];
+                float3 direction = float3(C[q]);
+                float linkFraction = clamp(
+                    populationsIn[q * uniforms.grid.w + source],
+                    1.0e-4f,
+                    1.0f
+                );
+                float3 wall = mix(
+                    wallVelocity[gid].xyz,
+                    wallVelocity[source].xyz,
+                    linkFraction
+                );
+                uint farther = 0u;
+                bool interpolatedBoundary = true;
+                if (linkFraction <= 0.5f) {
+                    int3 fartherCell = int3(cell) + C[q];
+                    if (inside(fartherCell, size)) {
+                        farther = flatten(uint3(fartherCell), size);
+                    }
+                    if (!inside(fartherCell, size)
+                        || solidCurrent[farther] != 0) {
+                        interpolatedBoundary = false;
+                        linkFraction = 0.5f;
+                        wall = wallVelocity[source].xyz;
+                    }
+                }
+                float wallCorrection = 2.0f
+                    * W[q]
+                    * uniforms.farFieldLattice.w
+                    * dot(direction, wall)
+                    / CS2;
+                float reflectedContribution = reflected;
+                float auxiliaryContribution = 0.0f;
+                float wallContribution = wallCorrection;
+                if (interpolatedBoundary) {
+                    if (linkFraction <= 0.5f) {
+                        float fartherOutgoing = populationsIn[
+                            OPP[q] * uniforms.grid.w + farther
+                        ];
+                        reflectedContribution = 2.0f
+                            * linkFraction * reflected;
+                        auxiliaryContribution = (1.0f
+                            - 2.0f * linkFraction) * fartherOutgoing;
+                    }
+                    else {
+                        float previousIncoming = populationsIn[
+                            q * uniforms.grid.w + gid
+                        ];
+                        reflectedContribution = reflected
+                            / (2.0f * linkFraction);
+                        auxiliaryContribution = (2.0f * linkFraction - 1.0f)
+                            * previousIncoming
+                            / (2.0f * linkFraction);
+                        wallContribution = wallCorrection
+                            / (2.0f * linkFraction);
+                    }
+                }
+                float selectedPopulation = selectedComponent == 0u
+                    ? reflectedContribution + reflected
+                    : (selectedComponent == 1u
+                        ? auxiliaryContribution
+                        : wallContribution);
+                float3 linkForceLattice = -selectedPopulation * direction;
+                forceOnBodyLattice += linkForceLattice;
+                float3 linkForcePhysical = linkForceLattice
+                    * uniforms.timeStepAndScales.w;
+                float3 boundaryPoint = world
+                    - linkFraction
+                    * direction
+                    * uniforms.originAndCellSize.w;
+                cellTorquePhysical += cross(
+                    boundaryPoint - reference,
+                    linkForcePhysical
+                );
+            }
+            cellForcePhysical = forceOnBodyLattice
+                * uniforms.timeStepAndScales.w;
+        }
+    }
+
+    groupForces[threadIndex] = float4(cellForcePhysical, 0);
+    groupTorques[threadIndex] = float4(cellTorquePhysical, 0);
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        float4 force = float4(0);
+        float4 torque = float4(0);
+        for (uint index = 0u; index < threadsPerThreadgroup; ++index) {
+            force += groupForces[index];
+            torque += groupTorques[index];
+        }
+        partialLoads[threadgroupPosition].force = force;
+        partialLoads[threadgroupPosition].torque = torque;
+    }
+}
+
+/// Captures one owner and one D3Q19 direction from the exact interpolated
+/// moving-boundary reconstruction without modifying populations or geometry.
+/// Eighteen compact dispatches (the rest direction is identically zero) avoid
+/// a cell-times-direction archive while
+/// retaining raw reflected, reconstructed reflected, interpolation, wall,
+/// link-fraction, branch, and wall-kinematic totals.
+kernel void capturePrescribedFormationBoundarySourceCensus(
+    device const float* populationsIn [[buffer(0)]],
+    device const uchar* solidCurrent [[buffer(1)]],
+    device const float4* wallVelocity [[buffer(2)]],
+    device GPUFormationBoundarySourceCensus* partials [[buffer(3)]],
+    constant GPUUniforms& uniforms [[buffer(4)]],
+    constant uint2& selection [[buffer(5)]],
+    uint gid [[thread_position_in_grid]],
+    uint threadIndex [[thread_index_in_threadgroup]],
+    uint threadgroupPosition [[threadgroup_position_in_grid]],
+    uint threadsPerThreadgroup [[threads_per_threadgroup]]
+) {
+    threadgroup float4 groupPopulations[256];
+    threadgroup float4 groupReconstruction[256];
+    threadgroup float4 groupWallKinematics[256];
+    threadgroup float4 groupBranches[256];
+    float4 populations = float4(0);
+    float4 reconstruction = float4(0);
+    float4 wallKinematics = float4(0);
+    float4 branches = float4(0);
+    uint selectedOwner = selection.x;
+    uint q = selection.y;
+
+    if (gid < uniforms.grid.w && selectedOwner >= 1u
+        && selectedOwner <= 2u && q > 0u && q < Q
+        && solidCurrent[gid] == 0u) {
+        uint3 size = uniforms.grid.xyz;
+        uint3 cell = unflatten(gid, size);
+        int3 sourceCell = int3(cell) - C[q];
+        bool sourceAvailable = inside(sourceCell, size);
+        if (!sourceAvailable && uniforms.flags.w != 0u) {
+            sourceCell.x = sourceCell.x < 0
+                ? int(size.x) - 1
+                : (sourceCell.x >= int(size.x) ? 0 : sourceCell.x);
+            sourceCell.y = sourceCell.y < 0
+                ? int(size.y) - 1
+                : (sourceCell.y >= int(size.y) ? 0 : sourceCell.y);
+            sourceCell.z = sourceCell.z < 0
+                ? int(size.z) - 1
+                : (sourceCell.z >= int(size.z) ? 0 : sourceCell.z);
+            sourceAvailable = true;
+        }
+        if (sourceAvailable) {
+            uint source = flatten(uint3(sourceCell), size);
+            if (uint(solidCurrent[source]) == selectedOwner) {
+                float rawReflected = populationsIn[
+                    OPP[q] * uniforms.grid.w + gid
+                ];
+                float3 direction = float3(C[q]);
+                float linkFraction = clamp(
+                    populationsIn[q * uniforms.grid.w + source],
+                    1.0e-4f,
+                    1.0f
+                );
+                float3 wall = mix(
+                    wallVelocity[gid].xyz,
+                    wallVelocity[source].xyz,
+                    linkFraction
+                );
+                uint farther = 0u;
+                bool interpolatedBoundary = true;
+                if (linkFraction <= 0.5f) {
+                    int3 fartherCell = int3(cell) + C[q];
+                    if (inside(fartherCell, size)) {
+                        farther = flatten(uint3(fartherCell), size);
+                    }
+                    if (!inside(fartherCell, size)
+                        || solidCurrent[farther] != 0u) {
+                        interpolatedBoundary = false;
+                        linkFraction = 0.5f;
+                        wall = wallVelocity[source].xyz;
+                    }
+                }
+                float wallCorrection = 2.0f
+                    * W[q]
+                    * uniforms.farFieldLattice.w
+                    * dot(direction, wall)
+                    / CS2;
+                float reflectedContribution = rawReflected;
+                float auxiliaryContribution = 0.0f;
+                float wallContribution = wallCorrection;
+                if (interpolatedBoundary) {
+                    if (linkFraction <= 0.5f) {
+                        float fartherOutgoing = populationsIn[
+                            OPP[q] * uniforms.grid.w + farther
+                        ];
+                        reflectedContribution = 2.0f
+                            * linkFraction * rawReflected;
+                        auxiliaryContribution = (1.0f
+                            - 2.0f * linkFraction) * fartherOutgoing;
+                        branches.x = 1.0f;
+                    }
+                    else {
+                        float previousIncoming = populationsIn[
+                            q * uniforms.grid.w + gid
+                        ];
+                        reflectedContribution = rawReflected
+                            / (2.0f * linkFraction);
+                        auxiliaryContribution = (2.0f * linkFraction - 1.0f)
+                            * previousIncoming
+                            / (2.0f * linkFraction);
+                        wallContribution = wallCorrection
+                            / (2.0f * linkFraction);
+                        branches.y = 1.0f;
+                    }
+                }
+                else {
+                    branches.z = 1.0f;
+                }
+                float incoming = reflectedContribution
+                    + auxiliaryContribution + wallContribution;
+                populations = float4(
+                    1.0f,
+                    rawReflected,
+                    reflectedContribution,
+                    auxiliaryContribution
+                );
+                reconstruction = float4(
+                    wallContribution,
+                    incoming,
+                    linkFraction,
+                    linkFraction * linkFraction
+                );
+                float wallProjection = dot(direction, wall);
+                wallKinematics = float4(
+                    wallProjection,
+                    abs(wallProjection),
+                    length(wall),
+                    incoming * incoming
+                );
+                branches.w = abs(incoming);
+            }
+        }
+    }
+
+    groupPopulations[threadIndex] = populations;
+    groupReconstruction[threadIndex] = reconstruction;
+    groupWallKinematics[threadIndex] = wallKinematics;
+    groupBranches[threadIndex] = branches;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (threadIndex == 0u) {
+        float4 populationSum = float4(0);
+        float4 reconstructionSum = float4(0);
+        float4 wallSum = float4(0);
+        float4 branchSum = float4(0);
+        for (uint index = 0u; index < threadsPerThreadgroup; ++index) {
+            populationSum += groupPopulations[index];
+            reconstructionSum += groupReconstruction[index];
+            wallSum += groupWallKinematics[index];
+            branchSum += groupBranches[index];
+        }
+        partials[threadgroupPosition].populations = populationSum;
+        partials[threadgroupPosition].reconstruction = reconstructionSum;
+        partials[threadgroupPosition].wallKinematics = wallSum;
+        partials[threadgroupPosition].branches = branchSum;
+    }
+}
+
+/// Sum-reduces the additive boundary-source census in deterministic ascending
+/// chunks, matching the existing force reduction's compact GPU workflow.
+kernel void reduceFormationBoundarySourceCensus(
+    device const GPUFormationBoundarySourceCensus* input [[buffer(0)]],
+    device GPUFormationBoundarySourceCensus* output [[buffer(1)]],
+    constant uint& inputCount [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    uint start = gid * 256u;
+    if (start >= inputCount) {
+        return;
+    }
+    float4 populations = float4(0);
+    float4 reconstruction = float4(0);
+    float4 wallKinematics = float4(0);
+    float4 branches = float4(0);
+    uint end = min(start + 256u, inputCount);
+    for (uint index = start; index < end; ++index) {
+        populations += input[index].populations;
+        reconstruction += input[index].reconstruction;
+        wallKinematics += input[index].wallKinematics;
+        branches += input[index].branches;
+    }
+    output[gid].populations = populations;
+    output[gid].reconstruction = reconstruction;
+    output[gid].wallKinematics = wallKinematics;
+    output[gid].branches = branches;
+}
+
+kernel void storeFormationBoundarySourceCensus(
+    device const GPUFormationBoundarySourceCensus* total [[buffer(0)]],
+    device GPUFormationBoundarySourceCensus* history [[buffer(1)]],
+    constant uint& sampleIndex [[buffer(2)]],
+    uint gid [[thread_position_in_grid]]
+) {
+    if (gid == 0u) {
+        history[sampleIndex] = total[0];
     }
 }
 

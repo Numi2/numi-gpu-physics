@@ -1,0 +1,127 @@
+{
+  "candidateOperator": "positivity-preserving-recursive-regularized-bgk",
+  "claimBoundary": "The locked c20 TRT case is a discriminator reference, not truth. A favorable c16 screen only authorizes one c20 RR3 run. No result here establishes biological benefit, validates power magnitude, or changes the production collision default.",
+  "classification": "collisionChangeAdverseOrUnsupported",
+  "controlOperator": "production-trt",
+  "fineRun": null,
+  "phaseResults": [
+    {
+      "actualCandidateFollowerPhase": 0.0550887021475257,
+      "baselineTRTNormalizedResidualEnergy": 286.33359437492254,
+      "baselineVerticalVelocityCorrelation": 0.9959555655144244,
+      "baselineVorticityCorrelation": 0.9826335816877207,
+      "candidateRR3NormalizedResidualEnergy": 434.0876698311918,
+      "candidateResidualEnergyReductionFraction": -0.516020747683562,
+      "candidateSlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-805089.json",
+      "candidateSliceSHA256": "0eab07524ee091d2c90f6c8be832589e679cae4738b3713b7716bbbe25e69ebe",
+      "candidateVerticalVelocityCorrelation": 0.9952663153797626,
+      "candidateVorticityCorrelation": 0.9578279111207375,
+      "commonWakeCellCount": 5318,
+      "targetFollowerPhase": 0.055,
+      "verticalVelocityScaleMetersPerSecond": 0.016245361901276754,
+      "vorticityScalePerSecond": 0.003957149729141823
+    },
+    {
+      "actualCandidateFollowerPhase": 0.06489262371615312,
+      "baselineTRTNormalizedResidualEnergy": 314.14117988815804,
+      "baselineVerticalVelocityCorrelation": 0.9952787182018575,
+      "baselineVorticityCorrelation": 0.9824885523132099,
+      "candidateRR3NormalizedResidualEnergy": 385.4795213917423,
+      "candidateResidualEnergyReductionFraction": -0.22709006673045054,
+      "candidateSlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-814893.json",
+      "candidateSliceSHA256": "f1f967bc98cb12155b67463baa2b076ba7cfb22368f9230ade87bd11d897afa5",
+      "candidateVerticalVelocityCorrelation": 0.9951118507316744,
+      "candidateVorticityCorrelation": 0.9623790915444947,
+      "commonWakeCellCount": 5324,
+      "targetFollowerPhase": 0.065,
+      "verticalVelocityScaleMetersPerSecond": 0.015909258712864586,
+      "vorticityScalePerSecond": 0.00397749679166551
+    },
+    {
+      "actualCandidateFollowerPhase": 0.07492997198879547,
+      "baselineTRTNormalizedResidualEnergy": 340.8370208759625,
+      "baselineVerticalVelocityCorrelation": 0.9948120312115117,
+      "baselineVorticityCorrelation": 0.9804763138218014,
+      "candidateRR3NormalizedResidualEnergy": 397.5039407123852,
+      "candidateResidualEnergyReductionFraction": -0.1662581127214023,
+      "candidateSlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-824930.json",
+      "candidateSliceSHA256": "b1255259a631d20059e2a8c1b6564bad3ade05d46e7039cbff76008780995413",
+      "candidateVerticalVelocityCorrelation": 0.994658117089014,
+      "candidateVorticityCorrelation": 0.9629082188246095,
+      "commonWakeCellCount": 5338,
+      "targetFollowerPhase": 0.075,
+      "verticalVelocityScaleMetersPerSecond": 0.015685419674433074,
+      "vorticityScalePerSecond": 0.00392361924431588
+    },
+    {
+      "actualCandidateFollowerPhase": 0.08496732026143805,
+      "baselineTRTNormalizedResidualEnergy": 336.81063648812034,
+      "baselineVerticalVelocityCorrelation": 0.994788610038754,
+      "baselineVorticityCorrelation": 0.9828938469820092,
+      "candidateRR3NormalizedResidualEnergy": 416.22910452303086,
+      "candidateResidualEnergyReductionFraction": -0.23579560569403718,
+      "candidateSlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-834967.json",
+      "candidateSliceSHA256": "3e30162f367e75560987019b88e259eeca75958fec1f806106b8e0d51826afc6",
+      "candidateVerticalVelocityCorrelation": 0.9939435745482084,
+      "candidateVorticityCorrelation": 0.9639524642099933,
+      "commonWakeCellCount": 5349,
+      "targetFollowerPhase": 0.085,
+      "verticalVelocityScaleMetersPerSecond": 0.01559637527555594,
+      "vorticityScalePerSecond": 0.003821851329770392
+    },
+    {
+      "actualCandidateFollowerPhase": 0.0950046685340804,
+      "baselineTRTNormalizedResidualEnergy": 325.6256794378938,
+      "baselineVerticalVelocityCorrelation": 0.9948956766961258,
+      "baselineVorticityCorrelation": 0.9827512560525943,
+      "candidateRR3NormalizedResidualEnergy": 435.2594331071411,
+      "candidateResidualEnergyReductionFraction": -0.3366864488651536,
+      "candidateSlicePath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-flow-slices/phase-845005.json",
+      "candidateSliceSHA256": "4e96dacea0166c6e55d3f57c94cd46c79ab7bc558580e66131bc0c0c8321be1d",
+      "candidateVerticalVelocityCorrelation": 0.9931679124204167,
+      "candidateVorticityCorrelation": 0.9606243240513336,
+      "commonWakeCellCount": 5365,
+      "targetFollowerPhase": 0.095,
+      "verticalVelocityScaleMetersPerSecond": 0.015568004793184424,
+      "vorticityScalePerSecond": 0.003690422732891452
+    }
+  ],
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-collision-dissipation-discriminator-v1.json",
+    "sha256": "de1fda2f88d2ce182b2c9615254f16af2e9b15e5ccbf6cd01fd6556182ab42d3"
+  },
+  "productionCollisionOperatorChanged": false,
+  "promotion": {
+    "c20CandidateAuthorized": false,
+    "c20CandidateExecuted": false,
+    "minimumForceReductionFraction": 0.1,
+    "minimumWakeReductionFraction": 0.25
+  },
+  "quantitativeFormationClaimAuthorized": false,
+  "schemaVersion": 1,
+  "screen": {
+    "aggregateBaselineWakeResidualEnergy": 1603.7481110650572,
+    "aggregateCandidateWakeResidualEnergy": 2068.5596695654913,
+    "aggregateWakeResidualEnergyReductionFraction": -0.28982828119544934,
+    "baselineDimensionlessForceResidualEnergy": 0.6498735096311767,
+    "baselineForceSignalEnergies": {
+      "followerDragCoefficient": 0.10645046855863288,
+      "followerLiftCoefficient": 0.26221336286110186,
+      "leaderDragCoefficient": 0.0983812277758122,
+      "leaderLiftCoefficient": 0.18282845043562973
+    },
+    "candidateDimensionlessForceResidualEnergy": 1.2011016736143763,
+    "candidateForceSignalEnergies": {
+      "followerDragCoefficient": 0.20321511168770362,
+      "followerLiftCoefficient": 0.5173120976227968,
+      "leaderDragCoefficient": 0.30863119030155706,
+      "leaderLiftCoefficient": 0.17194327400231876
+    },
+    "candidateNumericalGatesPassed": true,
+    "candidateReportPath": "ValidationArtifacts/formation-flight-collision-dissipation/c16-rr3/formation-flight-collision-diagnostic-report.json",
+    "candidateReportSHA256": "23a1235378bf773f231e34c2d1469d69ecf914c6896ef008c7c6001b84076582",
+    "collisionCorrectionActivationFraction": 0,
+    "dimensionlessForceResidualEnergyReductionFraction": -0.8482083910391093,
+    "minimumPopulation": 0.015596508979797363
+  }
+}

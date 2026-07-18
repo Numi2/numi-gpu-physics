@@ -1,0 +1,21 @@
+{
+  "entries" : [
+    {
+      "file" : "phase-785061.json",
+      "followerPhase" : 0.03506069094304376,
+      "leaderPhase" : 0.7850606909430439
+    },
+    {
+      "file" : "phase-845005.json",
+      "followerPhase" : 0.0950046685340804,
+      "leaderPhase" : 0.8450046685340803
+    },
+    {
+      "file" : "phase-000000.json",
+      "followerPhase" : 0.25,
+      "leaderPhase" : 0
+    }
+  ],
+  "plane" : "y",
+  "schemaVersion" : 1
+}

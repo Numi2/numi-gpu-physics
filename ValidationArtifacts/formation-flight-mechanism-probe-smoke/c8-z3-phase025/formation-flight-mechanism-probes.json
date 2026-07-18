@@ -1,0 +1,711 @@
+{
+  "closurePassed" : true,
+  "componentOrder" : [
+    "reflectedPopulation",
+    "interpolationAuxiliary",
+    "movingWall",
+    "coverImpulse",
+    "uncoverImpulse"
+  ],
+  "finite" : true,
+  "maximumAllowedRelativeClosureResidual" : 0.0002,
+  "maximumRelativeForceClosureResidual" : 1.5549424052579742e-06,
+  "maximumRelativePowerClosureResidual" : 4.00503729614096e-07,
+  "maximumRelativeTorqueClosureResidual" : 6.134622703877634e-07,
+  "passed" : true,
+  "samples" : [
+    {
+      "components" : {
+        "coverImpulse" : {
+          "actuatorPowerWatts" : -0.0064329603155565546,
+          "load" : {
+            "forceNewtons" : [
+              -0.037695155,
+              0.12579918,
+              0.027259361
+            ],
+            "torqueNewtonMeters" : [
+              0.113552265,
+              -0.57740045,
+              2.0189278
+            ]
+          }
+        },
+        "interpolationAuxiliary" : {
+          "actuatorPowerWatts" : 0.03787829261080957,
+          "load" : {
+            "forceNewtons" : [
+              0.47130913,
+              -0.61699176,
+              0.6219835
+            ],
+            "torqueNewtonMeters" : [
+              0.6962602,
+              -11.162121,
+              -11.887768
+            ]
+          }
+        },
+        "movingWall" : {
+          "actuatorPowerWatts" : 0.40248323656746265,
+          "load" : {
+            "forceNewtons" : [
+              1.3031654,
+              -8.0741825,
+              1.6178459
+            ],
+            "torqueNewtonMeters" : [
+              -10.727484,
+              -24.897602,
+              -126.31581
+            ]
+          }
+        },
+        "reflectedPopulation" : {
+          "actuatorPowerWatts" : -0.37895603570331954,
+          "load" : {
+            "forceNewtons" : [
+              -1.0124271,
+              7.3098984,
+              -0.55877304
+            ],
+            "torqueNewtonMeters" : [
+              13.295207,
+              10.28627,
+              118.93201
+            ]
+          }
+        },
+        "uncoverImpulse" : {
+          "actuatorPowerWatts" : -0.03055699470589878,
+          "load" : {
+            "forceNewtons" : [
+              -0.5554355,
+              0.814548,
+              -1.437375
+            ],
+            "torqueNewtonMeters" : [
+              -2.8847117,
+              21.671652,
+              9.590043
+            ]
+          }
+        }
+      },
+      "flyer" : "leader",
+      "followerPhase" : 0.034780578898225833,
+      "leaderPhase" : 0.784780578898226,
+      "production" : {
+        "actuatorPowerWatts" : 0.024415496671147,
+        "load" : {
+          "forceNewtons" : [
+            0.16891679,
+            -0.44092864,
+            0.27093887
+          ],
+          "torqueNewtonMeters" : [
+            0.4928074,
+            -4.6791534,
+            -7.662588
+          ]
+        }
+      },
+      "reconstructed" : {
+        "actuatorPowerWatts" : 0.024415548329325607,
+        "load" : {
+          "forceNewtons" : [
+            0.16891682,
+            -0.44092894,
+            0.27094078
+          ],
+          "torqueNewtonMeters" : [
+            0.49282432,
+            -4.679201,
+            -7.6626043
+          ]
+        }
+      },
+      "relativeForceClosureResidual" : 1.0374701261133176e-07,
+      "relativePowerClosureResidual" : 6.032666700407755e-08,
+      "relativeTorqueClosureResidual" : 1.8220944564835747e-07
+    },
+    {
+      "components" : {
+        "coverImpulse" : {
+          "actuatorPowerWatts" : -0.0010316475766635413,
+          "load" : {
+            "forceNewtons" : [
+              -0.022853764,
+              0.0074423626,
+              0.00854137
+            ],
+            "torqueNewtonMeters" : [
+              0.12435966,
+              0.2339942,
+              0.14870562
+            ]
+          }
+        },
+        "interpolationAuxiliary" : {
+          "actuatorPowerWatts" : 0.005426259988096783,
+          "load" : {
+            "forceNewtons" : [
+              -0.05129306,
+              0.048446104,
+              0.80034125
+            ],
+            "torqueNewtonMeters" : [
+              9.749933,
+              -2.863676,
+              1.8443744
+            ]
+          }
+        },
+        "movingWall" : {
+          "actuatorPowerWatts" : 0.08025019205176151,
+          "load" : {
+            "forceNewtons" : [
+              -1.6463017,
+              0.033910975,
+              -0.66438824
+            ],
+            "torqueNewtonMeters" : [
+              -9.658962,
+              -5.3050394,
+              33.32565
+            ]
+          }
+        },
+        "reflectedPopulation" : {
+          "actuatorPowerWatts" : -0.0786960513752084,
+          "load" : {
+            "forceNewtons" : [
+              1.305872,
+              0.035113215,
+              0.074295044
+            ],
+            "torqueNewtonMeters" : [
+              2.1619797,
+              7.730261,
+              -29.720963
+            ]
+          }
+        },
+        "uncoverImpulse" : {
+          "actuatorPowerWatts" : -0.003381430548753492,
+          "load" : {
+            "forceNewtons" : [
+              0.14315233,
+              -0.050521247,
+              -0.22263157
+            ],
+            "torqueNewtonMeters" : [
+              -2.2618496,
+              0.7713074,
+              -1.6294025
+            ]
+          }
+        }
+      },
+      "flyer" : "follower",
+      "followerPhase" : 0.034780578898225833,
+      "leaderPhase" : 0.784780578898226,
+      "production" : {
+        "actuatorPowerWatts" : 0.0025672537597601778,
+        "load" : {
+          "forceNewtons" : [
+            -0.27142364,
+            0.07439107,
+            -0.003835678
+          ],
+          "torqueNewtonMeters" : [
+            0.11550903,
+            0.56684875,
+            3.968358
+          ]
+        }
+      },
+      "reconstructed" : {
+        "actuatorPowerWatts" : 0.00256732135901509,
+        "load" : {
+          "forceNewtons" : [
+            -0.27142423,
+            0.07439141,
+            -0.0038421452
+          ],
+          "torqueNewtonMeters" : [
+            0.115460634,
+            0.56684697,
+            3.9683633
+          ]
+        }
+      },
+      "relativeForceClosureResidual" : 1.5549424052579742e-06,
+      "relativePowerClosureResidual" : 4.00503729614096e-07,
+      "relativeTorqueClosureResidual" : 6.134622703877634e-07
+    },
+    {
+      "components" : {
+        "coverImpulse" : {
+          "actuatorPowerWatts" : -0.017809992721294,
+          "load" : {
+            "forceNewtons" : [
+              -0.12599741,
+              0.24020614,
+              -0.022203365
+            ],
+            "torqueNewtonMeters" : [
+              0.2355473,
+              0.51127535,
+              5.589509
+            ]
+          }
+        },
+        "interpolationAuxiliary" : {
+          "actuatorPowerWatts" : 0.021934481978807444,
+          "load" : {
+            "forceNewtons" : [
+              0.18690257,
+              -0.49278247,
+              0.5985687
+            ],
+            "torqueNewtonMeters" : [
+              2.0250292,
+              -6.9657135,
+              -6.8839436
+            ]
+          }
+        },
+        "movingWall" : {
+          "actuatorPowerWatts" : 0.4253910741024227,
+          "load" : {
+            "forceNewtons" : [
+              4.995943,
+              -7.198316,
+              1.9419179
+            ],
+            "torqueNewtonMeters" : [
+              2.308837,
+              -32.3027,
+              -133.50523
+            ]
+          }
+        },
+        "reflectedPopulation" : {
+          "actuatorPowerWatts" : -0.41539082863577037,
+          "load" : {
+            "forceNewtons" : [
+              -4.8372574,
+              7.172457,
+              -2.2422028
+            ],
+            "torqueNewtonMeters" : [
+              -1.867569,
+              34.389305,
+              130.36674
+            ]
+          }
+        },
+        "uncoverImpulse" : {
+          "actuatorPowerWatts" : -0.013110886752777344,
+          "load" : {
+            "forceNewtons" : [
+              -0.071752936,
+              0.2536282,
+              -0.11088883
+            ],
+            "torqueNewtonMeters" : [
+              -1.167722,
+              2.4634638,
+              4.114736
+            ]
+          }
+        }
+      },
+      "flyer" : "leader",
+      "followerPhase" : 0.0950046685340804,
+      "leaderPhase" : 0.8450046685340803,
+      "production" : {
+        "actuatorPowerWatts" : 0.0010138191035827695,
+        "load" : {
+          "forceNewtons" : [
+            0.14783728,
+            -0.024808645,
+            0.16519165
+          ],
+          "torqueNewtonMeters" : [
+            1.534111,
+            -1.9043274,
+            -0.31817818
+          ]
+        }
+      },
+      "reconstructed" : {
+        "actuatorPowerWatts" : 0.001013841893955684,
+        "load" : {
+          "forceNewtons" : [
+            0.14783786,
+            -0.024807155,
+            0.16519162
+          ],
+          "torqueNewtonMeters" : [
+            1.5341225,
+            -1.9043694,
+            -0.31818533
+          ]
+        }
+      },
+      "relativeForceClosureResidual" : 8.302648984322931e-08,
+      "relativePowerClosureResidual" : 2.550293483454013e-08,
+      "relativeTorqueClosureResidual" : 1.505563187923502e-07
+    },
+    {
+      "components" : {
+        "coverImpulse" : {
+          "actuatorPowerWatts" : -0.011475307248305195,
+          "load" : {
+            "forceNewtons" : [
+              0.21089102,
+              -0.10939032,
+              0.0024053678
+            ],
+            "torqueNewtonMeters" : [
+              -0.1462566,
+              -0.3948046,
+              -3.9847915
+            ]
+          }
+        },
+        "interpolationAuxiliary" : {
+          "actuatorPowerWatts" : 0.003691986696570937,
+          "load" : {
+            "forceNewtons" : [
+              0.0032253303,
+              -0.02459915,
+              -0.08552241
+            ],
+            "torqueNewtonMeters" : [
+              1.5589695,
+              -1.1096172,
+              1.1945101
+            ]
+          }
+        },
+        "movingWall" : {
+          "actuatorPowerWatts" : 0.3417090423544058,
+          "load" : {
+            "forceNewtons" : [
+              -6.8673882,
+              3.471624,
+              1.42995
+            ],
+            "torqueNewtonMeters" : [
+              23.8868,
+              2.1151135,
+              119.00401
+            ]
+          }
+        },
+        "reflectedPopulation" : {
+          "actuatorPowerWatts" : -0.3095117491295775,
+          "load" : {
+            "forceNewtons" : [
+              6.175372,
+              -3.0426269,
+              -0.6642418
+            ],
+            "torqueNewtonMeters" : [
+              -14.50209,
+              -4.225586,
+              -107.382164
+            ]
+          }
+        },
+        "uncoverImpulse" : {
+          "actuatorPowerWatts" : -0.016158785826589642,
+          "load" : {
+            "forceNewtons" : [
+              0.3088091,
+              -0.21928461,
+              -0.61510116
+            ],
+            "torqueNewtonMeters" : [
+              -10.01148,
+              3.199464,
+              -6.0376253
+            ]
+          }
+        }
+      },
+      "flyer" : "follower",
+      "followerPhase" : 0.0950046685340804,
+      "leaderPhase" : 0.8450046685340803,
+      "production" : {
+        "actuatorPowerWatts" : 0.008255299629128372,
+        "load" : {
+          "forceNewtons" : [
+            -0.16909063,
+            0.07572305,
+            0.06749725
+          ],
+          "torqueNewtonMeters" : [
+            0.78590393,
+            -0.4154358,
+            2.793974
+          ]
+        }
+      },
+      "reconstructed" : {
+        "actuatorPowerWatts" : 0.00825519004878393,
+        "load" : {
+          "forceNewtons" : [
+            -0.16909069,
+            0.07572304,
+            0.06748998
+          ],
+          "torqueNewtonMeters" : [
+            0.78594303,
+            -0.4154303,
+            2.7939434
+          ]
+        }
+      },
+      "relativeForceClosureResidual" : 4.6048944046445474e-07,
+      "relativePowerClosureResidual" : 1.605462555842089e-07,
+      "relativeTorqueClosureResidual" : 2.0104181102187633e-07
+    },
+    {
+      "components" : {
+        "coverImpulse" : {
+          "actuatorPowerWatts" : -0.0006549442363136382,
+          "load" : {
+            "forceNewtons" : [
+              -0.020646922,
+              -0.013985299,
+              -0.010249926
+            ],
+            "torqueNewtonMeters" : [
+              -0.14727904,
+              0.13932995,
+              0.106565416
+            ]
+          }
+        },
+        "interpolationAuxiliary" : {
+          "actuatorPowerWatts" : 0.008521875158030805,
+          "load" : {
+            "forceNewtons" : [
+              0.025067985,
+              -0.35214657,
+              1.0408965
+            ],
+            "torqueNewtonMeters" : [
+              11.537617,
+              -3.5093975,
+              2.3020473
+            ]
+          }
+        },
+        "movingWall" : {
+          "actuatorPowerWatts" : 0.12937079373990382,
+          "load" : {
+            "forceNewtons" : [
+              4.070379,
+              -0.4485602,
+              0.008967714
+            ],
+            "torqueNewtonMeters" : [
+              -2.5198836,
+              -21.947754,
+              -49.870728
+            ]
+          }
+        },
+        "reflectedPopulation" : {
+          "actuatorPowerWatts" : -0.1138255450933149,
+          "load" : {
+            "forceNewtons" : [
+              -3.5177054,
+              0.30861697,
+              -1.1778965
+            ],
+            "torqueNewtonMeters" : [
+              -12.462227,
+              21.898863,
+              45.708607
+            ]
+          }
+        },
+        "uncoverImpulse" : {
+          "actuatorPowerWatts" : -0.021435885953103754,
+          "load" : {
+            "forceNewtons" : [
+              -0.62323433,
+              0.48413527,
+              0.1167794
+            ],
+            "torqueNewtonMeters" : [
+              3.3015997,
+              3.1280582,
+              4.1539917
+            ]
+          }
+        }
+      },
+      "flyer" : "leader",
+      "followerPhase" : 0.25,
+      "leaderPhase" : 0,
+      "production" : {
+        "actuatorPowerWatts" : 0.0019762495397553964,
+        "load" : {
+          "forceNewtons" : [
+            -0.06614017,
+            -0.021939732,
+            -0.021501541
+          ],
+          "torqueNewtonMeters" : [
+            -0.29016876,
+            -0.29089355,
+            2.4004865
+          ]
+        }
+      },
+      "reconstructed" : {
+        "actuatorPowerWatts" : 0.0019762938582975416,
+        "load" : {
+          "forceNewtons" : [
+            -0.06613988,
+            -0.021939814,
+            -0.021502778
+          ],
+          "torqueNewtonMeters" : [
+            -0.29017305,
+            -0.29090047,
+            2.400484
+          ]
+        }
+      },
+      "relativeForceClosureResidual" : 1.306909622847621e-07,
+      "relativePowerClosureResidual" : 1.6185930701374088e-07,
+      "relativeTorqueClosureResidual" : 6.761972114468869e-08
+    },
+    {
+      "components" : {
+        "coverImpulse" : {
+          "actuatorPowerWatts" : -0,
+          "load" : {
+            "forceNewtons" : [
+              0,
+              0,
+              0
+            ],
+            "torqueNewtonMeters" : [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "interpolationAuxiliary" : {
+          "actuatorPowerWatts" : -0.024551354642163393,
+          "load" : {
+            "forceNewtons" : [
+              0.33202326,
+              -0.3320346,
+              -0.5465548
+            ],
+            "torqueNewtonMeters" : [
+              -1.3079336,
+              5.465887,
+              -7.705226
+            ]
+          }
+        },
+        "movingWall" : {
+          "actuatorPowerWatts" : 0.39391556355503576,
+          "load" : {
+            "forceNewtons" : [
+              -1.0518427,
+              7.9884653,
+              0.98711365
+            ],
+            "torqueNewtonMeters" : [
+              16.852407,
+              -10.686532,
+              123.62692
+            ]
+          }
+        },
+        "reflectedPopulation" : {
+          "actuatorPowerWatts" : -0.36736459678695854,
+          "load" : {
+            "forceNewtons" : [
+              0.7416063,
+              -7.5970416,
+              -0.37822723
+            ],
+            "torqueNewtonMeters" : [
+              -15.342615,
+              4.2340546,
+              -115.294136
+            ]
+          }
+        },
+        "uncoverImpulse" : {
+          "actuatorPowerWatts" : -0,
+          "load" : {
+            "forceNewtons" : [
+              0,
+              0,
+              0
+            ],
+            "torqueNewtonMeters" : [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      "flyer" : "follower",
+      "followerPhase" : 0.25,
+      "leaderPhase" : 0,
+      "production" : {
+        "actuatorPowerWatts" : 0.001999487918381414,
+        "load" : {
+          "forceNewtons" : [
+            0.021787133,
+            0.059391446,
+            0.0623312
+          ],
+          "torqueNewtonMeters" : [
+            0.20186186,
+            -0.9866028,
+            0.62752163
+          ]
+        }
+      },
+      "reconstructed" : {
+        "actuatorPowerWatts" : 0.0019996212420629626,
+        "load" : {
+          "forceNewtons" : [
+            0.021786928,
+            0.059389114,
+            0.062331617
+          ],
+          "torqueNewtonMeters" : [
+            0.20185852,
+            -0.9865904,
+            0.6275635
+          ]
+        }
+      },
+      "relativeForceClosureResidual" : 1.4428395443105537e-07,
+      "relativePowerClosureResidual" : 1.696593722778897e-07,
+      "relativeTorqueClosureResidual" : 1.7426910398564334e-07
+    }
+  ],
+  "schemaVersion" : 1,
+  "scientificScope" : "read-only decomposition of the exact production formation-owner load at preregistered phases; numerical-mechanism localization, not a new biological or formation-benefit claim",
+  "scientificVerdict" : "all five causal terms close linearly to the unchanged production owner load"
+}

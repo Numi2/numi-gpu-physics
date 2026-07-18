@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight near-wing boundary population source census",
+  "preregisteredBeforeBoundarySourceReplayExecution": true,
+  "qualificationAmendment": {
+    "priorPreregistrationSHA256": "981ee7280cf1b7c3376e91b7e1200fc5d7f2a7a698ecd1357b99f6d4ecb27e4f",
+    "reason": "The preregistered c8 instrumentation-only smoke proved exact history replay and 1.24e-7 population reconstruction, but exposed a host report filter that copied the intentionally uncaptured phase-0 slot as two zero-support samples.",
+    "scope": "Move the phase-0 exclusion from the mechanism-report copier to the boundary-source-report copier; no Metal arithmetic, solver state, selected phase, decomposition, threshold, or decision rule changed.",
+    "amendedBeforeC16OrC20DiscriminatingReplay": true,
+    "failedSmokeExcludedFromDecision": true,
+    "failedSmokeArtifacts": [
+      {
+        "path": "ValidationArtifacts/formation-flight-boundary-source-census/c8-instrumentation-smoke-failed-phase0-report/formation-flight-field-replay-report.json",
+        "sha256": "9acbfee2af5afa8ac20d5ce7003d0f6a4909aaedebecfacd11f695a55c0e0c55"
+      },
+      {
+        "path": "ValidationArtifacts/formation-flight-boundary-source-census/c8-instrumentation-smoke-failed-phase0-report/formation-flight-boundary-source-census.json",
+        "sha256": "3ff5525cd5f7c1aa9eaeda5a753926750b376df67702b8fa82d110a58af6f674"
+      }
+    ]
+  },
+  "scientificQuestion": "Is the c16-to-c20 near-wing source discrepancy caused primarily by changes in which D3Q19 links sample the boundary, or by changes in the conditional population reconstruction on those links?",
+  "lockedConfiguration": {
+    "cycles": 5,
+    "followerOffsetChords": [0, 0, -3],
+    "followerPhaseOffsetCycles": 0.25,
+    "resolutions": [16, 20],
+    "collisionOperator": "productionTRT",
+    "leaderPhases": [0.785, 0.845],
+    "followerPhases": [0.035, 0.095],
+    "capturedFlyers": ["leader", "follower"],
+    "directionIndices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+    "expectedSamplesPerResolution": 4
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-summary.json",
+      "sha256": "508ab84e94736777c0f040b16f951c4cc9eaee29594b6e5fa5aff13cff15e67a"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-mechanism-probe/formation-flight-mechanism-audit.json",
+      "sha256": "fb30bc56d97d842c9f39c38e8f0d6213a98df115a1b7bf44aafc9a8e14f6e091"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-streamwise-attenuation/formation-flight-streamwise-attenuation-summary.json",
+      "sha256": "343cd013a291a31270eefa3954258232aded219d1f9882a9b9435867b7d4f4bd"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-streamwise-attenuation/formation-flight-streamwise-attenuation-audit.json",
+      "sha256": "2db9c4583c3159ad9760d3fbf0030908289368e11d510d32c3f458442d5da1fe"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c16-best-z3-phase025/formation-flight-report.json",
+      "sha256": "fd025d4ecb2147917d3011c6238a07996bd29c8e6f5b82cb202179f226e7f415"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json",
+      "sha256": "03f8dc2f24026e8d1702c05a49ec08d3f51577e838c7966cf2f5cd3cec9c15d6"
+    }
+  ],
+  "lockedImplementation": [
+    {
+      "path": "Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "sha256": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/GPUData.swift",
+      "sha256": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "sha256": "7585c72fb2a83391b246e40f22528c25fc892f14b2d93fde630acdc38422c832"
+    },
+    {
+      "path": "Sources/BirdFlowCLI/main.swift",
+      "sha256": "76a6e2d6237ff1cb95cb8b221705ee8df25a012f81d8e93d1b9a23e1f1fb45fe"
+    },
+    {
+      "path": "Scripts/static-audit.py",
+      "sha256": "f4cfd0788ba1e9c5cd8c19013815e8e53d043f89c1b8e3ff4402143abfc63cdc"
+    },
+    {
+      "path": "Tests/BirdFlowMetalTests/FormationFlightObservatoryTests.swift",
+      "sha256": "3c91e17f7915468db2fc6fda494907975b01d97940ed4d6ab19dac60239971de"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-boundary-source-census.sh",
+      "sha256": "25b221b03dd62265e069c6cd6a7c4b77265aa6482edf9dc347b19a1fdebac052"
+    },
+    {
+      "path": "Scripts/analyze-formation-boundary-source-census.py",
+      "sha256": "ea435b9d53d759c239cd6ea4ffaaf612834200e87f258f5edd4af561800ec3e9"
+    },
+    {
+      "path": "Scripts/audit-formation-boundary-source-census.py",
+      "sha256": "91ae7829f1139262e3afada14d827f6c4ae3059f0b0b4fa4343e05d8b4596aa7"
+    }
+  ],
+  "selectedProbes": {
+    "primary": {
+      "flyer": "leader",
+      "leaderPhase": 0.785,
+      "followerPhase": 0.035,
+      "selectionSource": "locked early-cycle near-boundary residual maximum and source-amplitude streamwise classification"
+    },
+    "secondary": [
+      {"flyer": "follower", "leaderPhase": 0.785, "followerPhase": 0.035},
+      {"flyer": "leader", "leaderPhase": 0.845, "followerPhase": 0.095},
+      {"flyer": "follower", "leaderPhase": 0.845, "followerPhase": 0.095}
+    ]
+  },
+  "recordedQuantitiesPerOwnerDirection": [
+    "link count",
+    "raw reflected population sum",
+    "reconstructed reflected contribution",
+    "interpolation auxiliary contribution",
+    "moving-wall contribution",
+    "reconstructed incoming population sum",
+    "absolute and squared incoming population sums",
+    "link-fraction first and second moments",
+    "wall projection and speed sums",
+    "near, far, and halfway-fallback branch counts"
+  ],
+  "gates": {
+    "maximumRelativeReferenceCoupledHistoryDifference": 0.000001,
+    "maximumRelativeOwnerClosureResidual": 0.0002,
+    "maximumRelativePopulationReconstructionClosureResidual": 0.000002,
+    "requireFinite": true,
+    "requireNoOverlap": true,
+    "requireExactBranchCountClosure": true,
+    "requireCaptureNonPerturbing": true,
+    "requirePositiveLinkSupport": true
+  },
+  "decomposition": {
+    "directionProbability": "p_r(q) = linkCount_r(q) / sum_q linkCount_r(q)",
+    "arealDirectionalLinkMeasure": "a_r(q) = linkCount_r(q) / chordCells_r^2; this preserves grid-normalized boundary-link density as well as direction distribution",
+    "primaryMomentumExchangePopulation": "rawReflectedPopulationSum + reconstructedIncomingPopulationSum, matching the two populations in the production momentum-exchange force",
+    "conditionalMean": "m_r(q) = primaryMomentumExchangePopulation_r(q) / linkCount_r(q), with zero only for a zero-support direction",
+    "directionalProfile": "s_r(q) = a_r(q) * m_r(q) = primaryMomentumExchangePopulation_r(q) / chordCells_r^2",
+    "exactSymmetricIdentity": "s_20(q)-s_16(q) = 0.5*(a_20-a_16)*(m_20+m_16) + 0.5*(m_20-m_16)*(a_20+a_16)",
+    "linkSamplingTerm": "0.5*(a_20-a_16)*(m_20+m_16)",
+    "conditionalAmplitudeTerm": "0.5*(m_20-m_16)*(a_20+a_16)",
+    "amplitudeSubterms": ["rawReflectedPopulationSum + reflectedIncomingPopulationSum", "interpolationAuxiliaryPopulationSum", "movingWallPopulationSum"],
+    "attributionNorm": "sum over D3Q19 directions of abs(term(q))*length(c_q), matching directional momentum magnitude",
+    "wingFrameMomentum": "sum_q s(q)*c_q projected on the analytic wing chord, span, and normal axes"
+  },
+  "decisionRule": {
+    "dominanceThreshold": 0.6,
+    "primarySignal": "areal momentum-exchange population profile at the primary probe",
+    "directionalLinkSamplingDominated": "link-sampling L1 share is at least 0.6",
+    "conditionalPopulationAmplitudeDominated": "conditional-amplitude L1 share is at least 0.6",
+    "reflectedPopulationAmplitudeDominated": "conditional amplitude is dominant and the reflected amplitude-subterm L1 share is at least 0.6",
+    "interpolationAuxiliaryAmplitudeDominated": "conditional amplitude is dominant and the interpolation amplitude-subterm L1 share is at least 0.6",
+    "movingWallAmplitudeDominated": "conditional amplitude is dominant and the moving-wall amplitude-subterm L1 share is at least 0.6",
+    "mixedPerLinkPopulationAmplitude": "conditional amplitude is dominant but no amplitude subterm reaches 0.6",
+    "mixedLinkSamplingAndPopulationAmplitude": "neither top-level term reaches 0.6",
+    "nextIfDirectionalLinkSamplingDominated": "test localized near-wing geometric refinement or improved link-quadrature realization before changing population reconstruction",
+    "nextIfReflectedPopulationAmplitudeDominated": "trace pre-boundary collision and streamed reflected populations on the dominant directions",
+    "nextIfInterpolationAuxiliaryAmplitudeDominated": "test the near/far interpolation branches on a fixed realized link set",
+    "nextIfMovingWallAmplitudeDominated": "test wall-velocity and density correction on a fixed realized link set",
+    "nextIfMixedPerLinkPopulationAmplitude": "capture cell-resolved covariance among reflected, interpolation, and wall terms only on dominant directions",
+    "nextIfMixedLinkSamplingAndPopulationAmplitude": "run one localized c18 bridge at the primary phase before selecting a mechanism"
+  },
+  "claimBoundary": "This source census can select the numerical mechanism behind the stopped c16-to-c20 formation ladder. It cannot authorize a quantitative formation-power benefit, production solver change, or biological bird claim."
+}

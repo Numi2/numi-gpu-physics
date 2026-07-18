@@ -1,0 +1,61 @@
+{
+  "entries" : [
+    {
+      "file" : "phase-754995.json",
+      "followerPhase" : 0.0049953314659196835,
+      "leaderPhase" : 0.7549953314659197
+    },
+    {
+      "file" : "phase-765079.json",
+      "followerPhase" : 0.015079365079365026,
+      "leaderPhase" : 0.765079365079365
+    },
+    {
+      "file" : "phase-774977.json",
+      "followerPhase" : 0.024976657329598417,
+      "leaderPhase" : 0.7749766573295985
+    },
+    {
+      "file" : "phase-785061.json",
+      "followerPhase" : 0.03506069094304376,
+      "leaderPhase" : 0.7850606909430439
+    },
+    {
+      "file" : "phase-794958.json",
+      "followerPhase" : 0.04495798319327715,
+      "leaderPhase" : 0.7949579831932773
+    },
+    {
+      "file" : "phase-805042.json",
+      "followerPhase" : 0.055042016806722716,
+      "leaderPhase" : 0.8050420168067227
+    },
+    {
+      "file" : "phase-814939.json",
+      "followerPhase" : 0.06493930905695611,
+      "leaderPhase" : 0.8149393090569561
+    },
+    {
+      "file" : "phase-825023.json",
+      "followerPhase" : 0.07502334267040145,
+      "leaderPhase" : 0.8250233426704014
+    },
+    {
+      "file" : "phase-834921.json",
+      "followerPhase" : 0.08492063492063506,
+      "leaderPhase" : 0.834920634920635
+    },
+    {
+      "file" : "phase-845005.json",
+      "followerPhase" : 0.0950046685340804,
+      "leaderPhase" : 0.8450046685340803
+    },
+    {
+      "file" : "phase-000000.json",
+      "followerPhase" : 0.25,
+      "leaderPhase" : 0
+    }
+  ],
+  "plane" : "y",
+  "schemaVersion" : 1
+}

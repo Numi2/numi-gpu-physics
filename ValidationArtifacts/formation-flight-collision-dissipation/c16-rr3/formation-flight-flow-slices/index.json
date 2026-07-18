@@ -1,0 +1,36 @@
+{
+  "entries" : [
+    {
+      "file" : "phase-805089.json",
+      "followerPhase" : 0.0550887021475257,
+      "leaderPhase" : 0.8050887021475257
+    },
+    {
+      "file" : "phase-814893.json",
+      "followerPhase" : 0.06489262371615312,
+      "leaderPhase" : 0.8148926237161531
+    },
+    {
+      "file" : "phase-824930.json",
+      "followerPhase" : 0.07492997198879547,
+      "leaderPhase" : 0.8249299719887955
+    },
+    {
+      "file" : "phase-834967.json",
+      "followerPhase" : 0.08496732026143805,
+      "leaderPhase" : 0.8349673202614379
+    },
+    {
+      "file" : "phase-845005.json",
+      "followerPhase" : 0.0950046685340804,
+      "leaderPhase" : 0.8450046685340803
+    },
+    {
+      "file" : "phase-000000.json",
+      "followerPhase" : 0.25,
+      "leaderPhase" : 0
+    }
+  ],
+  "plane" : "y",
+  "schemaVersion" : 1
+}
