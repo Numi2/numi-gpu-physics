@@ -3167,6 +3167,32 @@ The documented post-run correction changes the headline curvature by about
 candidates to test phase robustness; it does not authorize a full power ladder,
 production edit, quantitative formation benefit, or biological claim.
 
+The first authorized alternate-offset discriminator is now complete under
+`ValidationInputs/formation-flight-subcell-source-offset2-v1.json`. Before any
+new CFD it freezes the deterministic rank-2 common offset `[0.5,0.75,0.5]`,
+the unchanged c16/c18/c20 five-cycle production-TRT configuration, the original
+`0.5/1.0` curvature thresholds, parent evidence, implementation, analyzer, and
+an independent auditor. It also records the candidate's scalar geometry
+curvature `1.17661` as conditioning context rather than silently treating it as
+a population-operator error.
+
+The c16/c18/c20 runs complete in `397.70/772.67/1114.85 s`. All numerical,
+owner, periodicity, overlap, sample-completeness, branch, and reconstruction
+gates pass. Worst source reconstruction is `8.32e-8`; worst force/torque
+closure is `6.25e-7/2.38e-6`; worst periodic difference is `2.293%`.
+Direction-resolved areal, conditional-population, and exact source curvatures
+are `0.61730/0.60159/0.57541`; component curvatures are `0.54555` reflected,
+`0.60586` interpolation, and `1.05465` moving wall. The two-offset mean source
+curvature is `0.58368`. The frozen result is again
+`mixedPopulationWeightedSource`, and the independent raw-artifact audit passes
+`109/109` checks.
+
+This is evidence that lack of smoothness repeats at two tested near-median
+lattice phases, not proof of a single defective population term. Only the
+final authorized offset `[0.25,0,0.5]` may complete the minimal robustness set.
+Formation-power convergence, production correction, quantitative benefit, and
+biological interpretation remain blocked.
+
 ## 9. Free flight
 
 Enable six-degree-of-freedom coupling after prescribed-motion loads pass.

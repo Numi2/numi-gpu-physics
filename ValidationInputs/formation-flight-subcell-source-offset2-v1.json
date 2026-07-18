@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight second-ranked common-offset boundary source discriminator",
+  "preregisteredBeforeTranslatedCFD": true,
+  "preregisteredAtUTC": "2026-07-18T11:53:10Z",
+  "baselineGitCommit": "e47ec016ed1b7f3eb8534db15df3272fa683696c",
+  "scientificQuestion": "At the deterministic second-ranked common lattice offset, does the c16/c18/c20 population-weighted near-wing boundary source become smooth, remain mixed, or become non-asymptotic, and does averaging it with the accepted representative phase reduce h-linear curvature?",
+  "rationale": {
+    "why": "The accepted representative offset has smooth scalar geometry density but mixed direction-resolved population-weighted source curvature 0.8841533797. A second independently selected lattice phase is the minimum coupled experiment that can distinguish a phase-local residual from a repeatable lack of smoothness.",
+    "roi": "The run reuses the unchanged five-cycle production TRT executable and exact source census. One c16/c18/c20 triplet costs about 82 minutes on the measured Apple M4 baseline and can stop an invalid multi-position formation-power ladder that would cost many times more.",
+    "parentClassification": "mixedPopulationWeightedSource",
+    "parentPrimaryCurvature": 0.8841533797492038,
+    "parentAudit": "66/66",
+    "solverEvolution": "None. This experiment changes only the explicit diagnostic subcell translation from [0.25,0.25,0.75] to [0.5,0.75,0.5]. Collision, geometry, kinematics, force accounting, source reconstruction, cycles, phases, grids, and thresholds remain unchanged."
+  },
+  "lockedConfiguration": {
+    "resolutions": [16, 18, 20],
+    "cycles": 5,
+    "followerOffsetChords": [0, 0, -3],
+    "followerPhaseOffsetCycles": 0.25,
+    "leaderPhase": 0.785,
+    "subcellOffsetCells": [0.5, 0.75, 0.5],
+    "collisionOperator": "productionTRT",
+    "activeOwners": ["leader", "follower"],
+    "fluidCasesPerResolution": 1,
+    "capturedPhasesPerResolution": 1,
+    "expectedCensusSamplesPerResolution": 2,
+    "interpolationCoordinate": "h = 1 / chordCells"
+  },
+  "selectionRule": {
+    "source": "ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+    "orderedCollection": "topEightCandidates",
+    "zeroBasedRank": 1,
+    "expectedSelectionScore": 0.8437568283851116,
+    "metric": "sum over c16/c18/c20 of squared sample-SD-normalized distance from each resolution's leader areal-link-density median",
+    "tieBreak": "lexicographic x, y, z",
+    "selectedBeforeTranslatedCFD": true
+  },
+  "geometryConditioning": {
+    "candidateScalarGeometryDensityCurvature": 1.1766126354553235,
+    "status": "recorded context, not an acceptance gate",
+    "reason": "The authorized candidates were ranked by distance to the per-grid ensemble medians, not by endpoint-interpolation curvature. Direction-resolved areal, conditional-population, full-source, and component curvatures are therefore all retained so a nonsmooth full source is not silently attributed to population physics alone.",
+    "prohibitedInterpretation": "A nonsmooth alternate full-source curvature by itself does not prove a defective boundary operator because lattice-phase geometry sampling may contribute."
+  },
+  "gates": {
+    "maximumRelativeOwnerClosureResidual": 0.0002,
+    "maximumRelativePeriodicPowerDifference": 0.2,
+    "maximumRelativePopulationReconstructionClosureResidual": 0.000002,
+    "requireFinite": true,
+    "requireNoOverlap": true,
+    "requireExactBranchCountClosure": true,
+    "requireOneLeaderAndFollowerSamplePerGrid": true,
+    "requireCommonSubcellOffset": true,
+    "requireCompleteD3Q19": true,
+    "requireParentEvidencePassed": true,
+    "requireDeterministicCandidateRank": true
+  },
+  "decomposition": {
+    "arealDirectionalLinkMeasure": "a_r(q) = linkCount_r(q) / chordCells_r^2",
+    "conditionalMomentumExchangePopulation": "m_r(q) = (rawReflectedPopulationSum_r(q) + reconstructedIncomingPopulationSum_r(q)) / linkCount_r(q), with zero at zero support",
+    "populationWeightedSource": "s_r(q) = a_r(q) * m_r(q) = (rawReflectedPopulationSum_r(q) + reconstructedIncomingPopulationSum_r(q)) / chordCells_r^2",
+    "sourceComponents": {
+      "reflectedMomentumExchange": "rawReflectedPopulationSum + reflectedIncomingPopulationSum",
+      "interpolationAuxiliary": "interpolationAuxiliaryPopulationSum",
+      "movingWall": "movingWallPopulationSum"
+    },
+    "directionWeight": "Euclidean length of each D3Q19 direction",
+    "c18Expectation": "linear interpolation of the c16 and c20 direction profiles at h18, where h = 1 / chordCells",
+    "normalizedCurvature": "weightedL1(profile18 - interpolatedEndpointProfile18) / max(weightedL1(profile20 - profile16), denominatorFloor)",
+    "twoOffsetMean": "For each grid and direction, arithmetic mean of the accepted representative-phase profile and this alternate-phase profile, followed by the same h-linear curvature calculation. It is a secondary robustness diagnostic, not a three-offset ensemble claim."
+  },
+  "decisionRule": {
+    "denominatorFloor": 1e-12,
+    "smoothRefinementMaximumCurvature": 0.5,
+    "persistentBiasMinimumCurvature": 1.0,
+    "primaryMetric": "normalizedPopulationWeightedSourceCurvature",
+    "smoothPopulationWeightedSource": "primary curvature is at most 0.5",
+    "populationWeightedSourceNonAsymptotic": "primary curvature is at least 1.0",
+    "mixedPopulationWeightedSource": "primary curvature is between 0.5 and 1.0",
+    "crossOffsetInterpretation": {
+      "smoothPopulationWeightedSource": "phaseLocalSensitivityDetected",
+      "mixedPopulationWeightedSource": "nonsmoothAtBothTestedOffsets",
+      "populationWeightedSourceNonAsymptotic": "nonsmoothAtBothTestedOffsets"
+    },
+    "nextActions": {
+      "smoothPopulationWeightedSource": "run the final authorized deterministic offset [0.25,0,0.5], then preregister a three-offset mean and phase-spread acceptance rule before any power ladder",
+      "mixedPopulationWeightedSource": "run only the final authorized deterministic offset [0.25,0,0.5] to complete the minimal phase-robustness set; do not run a formation-power ladder",
+      "populationWeightedSourceNonAsymptotic": "stop the formation-power ladder and use the paired direction/component residuals to select one focused phase trace before deciding whether the final authorized offset adds information"
+    }
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+      "sha256": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+      "sha256": "8a464b91fe1488a39d0334cb00eefc8056a43ff00467b0d4e6331165c7f59c0c"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+      "sha256": "98f07499f56d630cdc65de4a6da867e12b6bdb80b52aaaff2df82c1e05c37bd1"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble.json",
+      "sha256": "b32ed2bb99d83b3b47dce660035e89edb494185837eb4e59b1b6d71d111dd17b"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+      "sha256": "4f4619be6655164741b8fad77d684bab23f932c162109e88125eb244360140f2"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-audit.json",
+      "sha256": "4e80126b6051907674e9cdc7161190c0b8ffe99f0890e06b84b8008ae98e743a"
+    }
+  ],
+  "lockedImplementation": [
+    {
+      "path": "Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "sha256": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/GPUData.swift",
+      "sha256": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "sha256": "214439c75fe66e1e76516ce59a11456ba6e291e6bdc3bd755f7e263357fe4974"
+    },
+    {
+      "path": "Package.swift",
+      "sha256": "f3558260ce7a949125518a177f7479e5a97344f742680556bb23ae3eba7d2475"
+    },
+    {
+      "path": "Tools/FormationSubcellSourceCensus/Package.swift",
+      "sha256": "3c3d4768c3a43237339d9df88935ea4b296124a6bdeab2bc413b44ca6a27eea1"
+    },
+    {
+      "path": "Tools/FormationSubcellSourceCensus/Sources/FormationSubcellSourceCensusCLI/main.swift",
+      "sha256": "2115c3f5645b426390fd96cab6301ef39ba5d74b9706f599850509fde6d2c77c"
+    },
+    {
+      "path": "Tests/BirdFlowMetalTests/FormationSubcellBoundarySourceTests.swift",
+      "sha256": "bcf3bd57d29678494bff0225884426ae4ba5180b9fd218b6cb1c0f8da30dfc86"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-subcell-source-offset2.sh",
+      "sha256": "9f6f67405810ac64fc08da8b4ea24cc975276d7d659a2e08c5d31cedffdbbd56"
+    },
+    {
+      "path": "Scripts/analyze-formation-subcell-source-offset2.py",
+      "sha256": "95a93c0efdbdf21c165a142f900e4961eb32ae2d30c4f4e711c3c86650301185"
+    },
+    {
+      "path": "Scripts/audit-formation-subcell-source-offset2.py",
+      "sha256": "a74716fe0dc762f5824ecf9b29a307bdcd2786163cd1e64d4311570b94134f67"
+    }
+  ],
+  "claimBoundary": "This second lattice phase can establish whether lack of smoothness repeats at two deterministic near-median offsets and can quantify a two-offset mean. It cannot establish three-offset robustness, quantitative formation-power convergence, a production correction, formation benefit, or a biological bird-flight claim."
+}

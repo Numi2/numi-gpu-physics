@@ -1,0 +1,111 @@
+{
+  "c18EndpointInterpolationFraction": 0.5555555555555559,
+  "claimBoundary": "This second lattice phase can establish whether lack of smoothness repeats at two deterministic near-median offsets and can quantify a two-offset mean. It cannot establish three-offset robustness, quantitative formation-power convergence, a production correction, formation benefit, or a biological bird-flight claim.",
+  "classification": "mixedPopulationWeightedSource",
+  "crossOffsetInterpretation": "nonsmoothAtBothTestedOffsets",
+  "csvPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/formation-flight-subcell-source-offset2-directions.csv",
+  "decisionMetrics": {
+    "candidateGeometryDensityCurvature": 1.1766126354553235,
+    "normalizedArealLinkProfileCurvature": 0.6173028378426622,
+    "normalizedComponentCurvatures": {
+      "interpolationAuxiliary": 0.6058577044247926,
+      "movingWall": 1.0546461742414088,
+      "reflectedMomentumExchange": 0.5455541191549422
+    },
+    "normalizedConditionalPopulationCurvature": 0.6015933901595483,
+    "normalizedPopulationWeightedSourceCurvature": 0.5754072597534435,
+    "parentCurvatures": {
+      "areal": 0.7849736455546932,
+      "conditional": 0.5873308564273788,
+      "source": 0.8841533797492038
+    },
+    "persistentBiasMinimumCurvature": 1.0,
+    "smoothRefinementMaximumCurvature": 0.5,
+    "sourceWeightedL1NormByResolution": {
+      "c16": 2.939841183535407,
+      "c18": 2.954349791229417,
+      "c20": 2.917286089545879
+    },
+    "twoOffsetMeanCurvatures": {
+      "areal": 0.5593352378044228,
+      "conditional": 0.553305993001683,
+      "source": 0.583678907782895
+    }
+  },
+  "figurePaths": [
+    "Docs/Media/formation-flight-subcell-source-offset2-convergence.png",
+    "Docs/Media/formation-flight-subcell-source-offset2-convergence.svg"
+  ],
+  "gates": {
+    "allFinite": true,
+    "allSourceCensusesPassed": true,
+    "allThreeRunsPassed": true,
+    "commonSubcellOffset": true,
+    "deterministicCandidateRank": true,
+    "incomingDecompositionClosure": true,
+    "oneLeaderAndFollowerSamplePerGrid": true,
+    "parentResultPassed": true,
+    "preregisteredBeforeTranslatedCFD": true
+  },
+  "inputs": {
+    "c16": {
+      "actualFollowerPhase": 0.03501400560224077,
+      "actualLeaderPhase": 0.7850140056022409,
+      "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c16-offset2/formation-flight-boundary-source-census.json",
+      "censusSHA256": "df3ac975d72a9f930b6494bb5a67edc50698e7b3cd2b75683d2401bf57682c40",
+      "deviceName": "Apple M4",
+      "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c16-offset2/formation-flight-subcell-source-report.json",
+      "reportSHA256": "2bf24e532678cb0db0f998029f6e85c961c876c76f43c00bee7c04df4a95c62b",
+      "runtimeSeconds": 397.69924306869507
+    },
+    "c18": {
+      "actualFollowerPhase": 0.03506224066390029,
+      "actualLeaderPhase": 0.7850622406639004,
+      "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c18-offset2/formation-flight-boundary-source-census.json",
+      "censusSHA256": "430f366b583c56f546b6e047252acd43f0a042c5f94425a31b96567a57b10a27",
+      "deviceName": "Apple M4",
+      "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c18-offset2/formation-flight-subcell-source-report.json",
+      "reportSHA256": "8fe2407d7ace2dd29e814e5f4504e9cbc569033824f370b64ac9137778d8c32b",
+      "runtimeSeconds": 772.6707830429077
+    },
+    "c20": {
+      "actualFollowerPhase": 0.03506069094304376,
+      "actualLeaderPhase": 0.7850606909430439,
+      "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c20-offset2/formation-flight-boundary-source-census.json",
+      "censusSHA256": "1b747bde81e2a97e225aa17c0e40166b777b2141433c62b6778725775a2de579",
+      "deviceName": "Apple M4",
+      "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c20-offset2/formation-flight-subcell-source-report.json",
+      "reportSHA256": "19bccba6b828578223bab25063beb44e5d908d932b43a50eaf12a5fac1a5c575",
+      "runtimeSeconds": 1114.8485100269318
+    }
+  },
+  "nextAction": "run only the final authorized deterministic offset [0.25,0,0.5] to complete the minimal phase-robustness set; do not run a formation-power ladder",
+  "parentEvidence": {
+    "auditPath": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+    "auditSHA256": "98f07499f56d630cdc65de4a6da867e12b6bdb80b52aaaff2df82c1e05c37bd1",
+    "classification": "mixedPopulationWeightedSource",
+    "summaryPath": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+    "summarySHA256": "8a464b91fe1488a39d0334cb00eefc8056a43ff00467b0d4e6331165c7f59c0c"
+  },
+  "passed": true,
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-subcell-source-offset2-v1.json",
+    "sha256": "4788b8ac6c8f189f739a2b4d820ac4d77269912c0021b5b2335b4025f18cad4b"
+  },
+  "schemaVersion": 1,
+  "scientificQuestion": "At the deterministic second-ranked common lattice offset, does the c16/c18/c20 population-weighted near-wing boundary source become smooth, remain mixed, or become non-asymptotic, and does averaging it with the accepted representative phase reduce h-linear curvature?",
+  "selection": {
+    "path": "ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+    "selectedMedianScore": 0.8257592096098685,
+    "selectionScore": 0.8437568283851116,
+    "sha256": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59",
+    "subcellOffsetCells": [
+      0.5,
+      0.75,
+      0.5
+    ],
+    "zeroBasedRank": 1
+  },
+  "title": "Formation Flight second-ranked lattice-phase source discriminator",
+  "totalRecordedRuntimeSeconds": 2285.2185361385345
+}

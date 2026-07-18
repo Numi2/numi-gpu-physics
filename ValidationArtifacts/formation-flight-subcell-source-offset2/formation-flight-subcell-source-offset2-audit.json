@@ -1,0 +1,717 @@
+{
+  "checkCount": 109,
+  "checks": [
+    {
+      "evidence": "2026-07-18T11:53:10Z",
+      "name": "preregistered before alternate CFD",
+      "passed": true
+    },
+    {
+      "evidence": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+      "passed": true
+    },
+    {
+      "evidence": "8a464b91fe1488a39d0334cb00eefc8056a43ff00467b0d4e6331165c7f59c0c",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "98f07499f56d630cdc65de4a6da867e12b6bdb80b52aaaff2df82c1e05c37bd1",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "b32ed2bb99d83b3b47dce660035e89edb494185837eb4e59b1b6d71d111dd17b",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble.json",
+      "passed": true
+    },
+    {
+      "evidence": "4f4619be6655164741b8fad77d684bab23f932c162109e88125eb244360140f2",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "4e80126b6051907674e9cdc7161190c0b8ffe99f0890e06b84b8008ae98e743a",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "passed": true
+    },
+    {
+      "evidence": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/GPUData.swift",
+      "passed": true
+    },
+    {
+      "evidence": "214439c75fe66e1e76516ce59a11456ba6e291e6bdc3bd755f7e263357fe4974",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "passed": true
+    },
+    {
+      "evidence": "f3558260ce7a949125518a177f7479e5a97344f742680556bb23ae3eba7d2475",
+      "name": "lockedImplementation hash Package.swift",
+      "passed": true
+    },
+    {
+      "evidence": "3c3d4768c3a43237339d9df88935ea4b296124a6bdeab2bc413b44ca6a27eea1",
+      "name": "lockedImplementation hash Tools/FormationSubcellSourceCensus/Package.swift",
+      "passed": true
+    },
+    {
+      "evidence": "2115c3f5645b426390fd96cab6301ef39ba5d74b9706f599850509fde6d2c77c",
+      "name": "lockedImplementation hash Tools/FormationSubcellSourceCensus/Sources/FormationSubcellSourceCensusCLI/main.swift",
+      "passed": true
+    },
+    {
+      "evidence": "bcf3bd57d29678494bff0225884426ae4ba5180b9fd218b6cb1c0f8da30dfc86",
+      "name": "lockedImplementation hash Tests/BirdFlowMetalTests/FormationSubcellBoundarySourceTests.swift",
+      "passed": true
+    },
+    {
+      "evidence": "9f6f67405810ac64fc08da8b4ea24cc975276d7d659a2e08c5d31cedffdbbd56",
+      "name": "lockedAnalysis hash Scripts/run-formation-subcell-source-offset2.sh",
+      "passed": true
+    },
+    {
+      "evidence": "95a93c0efdbdf21c165a142f900e4961eb32ae2d30c4f4e711c3c86650301185",
+      "name": "lockedAnalysis hash Scripts/analyze-formation-subcell-source-offset2.py",
+      "passed": true
+    },
+    {
+      "evidence": "a74716fe0dc762f5824ecf9b29a307bdcd2786163cd1e64d4311570b94134f67",
+      "name": "lockedAnalysis hash Scripts/audit-formation-subcell-source-offset2.py",
+      "passed": true
+    },
+    {
+      "evidence": "mixedPopulationWeightedSource",
+      "name": "parent summary passed",
+      "passed": true
+    },
+    {
+      "evidence": "66/66",
+      "name": "parent audit passed",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "candidate rank is second",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.5,
+        0.75,
+        0.5
+      ],
+      "name": "candidate offset frozen",
+      "passed": true
+    },
+    {
+      "evidence": 0.8437568283851116,
+      "name": "candidate score preserved",
+      "passed": true
+    },
+    {
+      "evidence": "2bf24e532678cb0db0f998029f6e85c961c876c76f43c00bee7c04df4a95c62b",
+      "name": "c16 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "df3ac975d72a9f930b6494bb5a67edc50698e7b3cd2b75683d2401bf57682c40",
+      "name": "c16 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 4.316474644383561e-07,
+        "maximumRelativePeriodicPowerDifference": 0.022906596750200462,
+        "maximumRelativeTorqueClosureResidual": 1.8468200551069458e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c16 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 6.783841403612985e-08,
+      "name": "c16 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.5,
+        0.75,
+        0.5
+      ],
+      "name": "c16 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850140056022409,
+      "name": "c16 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c16 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c16 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 3.160147816049535e-08,
+      "name": "c16 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 1.1920928955078125e-06,
+      "name": "c16 component identity",
+      "passed": true
+    },
+    {
+      "evidence": "8fe2407d7ace2dd29e814e5f4504e9cbc569033824f370b64ac9137778d8c32b",
+      "name": "c18 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "430f366b583c56f546b6e047252acd43f0a042c5f94425a31b96567a57b10a27",
+      "name": "c18 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 6.254505819924816e-07,
+        "maximumRelativePeriodicPowerDifference": 0.02292474206895309,
+        "maximumRelativeTorqueClosureResidual": 1.7301063053309917e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c18 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 6.305031839201304e-08,
+      "name": "c18 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.5,
+        0.75,
+        0.5
+      ],
+      "name": "c18 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850622406639004,
+      "name": "c18 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c18 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c18 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c18 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 5.69622827052129e-08,
+      "name": "c18 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 2.384185791015625e-06,
+      "name": "c18 component identity",
+      "passed": true
+    },
+    {
+      "evidence": "19bccba6b828578223bab25063beb44e5d908d932b43a50eaf12a5fac1a5c575",
+      "name": "c20 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "1b747bde81e2a97e225aa17c0e40166b777b2141433c62b6778725775a2de579",
+      "name": "c20 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 3.3268298693656106e-07,
+        "maximumRelativePeriodicPowerDifference": 0.021665082927888355,
+        "maximumRelativeTorqueClosureResidual": 2.3832794795453083e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c20 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 8.322393794440293e-08,
+      "name": "c20 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.5,
+        0.75,
+        0.5
+      ],
+      "name": "c20 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850606909430439,
+      "name": "c20 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c20 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c20 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 8.322393794440293e-08,
+      "name": "c20 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 5.7220458984375e-06,
+      "name": "c20 component identity",
+      "passed": true
+    },
+    {
+      "evidence": "d5b70df8a57f5f6ffc266e2dc50b9f4cd6e979039f3e1c5c0b6c51d728a3c16a",
+      "name": "c16 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "96b3095a4144e8881f1a6889d2c1e28475280f356c903119c435485a859e6225",
+      "name": "c16 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 7.47267733913759e-07,
+        "maximumRelativePeriodicPowerDifference": 0.02300266961378248,
+        "maximumRelativeTorqueClosureResidual": 3.0772280297242105e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c16 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 6.47340482006083e-08,
+      "name": "c16 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "c16 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850140056022409,
+      "name": "c16 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c16 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c16 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 6.47340482006083e-08,
+      "name": "c16 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 2.86102294921875e-06,
+      "name": "c16 component identity",
+      "passed": true
+    },
+    {
+      "evidence": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc",
+      "name": "c18 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "15309881c1f8cde31f72d0501fa7ab99b5dececbe789462c60208f1ccc8e6e1a",
+      "name": "c18 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 6.833756742707919e-07,
+        "maximumRelativePeriodicPowerDifference": 0.022131328122489784,
+        "maximumRelativeTorqueClosureResidual": 3.188533355569234e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c18 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 7.450188031677835e-08,
+      "name": "c18 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "c18 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850622406639004,
+      "name": "c18 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c18 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c18 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c18 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 5.381260438695416e-08,
+      "name": "c18 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 2.86102294921875e-06,
+      "name": "c18 component identity",
+      "passed": true
+    },
+    {
+      "evidence": "428c37d9f5166207255c73232e17c9b55c701451458845c816921eb35a2e2722",
+      "name": "c20 report hash",
+      "passed": true
+    },
+    {
+      "evidence": "c248439277b56c1f45fbf74e0a91f3c4161269b635b649a1c8515d0fd0480bd0",
+      "name": "c20 census hash",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "boundarySourceCensusPassed": true,
+        "expectedSampleCountPassed": true,
+        "finite": true,
+        "maximumAllowedRelativeClosureResidual": 0.0002,
+        "maximumAllowedRelativePeriodicPowerDifference": 0.2,
+        "maximumRelativeForceClosureResidual": 6.971583275117155e-07,
+        "maximumRelativePeriodicPowerDifference": 0.023948600411123174,
+        "maximumRelativeTorqueClosureResidual": 2.5210122203134233e-06,
+        "noGeometryOverlap": true,
+        "ownerForceClosurePassed": true,
+        "ownerTorqueClosurePassed": true,
+        "passed": true,
+        "periodicPowerPassed": true
+      },
+      "name": "c20 report passed",
+      "passed": true
+    },
+    {
+      "evidence": 8.060471116580536e-08,
+      "name": "c20 census passed",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "c20 common offset",
+      "passed": true
+    },
+    {
+      "evidence": 0.7850606909430439,
+      "name": "c20 phase lock",
+      "passed": true
+    },
+    {
+      "evidence": 2,
+      "name": "c20 two owners",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "c20 branch closure",
+      "passed": true
+    },
+    {
+      "evidence": 6.003325095467673e-08,
+      "name": "c20 independent source reconstruction",
+      "passed": true
+    },
+    {
+      "evidence": 3.814697265625e-06,
+      "name": "c20 component identity",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951,
+        1.4142135623730951
+      ],
+      "name": "D3Q19 weights agree across offsets",
+      "passed": true
+    },
+    {
+      "evidence": 0.5555555555555559,
+      "name": "interpolation fraction",
+      "passed": true
+    },
+    {
+      "evidence": 0.6173028378426622,
+      "name": "normalizedArealLinkProfileCurvature",
+      "passed": true
+    },
+    {
+      "evidence": 0.6015933901595483,
+      "name": "normalizedConditionalPopulationCurvature",
+      "passed": true
+    },
+    {
+      "evidence": 0.5754072597534435,
+      "name": "normalizedPopulationWeightedSourceCurvature",
+      "passed": true
+    },
+    {
+      "evidence": 0.5455541191549422,
+      "name": "component curvature reflectedMomentumExchange",
+      "passed": true
+    },
+    {
+      "evidence": 0.6058577044247926,
+      "name": "component curvature interpolationAuxiliary",
+      "passed": true
+    },
+    {
+      "evidence": 1.0546461742414088,
+      "name": "component curvature movingWall",
+      "passed": true
+    },
+    {
+      "evidence": 0.7849736455546932,
+      "name": "parent curvature areal",
+      "passed": true
+    },
+    {
+      "evidence": 0.5873308564273788,
+      "name": "parent curvature conditional",
+      "passed": true
+    },
+    {
+      "evidence": 0.8841533797492038,
+      "name": "parent curvature source",
+      "passed": true
+    },
+    {
+      "evidence": 0.5593352378044228,
+      "name": "two-offset mean curvature areal",
+      "passed": true
+    },
+    {
+      "evidence": 0.553305993001683,
+      "name": "two-offset mean curvature conditional",
+      "passed": true
+    },
+    {
+      "evidence": 0.583678907782895,
+      "name": "two-offset mean curvature source",
+      "passed": true
+    },
+    {
+      "evidence": 1.1766126354553235,
+      "name": "candidate geometry curvature",
+      "passed": true
+    },
+    {
+      "evidence": "mixedPopulationWeightedSource",
+      "name": "classification",
+      "passed": true
+    },
+    {
+      "evidence": "nonsmoothAtBothTestedOffsets",
+      "name": "cross-offset interpretation",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "allFinite": true,
+        "allSourceCensusesPassed": true,
+        "allThreeRunsPassed": true,
+        "commonSubcellOffset": true,
+        "deterministicCandidateRank": true,
+        "incomingDecompositionClosure": true,
+        "oneLeaderAndFollowerSamplePerGrid": true,
+        "parentResultPassed": true,
+        "preregisteredBeforeTranslatedCFD": true
+      },
+      "name": "summary passed",
+      "passed": true
+    },
+    {
+      "evidence": "Docs/Media/formation-flight-subcell-source-offset2-convergence.png",
+      "name": "figure PNG exists",
+      "passed": true
+    },
+    {
+      "evidence": "Docs/Media/formation-flight-subcell-source-offset2-convergence.svg",
+      "name": "figure SVG exists",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "GitHub Actions absent",
+      "passed": true
+    }
+  ],
+  "checksPassed": 109,
+  "passed": true,
+  "recomputedClassification": "mixedPopulationWeightedSource",
+  "recomputedCrossOffsetInterpretation": "nonsmoothAtBothTestedOffsets",
+  "recomputedGeometryCurvature": 1.1766126354553235,
+  "recomputedMetrics": {
+    "interpolationAuxiliary": 0.6058577044247926,
+    "movingWall": 1.0546461742414088,
+    "normalizedArealLinkProfileCurvature": 0.6173028378426622,
+    "normalizedConditionalPopulationCurvature": 0.6015933901595483,
+    "normalizedPopulationWeightedSourceCurvature": 0.5754072597534435,
+    "reflectedMomentumExchange": 0.5455541191549422
+  },
+  "recomputedParentCurvatures": {
+    "areal": 0.7849736455546932,
+    "conditional": 0.5873308564273788,
+    "source": 0.8841533797492038
+  },
+  "recomputedTwoOffsetMeanCurvatures": {
+    "areal": 0.5593352378044228,
+    "conditional": 0.553305993001683,
+    "source": 0.583678907782895
+  },
+  "schemaVersion": 1,
+  "title": "Formation source alternate-offset independent audit"
+}

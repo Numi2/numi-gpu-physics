@@ -619,6 +619,55 @@ decide whether the mixed residual is phase-local or systematic. A full
 formation-power ladder, production correction, quantitative benefit, and
 biological claim remain unauthorized.
 
+## First alternate source phase
+
+The first authorized phase-robustness discriminator is complete under
+`ValidationInputs/formation-flight-subcell-source-offset2-v1.json`. It freezes
+the second-ranked deterministic median candidate `[0.5,0.75,0.5]` (score
+`0.8437568`) before translated CFD. The runner verifies hashes for its parent
+geometry ensemble, accepted source summary/audit, production Metal and Swift
+implementation, CLI, test, runner, analyzer, and independent auditor before
+allocating fluid state.
+
+```bash
+PATH=".build/formation-analysis-venv/bin:$PATH" \
+  ./Scripts/run-formation-subcell-source-offset2.sh
+```
+
+![Second-ranked lattice-phase source convergence](Media/formation-flight-subcell-source-offset2-convergence.png)
+
+The unchanged five-cycle production-TRT c16/c18/c20 cases complete on Apple M4
+in `397.70/772.67/1114.85 s`, or `2285.22 s` recorded solver time. All cases
+are finite, overlap-free, have exactly two owner samples and complete D3Q19
+support, and pass force/torque closure and periodicity. Maximum source
+reconstruction residual is `8.32e-8`; maximum force/torque closure is
+`6.25e-7/2.38e-6`; maximum final-cycle periodic power difference is `2.293%`.
+
+At the alternate phase, direction-resolved areal links, conditional
+population, and exact production population-weighted source have normalized
+h-linear curvatures `0.61730/0.60159/0.57541`. Reflected, interpolation, and
+moving-wall component curvatures are `0.54555/0.60586/1.05465`. The exact
+source improves by `34.92%` relative to the representative phase but remains
+above the unchanged `0.5` smooth boundary, so the classification remains
+`mixedPopulationWeightedSource`. The arithmetic two-offset mean source
+curvature is `0.58368`, also mixed. Source norms are
+`2.93984/2.95435/2.91729`, so monotonicity is not claimed.
+
+The preregistration records the alternate scalar geometry-density curvature
+`1.17661` before CFD as context, not a hidden acceptance failure. Because the
+candidate was selected by distance to each grid's ensemble median rather than
+endpoint interpolation, a nonsmooth full source cannot by itself be assigned
+to the population operator. Direction, conditional-population, full-source,
+and component evidence are therefore retained separately. The independent
+implementation reconstructs provenance, D3Q19 populations, branch closure,
+all primary/component/parent/two-offset curvatures, classification, figures,
+and claim boundary with `109/109` checks passing.
+
+Two deterministic phases are now nonsmooth. Only the final authorized median
+candidate `[0.25,0,0.5]` may complete the minimal phase-robustness set. A full
+formation-power ladder, production correction, quantitative formation benefit,
+and biological claim remain unauthorized.
+
 ## Native Metal presentation integrity
 
 The complete birds in the README animation are two independently phased copies

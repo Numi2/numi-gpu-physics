@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Fixed sphere, Re=100 | **Accepted canonical** | drag, symmetry, torque leakage, refinement, batching |
 | Fixed finite wing, Re=100 | **Accepted canonical** | finest `CL=0.76135`, `CD=0.70711`; two-finest changes below `3%` |
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
-| Formation Flight Observatory | **Coupling/accounting accepted; representative source phase remains mixed; quantitative effect open** | The 192-pose no-fluid ensemble clears mean geometry, but the common median-phase c16/c18/c20 production source has h-linear curvature `0.884` (`mixedPopulationWeightedSource`); all Metal gates pass and the corrected independent audit is `66/66` |
+| Formation Flight Observatory | **Coupling/accounting accepted; two source phases remain mixed; quantitative effect open** | The representative and first alternate c16/c18/c20 production sources have h-linear curvatures `0.884` and `0.575`; their two-phase mean is `0.584`, the alternate audit passes `109/109`, and the final authorized phase remains required before any power ladder |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; planar weighting plus D12/D16 and D28/D32 complete-dove direction censuses clear static direction redistribution at the locked 26.5 ms phase with exact Metal/CPU parity; force-history change remains `5.632%` against `5%`, so the full localized phase window, force-bearing wall/interpolation interaction, convergence, and experimental agreement remain open |
@@ -384,9 +384,38 @@ preregistered production incoming value. The independent audit rejected it
 `62/64`; that failed audit is preserved byte-for-byte. A documented narrow
 post-run correction changed the headline curvature by only `1.2e-7`, did not
 change thresholds or classification, and passes the corrected independent
-audit `66/66`. This result authorizes only the two next-best deterministic
-offsets (`[0.5,0.75,0.5]` and `[0.25,0,0.5]`) to test phase robustness before
-any quantitative formation-power ladder.
+audit `66/66`. This result originally authorized only the two next-best
+deterministic offsets (`[0.5,0.75,0.5]` and `[0.25,0,0.5]`) to test phase
+robustness before any quantitative formation-power ladder.
+
+The first authorized alternate phase is now complete under a separate pre-CFD
+contract:
+
+```bash
+PATH=".build/formation-analysis-venv/bin:$PATH" \
+  ./Scripts/run-formation-subcell-source-offset2.sh
+```
+
+![Formation Flight alternate-phase source robustness](Docs/Media/formation-flight-subcell-source-offset2-convergence.png)
+
+The deterministic second-ranked offset `[0.5,0.75,0.5]` scores `0.843757`,
+only `2.18%` above the selected representative score. The unchanged
+production-TRT c16/c18/c20 runs complete in `397.70/772.67/1114.85 s`
+(`2285.22 s` total). Every case is finite and overlap-free; worst source
+reconstruction, force closure, torque closure, and final-cycle periodic
+difference are `8.32e-8`, `6.25e-7`, `2.38e-6`, and `2.293%`.
+
+The alternate direction-resolved areal-link, conditional-population, and exact
+population-weighted-source curvatures are `0.617`, `0.602`, and `0.575`.
+Reflected, interpolation, and moving-wall components are `0.546`, `0.606`, and
+`1.055`. The source improves substantially from `0.884` but remains above the
+frozen `0.5` smooth boundary; the two-offset mean is `0.584`. The locked result
+therefore remains `mixedPopulationWeightedSource`, with independent
+reconstruction passing `109/109` checks. Scalar geometry curvature at this
+phase is `1.177`, so the result is correctly reported as nonsmooth at both
+tested offsets—not misattributed to the population operator alone. Only the
+final authorized offset `[0.25,0,0.5]` may complete the minimal robustness set;
+formation-power convergence and benefit remain unclaimed.
 
 See the [scientific contract and scouting matrix](Docs/FORMATION_FLIGHT_OBSERVATORY.md).
 

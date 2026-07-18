@@ -263,6 +263,19 @@ Results:
   nested report atomically. Fast tests independently verify the dimensionless
   excursion algebra and reject schema-1 input before Metal allocation; no real
   specimen result is claimed.
+- The preregistered first alternate Formation source phase freezes the
+  deterministic rank-2 offset `[0.5,0.75,0.5]` and changes no production
+  physics or threshold. Five-cycle c16/c18/c20 TRT cases complete in
+  `397.70/772.67/1114.85 s`; all numerical, overlap, owner, periodicity,
+  source-reconstruction, branch, and completeness gates pass. Exact
+  population-weighted-source curvature falls from the representative `0.88415`
+  to `0.57541`, while the two-offset mean is `0.58368`; both remain above the
+  frozen `0.5` smooth boundary. Areal/conditional curvatures are
+  `0.61730/0.60159`, component curvatures are `0.54555/0.60586/1.05465`, and
+  the independent audit passes `109/109`. The recorded scalar geometry
+  curvature `1.17661` prevents a population-only attribution. The locked result
+  remains `mixedPopulationWeightedSource`; only the final authorized offset may
+  advance, and no formation-power or biological claim is promoted.
 
 ## Verification boundary
 
