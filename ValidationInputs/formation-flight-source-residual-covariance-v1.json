@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight archive-only c18 source residual covariance selector",
+  "registeredBeforeResidualSelection": true,
+  "registeredAtUTC": "2026-07-18T14:06:06Z",
+  "baselineGitCommit": "40dc7519e707af6818dde38a8b1b964b1c494f2b",
+  "scientificQuestion": "Is the persistent c18 h-linear source residual sufficiently concentrated in one stable D3Q19 direction and additive source component to justify exactly one focused temporal trace?",
+  "rationale": {
+    "why": "The three-offset exact-source mean remains mixed at curvature 0.59595 while maximum source phase spread is only 1.3844 percent. More offsets or a power map have low information value; the archived direction/component residuals can identify whether one focused trace is scientifically justified without executing fluid timesteps.",
+    "roi": "This analysis reuses nine locked source censuses, executes zero CFD, and can either select one high-yield c18 temporal trace or reject a diffuse trace before another approximately 15-minute c18 run.",
+    "parentClassification": "mixedPopulationWeightedSourceMean",
+    "parentMeanSourceCurvature": 0.5959457846757171,
+    "parentMaximumSourcePhaseSpread": 0.013843867116092428,
+    "parentAudit": "190/190"
+  },
+  "lockedConfiguration": {
+    "resolutions": [16, 18, 20],
+    "targetResolution": 18,
+    "owner": "leader",
+    "leaderPhaseAnchor": 0.785,
+    "offsets": [
+      [0.25, 0.25, 0.75],
+      [0.5, 0.75, 0.5],
+      [0.25, 0.0, 0.5]
+    ],
+    "components": [
+      "reflectedMomentumExchange",
+      "interpolationAuxiliary",
+      "movingWall"
+    ],
+    "analysisPython": {
+      "numpy": "2.5.1",
+      "matplotlib": "3.11.1"
+    },
+    "fluidTimesteps": 0
+  },
+  "residualDefinition": {
+    "coordinate": "h = 1 / chordCells",
+    "interpolationFraction": 0.5555555555555559,
+    "source": "R_source,p(q) = source_18,p(q) - [source_16,p(q) + t * (source_20,p(q) - source_16,p(q))]",
+    "component": "R_k,p(q) uses the identical h-linear residual for reflected momentum exchange, interpolation auxiliary, or moving wall",
+    "phaseMean": "arithmetic mean of R over the three deterministic offsets",
+    "additiveClosure": "R_source equals the sum of the three component residuals within the frozen absolute tolerance"
+  },
+  "selectionRule": {
+    "denominatorFloor": 1e-20,
+    "systematicAlignment": "directionWeight(q) * mean_p(R_component,p(q)) * mean_p(R_source,p(q))",
+    "positiveAlignmentLedger": "sum over moving directions and components of max(systematicAlignment, 0)",
+    "positiveAlignmentShare": "max(systematicAlignment, 0) / max(positiveAlignmentLedger, denominatorFloor)",
+    "centeredPhaseCovariance": "directionWeight(q) * mean_p[(R_component,p(q) - mean R_component(q)) * (R_source,p(q) - mean R_source(q))]",
+    "signAgreement": "number of offsets where R_component,p(q) * R_source,p(q) is positive",
+    "ranking": "descending positive systematic alignment, then descending sign agreement count, then component order [reflected, interpolation, moving wall], then ascending D3Q19 direction index",
+    "minimumPositiveAlignmentShare": 0.1,
+    "minimumSignAgreementCount": 2,
+    "thresholdBasis": "A uniform ledger over three components and 18 moving directions gives 1.85 percent per cell. Requiring 10 percent demands more than 5.4 times uniform concentration; two-of-three sign agreement prevents a phase-fragile one-off from authorizing a trace.",
+    "traceOffsetSelection": "For the selected component/direction, choose the offset with maximum signed local alignment directionWeight * R_component * R_source; break ties by offset order.",
+    "excludeRestDirection": true,
+    "selectedBeforeTemporalTrace": true
+  },
+  "gates": {
+    "maximumAbsoluteResidualComponentClosure": 0.000002,
+    "requireParentEvidencePassed": true,
+    "requireParentPowerGateFailed": true,
+    "requireAllNineInputHashesMatchParent": true,
+    "requireCompleteD3Q19": true,
+    "requireFinite": true,
+    "requireMovingDirection": true
+  },
+  "decisionRule": {
+    "classifications": {
+      "concentratedStableTraceSelected": "top positive alignment share is at least 10 percent, sign agreement is at least two of three offsets, and the direction is moving",
+      "concentratedPhaseFragile": "top share clears 10 percent but sign agreement fails",
+      "diffuseResidualNoSingleTrace": "no moving component/direction clears the concentration requirement"
+    },
+    "nextActions": {
+      "concentratedStableTraceSelected": "preregister exactly one c18 production-TRT temporal trace for the selected owner, component, direction, and subcell offset; capture the final cycle without changing collision, boundary, or force physics",
+      "concentratedPhaseFragile": "do not run a temporal trace; group archived residuals by opposite direction pair and source component before any new CFD",
+      "diffuseResidualNoSingleTrace": "do not run a temporal trace; group archived residuals by opposite direction pair and source component before any new CFD"
+    }
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationInputs/formation-flight-subcell-source-offset3-v1.json",
+      "sha256": "a765569c8f5e963258d65034d8159ecbe09c7dd34b3a08b7bd9c4f92929fb9e8"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-offset3/formation-flight-subcell-source-three-offset-summary.json",
+      "sha256": "4f90b4ba8edf82d5e265421ebe8dd9f15a05ecd0a89eb81b845d91b06ab66f89"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-offset3/formation-flight-subcell-source-three-offset-audit.json",
+      "sha256": "c769d160605f7c5679f0a3bda97ab18d64b6da585699b0a0d2b403512d4b5cef"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-source-residual-covariance.sh",
+      "sha256": "1f074c80180f20042dd146d76159955f44e86ad664ce268dee9daa30249a58ae"
+    },
+    {
+      "path": "Scripts/analyze-formation-source-residual-covariance.py",
+      "sha256": "e4fddc01379831f7e2a361fd0634cc8a6475be4e8a728c31ba08fd75d6db1348"
+    },
+    {
+      "path": "Scripts/audit-formation-source-residual-covariance.py",
+      "sha256": "efc0e1f0c0d07b5388e71f811c7cb62e89e153686040f5dc9892c118514539b9"
+    }
+  ],
+  "claimBoundary": "This archive-only selector can authorize at most one diagnostic c18 temporal trace. It cannot establish source convergence, formation-power convergence, quantitative formation benefit, a production correction, measured-bird formation flight, or a biological claim."
+}

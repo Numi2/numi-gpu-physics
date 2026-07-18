@@ -1,0 +1,397 @@
+{
+  "checkCount": 59,
+  "checks": [
+    {
+      "evidence": "2026-07-18T14:28:32Z",
+      "name": "registered before temporal trace",
+      "passed": true
+    },
+    {
+      "evidence": "eee543a847fa6eade9fecb4cbb6302d296500691f14e69643b89dc91e4c5398f",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-source-residual-covariance/formation-flight-source-residual-covariance-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "b9700a0ba29c3beb966227f9108dbf658680e6f3565ec9e9b6bd73347c865edf",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-source-residual-covariance/formation-flight-source-residual-covariance-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "64c94b43c34fdc0744fdd77aab0754f503407b17a776a6347eaf96527be24145",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "passed": true
+    },
+    {
+      "evidence": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/GPUData.swift",
+      "passed": true
+    },
+    {
+      "evidence": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc",
+      "name": "lockedImplementation hash Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "passed": true
+    },
+    {
+      "evidence": "b0ef133b6d07859d13e5d28672d252023a477c4e3fe2fa23a225d3d67dca89ca",
+      "name": "lockedImplementation hash Tools/FormationFocusedSourceTrace/Package.swift",
+      "passed": true
+    },
+    {
+      "evidence": "3ed9d6509a5d7d93c74df737821740bb9198e74439d9050eacc5acbc959120bc",
+      "name": "lockedImplementation hash Tools/FormationFocusedSourceTrace/Sources/FormationFocusedSourceTraceCLI/main.swift",
+      "passed": true
+    },
+    {
+      "evidence": "1280315b2fcb7ab61518506779e8be971680c290457b442f710df66c37093d08",
+      "name": "lockedAnalysis hash Scripts/run-formation-focused-source-trace.sh",
+      "passed": true
+    },
+    {
+      "evidence": "161c5ec1a370ecce01d38532ce1e338fe4fa4a5f27fb95f3439aa49bbc9c1f83",
+      "name": "lockedAnalysis hash Scripts/analyze-formation-focused-source-trace.py",
+      "passed": true
+    },
+    {
+      "evidence": "9d90b2b5c23d9ba461e0a91ccbc58fb5a00fa4b6f178e73ba84258cdfa91d16a",
+      "name": "lockedAnalysis hash Scripts/audit-formation-focused-source-trace.py",
+      "passed": true
+    },
+    {
+      "evidence": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc",
+      "name": "locked reference hash",
+      "passed": true
+    },
+    {
+      "evidence": "leader",
+      "name": "selector preserves owner",
+      "passed": true
+    },
+    {
+      "evidence": "reflectedMomentumExchange",
+      "name": "selector preserves component",
+      "passed": true
+    },
+    {
+      "evidence": 5,
+      "name": "selector preserves directionIndex",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0,
+        0,
+        1
+      ],
+      "name": "selector preserves direction",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "selector preserves subcellOffsetCells",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "agreement": 3,
+        "classification": "concentratedStableTraceSelected",
+        "share": 0.21787518963263686
+      },
+      "name": "selector authorized one stable trace",
+      "passed": true
+    },
+    {
+      "evidence": "5efe6e275cc7a4a56b6c5ddb39f5ca910e40b2ff3b1e5bb6c1319d0ae56f400a",
+      "name": "CLI and archived reports agree",
+      "passed": true
+    },
+    {
+      "evidence": 1323.5378789901733,
+      "name": "report is finite",
+      "passed": true
+    },
+    {
+      "evidence": 1,
+      "name": "report schema",
+      "passed": true
+    },
+    {
+      "evidence": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc",
+      "name": "reference identity",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "chordCells": 18,
+        "cycles": 5,
+        "followerOffsetChords": [
+          0,
+          0,
+          -3
+        ],
+        "followerPhaseOffsetCycles": 0.25
+      },
+      "name": "configuration identity",
+      "passed": true
+    },
+    {
+      "evidence": [
+        0.25,
+        0.25,
+        0.75
+      ],
+      "name": "subcell identity",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "direction": [
+          0,
+          0,
+          1
+        ],
+        "directionIndex": 5,
+        "flyer": "leader"
+      },
+      "name": "owner direction identity",
+      "passed": true
+    },
+    {
+      "evidence": [
+        180,
+        180,
+        234,
+        4820
+      ],
+      "name": "grid identity",
+      "passed": true
+    },
+    {
+      "evidence": 4820,
+      "name": "exact final-cycle sample count",
+      "passed": true
+    },
+    {
+      "evidence": [
+        1,
+        4820
+      ],
+      "name": "step sequence complete",
+      "passed": true
+    },
+    {
+      "evidence": [
+        19281,
+        24100
+      ],
+      "name": "absolute-step sequence complete",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "phase timing exact",
+      "passed": true
+    },
+    {
+      "evidence": 4820,
+      "name": "every record preserves q5",
+      "passed": true
+    },
+    {
+      "evidence": 2.7074983546032286e-07,
+      "name": "independent reconstruction closure",
+      "passed": true
+    },
+    {
+      "evidence": 4820,
+      "name": "independent branch-count closure",
+      "passed": true
+    },
+    {
+      "evidence": 2.7074983546032286e-07,
+      "name": "stored reconstruction closure agrees",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "independent load non-intrusion",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "stored load non-intrusion agrees",
+      "passed": true
+    },
+    {
+      "evidence": 0.0,
+      "name": "independent anchor source reproduction",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "absoluteIncomingPopulationSum": 38.957191467285156,
+        "absoluteWallProjectionSum": 0,
+        "direction": [
+          0,
+          0,
+          1
+        ],
+        "directionIndex": 5,
+        "farInterpolationLinkCount": 357,
+        "halfwayFallbackLinkCount": 0,
+        "interpolationAuxiliaryPopulationSum": 15.319336891174316,
+        "linkCount": 706,
+        "linkFractionSum": 355.400390625,
+        "movingWallPopulationSum": 0,
+        "nearInterpolationLinkCount": 349,
+        "rawReflectedPopulationSum": 38.97798538208008,
+        "reconstructedIncomingPopulationSum": 38.957191467285156,
+        "reflectedIncomingPopulationSum": 23.63785743713379,
+        "squaredIncomingPopulationSum": 2.149754762649536,
+        "squaredLinkFractionSum": 235.16680908203125,
+        "wallProjectionSum": 0,
+        "wallSpeedSum": 27.58544158935547
+      },
+      "name": "independent anchor branch reproduction",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "stored anchor difference agrees",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate finite",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate noGeometryOverlap",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate ownerForceClosurePassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate ownerTorqueClosurePassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate periodicPowerPassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate finalCycleCompletenessPassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate selectionIdentityPassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate reconstructionClosurePassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate branchCountClosurePassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate referenceLoadNonIntrusionPassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate referenceAnchorReproductionPassed",
+      "passed": true
+    },
+    {
+      "evidence": true,
+      "name": "report gate referenceAnchorBranchCountPassed",
+      "passed": true
+    },
+    {
+      "evidence": "the focused final-cycle trace is complete, algebraically closed, and non-intrusive relative to the locked c18 source census",
+      "name": "overall report gate",
+      "passed": true
+    },
+    {
+      "evidence": "3a85b018760ad63be6d3daac6b50ff8554c110df5dee7778cfd25c22b951c40a",
+      "name": "summary binds trace report",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "capturedFinalCycleSampleCount": 4820,
+        "chordCells": 18,
+        "component": "reflectedMomentumExchange",
+        "cycleSteps": 4820,
+        "direction": [
+          0,
+          0,
+          1
+        ],
+        "directionIndex": 5,
+        "flyer": "leader",
+        "subcellOffsetCells": [
+          0.25,
+          0.25,
+          0.75
+        ]
+      },
+      "name": "summary preserves selection",
+      "passed": true
+    },
+    {
+      "evidence": "cycleDistributedBranchAssociated",
+      "name": "classification is preregistered",
+      "passed": true
+    },
+    {
+      "evidence": "cycleDistributedBranchAssociated",
+      "name": "classification independently follows rule",
+      "passed": true
+    },
+    {
+      "evidence": 4821,
+      "name": "CSV contains one header plus every step",
+      "passed": true
+    },
+    {
+      "evidence": 462391,
+      "name": "figure exists Docs/Media/formation-flight-focused-source-trace.png",
+      "passed": true
+    },
+    {
+      "evidence": 868896,
+      "name": "figure exists Docs/Media/formation-flight-focused-source-trace.svg",
+      "passed": true
+    }
+  ],
+  "claimBoundary": "This one c18 trace can localize the timing and topology association of the selected absolute q5 source and can verify diagnostic non-intrusion. It cannot by itself localize the cross-grid residual in time, prove a branch causes that residual, establish source or power convergence, justify a force-law correction, quantify formation benefit, or support a biological claim.",
+  "classification": "cycleDistributedBranchAssociated",
+  "independentMetrics": {
+    "anchorBranchCountsEqual": true,
+    "maximumAbsoluteAdditiveClosure": 1.0162591934204102e-05,
+    "maximumRelativeReconstructionClosureResidual": 2.7074983546032286e-07,
+    "maximumRelativeReferenceAnchorSourceDifference": 0.0,
+    "relativeReferenceLoadSummaryDifference": 0.0
+  },
+  "passed": true,
+  "passedCheckCount": 59,
+  "schemaVersion": 1,
+  "title": "Formation focused boundary-source temporal trace audit"
+}

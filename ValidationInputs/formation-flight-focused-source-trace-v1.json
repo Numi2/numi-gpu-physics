@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight c18 focused boundary-source final-cycle temporal trace",
+  "registeredBeforeTemporalTrace": true,
+  "registeredAtUTC": "2026-07-18T14:28:32Z",
+  "baselineGitCommit": "40dc7519e707af6818dde38a8b1b964b1c494f2b",
+  "scientificQuestion": "When during the final converged c18 wingbeat is the selected leader q5 reflected-momentum source strongest, and how is its time variation associated with near versus far interpolation topology?",
+  "rationale": {
+    "why": "The archive-only residual selector found that leader q5 reflected momentum exchange accounts for 21.7875 percent of the positive systematic residual-alignment ledger with three-of-three subcell sign agreement. A single final-cycle trace is therefore more informative than another broad parameter sweep.",
+    "roi": "One existing read-only direction census per final-cycle step records 4820 compact samples while reusing the already paid c18 transient. It avoids 35 irrelevant direction-owner dispatches per step, avoids flow-slice allocation, and checks its own non-intrusion against the locked c18 anchor and load summaries.",
+    "authorizedTraceCount": 1,
+    "fluidRuns": 1
+  },
+  "lockedConfiguration": {
+    "chordCells": 18,
+    "cycles": 5,
+    "followerOffsetChords": [0, 0, -3],
+    "followerPhaseOffsetCycles": 0.25
+  },
+  "lockedGrid": {
+    "dimensions": [180, 180, 234],
+    "cycleSteps": 4820,
+    "capturedCycle": 5,
+    "firstCapturedAbsoluteStep": 19281,
+    "lastCapturedAbsoluteStep": 24100
+  },
+  "lockedSelection": {
+    "owner": "leader",
+    "component": "reflectedMomentumExchange",
+    "componentDefinition": "rawReflectedPopulationSum + reflectedIncomingPopulationSum",
+    "directionIndex": 5,
+    "direction": [0, 0, 1],
+    "subcellOffsetCells": [0.25, 0.25, 0.75],
+    "leaderPhaseAnchor": 0.785,
+    "actualReferenceLeaderPhase": 0.7850622406639004,
+    "collisionOperator": "productionTRT"
+  },
+  "selectorEvidence": {
+    "summaryPath": "ValidationArtifacts/formation-flight-source-residual-covariance/formation-flight-source-residual-covariance-summary.json",
+    "classification": "concentratedStableTraceSelected",
+    "positiveAlignmentShare": 0.21787518963263686,
+    "minimumPositiveAlignmentShare": 0.1,
+    "signAgreementCount": 3,
+    "minimumSignAgreementCount": 2,
+    "audit": "57/57"
+  },
+  "captureContract": {
+    "timing": "after current-step geometry and owner-load reads, before the fluid collision-stream step, matching the locked phase census",
+    "scope": "exactly one owner and one moving D3Q19 direction at every step of the final cycle",
+    "storage": "one compact GPUFormationBoundarySourceCensus record per step; no flow fields or cell-times-direction archive",
+    "readOnlyInputs": [
+      "currentPopulations",
+      "nextSolid",
+      "wallVelocity",
+      "GPUUniforms"
+    ],
+    "dedicatedOutputs": [
+      "boundarySourceReductionA",
+      "boundarySourceReductionB",
+      "focusedBoundarySourceTraceHistory"
+    ],
+    "forbiddenChanges": [
+      "D3Q19 collision",
+      "interpolated moving-boundary reconstruction",
+      "cover or uncover impulse",
+      "owner-load force accounting",
+      "geometry",
+      "kinematics",
+      "grid",
+      "sponge",
+      "fast-math mode"
+    ],
+    "productionMetalKernelSHA256UnchangedFromBaseline": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc",
+    "gpuDataLayoutSHA256UnchangedFromBaseline": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061"
+  },
+  "temporalAnalysis": {
+    "phaseBinCount": 64,
+    "centeredEnergySignal": "squared deviation of phase-binned reflectedMomentumExchange from its cycle mean",
+    "centeredEnergyTargetShare": 0.5,
+    "windowRule": "shortest contiguous circular phase-bin window containing at least the target share; ties choose the earliest start bin",
+    "branchAssociationSignals": [
+      "reflectedMomentumExchangePerLink versus nearInterpolationLinkFraction",
+      "reflectedMomentumExchangePerLink versus farInterpolationLinkFraction"
+    ],
+    "topologyTurnover": "absolute near-fraction change plus absolute far-fraction change plus relative link-count change between adjacent periodic steps",
+    "interpretationBoundary": "branch counts measure topology occupancy and association, not independent population contribution assigned to each branch"
+  },
+  "gates": {
+    "requireFinite": true,
+    "requireNoGeometryOverlap": true,
+    "requireExactFinalCycleSampleCount": 4820,
+    "requireExactStepAndPhaseSequence": true,
+    "requireExactOwnerAndDirectionIdentity": true,
+    "requireExactBranchCountClosure": true,
+    "maximumRelativeReconstructionClosureResidual": 0.000002,
+    "maximumRelativeReferenceDifference": 0.000001,
+    "maximumRelativeForceClosureResidual": 0.0002,
+    "maximumRelativeTorqueClosureResidual": 0.0002,
+    "maximumRelativePeriodicPowerDifference": 0.2,
+    "requireReferenceAnchorBranchCountsExact": true
+  },
+  "decisionRule": {
+    "maximumLocalizedWindowWidthCycles": 0.35,
+    "minimumAbsoluteBranchAssociation": 0.35,
+    "thresholdBasis": "A uniform centered-energy signal needs one-half cycle to contain half its energy; 0.35 demands meaningful temporal concentration. Absolute Pearson association 0.35 is a moderate preregistered topology signal, explaining at least about 12 percent of linear variance without being treated as causation.",
+    "nextActions": {
+      "temporallyLocalizedBranchAssociated": "trace c16 and c20 only across the selected circular phase window and preserve branch-resolved occupancy to test whether the q5 h-linear residual is generated at the same topology transition",
+      "temporallyLocalizedMixedBranches": "trace c16 and c20 only across the selected circular phase window; prioritize population terms over branch attribution because c18 topology occupancy is mixed",
+      "cycleDistributedBranchAssociated": "do not narrow by phase; use sparse matched-phase c16 and c20 traces stratified by near and far occupancy",
+      "cycleDistributedMixedBranches": "stop q5 temporal localization; return to the archived opposite-direction pair and component ledger before more CFD"
+    }
+  },
+  "lockedReference": {
+    "path": "ValidationArtifacts/formation-flight-subcell-source-census/c18-median-phase/formation-flight-subcell-source-report.json",
+    "sha256": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc"
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-source-residual-covariance/formation-flight-source-residual-covariance-summary.json",
+      "sha256": "eee543a847fa6eade9fecb4cbb6302d296500691f14e69643b89dc91e4c5398f"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-source-residual-covariance/formation-flight-source-residual-covariance-audit.json",
+      "sha256": "b9700a0ba29c3beb966227f9108dbf658680e6f3565ec9e9b6bd73347c865edf"
+    }
+  ],
+  "lockedImplementation": [
+    {
+      "path": "Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "sha256": "64c94b43c34fdc0744fdd77aab0754f503407b17a776a6347eaf96527be24145"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/GPUData.swift",
+      "sha256": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "sha256": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc"
+    },
+    {
+      "path": "Tools/FormationFocusedSourceTrace/Package.swift",
+      "sha256": "b0ef133b6d07859d13e5d28672d252023a477c4e3fe2fa23a225d3d67dca89ca"
+    },
+    {
+      "path": "Tools/FormationFocusedSourceTrace/Sources/FormationFocusedSourceTraceCLI/main.swift",
+      "sha256": "3ed9d6509a5d7d93c74df737821740bb9198e74439d9050eacc5acbc959120bc"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-focused-source-trace.sh",
+      "sha256": "1280315b2fcb7ab61518506779e8be971680c290457b442f710df66c37093d08"
+    },
+    {
+      "path": "Scripts/analyze-formation-focused-source-trace.py",
+      "sha256": "161c5ec1a370ecce01d38532ce1e338fe4fa4a5f27fb95f3439aa49bbc9c1f83"
+    },
+    {
+      "path": "Scripts/audit-formation-focused-source-trace.py",
+      "sha256": "9d90b2b5c23d9ba461e0a91ccbc58fb5a00fa4b6f178e73ba84258cdfa91d16a"
+    }
+  ],
+  "claimBoundary": "This one c18 trace can localize the timing and topology association of the selected absolute q5 source and can verify diagnostic non-intrusion. It cannot by itself localize the cross-grid residual in time, prove a branch causes that residual, establish source or power convergence, justify a force-law correction, quantify formation benefit, or support a biological claim."
+}

@@ -726,6 +726,102 @@ the three offsets, then select at most one focused production phase trace. No
 additional offset, global grid, power scout, production correction,
 quantitative benefit, or biological claim is authorized.
 
+## Archive-only c18 residual selector
+
+The authorized residual-covariance selector is complete under
+`ValidationInputs/formation-flight-source-residual-covariance-v1.json`. It
+locks all nine census hashes and the analysis before inspecting the detailed
+direction/component ranking. For each offset, component, and D3Q19 direction,
+it reconstructs the c18 residual against the h-linear c16/c20 expectation. Its
+primary systematic-alignment score is the direction weight times the product
+of the phase-mean component and exact-source residuals; centered phase
+covariance and per-offset sign agreement remain separate evidence.
+
+A single trace requires at least `10%` of the positive systematic-alignment
+ledger, agreement in at least two of three offsets, and a non-rest direction.
+The `10%` threshold is more than `5.4x` a uniform allocation over three
+components and 18 moving directions and is frozen before ranking.
+
+```bash
+BIRDFLOW_ANALYSIS_PYTHON="$PWD/.build/formation-analysis-venv/bin/python" \
+  ./Scripts/run-formation-source-residual-covariance.sh
+```
+
+![Archive-only source residual selector](Media/formation-flight-source-residual-covariance.png)
+
+The result is `concentratedStableTraceSelected`. Leader reflected momentum
+exchange at D3Q19 `q=5`, direction `[0,0,+1]`, supplies `21.7875%` of the
+positive systematic-alignment ledger and aligns with the exact-source residual
+in all `3/3` offsets. Its systematic alignment is `7.7377e-6`; centered phase
+covariance is `3.7829e-6`. The opposite reflected direction `q=6`,
+`[0,0,-1]`, ranks second at `16.5199%`, so the dominant evidence is a vertical
+reflected-population pair. The frozen one-direction rule nevertheless selects
+only `q=5`.
+
+Local selected-direction alignment is strongest at the representative offset
+`[0.25,0.25,0.75]`: `3.0268e-5`, versus `3.1778e-6` and `1.1160e-6` at the
+other offsets. Residual component closure is `1.37e-8`; every parent, hash,
+D3Q19, finiteness, and moving-direction gate passes. A separate implementation
+reconstructs all inputs, residuals, 57 component/direction candidates,
+systematic alignment, centered covariance, ranking, offset choice,
+classification, and claim boundary with `57/57` checks passing. Runtime fluid
+steps are exactly zero.
+
+Exactly one new diagnostic is authorized: a c18 production-TRT final-cycle
+temporal trace for the leader's reflected momentum-exchange term, `q=5`, at
+subcell offset `[0.25,0.25,0.75]`. Collision, boundary, force, geometry, and
+kinematics must remain unchanged. The power map, source convergence,
+production correction, quantitative benefit, and biological claims remain
+blocked.
+
+## Focused q5 final-cycle temporal trace
+
+The authorized run is complete under
+`ValidationInputs/formation-flight-focused-source-trace-v1.json`. The capture
+uses the existing read-only source-census kernel once per final-cycle step for
+only leader `q=5`; it writes one compact record per step and allocates no flow
+slices. Capture occurs after current-step geometry and owner-load reads and
+before collision/streaming, exactly matching the locked phase census. The
+production Metal kernel and `GPUData.swift` hashes are unchanged from baseline.
+
+```bash
+BIRDFLOW_ANALYSIS_PYTHON="$PWD/.build/formation-analysis-venv/bin/python" \
+  ./Scripts/run-formation-focused-source-trace.sh
+```
+
+![Focused leader q5 source trace](Media/formation-flight-focused-source-trace.png)
+
+The Apple M4 run records the complete `4,820/4,820` step fifth cycle in
+`1323.54 s`. Every record preserves direction `[0,0,+1]`, reconstructed
+incoming population closes to reflected, interpolation, and wall terms within
+`2.71e-7`, and branch counts close exactly. The locked c18 coupled leader and
+follower summaries reproduce with zero relative difference. At the locked
+leader phase `0.785062`, all 12 source totals and all four branch counts also
+reproduce exactly. Force/torque closure is `6.83e-7/3.19e-6`; periodic power
+difference is unchanged at `2.213%`. The independent implementation passes
+`59/59` checks.
+
+The signal is not temporally narrow. The shortest circular 64-bin window
+containing `50%` of centered reflected-exchange energy spans `31/64 = 0.4844`
+cycles, from phase `0.578125` through the periodic seam to `0.0625`, failing
+the preregistered `0.35` localization rule. Absolute reflected exchange peaks
+at leader phase `0.748963`; per-link exchange and topology turnover both peak
+at `0.250830`.
+
+Branch topology is nevertheless associated with the per-link signal:
+near/far occupancy correlations are `-0.4284/+0.4284`, clearing the frozen
+`0.35` moderate-association threshold. Mean near/far occupancy is
+`50.86%/49.14%`; no halfway fallback occurs. Total reflected exchange tracks
+link count at `r=0.9988`, so support dominates the gross time history. These
+are associations, not branch-specific population attribution or causation.
+
+The frozen classification is `cycleDistributedBranchAssociated`. It rejects a
+narrow-window endpoint rerun. The next admissible experiment is sparse,
+matched-phase c16/c20 tracing stratified by near and far occupancy. This c18
+trace does not itself localize the cross-grid residual in time, establish
+source convergence, authorize the formation-power map, justify a boundary
+change, or support a quantitative biological claim.
+
 ## Native Metal presentation integrity
 
 The complete birds in the README animation are two independently phased copies

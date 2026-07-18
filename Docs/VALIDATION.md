@@ -3224,6 +3224,58 @@ c18 direction/component residual-covariance selector may advance before one
 focused phase trace. No new lattice offset, global grid, production edit,
 quantitative formation benefit, or biological claim is authorized.
 
+The archive-only selector is complete under
+`ValidationInputs/formation-flight-source-residual-covariance-v1.json`. Before
+detailed ranking it freezes the nine input hashes, c18 h-linear residual
+definition, component algebra, deterministic tie breaks, a `10%` minimum
+positive-alignment share, and two-of-three sign agreement. It executes zero
+fluid timesteps.
+
+Leader reflected momentum exchange at D3Q19 `q=5`, direction `[0,0,+1]`, owns
+`21.7875%` of the positive systematic-alignment ledger and agrees with the
+exact-source residual in all three offsets. Reflected `q=6`, `[0,0,-1]`, is
+second at `16.5199%`, localizing the persistent residual to the vertical
+reflected-population pair. The deterministic one-direction selection chooses
+`q=5` at `[0.25,0.25,0.75]`, whose local alignment `3.0268e-5` exceeds the two
+alternate offsets by roughly one order of magnitude. Residual component
+closure is `1.37e-8`; all evidence gates pass and the independent audit is
+`57/57`.
+
+This authorizes exactly one c18 production-TRT final-cycle temporal trace for
+leader reflected momentum exchange in `q=5` at the selected offset. It does
+not authorize an opposite-pair trace, a new grid, the power scout, a boundary
+change, quantitative benefit, or biological interpretation.
+
+The one authorized temporal trace is complete under
+`ValidationInputs/formation-flight-focused-source-trace-v1.json`. It adds one
+read-only leader-q5 source reduction per step only during the final c18 cycle;
+the collision, boundary, force, geometry, kinematics, grid, and production
+Metal/GPU layouts are unchanged. The compact archive contains exactly
+`4,820/4,820` ordered samples from absolute steps `19,281...24,100` and no flow
+slice fields.
+
+All unchanged gates pass. Maximum population reconstruction residual is
+`2.71e-7`, force/torque closure is `6.83e-7/3.19e-6`, and final-cycle
+periodicity is `2.213%`. The diagnostic reproduces the locked coupled leader
+and follower power/coefficient summaries with zero relative difference. At
+the locked leader phase `0.785062`, all selected source totals and branch
+counts also reproduce exactly. The independent audit passes `59/59` checks.
+
+The preregistered 64-bin temporal decision is
+`cycleDistributedBranchAssociated`. The shortest circular interval containing
+half of the centered reflected-exchange energy spans `0.484375` cycles,
+exceeding the `0.35` localization boundary. Per-link reflected exchange has
+`-0.42844/+0.42844` correlation with near/far occupancy, clearing the frozen
+`0.35` association threshold; total reflected exchange correlates `0.99880`
+with q5 link count. Mean near/far fractions are `0.5086/0.4914`, and halfway
+fallback count is zero throughout.
+
+According to the frozen rule, a narrow c16/c20 phase-window replay is rejected.
+Only sparse matched-phase c16/c20 traces stratified by near/far occupancy may
+advance. The c18 absolute trace cannot alone localize the cross-grid residual,
+prove branch causation, establish source or power convergence, authorize a
+production correction, or support a formation-benefit or biological claim.
+
 ## 9. Free flight
 
 Enable six-degree-of-freedom coupling after prescribed-motion loads pass.

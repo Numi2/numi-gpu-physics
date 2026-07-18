@@ -1,0 +1,96 @@
+{
+  "branchAssociation": {
+    "branchAssociated": true,
+    "correlations": {
+      "centeredReflectedMomentumExchangeVsTopologyTurnover": -0.3110756294169246,
+      "reflectedMomentumExchangePerLinkVsFarFraction": 0.42844401698306767,
+      "reflectedMomentumExchangePerLinkVsNearFraction": -0.42844401698306767,
+      "reflectedMomentumExchangeVsLinkCount": 0.9987994474194615
+    },
+    "interpretationBoundary": "branch counts identify topology occupancy and association; they do not assign population contribution independently to each branch",
+    "maximumAbsoluteNearOrFarAssociation": 0.42844401698306767,
+    "maximumFallbackLinkCount": 0,
+    "meanFallbackFraction": 0.0,
+    "meanFarFraction": 0.491384319022688,
+    "meanNearFraction": 0.508615680977312
+  },
+  "claimBoundary": "This one c18 trace can localize the timing and topology association of the selected absolute q5 source and can verify diagnostic non-intrusion. It cannot by itself localize the cross-grid residual in time, prove a branch causes that residual, establish source or power convergence, justify a force-law correction, quantify formation benefit, or support a biological claim.",
+  "classification": "cycleDistributedBranchAssociated",
+  "integrity": {
+    "maximumAbsoluteAdditiveSourceClosure": 1.0162591934204102e-05,
+    "maximumRelativeReconstructionClosureResidual": 2.7074983546032286e-07,
+    "maximumRelativeReferenceAnchorSourceDifference": 0,
+    "referenceReportSHA256": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc",
+    "relativeReferenceLoadSummaryDifference": 0,
+    "reportPassed": true,
+    "traceReportSHA256": "3a85b018760ad63be6d3daac6b50ff8554c110df5dee7778cfd25c22b951c40a"
+  },
+  "nextAction": "do not narrow by phase; use sparse matched-phase c16 and c20 traces stratified by near and far occupancy",
+  "outputs": {
+    "csv": "ValidationArtifacts/formation-flight-focused-source-trace/formation-flight-focused-source-trace.csv",
+    "figurePNG": "Docs/Media/formation-flight-focused-source-trace.png",
+    "figureSVG": "Docs/Media/formation-flight-focused-source-trace.svg"
+  },
+  "runtimeSeconds": 1323.5378789901733,
+  "schemaVersion": 1,
+  "scientificScope": "read-only final-cycle temporal trace of one preregistered owner and moving D3Q19 boundary source; mechanism localization only, not a force correction, convergence result, formation benefit, or biological claim",
+  "selection": {
+    "capturedFinalCycleSampleCount": 4820,
+    "chordCells": 18,
+    "component": "reflectedMomentumExchange",
+    "cycleSteps": 4820,
+    "direction": [
+      0,
+      0,
+      1
+    ],
+    "directionIndex": 5,
+    "flyer": "leader",
+    "subcellOffsetCells": [
+      0.25,
+      0.25,
+      0.75
+    ]
+  },
+  "temporalLocalization": {
+    "anchor": {
+      "farFraction": 0.5056657223796034,
+      "leaderPhase": 0.7850622406639004,
+      "nearFraction": 0.4943342776203966,
+      "reflectedMomentumExchange": 62.61584281921387,
+      "stepWithinCycle": 3784
+    },
+    "centeredEnergyWindow": {
+      "binCount": 31,
+      "capturedEnergyShare": 0.5001509878948505,
+      "endBinExclusive": 4,
+      "endPhase": 0.0625,
+      "startBin": 37,
+      "startPhase": 0.578125,
+      "targetEnergyShare": 0.5,
+      "widthCycles": 0.484375,
+      "wraps": true
+    },
+    "localized": false,
+    "peakPerLinkReflectedMomentumExchange": {
+      "farFraction": 0.2757619738751814,
+      "leaderPhase": 0.2508298755186722,
+      "nearFraction": 0.7242380261248186,
+      "stepWithinCycle": 1209,
+      "value": 0.10209401633120067
+    },
+    "peakReflectedMomentumExchange": {
+      "leaderPhase": 0.7489626556016598,
+      "linkCount": 713,
+      "stepWithinCycle": 3610,
+      "value": 71.64527893066406
+    },
+    "peakTopologyTurnover": {
+      "leaderPhase": 0.2508298755186722,
+      "stepWithinCycle": 1209,
+      "value": 0.45544562822308554
+    },
+    "phaseBinCount": 64
+  },
+  "title": "Formation c18 focused boundary-source temporal trace"
+}

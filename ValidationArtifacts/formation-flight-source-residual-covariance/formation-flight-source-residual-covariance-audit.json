@@ -1,0 +1,327 @@
+{
+  "checkCount": 57,
+  "checks": [
+    {
+      "evidence": "2026-07-18T14:06:06Z",
+      "name": "registered before residual selection",
+      "passed": true
+    },
+    {
+      "evidence": "a765569c8f5e963258d65034d8159ecbe09c7dd34b3a08b7bd9c4f92929fb9e8",
+      "name": "lockedInputs hash ValidationInputs/formation-flight-subcell-source-offset3-v1.json",
+      "passed": true
+    },
+    {
+      "evidence": "4f90b4ba8edf82d5e265421ebe8dd9f15a05ecd0a89eb81b845d91b06ab66f89",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-subcell-source-offset3/formation-flight-subcell-source-three-offset-summary.json",
+      "passed": true
+    },
+    {
+      "evidence": "c769d160605f7c5679f0a3bda97ab18d64b6da585699b0a0d2b403512d4b5cef",
+      "name": "lockedInputs hash ValidationArtifacts/formation-flight-subcell-source-offset3/formation-flight-subcell-source-three-offset-audit.json",
+      "passed": true
+    },
+    {
+      "evidence": "1f074c80180f20042dd146d76159955f44e86ad664ce268dee9daa30249a58ae",
+      "name": "lockedAnalysis hash Scripts/run-formation-source-residual-covariance.sh",
+      "passed": true
+    },
+    {
+      "evidence": "e4fddc01379831f7e2a361fd0634cc8a6475be4e8a728c31ba08fd75d6db1348",
+      "name": "lockedAnalysis hash Scripts/analyze-formation-source-residual-covariance.py",
+      "passed": true
+    },
+    {
+      "evidence": "efc0e1f0c0d07b5388e71f811c7cb62e89e153686040f5dc9892c118514539b9",
+      "name": "lockedAnalysis hash Scripts/audit-formation-source-residual-covariance.py",
+      "passed": true
+    },
+    {
+      "evidence": "4f90b4ba8edf82d5e265421ebe8dd9f15a05ecd0a89eb81b845d91b06ab66f89",
+      "name": "parent summary hash",
+      "passed": true
+    },
+    {
+      "evidence": "mixedPopulationWeightedSourceMean",
+      "name": "parent summary passed",
+      "passed": true
+    },
+    {
+      "evidence": "c769d160605f7c5679f0a3bda97ab18d64b6da585699b0a0d2b403512d4b5cef",
+      "name": "parent audit hash",
+      "passed": true
+    },
+    {
+      "evidence": 190,
+      "name": "parent audit passed",
+      "passed": true
+    },
+    {
+      "evidence": "96b3095a4144e8881f1a6889d2c1e28475280f356c903119c435485a859e6225",
+      "name": "offset1 c16 hash",
+      "passed": true
+    },
+    {
+      "evidence": 6.47340482006083e-08,
+      "name": "offset1 c16 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset1 c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "15309881c1f8cde31f72d0501fa7ab99b5dececbe789462c60208f1ccc8e6e1a",
+      "name": "offset1 c18 hash",
+      "passed": true
+    },
+    {
+      "evidence": 7.450188031677835e-08,
+      "name": "offset1 c18 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset1 c18 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "c248439277b56c1f45fbf74e0a91f3c4161269b635b649a1c8515d0fd0480bd0",
+      "name": "offset1 c20 hash",
+      "passed": true
+    },
+    {
+      "evidence": 8.060471116580536e-08,
+      "name": "offset1 c20 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset1 c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "df3ac975d72a9f930b6494bb5a67edc50698e7b3cd2b75683d2401bf57682c40",
+      "name": "offset2 c16 hash",
+      "passed": true
+    },
+    {
+      "evidence": 6.783841403612985e-08,
+      "name": "offset2 c16 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset2 c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "430f366b583c56f546b6e047252acd43f0a042c5f94425a31b96567a57b10a27",
+      "name": "offset2 c18 hash",
+      "passed": true
+    },
+    {
+      "evidence": 6.305031839201304e-08,
+      "name": "offset2 c18 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset2 c18 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "1b747bde81e2a97e225aa17c0e40166b777b2141433c62b6778725775a2de579",
+      "name": "offset2 c20 hash",
+      "passed": true
+    },
+    {
+      "evidence": 8.322393794440293e-08,
+      "name": "offset2 c20 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset2 c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "3674fab57933bad0c24adfa9b8a8c1baf4173f9e2bfe3efa358057767624152c",
+      "name": "offset3 c16 hash",
+      "passed": true
+    },
+    {
+      "evidence": 6.98387088944822e-08,
+      "name": "offset3 c16 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset3 c16 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "c408a0fe39a52e618674c45c84e84c3183e3a5a8298d14e8d98517dc36aebd48",
+      "name": "offset3 c18 hash",
+      "passed": true
+    },
+    {
+      "evidence": 7.398205496953064e-08,
+      "name": "offset3 c18 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset3 c18 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": "957c9a8c0d3319e76b430b44566e0bbc495a49bb9dc52d173a4d0c299f0c6abc",
+      "name": "offset3 c20 hash",
+      "passed": true
+    },
+    {
+      "evidence": 7.565774699866019e-08,
+      "name": "offset3 c20 census passed",
+      "passed": true
+    },
+    {
+      "evidence": 19,
+      "name": "offset3 c20 complete D3Q19",
+      "passed": true
+    },
+    {
+      "evidence": 0.5555555555555559,
+      "name": "interpolation fraction",
+      "passed": true
+    },
+    {
+      "evidence": 1.3705388988635714e-08,
+      "name": "residual component closure",
+      "passed": true
+    },
+    {
+      "evidence": 1.3705388988635714e-08,
+      "name": "residual component closure gate",
+      "passed": true
+    },
+    {
+      "evidence": 3.551444044078098e-05,
+      "name": "positive alignment total",
+      "passed": true
+    },
+    {
+      "evidence": "reflectedMomentumExchange",
+      "name": "selected component",
+      "passed": true
+    },
+    {
+      "evidence": 5,
+      "name": "selected direction",
+      "passed": true
+    },
+    {
+      "evidence": 0.21787518963263686,
+      "name": "selected share",
+      "passed": true
+    },
+    {
+      "evidence": 7.737715445732144e-06,
+      "name": "selected systematic alignment",
+      "passed": true
+    },
+    {
+      "evidence": 3.7829318782829497e-06,
+      "name": "selected centered covariance",
+      "passed": true
+    },
+    {
+      "evidence": 3,
+      "name": "selected sign agreement",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "localAlignment": 3.0268076709504683e-05,
+        "offsetCells": [
+          0.25,
+          0.25,
+          0.75
+        ],
+        "phase": "offset1",
+        "phaseOrder": 0
+      },
+      "name": "selected trace offset",
+      "passed": true
+    },
+    {
+      "evidence": 3.0268076709504683e-05,
+      "name": "selected local alignment",
+      "passed": true
+    },
+    {
+      "evidence": "concentratedStableTraceSelected",
+      "name": "classification",
+      "passed": true
+    },
+    {
+      "evidence": "concentratedStableTraceSelected",
+      "name": "trace authorization",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "allFinite": true,
+        "allNineInputHashesMatchParent": true,
+        "completeD3Q19": true,
+        "parentEvidencePassed": true,
+        "parentPowerGateFailed": true,
+        "registeredBeforeResidualSelection": true,
+        "residualComponentClosure": true,
+        "selectedMovingDirection": true
+      },
+      "name": "summary evidence passed",
+      "passed": true
+    },
+    {
+      "evidence": 0,
+      "name": "zero fluid timesteps",
+      "passed": true
+    },
+    {
+      "evidence": "Docs/Media/formation-flight-source-residual-covariance.png",
+      "name": "figure PNG exists",
+      "passed": true
+    },
+    {
+      "evidence": "Docs/Media/formation-flight-source-residual-covariance.svg",
+      "name": "figure SVG exists",
+      "passed": true
+    },
+    {
+      "evidence": false,
+      "name": "GitHub Actions absent",
+      "passed": true
+    }
+  ],
+  "checksPassed": 57,
+  "passed": true,
+  "recomputedClassification": "concentratedStableTraceSelected",
+  "recomputedPositiveSystematicAlignmentTotal": 3.551444044078098e-05,
+  "recomputedResidualComponentClosureMaximumAbsolute": 1.3705388988635714e-08,
+  "recomputedSelection": {
+    "component": "reflectedMomentumExchange",
+    "directionIndex": 5,
+    "offsetCells": [
+      0.25,
+      0.25,
+      0.75
+    ],
+    "positiveAlignmentShare": 0.21787518963263686,
+    "signAgreementCount": 3
+  },
+  "recomputedTraceAuthorized": true,
+  "schemaVersion": 1,
+  "title": "Formation source residual covariance independent audit"
+}

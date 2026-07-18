@@ -444,6 +444,54 @@ The wider formation-power map remains blocked; the next admissible allocation
 is an archive-only c18 direction/component residual-covariance selector before
 one focused phase trace.
 
+That zero-CFD selector is complete under a locked pre-analysis contract:
+
+```bash
+BIRDFLOW_ANALYSIS_PYTHON="$PWD/.build/formation-analysis-venv/bin/python" \
+  ./Scripts/run-formation-source-residual-covariance.sh
+```
+
+![Formation Flight c18 source residual selector](Docs/Media/formation-flight-source-residual-covariance.png)
+
+The exact c18 residual against h-linear c16/c20 endpoints is concentrated in
+the leader's reflected momentum-exchange term at D3Q19 `q=5`, direction
+`[0,0,+1]`. It owns `21.788%` of the positive systematic-alignment ledger
+against a frozen `10%` requirement and agrees in all `3/3` lattice offsets.
+The opposite reflected direction `q=6` contributes another `16.520%`, exposing
+a vertical reflected-population pair rather than a diffuse all-stencil error.
+The deterministic strongest trace anchor is `[0.25,0.25,0.75]`; residual
+component closure is `1.37e-8`. The independent audit passes `57/57`, and the
+selector executes zero fluid timesteps. Exactly one c18 final-cycle temporal
+trace is now authorized for leader reflected momentum exchange, `q=5`, at that
+offset. It is diagnostic only and does not reopen the power map.
+
+That single preregistered trace is now complete:
+
+```bash
+BIRDFLOW_ANALYSIS_PYTHON="$PWD/.build/formation-analysis-venv/bin/python" \
+  ./Scripts/run-formation-focused-source-trace.sh
+```
+
+![Formation Flight leader q5 final-cycle source trace](Docs/Media/formation-flight-focused-source-trace.png)
+
+The read-only diagnostic records all `4,820` steps of the final c18 cycle and
+reproduces both locked coupled-load summaries and the locked phase-`0.785062`
+q5 census exactly: both relative differences are zero. Reconstruction closes
+to `2.71e-7`, force/torque closure remains `6.83e-7/3.19e-6`, periodic power
+difference remains `2.213%`, and the independent audit passes `59/59` checks.
+The production Metal kernel and GPU data layout remain byte-identical to the
+baseline.
+
+The preregistered result is `cycleDistributedBranchAssociated`: the shortest
+circular window containing half of the phase-binned centered q5 reflected
+energy spans `0.4844` cycles, wider than the `0.35` localization limit, while
+per-link reflected exchange has `|r|=0.4284` association with near/far branch
+occupancy. Total reflected exchange is almost entirely controlled by q5 link
+support (`r=0.9988` with link count), and no halfway-fallback link appears.
+Therefore a narrow phase-window ladder is rejected. The next justified test is
+sparse matched-phase c16/c20 sampling stratified by near/far occupancy—not a
+second c18 trace, a broad power map, or a production force change.
+
 See the [scientific contract and scouting matrix](Docs/FORMATION_FLIGHT_OBSERVATORY.md).
 
 The next experimental validation source is now qualified without weakening the

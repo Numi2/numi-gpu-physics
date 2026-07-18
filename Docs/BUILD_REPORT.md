@@ -288,6 +288,28 @@ Results:
   `190/190`. The locked `mixedPopulationWeightedSourceMean` result blocks the
   wider power scout and authorizes only an archive-only c18 direction/component
   residual-covariance selector before at most one focused phase trace.
+- The preregistered archive-only c18 residual selector executes zero fluid
+  timesteps and reconstructs the exact h-linear source and additive component
+  residuals from all nine locked censuses. Its frozen `10%` concentration and
+  two-of-three sign gates select leader reflected momentum exchange at D3Q19
+  `q=5`, `[0,0,+1]`, with `21.7875%` of the positive systematic-alignment
+  ledger and `3/3` agreement. Reflected `q=6` ranks second at `16.5199%`,
+  localizing the residual to a vertical reflected-population pair. The
+  representative offset `[0.25,0.25,0.75]` has the strongest selected local
+  alignment; residual component closure is `1.37e-8`, and the independent
+  audit passes `57/57`. Exactly one c18 final-cycle `q=5` reflected-population
+  trace advances; the power map and production edits remain blocked.
+- The single authorized c18 temporal trace records all `4,820` final-cycle
+  leader-q5 samples in `1323.54 s` through one compact read-only census
+  dispatch per step. It reproduces the locked coupled summaries and phase
+  anchor exactly, closes source algebra at `2.71e-7`, retains force/torque
+  closure at `6.83e-7/3.19e-6`, and passes an independent `59/59` audit. The
+  production Metal kernel and GPU layout remain byte-identical to baseline.
+  Half of centered source energy needs `0.4844` cycles, while per-link source
+  has `|r|=0.4284` near/far occupancy association; the frozen result is
+  `cycleDistributedBranchAssociated`. The next allocation is sparse
+  matched-phase c16/c20 sampling stratified by branch occupancy, not a narrow
+  phase window, second c18 trace, power map, or production edit.
 
 ## Verification boundary
 
