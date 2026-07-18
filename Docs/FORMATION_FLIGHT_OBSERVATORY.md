@@ -668,6 +668,64 @@ candidate `[0.25,0,0.5]` may complete the minimal phase-robustness set. A full
 formation-power ladder, production correction, quantitative formation benefit,
 and biological claim remain unauthorized.
 
+## Three-offset source robustness decision
+
+The final authorized offset and the aggregate decision are complete under
+`ValidationInputs/formation-flight-subcell-source-offset3-v1.json`. Before the
+third CFD triplet, the contract freezes the final rank-3 candidate
+`[0.25,0,0.5]`, exact implementation and analysis hashes, NumPy `2.5.1`,
+Matplotlib `3.11.1`, and a two-part promotion rule:
+
+- direction-resolved three-offset mean source curvature must be at most `0.5`;
+- maximum pairwise direction-weighted source-profile spread must be at most
+  `5%`.
+
+The `5%` spread bound is fixed before the third phase and is more than four
+times the already known two-phase maximum `1.1618%`. The individual final
+offset's scalar geometry curvature is recorded as an ill-conditioned `60.38`
+because its c16 and c20 endpoint densities are almost equal. It is explicitly
+not used as the primary decision metric.
+
+```bash
+BIRDFLOW_ANALYSIS_PYTHON="$PWD/.build/formation-analysis-venv/bin/python" \
+  ./Scripts/run-formation-subcell-source-offset3.sh
+```
+
+![Three-offset source robustness decision](Media/formation-flight-subcell-source-three-offset-convergence.png)
+
+The new five-cycle production-TRT c16/c18/c20 cases complete in
+`497.74/891.05/1630.52 s` (`3019.32 s` total). All nine source cases across the
+three offsets are finite, overlap-free, owner-complete, D3Q19-complete, and
+inside unchanged reconstruction, force, torque, and periodicity gates. For the
+new triplet, worst source reconstruction is `7.57e-8`; worst force/torque
+closure is `8.45e-7/4.03e-6`; worst final-cycle periodic difference is
+`2.327%`.
+
+Individual exact-source curvatures are `0.88415/0.57541/0.68861`. The
+three-offset mean areal-link, conditional-population, and exact-source
+curvatures are `0.58081/0.56446/0.59595`. Mean reflected, interpolation, and
+moving-wall component curvatures are `0.62088/0.67654/0.86144`. Thus sampling,
+conditional population, and all three source components remain mixed; no
+single population term can be rescaled or promoted.
+
+Maximum pairwise exact-source spread is only `1.3844%` across all grids
+(`1.3844/1.1784/1.3159%` at c16/c18/c20), clearing the frozen `5%` limit.
+Conditional-population spread is only `0.0724%`, areal-link spread is `1.292%`,
+and the largest component spread is `2.199%`. Lattice-phase variability is
+therefore small, but averaging it does not restore the required h-linear
+source refinement. The frozen classification is
+`mixedPopulationWeightedSourceMean`; the quantitative power gate fails, while
+the evidence-integrity result passes. An independent implementation
+reconstructs all nine inputs, branches, populations, individual/mean/component
+curvatures, phase spreads, geometry conditioning, classification, figures, and
+claim boundary with `190/190` checks passing.
+
+The wider position-phase power map is not authorized. The next allocation is
+archive-only: compute the c18 direction/component residual covariance across
+the three offsets, then select at most one focused production phase trace. No
+additional offset, global grid, power scout, production correction,
+quantitative benefit, or biological claim is authorized.
+
 ## Native Metal presentation integrity
 
 The complete birds in the README animation are two independently phased copies

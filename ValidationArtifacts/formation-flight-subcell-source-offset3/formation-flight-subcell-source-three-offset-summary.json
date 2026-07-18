@@ -1,0 +1,329 @@
+{
+  "allThreeOffsetRuntimeSeconds": 10233.731084346771,
+  "c18EndpointInterpolationFraction": 0.5555555555555559,
+  "claimBoundary": "This final deterministic phase and three-offset analysis can decide whether source refinement is robust enough to authorize the already-declared coarse formation-power scout. It cannot establish formation-power convergence, quantitative formation benefit, measured-bird formation flight, a production correction, or a biological claim.",
+  "classification": "mixedPopulationWeightedSourceMean",
+  "csvPath": "ValidationArtifacts/formation-flight-subcell-source-offset3/formation-flight-subcell-source-three-offset-directions.csv",
+  "decisionMetrics": {
+    "componentPhaseSpread": {
+      "interpolationAuxiliary": {
+        "maximumRelativePairwiseDifference": 0.021090393467911223,
+        "maximumRelativePairwiseDifferenceByResolution": {
+          "c16": 0.016748326518987007,
+          "c18": 0.021090393467911223,
+          "c20": 0.012049719160807814
+        }
+      },
+      "movingWall": {
+        "maximumRelativePairwiseDifference": 0.02198538910650834,
+        "maximumRelativePairwiseDifferenceByResolution": {
+          "c16": 0.02198538910650834,
+          "c18": 0.015825552453771378,
+          "c20": 0.008657956957988728
+        }
+      },
+      "reflectedMomentumExchange": {
+        "maximumRelativePairwiseDifference": 0.015681210854275845,
+        "maximumRelativePairwiseDifferenceByResolution": {
+          "c16": 0.01536960367010545,
+          "c18": 0.013014935190937538,
+          "c20": 0.015681210854275845
+        }
+      }
+    },
+    "geometryByPhase": {
+      "offset1": {
+        "curvature": 0.14997913216742337,
+        "densityByResolution": {
+          "c16": 33.578125,
+          "c18": 33.34567901234568,
+          "c20": 33.005
+        }
+      },
+      "offset2": {
+        "curvature": 1.1766126354553235,
+        "densityByResolution": {
+          "c16": 33.390625,
+          "c18": 33.54938271604938,
+          "c20": 33.135
+        }
+      },
+      "offset3": {
+        "curvature": 60.38408779155144,
+        "densityByResolution": {
+          "c16": 33.2421875,
+          "c18": 33.41358024691358,
+          "c20": 33.245
+        }
+      }
+    },
+    "individualOffsetCurvatures": {
+      "offset1": {
+        "areal": 0.7849736455546932,
+        "conditional": 0.5873308564273788,
+        "source": 0.8841533797492038
+      },
+      "offset2": {
+        "areal": 0.6173028378426622,
+        "conditional": 0.6015933901595483,
+        "source": 0.5754072597534435
+      },
+      "offset3": {
+        "areal": 0.7319873346341987,
+        "conditional": 0.5338505177566459,
+        "source": 0.6886059036871631
+      }
+    },
+    "maximumRelativePairwiseSourcePhaseSpread": 0.05,
+    "persistentBiasMinimumCurvature": 1.0,
+    "phaseSpread": {
+      "areal": {
+        "byResolution": {
+          "c16": {
+            "maximumRelativeDeviationFromMean": 0.007485186232019715,
+            "maximumRelativePairwiseDifference": 0.01291988530012849
+          },
+          "c18": {
+            "maximumRelativeDeviationFromMean": 0.006796048500670518,
+            "maximumRelativePairwiseDifference": 0.010887918622886503
+          },
+          "c20": {
+            "maximumRelativeDeviationFromMean": 0.007529181637503975,
+            "maximumRelativePairwiseDifference": 0.0122591311490258
+          }
+        },
+        "maximumRelativeDeviationFromMean": 0.007529181637503975,
+        "maximumRelativePairwiseDifference": 0.01291988530012849
+      },
+      "conditional": {
+        "byResolution": {
+          "c16": {
+            "maximumRelativeDeviationFromMean": 0.00031968261549992404,
+            "maximumRelativePairwiseDifference": 0.0005452250163311602
+          },
+          "c18": {
+            "maximumRelativeDeviationFromMean": 0.00022458379775352756,
+            "maximumRelativePairwiseDifference": 0.0003925416273648323
+          },
+          "c20": {
+            "maximumRelativeDeviationFromMean": 0.0003665277266376561,
+            "maximumRelativePairwiseDifference": 0.0007243202481956844
+          }
+        },
+        "maximumRelativeDeviationFromMean": 0.0003665277266376561,
+        "maximumRelativePairwiseDifference": 0.0007243202481956844
+      },
+      "source": {
+        "byResolution": {
+          "c16": {
+            "maximumRelativeDeviationFromMean": 0.00801860971821212,
+            "maximumRelativePairwiseDifference": 0.013843867116092428
+          },
+          "c18": {
+            "maximumRelativeDeviationFromMean": 0.007573121764785981,
+            "maximumRelativePairwiseDifference": 0.011784008660612156
+          },
+          "c20": {
+            "maximumRelativeDeviationFromMean": 0.008224430549952354,
+            "maximumRelativePairwiseDifference": 0.013158947085306233
+          }
+        },
+        "maximumRelativeDeviationFromMean": 0.008224430549952354,
+        "maximumRelativePairwiseDifference": 0.013843867116092428
+      }
+    },
+    "smoothRefinementMaximumCurvature": 0.5,
+    "threeOffsetMeanComponentCurvatures": {
+      "interpolationAuxiliary": 0.6765447247450421,
+      "movingWall": 0.8614442865738687,
+      "reflectedMomentumExchange": 0.620883939234056
+    },
+    "threeOffsetMeanCurvatures": {
+      "areal": 0.5808127815080057,
+      "conditional": 0.5644587080192439,
+      "source": 0.5959457846757171
+    },
+    "threeOffsetMeanGeometryDensityCurvature": 0.6738507961865283
+  },
+  "figurePaths": [
+    "Docs/Media/formation-flight-subcell-source-three-offset-convergence.png",
+    "Docs/Media/formation-flight-subcell-source-three-offset-convergence.svg"
+  ],
+  "gates": {
+    "allFinite": true,
+    "allNineRunsPassed": true,
+    "allNineSourceCensusesPassed": true,
+    "allOffsetsMatch": true,
+    "allOwnersAndDirectionsComplete": true,
+    "deterministicFinalCandidateRank": true,
+    "incomingDecompositionClosure": true,
+    "parentResultsPassed": true,
+    "preregisteredBeforeTranslatedCFD": true,
+    "sourceProfilePhaseSpreadPassed": true,
+    "threeOffsetMeanSourceSmooth": false
+  },
+  "newCFDRuntimeSeconds": 3019.317967057228,
+  "nextAction": "do not run the power scout; select one c18 direction/component phase trace from the archived three-offset residual covariance",
+  "parentEvidence": {
+    "offset1Audit": {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+      "sha256": "98f07499f56d630cdc65de4a6da867e12b6bdb80b52aaaff2df82c1e05c37bd1"
+    },
+    "offset1Summary": {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+      "sha256": "8a464b91fe1488a39d0334cb00eefc8056a43ff00467b0d4e6331165c7f59c0c"
+    },
+    "offset2Audit": {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-offset2/formation-flight-subcell-source-offset2-audit.json",
+      "sha256": "169d05394deec00af45411af0102956e80c3085052ae031416d5ed8f33063e9f"
+    },
+    "offset2Summary": {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-offset2/formation-flight-subcell-source-offset2-summary.json",
+      "sha256": "7208c75f3f3d64730090856c043f2b66c6917aa81bf068a94db23b845b5095b5"
+    }
+  },
+  "passed": true,
+  "phaseInputs": {
+    "offset1": {
+      "c16": {
+        "actualFollowerPhase": 0.03501400560224077,
+        "actualLeaderPhase": 0.7850140056022409,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-census/c16-median-phase/formation-flight-boundary-source-census.json",
+        "censusSHA256": "96b3095a4144e8881f1a6889d2c1e28475280f356c903119c435485a859e6225",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-census/c16-median-phase/formation-flight-subcell-source-report.json",
+        "reportSHA256": "d5b70df8a57f5f6ffc266e2dc50b9f4cd6e979039f3e1c5c0b6c51d728a3c16a",
+        "runtimeSeconds": 1016.7172250747681
+      },
+      "c18": {
+        "actualFollowerPhase": 0.03506224066390029,
+        "actualLeaderPhase": 0.7850622406639004,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-census/c18-median-phase/formation-flight-boundary-source-census.json",
+        "censusSHA256": "15309881c1f8cde31f72d0501fa7ab99b5dececbe789462c60208f1ccc8e6e1a",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-census/c18-median-phase/formation-flight-subcell-source-report.json",
+        "reportSHA256": "4d224787103e05652580f3191f7ae5459ef84e7677cf9b007ef9fe5a2b2a9ccc",
+        "runtimeSeconds": 1367.6834870576859
+      },
+      "c20": {
+        "actualFollowerPhase": 0.03506069094304376,
+        "actualLeaderPhase": 0.7850606909430439,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-census/c20-median-phase/formation-flight-boundary-source-census.json",
+        "censusSHA256": "c248439277b56c1f45fbf74e0a91f3c4161269b635b649a1c8515d0fd0480bd0",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-census/c20-median-phase/formation-flight-subcell-source-report.json",
+        "reportSHA256": "428c37d9f5166207255c73232e17c9b55c701451458845c816921eb35a2e2722",
+        "runtimeSeconds": 2544.7938690185547
+      }
+    },
+    "offset2": {
+      "c16": {
+        "actualFollowerPhase": 0.03501400560224077,
+        "actualLeaderPhase": 0.7850140056022409,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c16-offset2/formation-flight-boundary-source-census.json",
+        "censusSHA256": "df3ac975d72a9f930b6494bb5a67edc50698e7b3cd2b75683d2401bf57682c40",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c16-offset2/formation-flight-subcell-source-report.json",
+        "reportSHA256": "2bf24e532678cb0db0f998029f6e85c961c876c76f43c00bee7c04df4a95c62b",
+        "runtimeSeconds": 397.69924306869507
+      },
+      "c18": {
+        "actualFollowerPhase": 0.03506224066390029,
+        "actualLeaderPhase": 0.7850622406639004,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c18-offset2/formation-flight-boundary-source-census.json",
+        "censusSHA256": "430f366b583c56f546b6e047252acd43f0a042c5f94425a31b96567a57b10a27",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c18-offset2/formation-flight-subcell-source-report.json",
+        "reportSHA256": "8fe2407d7ace2dd29e814e5f4504e9cbc569033824f370b64ac9137778d8c32b",
+        "runtimeSeconds": 772.6707830429077
+      },
+      "c20": {
+        "actualFollowerPhase": 0.03506069094304376,
+        "actualLeaderPhase": 0.7850606909430439,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c20-offset2/formation-flight-boundary-source-census.json",
+        "censusSHA256": "1b747bde81e2a97e225aa17c0e40166b777b2141433c62b6778725775a2de579",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset2/c20-offset2/formation-flight-subcell-source-report.json",
+        "reportSHA256": "19bccba6b828578223bab25063beb44e5d908d932b43a50eaf12a5fac1a5c575",
+        "runtimeSeconds": 1114.8485100269318
+      }
+    },
+    "offset3": {
+      "c16": {
+        "actualFollowerPhase": 0.03501400560224077,
+        "actualLeaderPhase": 0.7850140056022409,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset3/c16-offset3/formation-flight-boundary-source-census.json",
+        "censusSHA256": "3674fab57933bad0c24adfa9b8a8c1baf4173f9e2bfe3efa358057767624152c",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset3/c16-offset3/formation-flight-subcell-source-report.json",
+        "reportSHA256": "82718785b841fc633f0e19d49ce59cfd4ee0c7a45855468cc401d83f43931b02",
+        "runtimeSeconds": 497.74090898036957
+      },
+      "c18": {
+        "actualFollowerPhase": 0.03506224066390029,
+        "actualLeaderPhase": 0.7850622406639004,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset3/c18-offset3/formation-flight-boundary-source-census.json",
+        "censusSHA256": "c408a0fe39a52e618674c45c84e84c3183e3a5a8298d14e8d98517dc36aebd48",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset3/c18-offset3/formation-flight-subcell-source-report.json",
+        "reportSHA256": "de9474401c5ffc8f30172ced1e8f19d00b65635476b83c255a68aa581d4716f6",
+        "runtimeSeconds": 891.0520590543747
+      },
+      "c20": {
+        "actualFollowerPhase": 0.03506069094304376,
+        "actualLeaderPhase": 0.7850606909430439,
+        "censusPath": "ValidationArtifacts/formation-flight-subcell-source-offset3/c20-offset3/formation-flight-boundary-source-census.json",
+        "censusSHA256": "957c9a8c0d3319e76b430b44566e0bbc495a49bb9dc52d173a4d0c299f0c6abc",
+        "deviceName": "Apple M4",
+        "reportPath": "ValidationArtifacts/formation-flight-subcell-source-offset3/c20-offset3/formation-flight-subcell-source-report.json",
+        "reportSHA256": "5c59f071936d70a37e445c8ca8594f077c1606464df3278ab3d57dc4569c2bd5",
+        "runtimeSeconds": 1630.5249990224838
+      }
+    }
+  },
+  "preregistration": {
+    "path": "ValidationInputs/formation-flight-subcell-source-offset3-v1.json",
+    "sha256": "a765569c8f5e963258d65034d8159ecbe09c7dd34b3a08b7bd9c4f92929fb9e8"
+  },
+  "primaryMetric": "threeOffsetMeanCurvatures.source",
+  "quantitativePowerGatePassed": false,
+  "schemaVersion": 1,
+  "scientificQuestion": "Does the arithmetic mean of the exact population-weighted boundary-source profiles over the three deterministic near-median lattice offsets follow smooth c16/c18/c20 refinement while phase-to-phase source variation remains below 5 percent?",
+  "selection": {
+    "offsets": [
+      {
+        "name": "offset1",
+        "offsetCells": [
+          0.25,
+          0.25,
+          0.75
+        ],
+        "selectionScore": 0.8257592096098685,
+        "zeroBasedRank": 0
+      },
+      {
+        "name": "offset2",
+        "offsetCells": [
+          0.5,
+          0.75,
+          0.5
+        ],
+        "selectionScore": 0.8437568283851116,
+        "zeroBasedRank": 1
+      },
+      {
+        "name": "offset3",
+        "offsetCells": [
+          0.25,
+          0.0,
+          0.5
+        ],
+        "selectionScore": 0.8732630458160676,
+        "zeroBasedRank": 2
+      }
+    ],
+    "path": "ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+    "sha256": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59"
+  },
+  "title": "Formation Flight three-offset source robustness decision"
+}

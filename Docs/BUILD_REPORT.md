@@ -276,6 +276,18 @@ Results:
   curvature `1.17661` prevents a population-only attribution. The locked result
   remains `mixedPopulationWeightedSource`; only the final authorized offset may
   advance, and no formation-power or biological claim is promoted.
+- The final Formation source phase freezes rank-3 offset `[0.25,0,0.5]`, the
+  exact analysis environment, and a joint promotion rule before CFD: the
+  direction-resolved three-offset mean source curvature must be at most `0.5`
+  and maximum pairwise phase spread at most `5%`. New c16/c18/c20 cases finish
+  in `497.74/891.05/1630.52 s`; every numerical and accounting gate passes.
+  Individual source curvatures are `0.88415/0.57541/0.68861`; three-offset mean
+  areal/conditional/source curvatures are `0.58081/0.56446/0.59595`. Source
+  spread clears at `1.3844%`, but mean curvature fails. Mean component
+  curvatures are `0.62088/0.67654/0.86144`, and the independent audit passes
+  `190/190`. The locked `mixedPopulationWeightedSourceMean` result blocks the
+  wider power scout and authorizes only an archive-only c18 direction/component
+  residual-covariance selector before at most one focused phase trace.
 
 ## Verification boundary
 

@@ -44,7 +44,7 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 | Fixed sphere, Re=100 | **Accepted canonical** | drag, symmetry, torque leakage, refinement, batching |
 | Fixed finite wing, Re=100 | **Accepted canonical** | finest `CL=0.76135`, `CD=0.70711`; two-finest changes below `3%` |
 | Prescribed flapping wing | **Accepted canonical** | 20/24-cell fixed-thickness changes `1.904%` lift and `3.054%` drag; finest mean errors below `4%` |
-| Formation Flight Observatory | **Coupling/accounting accepted; two source phases remain mixed; quantitative effect open** | The representative and first alternate c16/c18/c20 production sources have h-linear curvatures `0.884` and `0.575`; their two-phase mean is `0.584`, the alternate audit passes `109/109`, and the final authorized phase remains required before any power ladder |
+| Formation Flight Observatory | **Coupling/accounting accepted; three-phase source mean remains mixed; power study blocked** | Three deterministic c16/c18/c20 source phases have only `1.384%` maximum profile spread, but their mean h-linear curvature is `0.596 > 0.5`; all nine cases pass and the independent audit is `190/190` |
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; planar weighting plus D12/D16 and D28/D32 complete-dove direction censuses clear static direction redistribution at the locked 26.5 ms phase with exact Metal/CPU parity; force-history change remains `5.632%` against `5%`, so the full localized phase window, force-bearing wall/interpolation interaction, convergence, and experimental agreement remain open |
@@ -416,6 +416,33 @@ phase is `1.177`, so the result is correctly reported as nonsmooth at both
 tested offsets—not misattributed to the population operator alone. Only the
 final authorized offset `[0.25,0,0.5]` may complete the minimal robustness set;
 formation-power convergence and benefit remain unclaimed.
+
+That final robustness decision is now complete:
+
+```bash
+BIRDFLOW_ANALYSIS_PYTHON="$PWD/.build/formation-analysis-venv/bin/python" \
+  ./Scripts/run-formation-subcell-source-offset3.sh
+```
+
+![Formation Flight three-phase source robustness decision](Docs/Media/formation-flight-subcell-source-three-offset-convergence.png)
+
+The final offset `[0.25,0,0.5]` completes in `497.74/891.05/1630.52 s` at
+c16/c18/c20. Every new case passes unchanged finiteness, overlap, owner,
+periodicity, branch, sample-completeness, and reconstruction gates. Across all
+three deterministic phases, individual source curvatures are
+`0.884/0.575/0.689`; the direction-resolved three-phase mean areal-link,
+conditional-population, and exact-source curvatures are
+`0.581/0.564/0.596`.
+
+Maximum pairwise exact-source phase spread is only `1.384%`, comfortably below
+the frozen `5%` uncertainty gate, but mean source curvature remains above the
+unchanged `0.5` smooth boundary. The preregistered quantitative power gate
+therefore fails as `mixedPopulationWeightedSourceMean`. Mean reflected,
+interpolation, and moving-wall curvatures are `0.621/0.677/0.861`; no single
+term owns the residual. The independent raw-artifact audit passes `190/190`.
+The wider formation-power map remains blocked; the next admissible allocation
+is an archive-only c18 direction/component residual-covariance selector before
+one focused phase trace.
 
 See the [scientific contract and scouting matrix](Docs/FORMATION_FLIGHT_OBSERVATORY.md).
 

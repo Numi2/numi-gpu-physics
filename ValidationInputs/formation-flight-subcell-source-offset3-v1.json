@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "title": "Formation Flight final common-offset and three-phase source robustness decision",
+  "preregisteredBeforeTranslatedCFD": true,
+  "preregisteredAtUTC": "2026-07-18T12:48:18Z",
+  "baselineGitCommit": "a7abc358e09831beaa75ea6a31557b6e631aaff2",
+  "scientificQuestion": "Does the arithmetic mean of the exact population-weighted boundary-source profiles over the three deterministic near-median lattice offsets follow smooth c16/c18/c20 refinement while phase-to-phase source variation remains below 5 percent?",
+  "rationale": {
+    "why": "The representative and second-ranked offsets remain individually mixed at source curvatures 0.88415 and 0.57541, but their direction-weighted profiles differ by only 1.02 to 1.16 percent. The final authorized candidate is required to distinguish small lattice-phase noise around a smooth mean from repeatable grid-dependent bias.",
+    "roi": "One unchanged c16/c18/c20 production-TRT triplet completes the entire authorized phase set. A passing mean-and-spread decision unlocks only the already-declared c8 wider-map scout; failure stops that much larger allocation and redirects analysis to existing direction/component evidence.",
+    "parentOffset1Classification": "mixedPopulationWeightedSource",
+    "parentOffset1SourceCurvature": 0.8841533797492038,
+    "parentOffset1Audit": "66/66",
+    "parentOffset2Classification": "mixedPopulationWeightedSource",
+    "parentOffset2SourceCurvature": 0.5754072597534435,
+    "parentOffset2TwoPhaseMeanSourceCurvature": 0.583678907782895,
+    "parentOffset2Audit": "109/109",
+    "solverEvolution": "None. The final diagnostic changes only the common subcell translation to [0.25,0,0.5]. Collision, geometry, kinematics, force accounting, source reconstruction, cycles, phases, grids, and numerical gates remain unchanged."
+  },
+  "lockedConfiguration": {
+    "resolutions": [16, 18, 20],
+    "cycles": 5,
+    "followerOffsetChords": [0, 0, -3],
+    "followerPhaseOffsetCycles": 0.25,
+    "leaderPhase": 0.785,
+    "subcellOffsetCells": [0.25, 0.0, 0.5],
+    "collisionOperator": "productionTRT",
+    "activeOwners": ["leader", "follower"],
+    "fluidCasesPerResolution": 1,
+    "capturedPhasesPerResolution": 1,
+    "expectedCensusSamplesPerResolution": 2,
+    "interpolationCoordinate": "h = 1 / chordCells",
+    "analysisPython": {
+      "numpy": "2.5.1",
+      "matplotlib": "3.11.1"
+    }
+  },
+  "selectionRule": {
+    "source": "ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+    "orderedCollection": "topEightCandidates",
+    "zeroBasedRank": 2,
+    "expectedSelectionScore": 0.8732630458160676,
+    "metric": "sum over c16/c18/c20 of squared sample-SD-normalized distance from each resolution's leader areal-link-density median",
+    "tieBreak": "lexicographic x, y, z",
+    "selectedBeforeTranslatedCFD": true
+  },
+  "geometryConditioning": {
+    "offset1ScalarGeometryDensityCurvature": 0.14997913216742337,
+    "offset2ScalarGeometryDensityCurvature": 1.1766126354553235,
+    "offset3ScalarGeometryDensityCurvature": 60.38408779155144,
+    "threeOffsetMeanScalarGeometryDensityCurvature": 0.6738507961865026,
+    "status": "recorded context, not the primary decision metric",
+    "reason": "The final offset has nearly equal c16 and c20 scalar densities, so its endpoint-normalized scalar curvature has an ill-conditioned denominator. The preregistered primary metric is therefore the direction-resolved three-offset mean population-weighted source, with individual geometry, areal-link, conditional-population, full-source, and component curvatures retained for attribution.",
+    "prohibitedInterpretation": "The final offset's individual normalized curvature cannot by itself establish convergence or a defective population operator."
+  },
+  "knownPreFinalPhaseSpread": {
+    "definition": "direction-weighted L1 pairwise source-profile difference divided by the direction-weighted L1 two-phase mean profile",
+    "byResolution": {
+      "c16": 0.01018630591,
+      "c18": 0.01153466641,
+      "c20": 0.01161820431
+    },
+    "maximum": 0.01161820431,
+    "recordedBeforeFinalOffsetCFD": true
+  },
+  "gates": {
+    "maximumRelativeOwnerClosureResidual": 0.0002,
+    "maximumRelativePeriodicPowerDifference": 0.2,
+    "maximumRelativePopulationReconstructionClosureResidual": 0.000002,
+    "requireFinite": true,
+    "requireNoOverlap": true,
+    "requireExactBranchCountClosure": true,
+    "requireOneLeaderAndFollowerSamplePerGridAndOffset": true,
+    "requireAllThreeDeterministicOffsets": true,
+    "requireCompleteD3Q19": true,
+    "requireParentEvidencePassed": true,
+    "requireDeterministicCandidateRank": true
+  },
+  "decomposition": {
+    "arealDirectionalLinkMeasure": "a_r,p(q) = linkCount_r,p(q) / chordCells_r^2",
+    "conditionalMomentumExchangePopulation": "m_r,p(q) = (rawReflectedPopulationSum_r,p(q) + reconstructedIncomingPopulationSum_r,p(q)) / linkCount_r,p(q), with zero at zero support",
+    "populationWeightedSource": "s_r,p(q) = a_r,p(q) * m_r,p(q) = (rawReflectedPopulationSum_r,p(q) + reconstructedIncomingPopulationSum_r,p(q)) / chordCells_r^2",
+    "threeOffsetMeanProfile": "mean_p s_r,p(q) over the three deterministic offsets, evaluated before h-linear curvature",
+    "sourceComponents": {
+      "reflectedMomentumExchange": "rawReflectedPopulationSum + reflectedIncomingPopulationSum",
+      "interpolationAuxiliary": "interpolationAuxiliaryPopulationSum",
+      "movingWall": "movingWallPopulationSum"
+    },
+    "directionWeight": "Euclidean length of each D3Q19 direction",
+    "c18Expectation": "linear interpolation of the c16 and c20 direction profiles at h18, where h = 1 / chordCells",
+    "normalizedCurvature": "weightedL1(meanProfile18 - interpolatedMeanEndpointProfile18) / max(weightedL1(meanProfile20 - meanProfile16), denominatorFloor)",
+    "phaseSpread": "For each grid, maximum over the three phase pairs of weightedL1(source_i - source_j) / max(weightedL1(threeOffsetMeanSource), denominatorFloor); the headline is the maximum over c16/c18/c20."
+  },
+  "decisionRule": {
+    "denominatorFloor": 1e-12,
+    "smoothRefinementMaximumCurvature": 0.5,
+    "persistentBiasMinimumCurvature": 1.0,
+    "maximumRelativePairwiseSourcePhaseSpread": 0.05,
+    "phaseSpreadThresholdBasis": "The 5 percent bound is frozen before final-offset CFD, matches the project's established quantitative refinement scale, and is more than four times the known two-phase maximum 1.1618 percent; it is not fit to the unseen third phase.",
+    "primaryMetric": "threeOffsetMeanCurvatures.source",
+    "promotionRequires": [
+      "three-offset mean population-weighted-source curvature at most 0.5",
+      "maximum pairwise source-profile phase spread at most 0.05",
+      "all evidence-integrity and numerical gates pass"
+    ],
+    "classifications": {
+      "robustSmoothPopulationWeightedSource": "mean curvature is at most 0.5 and source phase spread is at most 0.05",
+      "meanSmoothButPhaseSensitive": "mean curvature is at most 0.5 but source phase spread exceeds 0.05",
+      "populationWeightedSourceMeanNonAsymptotic": "mean curvature is at least 1.0",
+      "mixedPopulationWeightedSourceMean": "mean curvature is between 0.5 and 1.0"
+    },
+    "nextActions": {
+      "robustSmoothPopulationWeightedSource": "authorize only the declared c8 three-cycle wider position-phase power scout; retain source-phase spread as numerical uncertainty and require best, neutral, and worst cells to pass c12/c16 refinement before any quantitative benefit claim",
+      "meanSmoothButPhaseSensitive": "do not run the power scout; use the archived three-offset direction/component profiles to localize the phase-sensitive source contribution",
+      "populationWeightedSourceMeanNonAsymptotic": "do not run the power scout; select one c18 direction/component phase trace from the archived three-offset residual covariance",
+      "mixedPopulationWeightedSourceMean": "do not run the power scout; select one c18 direction/component phase trace from the archived three-offset residual covariance"
+    }
+  },
+  "lockedInputs": [
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/median-offset-selection.json",
+      "sha256": "9ac50f03d8d0f06b62f8e9acd8a85a896553559faef9c5b5e6cfff1868f88c59"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-subcell-source-census-v1.json",
+      "sha256": "fddf385caf345c3e3dac8d21df6482adfdbf4f656fd654c189634b2303058a56"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json",
+      "sha256": "8a464b91fe1488a39d0334cb00eefc8056a43ff00467b0d4e6331165c7f59c0c"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-audit.json",
+      "sha256": "98f07499f56d630cdc65de4a6da867e12b6bdb80b52aaaff2df82c1e05c37bd1"
+    },
+    {
+      "path": "ValidationInputs/formation-flight-subcell-source-offset2-v1.json",
+      "sha256": "4788b8ac6c8f189f739a2b4d820ac4d77269912c0021b5b2335b4025f18cad4b"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-offset2/formation-flight-subcell-source-offset2-summary.json",
+      "sha256": "7208c75f3f3d64730090856c043f2b66c6917aa81bf068a94db23b845b5095b5"
+    },
+    {
+      "path": "ValidationArtifacts/formation-flight-subcell-source-offset2/formation-flight-subcell-source-offset2-audit.json",
+      "sha256": "169d05394deec00af45411af0102956e80c3085052ae031416d5ed8f33063e9f"
+    }
+  ],
+  "lockedImplementation": [
+    {
+      "path": "Sources/BirdFlowMetal/Metal/BirdFlow.metal",
+      "sha256": "050165d435fc77ed4faf57fc800635065a3a50e2ddef7bd8a4a62abfc5b12bcc"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/GPUData.swift",
+      "sha256": "7d5cd362ba419be213ae62870a516b9575a80f4f1d7aa45ca214b08502f4a061"
+    },
+    {
+      "path": "Sources/BirdFlowMetal/MetalFormationFlightValidation.swift",
+      "sha256": "214439c75fe66e1e76516ce59a11456ba6e291e6bdc3bd755f7e263357fe4974"
+    },
+    {
+      "path": "Package.swift",
+      "sha256": "f3558260ce7a949125518a177f7479e5a97344f742680556bb23ae3eba7d2475"
+    },
+    {
+      "path": "Tools/FormationSubcellSourceCensus/Package.swift",
+      "sha256": "3c3d4768c3a43237339d9df88935ea4b296124a6bdeab2bc413b44ca6a27eea1"
+    },
+    {
+      "path": "Tools/FormationSubcellSourceCensus/Sources/FormationSubcellSourceCensusCLI/main.swift",
+      "sha256": "2115c3f5645b426390fd96cab6301ef39ba5d74b9706f599850509fde6d2c77c"
+    },
+    {
+      "path": "Tests/BirdFlowMetalTests/FormationSubcellBoundarySourceTests.swift",
+      "sha256": "bcf3bd57d29678494bff0225884426ae4ba5180b9fd218b6cb1c0f8da30dfc86"
+    }
+  ],
+  "lockedAnalysis": [
+    {
+      "path": "Scripts/run-formation-subcell-source-offset3.sh",
+      "sha256": "7450b390c73e88f8b2789f31cd68625ecd0ce9439209b03848da378759d5aa83"
+    },
+    {
+      "path": "Scripts/analyze-formation-subcell-source-offset3.py",
+      "sha256": "d0a04fb2dfadef12949ac91f7a8fc7d4291163635900c01b8aa50073ec71aa78"
+    },
+    {
+      "path": "Scripts/audit-formation-subcell-source-offset3.py",
+      "sha256": "0f779189a47f152971d9a0c501b1d249c150a02d4213d084b1cfe7c60391a0da"
+    }
+  ],
+  "claimBoundary": "This final deterministic phase and three-offset analysis can decide whether source refinement is robust enough to authorize the already-declared coarse formation-power scout. It cannot establish formation-power convergence, quantitative formation benefit, measured-bird formation flight, a production correction, or a biological claim."
+}

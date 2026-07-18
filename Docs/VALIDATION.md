@@ -3193,6 +3193,37 @@ final authorized offset `[0.25,0,0.5]` may complete the minimal robustness set.
 Formation-power convergence, production correction, quantitative benefit, and
 biological interpretation remain blocked.
 
+The final deterministic offset and aggregate robustness decision are now
+complete under
+`ValidationInputs/formation-flight-subcell-source-offset3-v1.json`. Before
+third-phase CFD, the contract freezes `[0.25,0,0.5]`, exact implementation and
+analysis hashes, the original `0.5` mean-curvature limit, and a `5%` maximum
+pairwise source-profile spread limit. It records the known two-phase spread
+(`1.0186/1.1535/1.1618%` at c16/c18/c20) and the final offset's
+ill-conditioned scalar geometry curvature `60.38`, preventing either from
+being interpreted after seeing the final source result.
+
+The final c16/c18/c20 production-TRT cases complete in
+`497.74/891.05/1630.52 s`. All nine cases across all three offsets pass
+finiteness, overlap, owner, periodicity, branch, sample-completeness, and source
+reconstruction gates. For the final triplet, worst reconstruction is
+`7.57e-8`; worst force/torque closure is `8.45e-7/4.03e-6`; worst periodic
+difference is `2.327%`.
+
+Individual source curvatures are `0.88415/0.57541/0.68861`. Three-offset mean
+areal, conditional-population, and source curvatures are
+`0.58081/0.56446/0.59595`; mean component curvatures are `0.62088` reflected,
+`0.67654` interpolation, and `0.86144` moving wall. Maximum pairwise source
+phase spread is only `1.3844%`, so the uncertainty condition passes, but the
+mean source misses the smooth boundary. The frozen result is
+`mixedPopulationWeightedSourceMean`; the quantitative power gate is false and
+the independent audit passes `190/190`.
+
+The declared wider formation-power scout remains blocked. Only an archive-only
+c18 direction/component residual-covariance selector may advance before one
+focused phase trace. No new lattice offset, global grid, production edit,
+quantitative formation benefit, or biological claim is authorized.
+
 ## 9. Free flight
 
 Enable six-degree-of-freedom coupling after prescribed-motion loads pass.
