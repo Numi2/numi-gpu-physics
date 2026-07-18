@@ -621,29 +621,41 @@ biological claim remain unauthorized.
 
 ## Native Metal presentation integrity
 
-The complete birds in the README animation are presentation shells around the
-one force-bearing prescribed wing owned by each solver body. V4 constructs the
-partner wing with the sagittal reflection `(-x,y,z)` about that flyer's root and
-uses the exact same wingbeat phase on both sides. This is distinct from the
-intentional `Δφ=0.25` offset between leader and follower. Body, chest, shoulder,
-head, tail, feathers, and the reflected partner never enter voxelization, fluid
-stepping, loads, torque, or actuator power.
+The complete birds in the README animation are two independently phased copies
+of the locked Deetjen OB F03 measured-derived surface sequence. Each contains
+`2,157` vertices and `3,968` triangles. The replay advances source frames
+`27...121`, then uses the existing velocity-matched `14 ms` cubic-Hermite
+segment to close the forward-only presentation loop. The intentional
+leader/follower `Δφ=0.25` is applied to this normalized dove presentation phase.
 
-Capture writes a machine-readable bilateral sidecar and refuses the GIF unless
-36,864 corresponding vertices over 48 phases and two flyers have position and
-normal reflection residuals at or below `1e-6` and zero within-flyer phase
-difference. The current sidecar is exact-zero on all three measures. The V4
-visual manifest then locks the renderer, inputs, 21 archived CFD fields, source
-result, sidecar, GIF hash, forward-only frame count, and loop seam; its audit
-passes `41/41`.
+Evidence boundaries remain visible and machine-audited. The body is a processed
+measured surface; the left wing is measured-outline-derived and gap-filled; the
+right wing is a documented bilateral-reflection assumption; and the tail is a
+fixed parameterization derived from the processed surface. A first native-Metal
+pass revealed that scaling the reconstructed tail with full wing span made its
+fan dominate the scene. V6 records the promoted part-aware presentation scales:
+`[16,16,7]` for body/wings and `[14,6,6]` for the tail. The audit requires tail
+lateral scale to stay below half the body/wing value.
 
-The prior V3 binary is retained under `Docs/Media/Progress` as a documented
-negative visual control. It used `(-x,-y,z)`, so its partner wing was rotated
-instead of reflected. Archived CFD and quantitative reports were unaffected.
-The corrected V4 overlay also advances the visible scientific state: geometry
-curvature `0.150` is smooth, while exact population-weighted source curvature
-`0.884` is mixed. The original `10.68% > 5%` force-convergence stop remains
-visible, so the stronger visual does not imply a quantitative formation claim.
+Capture writes a machine-readable dove sidecar and refuses the GIF unless the
+dataset identity, Dryad/eLife DOI, CC0 license, exact topology, component
+evidence, two-flyer phase offset, loop window, closure duration, zero endpoint
+residual, and presentation-only claim boundary all match. It also requires all
+`48/48` unique phases to select a real archived CFD slice at full opacity. The
+renderer uses a labeled nearest-phase hold outside the captured windows: field
+values are never interpolated or synthesized, and the held source phase remains
+visible in the overlay. The V6 visual
+manifest additionally locks the renderer, dove binaries, 21 archived CFD
+fields, mixed source result, GIF hash, frame count, and loop seam; its audit
+passes `46/46`.
+
+The two doves and their wingtip guides do not enter voxelization, fluid
+stepping, loads, torque, or actuator power. Those remain the archived
+prescribed-wing canonical, as stated in the overlay. Geometry curvature `0.150`
+is smooth, exact population-weighted source curvature `0.884` is mixed, and the
+original `10.68% > 5%` force-convergence stop remains visible. V4's synchronized
+procedural birds and V3's invalid rotated partner-wing presentation are both
+retained under `Docs/Media/Progress`.
 
 ## Wider position-phase map
 

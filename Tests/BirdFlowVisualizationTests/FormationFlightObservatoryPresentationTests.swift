@@ -1,3 +1,5 @@
+import BirdFlowMetal
+import Foundation
 import Metal
 import Testing
 
@@ -24,4 +26,42 @@ func formationPresentationUsesSagittalReflection() throws {
   #expect(audit.maximumNormalReflectionResidual <= 1e-6)
   #expect(audit.maximumWithinFlyerPhaseDifferenceCycles == 0)
   #expect(audit.flyerPairPhaseOffsetCycles == 0.25)
+}
+
+@Test("formation presentation uses the locked dual-dove surface loop")
+func formationPresentationUsesLockedDualDove() throws {
+  guard let device = MTLCreateSystemDefaultDevice() else { return }
+  let repository = URL(fileURLWithPath: #filePath)
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+  let manifest = repository.appendingPathComponent(
+    "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
+  )
+  let dataset = try MeasuredBirdSurfaceSequenceLoader.load(
+    manifestURL: manifest
+  )
+  let renderer = try FormationObservatoryRenderer(
+    device: device,
+    doveDataset: dataset
+  )
+  let audit = renderer.dovePresentationAudit(
+    flyerPairPhaseOffsetCycles: 0.25,
+    archivedFlowSliceCount: 21,
+    capturePhaseCount: 48,
+    capturePhasesWithVisibleFlow: 48,
+    minimumFlowOpacity: 1
+  )
+  #expect(audit.passed)
+  #expect(audit.flyerCount == 2)
+  #expect(audit.vertexCountPerFlyer == 2_157)
+  #expect(audit.triangleCountPerFlyer == 3_968)
+  #expect(audit.componentNames == ["body", "leftWing", "rightWing", "tail"])
+  #expect(audit.endpointMaximumPositionResidual == 0)
+  #expect(audit.flowDisplayMode == "nearest-archived-phase-hold")
+  #expect(audit.capturePhasesWithVisibleFlow == audit.capturePhaseCount)
+  #expect(audit.minimumFlowOpacity == 1)
+  #expect(audit.tailScale[1] < 0.5 * audit.bodyAndWingScale[1])
+  #expect(audit.presentationOnly)
+  #expect(!audit.quantitativeForceAcceptanceReady)
 }

@@ -222,7 +222,9 @@ but the binary is explicitly archived as visually invalid. It is `7,155,013`
 bytes with SHA-256
 `3d9fce8bc5f04c93c3b4e1c0e3d9b68f619424b5f19d13b69fbe4f2c28a0aa9c`.
 
-The [current V4 Formation Observatory animation](../formation-flight-observatory.gif)
+V4 is preserved exactly as
+[`2026-07-18-v4-synchronized-procedural-birds.gif`](2026-07-18-v4-synchronized-procedural-birds.gif).
+It
 uses the correct sagittal `(-x,y,z)` partner transform and one shared phase for
 both wings of each flyer. The intentional leader/follower `Δφ=0.25` remains.
 It adds chest and shoulder shaping, paired bilateral wake guides, and a more
@@ -234,3 +236,31 @@ fields and uses 48 forward-only frames at `1120 × 630`. The binary is
 its endpoint probe is pixel-identical and encoded seam is `0.951x` the median
 adjacent-frame change. The independent V4 visual audit passes `41/41`, including
 36,864 exact bilateral vertex comparisons across both flyers and all phases.
+
+V5 is preserved exactly as
+[`2026-07-18-v5-dual-dove-windowed-cfd.gif`](2026-07-18-v5-dual-dove-windowed-cfd.gif).
+It
+replaces both procedural shells with independently phased copies of the locked
+Deetjen OB F03 measured-derived complete dove sequence. Each flyer renders
+`2,157` vertices and `3,968` triangles from frames `27...121`; a velocity-matched
+`14 ms` Hermite segment closes the forward-only loop. The source evidence is
+kept explicit: body and left wing derive from measured surfaces, the right wing
+is a bilateral-reflection assumption, and the reconstructed tail uses a bounded
+presentation scale after the first pass was visually oversized. The doves and
+wingtip guides remain presentation-only; all CFD, loads, power, 21 field states,
+mixed source result, and the `10.68% > 5%` stop retain their prescribed-wing
+provenance. The 48-frame `1120 × 630` binary is `7,107,904` bytes with SHA-256
+`dcd898e07a7f6d72e57ce1176e8207c2740cd8265b920551b52c49123e0a0ec7`;
+its endpoint probe is pixel-identical and encoded seam is `0.993x` the median
+adjacent-frame change. The independent V5 visual audit passes `45/45`.
+
+The [current V6 Formation Observatory animation](../formation-flight-observatory.gif)
+keeps the V5 dual-dove geometry and scientific boundary but removes the visual
+CFD dropout. All `48/48` unique phases now display the nearest of the 21 real
+archived c20 slices at full opacity. The overlay prints the held slice's
+leader/follower phase and labels the mode `nearest archived c20 CFD (phase
+hold)`; no CFD values are interpolated or synthesized. The 48-frame
+`1120 × 630` binary is `8,144,140` bytes with SHA-256
+`54255ff84b855f2124ec0d6fbff2449bab740c6d9f61cef70c1ba89ea5298b61`;
+its endpoint probe is pixel-identical and encoded seam is `1.005x` the median
+adjacent-frame change. The independent V6 visual audit passes `46/46`.

@@ -8,7 +8,8 @@ SLICE_SOURCE="${3:-$(dirname "$REPORT")/formation-flight-flow-slices}"
 SUMMARY="${4:-$ROOT/ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json}"
 SUBCELL_SUMMARY="${5:-$ROOT/ValidationArtifacts/formation-flight-geometry-subcell-ensemble/formation-flight-geometry-subcell-ensemble-summary.json}"
 SOURCE_SUMMARY="${6:-$ROOT/ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json}"
-GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-bilateral-v4.json"
+DOVE_MANIFEST="${7:-$ROOT/ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json}"
+GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-dove-v6.json"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "ffmpeg is required to encode the formation GIF" >&2
@@ -43,6 +44,7 @@ else
 fi
 CAPTURE_ARGS+=(--capture-formation-subcell-summary "$SUBCELL_SUMMARY")
 CAPTURE_ARGS+=(--capture-formation-source-summary "$SOURCE_SUMMARY")
+CAPTURE_ARGS+=(--capture-formation-dove-manifest "$DOVE_MANIFEST")
 .build/release/birdflow-viewer "${CAPTURE_ARGS[@]}"
 cp "$FRAMES/presentation-geometry-audit.json" "$GEOMETRY_AUDIT"
 
@@ -86,14 +88,26 @@ python3 - "$GEOMETRY_AUDIT" <<'PY'
 import json, sys
 audit = json.load(open(sys.argv[1]))
 if not audit["passed"]:
-    raise SystemExit("bilateral presentation audit failed")
-if audit["maximumWithinFlyerPhaseDifferenceCycles"] != 0:
-    raise SystemExit("presentation wings are not phase synchronized")
-if audit["maximumPositionReflectionResidual"] > 1e-6:
-    raise SystemExit("presentation wing positions are not sagittal reflections")
-if audit["maximumNormalReflectionResidual"] > 1e-6:
-    raise SystemExit("presentation wing normals are not sagittal reflections")
-print("bilateral wing presentation audit passed")
+    raise SystemExit("dual-dove presentation audit failed")
+if audit["datasetIdentifier"] != "deetjen-ob-2018-12-11-f03-complete-surface-v1":
+    raise SystemExit("unexpected dove presentation dataset")
+if audit["flyerCount"] != 2 or audit["vertexCountPerFlyer"] != 2157:
+    raise SystemExit("unexpected dual-dove topology")
+if audit["flyerPairPhaseOffsetCycles"] != 0.25:
+    raise SystemExit("unexpected dual-dove phase offset")
+if audit["endpointMaximumPositionResidual"] > 1e-7:
+    raise SystemExit("dual-dove presentation loop is not seamless")
+if audit["flowDisplayMode"] != "nearest-archived-phase-hold":
+    raise SystemExit("formation CFD display is not a labeled phase hold")
+if audit["capturePhasesWithVisibleFlow"] != audit["capturePhaseCount"]:
+    raise SystemExit("formation CFD is not visible at every encoded phase")
+if audit["minimumFlowOpacity"] != 1:
+    raise SystemExit("formation CFD opacity is not constant")
+if audit["tailScale"][1] >= 0.5 * audit["bodyAndWingScale"][1]:
+    raise SystemExit("dual-dove presentation tail is not laterally bounded")
+if not audit["presentationOnly"] or audit["quantitativeForceAcceptanceReady"]:
+    raise SystemExit("dual-dove claim boundary is not fail-closed")
+print("dual-dove presentation audit passed")
 PY
 
 echo "Formation GIF: $OUTPUT (${DIMENSIONS}, ${FRAME_COUNT} frames, ${BYTES} bytes)"

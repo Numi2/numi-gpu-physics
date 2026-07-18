@@ -79,17 +79,18 @@ The command decodes the c20 formation accounting archive, its 21 indexed field
 captures, the preregistered sequential decision, the accepted 192-pose
 geometry-only subcell ensemble, and the later common-offset c16/c18/c20 source
 discriminator. It evaluates the same published prescribed-wing
-kinematics for a leader and phase-shifted follower. Each bright scientific wing
-is wrapped in a native-Metal complete-bird presentation shell containing a
-same-phase partner wing reflected across the sagittal plane, body, chest,
-shoulders, head, eyes, beak, layered feathers, and tail. Those
-shell parts are visual context only: they never enter the archived voxel mask,
-fluid state, load, or power. The partner wings are synchronized within each
-flyer; the leader and follower retain their intentional `Δφ=0.25` experimental
-offset. During the two measured phase windows, the renderer selects an actual
-archived field and fades it only at the window boundary. The real zero-phase
-capture anchors both sides of the encoded loop seam; the displayed field phase
-remains explicit, and no field values are interpolated. Slice hue shows signed vertical velocity while
+kinematics for a leader and phase-shifted follower, while presenting two copies
+of the locked Deetjen OB F03 complete dove surface sequence. Each dove contains
+`2,157` vertices and `3,968` triangles; source frames `27...121` feed the
+forward replay and the existing velocity-matched `14 ms` Hermite segment closes
+the visual loop. The dove surfaces are visual context only: they never enter
+the archived voxel mask, fluid state, load, or power. The leader and follower
+retain their intentional `Δφ=0.25` experimental offset. Every encoded frame now
+selects the nearest actual archived field and holds it at full opacity until a
+closer capture exists. The real zero-phase capture anchors both sides of the
+encoded loop seam; the held field's leader/follower phase is printed as
+`nearest archived c20 CFD (phase hold)`. No field values are interpolated.
+Slice hue shows signed vertical velocity while
 opacity follows vorticity magnitude. The fail-closed overlay reports c16 and
 c20 savings, the frozen continuation limit, waveform residual, owner closure,
 overlap, the stopped quantitative decision, smooth scalar geometry curvature
@@ -102,13 +103,15 @@ The capture writes 48 unique frames plus a pixel-identical endpoint probe at
 frames, and a file below 10 MB before replacing
 `Docs/Media/formation-flight-observatory.gif`. The source c20 run captured fields
 GPU-resident at 20 requested follower-local phases plus its legacy final state.
-A capture-side bilateral audit also requires 36,864 corresponding wing-vertex
-pairs across two flyers and 48 phases to have zero sagittal position/normal
-reflection residual and zero within-flyer phase error. A separate V4 visual
-manifest and `41/41` audit lock that geometry sidecar, the presentation/science
-boundary, all source hashes, the independent `66/66` source audit, 21-slice
-combined hash, `7,318,268`-byte GIF, forward-only frame count, and encoded seam
-ratio `0.951`.
+A capture-side dove audit requires the exact Dryad/eLife identity, CC0 license,
+144-frame source sequence, two-flyer topology, documented component evidence,
+`Δφ=0.25`, and zero endpoint residual. It also bounds the tail's lateral
+presentation scale below half the wing scale after the first visual pass showed
+the reconstructed fan was too dominant. It also requires all `48/48` unique
+capture phases to resolve a real archived field at minimum opacity `1.0`. A
+separate V6 manifest and `46/46` audit lock that sidecar, all dove/source/CFD
+hashes, the independent `66/66` source audit, 21-slice combined hash,
+`8,144,140`-byte GIF, forward-only frame count, and encoded seam ratio `1.005`.
 A dedicated archive smoke proves that simultaneous field capture preserves
 conservative owner accounting and reproduces the prior CPU vorticity extraction
 to `1e-9` maximum absolute difference. The capture script itself neither reruns
@@ -118,7 +121,8 @@ The detailed matched median-phase source result remains available as the static
 convergence figure at
 `Docs/Media/formation-flight-subcell-source-convergence.png`. The GIF reports
 only its locked classification and two headline curvatures; it does not turn
-the presentation shell into direction-resolved population evidence.
+the dove presentation replay into direction-resolved population evidence or
+replace the prescribed-wing force owner.
 
 The New Run sheet uses the CLI defaults: fixed flight, `Re=2000`, an `8 m/s`
 reference speed, `0.04` lattice speed, resolution scale 1, and a 32-step solver

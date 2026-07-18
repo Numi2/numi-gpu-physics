@@ -55,32 +55,39 @@ The most important accepted flapping result is committed as [`flapping-wing-fixe
 
 ## Formation Flight Observatory
 
-![Formation Flight Observatory native Metal presentation with synchronized bilateral wings on each complete-bird shell, an intentional quarter-cycle leader-follower offset, phase-resolved c20 CFD, and the mixed source-convergence result](Docs/Media/formation-flight-observatory.gif)
+![Formation Flight Observatory native Metal presentation with two phase-shifted measured-derived Deetjen dove surfaces, phase-resolved prescribed-wing c20 CFD, and the mixed source-convergence result](Docs/Media/formation-flight-observatory.gif)
 
 BirdFlowMetal can now place a leader and follower in the same D3Q19 fluid,
 assign each an independent wingbeat phase, and resolve force, root torque, and
 actuator power per flyer. The first gate uses two copies of the accepted
 prescribed hovering-wing canonical, so it studies multi-body wake interaction
 without waiting for another bird dataset. The native Metal presentation now
-wraps each force-bearing wing in a complete-bird presentation shell with a
-same-phase partner wing reflected across the bird's sagittal plane, body,
-chest, shoulders, head, beak, layered feathers, and tail. The shell is
-explicitly labeled and never enters voxelization, CFD, loads, or power; the
-bright prescribed wing remains the exact scientific owner geometry. Left and
-right wings on each bird are synchronized; only the two flyers retain the
-intentional `Δφ=0.25` experimental offset. The scene
-scans the 21 archived c20 field states only inside their two measured phase
-windows and separates them from the lighter kinematic wake-history guides. Its
+uses two phase-shifted copies of the locked Deetjen OB F03 measured-derived
+complete dove surface: `2,157` vertices and `3,968` triangles per flyer over
+source frames `27...121`, followed by the existing velocity-matched `14 ms`
+presentation closure. The leader and follower retain the intentional
+`Δφ=0.25` offset. These dove surfaces and their wingtip guides are explicitly
+labeled presentation-only; the archived CFD, voxelization, loads, and power
+remain the accepted prescribed-wing canonical. The gradient now remains visible
+through the entire loop: every frame holds the nearest of the 21 real archived
+c20 fields at full opacity and prints that field's leader/follower source phase.
+No CFD values are interpolated or synthesized; uncaptured intervals are
+explicit nearest-phase holds. The scene separates those fields from the lighter
+dove wingtip guides. Its
 upper-right decision panel is decoded from the preregistered c20 summary: the
 solver gates pass, but the `10.68%` c16-to-c20 change exceeds the frozen `5%`
 limit. The second locked panel carries the later common-offset result: geometry
 curvature is smooth at `0.150`, while the exact population-weighted source is
 mixed at `0.884`; all Metal gates pass but power convergence remains open.
-The 48-frame forward loop is pixel-seamless, with an encoded seam `0.951x` the
+The 48-frame forward loop is pixel-seamless, with an encoded seam `1.005x` the
 median adjacent-frame change; it does not reverse motion or interpolate CFD
-between measured states. A deterministic `41/41` visual audit checks 36,864
-bilateral vertex pairs across both flyers and all 48 phases with zero position,
-normal, or within-flyer phase residual.
+between measured CFD states. A deterministic `46/46` visual audit locks the
+dove manifest and binary streams, exact two-flyer topology, source evidence,
+phase offset, zero-residual endpoint, bounded presentation tail, continuous
+`48/48` full-opacity field visibility, CFD archive, and open quantitative claim.
+The right dove wing remains the source dataset's
+documented bilateral-reflection assumption, and the reconstructed tail is
+presentation-scaled so it does not dominate the formation view.
 
 ```bash
 swift run birdflow validate formation-flight \

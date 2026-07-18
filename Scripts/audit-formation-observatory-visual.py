@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed audit for the synchronized native Metal Formation Observatory GIF."""
+"""Fail-closed audit for the continuous-CFD dual-dove Formation Observatory."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image, ImageSequence
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v4.json"
+MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v6.json"
 
 
 def digest(path: Path) -> str:
@@ -122,41 +122,66 @@ check(
     f"{source_audit['checksPassed']}/{source_audit['checkCount']}",
 )
 
-bilateral = json.loads(
-    (ROOT / manifest["presentationGeometry"]["bilateralAuditPath"]).read_text()
+dove = json.loads(
+    (ROOT / manifest["presentationGeometry"]["doveAuditPath"]).read_text()
 )
-max_residual = manifest["presentationGeometry"]["maximumReflectionResidual"]
-check("bilateral presentation audit passed", bilateral["passed"])
+check("dual-dove presentation audit passed", dove["passed"])
 check(
-    "bilateral audit phase coverage",
-    bilateral["flyerCount"] == 2
-    and bilateral["phaseCountPerFlyer"] == 48
-    and bilateral["vertexPairsCompared"] >= 30_000,
-    bilateral["vertexPairsCompared"],
-)
-check(
-    "sagittal position reflection",
-    bilateral["maximumPositionReflectionResidual"] <= max_residual,
-    bilateral["maximumPositionReflectionResidual"],
+    "locked dove identity and topology",
+    dove["datasetIdentifier"]
+    == "deetjen-ob-2018-12-11-f03-complete-surface-v1"
+    and dove["flyerCount"] == 2
+    and dove["vertexCountPerFlyer"] == 2_157
+    and dove["triangleCountPerFlyer"] == 3_968,
+    f"{dove['flyerCount']} x {dove['vertexCountPerFlyer']} vertices",
 )
 check(
-    "sagittal normal reflection",
-    bilateral["maximumNormalReflectionResidual"] <= max_residual,
-    bilateral["maximumNormalReflectionResidual"],
+    "dove component evidence disclosed",
+    dove["componentNames"] == ["body", "leftWing", "rightWing", "tail"]
+    and dove["componentEvidenceClasses"][2]
+    == "bilateral-reflection-assumption",
+    dove["componentEvidenceClasses"],
 )
 check(
-    "within-flyer wing phase synchronization",
-    bilateral["maximumWithinFlyerPhaseDifferenceCycles"] == 0,
-    bilateral["maximumWithinFlyerPhaseDifferenceCycles"],
+    "measured loop and Hermite closure locked",
+    dove["measuredLoopStartFrame"] == 27
+    and dove["measuredLoopEndFrame"] == 121
+    and math.isclose(dove["closureDurationSeconds"], 0.014, abs_tol=1e-9)
+    and dove["endpointMaximumPositionResidual"] <= 1e-7,
+    dove["endpointMaximumPositionResidual"],
 )
 check(
     "intentional flyer-pair phase offset",
     math.isclose(
-        bilateral["flyerPairPhaseOffsetCycles"],
+        dove["flyerPairPhaseOffsetCycles"],
         manifest["presentationGeometry"]["flyerPairPhaseOffsetCycles"],
         abs_tol=1e-12,
     ),
-    bilateral["flyerPairPhaseOffsetCycles"],
+    dove["flyerPairPhaseOffsetCycles"],
+)
+check(
+    "tail presentation scale bounded",
+    dove["tailScale"][1] < 0.5 * dove["bodyAndWingScale"][1],
+    {"bodyAndWing": dove["bodyAndWingScale"], "tail": dove["tailScale"]},
+)
+check(
+    "dove surface remains presentation-only",
+    dove["presentationOnly"]
+    and dove["completeBirdSurfaceReady"]
+    and not dove["quantitativeForceAcceptanceReady"],
+)
+check(
+    "nearest archived CFD held at every phase",
+    dove["flowDisplayMode"] == "nearest-archived-phase-hold"
+    and dove["archivedFlowSliceCount"] == 21
+    and dove["capturePhaseCount"] == 48
+    and dove["capturePhasesWithVisibleFlow"] == dove["capturePhaseCount"]
+    and dove["minimumFlowOpacity"] == 1,
+    {
+        "visible": dove["capturePhasesWithVisibleFlow"],
+        "phases": dove["capturePhaseCount"],
+        "minimumOpacity": dove["minimumFlowOpacity"],
+    },
 )
 check(
     "quantitative force claim remains open",
@@ -164,17 +189,16 @@ check(
     and "presentation" in manifest["claimBoundary"].lower(),
 )
 check(
-    "known-invalid predecessor archived",
+    "archived procedural predecessor hash",
     digest(ROOT / manifest["predecessor"]["path"])
-    == manifest["predecessor"]["sha256"]
-    and "invalid" in manifest["predecessor"]["description"].lower(),
+    == manifest["predecessor"]["sha256"],
 )
 check("GitHub Actions remain absent", not (ROOT / ".github").exists())
 
 passed = all(item["passed"] for item in checks)
 result = {
-    "schemaVersion": 2,
-    "title": "Synchronized native Metal Formation Observatory visual audit",
+    "schemaVersion": 4,
+    "title": "Continuous-CFD dual-dove Formation Observatory visual audit",
     "passed": passed,
     "checkCount": len(checks),
     "passedCheckCount": sum(item["passed"] for item in checks),

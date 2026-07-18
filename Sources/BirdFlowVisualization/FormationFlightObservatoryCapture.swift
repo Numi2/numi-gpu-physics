@@ -126,6 +126,7 @@ public enum FormationFlightObservatoryCapture {
     let discriminatorURL: URL?
     let geometrySubcellSummaryURL: URL?
     let formationSourceSummaryURL: URL?
+    let doveManifestURL: URL?
     let width: Int
     let height: Int
     let frameCount: Int
@@ -209,6 +210,15 @@ public enum FormationFlightObservatoryCapture {
       } else {
         formationSourceSummaryURL = nil
       }
+      if commandLine.contains("--capture-formation-dove-manifest") {
+        doveManifestURL = URL(
+          fileURLWithPath: try value(
+            after: "--capture-formation-dove-manifest"
+          )
+        )
+      } else {
+        doveManifestURL = nil
+      }
       width = try integer(after: "--capture-width", default: 1120)
       height = try integer(after: "--capture-height", default: 630)
       frameCount = try integer(after: "--capture-frames", default: 49)
@@ -262,6 +272,9 @@ public enum FormationFlightObservatoryCapture {
         FormationSourceSummary.self,
         from: Data(contentsOf: $0)
       )
+    }
+    let doveDataset = try arguments.doveManifestURL.map {
+      try MeasuredBirdSurfaceSequenceLoader.load(manifestURL: $0)
     }
     guard report.gates.passed, report.phaseSamples.count == 100 else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
@@ -377,25 +390,59 @@ public enum FormationFlightObservatoryCapture {
         )
       }
     }
+    guard let doveDataset,
+      doveDataset.datasetIdentifier
+        == "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+      doveDataset.scientificTier == "derived-measured-complete-surface",
+      doveDataset.sourceDatasetDOI == "10.5061/dryad.wwpzgmsqs",
+      doveDataset.sourceArticleDOI == "10.7554/eLife.89968",
+      doveDataset.sourceLicense == "CC0-1.0",
+      doveDataset.frameCount == 144,
+      doveDataset.vertexCount == 2_157,
+      doveDataset.triangleCount == 3_968,
+      doveDataset.components.map(\.partIdentifier) == [1, 2, 3, 4],
+      doveDataset.completeBirdSurfaceReady,
+      !doveDataset.quantitativeForceAcceptanceReady
+    else {
+      throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
+        "formation showcase requires the locked presentation-only Deetjen dove surface sequence"
+      )
+    }
     try FileManager.default.createDirectory(
       at: arguments.outputDirectory,
       withIntermediateDirectories: true
     )
-    let renderer = try FormationObservatoryRenderer(device: device)
-    let bilateralAudit = renderer.bilateralPresentationAudit(
-      phases: (0..<48).map { Float($0) / 48 },
+    let renderer = try FormationObservatoryRenderer(
+      device: device,
+      doveDataset: doveDataset
+    )
+    let uniqueCapturePhases = (0..<(arguments.frameCount - 1)).map {
+      Double($0) / Double(arguments.frameCount - 1)
+    }
+    let visibleFlowPhases = uniqueCapturePhases.filter {
+      nearestPhaseFlowSlice(phaseFlowSlices, leaderPhase: $0) != nil
+        && phaseFlowOpacity(phaseFlowSlices, leaderPhase: $0) > 0
+    }
+    let minimumFlowOpacity = uniqueCapturePhases.map {
+      phaseFlowOpacity(phaseFlowSlices, leaderPhase: $0)
+    }.min() ?? 0
+    let presentationAudit = renderer.dovePresentationAudit(
       flyerPairPhaseOffsetCycles: Float(
         report.configuration.followerPhaseOffsetCycles
-      )
+      ),
+      archivedFlowSliceCount: phaseFlowSlices.count,
+      capturePhaseCount: uniqueCapturePhases.count,
+      capturePhasesWithVisibleFlow: visibleFlowPhases.count,
+      minimumFlowOpacity: minimumFlowOpacity
     )
-    guard bilateralAudit.passed else {
+    guard presentationAudit.passed else {
       throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
-        "formation presentation failed bilateral wing synchrony"
+        "formation presentation failed the measured-dove provenance and loop contract"
       )
     }
     let auditEncoder = JSONEncoder()
     auditEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-    try auditEncoder.encode(bilateralAudit).write(
+    try auditEncoder.encode(presentationAudit).write(
       to: arguments.outputDirectory.appendingPathComponent(
         "presentation-geometry-audit.json"
       ),
@@ -512,7 +559,7 @@ public enum FormationFlightObservatoryCapture {
     guard let nearest = slices.min(by: {
       circularDistance($0.entry.leaderPhase, leaderPhase)
         < circularDistance($1.entry.leaderPhase, leaderPhase)
-    }), circularDistance(nearest.entry.leaderPhase, leaderPhase) <= 0.055
+    })
     else { return nil }
     return nearest
   }
@@ -521,11 +568,9 @@ public enum FormationFlightObservatoryCapture {
     _ slices: [PhaseFlowSlice],
     leaderPhase: Double
   ) -> Float {
-    guard let nearest = nearestPhaseFlowSlice(slices, leaderPhase: leaderPhase)
-    else { return slices.isEmpty ? 1 : 0 }
-    let distance = circularDistance(nearest.entry.leaderPhase, leaderPhase)
-    let edge = max(0, min(1, (0.055 - distance) / 0.012))
-    return Float(edge * edge * (3 - 2 * edge))
+    nearestPhaseFlowSlice(slices, leaderPhase: leaderPhase) == nil
+      ? (slices.isEmpty ? 1 : 0)
+      : 1
   }
 
   private static func drawOverlay(
@@ -572,7 +617,7 @@ public enum FormationFlightObservatoryCapture {
       discriminator == nil
         ? "ONE FLUID  •  TWO OWNERS  •  MATCHED ISOLATED CONTROLS"
         : String(
-          format: "BILATERAL WINGS L/R SYNC  •  FLYER PAIR Δφ %.2f  •  FORCE OWNER: BRIGHT PRESCRIBED WING",
+          format: "DEETJEN DOVE SHELLS  •  FLYER PAIR Δφ %.2f  •  CFD + LOADS: PRESCRIBED-WING CANONICAL",
           report.configuration.followerPhaseOffsetCycles
         ),
       font: labelFont,
@@ -661,13 +706,13 @@ public enum FormationFlightObservatoryCapture {
     drawText(
       displayedFlowPhase.map {
         String(
-          format: "actual c20 CFD  •  L %.3f  F %.3f",
+          format: "nearest archived c20 CFD (phase hold)  •  L %.3f  F %.3f",
           $0.leader,
           $0.follower
         )
       } ?? (hasFlowSlice
         ? "archived CFD slice + wake-history guides"
-        : "kinematic wake guides  •  CFD observed only in gold windows"),
+        : "dove wingtip guides  •  no archived CFD available"),
       font: labelFont,
       color: NSColor(calibratedWhite: 0.48, alpha: 1).cgColor,
       at: CGPoint(
@@ -689,7 +734,7 @@ public enum FormationFlightObservatoryCapture {
       )
     }
     drawText(
-      "LEADER  •  L/R SYNC",
+      "LEADER  •  DOVE REPLAY",
       font: valueFont,
       color: NSColor(calibratedRed: 0.18, green: 0.78, blue: 1, alpha: 1)
         .cgColor,
@@ -697,7 +742,7 @@ public enum FormationFlightObservatoryCapture {
       context: context
     )
     drawText(
-      "FOLLOWER  •  L/R SYNC",
+      "FOLLOWER  •  DOVE REPLAY",
       font: valueFont,
       color: NSColor(calibratedRed: 1, green: 0.44, blue: 0.20, alpha: 1)
         .cgColor,
@@ -1139,8 +1184,46 @@ struct FormationPresentationBilateralAudit: Codable, Sendable {
   let passed: Bool
 }
 
+struct FormationDovePresentationAudit: Codable, Sendable {
+  let schemaVersion: Int
+  let datasetIdentifier: String
+  let scientificTier: String
+  let sourceDatasetDOI: String
+  let sourceArticleDOI: String
+  let sourceLicense: String
+  let manifestSHA256: String
+  let frameCount: Int
+  let vertexCountPerFlyer: Int
+  let triangleCountPerFlyer: Int
+  let flyerCount: Int
+  let componentNames: [String]
+  let componentEvidenceClasses: [String]
+  let measuredLoopStartFrame: Int
+  let measuredLoopEndFrame: Int
+  let closureDurationSeconds: Float
+  let flyerPairPhaseOffsetCycles: Float
+  let endpointMaximumPositionResidual: Float
+  let flowDisplayMode: String
+  let archivedFlowSliceCount: Int
+  let capturePhaseCount: Int
+  let capturePhasesWithVisibleFlow: Int
+  let minimumFlowOpacity: Float
+  let bodyAndWingScale: [Float]
+  let tailScale: [Float]
+  let completeBirdSurfaceReady: Bool
+  let quantitativeForceAcceptanceReady: Bool
+  let presentationOnly: Bool
+  let passed: Bool
+}
+
 final class FormationObservatoryRenderer {
+  private static let doveBodyAndWingScale = SIMD3<Float>(16, 16, 7)
+  private static let doveTailScale = SIMD3<Float>(14, 6, 6)
   private let backend: VisualizationBackend
+  private let doveDataset: MeasuredBirdSurfaceSequence?
+  private let doveLoop: MeasuredDovePresentationLoop?
+  private let doveReferenceBodyCenter: SIMD3<Float>
+  private let doveWingtipIndices: [Int]
   private let surfacePipeline: MTLRenderPipelineState
   private let trailPipeline: MTLRenderPipelineState
   private let wirePipeline: MTLRenderPipelineState
@@ -1148,8 +1231,24 @@ final class FormationObservatoryRenderer {
   private let depthWriteState: MTLDepthStencilState
   private let depthReadState: MTLDepthStencilState
 
-  init(device: MTLDevice) throws {
+  init(
+    device: MTLDevice,
+    doveDataset: MeasuredBirdSurfaceSequence? = nil
+  ) throws {
     backend = try VisualizationBackend(device: device)
+    self.doveDataset = doveDataset
+    if let doveDataset {
+      doveLoop = MeasuredDovePresentationLoop(dataset: doveDataset)
+      doveReferenceBodyCenter = Self.bodyCenter(
+        dataset: doveDataset,
+        frame: MeasuredDovePresentationLoop.startFrame
+      )
+      doveWingtipIndices = Self.findDoveWingtipIndices(dataset: doveDataset)
+    } else {
+      doveLoop = nil
+      doveReferenceBodyCenter = .zero
+      doveWingtipIndices = []
+    }
     surfacePipeline = try backend.render(
       vertex: "coloredSurfaceVertex",
       fragment: "showcaseDoveFragment",
@@ -1210,17 +1309,32 @@ final class FormationObservatoryRenderer {
     camera.distance = 11.9 + 0.12 * sin(orbit)
     camera.yaw = -1.02 + 0.035 * sin(orbit)
     camera.pitch = 0.36 + 0.018 * cos(orbit)
-    let trails = wakeTrails(
-      root: leaderRoot,
-      phase: phase,
-      color: SIMD3<Float>(0.08, 0.68, 1),
-      camera: camera
-    ) + wakeTrails(
-      root: followerRoot,
-      phase: phase + phaseOffset,
-      color: SIMD3<Float>(1, 0.34, 0.12),
-      camera: camera
-    )
+    let trails: [[ColoredVertex]]
+    if doveLoop != nil {
+      trails = doveWakeTrails(
+        root: leaderRoot,
+        phase: phase,
+        color: SIMD3<Float>(0.08, 0.68, 1),
+        camera: camera
+      ) + doveWakeTrails(
+        root: followerRoot,
+        phase: phase + phaseOffset,
+        color: SIMD3<Float>(1, 0.34, 0.12),
+        camera: camera
+      )
+    } else {
+      trails = wakeTrails(
+        root: leaderRoot,
+        phase: phase,
+        color: SIMD3<Float>(0.08, 0.68, 1),
+        camera: camera
+      ) + wakeTrails(
+        root: followerRoot,
+        phase: phase + phaseOffset,
+        color: SIMD3<Float>(1, 0.34, 0.12),
+        camera: camera
+      )
+    }
     let slice = flowSlice.map {
       flowSliceVertices($0, opacity: flowOpacity)
     } ?? []
@@ -1342,6 +1456,15 @@ final class FormationObservatoryRenderer {
     phase: Float,
     color: SIMD3<Float>
   ) -> [ColoredVertex] {
+    if let doveDataset, let doveLoop {
+      return doveVertices(
+        dataset: doveDataset,
+        loop: doveLoop,
+        root: root,
+        phase: phase,
+        tint: color
+      )
+    }
     let canonicalWing = wingVertices(
       root: root,
       phase: phase,
@@ -1433,6 +1556,88 @@ final class FormationObservatoryRenderer {
       to: &result
     )
     return result
+  }
+
+  private func doveVertices(
+    dataset: MeasuredBirdSurfaceSequence,
+    loop: MeasuredDovePresentationLoop,
+    root: SIMD3<Float>,
+    phase: Float,
+    tint: SIMD3<Float>
+  ) -> [ColoredVertex] {
+    let states = (0..<dataset.vertexCount).map {
+      loop.point(phase: phase, vertexIndex: $0)
+    }
+    var result: [ColoredVertex] = []
+    result.reserveCapacity(dataset.triangleCount * 3)
+    for triangleIndex in 0..<dataset.triangleCount {
+      let triangle = dataset.triangle(triangleIndex)
+      let indices = [Int(triangle.x), Int(triangle.y), Int(triangle.z)]
+      let part = dataset.trianglePartIdentifiers[triangleIndex]
+      let points = indices.map {
+        formationDovePoint(
+          states[$0].position,
+          root: root,
+          partIdentifier: part
+        )
+      }
+      let rawNormal = simd_cross(points[1] - points[0], points[2] - points[0])
+      let normal =
+        simd_length_squared(rawNormal) > 1e-12
+        ? simd_normalize(rawNormal)
+        : SIMD3<Float>(0, 0, 1)
+      let speed = indices.reduce(Float.zero) {
+        $0 + simd_length(states[$1].velocity)
+      } / 3
+      let surfaceColor = doveSurfaceColor(
+        partIdentifier: part,
+        tint: tint,
+        normalizedSpeed: min(max(speed / 25.2305, 0), 1)
+      )
+      for point in points {
+        result.append(
+          ColoredVertex(
+            position: SIMD4<Float>(point, 1),
+            normal: SIMD4<Float>(normal, 0),
+            color: surfaceColor
+          )
+        )
+      }
+    }
+    return result
+  }
+
+  private func formationDovePoint(
+    _ point: SIMD3<Float>,
+    root: SIMD3<Float>,
+    partIdentifier: UInt8? = nil
+  ) -> SIMD3<Float> {
+    let local = point - doveReferenceBodyCenter
+    let scale = partIdentifier == 4
+      ? Self.doveTailScale
+      : Self.doveBodyAndWingScale
+    return root + scale * local
+  }
+
+  private func doveSurfaceColor(
+    partIdentifier: UInt8,
+    tint: SIMD3<Float>,
+    normalizedSpeed: Float
+  ) -> SIMD4<Float> {
+    let white = SIMD3<Float>(0.92, 0.96, 1)
+    let base: SIMD3<Float>
+    switch partIdentifier {
+    case 1:
+      base = 0.42 * tint + 0.58 * white
+    case 2:
+      base = tint
+    case 3:
+      base = 0.82 * tint + 0.18 * white
+    default:
+      base = 0.58 * tint + 0.24 * white
+    }
+    let brightness = 0.80 + 0.20 * sqrt(normalizedSpeed)
+    return SIMD4<Float>(min(brightness * base, 1), 0.99)
   }
 
   private func wingFeatherVertices(
@@ -1726,6 +1931,46 @@ final class FormationObservatoryRenderer {
     return result
   }
 
+  private func doveWakeTrails(
+    root: SIMD3<Float>,
+    phase: Float,
+    color: SIMD3<Float>,
+    camera: CameraState
+  ) -> [[ColoredVertex]] {
+    guard let doveLoop else { return [] }
+    return doveWingtipIndices.flatMap { vertexIndex in
+      let sampleCount = 34
+      var points: [SIMD3<Float>] = []
+      for sample in stride(from: sampleCount - 1, through: 0, by: -1) {
+        let samplePhase = doveLoop.phase(
+          offsetBy: -Float(sample) * 0.0017,
+          from: phase
+        )
+        let position = doveLoop.point(
+          phase: samplePhase,
+          vertexIndex: vertexIndex
+        ).position
+        points.append(formationDovePoint(position, root: root))
+      }
+      return [
+        trailVertices(
+          points: points,
+          color: color,
+          camera: camera,
+          width: 0.026,
+          alpha: 0.16
+        ),
+        trailVertices(
+          points: points,
+          color: min(color + SIMD3<Float>(0.30, 0.30, 0.30), 1),
+          camera: camera,
+          width: 0.008,
+          alpha: 0.58
+        ),
+      ]
+    }
+  }
+
   private func wakeTrails(
     root: SIMD3<Float>,
     phase: Float,
@@ -1777,6 +2022,166 @@ final class FormationObservatoryRenderer {
     _ relative: SIMD3<Float>
   ) -> SIMD3<Float> {
     SIMD3<Float>(-relative.x, relative.y, relative.z)
+  }
+
+  func dovePresentationAudit(
+    flyerPairPhaseOffsetCycles: Float,
+    archivedFlowSliceCount: Int,
+    capturePhaseCount: Int,
+    capturePhasesWithVisibleFlow: Int,
+    minimumFlowOpacity: Float
+  ) -> FormationDovePresentationAudit {
+    guard let dataset = doveDataset, let loop = doveLoop else {
+      return FormationDovePresentationAudit(
+        schemaVersion: 1,
+        datasetIdentifier: "missing",
+        scientificTier: "missing",
+        sourceDatasetDOI: "missing",
+        sourceArticleDOI: "missing",
+        sourceLicense: "missing",
+        manifestSHA256: "missing",
+        frameCount: 0,
+        vertexCountPerFlyer: 0,
+        triangleCountPerFlyer: 0,
+        flyerCount: 0,
+        componentNames: [],
+        componentEvidenceClasses: [],
+        measuredLoopStartFrame: 0,
+        measuredLoopEndFrame: 0,
+        closureDurationSeconds: 0,
+        flyerPairPhaseOffsetCycles: flyerPairPhaseOffsetCycles,
+        endpointMaximumPositionResidual: .infinity,
+        flowDisplayMode: "nearest-archived-phase-hold",
+        archivedFlowSliceCount: archivedFlowSliceCount,
+        capturePhaseCount: capturePhaseCount,
+        capturePhasesWithVisibleFlow: capturePhasesWithVisibleFlow,
+        minimumFlowOpacity: minimumFlowOpacity,
+        bodyAndWingScale: [],
+        tailScale: [],
+        completeBirdSurfaceReady: false,
+        quantitativeForceAcceptanceReady: false,
+        presentationOnly: true,
+        passed: false
+      )
+    }
+    var endpointResidual: Float = 0
+    for vertexIndex in 0..<dataset.vertexCount {
+      endpointResidual = max(
+        endpointResidual,
+        simd_distance(
+          loop.point(phase: 0, vertexIndex: vertexIndex).position,
+          loop.point(phase: 1, vertexIndex: vertexIndex).position
+        )
+      )
+    }
+    let names = dataset.components.map(\.name)
+    let evidence = dataset.components.map(\.evidenceClass)
+    let passed = dataset.datasetIdentifier
+      == "deetjen-ob-2018-12-11-f03-complete-surface-v1"
+      && dataset.scientificTier == "derived-measured-complete-surface"
+      && dataset.sourceDatasetDOI == "10.5061/dryad.wwpzgmsqs"
+      && dataset.sourceArticleDOI == "10.7554/eLife.89968"
+      && dataset.sourceLicense == "CC0-1.0"
+      && dataset.frameCount == 144
+      && dataset.vertexCount == 2_157
+      && dataset.triangleCount == 3_968
+      && names == ["body", "leftWing", "rightWing", "tail"]
+      && evidence == [
+        "measured-processed-surface",
+        "measured-outline-derived-gap-filled-surface",
+        "bilateral-reflection-assumption",
+        "measured-processed-surface-derived-fixed-parameterization",
+      ]
+      && dataset.completeBirdSurfaceReady
+      && !dataset.quantitativeForceAcceptanceReady
+      && endpointResidual <= 1e-7
+      && abs(flyerPairPhaseOffsetCycles - 0.25) <= 1e-7
+      && archivedFlowSliceCount == 21
+      && capturePhaseCount == 48
+      && capturePhasesWithVisibleFlow == capturePhaseCount
+      && minimumFlowOpacity == 1
+      && Self.doveTailScale.y < 0.5 * Self.doveBodyAndWingScale.y
+    return FormationDovePresentationAudit(
+      schemaVersion: 1,
+      datasetIdentifier: dataset.datasetIdentifier,
+      scientificTier: dataset.scientificTier,
+      sourceDatasetDOI: dataset.sourceDatasetDOI,
+      sourceArticleDOI: dataset.sourceArticleDOI,
+      sourceLicense: dataset.sourceLicense,
+      manifestSHA256: dataset.manifestSHA256,
+      frameCount: dataset.frameCount,
+      vertexCountPerFlyer: dataset.vertexCount,
+      triangleCountPerFlyer: dataset.triangleCount,
+      flyerCount: 2,
+      componentNames: names,
+      componentEvidenceClasses: evidence,
+      measuredLoopStartFrame: MeasuredDovePresentationLoop.startFrame,
+      measuredLoopEndFrame: MeasuredDovePresentationLoop.endFrame,
+      closureDurationSeconds:
+        MeasuredDovePresentationLoop.closureDurationSeconds,
+      flyerPairPhaseOffsetCycles: flyerPairPhaseOffsetCycles,
+      endpointMaximumPositionResidual: endpointResidual,
+      flowDisplayMode: "nearest-archived-phase-hold",
+      archivedFlowSliceCount: archivedFlowSliceCount,
+      capturePhaseCount: capturePhaseCount,
+      capturePhasesWithVisibleFlow: capturePhasesWithVisibleFlow,
+      minimumFlowOpacity: minimumFlowOpacity,
+      bodyAndWingScale: [
+        Self.doveBodyAndWingScale.x,
+        Self.doveBodyAndWingScale.y,
+        Self.doveBodyAndWingScale.z,
+      ],
+      tailScale: [
+        Self.doveTailScale.x,
+        Self.doveTailScale.y,
+        Self.doveTailScale.z,
+      ],
+      completeBirdSurfaceReady: dataset.completeBirdSurfaceReady,
+      quantitativeForceAcceptanceReady:
+        dataset.quantitativeForceAcceptanceReady,
+      presentationOnly: true,
+      passed: passed
+    )
+  }
+
+  private static func bodyCenter(
+    dataset: MeasuredBirdSurfaceSequence,
+    frame: Int
+  ) -> SIMD3<Float> {
+    guard
+      let body = dataset.components.first(where: {
+        $0.partIdentifier == 1
+      })
+    else { return .zero }
+    var center = SIMD3<Float>.zero
+    for index in body.vertexOffset..<(body.vertexOffset + body.vertexCount) {
+      center += dataset.vertex(frame: frame, index: index)
+    }
+    return center / Float(body.vertexCount)
+  }
+
+  private static func findDoveWingtipIndices(
+    dataset: MeasuredBirdSurfaceSequence
+  ) -> [Int] {
+    let frame = MeasuredDovePresentationLoop.startFrame
+    let center = bodyCenter(dataset: dataset, frame: frame)
+    return [UInt8(2), UInt8(3)].compactMap { identifier in
+      guard
+        let wing = dataset.components.first(where: {
+          $0.partIdentifier == identifier
+        })
+      else { return nil }
+      return (wing.vertexOffset..<(wing.vertexOffset + wing.vertexCount)).max {
+        simd_distance_squared(
+          dataset.vertex(frame: frame, index: $0),
+          center
+        )
+          < simd_distance_squared(
+            dataset.vertex(frame: frame, index: $1),
+            center
+          )
+      }
+    }
   }
 
   private func mirrored(

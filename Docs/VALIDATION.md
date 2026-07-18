@@ -2945,14 +2945,19 @@ and agrees with the retired CPU slice reconstruction to `1e-9` maximum
 vorticity difference. The decision, report SHA, index SHA, and every slice SHA
 are retained in
 `ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json`.
-The native Metal V4 presentation applies a sagittal `(-x,y,z)` reflection to
-the presentation-only partner wing and shares one phase between both wings of
-each flyer; the leader/follower `Δφ=0.25` remains intentional. Its capture-side
-audit compares 36,864 vertex pairs across two flyers and 48 phases with zero
-position, normal, and within-flyer phase residual. The separate V4 visual audit
-locks the renderer, source evidence, archived fields, output, and claim boundary
-and passes `41/41`. The previous `(-x,-y,z)` presentation is archived as an
-invalid visual negative control; it never entered CFD or force accounting.
+The native Metal V6 presentation uses two `2,157`-vertex, `3,968`-triangle
+copies of the locked Deetjen OB F03 measured-derived dove sequence over source
+frames `27...121`, plus its velocity-matched `14 ms` visual closure. The
+leader/follower `Δφ=0.25` remains intentional. Its capture-side audit locks the
+Dryad/eLife provenance, CC0 license, exact topology, component evidence,
+zero-residual loop endpoint, and bounded part-aware tail scale. It also requires
+all `48/48` unique phases to hold a real archived CFD slice at full opacity;
+the source phase is labeled and field values are not interpolated. It explicitly
+records that the right wing is a bilateral-reflection assumption and that the
+doves are not quantitative force geometry. The separate V6 visual audit locks
+the renderer, dove binaries, source evidence, archived CFD fields, output, and
+claim boundary and passes `46/46`. Windowed V5, V4, and invalid V3 remain
+archived; none entered CFD or force accounting.
 The phase-aligned c16/c20 maximum-selector normalized-power residual has RMS
 `0.0313`, maximum `0.1122` at follower phase `0.055`, and only `23.15%` of
 its absolute magnitude in the prior midstroke bands. Absolute residual tracks
