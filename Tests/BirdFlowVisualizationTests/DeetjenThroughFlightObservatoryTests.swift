@@ -87,6 +87,11 @@ func throughFlightObservatoryRendersEvidenceLockedFrames() throws {
   #expect(audit.rawLaboratoryFrameGeometry)
   #expect(audit.trajectorySampleCount == 144)
   #expect(audit.maximumTrajectoryCenterResidualMeters <= 1e-7)
+  #expect(audit.wakeFieldArchivePassed)
+  #expect(audit.wakeSliceCount == 26)
+  #expect(audit.wakeRenderedFrameCount == 1)
+  #expect(audit.wakeVorticityDisplayScalePerSecond > 0)
+  #expect(audit.wakePositiveQDisplayScalePerSecondSquared > 0)
   #expect(audit.completedFluidSteps == audit.plannedFluidSteps)
   #expect(audit.minimumSampledPopulation > 0)
 }

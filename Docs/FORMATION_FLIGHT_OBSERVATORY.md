@@ -887,6 +887,15 @@ streaming map directly to Metal threads; reflected and moving-wall-corrected
 populations at an articulated boundary supply the momentum exchange used by
 the existing phase-resolved force and torque ledger.
 
+V11 closes that visual provenance chain with two load vectors sourced from the
+100 phase bins in the locked c20 formation report. At each display phase, cyclic
+linear interpolation is applied independently to the archived leader and
+follower three-component force vectors. Arrow direction is therefore archived
+force data. Arrow length uses a square-root mapping after normalization by each
+flyer's own cycle-maximum magnitude and is explicitly presentation-only, not a
+common physical scale or a new estimator. The depth-tested arrows and D3Q19 lens
+are uploaded and rendered as one diagnostic triangle batch.
+
 The renderer performs the scene pass in `RGBA16Float`, extracts selective bloom
 through a half-resolution 25-tap kernel, applies a bounded highlight shoulder,
 and composites once to sRGB. The 25-tap kernel uses `69%` fewer texture samples
@@ -897,18 +906,20 @@ buffer slot zero before the dove wire pass. The renderer now restores the
 dove surface buffer explicitly, and the independent audit measures maximum
 encoded high-edge density against the median to reject any recurrence.
 
-The V10 manifest locks the renderer, dove binaries, all 21 CFD fields, the
+The V11 manifest locks the renderer, dove binaries, all 21 CFD fields, all 100
+archived c20 flyer-force vectors, their cyclic interpolation and normalization,
+the exact V10 predecessor,
 complete 4,820-step q5 trace and its independent audit, exact `1+6+12` stencil,
 HDR/batching path, no-overlay figure-eight camera, GIF hash, frame count, loop
 seam, and transient-streak metric.
-The independent V10 visual audit passes `64/64` checks.
+The independent V11 visual audit passes `65/65` checks.
 
 The two doves and their wingtip guides do not enter voxelization, fluid
 stepping, loads, torque, or actuator power. Those remain the archived
 prescribed-wing canonical. Geometry curvature `0.150` is smooth, exact
 population-weighted source curvature `0.884` is mixed, and the original
 `10.68% > 5%` force-convergence stop remains governing even though the HUD is
-gone. The exact V9 seamless-field binary, V8 unsmoothed-field binary, V7 restrained-camera binary, V6 HUD
+gone. The exact V10 D3Q19 binary, V9 seamless-field binary, V8 unsmoothed-field binary, V7 restrained-camera binary, V6 HUD
 binary, V4 synchronized procedural birds, and V3 invalid rotated partner-wing
 presentation are retained under `Docs/Media/Progress`.
 

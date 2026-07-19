@@ -52,6 +52,12 @@ public struct DeetjenThroughFlightObservatoryAudit: Codable, Sendable {
   public let sourceEndTimeSeconds: Double
   public let trajectorySampleCount: Int
   public let maximumTrajectoryCenterResidualMeters: Double
+  public let wakeSliceCount: Int
+  public let wakeRenderedFrameCount: Int
+  public let wakeSliceAftOffsetMeters: Double
+  public let wakeVorticityDisplayScalePerSecond: Double
+  public let wakePositiveQDisplayScalePerSecondSquared: Double
+  public let wakeFieldArchivePassed: Bool
   public let rawLaboratoryFrameGeometry: Bool
   public let bodyFollowingCamera: Bool
   public let completedFluidSteps: Int
@@ -160,6 +166,7 @@ public enum DeetjenThroughFlightObservatoryCapture {
       withIntermediateDirectories: true
     )
 
+    var wakeRenderedFrameCount = 0
     for frameIndex in 0..<arguments.frameCount {
       let progress = Float(frameIndex) / Float(arguments.frameCount - 1)
       let sourceTime = timeline.sourceTime(progress: progress)
@@ -177,6 +184,11 @@ public enum DeetjenThroughFlightObservatoryCapture {
         dataset.frameCount,
         Int(floor(timeline.sourceFrameCoordinate(progress: progress))) + 1
       )
+      let wake = wakeRendering(
+        report: report,
+        sourceTimeSeconds: Double(sourceTime)
+      )
+      if wake != nil { wakeRenderedFrameCount += 1 }
       let texture = try renderer.render(
         loop: timeline,
         phase: progress,
@@ -186,7 +198,8 @@ public enum DeetjenThroughFlightObservatoryCapture {
         trajectory: MeasuredDoveTrajectoryRendering(
           allPoints: trajectoryPoints,
           completedPointCount: completedPointCount
-        )
+        ),
+        wake: wake
       )
       let png = try ReadmeShowcaseCapture.pngData(
         texture: texture,
@@ -234,6 +247,14 @@ public enum DeetjenThroughFlightObservatoryCapture {
       sourceEndTimeSeconds: report.sourceEndTimeSeconds,
       trajectorySampleCount: report.bodyTrajectorySamples.count,
       maximumTrajectoryCenterResidualMeters: maximumResidual,
+      wakeSliceCount: report.wakeSlices.count,
+      wakeRenderedFrameCount: wakeRenderedFrameCount,
+      wakeSliceAftOffsetMeters: report.wakeSliceAftOffsetMeters,
+      wakeVorticityDisplayScalePerSecond:
+        report.wakeVorticityDisplayScalePerSecond,
+      wakePositiveQDisplayScalePerSecondSquared:
+        report.wakePositiveQDisplayScalePerSecondSquared,
+      wakeFieldArchivePassed: report.wakeFieldArchivePassed,
       rawLaboratoryFrameGeometry: true,
       bodyFollowingCamera: true,
       completedFluidSteps: report.pilot.completedFluidSteps,
@@ -241,12 +262,12 @@ public enum DeetjenThroughFlightObservatoryCapture {
       registeredForceSampleCount: report.pilot.samples.count,
       minimumSampledPopulation: report.pilot.minimumSampledPopulation,
       scientificOverlayMode:
-        "source-time+body-kinematics+D8-RR3-registered-force+positivity",
+        "source-time+body-kinematics+D8-RR3-force+positivity+transverse-wake",
       trajectoryRenderingMode:
-        "raw-body-centroid-path+measured-wingtip-kinematic-trails",
+        "raw-body-path+kinematic-wing-history+archived-CFD-wake-slices",
       prescribedMotion: report.prescribedMotion,
       fullSourceTimelineCompleted: report.fullSourceTimelineCompleted,
-      passed: true
+      passed: wakeRenderedFrameCount == arguments.frameCount - 1
     )
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -262,7 +283,7 @@ public enum DeetjenThroughFlightObservatoryCapture {
     dataset: MeasuredBirdSurfaceSequence,
     report: DeetjenDoveThroughFlightReport
   ) throws -> Double {
-    guard report.schemaVersion >= 2,
+    guard report.schemaVersion >= 3,
       report.passed,
       report.fullSourceTimelineCompleted,
       report.sourceTranslationPreserved,
@@ -271,6 +292,12 @@ public enum DeetjenThroughFlightObservatoryCapture {
       report.manifestSHA256 == dataset.manifestSHA256,
       report.sourceFrameCount == dataset.frameCount,
       report.bodyTrajectorySamples.count == dataset.frameCount,
+      report.wakeFieldArchivePassed,
+      report.wakeSlices.count == 26,
+      report.wakeSlices.first?.sourceFrameIndex == 1,
+      report.wakeSlices.last?.sourceFrameIndex == 143,
+      report.wakeVorticityDisplayScalePerSecond > 0,
+      report.wakePositiveQDisplayScalePerSecondSquared > 0,
       report.pilot.completedFluidSteps == report.pilot.plan.totalFluidSteps,
       report.pilot.minimumSampledPopulation > 0,
       report.pilot.allLoadsFinite,
@@ -319,7 +346,95 @@ public enum DeetjenThroughFlightObservatoryCapture {
         "through-flight archived trajectory does not reproduce source geometry"
       )
     }
+    for wake in report.wakeSlices {
+      let expected = wake.gridY * wake.gridZ
+      guard wake.validCellCount > 0,
+        wake.streamwiseVorticityPerSecond.count == expected,
+        wake.qCriterionPerSecondSquared.count == expected,
+        wake.valid.count == expected,
+        wake.minimumValidDensityLattice > 0,
+        wake.maximumAbsoluteStreamwiseVorticityPerSecond > 0,
+        wake.maximumPositiveQCriterionPerSecondSquared > 0
+      else {
+        throw CaptureError.invalidEvidence(
+          "through-flight wake slice does not satisfy its field contract"
+        )
+      }
+    }
     return maximumResidual
+  }
+
+  private static func wakeRendering(
+    report: DeetjenDoveThroughFlightReport,
+    sourceTimeSeconds: Double
+  ) -> MeasuredDoveWakeRendering? {
+    guard let first = report.wakeSlices.first,
+      sourceTimeSeconds >= first.sourceTimeSeconds
+    else { return nil }
+    let upperIndex =
+      report.wakeSlices.firstIndex {
+        $0.sourceTimeSeconds >= sourceTimeSeconds
+      } ?? (report.wakeSlices.count - 1)
+    let lowerIndex = max(upperIndex - 1, 0)
+    let lower = report.wakeSlices[lowerIndex]
+    let upper = report.wakeSlices[upperIndex]
+    let blend =
+      lowerIndex == upperIndex
+      ? 0
+      : min(
+        max(
+          (sourceTimeSeconds - lower.sourceTimeSeconds)
+            / (upper.sourceTimeSeconds - lower.sourceTimeSeconds),
+          0
+        ),
+        1
+      )
+    let count = lower.gridY * lower.gridZ
+    guard lower.gridY == upper.gridY,
+      lower.gridZ == upper.gridZ,
+      lower.streamwiseVorticityPerSecond.count == count,
+      upper.streamwiseVorticityPerSecond.count == count
+    else { return nil }
+    var vorticity = [Float](repeating: 0, count: count)
+    var q = [Float](repeating: 0, count: count)
+    var valid = [UInt8](repeating: 0, count: count)
+    let blendFloat = Float(blend)
+    for index in 0..<count
+    where lower.valid[index] == 1
+      && upper.valid[index] == 1
+    {
+      vorticity[index] =
+        lower.streamwiseVorticityPerSecond[index]
+        + blendFloat
+        * (upper.streamwiseVorticityPerSecond[index]
+          - lower.streamwiseVorticityPerSecond[index])
+      q[index] =
+        lower.qCriterionPerSecondSquared[index]
+        + blendFloat
+        * (upper.qCriterionPerSecondSquared[index]
+          - lower.qCriterionPerSecondSquared[index])
+      valid[index] = 1
+    }
+    return MeasuredDoveWakeRendering(
+      planeXMeters: Float(
+        lower.planeXMeters
+          + blend * (upper.planeXMeters - lower.planeXMeters)
+      ),
+      domainOriginY: Float(report.wakeDomainOriginMeters.y),
+      domainOriginZ: Float(report.wakeDomainOriginMeters.z),
+      cellSizeMeters: Float(report.wakeCellSizeMeters),
+      gridY: lower.gridY,
+      gridZ: lower.gridZ,
+      streamwiseVorticityPerSecond: vorticity,
+      qCriterionPerSecondSquared: q,
+      valid: valid,
+      vorticityDisplayScalePerSecond: Float(
+        report.wakeVorticityDisplayScalePerSecond
+      ),
+      positiveQDisplayScalePerSecondSquared: Float(
+        report.wakePositiveQDisplayScalePerSecondSquared
+      )
+    )
   }
 
   private static func drawOverlay(
@@ -427,7 +542,7 @@ public enum DeetjenThroughFlightObservatoryCapture {
       context: graphics
     )
     drawText(
-      "TRAILS = KINEMATIC HISTORY  •  CFD WAKE FIELD NOT DISPLAYED",
+      "WAKE PLANE: x = body − 0.22 m  •  ±ωx BLUE/ORANGE  •  Q LUMINANCE",
       font: systemFont(.userFixedPitch, size: 8.8 * scale),
       color: NSColor(calibratedRed: 1, green: 0.72, blue: 0.30, alpha: 1).cgColor,
       position: CGPoint(x: science.minX + 15 * scale, y: science.minY + 22 * scale),

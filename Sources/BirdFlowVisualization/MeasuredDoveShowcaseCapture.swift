@@ -21,6 +21,20 @@ struct MeasuredDoveTrajectoryRendering {
   let completedPointCount: Int
 }
 
+struct MeasuredDoveWakeRendering {
+  let planeXMeters: Float
+  let domainOriginY: Float
+  let domainOriginZ: Float
+  let cellSizeMeters: Float
+  let gridY: Int
+  let gridZ: Int
+  let streamwiseVorticityPerSecond: [Float]
+  let qCriterionPerSecondSquared: [Float]
+  let valid: [UInt8]
+  let vorticityDisplayScalePerSecond: Float
+  let positiveQDisplayScalePerSecondSquared: Float
+}
+
 struct MeasuredDovePresentationLoop: MeasuredDoveMotion {
   static let startFrame = 27
   static let endFrame = 121
@@ -2028,7 +2042,8 @@ final class MeasuredDoveShowcaseRenderer {
     camera: CameraState,
     width: Int,
     height: Int,
-    trajectory: MeasuredDoveTrajectoryRendering? = nil
+    trajectory: MeasuredDoveTrajectoryRendering? = nil,
+    wake: MeasuredDoveWakeRendering? = nil
   ) throws -> MTLTexture {
     let surface = surfaceVertices(loop: loop, phase: phase)
     let ghosts = ghostVertices(
@@ -2069,6 +2084,8 @@ final class MeasuredDoveShowcaseRenderer {
     let surfaceBuffer = try sharedBuffer(surface)
     let ghostBuffer = try sharedBuffer(ghosts)
     let trailBuffers = try trails.map(sharedBuffer)
+    let wakeVertices = wake.map(makeWakeVertices) ?? []
+    let wakeBuffer = try sharedBuffer(wakeVertices)
     let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(
       pixelFormat: .bgra8Unorm_srgb,
       width: width,
@@ -2128,6 +2145,14 @@ final class MeasuredDoveShowcaseRenderer {
       length: MemoryLayout<CameraUniforms>.stride,
       index: 1
     )
+    if !wakeVertices.isEmpty {
+      encoder.setVertexBuffer(wakeBuffer, offset: 0, index: 0)
+      encoder.drawPrimitives(
+        type: .triangle,
+        vertexStart: 0,
+        vertexCount: wakeVertices.count
+      )
+    }
     if !ghosts.isEmpty {
       encoder.setVertexBuffer(ghostBuffer, offset: 0, index: 0)
       encoder.drawPrimitives(
@@ -2389,6 +2414,83 @@ final class MeasuredDoveShowcaseRenderer {
           color: color
         )
       )
+    }
+    return vertices
+  }
+
+  private func makeWakeVertices(
+    _ wake: MeasuredDoveWakeRendering
+  ) -> [ColoredVertex] {
+    let expected = wake.gridY * wake.gridZ
+    guard wake.gridY >= 3,
+      wake.gridZ >= 3,
+      wake.streamwiseVorticityPerSecond.count == expected,
+      wake.qCriterionPerSecondSquared.count == expected,
+      wake.valid.count == expected,
+      wake.vorticityDisplayScalePerSecond > 0,
+      wake.positiveQDisplayScalePerSecondSquared > 0
+    else { return [] }
+
+    var vertices: [ColoredVertex] = []
+    vertices.reserveCapacity(expected * 3)
+    let halfCell = 0.48 * wake.cellSizeMeters
+    let normal = SIMD4<Float>(1, 0, 0, 0)
+    for z in 1..<(wake.gridZ - 1) {
+      for y in 1..<(wake.gridY - 1) {
+        let index = y + wake.gridY * z
+        guard wake.valid[index] == 1 else { continue }
+        let vorticity = wake.streamwiseVorticityPerSecond[index]
+        let q = max(wake.qCriterionPerSecondSquared[index], 0)
+        let vorticitySignal = min(
+          abs(vorticity) / wake.vorticityDisplayScalePerSecond,
+          1
+        )
+        let qSignal = min(
+          sqrt(q / wake.positiveQDisplayScalePerSecondSquared),
+          1
+        )
+        let signal = max(vorticitySignal, qSignal)
+        guard signal >= 0.055 else { continue }
+        let base =
+          vorticity >= 0
+          ? SIMD3<Float>(0.10, 0.58, 1)
+          : SIMD3<Float>(1, 0.27, 0.08)
+        let qTint = SIMD3<Float>(0.62, 1, 0.72)
+        let rgb = base + 0.28 * qSignal * (qTint - base)
+        let alpha = 0.055 + 0.46 * pow(signal, 0.68)
+        let centerY =
+          wake.domainOriginY
+          + (Float(y) + 0.5) * wake.cellSizeMeters
+        let centerZ =
+          wake.domainOriginZ
+          + (Float(z) + 0.5) * wake.cellSizeMeters
+        let lowerY = centerY - halfCell
+        let upperY = centerY + halfCell
+        let lowerZ = centerZ - halfCell
+        let upperZ = centerZ + halfCell
+        let color = SIMD4<Float>(rgb, alpha)
+        let a = ColoredVertex(
+          position: SIMD4<Float>(wake.planeXMeters, lowerY, lowerZ, 1),
+          normal: normal,
+          color: color
+        )
+        let b = ColoredVertex(
+          position: SIMD4<Float>(wake.planeXMeters, upperY, lowerZ, 1),
+          normal: normal,
+          color: color
+        )
+        let c = ColoredVertex(
+          position: SIMD4<Float>(wake.planeXMeters, upperY, upperZ, 1),
+          normal: normal,
+          color: color
+        )
+        let d = ColoredVertex(
+          position: SIMD4<Float>(wake.planeXMeters, lowerY, upperZ, 1),
+          normal: normal,
+          color: color
+        )
+        vertices.append(contentsOf: [a, b, c, a, c, d])
+      }
     }
     return vertices
   }

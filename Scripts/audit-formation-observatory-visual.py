@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed audit for the D3Q19 Formation Observatory."""
+"""Fail-closed audit for the phase-resolved Formation Observatory."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image, ImageSequence
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v10.json"
+MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v11.json"
 
 
 def digest(path: Path) -> str:
@@ -283,6 +283,17 @@ check(
     == "focused-leader-q5-source-modulates-positive-z-link",
 )
 check(
+    "phase-resolved c20 flyer-load vectors",
+    dove["phaseResolvedLoadDisplayMode"]
+    == "cyclic-linear-interpolation-of-archived-c20-force-vectors"
+    and dove["phaseResolvedLoadSampleCount"] == 100
+    and dove["phaseResolvedLoadUnits"] == "newtons"
+    and dove["phaseResolvedLoadNormalization"]
+    == "per-flyer-cycle-maximum"
+    and dove["phaseResolvedLoadGlyphMode"]
+    == "gpu-batched-depth-tested-vector-arrows",
+)
+check(
     "GPU-conscious cinematic path",
     dove["trailDrawCallMode"] == "single-degenerate-strip-batch"
     and dove["postProcessingMode"]
@@ -315,8 +326,8 @@ check("GitHub Actions remain absent", not (ROOT / ".github").exists())
 
 passed = all(item["passed"] for item in checks)
 result = {
-    "schemaVersion": 8,
-    "title": "D3Q19 Formation Observatory visual audit",
+    "schemaVersion": 9,
+    "title": "Phase-resolved Formation Observatory visual audit",
     "passed": passed,
     "checkCount": len(checks),
     "passedCheckCount": sum(item["passed"] for item in checks),

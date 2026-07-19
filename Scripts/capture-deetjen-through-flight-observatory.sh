@@ -85,12 +85,15 @@ expected = {
     "sourceFrameCount": 144,
     "trajectorySampleCount": 144,
     "renderedFrameCount": 48,
+    "wakeFieldArchivePassed": True,
+    "wakeSliceCount": 26,
+    "wakeRenderedFrameCount": 47,
 }
 for key, value in expected.items():
     if audit.get(key) != value:
         raise SystemExit(f"through-flight observatory audit failed: {key}")
-if audit.get("throughFlightReportSchemaVersion") != 2:
-    raise SystemExit("through-flight observatory did not consume schema-2 evidence")
+if audit.get("throughFlightReportSchemaVersion") != 3:
+    raise SystemExit("through-flight observatory did not consume schema-3 evidence")
 if audit.get("maximumTrajectoryCenterResidualMeters", 1) > 1e-7:
     raise SystemExit("through-flight observatory trajectory drifted from source geometry")
 if audit.get("completedFluidSteps") != audit.get("plannedFluidSteps"):
@@ -102,6 +105,12 @@ if audit.get("throughFlightReportSHA256") != digest:
     raise SystemExit("through-flight observatory report hash mismatch")
 if len(report.get("bodyTrajectorySamples", [])) != 144:
     raise SystemExit("through-flight report does not archive every body trajectory frame")
+if report.get("wakeFieldArchivePassed") is not True \
+        or len(report.get("wakeSlices", [])) != 26:
+    raise SystemExit("through-flight report does not archive the qualified wake slices")
+if audit.get("wakeVorticityDisplayScalePerSecond", 0) <= 0 \
+        or audit.get("wakePositiveQDisplayScalePerSecondSquared", 0) <= 0:
+    raise SystemExit("through-flight observatory wake display scale is invalid")
 print(f"verified Deetjen through-flight observatory: {audit_path}")
 PY
 

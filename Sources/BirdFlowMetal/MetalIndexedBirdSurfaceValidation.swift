@@ -259,6 +259,13 @@ public struct DeetjenDoveThroughFlightReport: Codable, Sendable {
     public let measuredDerivedBodyTravelMeters: Double
     public let meanMeasuredDerivedBodyVelocityMetersPerSecond: SIMD3<Double>
     public let bodyTrajectorySamples: [DeetjenDoveBodyTrajectorySample]
+    public let wakeDomainOriginMeters: SIMD3<Double>
+    public let wakeCellSizeMeters: Double
+    public let wakeSliceAftOffsetMeters: Double
+    public let wakeVorticityDisplayScalePerSecond: Double
+    public let wakePositiveQDisplayScalePerSecondSquared: Double
+    public let wakeSlices: [DeetjenDoveWakeSlice]
+    public let wakeFieldArchivePassed: Bool
     public let sourceTranslationPreserved: Bool
     public let prescribedMotion: Bool
     public let pilot: MetalIndexedBirdSurfacePilotReport
@@ -3300,6 +3307,20 @@ public enum MetalIndexedBirdSurfacePilotValidator {
         }
     }
 
+    public static func deetjenWakeSourceFrameIndices(
+        frameCount: Int
+    ) throws -> [Int] {
+        guard frameCount == 144 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "Deetjen wake capture requires the complete 144-frame source"
+            )
+        }
+        var frames = Array(stride(from: 1, through: 139, by: 6))
+        frames.append(118)
+        frames.append(143)
+        return Array(Set(frames)).sorted()
+    }
+
     public static func deetjenThroughFlightPlan(
         surface: MeasuredBirdSurfaceSequence,
         target: MeasuredBirdForceTarget,
@@ -3402,13 +3423,43 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             spongeWidthCells: plan.spongeWidthCells,
             spongeStrength: Float(plan.spongeStrength)
         )
+        let wakeSourceFrames = try deetjenWakeSourceFrameIndices(
+            frameCount: surface.frameCount
+        )
+        let fluidStepsPerSourceFrame = Int(
+            round(
+                (1 / Double(surface.sampleRateHertz))
+                    / plan.fluidTimeStepSeconds
+            )
+        )
+        guard fluidStepsPerSourceFrame > 0,
+              abs(
+                Double(fluidStepsPerSourceFrame)
+                    * plan.fluidTimeStepSeconds
+                    - 1 / Double(surface.sampleRateHertz)
+              ) <= 1e-10 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "Deetjen wake frames do not align with the D8 timestep"
+            )
+        }
+        let wakeCapture = try MetalIndexedBirdSurfaceWakeCapture(
+            backend: backend,
+            sourceFrameIndices: wakeSourceFrames,
+            fluidStepsPerSourceFrame: fluidStepsPerSourceFrame,
+            grid: replay.grid,
+            domainOriginMeters: replay.domainOriginMeters,
+            cellSizeMeters: Float(plan.cellSizeMeters),
+            velocityToPhysical: replay.velocityToPhysical,
+            aftOffsetMeters: 0.22
+        )
         let pilot = try replay.runCoarseForcePilot(
             target: target,
             plan: plan,
             collisionOperator: .positivityPreservingRecursiveRegularizedBGK,
             maximumFluidSteps: plan.totalFluidSteps,
             populationDiagnosticStride: plan.fluidStepsPerForceSample,
-            stopAtFirstNegativePopulation: true
+            stopAtFirstNegativePopulation: true,
+            wakeCapture: wakeCapture
         )
         let sourceStart = surface.frameTimesSeconds.first!
         let sourceEnd = surface.frameTimesSeconds.last!
@@ -3431,6 +3482,62 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             }
         let sourceTranslationPreserved = trajectoryFinite
             && endBody.cumulativeTravelMeters > 0
+        let wakeSlices = wakeCapture.slices
+        let wakeVorticityValues = wakeSlices.reduce(into: [Double]()) {
+            result, slice in
+            result.append(
+                contentsOf: zip(
+                    slice.streamwiseVorticityPerSecond,
+                    slice.valid
+                ).compactMap {
+                    $0.1 == 1 ? abs(Double($0.0)) : nil
+                }
+            )
+        }
+        let wakePositiveQValues = wakeSlices.reduce(into: [Double]()) {
+            result, slice in
+            result.append(
+                contentsOf: zip(
+                    slice.qCriterionPerSecondSquared,
+                    slice.valid
+                ).compactMap {
+                    $0.1 == 1 && $0.0 > 0 ? Double($0.0) : nil
+                }
+            )
+        }
+        func percentile95(_ values: [Double]) -> Double {
+            guard !values.isEmpty else { return 0 }
+            let ordered = values.sorted()
+            let index = min(
+                Int((0.95 * Double(ordered.count - 1)).rounded()),
+                ordered.count - 1
+            )
+            return ordered[index]
+        }
+        let wakeVorticityScale = percentile95(wakeVorticityValues)
+        let wakePositiveQScale = percentile95(wakePositiveQValues)
+        let minimumWakeValidCells =
+            (replay.grid.y - 2)
+                * (replay.grid.z - 2) / 2
+        let wakeFieldArchivePassed =
+            wakeSlices.map(\.sourceFrameIndex) == wakeSourceFrames
+                && wakeSlices.allSatisfy { slice in
+                    let expected = slice.gridY * slice.gridZ
+                    return slice.streamwiseVorticityPerSecond.count == expected
+                        && slice.qCriterionPerSecondSquared.count == expected
+                        && slice.valid.count == expected
+                        && slice.validCellCount >= minimumWakeValidCells
+                        && slice.minimumValidDensityLattice > 0
+                        && slice.maximumValidDensityLattice.isFinite
+                        && slice.maximumAbsoluteStreamwiseVorticityPerSecond > 0
+                        && slice.maximumPositiveQCriterionPerSecondSquared > 0
+                        && abs(
+                            slice.planeXMeters
+                                - slice.desiredAftPlaneXMeters
+                        ) <= 0.5 * plan.cellSizeMeters + 1e-7
+                }
+                && wakeVorticityScale > 0
+                && wakePositiveQScale > 0
         let completed = pilot.completedFluidSteps == plan.totalFluidSteps
             && abs(
                 Double(plan.totalFluidSteps) * plan.fluidTimeStepSeconds
@@ -3445,8 +3552,9 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             && pilot.firstNonFiniteLoadStep == nil
             && pilot.firstNonFinitePopulationStep == nil
             && sourceTranslationPreserved
+            && wakeFieldArchivePassed
         return DeetjenDoveThroughFlightReport(
-            schemaVersion: 2,
+            schemaVersion: 3,
             datasetIdentifier: surface.datasetIdentifier,
             manifestSHA256: surface.manifestSHA256,
             forceTargetIdentifier: target.datasetIdentifier,
@@ -3462,6 +3570,17 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             meanMeasuredDerivedBodyVelocityMetersPerSecond:
                 displacement / duration,
             bodyTrajectorySamples: trajectory,
+            wakeDomainOriginMeters: SIMD3<Double>(
+                Double(replay.domainOriginMeters.x),
+                Double(replay.domainOriginMeters.y),
+                Double(replay.domainOriginMeters.z)
+            ),
+            wakeCellSizeMeters: plan.cellSizeMeters,
+            wakeSliceAftOffsetMeters: Double(wakeCapture.aftOffsetMeters),
+            wakeVorticityDisplayScalePerSecond: wakeVorticityScale,
+            wakePositiveQDisplayScalePerSecondSquared: wakePositiveQScale,
+            wakeSlices: wakeSlices,
+            wakeFieldArchivePassed: wakeFieldArchivePassed,
             sourceTranslationPreserved: sourceTranslationPreserved,
             prescribedMotion: true,
             pilot: pilot,
@@ -3481,8 +3600,10 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                 "This is prescribed-motion CFD over the measured-derived "
                     + "Deetjen surface sequence. The right wing remains a "
                     + "bilateral reconstruction and the D8 engineering "
-                    + "viscosity exceeds the source condition. The body does "
-                    + "not respond to computed loads, so this is not a "
+                    + "viscosity exceeds the source condition. Archived wake "
+                    + "evidence is a sparse body-following transverse slice, "
+                    + "not a full-volume flow archive. The body does not "
+                    + "respond to computed loads, so this is not a "
                     + "free-flight prediction or experimental-agreement claim."
             )
         )
@@ -17596,6 +17717,9 @@ private final class MetalIndexedBirdSurfaceReplay {
     var domainOriginMeters: SIMD3<Float> {
         configuration.domainOriginMeters
     }
+    var velocityToPhysical: Float {
+        configuration.scaling.velocityToPhysical
+    }
 
     private let backend: MetalBackend
     private let dataset: MeasuredBirdSurfaceSequence
@@ -18554,7 +18678,8 @@ private final class MetalIndexedBirdSurfaceReplay {
         populationDiagnosticStride: Int = 16,
         stopAtFirstNegativePopulation: Bool = false,
         populationStageCapture: MetalIndexedPopulationStageCapture? = nil,
-        boundaryTermCapture: MetalIndexedBoundaryTermCapture? = nil
+        boundaryTermCapture: MetalIndexedBoundaryTermCapture? = nil,
+        wakeCapture: MetalIndexedBirdSurfaceWakeCapture? = nil
     ) throws -> MetalIndexedBirdSurfacePilotReport {
         let started = Date()
         let requestedFluidSteps = maximumFluidSteps ?? plan.totalFluidSteps
@@ -18717,11 +18842,13 @@ private final class MetalIndexedBirdSurfaceReplay {
             let forceEndpoint = step % plan.fluidStepsPerForceSample == 0
             let populationDiagnostic =
                 step % populationDiagnosticStride == 0
+            let wakeSourceFrame = wakeCapture?.sourceFrameIndex(forStep: step)
             updateSurfaceTime(sourceTime)
             var uniforms = makePilotUniforms(
                 step: step,
                 hasPreviousGeometry: true,
-                collisionOperator: collisionOperator
+                collisionOperator: collisionOperator,
+                captureMacroscopicFields: wakeSourceFrame != nil
             )
             guard let commandBuffer = backend.queue.makeCommandBuffer() else {
                 throw BirdFlowError.commandBufferFailed(
@@ -18830,10 +18957,27 @@ private final class MetalIndexedBirdSurfaceReplay {
                 size: maskBytes
             )
             stepBlit.endEncoding()
+            if wakeSourceFrame != nil {
+                try wakeCapture?.encodeReadback(
+                    commandBuffer: commandBuffer,
+                    density: densityScratch,
+                    velocity: velocityAndCoveredMomentum,
+                    solidPartIdentifiers: partMask
+                )
+            }
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
             try check(commandBuffer)
             completedSteps = step
+            if let wakeSourceFrame {
+                wakeCapture?.record(
+                    sourceFrameIndex: wakeSourceFrame,
+                    sourceTimeSeconds: sourceTime,
+                    bodyCenterMeters: dataset.bodyState(
+                        timeSeconds: sourceTime
+                    ).positionMeters
+                )
+            }
 
             let rawLoad = reducedLoad.contents()
                 .assumingMemoryBound(to: GPUForceTorque.self)
@@ -19699,12 +19843,13 @@ private final class MetalIndexedBirdSurfaceReplay {
         hasPreviousGeometry: Bool,
         collisionOperator: MetalIndexedBirdSurfaceCollisionOperator,
         movingWallNormalization:
-            MetalIndexedBirdSurfaceMovingWallNormalization = .referenceDensity
+            MetalIndexedBirdSurfaceMovingWallNormalization = .referenceDensity,
+        captureMacroscopicFields: Bool = false
     ) -> GPUUniforms {
         GPUUniforms(
             configuration: configuration,
             time: Float(step),
-            captureMacroscopicFields: false,
+            captureMacroscopicFields: captureMacroscopicFields,
             accumulateLoads: true,
             hasPreviousGeometry: hasPreviousGeometry,
             periodicBoundaries: false,

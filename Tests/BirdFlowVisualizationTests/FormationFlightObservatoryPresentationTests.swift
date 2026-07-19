@@ -2,6 +2,7 @@ import BirdFlowCore
 import BirdFlowMetal
 import Foundation
 import Metal
+import simd
 import Testing
 
 @testable import BirdFlowVisualization
@@ -54,10 +55,11 @@ func formationPresentationUsesLockedDualDove() throws {
     minimumFlowOpacity: 1,
     focusedSourceTraceSampleCount: 4_820,
     focusedSourceTraceDirectionIndex: 5,
+    phaseResolvedLoadSampleCount: 100,
     wakeBridgePhaseCount: 48
   )
   #expect(audit.passed)
-  #expect(audit.schemaVersion == 6)
+  #expect(audit.schemaVersion == 7)
   #expect(audit.flyerCount == 2)
   #expect(audit.vertexCountPerFlyer == 2_157)
   #expect(audit.triangleCountPerFlyer == 3_968)
@@ -96,6 +98,19 @@ func formationPresentationUsesLockedDualDove() throws {
   #expect(audit.latticeFaceDiagonalDirectionCount == 12)
   #expect(audit.focusedMomentumExchangeDirectionIndex == 5)
   #expect(audit.focusedMomentumExchangeDirection == [0, 0, 1])
+  #expect(
+    audit.phaseResolvedLoadDisplayMode
+      == "cyclic-linear-interpolation-of-archived-c20-force-vectors"
+  )
+  #expect(audit.phaseResolvedLoadSampleCount == 100)
+  #expect(audit.phaseResolvedLoadUnits == "newtons")
+  #expect(
+    audit.phaseResolvedLoadNormalization == "per-flyer-cycle-maximum"
+  )
+  #expect(
+    audit.phaseResolvedLoadGlyphMode
+      == "gpu-batched-depth-tested-vector-arrows"
+  )
   #expect(audit.trailDrawCallMode == "single-degenerate-strip-batch")
   #expect(
     audit.postProcessingMode
@@ -302,6 +317,79 @@ func formationWakeBridgeUsesFocusedQ5Trace() throws {
   #expect(seam == repeatedSeam)
   #expect(seam >= 0 && seam < 0.01)
   #expect(quarter > 0.80 && quarter <= 1)
+}
+
+@Test("formation load vectors interpolate cyclically from archived c20 forces")
+func formationLoadVectorsInterpolateCyclically() throws {
+  let repository = URL(fileURLWithPath: #filePath)
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+  let reportURL = repository.appendingPathComponent(
+    "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-report.json"
+  )
+  let report = try JSONDecoder().decode(
+    FormationFlightReport.self,
+    from: Data(contentsOf: reportURL)
+  )
+  #expect(report.phaseSamples.count == 100)
+  let seamStart = try #require(
+    FormationFlightObservatoryCapture.phaseResolvedLoadDisplaySample(
+      report,
+      leaderPhase: 0
+    )
+  )
+  let seamEnd = try #require(
+    FormationFlightObservatoryCapture.phaseResolvedLoadDisplaySample(
+      report,
+      leaderPhase: 1
+    )
+  )
+  #expect(seamStart.leaderForceNewtons == seamEnd.leaderForceNewtons)
+  #expect(seamStart.followerForceNewtons == seamEnd.followerForceNewtons)
+  #expect(
+    seamStart.leaderNormalizedMagnitude
+      == seamEnd.leaderNormalizedMagnitude
+  )
+  #expect(
+    seamStart.followerNormalizedMagnitude
+      == seamEnd.followerNormalizedMagnitude
+  )
+
+  let archived = report.phaseSamples[37]
+  let exact = try #require(
+    FormationFlightObservatoryCapture.phaseResolvedLoadDisplaySample(
+      report,
+      leaderPhase: archived.leaderPhase
+    )
+  )
+  #expect(
+    simd_distance(exact.leaderForceNewtons, archived.leaderForceNewtons)
+      < 1e-6
+  )
+  #expect(
+    simd_distance(exact.followerForceNewtons, archived.followerForceNewtons)
+      < 1e-6
+  )
+
+  for phase in stride(from: 0.0, through: 1.0, by: 0.01) {
+    let sample = try #require(
+      FormationFlightObservatoryCapture.phaseResolvedLoadDisplaySample(
+        report,
+        leaderPhase: phase
+      )
+    )
+    #expect(sample.leaderForceNewtons.x.isFinite)
+    #expect(sample.leaderForceNewtons.y.isFinite)
+    #expect(sample.leaderForceNewtons.z.isFinite)
+    #expect(sample.followerForceNewtons.x.isFinite)
+    #expect(sample.followerForceNewtons.y.isFinite)
+    #expect(sample.followerForceNewtons.z.isFinite)
+    #expect(sample.leaderNormalizedMagnitude >= 0)
+    #expect(sample.leaderNormalizedMagnitude <= 1)
+    #expect(sample.followerNormalizedMagnitude >= 0)
+    #expect(sample.followerNormalizedMagnitude <= 1)
+  }
 }
 
 @Test("formation CFD presentation interpolates cyclically without a seam")

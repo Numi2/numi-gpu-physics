@@ -11,7 +11,7 @@ SUBCELL_SUMMARY="${5:-$ROOT/ValidationArtifacts/formation-flight-geometry-subcel
 SOURCE_SUMMARY="${6:-$ROOT/ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json}"
 DOVE_MANIFEST="${7:-$ROOT/ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json}"
 FOCUSED_SOURCE_TRACE="${8:-$ROOT/ValidationArtifacts/formation-flight-focused-source-trace/formation-flight-focused-source-trace-report.json}"
-GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-dove-v10.json"
+GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-dove-v11.json"
 V6_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v6-dual-dove-continuous-cfd.gif"
 V6_SHA256="54255ff84b855f2124ec0d6fbff2449bab740c6d9f61cef70c1ba89ea5298b61"
 V7_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v7-cinematic-wake-bridge.gif"
@@ -20,7 +20,9 @@ V8_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v8-figure-eight-camera.gif"
 V8_SHA256="f4af3b62318d0fffd1d2e41fa157cf12e3a054400ba7ba6d4e9973448bde3564"
 V9_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-19-v9-seamless-field-figure-eight.gif"
 V9_SHA256="b17a669ee923ad17281316577c28c704b4ae27d86f912d59b5ec29f533cbb65e"
-V10_MANIFEST="$ROOT/ValidationArtifacts/formation-flight-observatory-visual-v10.json"
+V10_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-19-v10-d3q19-collision-streaming.gif"
+V10_SHA256="e64059a079e2f6c51cfd9f5e288b9e219895ab446a51d51b668693ceb7e1d064"
+V11_MANIFEST="$ROOT/ValidationArtifacts/formation-flight-observatory-visual-v11.json"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "ffmpeg is required to encode the formation GIF" >&2
@@ -36,16 +38,16 @@ trap cleanup EXIT
 mkdir -p "$(dirname "$OUTPUT")"
 if [[ "$OUTPUT" == "$DEFAULT_OUTPUT" ]]; then
   CURRENT_SHA="$(shasum -a 256 "$DEFAULT_OUTPUT" | awk '{print $1}')"
-  LOCKED_V10_SHA=""
-  if [[ -f "$V10_MANIFEST" ]]; then
-    LOCKED_V10_SHA="$(python3 - "$V10_MANIFEST" <<'PY'
+  LOCKED_V11_SHA=""
+  if [[ -f "$V11_MANIFEST" ]]; then
+    LOCKED_V11_SHA="$(python3 - "$V11_MANIFEST" <<'PY'
 import json, sys
 print(json.load(open(sys.argv[1]))["output"]["sha256"])
 PY
 )"
   fi
-  if [[ "$CURRENT_SHA" != "$V9_SHA256" && "$CURRENT_SHA" != "$LOCKED_V10_SHA" ]]; then
-    echo "current Formation GIF is neither the locked V9 predecessor nor V10" >&2
+  if [[ "$CURRENT_SHA" != "$V10_SHA256" && "$CURRENT_SHA" != "$LOCKED_V11_SHA" ]]; then
+    echo "current Formation GIF is neither the locked V10 predecessor nor V11" >&2
     exit 1
   fi
   if [[ ! -f "$V6_ARCHIVE" ]] \
@@ -88,6 +90,19 @@ PY
       exit 1
     fi
     cp "$DEFAULT_OUTPUT" "$V9_ARCHIVE"
+  fi
+  if [[ -f "$V10_ARCHIVE" ]]; then
+    ARCHIVE_SHA="$(shasum -a 256 "$V10_ARCHIVE" | awk '{print $1}')"
+    if [[ "$ARCHIVE_SHA" != "$V10_SHA256" ]]; then
+      echo "V10 progress archive does not match the locked predecessor" >&2
+      exit 1
+    fi
+  else
+    if [[ "$CURRENT_SHA" != "$V10_SHA256" ]]; then
+      echo "V10 progress archive is missing and cannot be recovered from V11" >&2
+      exit 1
+    fi
+    cp "$DEFAULT_OUTPUT" "$V10_ARCHIVE"
   fi
 fi
 cd "$ROOT"
@@ -171,7 +186,7 @@ if audit["capturePhasesWithVisibleFlow"] != audit["capturePhaseCount"]:
     raise SystemExit("formation CFD is not visible at every encoded phase")
 if audit["minimumFlowOpacity"] != 1:
     raise SystemExit("formation CFD opacity is not constant")
-if audit["schemaVersion"] != 6:
+if audit["schemaVersion"] != 7:
     raise SystemExit("formation presentation audit schema changed")
 if audit["flowSpatialFilterMode"] != "gaussian-radius4-sigma2-with-solid-gap-fill-presentation-only":
     raise SystemExit("formation flow spatial presentation filter changed")
@@ -189,6 +204,14 @@ if [audit["latticeDirectionCount"], audit["latticeRestPopulationCount"], audit["
     raise SystemExit("formation D3Q19 population topology changed")
 if audit["focusedMomentumExchangeDirectionIndex"] != 5 or audit["focusedMomentumExchangeDirection"] != [0, 0, 1]:
     raise SystemExit("formation focused q5 momentum-exchange direction changed")
+if audit["phaseResolvedLoadDisplayMode"] != "cyclic-linear-interpolation-of-archived-c20-force-vectors":
+    raise SystemExit("formation phase-resolved load display changed")
+if audit["phaseResolvedLoadSampleCount"] != 100 or audit["phaseResolvedLoadUnits"] != "newtons":
+    raise SystemExit("formation phase-resolved load archive changed")
+if audit["phaseResolvedLoadNormalization"] != "per-flyer-cycle-maximum":
+    raise SystemExit("formation load-vector normalization changed")
+if audit["phaseResolvedLoadGlyphMode"] != "gpu-batched-depth-tested-vector-arrows":
+    raise SystemExit("formation load-vector GPU presentation changed")
 if audit["trailDrawCallMode"] != "single-degenerate-strip-batch":
     raise SystemExit("formation wake draw-call batching changed")
 if audit["postProcessingMode"] != "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff":

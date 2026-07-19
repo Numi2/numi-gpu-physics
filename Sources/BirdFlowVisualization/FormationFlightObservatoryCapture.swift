@@ -111,6 +111,13 @@ public enum FormationFlightObservatoryCapture {
     let farFraction: Double
   }
 
+  struct PhaseResolvedLoadDisplaySample: Sendable {
+    let leaderForceNewtons: SIMD3<Float>
+    let followerForceNewtons: SIMD3<Float>
+    let leaderNormalizedMagnitude: Float
+    let followerNormalizedMagnitude: Float
+  }
+
   private struct FlowSliceIndex: Decodable {
     struct Entry: Decodable {
       let file: String
@@ -486,6 +493,7 @@ public enum FormationFlightObservatoryCapture {
         focusedSourceTrace?.samples.count ?? 0,
       focusedSourceTraceDirectionIndex:
         focusedSourceTrace?.directionIndex ?? -1,
+      phaseResolvedLoadSampleCount: report.phaseSamples.count,
       wakeBridgePhaseCount: uniqueCapturePhases.filter { capturePhase in
         interpolatedPhaseFlowSlice(
           phaseFlowSlices,
@@ -527,6 +535,14 @@ public enum FormationFlightObservatoryCapture {
           leaderPhase: Double(phase)
         )
       }
+      guard let loadSample = phaseResolvedLoadDisplaySample(
+        report,
+        leaderPhase: Double(phase)
+      ) else {
+        throw ReadmeShowcaseCapture.CaptureError.invalidFrame(
+          "formation presentation requires the complete phase-resolved load history"
+        )
+      }
       let texture = try renderer.render(
         phase: phase,
         phaseOffset: Float(
@@ -542,6 +558,7 @@ public enum FormationFlightObservatoryCapture {
         ),
         focusedSourceIntensity:
           focusedSourceSample?.normalizedIntensity ?? 0,
+        loadSample: loadSample,
         width: arguments.width,
         height: arguments.height
       )
@@ -715,6 +732,64 @@ public enum FormationFlightObservatoryCapture {
     let value = nearest.source.rawReflectedPopulationSum
       + nearest.source.reflectedIncomingPopulationSum
     return Float((value - minimum) / max(maximum - minimum, 1e-12))
+  }
+
+  static func phaseResolvedLoadDisplaySample(
+    _ report: FormationFlightReport,
+    leaderPhase: Double
+  ) -> PhaseResolvedLoadDisplaySample? {
+    guard report.phaseSamples.count >= 2 else { return nil }
+    let ordered = report.phaseSamples.sorted {
+      $0.leaderPhase < $1.leaderPhase
+    }
+    let phase = leaderPhase - floor(leaderPhase)
+    let upperIndex = ordered.firstIndex {
+      $0.leaderPhase > phase
+    } ?? 0
+    let lowerIndex = upperIndex == 0 ? ordered.count - 1 : upperIndex - 1
+    let lower = ordered[lowerIndex]
+    let upper = ordered[upperIndex]
+    let lowerPhase = lower.leaderPhase
+    let wraps = upperIndex < lowerIndex
+    let upperPhase = upper.leaderPhase + (wraps ? 1 : 0)
+    let queryPhase = phase + (wraps ? 1 : 0)
+    let fraction = Float(
+      min(
+        max(
+          (queryPhase - lowerPhase) / max(upperPhase - lowerPhase, 1e-12),
+          0
+        ),
+        1
+      )
+    )
+    let leader = simd_mix(
+      lower.leaderForceNewtons,
+      upper.leaderForceNewtons,
+      SIMD3<Float>(repeating: fraction)
+    )
+    let follower = simd_mix(
+      lower.followerForceNewtons,
+      upper.followerForceNewtons,
+      SIMD3<Float>(repeating: fraction)
+    )
+    let leaderMaximum = report.phaseSamples.map {
+      simd_length($0.leaderForceNewtons)
+    }.max() ?? 1
+    let followerMaximum = report.phaseSamples.map {
+      simd_length($0.followerForceNewtons)
+    }.max() ?? 1
+    return PhaseResolvedLoadDisplaySample(
+      leaderForceNewtons: leader,
+      followerForceNewtons: follower,
+      leaderNormalizedMagnitude: min(
+        max(simd_length(leader) / max(leaderMaximum, 1e-12), 0),
+        1
+      ),
+      followerNormalizedMagnitude: min(
+        max(simd_length(follower) / max(followerMaximum, 1e-12), 0),
+        1
+      )
+    )
   }
 
   private static func focusedSourceDisplaySample(
@@ -1418,6 +1493,11 @@ struct FormationDovePresentationAudit: Codable, Sendable {
   let movingBoundaryExchangeMode: String
   let focusedMomentumExchangeDirectionIndex: Int
   let focusedMomentumExchangeDirection: [Int]
+  let phaseResolvedLoadDisplayMode: String
+  let phaseResolvedLoadSampleCount: Int
+  let phaseResolvedLoadUnits: String
+  let phaseResolvedLoadNormalization: String
+  let phaseResolvedLoadGlyphMode: String
   let trailDrawCallMode: String
   let postProcessingMode: String
   let focusedSourceTraceSampleCount: Int
@@ -1523,6 +1603,7 @@ final class FormationObservatoryRenderer {
     flowSlice: FormationFlightFlowSlice?,
     flowOpacity: Float,
     focusedSourceIntensity: Float,
+    loadSample: FormationFlightObservatoryCapture.PhaseResolvedLoadDisplaySample,
     width: Int,
     height: Int
   ) throws -> MTLTexture {
@@ -1603,12 +1684,26 @@ final class FormationObservatoryRenderer {
       focusedSourceIntensity: focusedSourceIntensity,
       camera: camera
     )
+    let loadGlyphs = momentumLoadGlyphVertices(
+      root: leaderRoot,
+      forceNewtons: loadSample.leaderForceNewtons,
+      normalizedMagnitude: loadSample.leaderNormalizedMagnitude,
+      color: SIMD3<Float>(0.08, 0.68, 1),
+      camera: camera
+    ) + momentumLoadGlyphVertices(
+      root: followerRoot,
+      forceNewtons: loadSample.followerForceNewtons,
+      normalizedMagnitude: loadSample.followerNormalizedMagnitude,
+      color: SIMD3<Float>(1, 0.34, 0.12),
+      camera: camera
+    )
+    let diagnostics = latticeLens + loadGlyphs
     let surfaceBuffer = try sharedBuffer(surfaces)
     let trailBuffer = batchedTrails.isEmpty
       ? nil
       : try sharedBuffer(batchedTrails)
     let sliceBuffer = slice.isEmpty ? nil : try sharedBuffer(slice)
-    let latticeBuffer = try sharedBuffer(latticeLens)
+    let diagnosticsBuffer = try sharedBuffer(diagnostics)
 
     let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(
       pixelFormat: .bgra8Unorm_srgb,
@@ -1720,11 +1815,11 @@ final class FormationObservatoryRenderer {
     encoder.setDepthStencilState(depthReadState)
     encoder.setTriangleFillMode(.fill)
     encoder.setRenderPipelineState(trailPipeline)
-    encoder.setVertexBuffer(latticeBuffer, offset: 0, index: 0)
+    encoder.setVertexBuffer(diagnosticsBuffer, offset: 0, index: 0)
     encoder.drawPrimitives(
       type: .triangle,
       vertexStart: 0,
-      vertexCount: latticeLens.count
+      vertexCount: diagnostics.count
     )
     encoder.setDepthStencilState(depthReadState)
     encoder.setRenderPipelineState(wirePipeline)
@@ -2854,6 +2949,57 @@ final class FormationObservatoryRenderer {
     return result
   }
 
+  private func momentumLoadGlyphVertices(
+    root: SIMD3<Float>,
+    forceNewtons: SIMD3<Float>,
+    normalizedMagnitude: Float,
+    color: SIMD3<Float>,
+    camera: CameraState
+  ) -> [ColoredVertex] {
+    let magnitude = simd_length(forceNewtons)
+    guard magnitude.isFinite, magnitude > 1e-8 else { return [] }
+    let direction = forceNewtons / magnitude
+    let strength = sqrt(min(max(normalizedMagnitude, 0), 1))
+    let start = root + 0.15 * direction
+    let tip = root + (0.52 + 0.58 * strength) * direction
+    let core = min(color + SIMD3<Float>(0.28, 0.28, 0.28), 1.15)
+    var result: [ColoredVertex] = []
+    result.reserveCapacity(24)
+    appendBillboardSegment(
+      from: start,
+      to: tip - 0.17 * direction,
+      width: 0.038 + 0.012 * strength,
+      color: SIMD4<Float>(color, 0.15 + 0.12 * strength),
+      camera: camera,
+      to: &result
+    )
+    appendBillboardSegment(
+      from: start,
+      to: tip - 0.14 * direction,
+      width: 0.010 + 0.004 * strength,
+      color: SIMD4<Float>(core, 0.72 + 0.20 * strength),
+      camera: camera,
+      to: &result
+    )
+    let midpoint = 0.5 * (start + tip)
+    let view = simd_normalize(camera.eye - midpoint)
+    var lateral = simd_cross(view, direction)
+    if simd_length_squared(lateral) < 1e-8 {
+      lateral = simd_cross(SIMD3<Float>(0, 0, 1), direction)
+    }
+    lateral = simd_normalize(lateral + SIMD3<Float>(1e-8, 0, 0))
+    let arrowHalfWidth = 0.105 + 0.025 * strength
+    let arrowBase = tip - (0.22 + 0.04 * strength) * direction
+    appendTriangle(
+      arrowBase - arrowHalfWidth * lateral,
+      arrowBase + arrowHalfWidth * lateral,
+      tip,
+      color: SIMD4<Float>(core, 0.84 + 0.12 * strength),
+      to: &result
+    )
+    return result
+  }
+
   private func appendBillboardSegment(
     from start: SIMD3<Float>,
     to end: SIMD3<Float>,
@@ -2924,11 +3070,12 @@ final class FormationObservatoryRenderer {
     minimumFlowOpacity: Float,
     focusedSourceTraceSampleCount: Int,
     focusedSourceTraceDirectionIndex: Int,
+    phaseResolvedLoadSampleCount: Int,
     wakeBridgePhaseCount: Int
   ) -> FormationDovePresentationAudit {
     guard let dataset = doveDataset, let loop = doveLoop else {
       return FormationDovePresentationAudit(
-        schemaVersion: 6,
+        schemaVersion: 7,
         datasetIdentifier: "missing",
         scientificTier: "missing",
         sourceDatasetDOI: "missing",
@@ -2973,6 +3120,13 @@ final class FormationObservatoryRenderer {
           "focused-leader-q5-source-modulates-positive-z-link",
         focusedMomentumExchangeDirectionIndex: 5,
         focusedMomentumExchangeDirection: [0, 0, 1],
+        phaseResolvedLoadDisplayMode:
+          "cyclic-linear-interpolation-of-archived-c20-force-vectors",
+        phaseResolvedLoadSampleCount: phaseResolvedLoadSampleCount,
+        phaseResolvedLoadUnits: "newtons",
+        phaseResolvedLoadNormalization: "per-flyer-cycle-maximum",
+        phaseResolvedLoadGlyphMode:
+          "gpu-batched-depth-tested-vector-arrows",
         trailDrawCallMode: "single-degenerate-strip-batch",
         postProcessingMode:
           "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff",
@@ -3037,6 +3191,7 @@ final class FormationObservatoryRenderer {
       && minimumFlowOpacity == 1
       && focusedSourceTraceSampleCount == 4_820
       && focusedSourceTraceDirectionIndex == 5
+      && phaseResolvedLoadSampleCount == 100
       && lattice.total == 19
       && lattice.rest == 1
       && lattice.axis == 6
@@ -3046,7 +3201,7 @@ final class FormationObservatoryRenderer {
       && cameraEndpointResidual <= 1e-7
       && Self.doveTailScale.y < 0.5 * Self.doveBodyAndWingScale.y
     return FormationDovePresentationAudit(
-      schemaVersion: 6,
+      schemaVersion: 7,
       datasetIdentifier: dataset.datasetIdentifier,
       scientificTier: dataset.scientificTier,
       sourceDatasetDOI: dataset.sourceDatasetDOI,
@@ -3092,6 +3247,13 @@ final class FormationObservatoryRenderer {
         "focused-leader-q5-source-modulates-positive-z-link",
       focusedMomentumExchangeDirectionIndex: 5,
       focusedMomentumExchangeDirection: [0, 0, 1],
+      phaseResolvedLoadDisplayMode:
+        "cyclic-linear-interpolation-of-archived-c20-force-vectors",
+      phaseResolvedLoadSampleCount: phaseResolvedLoadSampleCount,
+      phaseResolvedLoadUnits: "newtons",
+      phaseResolvedLoadNormalization: "per-flyer-cycle-maximum",
+      phaseResolvedLoadGlyphMode:
+        "gpu-batched-depth-tested-vector-arrows",
       trailDrawCallMode: "single-degenerate-strip-batch",
       postProcessingMode:
         "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff",

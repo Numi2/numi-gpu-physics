@@ -118,6 +118,14 @@ solver, force ledger, or archive. The scene is rendered through an
 highlight rolloff. All wake ribbons share one degenerate triangle-strip batch,
 reducing their per-frame buffer allocations and draw calls to one.
 
+V11 adds a phase-resolved resultant-force vector at each dove. Its direction is
+cyclic linear interpolation of the corresponding three-component force in the
+100-bin archived c20 report; its length is a square-root presentation map of
+magnitude normalized by that flyer's cycle maximum. Both vectors are depth
+tested and batched with the D3Q19 diagnostic geometry. This makes the chain from
+collision and streaming through moving-boundary exchange to the archived flyer
+load visible, while explicitly avoiding a scale-arrow or new-force claim.
+
 The capture writes 48 unique frames plus a pixel-identical endpoint probe at
 `1120 x 630`. The local script requires a seamless endpoint, exactly 48 encoded
 frames, and a file below 10 MB before replacing
@@ -129,13 +137,15 @@ A capture-side dove audit requires the exact Dryad/eLife identity, CC0 license,
 presentation scale below half the wing scale after the first visual pass showed
 the reconstructed fan was too dominant. It also requires all `48/48` unique
 capture phases to resolve the cyclic archived field at minimum opacity `1.0`.
-A separate V10 manifest and fail-closed audit lock that sidecar, all
+A separate V11 manifest and fail-closed audit lock that sidecar, all
 dove/source/CFD hashes, the independent source and q5-trace audits, exact
-`1+6+12` D3Q19 topology, positive-`z` q5 cue, 21-slice combined hash,
-`8,024,801`-byte GIF, HDR/batching contract, no-overlay figure-eight camera,
-forward-only frame count, encoded seam ratio `0.979`, and a high-edge-density
+`1+6+12` D3Q19 topology, positive-`z` q5 cue, all 100 c20 force vectors,
+21-slice combined hash, `8,014,782`-byte GIF, HDR/batching contract,
+no-overlay figure-eight camera, forward-only frame count, encoded seam ratio
+`0.973`, and a high-edge-density
 burst limit that detects transient geometry streaks.
-The independent V10 audit passes `64/64` checks.
+The independent V11 audit passes `65/65` checks. Exact V10 is retained under
+`Docs/Media/Progress` before the load-vector layer.
 A dedicated archive smoke proves that simultaneous field capture preserves
 conservative owner accounting and reproduces the prior CPU vorticity extraction
 to `1e-9` maximum absolute difference. The capture script itself neither reruns
