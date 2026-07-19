@@ -29,6 +29,20 @@ for key, expected in required.items():
         raise SystemExit(f"through-flight contract failed: {key}")
 if report.get("sourceFrameCount") != 144:
     raise SystemExit("through-flight contract failed: sourceFrameCount")
+if report.get("schemaVersion") != 2:
+    raise SystemExit("through-flight contract failed: schemaVersion")
+trajectory = report.get("bodyTrajectorySamples", [])
+if len(trajectory) != 144:
+    raise SystemExit("through-flight contract failed: bodyTrajectorySamples")
+if trajectory[0].get("sourceFrameIndex") != 0 \
+        or trajectory[-1].get("sourceFrameIndex") != 143:
+    raise SystemExit("through-flight contract failed: trajectory endpoints")
+if any(
+    right["sourceTimeSeconds"] <= left["sourceTimeSeconds"]
+    or right["cumulativeTravelMeters"] < left["cumulativeTravelMeters"]
+    for left, right in zip(trajectory, trajectory[1:])
+):
+    raise SystemExit("through-flight contract failed: trajectory monotonicity")
 pilot = report.get("pilot", {})
 plan = pilot.get("plan", {})
 if pilot.get("completedFluidSteps") != plan.get("totalFluidSteps"):

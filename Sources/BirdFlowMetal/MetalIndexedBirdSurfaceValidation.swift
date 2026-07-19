@@ -258,6 +258,7 @@ public struct DeetjenDoveThroughFlightReport: Codable, Sendable {
     public let measuredDerivedBodyDisplacementMeters: SIMD3<Double>
     public let measuredDerivedBodyTravelMeters: Double
     public let meanMeasuredDerivedBodyVelocityMetersPerSecond: SIMD3<Double>
+    public let bodyTrajectorySamples: [DeetjenDoveBodyTrajectorySample]
     public let sourceTranslationPreserved: Bool
     public let prescribedMotion: Bool
     public let pilot: MetalIndexedBirdSurfacePilotReport
@@ -265,6 +266,15 @@ public struct DeetjenDoveThroughFlightReport: Codable, Sendable {
     public let passed: Bool
     public let scientificVerdict: String
     public let claimBoundary: String
+}
+
+public struct DeetjenDoveBodyTrajectorySample: Codable, Sendable, Equatable {
+    public let sourceFrameIndex: Int
+    public let sourceTimeSeconds: Double
+    public let bodyCenterMeters: SIMD3<Double>
+    public let bodyVelocityMetersPerSecond: SIMD3<Double>
+    public let displacementFromStartMeters: SIMD3<Double>
+    public let cumulativeTravelMeters: Double
 }
 
 public struct MetalIndexedBirdSurfaceCollisionPreRollCase: Codable, Sendable {
@@ -3248,6 +3258,48 @@ public enum MetalIndexedBirdSurfacePilotValidator {
 
     /// Extends the bounded force-comparison pilot through the final source
     /// frame while retaining the same D8 engineering scaling and force window.
+    public static func deetjenBodyTrajectory(
+        surface: MeasuredBirdSurfaceSequence
+    ) throws -> [DeetjenDoveBodyTrajectorySample] {
+        guard surface.datasetIdentifier
+                == "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+              surface.frameCount >= 2 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "Deetjen body trajectory requires the locked complete OB F03 surface"
+            )
+        }
+        let toDouble: (SIMD3<Float>) -> SIMD3<Double> = {
+            SIMD3<Double>(Double($0.x), Double($0.y), Double($0.z))
+        }
+        let start = surface.bodyState(
+            timeSeconds: surface.frameTimesSeconds[0]
+        ).positionMeters
+        var previous = start
+        var cumulativeTravel: Float = 0
+        return surface.frameTimesSeconds.enumerated().map { index, time in
+            let state = surface.bodyState(timeSeconds: time)
+            if index > 0 {
+                let segment = state.positionMeters - previous
+                cumulativeTravel += sqrt(
+                    segment.x * segment.x
+                        + segment.y * segment.y
+                        + segment.z * segment.z
+                )
+            }
+            previous = state.positionMeters
+            return DeetjenDoveBodyTrajectorySample(
+                sourceFrameIndex: index,
+                sourceTimeSeconds: Double(time),
+                bodyCenterMeters: toDouble(state.positionMeters),
+                bodyVelocityMetersPerSecond:
+                    toDouble(state.velocityMetersPerSecond),
+                displacementFromStartMeters:
+                    toDouble(state.positionMeters - start),
+                cumulativeTravelMeters: Double(cumulativeTravel)
+            )
+        }
+    }
+
     public static func deetjenThroughFlightPlan(
         surface: MeasuredBirdSurfaceSequence,
         target: MeasuredBirdForceTarget,
@@ -3360,24 +3412,25 @@ public enum MetalIndexedBirdSurfacePilotValidator {
         )
         let sourceStart = surface.frameTimesSeconds.first!
         let sourceEnd = surface.frameTimesSeconds.last!
-        let startBody = surface.bodyState(timeSeconds: sourceStart)
-        let endBody = surface.bodyState(timeSeconds: sourceEnd)
-        let displacement = endBody.positionMeters - startBody.positionMeters
-        var bodyTravel: Float = 0
-        var previousBodyPosition = startBody.positionMeters
-        for frameTime in surface.frameTimesSeconds.dropFirst() {
-            let bodyPosition = surface.bodyState(
-                timeSeconds: frameTime
-            ).positionMeters
-            let segment = bodyPosition - previousBodyPosition
-            bodyTravel += sqrt(
-                segment.x * segment.x
-                    + segment.y * segment.y
-                    + segment.z * segment.z
-            )
-            previousBodyPosition = bodyPosition
-        }
-        let duration = sourceEnd - sourceStart
+        let trajectory = try deetjenBodyTrajectory(surface: surface)
+        let startBody = trajectory[0]
+        let endBody = trajectory[trajectory.count - 1]
+        let displacement = endBody.bodyCenterMeters - startBody.bodyCenterMeters
+        let duration = Double(sourceEnd - sourceStart)
+        let trajectoryFinite = trajectory.count == surface.frameCount
+            && trajectory.allSatisfy {
+                $0.sourceTimeSeconds.isFinite
+                    && $0.bodyCenterMeters.x.isFinite
+                    && $0.bodyCenterMeters.y.isFinite
+                    && $0.bodyCenterMeters.z.isFinite
+                    && $0.bodyVelocityMetersPerSecond.x.isFinite
+                    && $0.bodyVelocityMetersPerSecond.y.isFinite
+                    && $0.bodyVelocityMetersPerSecond.z.isFinite
+                    && $0.cumulativeTravelMeters.isFinite
+                    && $0.cumulativeTravelMeters >= 0
+            }
+        let sourceTranslationPreserved = trajectoryFinite
+            && endBody.cumulativeTravelMeters > 0
         let completed = pilot.completedFluidSteps == plan.totalFluidSteps
             && abs(
                 Double(plan.totalFluidSteps) * plan.fluidTimeStepSeconds
@@ -3391,11 +3444,9 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             && pilot.firstNegativePopulationStep == nil
             && pilot.firstNonFiniteLoadStep == nil
             && pilot.firstNonFinitePopulationStep == nil
-        let toDouble: (SIMD3<Float>) -> SIMD3<Double> = {
-            SIMD3<Double>(Double($0.x), Double($0.y), Double($0.z))
-        }
+            && sourceTranslationPreserved
         return DeetjenDoveThroughFlightReport(
-            schemaVersion: 1,
+            schemaVersion: 2,
             datasetIdentifier: surface.datasetIdentifier,
             manifestSHA256: surface.manifestSHA256,
             forceTargetIdentifier: target.datasetIdentifier,
@@ -3404,13 +3455,14 @@ public enum MetalIndexedBirdSurfacePilotValidator {
             sourceStartTimeSeconds: Double(sourceStart),
             sourceEndTimeSeconds: Double(sourceEnd),
             sourceDurationSeconds: Double(duration),
-            startBodyCenterMeters: toDouble(startBody.positionMeters),
-            endBodyCenterMeters: toDouble(endBody.positionMeters),
-            measuredDerivedBodyDisplacementMeters: toDouble(displacement),
-            measuredDerivedBodyTravelMeters: Double(bodyTravel),
+            startBodyCenterMeters: startBody.bodyCenterMeters,
+            endBodyCenterMeters: endBody.bodyCenterMeters,
+            measuredDerivedBodyDisplacementMeters: displacement,
+            measuredDerivedBodyTravelMeters: endBody.cumulativeTravelMeters,
             meanMeasuredDerivedBodyVelocityMetersPerSecond:
-                toDouble(displacement / duration),
-            sourceTranslationPreserved: true,
+                displacement / duration,
+            bodyTrajectorySamples: trajectory,
+            sourceTranslationPreserved: sourceTranslationPreserved,
             prescribedMotion: true,
             pilot: pilot,
             fullSourceTimelineCompleted: completed,

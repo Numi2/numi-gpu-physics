@@ -11,7 +11,17 @@ struct DoveLoopPoint {
   let velocity: SIMD3<Float>
 }
 
-struct MeasuredDovePresentationLoop {
+protocol MeasuredDoveMotion {
+  func point(phase: Float, vertexIndex: Int) -> DoveLoopPoint
+  func phase(offsetBy seconds: Float, from phase: Float) -> Float
+}
+
+struct MeasuredDoveTrajectoryRendering {
+  let allPoints: [SIMD3<Float>]
+  let completedPointCount: Int
+}
+
+struct MeasuredDovePresentationLoop: MeasuredDoveMotion {
   static let startFrame = 27
   static let endFrame = 121
   static let closureDurationSeconds: Float = 0.014
@@ -1959,7 +1969,7 @@ enum MeasuredDoveShowcaseCapture {
   }
 }
 
-private final class MeasuredDoveShowcaseRenderer {
+final class MeasuredDoveShowcaseRenderer {
   private let backend: VisualizationBackend
   private let dataset: MeasuredBirdSurfaceSequence
   private let surfacePipeline: MTLRenderPipelineState
@@ -2013,22 +2023,49 @@ private final class MeasuredDoveShowcaseRenderer {
   }
 
   func render(
-    loop: MeasuredDovePresentationLoop,
+    loop: any MeasuredDoveMotion,
     phase: Float,
     camera: CameraState,
     width: Int,
-    height: Int
+    height: Int,
+    trajectory: MeasuredDoveTrajectoryRendering? = nil
   ) throws -> MTLTexture {
     let surface = surfaceVertices(loop: loop, phase: phase)
     let ghosts = ghostVertices(
       loop: loop,
       phase: phase
     )
-    let trails = trailVertices(
+    var trails = trailVertices(
       loop: loop,
       phase: phase,
       camera: camera
     )
+    if let trajectory, trajectory.allPoints.count >= 2 {
+      trails.insert(
+        makeConstantTrailVertices(
+          points: trajectory.allPoints,
+          rgb: SIMD3<Float>(0.12, 0.48, 0.68),
+          camera: camera,
+          width: 0.00042,
+          alpha: 0.18
+        ),
+        at: 0
+      )
+      let completedCount = min(
+        max(trajectory.completedPointCount, 2),
+        trajectory.allPoints.count
+      )
+      trails.insert(
+        makeConstantTrailVertices(
+          points: Array(trajectory.allPoints.prefix(completedCount)),
+          rgb: SIMD3<Float>(0.18, 0.92, 1),
+          camera: camera,
+          width: 0.00072,
+          alpha: 0.82
+        ),
+        at: 1
+      )
+    }
     let surfaceBuffer = try sharedBuffer(surface)
     let ghostBuffer = try sharedBuffer(ghosts)
     let trailBuffers = try trails.map(sharedBuffer)
@@ -2154,7 +2191,7 @@ private final class MeasuredDoveShowcaseRenderer {
   }
 
   private func surfaceVertices(
-    loop: MeasuredDovePresentationLoop,
+    loop: any MeasuredDoveMotion,
     phase: Float
   ) -> [ColoredVertex] {
     let states = (0..<dataset.vertexCount).map {
@@ -2193,7 +2230,7 @@ private final class MeasuredDoveShowcaseRenderer {
   }
 
   private func ghostVertices(
-    loop: MeasuredDovePresentationLoop,
+    loop: any MeasuredDoveMotion,
     phase: Float
   ) -> [ColoredVertex] {
     var result: [ColoredVertex] = []
@@ -2235,7 +2272,7 @@ private final class MeasuredDoveShowcaseRenderer {
   }
 
   private func trailVertices(
-    loop: MeasuredDovePresentationLoop,
+    loop: any MeasuredDoveMotion,
     phase: Float,
     camera: CameraState
   ) -> [[ColoredVertex]] {
@@ -2299,6 +2336,45 @@ private final class MeasuredDoveShowcaseRenderer {
       let age = Float(index) / Float(points.count - 1)
       let width = baseWidth + tipWidth * age
       let color = SIMD4<Float>(rgb, peakAlpha * age * age)
+      vertices.append(
+        ColoredVertex(
+          position: SIMD4<Float>(points[index] - width * lateral, 1),
+          normal: SIMD4<Float>(view, 0),
+          color: color
+        )
+      )
+      vertices.append(
+        ColoredVertex(
+          position: SIMD4<Float>(points[index] + width * lateral, 1),
+          normal: SIMD4<Float>(view, 0),
+          color: color
+        )
+      )
+    }
+    return vertices
+  }
+
+  private func makeConstantTrailVertices(
+    points: [SIMD3<Float>],
+    rgb: SIMD3<Float>,
+    camera: CameraState,
+    width: Float,
+    alpha: Float
+  ) -> [ColoredVertex] {
+    guard points.count >= 2 else { return [] }
+    var vertices: [ColoredVertex] = []
+    vertices.reserveCapacity(points.count * 2)
+    for index in points.indices {
+      let previous = points[max(index - 1, 0)]
+      let next = points[min(index + 1, points.count - 1)]
+      let tangent = simd_normalize(next - previous + SIMD3<Float>(1e-8, 0, 0))
+      let view = simd_normalize(camera.eye - points[index])
+      let rawLateral = simd_cross(view, tangent)
+      let lateral =
+        simd_length_squared(rawLateral) > 1e-12
+        ? simd_normalize(rawLateral)
+        : SIMD3<Float>(0, 0, 1)
+      let color = SIMD4<Float>(rgb, alpha)
       vertices.append(
         ColoredVertex(
           position: SIMD4<Float>(points[index] - width * lateral, 1),

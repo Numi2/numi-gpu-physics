@@ -48,6 +48,38 @@ the resulting completion contract:
 The authoritative machine-readable evidence is
 `ValidationArtifacts/deetjen-dove-through-flight-v1.json`.
 
+Schema 2 archives one `bodyTrajectorySamples` entry for each of the 144 source
+frames: body-center position, measured-derived velocity, displacement from the
+first frame, and monotone cumulative travel. The run wrapper rejects missing,
+reordered, or non-monotone trajectory evidence.
+
+## Through-flight observatory
+
+The deterministic native Metal capture consumes the complete-surface manifest
+and the hashed schema-2 simulation report:
+
+```bash
+./Scripts/capture-deetjen-through-flight-observatory.sh
+```
+
+It produces:
+
+- `Docs/Media/deetjen-through-flight-observatory.mp4`: 48 frames at 1120x630;
+- `Docs/Media/deetjen-through-flight-observatory.png`: the poster frame;
+- `ValidationArtifacts/deetjen-through-flight-observatory-v1.json`: the visual
+  evidence audit and exact input-report hash.
+
+The camera follows the body, but geometry remains in the laboratory frame. A
+cyan line retains the translating body-centroid path, while the HUD shows raw
+source time/frame, body speed and displacement, the registered measured and D8
+RR3 vertical-force histories, solver completion, and population positivity.
+The renderer reproduces every archived body center against the source surface
+to within `1e-7 m` before capturing.
+
+Translucent prior wing surfaces and wingtip ribbons are kinematic history, not
+computed vortices. The capture labels this directly; a real CFD wake-field
+layer remains a separate future scientific step.
+
 ## What changed from the existing showcase
 
 The README dove showcase uses frames `27...121`, subtracts the body centroid,
@@ -76,8 +108,9 @@ the public record does not provide.
 
 ## Direction from here
 
-1. Add a through-flight observatory that follows the translating body and
-   renders the evolving computed wake without body-centering the geometry.
+1. Add archived full-volume or body-following slice fields so the through-flight
+   observatory can render computed vorticity/Q without conflating it with
+   kinematic history.
 2. Extend the already-qualified source-viscosity refinement from the registered
    force window through the complete `143 ms` surface timeline.
 3. Compare the synchronized horizontal and vertical forces only after the

@@ -8,7 +8,20 @@ import SwiftUI
 @main
 struct BirdFlowViewerApp: App {
   init() {
-    if CommandLine.arguments.contains("--capture-formation-frames") {
+    if CommandLine.arguments.contains("--capture-deetjen-through-flight") {
+      do {
+        let arguments = try DeetjenThroughFlightObservatoryCapture.Arguments(
+          commandLine: CommandLine.arguments
+        )
+        try DeetjenThroughFlightObservatoryCapture.run(arguments)
+        Foundation.exit(EXIT_SUCCESS)
+      } catch {
+        FileHandle.standardError.write(
+          Data("birdflow-viewer Deetjen capture failed: \(error)\n".utf8)
+        )
+        Foundation.exit(EXIT_FAILURE)
+      }
+    } else if CommandLine.arguments.contains("--capture-formation-frames") {
       do {
         let arguments = try FormationFlightObservatoryCapture.Arguments(
           commandLine: CommandLine.arguments

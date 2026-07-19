@@ -163,27 +163,28 @@ func deetjenThroughFlightPlanPreservesMeasuredBodyTranslation() throws {
     #expect(start.velocityMetersPerSecond.x.isFinite)
     #expect(end.velocityMetersPerSecond.x.isFinite)
 
-    var bodyTravel: Float = 0
-    var previousBodyPosition = start.positionMeters
-    for frameTime in surface.frameTimesSeconds.dropFirst() {
-        let bodyPosition = surface.bodyState(
-            timeSeconds: frameTime
-        ).positionMeters
-        let segment = bodyPosition - previousBodyPosition
-        bodyTravel += sqrt(
-            segment.x * segment.x
-                + segment.y * segment.y
-                + segment.z * segment.z
-        )
-        previousBodyPosition = bodyPosition
-    }
+    let trajectory = try MetalIndexedBirdSurfacePilotValidator
+        .deetjenBodyTrajectory(surface: surface)
+    #expect(trajectory.count == surface.frameCount)
+    #expect(trajectory.first?.sourceFrameIndex == 0)
+    #expect(trajectory.last?.sourceFrameIndex == 143)
+    #expect(trajectory.first?.cumulativeTravelMeters == 0)
+    #expect(
+        zip(trajectory, trajectory.dropFirst()).allSatisfy {
+            $0.0.sourceTimeSeconds < $0.1.sourceTimeSeconds
+                && $0.0.cumulativeTravelMeters
+                    <= $0.1.cumulativeTravelMeters
+        }
+    )
     let endpointDistance = sqrt(
         displacement.x * displacement.x
             + displacement.y * displacement.y
             + displacement.z * displacement.z
     )
-    #expect(abs(bodyTravel - 0.241_865) <= 2e-6)
-    #expect(bodyTravel > endpointDistance)
+    #expect(
+        abs(trajectory.last!.cumulativeTravelMeters - 0.241_865) <= 2e-6
+    )
+    #expect(trajectory.last!.cumulativeTravelMeters > Double(endpointDistance))
 }
 
 @Test

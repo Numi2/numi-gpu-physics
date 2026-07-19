@@ -44,6 +44,14 @@ and the direction/claim contract is
 This is prescribed-motion CFD at the existing D8 engineering viscosity. It is
 not yet source-viscosity experimental agreement or load-responsive free flight.
 
+[![Deetjen through-flight observatory](Docs/Media/deetjen-through-flight-observatory.png)](Docs/Media/deetjen-through-flight-observatory.mp4)
+
+The artifact-locked observatory follows the raw translating surface, draws the
+144-sample body-centroid path, and synchronizes the D8 RR3 vertical-force trace
+and positivity state. Generate and verify it with
+`./Scripts/capture-deetjen-through-flight-observatory.sh`. Translucent wing
+history is explicitly kinematic; V1 does not present it as a computed wake.
+
 [Quick start](#quick-start) · [Validation scoreboard](#validation-scoreboard) · [Native viewer](#native-metal-viewer) · [Architecture](#architecture) · [Measured data](#measured-geometry-and-kinematics) · [Scientific limits](#scientific-boundary) · [Full validation contract](Docs/VALIDATION.md)
 
 ## Why this project is interesting

@@ -1,4 +1,2886 @@
 {
+  "bodyTrajectorySamples" : [
+    {
+      "bodyCenterMeters" : [
+        -0.05673021078109741,
+        -0.0006323134293779731,
+        -0.02436635084450245
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.4674525260925293,
+        -0.04862647131085396,
+        1.6649192571640015
+      ],
+      "cumulativeTravelMeters" : 0,
+      "displacementFromStartMeters" : [
+        0,
+        0,
+        0
+      ],
+      "sourceFrameIndex" : 0,
+      "sourceTimeSeconds" : 0
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05626268684864044,
+        -0.0006809384212829173,
+        -0.022701410576701164
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.46180489659309387,
+        -0.05006411671638489,
+        1.6654335260391235
+      ],
+      "cumulativeTravelMeters" : 0.001730020041577518,
+      "displacementFromStartMeters" : [
+        0.0004675239324569702,
+        -4.862499190494418e-05,
+        0.0016649402678012848
+      ],
+      "sourceFrameIndex" : 1,
+      "sourceTimeSeconds" : 0.0010000000474974513
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05580086633563042,
+        -0.0007310028304345906,
+        -0.02103601209819317
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.45670124888420105,
+        -0.04928922280669212,
+        1.6628656387329102
+      ],
+      "cumulativeTravelMeters" : 0.0034589897841215134,
+      "displacementFromStartMeters" : [
+        0.0009293444454669952,
+        -9.86894010566175e-05,
+        0.0033303387463092804
+      ],
+      "sourceFrameIndex" : 2,
+      "sourceTimeSeconds" : 0.0020000000949949026
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.055344197899103165,
+        -0.0007802858599461615,
+        -0.01937311515212059
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.45253828167915344,
+        -0.04553118348121643,
+        1.6558966636657715
+      ],
+      "cumulativeTravelMeters" : 0.005184156820178032,
+      "displacementFromStartMeters" : [
+        0.0013860128819942474,
+        -0.00014797243056818843,
+        0.004993235692381859
+      ],
+      "sourceFrameIndex" : 3,
+      "sourceTimeSeconds" : 0.003000000026077032
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.054891690611839294,
+        -0.0008258229354396462,
+        -0.017717231065034866
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.4497719407081604,
+        -0.03822663798928261,
+        1.6433416604995728
+      ],
+      "cumulativeTravelMeters" : 0.006901360582560301,
+      "displacementFromStartMeters" : [
+        0.0018385201692581177,
+        -0.00019350950606167316,
+        0.006649119779467583
+      ],
+      "sourceFrameIndex" : 4,
+      "sourceTimeSeconds" : 0.004000000189989805
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.054441899061203,
+        -0.000864052155520767,
+        -0.01607390120625496
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.4488971531391144,
+        -0.027004824951291084,
+        1.624159574508667
+      ],
+      "cumulativeTravelMeters" : 0.008605563081800938,
+      "displacementFromStartMeters" : [
+        0.002288311719894409,
+        -0.0002317387261427939,
+        0.00829244963824749
+      ],
+      "sourceFrameIndex" : 5,
+      "sourceTimeSeconds" : 0.004999999888241291
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05399299040436745,
+        -0.0008910577744245529,
+        -0.01444973424077034
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.45042917132377625,
+        -0.011670243926346302,
+        1.5974732637405396
+      ],
+      "cumulativeTravelMeters" : 0.01029084250330925,
+      "displacementFromStartMeters" : [
+        0.002737220376729965,
+        -0.00025874434504657984,
+        0.009916616603732109
+      ],
+      "sourceFrameIndex" : 6,
+      "sourceTimeSeconds" : 0.006000000052154064
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.053542524576187134,
+        -0.0009027236956171691,
+        -0.012852267362177372
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.45487305521965027,
+        0.00781815405935049,
+        1.5625663995742798
+      ],
+      "cumulativeTravelMeters" : 0.01195064838975668,
+      "displacementFromStartMeters" : [
+        0.0031876862049102783,
+        -0.00027041026623919606,
+        0.011514083482325077
+      ],
+      "sourceFrameIndex" : 7,
+      "sourceTimeSeconds" : 0.007000000216066837
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05308769643306732,
+        -0.000894903379958123,
+        -0.011289706453680992
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.4627063572406769,
+        0.031358249485492706,
+        1.5188953876495361
+      ],
+      "cumulativeTravelMeters" : 0.013578077778220177,
+      "displacementFromStartMeters" : [
+        0.0036425143480300903,
+        -0.0002625899505801499,
+        0.013076644390821457
+      ],
+      "sourceFrameIndex" : 8,
+      "sourceTimeSeconds" : 0.00800000037997961
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05262501910328865,
+        -0.0008635486010462046,
+        -0.009770805016160011
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.4743664860725403,
+        0.058704424649477005,
+        1.4660863876342773
+      ],
+      "cumulativeTravelMeters" : 0.015166194178164005,
+      "displacementFromStartMeters" : [
+        0.004105191677808762,
+        -0.0002312351716682315,
+        0.014595545828342438
+      ],
+      "sourceFrameIndex" : 9,
+      "sourceTimeSeconds" : 0.008999999612569809
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05215063318610191,
+        -0.0008048457675613463,
+        -0.00830470584332943
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.490267276763916,
+        0.08944930136203766,
+        1.4039007425308228
+      ],
+      "cumulativeTravelMeters" : 0.0167082492262125,
+      "displacementFromStartMeters" : [
+        0.004579577594995499,
+        -0.0001725323381833732,
+        0.01606164500117302
+      ],
+      "sourceFrameIndex" : 10,
+      "sourceTimeSeconds" : 0.009999999776482582
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05166034400463104,
+        -0.0007153959013521671,
+        -0.006900814827531576
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.5107927322387695,
+        0.12301356345415115,
+        1.3322333097457886
+      ],
+      "cumulativeTravelMeters" : 0.018197979778051376,
+      "displacementFromStartMeters" : [
+        0.00506986677646637,
+        -8.308247197419405e-05,
+        0.017465535551309586
+      ],
+      "sourceFrameIndex" : 11,
+      "sourceTimeSeconds" : 0.010999999940395355
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05114957317709923,
+        -0.0005923834396526217,
+        -0.005568594206124544
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.536283552646637,
+        0.1586482971906662,
+        1.2511249780654907
+      ],
+      "cumulativeTravelMeters" : 0.019630052149295807,
+      "displacementFromStartMeters" : [
+        0.005580637603998184,
+        3.9929989725351334e-05,
+        0.018797757104039192
+      ],
+      "sourceFrameIndex" : 12,
+      "sourceTimeSeconds" : 0.012000000104308128
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05061333253979683,
+        -0.00043373226071707904,
+        -0.0043174512684345245
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.5670080184936523,
+        0.19545742869377136,
+        1.160797357559204
+      ],
+      "cumulativeTravelMeters" : 0.021000484004616737,
+      "displacementFromStartMeters" : [
+        0.006116878241300583,
+        0.00019858116866089404,
+        0.020048899576067924
+      ],
+      "sourceFrameIndex" : 13,
+      "sourceTimeSeconds" : 0.013000000268220901
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.05004623159766197,
+        -0.00023827870609238744,
+        -0.00315665896050632
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.6031426191329956,
+        0.23242400586605072,
+        1.061671257019043
+      ],
+      "cumulativeTravelMeters" : 0.022307099774479866,
+      "displacementFromStartMeters" : [
+        0.00668397918343544,
+        0.00039403472328558564,
+        0.02120969258248806
+      ],
+      "sourceFrameIndex" : 14,
+      "sourceTimeSeconds" : 0.014000000432133675
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04944311082363129,
+        -5.852251433680067e-06,
+        -0.0020949917379766703
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.6447440385818481,
+        0.268446147441864,
+        0.954383134841919
+      ],
+      "cumulativeTravelMeters" : 0.023550044745206833,
+      "displacementFromStartMeters" : [
+        0.0072870999574661255,
+        0.0006264611729420722,
+        0.022271359339356422
+      ],
+      "sourceFrameIndex" : 15,
+      "sourceTimeSeconds" : 0.014999999664723873
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04879837483167648,
+        0.00026259617879986763,
+        -0.0011406105477362871
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.6917479038238525,
+        0.30238863825798035,
+        0.839796245098114
+      ],
+      "cumulativeTravelMeters" : 0.024732666090130806,
+      "displacementFromStartMeters" : [
+        0.007931835949420929,
+        0.0008949096081778407,
+        0.02322573959827423
+      ],
+      "sourceFrameIndex" : 16,
+      "sourceTimeSeconds" : 0.01600000075995922
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04810664802789688,
+        0.0005649809609167278,
+        -0.0003008050553034991
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.7439316511154175,
+        0.3331349194049835,
+        0.7189996242523193
+      ],
+      "cumulativeTravelMeters" : 0.025861911475658417,
+      "displacementFromStartMeters" : [
+        0.008623562753200531,
+        0.00119729433208704,
+        0.024065546691417694
+      ],
+      "sourceFrameIndex" : 17,
+      "sourceTimeSeconds" : 0.017000000923871994
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04736270010471344,
+        0.0008981145219877362,
+        0.0004181901167612523
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.8009107708930969,
+        0.35965538024902344,
+        0.5932969450950623
+      ],
+      "cumulativeTravelMeters" : 0.026948830112814903,
+      "displacementFromStartMeters" : [
+        0.009367510676383972,
+        0.0015304279513657093,
+        0.024784540757536888
+      ],
+      "sourceFrameIndex" : 18,
+      "sourceTimeSeconds" : 0.017999999225139618
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04656177759170532,
+        0.0012577767483890057,
+        0.0010114869801327586
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.8621306419372559,
+        0.3810727894306183,
+        0.4642069935798645
+      ],
+      "cumulativeTravelMeters" : 0.028008468449115753,
+      "displacementFromStartMeters" : [
+        0.01016843318939209,
+        0.0018900901777669787,
+        0.02537783794105053
+      ],
+      "sourceFrameIndex" : 19,
+      "sourceTimeSeconds" : 0.01899999938905239
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04569965973496437,
+        0.001638850662857294,
+        0.001475695171393454
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.9268549084663391,
+        0.3967197835445404,
+        0.3334107995033264
+      ],
+      "cumulativeTravelMeters" : 0.029059160500764847,
+      "displacementFromStartMeters" : [
+        0.011030551046133041,
+        0.002271164208650589,
+        0.02584204636514187
+      ],
+      "sourceFrameIndex" : 20,
+      "sourceTimeSeconds" : 0.019999999552965164
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.044772807508707047,
+        0.00203557126224041,
+        0.0018091037636622787
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        0.994168758392334,
+        0.4062001705169678,
+        0.20272859930992126
+      ],
+      "cumulativeTravelMeters" : 0.03012104704976082,
+      "displacementFromStartMeters" : [
+        0.011957403272390366,
+        0.0026678848080337048,
+        0.026175454258918762
+      ],
+      "sourceFrameIndex" : 21,
+      "sourceTimeSeconds" : 0.020999999716877937
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.043778613209724426,
+        0.002441764110699296,
+        0.002011834643781185
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.062980055809021,
+        0.40943774580955505,
+        0.07407233864068985
+      ],
+      "cumulativeTravelMeters" : 0.03121398575603962,
+      "displacementFromStartMeters" : [
+        0.012951597571372986,
+        0.0030740774236619473,
+        0.02637818455696106
+      ],
+      "sourceFrameIndex" : 22,
+      "sourceTimeSeconds" : 0.02199999988079071
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.042715635150671005,
+        0.0028512042481452227,
+        0.002085904823616147
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.132028579711914,
+        0.40671074390411377,
+        -0.050606586039066315
+      ],
+      "cumulativeTravelMeters" : 0.032355498522520065,
+      "displacementFromStartMeters" : [
+        0.014014575630426407,
+        0.003483517561107874,
+        0.026452256366610527
+      ],
+      "sourceFrameIndex" : 23,
+      "sourceTimeSeconds" : 0.023000000044703484
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04158362001180649,
+        0.003257917007431388,
+        0.0020352983847260475
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.199924349784851,
+        0.39865389466285706,
+        -0.1693783849477768
+      ],
+      "cumulativeTravelMeters" : 0.03355942294001579,
+      "displacementFromStartMeters" : [
+        0.015146590769290924,
+        0.003890230320394039,
+        0.02640165016055107
+      ],
+      "sourceFrameIndex" : 24,
+      "sourceTimeSeconds" : 0.024000000208616257
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.04038369655609131,
+        0.0036565710324794054,
+        0.0018659222405403852
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.2651963233947754,
+        0.3862217962741852,
+        -0.28041279315948486
+      ],
+      "cumulativeTravelMeters" : 0.03483512997627258,
+      "displacementFromStartMeters" : [
+        0.016346514225006104,
+        0.004288884345442057,
+        0.026232272386550903
+      ],
+      "sourceFrameIndex" : 25,
+      "sourceTimeSeconds" : 0.02500000037252903
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.039118506014347076,
+        0.004042792599648237,
+        0.001585508813150227
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3263834714889526,
+        0.3706268072128296,
+        -0.38205698132514954
+      ],
+      "cumulativeTravelMeters" : 0.03618735074996948,
+      "displacementFromStartMeters" : [
+        0.017611704766750336,
+        0.004675106145441532,
+        0.02595186047255993
+      ],
+      "sourceFrameIndex" : 26,
+      "sourceTimeSeconds" : 0.026000000536441803
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.037792131304740906,
+        0.004413420334458351,
+        0.0012034509563818574
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3821088075637817,
+        0.35324761271476746,
+        -0.4729100167751312
+      ],
+      "cumulativeTravelMeters" : 0.0376165471971035,
+      "displacementFromStartMeters" : [
+        0.018938079476356506,
+        0.005045733880251646,
+        0.025569802150130272
+      ],
+      "sourceFrameIndex" : 27,
+      "sourceTimeSeconds" : 0.027000000700354576
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.036409974098205566,
+        0.004766661673784256,
+        0.0007305433391593397
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4311842918395996,
+        0.33553338050842285,
+        -0.5518837571144104
+      ],
+      "cumulativeTravelMeters" : 0.03911947086453438,
+      "displacementFromStartMeters" : [
+        0.020320236682891846,
+        0.005398975219577551,
+        0.025096893310546875
+      ],
+      "sourceFrameIndex" : 28,
+      "sourceTimeSeconds" : 0.02800000086426735
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.03497878462076187,
+        0.005102199502289295,
+        0.0001786563079804182
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4726661443710327,
+        0.31888824701309204,
+        -0.6182420253753662
+      ],
+      "cumulativeTravelMeters" : 0.04068965092301369,
+      "displacementFromStartMeters" : [
+        0.02175142616033554,
+        0.00573451304808259,
+        0.024545006453990936
+      ],
+      "sourceFrameIndex" : 29,
+      "sourceTimeSeconds" : 0.028999999165534973
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.033506181091070175,
+        0.005421086680144072,
+        -0.0004395825380925089
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5059483051300049,
+        0.3045872151851654,
+        -0.6716324090957642
+      ],
+      "cumulativeTravelMeters" : 0.04231829196214676,
+      "displacementFromStartMeters" : [
+        0.023224029690027237,
+        0.0060534002259373665,
+        0.023926768451929092
+      ],
+      "sourceFrameIndex" : 30,
+      "sourceTimeSeconds" : 0.029999999329447746
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.03200023993849754,
+        0.005725682247430086,
+        -0.0011112237116321921
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5307585000991821,
+        0.2936931252479553,
+        -0.7120623588562012
+      ],
+      "cumulativeTravelMeters" : 0.04399511590600014,
+      "displacementFromStartMeters" : [
+        0.02472997084259987,
+        0.006357995793223381,
+        0.023255126550793648
+      ],
+      "sourceFrameIndex" : 31,
+      "sourceTimeSeconds" : 0.03099999949336052
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.030469464138150215,
+        0.006019365042448044,
+        -0.0018232803558930755
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5471878051757812,
+        0.28700971603393555,
+        -0.7398843169212341
+      ],
+      "cumulativeTravelMeters" : 0.045708753168582916,
+      "displacementFromStartMeters" : [
+        0.026260746642947197,
+        0.006651678588241339,
+        0.02254307083785534
+      ],
+      "sourceFrameIndex" : 32,
+      "sourceTimeSeconds" : 0.03200000151991844
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.02892228402197361,
+        0.006306374445557594,
+        -0.002563163172453642
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5556256771087646,
+        0.28503939509391785,
+        -0.7557395100593567
+      ],
+      "cumulativeTravelMeters" : 0.04744759574532509,
+      "displacementFromStartMeters" : [
+        0.027807926759123802,
+        0.006938687991350889,
+        0.02180318720638752
+      ],
+      "sourceFrameIndex" : 33,
+      "sourceTimeSeconds" : 0.032999999821186066
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.027366656810045242,
+        0.006591422017663717,
+        -0.003318900940939784
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5568017959594727,
+        0.287992388010025,
+        -0.7605452537536621
+      ],
+      "cumulativeTravelMeters" : 0.04920041188597679,
+      "displacementFromStartMeters" : [
+        0.02936355397105217,
+        0.007223735563457012,
+        0.021047450602054596
+      ],
+      "sourceFrameIndex" : 34,
+      "sourceTimeSeconds" : 0.03400000184774399
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.025809863582253456,
+        0.006879414431750774,
+        -0.0040794480592012405
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.551626205444336,
+        0.2957919239997864,
+        -0.7553985714912415
+      ],
+      "cumulativeTravelMeters" : 0.05095682293176651,
+      "displacementFromStartMeters" : [
+        0.030920347198843956,
+        0.007511727977544069,
+        0.02028690278530121
+      ],
+      "sourceFrameIndex" : 35,
+      "sourceTimeSeconds" : 0.03500000014901161
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.024258241057395935,
+        0.007175198290497065,
+        -0.004834858234971762
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5411896705627441,
+        0.3081318736076355,
+        -0.7415429353713989
+      ],
+      "cumulativeTravelMeters" : 0.0527077279984951,
+      "displacementFromStartMeters" : [
+        0.03247196972370148,
+        0.0078075118362903595,
+        0.0195314921438694
+      ],
+      "sourceFrameIndex" : 36,
+      "sourceTimeSeconds" : 0.035999998450279236
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.022717008367180824,
+        0.007483331952244043,
+        -0.005576389376074076
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5266538858413696,
+        0.3245469331741333,
+        -0.7203037142753601
+      ],
+      "cumulativeTravelMeters" : 0.05444560572504997,
+      "displacementFromStartMeters" : [
+        0.03401320427656174,
+        0.008115645498037338,
+        0.01878996193408966
+      ],
+      "sourceFrameIndex" : 37,
+      "sourceTimeSeconds" : 0.03700000047683716
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.02119039185345173,
+        0.007807882037013769,
+        -0.006296693813055754
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5091475248336792,
+        0.34445181488990784,
+        -0.6930252313613892
+      ],
+      "cumulativeTravelMeters" : 0.056164536625146866,
+      "displacementFromStartMeters" : [
+        0.03553982079029083,
+        0.008440195582807064,
+        0.018069656565785408
+      ],
+      "sourceFrameIndex" : 38,
+      "sourceTimeSeconds" : 0.03799999877810478
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.019681232050061226,
+        0.008152324706315994,
+        -0.006989723537117243
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4897938966751099,
+        0.3672003149986267,
+        -0.6610869765281677
+      ],
+      "cumulativeTravelMeters" : 0.05786056071519852,
+      "displacementFromStartMeters" : [
+        0.037048980593681335,
+        0.008784637786448002,
+        0.017376627773046494
+      ],
+      "sourceFrameIndex" : 39,
+      "sourceTimeSeconds" : 0.039000000804662704
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.018191421404480934,
+        0.008519530296325684,
+        -0.007650804705917835
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.469579815864563,
+        0.3920927047729492,
+        -0.6258388161659241
+      ],
+      "cumulativeTravelMeters" : 0.059531308710575104,
+      "displacementFromStartMeters" : [
+        0.03853879123926163,
+        0.009151843376457691,
+        0.01671554520726204
+      ],
+      "sourceFrameIndex" : 40,
+      "sourceTimeSeconds" : 0.03999999910593033
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.016721850261092186,
+        0.008911633864045143,
+        -0.008276646956801414
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4494364261627197,
+        0.4184108376502991,
+        -0.5886132717132568
+      ],
+      "cumulativeTravelMeters" : 0.06117601692676544,
+      "displacementFromStartMeters" : [
+        0.04000835865736008,
+        0.00954394694417715,
+        0.016089703887701035
+      ],
+      "sourceFrameIndex" : 41,
+      "sourceTimeSeconds" : 0.04100000113248825
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.015272395685315132,
+        0.00933004729449749,
+        -0.008865263313055038
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4301128387451172,
+        0.44541287422180176,
+        -0.5506467223167419
+      ],
+      "cumulativeTravelMeters" : 0.06279541552066803,
+      "displacementFromStartMeters" : [
+        0.04145781695842743,
+        0.009962360374629498,
+        0.01550108753144741
+      ],
+      "sourceFrameIndex" : 42,
+      "sourceTimeSeconds" : 0.041999999433755875
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.013842281885445118,
+        0.009775460697710514,
+        -0.009415902197360992
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.412258267402649,
+        0.47236740589141846,
+        -0.5130741000175476
+      ],
+      "cumulativeTravelMeters" : 0.06439129263162613,
+      "displacementFromStartMeters" : [
+        0.04288792982697487,
+        0.010407773777842522,
+        0.014950448647141457
+      ],
+      "sourceFrameIndex" : 43,
+      "sourceTimeSeconds" : 0.0430000014603138
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.012430040165781975,
+        0.010247819125652313,
+        -0.009928984567523003
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.396334171295166,
+        0.49854186177253723,
+        -0.47685185074806213
+      ],
+      "cumulativeTravelMeters" : 0.06596634536981583,
+      "displacementFromStartMeters" : [
+        0.04430016875267029,
+        0.01088013220578432,
+        0.014437366276979446
+      ],
+      "sourceFrameIndex" : 44,
+      "sourceTimeSeconds" : 0.04399999976158142
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.011033713817596436,
+        0.010746367275714874,
+        -0.01040584035217762
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3826922178268433,
+        0.5232442617416382,
+        -0.44275903701782227
+      ],
+      "cumulativeTravelMeters" : 0.06752379983663559,
+      "displacementFromStartMeters" : [
+        0.04569649696350098,
+        0.011378680355846882,
+        0.013960510492324829
+      ],
+      "sourceFrameIndex" : 45,
+      "sourceTimeSeconds" : 0.04500000178813934
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.009651031345129013,
+        0.011269606649875641,
+        -0.010848586447536945
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3715007305145264,
+        0.5458167791366577,
+        -0.41134113073349
+      ],
+      "cumulativeTravelMeters" : 0.06906704604625702,
+      "displacementFromStartMeters" : [
+        0.0470791794359684,
+        0.011901919730007648,
+        0.013517764396965504
+      ],
+      "sourceFrameIndex" : 46,
+      "sourceTimeSeconds" : 0.04600000008940697
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.00827950518578291,
+        0.011815412901341915,
+        -0.01125991903245449
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3628110885620117,
+        0.5656732320785522,
+        -0.3829164505004883
+      ],
+      "cumulativeTravelMeters" : 0.07059942185878754,
+      "displacementFromStartMeters" : [
+        0.04845070466399193,
+        0.012447725981473923,
+        0.013106431812047958
+      ],
+      "sourceFrameIndex" : 47,
+      "sourceTimeSeconds" : 0.04699999839067459
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.006916714832186699,
+        0.012381098233163357,
+        -0.011642856523394585
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3565714359283447,
+        0.5823155641555786,
+        -0.3575762212276459
+      ],
+      "cumulativeTravelMeters" : 0.07212383300065994,
+      "displacementFromStartMeters" : [
+        0.049813494086265564,
+        0.013013411313295364,
+        0.012723494321107864
+      ],
+      "sourceFrameIndex" : 48,
+      "sourceTimeSeconds" : 0.04800000041723251
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.005560126155614853,
+        0.01296340674161911,
+        -0.012000438757240772
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3526006937026978,
+        0.5953295826911926,
+        -0.3351826071739197
+      ],
+      "cumulativeTravelMeters" : 0.0736428052186966,
+      "displacementFromStartMeters" : [
+        0.05117008462548256,
+        0.013595719821751118,
+        0.012365912087261677
+      ],
+      "sourceFrameIndex" : 49,
+      "sourceTimeSeconds" : 0.04899999871850014
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.0042075286619365215,
+        0.01355874352157116,
+        -0.012335608713328838
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3507065773010254,
+        0.6044154763221741,
+        -0.31540706753730774
+      ],
+      "cumulativeTravelMeters" : 0.07515815645456314,
+      "displacementFromStartMeters" : [
+        0.0525226816534996,
+        0.014191056601703167,
+        0.01203074213117361
+      ],
+      "sourceFrameIndex" : 50,
+      "sourceTimeSeconds" : 0.05000000074505806
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.0028568238485604525,
+        0.014163143001496792,
+        -0.012651000171899796
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3506196737289429,
+        0.6093491911888123,
+        -0.29773950576782227
+      ],
+      "cumulativeTravelMeters" : 0.07667116075754166,
+      "displacementFromStartMeters" : [
+        0.05387338623404503,
+        0.0147954560816288,
+        0.011715350672602654
+      ],
+      "sourceFrameIndex" : 51,
+      "sourceTimeSeconds" : 0.050999999046325684
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.001506203319877386,
+        0.014772508293390274,
+        -0.012948762625455856
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.35211181640625,
+        0.6100101470947266,
+        -0.28153476119041443
+      ],
+      "cumulativeTravelMeters" : 0.07818250358104706,
+      "displacementFromStartMeters" : [
+        0.05522400885820389,
+        0.015404821373522282,
+        0.011417588219046593
+      ],
+      "sourceFrameIndex" : 52,
+      "sourceTimeSeconds" : 0.052000001072883606
+    },
+    {
+      "bodyCenterMeters" : [
+        -0.0001540887460578233,
+        0.015382520854473114,
+        -0.013230291195213795
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3549189567565918,
+        0.6063497066497803,
+        -0.26602765917778015
+      ],
+      "cumulativeTravelMeters" : 0.07969233393669128,
+      "displacementFromStartMeters" : [
+        0.05657612159848213,
+        0.016014834865927696,
+        0.011136059649288654
+      ],
+      "sourceFrameIndex" : 53,
+      "sourceTimeSeconds" : 0.05299999937415123
+    },
+    {
+      "bodyCenterMeters" : [
+        0.0012008337071165442,
+        0.01598886400461197,
+        -0.013496311381459236
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3588260412216187,
+        0.5984289050102234,
+        -0.2503945529460907
+      ],
+      "cumulativeTravelMeters" : 0.08120039105415344,
+      "displacementFromStartMeters" : [
+        0.057931043207645416,
+        0.01662117801606655,
+        0.010870039463043213
+      ],
+      "sourceFrameIndex" : 54,
+      "sourceTimeSeconds" : 0.05400000140070915
+    },
+    {
+      "bodyCenterMeters" : [
+        0.002559656510129571,
+        0.016587279736995697,
+        -0.013746709562838078
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.36358642578125,
+        0.586387574672699,
+        -0.23379209637641907
+      ],
+      "cumulativeTravelMeters" : 0.08270611613988876,
+      "displacementFromStartMeters" : [
+        0.05928986892104149,
+        0.01721959374845028,
+        0.010619641281664371
+      ],
+      "sourceFrameIndex" : 55,
+      "sourceTimeSeconds" : 0.054999999701976776
+    },
+    {
+      "bodyCenterMeters" : [
+        0.003923238720744848,
+        0.017173679545521736,
+        -0.013980524614453316
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3690121173858643,
+        0.5704682469367981,
+        -0.21543672680854797
+      ],
+      "cumulativeTravelMeters" : 0.08420874178409576,
+      "displacementFromStartMeters" : [
+        0.0606534481048584,
+        0.01780599355697632,
+        0.010385826230049133
+      ],
+      "sourceFrameIndex" : 56,
+      "sourceTimeSeconds" : 0.0560000017285347
+    },
+    {
+      "bodyCenterMeters" : [
+        0.005292254500091076,
+        0.017744166776537895,
+        -0.014195945113897324
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.374906301498413,
+        0.5509734153747559,
+        -0.19465303421020508
+      ],
+      "cumulativeTravelMeters" : 0.08570743352174759,
+      "displacementFromStartMeters" : [
+        0.06202246621251106,
+        0.018376480787992477,
+        0.010170405730605125
+      ],
+      "sourceFrameIndex" : 57,
+      "sourceTimeSeconds" : 0.05700000002980232
+    },
+    {
+      "bodyCenterMeters" : [
+        0.006667159032076597,
+        0.018295126035809517,
+        -0.014390598982572556
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3811224699020386,
+        0.5282591581344604,
+        -0.17092862725257874
+      ],
+      "cumulativeTravelMeters" : 0.08720135688781738,
+      "displacementFromStartMeters" : [
+        0.0633973702788353,
+        0.0189274400472641,
+        0.009975751861929893
+      ],
+      "sourceFrameIndex" : 58,
+      "sourceTimeSeconds" : 0.057999998331069946
+    },
+    {
+      "bodyCenterMeters" : [
+        0.008048283867537975,
+        0.018823396414518356,
+        -0.014561512507498264
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3875724077224731,
+        0.5027188062667847,
+        -0.14394071698188782
+      ],
+      "cumulativeTravelMeters" : 0.0886899083852768,
+      "displacementFromStartMeters" : [
+        0.06477849185466766,
+        0.01945571042597294,
+        0.009804838337004185
+      ],
+      "sourceFrameIndex" : 59,
+      "sourceTimeSeconds" : 0.05900000035762787
+    },
+    {
+      "bodyCenterMeters" : [
+        0.009435851126909256,
+        0.019326088950037956,
+        -0.01470545120537281
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3941866159439087,
+        0.4747418463230133,
+        -0.11355321854352951
+      ],
+      "cumulativeTravelMeters" : 0.09017273038625717,
+      "displacementFromStartMeters" : [
+        0.06616605818271637,
+        0.01995840296149254,
+        0.009660899639129639
+      ],
+      "sourceFrameIndex" : 60,
+      "sourceTimeSeconds" : 0.05999999865889549
+    },
+    {
+      "bodyCenterMeters" : [
+        0.010830039158463478,
+        0.019800841808319092,
+        -0.014819024130702019
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4009730815887451,
+        0.44472628831863403,
+        -0.07981362193822861
+      ],
+      "cumulativeTravelMeters" : 0.09164990484714508,
+      "displacementFromStartMeters" : [
+        0.06756024807691574,
+        0.020433155819773674,
+        0.00954732671380043
+      ],
+      "sourceFrameIndex" : 61,
+      "sourceTimeSeconds" : 0.061000000685453415
+    },
+    {
+      "bodyCenterMeters" : [
+        0.012231010012328625,
+        0.02024555578827858,
+        -0.014898826368153095
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4079391956329346,
+        0.41305258870124817,
+        -0.042920198291540146
+      ],
+      "cumulativeTravelMeters" : 0.09312193095684052,
+      "displacementFromStartMeters" : [
+        0.06896121799945831,
+        0.020877869799733162,
+        0.009467524476349354
+      ],
+      "sourceFrameIndex" : 62,
+      "sourceTimeSeconds" : 0.06199999898672104
+    },
+    {
+      "bodyCenterMeters" : [
+        0.01363895833492279,
+        0.02065862901508808,
+        -0.014941747300326824
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4151374101638794,
+        0.38012033700942993,
+        -0.0031877171713858843
+      ],
+      "cumulativeTravelMeters" : 0.09458985179662704,
+      "displacementFromStartMeters" : [
+        0.0703691691160202,
+        0.021290943026542664,
+        0.009424603544175625
+      ],
+      "sourceFrameIndex" : 63,
+      "sourceTimeSeconds" : 0.06300000101327896
+    },
+    {
+      "bodyCenterMeters" : [
+        0.015054089017212391,
+        0.021038729697465897,
+        -0.014944924972951412
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4226011037826538,
+        0.3463478088378906,
+        0.038996703922748566
+      ],
+      "cumulativeTravelMeters" : 0.09605514258146286,
+      "displacementFromStartMeters" : [
+        0.07178430259227753,
+        0.02167104370892048,
+        0.009421425871551037
+      ],
+      "sourceFrameIndex" : 64,
+      "sourceTimeSeconds" : 0.06400000303983688
+    },
+    {
+      "bodyCenterMeters" : [
+        0.016476687043905258,
+        0.021385107189416885,
+        -0.01490594632923603
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.430291771888733,
+        0.31217509508132935,
+        0.08321037143468857
+      ],
+      "cumulativeTravelMeters" : 0.09751982241868973,
+      "displacementFromStartMeters" : [
+        0.07320690155029297,
+        0.022017421200871468,
+        0.009460404515266418
+      ],
+      "sourceFrameIndex" : 65,
+      "sourceTimeSeconds" : 0.06499999761581421
+    },
+    {
+      "bodyCenterMeters" : [
+        0.017906982451677322,
+        0.02169726975262165,
+        -0.014822719618678093
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4381887912750244,
+        0.27809667587280273,
+        0.12902748584747314
+      ],
+      "cumulativeTravelMeters" : 0.09898614883422852,
+      "displacementFromStartMeters" : [
+        0.07463718950748444,
+        0.022329583764076233,
+        0.009543631225824356
+      ],
+      "sourceFrameIndex" : 66,
+      "sourceTimeSeconds" : 0.06599999964237213
+    },
+    {
+      "bodyCenterMeters" : [
+        0.01934516429901123,
+        0.02197534777224064,
+        -0.014693685807287693
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4461596012115479,
+        0.24463532865047455,
+        0.17603828012943268
+      ],
+      "cumulativeTravelMeters" : 0.10045664012432098,
+      "displacementFromStartMeters" : [
+        0.07607537508010864,
+        0.02260766178369522,
+        0.009672665037214756
+      ],
+      "sourceFrameIndex" : 67,
+      "sourceTimeSeconds" : 0.06700000166893005
+    },
+    {
+      "bodyCenterMeters" : [
+        0.020791342481970787,
+        0.022219980135560036,
+        -0.014517667703330517
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4540258646011353,
+        0.21236060559749603,
+        0.22386868298053741
+      ],
+      "cumulativeTravelMeters" : 0.10193388909101486,
+      "displacementFromStartMeters" : [
+        0.07752155512571335,
+        0.022852294147014618,
+        0.009848683141171932
+      ],
+      "sourceFrameIndex" : 68,
+      "sourceTimeSeconds" : 0.06800000369548798
+    },
+    {
+      "bodyCenterMeters" : [
+        0.022245360538363457,
+        0.0224323570728302,
+        -0.014293781481683254
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4614800214767456,
+        0.18187525868415833,
+        0.2721816897392273
+      ],
+      "cumulativeTravelMeters" : 0.10342029482126236,
+      "displacementFromStartMeters" : [
+        0.07897557318210602,
+        0.023064671084284782,
+        0.010072569362819195
+      ],
+      "sourceFrameIndex" : 69,
+      "sourceTimeSeconds" : 0.0689999982714653
+    },
+    {
+      "bodyCenterMeters" : [
+        0.023706845939159393,
+        0.02261423133313656,
+        -0.014021597802639008
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4682031869888306,
+        0.15383201837539673,
+        0.3206954598426819
+      ],
+      "cumulativeTravelMeters" : 0.1049179956316948,
+      "displacementFromStartMeters" : [
+        0.0804370567202568,
+        0.02324654534459114,
+        0.010344753041863441
+      ],
+      "sourceFrameIndex" : 70,
+      "sourceTimeSeconds" : 0.07000000029802322
+    },
+    {
+      "bodyCenterMeters" : [
+        0.025175029411911964,
+        0.02276807464659214,
+        -0.013700921088457108
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4737681150436401,
+        0.12890535593032837,
+        0.36916306614875793
+      ],
+      "cumulativeTravelMeters" : 0.10642864555120468,
+      "displacementFromStartMeters" : [
+        0.08190523833036423,
+        0.023400388658046722,
+        0.010665429756045341
+      ],
+      "sourceFrameIndex" : 71,
+      "sourceTimeSeconds" : 0.07100000232458115
+    },
+    {
+      "bodyCenterMeters" : [
+        0.02664879709482193,
+        0.022896965965628624,
+        -0.013331766240298748
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4776614904403687,
+        0.10778409987688065,
+        0.41734805703163147
+      ],
+      "cumulativeTravelMeters" : 0.10795339941978455,
+      "displacementFromStartMeters" : [
+        0.08337900787591934,
+        0.023529279977083206,
+        0.011034584604203701
+      ],
+      "sourceFrameIndex" : 72,
+      "sourceTimeSeconds" : 0.07199999690055847
+    },
+    {
+      "bodyCenterMeters" : [
+        0.028126457706093788,
+        0.02300475724041462,
+        -0.012914403341710567
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.479420781135559,
+        0.09114007651805878,
+        0.4650370478630066
+      ],
+      "cumulativeTravelMeters" : 0.10949265211820602,
+      "displacementFromStartMeters" : [
+        0.08485666662454605,
+        0.0236370712518692,
+        0.011451947502791882
+      ],
+      "sourceFrameIndex" : 73,
+      "sourceTimeSeconds" : 0.0729999989271164
+    },
+    {
+      "bodyCenterMeters" : [
+        0.029605906456708908,
+        0.02309590019285679,
+        -0.012449344620108604
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.478556513786316,
+        0.07955998182296753,
+        0.511982262134552
+      ],
+      "cumulativeTravelMeters" : 0.11104615032672882,
+      "displacementFromStartMeters" : [
+        0.08633612096309662,
+        0.02372821420431137,
+        0.011917006224393845
+      ],
+      "sourceFrameIndex" : 74,
+      "sourceTimeSeconds" : 0.07400000095367432
+    },
+    {
+      "bodyCenterMeters" : [
+        0.0310844574123621,
+        0.02317543886601925,
+        -0.011937392875552177
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4746822118759155,
+        0.0734773799777031,
+        0.5579054951667786
+      ],
+      "cumulativeTravelMeters" : 0.11261284351348877,
+      "displacementFromStartMeters" : [
+        0.08781466633081436,
+        0.02380775287747383,
+        0.012428957968950272
+      ],
+      "sourceFrameIndex" : 75,
+      "sourceTimeSeconds" : 0.07500000298023224
+    },
+    {
+      "bodyCenterMeters" : [
+        0.032559093087911606,
+        0.023248933255672455,
+        -0.011379498057067394
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.467482089996338,
+        0.07310169190168381,
+        0.602449357509613
+      ],
+      "cumulativeTravelMeters" : 0.1141911968588829,
+      "displacementFromStartMeters" : [
+        0.08928930759429932,
+        0.023881247267127037,
+        0.012986852787435055
+      ],
+      "sourceFrameIndex" : 76,
+      "sourceTimeSeconds" : 0.07599999755620956
+    },
+    {
+      "bodyCenterMeters" : [
+        0.0340266190469265,
+        0.02332204580307007,
+        -0.010777023620903492
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4568792581558228,
+        0.07836085557937622,
+        0.6451913714408875
+      ],
+      "cumulativeTravelMeters" : 0.11577926576137543,
+      "displacementFromStartMeters" : [
+        0.09075683355331421,
+        0.02395435981452465,
+        0.013589327223598957
+      ],
+      "sourceFrameIndex" : 77,
+      "sourceTimeSeconds" : 0.07699999958276749
+    },
+    {
+      "bodyCenterMeters" : [
+        0.03548350930213928,
+        0.023400388658046722,
+        -0.010131827555596828
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4429693222045898,
+        0.0888395756483078,
+        0.6855913400650024
+      ],
+      "cumulativeTravelMeters" : 0.11737455427646637,
+      "displacementFromStartMeters" : [
+        0.0922137200832367,
+        0.024032702669501305,
+        0.01423452328890562
+      ],
+      "sourceFrameIndex" : 78,
+      "sourceTimeSeconds" : 0.07800000160932541
+    },
+    {
+      "bodyCenterMeters" : [
+        0.03692646697163582,
+        0.02348923496901989,
+        -0.009446242824196815
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4261242151260376,
+        0.10373502969741821,
+        0.723004162311554
+      ],
+      "cumulativeTravelMeters" : 0.11897456645965576,
+      "displacementFromStartMeters" : [
+        0.09365667402744293,
+        0.024121548980474472,
+        0.014920108020305634
+      ],
+      "sourceFrameIndex" : 79,
+      "sourceTimeSeconds" : 0.07900000363588333
+    },
+    {
+      "bodyCenterMeters" : [
+        0.03835258260369301,
+        0.023592982441186905,
+        -0.00872325524687767
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4069384336471558,
+        0.12183400243520737,
+        0.7566620707511902
+      ],
+      "cumulativeTravelMeters" : 0.12057684361934662,
+      "displacementFromStartMeters" : [
+        0.09508278965950012,
+        0.024225296452641487,
+        0.01564309559762478
+      ],
+      "sourceFrameIndex" : 80,
+      "sourceTimeSeconds" : 0.07999999821186066
+    },
+    {
+      "bodyCenterMeters" : [
+        0.03975951671600342,
+        0.02371479570865631,
+        -0.007966593839228153
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3863389492034912,
+        0.14154335856437683,
+        0.7857488393783569
+      ],
+      "cumulativeTravelMeters" : 0.12217897921800613,
+      "displacementFromStartMeters" : [
+        0.09648972749710083,
+        0.024347109720110893,
+        0.01639975607395172
+      ],
+      "sourceFrameIndex" : 81,
+      "sourceTimeSeconds" : 0.08100000023841858
+    },
+    {
+      "bodyCenterMeters" : [
+        0.04114588350057602,
+        0.023856349289417267,
+        -0.007180832326412201
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3654258251190186,
+        0.16095824539661407,
+        0.8094027042388916
+      ],
+      "cumulativeTravelMeters" : 0.1237788125872612,
+      "displacementFromStartMeters" : [
+        0.09787609428167343,
+        0.02448866330087185,
+        0.017185518518090248
+      ],
+      "sourceFrameIndex" : 82,
+      "sourceTimeSeconds" : 0.0820000022649765
+    },
+    {
+      "bodyCenterMeters" : [
+        0.04251128062605858,
+        0.024017279967665672,
+        -0.006371443625539541
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3454043865203857,
+        0.17799274623394012,
+        0.8267654776573181
+      ],
+      "cumulativeTravelMeters" : 0.1253742128610611,
+      "displacementFromStartMeters" : [
+        0.09924149513244629,
+        0.024649593979120255,
+        0.01799490675330162
+      ],
+      "sourceFrameIndex" : 83,
+      "sourceTimeSeconds" : 0.08299999684095383
+    },
+    {
+      "bodyCenterMeters" : [
+        0.0438566692173481,
+        0.024195291101932526,
+        -0.0055446685291826725
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3275564908981323,
+        0.1905440390110016,
+        0.8371140360832214
+      ],
+      "cumulativeTravelMeters" : 0.12696333229541779,
+      "displacementFromStartMeters" : [
+        0.10058687627315521,
+        0.024827605113387108,
+        0.018821682780981064
+      ],
+      "sourceFrameIndex" : 84,
+      "sourceTimeSeconds" : 0.08399999886751175
+    },
+    {
+      "bodyCenterMeters" : [
+        0.04518427699804306,
+        0.02438582293689251,
+        -0.004707552958279848
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3130518198013306,
+        0.1966460645198822,
+        0.8398678302764893
+      ],
+      "cumulativeTravelMeters" : 0.12854434549808502,
+      "displacementFromStartMeters" : [
+        0.10191448777914047,
+        0.02501813694834709,
+        0.019658798351883888
+      ],
+      "sourceFrameIndex" : 85,
+      "sourceTimeSeconds" : 0.08500000089406967
+    },
+    {
+      "bodyCenterMeters" : [
+        0.04649732634425163,
+        0.024582501500844955,
+        -0.0038676925469189882
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.302904486656189,
+        0.1946161687374115,
+        0.8346867561340332
+      ],
+      "cumulativeTravelMeters" : 0.13011537492275238,
+      "displacementFromStartMeters" : [
+        0.10322754085063934,
+        0.025214815512299538,
+        0.02049865759909153
+      ],
+      "sourceFrameIndex" : 86,
+      "sourceTimeSeconds" : 0.0860000029206276
+    },
+    {
+      "bodyCenterMeters" : [
+        0.047800201922655106,
+        0.02477710135281086,
+        -0.003033001208677888
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.2978615760803223,
+        0.18315674364566803,
+        0.8214704394340515
+      ],
+      "cumulativeTravelMeters" : 0.1316748857498169,
+      "displacementFromStartMeters" : [
+        0.10453040897846222,
+        0.025409415364265442,
+        0.021333349868655205
+      ],
+      "sourceFrameIndex" : 87,
+      "sourceTimeSeconds" : 0.08699999749660492
+    },
+    {
+      "bodyCenterMeters" : [
+        0.04909808188676834,
+        0.02496025152504444,
+        -0.0022115251049399376
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.2984395027160645,
+        0.1614426225423813,
+        0.8004352450370789
+      ],
+      "cumulativeTravelMeters" : 0.13322177529335022,
+      "displacementFromStartMeters" : [
+        0.10582829266786575,
+        0.025592565536499023,
+        0.022154826670885086
+      ],
+      "sourceFrameIndex" : 88,
+      "sourceTimeSeconds" : 0.08799999952316284
+    },
+    {
+      "bodyCenterMeters" : [
+        0.05039651319384575,
+        0.02512170560657978,
+        -0.0014110906049609184
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3048374652862549,
+        0.12914694845676422,
+        0.7720558643341064
+      ],
+      "cumulativeTravelMeters" : 0.13475562632083893,
+      "displacementFromStartMeters" : [
+        0.10712672770023346,
+        0.025754019618034363,
+        0.022955261170864105
+      ],
+      "sourceFrameIndex" : 89,
+      "sourceTimeSeconds" : 0.08900000154972076
+    },
+    {
+      "bodyCenterMeters" : [
+        0.05170135945081711,
+        0.025250818580389023,
+        -0.0006390370544977486
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3169788122177124,
+        0.08644630759954453,
+        0.7370692491531372
+      ],
+      "cumulativeTravelMeters" : 0.13627725839614868,
+      "displacementFromStartMeters" : [
+        0.10843157023191452,
+        0.025883132591843605,
+        0.023727314546704292
+      ],
+      "sourceFrameIndex" : 90,
+      "sourceTimeSeconds" : 0.09000000357627869
+    },
+    {
+      "bodyCenterMeters" : [
+        0.05301830545067787,
+        0.02533729001879692,
+        9.803254943108186e-05
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3344982862472534,
+        0.033989593386650085,
+        0.6963958740234375
+      ],
+      "cumulativeTravelMeters" : 0.13778890669345856,
+      "displacementFromStartMeters" : [
+        0.10974851250648499,
+        0.025969604030251503,
+        0.024464383721351624
+      ],
+      "sourceFrameIndex" : 91,
+      "sourceTimeSeconds" : 0.09099999815225601
+    },
+    {
+      "bodyCenterMeters" : [
+        0.054352857172489166,
+        0.02537127397954464,
+        0.0007944270619191229
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3568682670593262,
+        -0.027139339596033096,
+        0.6511351466178894
+      ],
+      "cumulativeTravelMeters" : 0.1392946094274521,
+      "displacementFromStartMeters" : [
+        0.11108306795358658,
+        0.026003587990999222,
+        0.0251607783138752
+      ],
+      "sourceFrameIndex" : 92,
+      "sourceTimeSeconds" : 0.09200000017881393
+    },
+    {
+      "bodyCenterMeters" : [
+        0.05570969358086586,
+        0.025344105437397957,
+        0.0014455643249675632
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3833380937576294,
+        -0.09547635912895203,
+        0.60247802734375
+      ],
+      "cumulativeTravelMeters" : 0.14079983532428741,
+      "displacementFromStartMeters" : [
+        0.11243990063667297,
+        0.02597641944885254,
+        0.02581191435456276
+      ],
+      "sourceFrameIndex" : 93,
+      "sourceTimeSeconds" : 0.09300000220537186
+    },
+    {
+      "bodyCenterMeters" : [
+        0.05709303542971611,
+        0.0252486951649189,
+        0.002048040274530649
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4129674434661865,
+        -0.1692257672548294,
+        0.5516666769981384
+      ],
+      "cumulativeTravelMeters" : 0.142311692237854,
+      "displacementFromStartMeters" : [
+        0.11382324993610382,
+        0.025881009176373482,
+        0.02641439065337181
+      ],
+      "sourceFrameIndex" : 94,
+      "sourceTimeSeconds" : 0.09399999678134918
+    },
+    {
+      "bodyCenterMeters" : [
+        0.05850599333643913,
+        0.02507944032549858,
+        0.002599705010652542
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4447441101074219,
+        -0.2463286817073822,
+        0.5000057816505432
+      ],
+      "cumulativeTravelMeters" : 0.14383794367313385,
+      "displacementFromStartMeters" : [
+        0.11523620784282684,
+        0.025711754336953163,
+        0.02696605585515499
+      ],
+      "sourceFrameIndex" : 95,
+      "sourceTimeSeconds" : 0.0949999988079071
+    },
+    {
+      "bodyCenterMeters" : [
+        0.05995079129934311,
+        0.024833133444190025,
+        0.0030997134745121002
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4775309562683105,
+        -0.3245246708393097,
+        0.4487806558609009
+      ],
+      "cumulativeTravelMeters" : 0.14538653194904327,
+      "displacementFromStartMeters" : [
+        0.11668100208044052,
+        0.025465447455644608,
+        0.02746606431901455
+      ],
+      "sourceFrameIndex" : 96,
+      "sourceTimeSeconds" : 0.09600000083446503
+    },
+    {
+      "bodyCenterMeters" : [
+        0.06142830848693848,
+        0.024508580565452576,
+        0.003548496402800083
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5101611614227295,
+        -0.4014403820037842,
+        0.39924588799476624
+      ],
+      "cumulativeTravelMeters" : 0.1469644457101822,
+      "displacementFromStartMeters" : [
+        0.11815851926803589,
+        0.025140894576907158,
+        0.027914848178625107
+      ],
+      "sourceFrameIndex" : 97,
+      "sourceTimeSeconds" : 0.09700000286102295
+    },
+    {
+      "bodyCenterMeters" : [
+        0.06293846666812897,
+        0.024107148870825768,
+        0.00394774042069912
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5414297580718994,
+        -0.4746505618095398,
+        0.35256725549697876
+      ],
+      "cumulativeTravelMeters" : 0.1485772430896759,
+      "displacementFromStartMeters" : [
+        0.11966867744922638,
+        0.02473946288228035,
+        0.02831409126520157
+      ],
+      "sourceFrameIndex" : 98,
+      "sourceTimeSeconds" : 0.09799999743700027
+    },
+    {
+      "bodyCenterMeters" : [
+        0.06447991728782654,
+        0.02363249659538269,
+        0.004300304688513279
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5702439546585083,
+        -0.5417859554290771,
+        0.30979523062705994
+      ],
+      "cumulativeTravelMeters" : 0.15022820234298706,
+      "displacementFromStartMeters" : [
+        0.12121012806892395,
+        0.024264810606837273,
+        0.028666656464338303
+      ],
+      "sourceFrameIndex" : 99,
+      "sourceTimeSeconds" : 0.0989999994635582
+    },
+    {
+      "bodyCenterMeters" : [
+        0.06605014204978943,
+        0.023090679198503494,
+        0.0046101040206849575
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5955610275268555,
+        -0.6005649566650391,
+        0.2717812657356262
+      ],
+      "cumulativeTravelMeters" : 0.15191791951656342,
+      "displacementFromStartMeters" : [
+        0.12278035283088684,
+        0.023722993209958076,
+        0.028976455330848694
+      ],
+      "sourceFrameIndex" : 100,
+      "sourceTimeSeconds" : 0.10000000149011612
+    },
+    {
+      "bodyCenterMeters" : [
+        0.06764569133520126,
+        0.022490132600069046,
+        0.0048818825744092464
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.616493582725525,
+        -0.6488739252090454,
+        0.23913313448429108
+      ],
+      "cumulativeTravelMeters" : 0.15364427864551544,
+      "displacementFromStartMeters" : [
+        0.12437590211629868,
+        0.023122446611523628,
+        0.029248233884572983
+      ],
+      "sourceFrameIndex" : 101,
+      "sourceTimeSeconds" : 0.10100000351667404
+    },
+    {
+      "bodyCenterMeters" : [
+        0.06926217675209045,
+        0.0218412596732378,
+        0.005121017340570688
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6322742700576782,
+        -0.6847888231277466,
+        0.21214085817337036
+      ],
+      "cumulativeTravelMeters" : 0.15540246665477753,
+      "displacementFromStartMeters" : [
+        0.12599238753318787,
+        0.022473573684692383,
+        0.02948736771941185
+      ],
+      "sourceFrameIndex" : 102,
+      "sourceTimeSeconds" : 0.10199999809265137
+    },
+    {
+      "bodyCenterMeters" : [
+        0.07089443504810333,
+        0.021156463772058487,
+        0.00533315958455205
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6424013376235962,
+        -0.7066831588745117,
+        0.1907343566417694
+      ],
+      "cumulativeTravelMeters" : 0.15718522667884827,
+      "displacementFromStartMeters" : [
+        0.12762464582920074,
+        0.02178877778351307,
+        0.02969950996339321
+      ],
+      "sourceFrameIndex" : 103,
+      "sourceTimeSeconds" : 0.10300000011920929
+    },
+    {
+      "bodyCenterMeters" : [
+        0.07253673672676086,
+        0.0204498041421175,
+        0.0055238911882042885
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6465301513671875,
+        -0.7132169604301453,
+        0.1744365394115448
+      ],
+      "cumulativeTravelMeters" : 0.1589832603931427,
+      "displacementFromStartMeters" : [
+        0.12926694750785828,
+        0.021082118153572083,
+        0.029890242964029312
+      ],
+      "sourceFrameIndex" : 104,
+      "sourceTimeSeconds" : 0.10400000214576721
+    },
+    {
+      "bodyCenterMeters" : [
+        0.0741833820939064,
+        0.019736584275960922,
+        0.0056983246468007565
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6445132493972778,
+        -0.7033640742301941,
+        0.16235847771167755
+      ],
+      "cumulativeTravelMeters" : 0.16078618168830872,
+      "displacementFromStartMeters" : [
+        0.13091358542442322,
+        0.020368898287415504,
+        0.030064675956964493
+      ],
+      "sourceFrameIndex" : 105,
+      "sourceTimeSeconds" : 0.10499999672174454
+    },
+    {
+      "bodyCenterMeters" : [
+        0.07582790404558182,
+        0.01903322897851467,
+        0.005860686302185059
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6364649534225464,
+        -0.6764928698539734,
+        0.15323148667812347
+      ],
+      "cumulativeTravelMeters" : 0.1625821590423584,
+      "displacementFromStartMeters" : [
+        0.13255810737609863,
+        0.019665542989969254,
+        0.030227037146687508
+      ],
+      "sourceFrameIndex" : 106,
+      "sourceTimeSeconds" : 0.10599999874830246
+    },
+    {
+      "bodyCenterMeters" : [
+        0.07746438682079315,
+        0.018356729298830032,
+        0.006013914477080107
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6226704120635986,
+        -0.6323539614677429,
+        0.145437553524971
+      ],
+      "cumulativeTravelMeters" : 0.16435956954956055,
+      "displacementFromStartMeters" : [
+        0.13419459760189056,
+        0.018989043310284615,
+        0.030380265787243843
+      ],
+      "sourceFrameIndex" : 107,
+      "sourceTimeSeconds" : 0.10700000077486038
+    },
+    {
+      "bodyCenterMeters" : [
+        0.079087033867836,
+        0.01772436872124672,
+        0.006159358192235231
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6036440134048462,
+        -0.5711785554885864,
+        0.13707904517650604
+      ],
+      "cumulativeTravelMeters" : 0.1661071479320526,
+      "displacementFromStartMeters" : [
+        0.1358172446489334,
+        0.0183566827327013,
+        0.030525708571076393
+      ],
+      "sourceFrameIndex" : 108,
+      "sourceTimeSeconds" : 0.1080000028014183
+    },
+    {
+      "bodyCenterMeters" : [
+        0.08069067448377609,
+        0.017153192311525345,
+        0.006296438630670309
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5800749063491821,
+        -0.49371710419654846,
+        0.12604805827140808
+      ],
+      "cumulativeTravelMeters" : 0.16781498491764069,
+      "displacementFromStartMeters" : [
+        0.1374208927154541,
+        0.017785506322979927,
+        0.030662789940834045
+      ],
+      "sourceFrameIndex" : 109,
+      "sourceTimeSeconds" : 0.10899999737739563
+    },
+    {
+      "bodyCenterMeters" : [
+        0.08227077126502991,
+        0.016659459099173546,
+        0.0064224861562252045
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.552931308746338,
+        -0.4013385474681854,
+        0.11012732982635498
+      ],
+      "cumulativeTravelMeters" : 0.16947521269321442,
+      "displacementFromStartMeters" : [
+        0.13900098204612732,
+        0.017291773110628128,
+        0.030788837000727654
+      ],
+      "sourceFrameIndex" : 110,
+      "sourceTimeSeconds" : 0.10999999940395355
+    },
+    {
+      "bodyCenterMeters" : [
+        0.08382359147071838,
+        0.016258135437965393,
+        0.006532609928399324
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5233455896377563,
+        -0.2960156202316284,
+        0.08708154410123825
+      ],
+      "cumulativeTravelMeters" : 0.17108282446861267,
+      "displacementFromStartMeters" : [
+        0.1405538022518158,
+        0.016890449449419975,
+        0.030898960307240486
+      ],
+      "sourceFrameIndex" : 111,
+      "sourceTimeSeconds" : 0.11100000143051147
+    },
+    {
+      "bodyCenterMeters" : [
+        0.08534702658653259,
+        0.015962129458785057,
+        0.006619694642722607
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4926196336746216,
+        -0.18029114603996277,
+        0.05477876216173172
+      ],
+      "cumulativeTravelMeters" : 0.1726371943950653,
+      "displacementFromStartMeters" : [
+        0.14207723736763,
+        0.01659444347023964,
+        0.03098604455590248
+      ],
+      "sourceFrameIndex" : 112,
+      "sourceTimeSeconds" : 0.1120000034570694
+    },
+    {
+      "bodyCenterMeters" : [
+        0.08683963865041733,
+        0.015781832858920097,
+        0.00667447317391634
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4620964527130127,
+        -0.05713792145252228,
+        0.011320355348289013
+      ],
+      "cumulativeTravelMeters" : 0.17414166033267975,
+      "displacementFromStartMeters" : [
+        0.14356985688209534,
+        0.01641414687037468,
+        0.031040824949741364
+      ],
+      "sourceFrameIndex" : 113,
+      "sourceTimeSeconds" : 0.11299999803304672
+    },
+    {
+      "bodyCenterMeters" : [
+        0.08830168098211288,
+        0.01572466269135475,
+        0.00668579014018178
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4331996440887451,
+        0.07017244398593903,
+        -0.04482894763350487
+      ],
+      "cumulativeTravelMeters" : 0.17560486495494843,
+      "displacementFromStartMeters" : [
+        0.1450318992137909,
+        0.016356976702809334,
+        0.03105214051902294
+      ],
+      "sourceFrameIndex" : 114,
+      "sourceTimeSeconds" : 0.11400000005960464
+    },
+    {
+      "bodyCenterMeters" : [
+        0.08973497152328491,
+        0.015794876962900162,
+        0.006640964653342962
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4072412252426147,
+        0.19826620817184448,
+        -0.11471880972385406
+      ],
+      "cumulativeTravelMeters" : 0.17704057693481445,
+      "displacementFromStartMeters" : [
+        0.14646518230438232,
+        0.016427190974354744,
+        0.0310073159635067
+      ],
+      "sourceFrameIndex" : 115,
+      "sourceTimeSeconds" : 0.11500000208616257
+    },
+    {
+      "bodyCenterMeters" : [
+        0.09114215523004532,
+        0.0159931480884552,
+        0.006526241544634104
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3853332996368408,
+        0.32383131980895996,
+        -0.19880498945713043
+      ],
+      "cumulativeTravelMeters" : 0.1784662902355194,
+      "displacementFromStartMeters" : [
+        0.14787235856056213,
+        0.016625462099909782,
+        0.030892591923475266
+      ],
+      "sourceFrameIndex" : 116,
+      "sourceTimeSeconds" : 0.11599999666213989
+    },
+    {
+      "bodyCenterMeters" : [
+        0.09252748638391495,
+        0.016316981986165047,
+        0.006327439099550247
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3684096336364746,
+        0.4438394010066986,
+        -0.29688507318496704
+      ],
+      "cumulativeTravelMeters" : 0.1799027919769287,
+      "displacementFromStartMeters" : [
+        0.14925768971443176,
+        0.01694929599761963,
+        0.030693789944052696
+      ],
+      "sourceFrameIndex" : 117,
+      "sourceTimeSeconds" : 0.11699999868869781
+    },
+    {
+      "bodyCenterMeters" : [
+        0.09389590471982956,
+        0.016760796308517456,
+        0.006030555814504623
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3570221662521362,
+        0.5557200312614441,
+        -0.4080522954463959
+      ],
+      "cumulativeTravelMeters" : 0.18137168884277344,
+      "displacementFromStartMeters" : [
+        0.15062612295150757,
+        0.01739311031997204,
+        0.030396906659007072
+      ],
+      "sourceFrameIndex" : 118,
+      "sourceTimeSeconds" : 0.11800000071525574
+    },
+    {
+      "bodyCenterMeters" : [
+        0.09525295346975327,
+        0.017316531389951706,
+        0.005622499622404575
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3513566255569458,
+        0.6575371623039246,
+        -0.5307108163833618
+      ],
+      "cumulativeTravelMeters" : 0.18289384245872498,
+      "displacementFromStartMeters" : [
+        0.15198317170143127,
+        0.017948845401406288,
+        0.0299888513982296
+      ],
+      "sourceFrameIndex" : 119,
+      "sourceTimeSeconds" : 0.11900000274181366
+    },
+    {
+      "bodyCenterMeters" : [
+        0.09660433977842331,
+        0.017974060028791428,
+        0.00509179150685668
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3511550426483154,
+        0.7480509877204895,
+        -0.6626145839691162
+      ],
+      "cumulativeTravelMeters" : 0.18448765575885773,
+      "displacementFromStartMeters" : [
+        0.15333455801010132,
+        0.01860637404024601,
+        0.029458142817020416
+      ],
+      "sourceFrameIndex" : 120,
+      "sourceTimeSeconds" : 0.11999999731779099
+    },
+    {
+      "bodyCenterMeters" : [
+        0.09795545786619186,
+        0.01872212253510952,
+        0.004429176449775696
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.35586416721344,
+        0.8267602324485779,
+        -0.8010286092758179
+      ],
+      "cumulativeTravelMeters" : 0.18616817891597748,
+      "displacementFromStartMeters" : [
+        0.15468567609786987,
+        0.019354436546564102,
+        0.028795527294278145
+      ],
+      "sourceFrameIndex" : 121,
+      "sourceTimeSeconds" : 0.12099999934434891
+    },
+    {
+      "bodyCenterMeters" : [
+        0.09931133687496185,
+        0.019548894837498665,
+        0.0036281428765505552
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.364583969116211,
+        0.8938051462173462,
+        -0.9428514242172241
+      ],
+      "cumulativeTravelMeters" : 0.1879468411207199,
+      "displacementFromStartMeters" : [
+        0.15604154765605927,
+        0.020181208848953247,
+        0.027994493022561073
+      ],
+      "sourceFrameIndex" : 122,
+      "sourceTimeSeconds" : 0.12200000137090683
+    },
+    {
+      "bodyCenterMeters" : [
+        0.10067598521709442,
+        0.020442675799131393,
+        0.0026852961163967848
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3762319087982178,
+        0.9499359130859375,
+        -1.0848139524459839
+      ],
+      "cumulativeTravelMeters" : 0.18983100354671478,
+      "displacementFromStartMeters" : [
+        0.15740619599819183,
+        0.021074989810585976,
+        0.027051646262407303
+      ],
+      "sourceFrameIndex" : 123,
+      "sourceTimeSeconds" : 0.12300000339746475
+    },
+    {
+      "bodyCenterMeters" : [
+        0.10205207765102386,
+        0.02139262855052948,
+        0.0016004838980734348
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.3895604610443115,
+        0.9963458776473999,
+        -1.2236307859420776
+      ],
+      "cumulativeTravelMeters" : 0.19182421267032623,
+      "displacementFromStartMeters" : [
+        0.15878228843212128,
+        0.022024942561984062,
+        0.025966834276914597
+      ],
+      "sourceFrameIndex" : 124,
+      "sourceTimeSeconds" : 0.12399999797344208
+    },
+    {
+      "bodyCenterMeters" : [
+        0.10344168543815613,
+        0.022388946264982224,
+        0.00037684731069020927
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4033993482589722,
+        1.0345864295959473,
+        -1.3562517166137695
+      ],
+      "cumulativeTravelMeters" : 0.19392681121826172,
+      "displacementFromStartMeters" : [
+        0.16017189621925354,
+        0.023021260276436806,
+        0.024743197485804558
+      ],
+      "sourceFrameIndex" : 125,
+      "sourceTimeSeconds" : 0.125
+    },
+    {
+      "bodyCenterMeters" : [
+        0.10484512895345688,
+        0.023423539474606514,
+        -0.000979393720626831
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4166522026062012,
+        1.0663279294967651,
+        -1.4799377918243408
+      ],
+      "cumulativeTravelMeters" : 0.1961357593536377,
+      "displacementFromStartMeters" : [
+        0.1615753471851349,
+        0.024055853486061096,
+        0.023386957123875618
+      ],
+      "sourceFrameIndex" : 126,
+      "sourceTimeSeconds" : 0.12600000202655792
+    },
+    {
+      "bodyCenterMeters" : [
+        0.10626158863306046,
+        0.024489864706993103,
+        -0.0024593474809080362
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4284504652023315,
+        1.0932321548461914,
+        -1.5923901796340942
+      ],
+      "cumulativeTravelMeters" : 0.19844523072242737,
+      "displacementFromStartMeters" : [
+        0.16299179196357727,
+        0.025122178718447685,
+        0.021907003596425056
+      ],
+      "sourceFrameIndex" : 127,
+      "sourceTimeSeconds" : 0.12700000405311584
+    },
+    {
+      "bodyCenterMeters" : [
+        0.1076902523636818,
+        0.02558307722210884,
+        -0.004051737952977419
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4382396936416626,
+        1.1168363094329834,
+        -1.69186270236969
+      ],
+      "cumulativeTravelMeters" : 0.20084771513938904,
+      "displacementFromStartMeters" : [
+        0.1644204556941986,
+        0.026215391233563423,
+        0.020314613357186317
+      ],
+      "sourceFrameIndex" : 128,
+      "sourceTimeSeconds" : 0.12800000607967377
+    },
+    {
+      "bodyCenterMeters" : [
+        0.1091284230351448,
+        0.026699932292103767,
+        -0.0057435790076851845
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4457184076309204,
+        1.1383657455444336,
+        -1.777056097984314
+      ],
+      "cumulativeTravelMeters" : 0.2033332735300064,
+      "displacementFromStartMeters" : [
+        0.16585862636566162,
+        0.02733224630355835,
+        0.01862277090549469
+      ],
+      "sourceFrameIndex" : 129,
+      "sourceTimeSeconds" : 0.1289999932050705
+    },
+    {
+      "bodyCenterMeters" : [
+        0.11057422310113907,
+        0.02783833257853985,
+        -0.007520639803260565
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4510798454284668,
+        1.1588412523269653,
+        -1.8474076986312866
+      ],
+      "cumulativeTravelMeters" : 0.2058914452791214,
+      "displacementFromStartMeters" : [
+        0.16730442643165588,
+        0.02847064658999443,
+        0.016845710575580597
+      ],
+      "sourceFrameIndex" : 130,
+      "sourceTimeSeconds" : 0.12999999523162842
+    },
+    {
+      "bodyCenterMeters" : [
+        0.1120254173874855,
+        0.02899712510406971,
+        -0.009368055500090122
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4547967910766602,
+        1.1788831949234009,
+        -1.9028054475784302
+      ],
+      "cumulativeTravelMeters" : 0.20851093530654907,
+      "displacementFromStartMeters" : [
+        0.16875562071800232,
+        0.029629439115524292,
+        0.014998295344412327
+      ],
+      "sourceFrameIndex" : 131,
+      "sourceTimeSeconds" : 0.13099999725818634
+    },
+    {
+      "bodyCenterMeters" : [
+        0.11348000168800354,
+        0.03017599880695343,
+        -0.0112708555534482
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4576964378356934,
+        1.1988027095794678,
+        -1.943698763847351
+      ],
+      "cumulativeTravelMeters" : 0.2111804336309433,
+      "displacementFromStartMeters" : [
+        0.17021021246910095,
+        0.030808312818408012,
+        0.013095495291054249
+      ],
+      "sourceFrameIndex" : 132,
+      "sourceTimeSeconds" : 0.13199999928474426
+    },
+    {
+      "bodyCenterMeters" : [
+        0.1149376854300499,
+        0.03137481212615967,
+        -0.013214560225605965
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4608771800994873,
+        1.2186187505722046,
+        -1.97099769115448
+      ],
+      "cumulativeTravelMeters" : 0.21388967335224152,
+      "displacementFromStartMeters" : [
+        0.1716679036617279,
+        0.0320071242749691,
+        0.011151790618896484
+      ],
+      "sourceFrameIndex" : 133,
+      "sourceTimeSeconds" : 0.13300000131130219
+    },
+    {
+      "bodyCenterMeters" : [
+        0.11639853566884995,
+        0.03259344398975372,
+        -0.01518557034432888
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.465640902519226,
+        1.23813796043396,
+        -1.9859966039657593
+      ],
+      "cumulativeTravelMeters" : 0.2166290283203125,
+      "displacementFromStartMeters" : [
+        0.17312875390052795,
+        0.033225756138563156,
+        0.009180780500173569
+      ],
+      "sourceFrameIndex" : 134,
+      "sourceTimeSeconds" : 0.1340000033378601
+    },
+    {
+      "bodyCenterMeters" : [
+        0.11786431819200516,
+        0.033831603825092316,
+        -0.01717153936624527
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4733595848083496,
+        1.2570445537567139,
+        -1.9902514219284058
+      ],
+      "cumulativeTravelMeters" : 0.21939048171043396,
+      "displacementFromStartMeters" : [
+        0.17459452152252197,
+        0.03446391597390175,
+        0.007194811478257179
+      ],
+      "sourceFrameIndex" : 135,
+      "sourceTimeSeconds" : 0.13500000536441803
+    },
+    {
+      "bodyCenterMeters" : [
+        0.11933756619691849,
+        0.0350886769592762,
+        -0.01916179619729519
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.4853971004486084,
+        1.275003433227539,
+        -1.985471248626709
+      ],
+      "cumulativeTravelMeters" : 0.2221674919128418,
+      "displacementFromStartMeters" : [
+        0.1760677695274353,
+        0.03572098910808563,
+        0.00520455464720726
+      ],
+      "sourceFrameIndex" : 136,
+      "sourceTimeSeconds" : 0.13600000739097595
+    },
+    {
+      "bodyCenterMeters" : [
+        0.12082289904356003,
+        0.03636360913515091,
+        -0.021147266030311584
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5028830766677856,
+        1.2916303873062134,
+        -1.973249077796936
+      ],
+      "cumulativeTravelMeters" : 0.22495563328266144,
+      "displacementFromStartMeters" : [
+        0.17755311727523804,
+        0.03699592128396034,
+        0.0032190848141908646
+      ],
+      "sourceFrameIndex" : 137,
+      "sourceTimeSeconds" : 0.13699999451637268
+    },
+    {
+      "bodyCenterMeters" : [
+        0.12232586741447449,
+        0.03765526041388512,
+        -0.02312052808701992
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5267908573150635,
+        1.306748390197754,
+        -1.955237627029419
+      ],
+      "cumulativeTravelMeters" : 0.22775223851203918,
+      "displacementFromStartMeters" : [
+        0.1790560781955719,
+        0.03828757256269455,
+        0.0012458227574825287
+      ],
+      "sourceFrameIndex" : 138,
+      "sourceTimeSeconds" : 0.1379999965429306
+    },
+    {
+      "bodyCenterMeters" : [
+        0.12385258823633194,
+        0.03896200656890869,
+        -0.02507578395307064
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5576250553131104,
+        1.3202061653137207,
+        -1.932769536972046
+      ],
+      "cumulativeTravelMeters" : 0.23055607080459595,
+      "displacementFromStartMeters" : [
+        0.18058279156684875,
+        0.039594318717718124,
+        -0.0007094331085681915
+      ],
+      "sourceFrameIndex" : 139,
+      "sourceTimeSeconds" : 0.13899999856948853
+    },
+    {
+      "bodyCenterMeters" : [
+        0.12541022896766663,
+        0.040282219648361206,
+        -0.027008529752492905
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.5953963994979858,
+        1.3320143222808838,
+        -1.9069712162017822
+      ],
+      "cumulativeTravelMeters" : 0.23336760699748993,
+      "displacementFromStartMeters" : [
+        0.18214043974876404,
+        0.04091453179717064,
+        -0.0026421789079904556
+      ],
+      "sourceFrameIndex" : 140,
+      "sourceTimeSeconds" : 0.14000000059604645
+    },
+    {
+      "bodyCenterMeters" : [
+        0.12700563669204712,
+        0.04161422327160835,
+        -0.02891550585627556
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.6395080089569092,
+        1.3423044681549072,
+        -1.8787344694137573
+      ],
+      "cumulativeTravelMeters" : 0.23618826270103455,
+      "displacementFromStartMeters" : [
+        0.18373584747314453,
+        0.042246535420417786,
+        -0.0045491550117731094
+      ],
+      "sourceFrameIndex" : 141,
+      "sourceTimeSeconds" : 0.14100000262260437
+    },
+    {
+      "bodyCenterMeters" : [
+        0.1286451816558838,
+        0.042956553399562836,
+        -0.030794253572821617
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.68863844871521,
+        1.3513262271881104,
+        -1.848760962486267
+      ],
+      "cumulativeTravelMeters" : 0.23902016878128052,
+      "displacementFromStartMeters" : [
+        0.1853753924369812,
+        0.04358886554837227,
+        -0.006427902728319168
+      ],
+      "sourceFrameIndex" : 142,
+      "sourceTimeSeconds" : 0.1420000046491623
+    },
+    {
+      "bodyCenterMeters" : [
+        0.13033391535282135,
+        0.0443078838288784,
+        -0.032643016427755356
+      ],
+      "bodyVelocityMetersPerSecond" : [
+        1.68863844871521,
+        1.3513262271881104,
+        -1.848760962486267
+      ],
+      "cumulativeTravelMeters" : 0.24186548590660095,
+      "displacementFromStartMeters" : [
+        0.18706412613391876,
+        0.044940195977687836,
+        -0.008276665583252907
+      ],
+      "sourceFrameIndex" : 143,
+      "sourceTimeSeconds" : 0.14300000667572021
+    }
+  ],
   "claimBoundary" : "This is prescribed-motion CFD over the measured-derived Deetjen surface sequence. The right wing remains a bilateral reconstruction and the D8 engineering viscosity exceeds the source condition. The body does not respond to computed loads, so this is not a free-flight prediction or experimental-agreement claim.",
   "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
   "endBodyCenterMeters" : [
@@ -11,13 +2893,13 @@
   "fullSourceTimelineCompleted" : true,
   "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
   "meanMeasuredDerivedBodyVelocityMetersPerSecond" : [
-    1.3081406354904175,
-    0.314267098903656,
-    -0.057878777384757996
+    1.3081406811268361,
+    0.314267099023057,
+    -0.057878777600492176
   ],
   "measuredDerivedBodyDisplacementMeters" : [
     0.18706412613391876,
-    0.044940195977687836,
+    0.044940197258256376,
     -0.008276665583252907
   ],
   "measuredDerivedBodyTravelMeters" : 0.24186548590660095,
@@ -92,7 +2974,7 @@
     "populationDiagnosticStride" : 16,
     "recordedComparisonSamples" : 187,
     "recordedPopulationDiagnosticSamples" : 286,
-    "runtimeSeconds" : 15.573374032974243,
+    "runtimeSeconds" : 9.07962691783905,
     "sampledPopulationPositivityPassed" : true,
     "samples" : [
       {
@@ -5336,7 +8218,7 @@
     "scientificVerdict" : "The viscosity-floor coarse pilot completed the phase-locked measured-motion Metal path with finite positive sampled populations and all four surface components present."
   },
   "prescribedMotion" : true,
-  "schemaVersion" : 1,
+  "schemaVersion" : 2,
   "scientificVerdict" : "The complete non-periodic 143 ms Deetjen source sequence advanced through the Metal moving-boundary solver with its measured-derived body translation intact.",
   "sourceDurationSeconds" : 0.14300000667572021,
   "sourceEndTimeSeconds" : 0.14300000667572021,
