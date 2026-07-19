@@ -1,0 +1,44 @@
+{
+  "analysisEndConvectiveTimeInclusive": 60.0,
+  "analysisStartConvectiveTimeInclusive": 10.0,
+  "blockConstruction": "start at convective time 10 and retain consecutive full low-mode periods whose upper edge does not exceed 30; compute time-weighted drag means by piecewise-linear trapezoidal integration",
+  "claimBoundary": "This duration extension can determine whether the identified D=8 low wake mode yields a stable complete-period mean-drag statistic. It cannot establish spatial convergence, validate D20, promote RR3 into bird replay, establish experimental agreement, or support a biological claim.",
+  "classificationRule": "Apply the unchanged multimode V1 low-mode, drag-harmonic, split-half, complete-block, confidence, and early/late gates to convective times 10 through 60. A complete pass authorizes D20 planning only. Failure does not change any method, collision, correction, or refinement gate.",
+  "d20PlanningAuthorizedOnPass": true,
+  "detrendingMethod": "ordinary-least-squares constant-plus-linear trend",
+  "dragHarmonicFrequencyBandCyclesPerConvectiveTimeInclusive": [
+    0.24,
+    0.56
+  ],
+  "experimentalAgreementGateApplied": false,
+  "lowModeFrequencyBandCyclesPerConvectiveTimeInclusive": [
+    0.12,
+    0.28
+  ],
+  "maximumDragToTwiceLowModeFrequencyRelativeDifference": 0.3,
+  "maximumFirstHalfSecondHalfBlockMeanRelativeDifference": 0.15,
+  "maximumLowModeSplitHalfFrequencyRelativeDifference": 0.3,
+  "maximumRelative95ConfidenceHalfWidth": 0.15,
+  "minimumCompleteLowModeBlockCount": 3,
+  "minimumLowModeDominantToRunnerUpPowerRatio": 1.5,
+  "numericalSelectionRule": "Run only D=8 from rest through 60 convective times with the same domain, Reynolds number, stationary voxel sphere, RR3 collision, source ledger, force budget, and non-intrusive correction limits. The first 3000 force-vector samples must reproduce the retained thirty-time capture exactly.",
+  "passed": true,
+  "preregistrationIdentifier": "stationary-wall-rr3-d8-multimode-duration-v2",
+  "productionModificationAuthorized": false,
+  "requestedConvectiveTimes": 60,
+  "requestedSteps": 6000,
+  "requiredCapture": "archive native drag, y-force, and z-force coefficients at every step; retain every unchanged numerical and accounting gate",
+  "rr3BirdReplayPromotionAuthorized": false,
+  "runnerUpExclusionBinsAroundPeak": 1,
+  "schemaVersion": 1,
+  "selectedDiameterCells": 8,
+  "shearLayerFrequencyBandCyclesPerConvectiveTimeInclusive": [
+    1.4,
+    2.6
+  ],
+  "sourceMultimodeAnalysisSHA256": "f035f8967144fe538ec82fb5ed8ab88f61a857c1ae1bba253b0b9e0a65b209bd",
+  "sourceMultimodeCaptureSHA256": "09bc1134b61e85820b2dbb76cd6edadf2961a7e036dd861e8524d05f9a8bc6ca",
+  "sourceMultimodePreregistrationSHA256": "89b993a8896338597a628c8c6724a75a221746acee60cee5479587a42e75d88d",
+  "spectralMethod": "direct real-signal Fourier power on the native uniform sample grid; sum y-force and z-force powers to form a rotation-invariant transverse spectrum; refine each band maximum by a three-point parabola in log power",
+  "uncertaintyMethod": "Student-t 95% confidence interval of complete low-mode-period drag means"
+}

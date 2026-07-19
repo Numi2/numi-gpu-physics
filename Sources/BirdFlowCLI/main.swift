@@ -2289,6 +2289,9 @@ private struct TranslatingBodyArguments {
     var geometricLimiterLadder = false
     var recursiveRegularizationLadder = false
     var recursiveRegularizationDuration = false
+    var recursiveRegularizationD8Extension = false
+    var recursiveRegularizationD8Multimode = false
+    var recursiveRegularizationD8MultimodeDuration = false
     var radialLimiterLocalization = false
     var bulkCollisionOperatorAB = false
     var recursiveRegularizationAB = false
@@ -2323,6 +2326,12 @@ private struct TranslatingBodyArguments {
                 recursiveRegularizationLadder = true
             case "--recursive-regularization-duration":
                 recursiveRegularizationDuration = true
+            case "--recursive-regularization-d8-extension":
+                recursiveRegularizationD8Extension = true
+            case "--recursive-regularization-d8-multimode":
+                recursiveRegularizationD8Multimode = true
+            case "--recursive-regularization-d8-multimode-duration":
+                recursiveRegularizationD8MultimodeDuration = true
             case "--radial-limiter-localization":
                 radialLimiterLocalization = true
             case "--bulk-collision-operator-ab":
@@ -2410,6 +2419,21 @@ private struct TranslatingBodyArguments {
                 "--recursive-regularization-duration requires --stationary-wall"
             )
         }
+        if recursiveRegularizationD8Extension && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-d8-extension requires --stationary-wall"
+            )
+        }
+        if recursiveRegularizationD8Multimode && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-d8-multimode requires --stationary-wall"
+            )
+        }
+        if recursiveRegularizationD8MultimodeDuration && !stationaryWall {
+            throw CLIError.invalidArgument(
+                "--recursive-regularization-d8-multimode-duration requires --stationary-wall"
+            )
+        }
         if radialLimiterLocalization && !stationaryWall {
             throw CLIError.invalidArgument(
                 "--radial-limiter-localization requires --stationary-wall"
@@ -2434,6 +2458,9 @@ private struct TranslatingBodyArguments {
             geometricLimiterLadder,
             recursiveRegularizationLadder,
             recursiveRegularizationDuration,
+            recursiveRegularizationD8Extension,
+            recursiveRegularizationD8Multimode,
+            recursiveRegularizationD8MultimodeDuration,
             radialLimiterLocalization,
             bulkCollisionOperatorAB,
             recursiveRegularizationAB,
@@ -2450,6 +2477,9 @@ private struct TranslatingBodyArguments {
             && !geometricLimiterLadder
             && !recursiveRegularizationLadder
             && !recursiveRegularizationDuration
+            && !recursiveRegularizationD8Extension
+            && !recursiveRegularizationD8Multimode
+            && !recursiveRegularizationD8MultimodeDuration
             && !radialLimiterLocalization
             && !bulkCollisionOperatorAB
             && !recursiveRegularizationAB {
@@ -2482,6 +2512,12 @@ private struct TranslatingBodyArguments {
                            Run RR3 through the unchanged D=8/12/16 sphere refinement
       --recursive-regularization-duration
                            Extend only RR3 D=8/12 to ten convective times
+      --recursive-regularization-d8-extension
+                           Extend only RR3 D=8 to thirty convective times
+      --recursive-regularization-d8-multimode
+                           Capture D=8 drag and transverse force through thirty times
+      --recursive-regularization-d8-multimode-duration
+                           Extend D=8 vector-force capture through sixty times
       --radial-limiter-localization
                            Localize D=16 limiter intervention by sphere distance
       --bulk-collision-operator-ab
@@ -7387,6 +7423,87 @@ private func runTranslatingBodyValidation(_ values: [String]) throws {
                 guard report.passed else {
                     throw MetalTranslatingBodyTopologyValidationError.failed(
                         "recursive-regularization duration diagnostic did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.recursiveRegularizationD8Extension {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRecursiveRegularizationD8Extension()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print(
+                        "D=\(report.numericalCase.diameterCells): "
+                            + "steps=\(report.numericalCase.requestedSteps) "
+                            + "tU/D=\(report.numericalCase.completedConvectiveTimes) "
+                            + "Cd_last=\(report.numericalCase.meanDragCoefficientLastConvectiveTime)"
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "recursive-regularization D=8 extension did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.recursiveRegularizationD8Multimode {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRR3D8MultimodeCapture()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print(
+                        "D=\(report.numericalCase.diameterCells): "
+                            + "steps=\(report.numericalCase.requestedSteps) "
+                            + "tU/D=\(report.numericalCase.completedConvectiveTimes) "
+                            + "vector_samples=\(report.numericalCase.samples.count)"
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "recursive-regularization D=8 multimode capture did not complete"
+                    )
+                }
+                return
+            }
+            if arguments.recursiveRegularizationD8MultimodeDuration {
+                let report = try MetalTranslatingBodyTopologyValidator
+                    .runStationaryWallRR3D8MultimodeDurationCapture()
+                if let archivePath = arguments.archivePath {
+                    try writeJSON(report, to: archivePath)
+                }
+                if arguments.json {
+                    try printJSON(report)
+                } else {
+                    print("production_kernel: \(report.productionKernel)")
+                    print("device: \(report.deviceName)")
+                    print("classification: \(report.classification)")
+                    print(
+                        "D=\(report.numericalCase.diameterCells): "
+                            + "steps=\(report.numericalCase.requestedSteps) "
+                            + "tU/D=\(report.numericalCase.completedConvectiveTimes) "
+                            + "vector_samples=\(report.numericalCase.samples.count)"
+                    )
+                    print("passed: \(report.passed)")
+                }
+                guard report.passed else {
+                    throw MetalTranslatingBodyTopologyValidationError.failed(
+                        "recursive-regularization D=8 multimode duration did not complete"
                     )
                 }
                 return

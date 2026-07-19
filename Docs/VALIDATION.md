@@ -1093,12 +1093,43 @@ be reclassified as duration-biased, and D=20 is deferred.
 
 This is an admissible negative result, not a numerical failure: every
 individual physics and accounting gate passes, while the separate scientific
-duration flag remains false. The next gate should extend only D=8 and estimate
-the dominant shedding period plus uncertainty from period-complete block means.
-That avoids treating adjacent one-convective-time samples of an unsteady wake as
-independent steady estimates. The exact report and figure are
+duration flag remains false. The exact report and figure are
 `ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json`
 and `ValidationArtifacts/Figures/stationary-wall-recursive-regularization-duration.svg`.
+
+The resulting D=8 shedding-statistic program is also complete. Its contracts
+were frozen before each corresponding result. V1 analyzes `tU/D=2...10` and
+finds a `2.67`-time Fourier period versus a `0.260`-time autocorrelation period.
+The 30-time extension passes every unchanged numerical gate and reproduces the
+original 1,000-sample prefix exactly, but V2 over `10...30` again disagrees:
+`2.492` versus `0.260`. Both single-period failures are retained; no frequency
+or agreement threshold was moved.
+
+Published sphere-wake evidence instead requires a multimode question at this
+Reynolds number. The preregistered full-force contract archives drag plus both
+transverse coefficients and separates low transverse, drag-harmonic, and
+shear-layer bands. The 30-time vector history identifies `St=0.1499` with a
+`3.062` dominant/runner-up power ratio, exact split-half `St=0.1998`, a drag
+peak at `St=0.4013`, and a descriptive shear-layer-band peak at `St=1.604`.
+Only two full `6.67`-time low-mode blocks fit, so the Student-t confidence gate
+remains unresolved. The separately preregistered 60-time run reproduces every
+one of the first 3,000 drag/Y/Z samples exactly and supplies 11 full blocks.
+Its mean-drag relative 95% confidence half-width drops to `4.394%`, and its
+early/late difference is `1.552%`, but the low peak shifts to `St=0.2318` and
+dominance falls to `1.180` against the frozen `1.5` gate. Thus additional
+duration resolves averaging uncertainty but falsifies a stable single D8 low
+mode. The independent scalar audit reconstructs `19/19` checks for both
+multimode analyses.
+
+D20 remains blocked. The next admissible discriminator is D8 sub-cell
+placement/grid-orientation sensitivity; another duration extension or relaxed
+spectral gate is not justified. The decision artifacts are:
+
+- `ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-period.json`
+- `ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-period-v2.json`
+- `ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-analysis.json`
+- `ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-duration-analysis.json`
+- `ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-audit.json`
 
 Even a passing numerical gate would not supply the missing specimen body,
 mass, left wing, tail, physical feather thickness, pressure, or humidity.

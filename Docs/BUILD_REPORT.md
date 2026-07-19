@@ -315,6 +315,21 @@ Results:
   `cycleDistributedBranchAssociated`. The next allocation is sparse
   matched-phase c16/c20 sampling stratified by branch occupancy, not a narrow
   phase window, second c18 trace, power map, or production edit.
+- The high-Re RR3 D8 duration question is now bounded by retained negative
+  evidence instead of an assumed steady window. V1 and V2 drag-only contracts
+  reject a single period because Fourier selects `2.67/2.492 tU/D` while the
+  biased autocorrelation selects `0.260 tU/D`. A literature-bounded vector-force
+  contract then identifies transverse `St=0.1499`, its drag harmonic
+  `St=0.4013`, and a descriptive `St=1.604` shear-band peak in the 30-time
+  capture, but only two complete low-mode blocks fit. Its preregistered 60-time
+  extension reproduces all first 3,000 drag/Y/Z samples exactly, supplies 11
+  blocks, and reduces the mean-drag relative 95% confidence half-width to
+  `4.394%`; the low peak nevertheless shifts to `St=0.2318` and fails dominance
+  at `1.180 < 1.5`. Both runs pass unchanged positivity, source, force-budget,
+  isolation, and correction gates. An independent scalar implementation passes
+  `19/19` checks for each analysis. D20 and RR3 bird-replay promotion remain
+  blocked; the next admissible discriminator is D8 sub-cell placement/grid
+  sensitivity, not more duration or threshold relaxation.
 
 ## Verification boundary
 

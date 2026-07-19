@@ -1,0 +1,121 @@
+{
+  "analysisEndConvectiveTime": 30,
+  "analysisIdentifier": "stationary-wall-rr3-d8-period-v2",
+  "analysisSampleCount": 2001,
+  "analysisStartConvectiveTime": 10,
+  "autocorrelation": {
+    "peakCorrelation": 0.9543603735609069,
+    "peakLagSamples": 26,
+    "periodConvectiveTimes": 0.2600083018739249
+  },
+  "claimBoundary": "This archive-only gate can identify the dominant D=8 stationary-sphere RR3 shedding period and estimate its mean drag from complete-period blocks over convective times 10 through 30. It cannot establish spatial convergence, validate D20, promote RR3 into flapping or measured-bird replay, establish experimental agreement, or support a biological claim.",
+  "classification": "d8-shedding-period-unresolved",
+  "d20PlanningAuthorized": false,
+  "diameterCells": 8,
+  "experimentalAgreementGateApplied": false,
+  "firstHalfFourier": {
+    "dominantToRunnerUpPowerRatio": 8.753488511938691,
+    "frequencyCyclesPerConvectiveTime": 0.3975258226913266,
+    "peakBinIndex": 4,
+    "peakPower": 20173.776930746368,
+    "periodConvectiveTimes": 2.5155598527658074,
+    "runnerUpPower": 2304.6556699345406,
+    "sampleCount": 1001,
+    "sampleSpacingConvectiveTime": 0.01
+  },
+  "fluidEvolutionExecuted": false,
+  "fourier": {
+    "dominantToRunnerUpPowerRatio": 3.654068174496269,
+    "frequencyCyclesPerConvectiveTime": 0.4013259266756542,
+    "peakBinIndex": 8,
+    "peakPower": 18095.70604859968,
+    "periodConvectiveTimes": 2.4917403375441167,
+    "runnerUpPower": 4952.208110100261,
+    "sampleCount": 2001,
+    "sampleSpacingConvectiveTime": 0.01
+  },
+  "fourierAutocorrelationPeriodRelativeDifference": 0.8956519273070839,
+  "nextAction": "Extend only D=8 before D20 and repeat this unchanged period contract.",
+  "passed": true,
+  "periodCompleteBlocks": {
+    "blockCount": 8,
+    "blocks": [
+      {
+        "endConvectiveTime": 12.491740337544117,
+        "index": 0,
+        "meanDragCoefficient": 1.422131525892117,
+        "startConvectiveTime": 10.0
+      },
+      {
+        "endConvectiveTime": 14.983480675088234,
+        "index": 1,
+        "meanDragCoefficient": 1.174964608601847,
+        "startConvectiveTime": 12.491740337544117
+      },
+      {
+        "endConvectiveTime": 17.47522101263235,
+        "index": 2,
+        "meanDragCoefficient": 1.0930784867722771,
+        "startConvectiveTime": 14.983480675088234
+      },
+      {
+        "endConvectiveTime": 19.966961350176465,
+        "index": 3,
+        "meanDragCoefficient": 1.1639678957837705,
+        "startConvectiveTime": 17.47522101263235
+      },
+      {
+        "endConvectiveTime": 22.458701687720584,
+        "index": 4,
+        "meanDragCoefficient": 1.3559162016776838,
+        "startConvectiveTime": 19.96696135017647
+      },
+      {
+        "endConvectiveTime": 24.9504420252647,
+        "index": 5,
+        "meanDragCoefficient": 1.193669715035338,
+        "startConvectiveTime": 22.458701687720584
+      },
+      {
+        "endConvectiveTime": 27.442182362808815,
+        "index": 6,
+        "meanDragCoefficient": 1.4727887422026626,
+        "startConvectiveTime": 24.9504420252647
+      },
+      {
+        "endConvectiveTime": 29.933922700352934,
+        "index": 7,
+        "meanDragCoefficient": 1.1645430191151356,
+        "startConvectiveTime": 27.44218236280882
+      }
+    ],
+    "confidence95HalfWidth": 0.11757394785729118,
+    "firstHalfMeanDragCoefficient": 1.2135356292625028,
+    "firstHalfSecondHalfRelativeDifference": 0.0641566305149352,
+    "meanDragCoefficient": 1.255132524385104,
+    "relativeConfidence95HalfWidth": 0.09367452884299311,
+    "sampleStandardDeviation": 0.1406128301408273,
+    "secondHalfMeanDragCoefficient": 1.296729419507705,
+    "standardError": 0.049714142857205566,
+    "studentT975": 2.365
+  },
+  "periodCompleteStatisticPassed": false,
+  "periodIdentificationPassed": false,
+  "productionModificationAuthorized": false,
+  "rr3BirdReplayPromotionAuthorized": false,
+  "schemaVersion": 1,
+  "scientificVerdict": "The D=8 archive does not identify one stable dominant shedding period under the frozen Fourier, autocorrelation, and split-half gates.",
+  "secondHalfFourier": {
+    "dominantToRunnerUpPowerRatio": 1.2718670259117895,
+    "frequencyCyclesPerConvectiveTime": 0.2997002997002997,
+    "peakBinIndex": 3,
+    "peakPower": 1454.2716482194214,
+    "periodConvectiveTimes": 3.3366666666666664,
+    "runnerUpPower": 1143.414852804182,
+    "sampleCount": 1001,
+    "sampleSpacingConvectiveTime": 0.01
+  },
+  "sourceExtensionReportSHA256": "e4170ce6bfc3f1d246b1901fdf8dd84e36bd94872acbdd5b950eacb4999e8a5c",
+  "sourcePreregistrationSHA256": "4597e7d725e886a58e44ae2194629d99108711ce0072f093e45bdcc197b70883",
+  "splitHalfPeriodRelativeDifference": 0.24608595821204568
+}

@@ -1,0 +1,55 @@
+{
+  "analysisEndConvectiveTimeInclusive": 30.0,
+  "analysisStartConvectiveTimeInclusive": 10.0,
+  "blockConstruction": "start at convective time 10 and retain consecutive full low-mode periods whose upper edge does not exceed 30; compute time-weighted drag means by piecewise-linear trapezoidal integration",
+  "claimBoundary": "This test can determine whether the D=8 force history resolves the documented low sphere-wake mode separately from a drag harmonic and a higher-frequency band, and can estimate mean drag in complete low-mode blocks. It cannot establish spatial convergence, validate D20, promote RR3 into bird replay, establish experimental agreement, or support a biological claim.",
+  "classificationRule": "Accept the low wake mode only if the rotation-invariant transverse spectrum clears dominance and split-half gates and the drag-band maximum is consistent with twice its frequency. Accept the period-complete drag statistic only if at least three low-mode blocks also clear the unchanged 15% confidence and early/late gates. Report shear-layer-band power as a separate observed or unresolved mode; never force the multimode trace through the failed V1 autocorrelation rule. A complete pass authorizes D20 planning only.",
+  "d20PlanningAuthorizedOnPass": true,
+  "detrendingMethod": "ordinary-least-squares constant-plus-linear trend",
+  "dragHarmonicFrequencyBandCyclesPerConvectiveTimeInclusive": [
+    0.24,
+    0.56
+  ],
+  "experimentalAgreementGateApplied": false,
+  "literatureBasis": [
+    {
+      "citation": "Sakamoto and Haniu, Journal of Fluids Engineering 112 (1990) 386-392",
+      "doi": "10.1115/1.2909415",
+      "lockedObservation": "higher and lower sphere-wake frequency modes coexist for Reynolds numbers from 800 through 15000"
+    },
+    {
+      "citation": "Rodriguez et al., Computers and Fluids 80 (2013) 233-243",
+      "doi": "10.1016/j.compfluid.2012.03.009",
+      "lockedObservation": "Re=10000 references place the low vortex-shedding mode near St=0.195 and the separated-shear-layer mode near St=1.7 to 2.3"
+    }
+  ],
+  "lowModeFrequencyBandCyclesPerConvectiveTimeInclusive": [
+    0.12,
+    0.28
+  ],
+  "maximumDragToTwiceLowModeFrequencyRelativeDifference": 0.3,
+  "maximumFirstHalfSecondHalfBlockMeanRelativeDifference": 0.15,
+  "maximumLowModeSplitHalfFrequencyRelativeDifference": 0.3,
+  "maximumRelative95ConfidenceHalfWidth": 0.15,
+  "minimumCompleteLowModeBlockCount": 3,
+  "minimumLowModeDominantToRunnerUpPowerRatio": 1.5,
+  "passed": true,
+  "preregistrationIdentifier": "stationary-wall-rr3-d8-multimode-v1",
+  "productionModificationAuthorized": false,
+  "requestedConvectiveTimes": 30,
+  "requestedSteps": 3000,
+  "requiredCapture": "archive native drag, y-force, and z-force coefficients at every step; retain every unchanged numerical and accounting gate",
+  "rr3BirdReplayPromotionAuthorized": false,
+  "runnerUpExclusionBinsAroundPeak": 1,
+  "schemaVersion": 1,
+  "selectedDiameterCells": 8,
+  "shearLayerFrequencyBandCyclesPerConvectiveTimeInclusive": [
+    1.4,
+    2.6
+  ],
+  "sourceExtensionReportSHA256": "e4170ce6bfc3f1d246b1901fdf8dd84e36bd94872acbdd5b950eacb4999e8a5c",
+  "sourcePeriodV2PreregistrationSHA256": "4597e7d725e886a58e44ae2194629d99108711ce0072f093e45bdcc197b70883",
+  "sourcePeriodV2ResultSHA256": "4e73e08d12b9df9f81988b86cf4391372c299a18adf907d0c478be5833e20e92",
+  "spectralMethod": "direct real-signal Fourier power on the native uniform sample grid; sum y-force and z-force powers to form a rotation-invariant transverse spectrum; refine each band maximum by a three-point parabola in log power",
+  "uncertaintyMethod": "Student-t 95% confidence interval of complete low-mode-period drag means"
+}

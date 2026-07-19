@@ -535,6 +535,8 @@ public struct MetalStationaryWallGeometricLimiterSample:
     public let convectiveTime: Double
     public let minimumPopulation: Double
     public let dragCoefficient: Double
+    public let transverseForceCoefficientY: Double?
+    public let transverseForceCoefficientZ: Double?
     public let limiterActivationCount: Int
     public let limiterActivationFraction: Double
     public let controlVolumeLimiterActivationFraction: Double
@@ -666,6 +668,45 @@ public struct MetalStationaryWallRecursiveDurationReport:
     public let scientificVerdict: String
     public let runtimeSeconds: Double
     public let diagnosticCompleted: Bool
+    public let passed: Bool
+}
+
+public struct MetalStationaryWallRecursiveD8ExtensionReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let ledgerCaptureKernel: String
+    public let collisionMode: String
+    public let requestedConvectiveTimes: Double
+    public let numericalCase: MetalStationaryWallGeometricLimiterCaseReport
+    public let allIndividualGatesPassed: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let diagnosticCompleted: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let runtimeSeconds: Double
+    public let passed: Bool
+}
+
+public struct MetalStationaryWallRR3D8MultimodeCaptureReport:
+    Codable, Sendable
+{
+    public let schemaVersion: Int
+    public let deviceName: String
+    public let productionKernel: String
+    public let ledgerCaptureKernel: String
+    public let collisionMode: String
+    public let requestedConvectiveTimes: Double
+    public let numericalCase: MetalStationaryWallGeometricLimiterCaseReport
+    public let allIndividualGatesPassed: Bool
+    public let forceVectorSamplesArchived: Bool
+    public let fluidEvolutionExecuted: Bool
+    public let diagnosticCompleted: Bool
+    public let classification: String
+    public let scientificVerdict: String
+    public let runtimeSeconds: Double
     public let passed: Bool
 }
 
@@ -1758,6 +1799,192 @@ public enum MetalTranslatingBodyTopologyValidator {
         )
     }
 
+    public static func runStationaryWallRecursiveRegularizationD8Extension(
+        requestedConvectiveTimes: Double = 30
+    ) throws -> MetalStationaryWallRecursiveD8ExtensionReport {
+        guard requestedConvectiveTimes == 30 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall RR3 D=8 extension is locked to 30 convective times"
+            )
+        }
+        let started = Date()
+        let raw = try runStationaryWallGeometricCollisionLadder(
+            collisionOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            limiterMode:
+                "recursive second-plus-supported-third-order D3Q19 Hermite reconstruction with a convex equilibrium-to-post-collision positivity scale",
+            acceptedClassification: "internal-d8-extension-accepted",
+            rejectedClassification: "internal-d8-extension-not-a-spatial-ladder",
+            acceptedVerdict: "Internal D=8 extension completed.",
+            rejectedVerdict:
+                "The single-resolution D=8 extension is not a spatial ladder.",
+            diameters: [8],
+            requestedConvectiveTimes: requestedConvectiveTimes
+        )
+        guard raw.cases.count == 1 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall RR3 D=8 extension returned the wrong case count"
+            )
+        }
+        let numericalCase = raw.cases[0]
+        let diagnosticCompleted =
+            numericalCase.diameterCells == 8
+            && numericalCase.requestedSteps == 3_000
+            && numericalCase.completedConvectiveTimes >= 30
+            && numericalCase.samples.count == 3_000
+            && numericalCase.passed
+        let classification = diagnosticCompleted
+            ? "stationary-wall-rr3-d8-thirty-convective-times-complete"
+            : "stationary-wall-rr3-d8-extension-invalid"
+        let verdict = diagnosticCompleted
+            ? "The D=8 RR3 stationary-sphere case completed 30 convective times under every unchanged positivity, source-ledger, force-budget, control-volume, and non-intrusive correction gate. Its force history may enter the separately preregistered period-complete analysis."
+            : "The D=8 RR3 extension failed at least one unchanged numerical or accounting gate. Do not analyze its wake period or authorize D20."
+        return MetalStationaryWallRecursiveD8ExtensionReport(
+            schemaVersion: 1,
+            deviceName: raw.deviceName,
+            productionKernel: raw.productionKernel,
+            ledgerCaptureKernel: raw.ledgerCaptureKernel,
+            collisionMode: raw.limiterMode,
+            requestedConvectiveTimes: requestedConvectiveTimes,
+            numericalCase: numericalCase,
+            allIndividualGatesPassed: numericalCase.passed,
+            fluidEvolutionExecuted: true,
+            diagnosticCompleted: diagnosticCompleted,
+            classification: classification,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            passed: diagnosticCompleted
+        )
+    }
+
+    public static func runStationaryWallRR3D8MultimodeCapture(
+        requestedConvectiveTimes: Double = 30
+    ) throws -> MetalStationaryWallRR3D8MultimodeCaptureReport {
+        guard requestedConvectiveTimes == 30 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall RR3 D=8 multimode capture is locked to 30 convective times"
+            )
+        }
+        let started = Date()
+        let raw = try runStationaryWallGeometricCollisionLadder(
+            collisionOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            limiterMode:
+                "recursive second-plus-supported-third-order D3Q19 Hermite reconstruction with a convex equilibrium-to-post-collision positivity scale",
+            acceptedClassification: "internal-d8-multimode-capture-accepted",
+            rejectedClassification: "internal-d8-multimode-capture-not-a-spatial-ladder",
+            acceptedVerdict: "Internal D=8 multimode capture completed.",
+            rejectedVerdict:
+                "The single-resolution D=8 multimode capture is not a spatial ladder.",
+            diameters: [8],
+            requestedConvectiveTimes: requestedConvectiveTimes
+        )
+        guard raw.cases.count == 1 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall RR3 D=8 multimode capture returned the wrong case count"
+            )
+        }
+        let numericalCase = raw.cases[0]
+        let vectorSamplesArchived = numericalCase.samples.count == 3_000
+            && numericalCase.samples.allSatisfy {
+                $0.transverseForceCoefficientY?.isFinite == true
+                    && $0.transverseForceCoefficientZ?.isFinite == true
+            }
+        let diagnosticCompleted =
+            numericalCase.diameterCells == 8
+            && numericalCase.requestedSteps == 3_000
+            && numericalCase.completedConvectiveTimes >= 30
+            && numericalCase.passed
+            && vectorSamplesArchived
+        let classification = diagnosticCompleted
+            ? "stationary-wall-rr3-d8-multimode-force-capture-complete"
+            : "stationary-wall-rr3-d8-multimode-force-capture-invalid"
+        let verdict = diagnosticCompleted
+            ? "The D=8 RR3 stationary-sphere case completed 30 convective times with native drag and both transverse-force coefficients archived under every unchanged numerical gate. The vector history may enter only the separately preregistered multimode analysis."
+            : "The D=8 RR3 multimode capture failed a numerical gate or did not archive every force-vector sample. Do not analyze its modes or authorize D20."
+        return MetalStationaryWallRR3D8MultimodeCaptureReport(
+            schemaVersion: 1,
+            deviceName: raw.deviceName,
+            productionKernel: raw.productionKernel,
+            ledgerCaptureKernel: raw.ledgerCaptureKernel,
+            collisionMode: raw.limiterMode,
+            requestedConvectiveTimes: requestedConvectiveTimes,
+            numericalCase: numericalCase,
+            allIndividualGatesPassed: numericalCase.passed,
+            forceVectorSamplesArchived: vectorSamplesArchived,
+            fluidEvolutionExecuted: true,
+            diagnosticCompleted: diagnosticCompleted,
+            classification: classification,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            passed: diagnosticCompleted
+        )
+    }
+
+    public static func runStationaryWallRR3D8MultimodeDurationCapture(
+        requestedConvectiveTimes: Double = 60
+    ) throws -> MetalStationaryWallRR3D8MultimodeCaptureReport {
+        guard requestedConvectiveTimes == 60 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall RR3 D=8 multimode duration is locked to 60 convective times"
+            )
+        }
+        let started = Date()
+        let raw = try runStationaryWallGeometricCollisionLadder(
+            collisionOperator:
+                .positivityPreservingRecursiveRegularizedBGK,
+            limiterMode:
+                "recursive second-plus-supported-third-order D3Q19 Hermite reconstruction with a convex equilibrium-to-post-collision positivity scale",
+            acceptedClassification: "internal-d8-multimode-duration-accepted",
+            rejectedClassification: "internal-d8-multimode-duration-not-a-spatial-ladder",
+            acceptedVerdict: "Internal D=8 multimode duration completed.",
+            rejectedVerdict:
+                "The single-resolution D=8 multimode duration is not a spatial ladder.",
+            diameters: [8],
+            requestedConvectiveTimes: requestedConvectiveTimes
+        )
+        guard raw.cases.count == 1 else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall RR3 D=8 multimode duration returned the wrong case count"
+            )
+        }
+        let numericalCase = raw.cases[0]
+        let vectorSamplesArchived = numericalCase.samples.count == 6_000
+            && numericalCase.samples.allSatisfy {
+                $0.transverseForceCoefficientY?.isFinite == true
+                    && $0.transverseForceCoefficientZ?.isFinite == true
+            }
+        let diagnosticCompleted =
+            numericalCase.diameterCells == 8
+            && numericalCase.requestedSteps == 6_000
+            && numericalCase.completedConvectiveTimes >= 60
+            && numericalCase.passed
+            && vectorSamplesArchived
+        let classification = diagnosticCompleted
+            ? "stationary-wall-rr3-d8-multimode-sixty-time-force-capture-complete"
+            : "stationary-wall-rr3-d8-multimode-sixty-time-force-capture-invalid"
+        let verdict = diagnosticCompleted
+            ? "The D=8 RR3 stationary-sphere case completed 60 convective times with every drag and transverse-force coefficient archived under unchanged numerical gates. The history may enter only the separately preregistered duration analysis."
+            : "The D=8 RR3 multimode duration failed a numerical gate or did not archive every force-vector sample. Do not analyze its statistic or authorize D20."
+        return MetalStationaryWallRR3D8MultimodeCaptureReport(
+            schemaVersion: 1,
+            deviceName: raw.deviceName,
+            productionKernel: raw.productionKernel,
+            ledgerCaptureKernel: raw.ledgerCaptureKernel,
+            collisionMode: raw.limiterMode,
+            requestedConvectiveTimes: requestedConvectiveTimes,
+            numericalCase: numericalCase,
+            allIndividualGatesPassed: numericalCase.passed,
+            forceVectorSamplesArchived: vectorSamplesArchived,
+            fluidEvolutionExecuted: true,
+            diagnosticCompleted: diagnosticCompleted,
+            classification: classification,
+            scientificVerdict: verdict,
+            runtimeSeconds: Date().timeIntervalSince(started),
+            passed: diagnosticCompleted
+        )
+    }
+
     private static func relativeChange(from: Double, to: Double) -> Double {
         abs(to - from) / max(abs(to), 1.0e-30)
     }
@@ -1965,6 +2192,10 @@ public enum MetalTranslatingBodyTopologyValidator {
                             Double(populationMinimum.rawValue),
                         dragCoefficient:
                             Double(step.measuredForce.x) / forceDenominator,
+                        transverseForceCoefficientY:
+                            Double(step.measuredForce.y) / forceDenominator,
+                        transverseForceCoefficientZ:
+                            Double(step.measuredForce.z) / forceDenominator,
                         limiterActivationCount:
                             step.symmetricLimiterActivationCount,
                         limiterActivationFraction:
@@ -2114,12 +2345,18 @@ public enum MetalTranslatingBodyTopologyValidator {
             ))
         }
 
-        let finest = cases[cases.count - 1]
-        let nextFinest = cases[cases.count - 2]
-        let finestTwoDragChange = abs(
-            finest.meanDragCoefficientLastConvectiveTime
-                - nextFinest.meanDragCoefficientLastConvectiveTime
-        ) / max(abs(finest.meanDragCoefficientLastConvectiveTime), 1.0e-30)
+        guard let finest = cases.last else {
+            throw MetalTranslatingBodyTopologyValidationError.failed(
+                "stationary-wall collision ladder produced no cases"
+            )
+        }
+        let nextFinest = cases.dropLast().last
+        let finestTwoDragChange = nextFinest.map {
+            abs(
+                finest.meanDragCoefficientLastConvectiveTime
+                    - $0.meanDragCoefficientLastConvectiveTime
+            ) / max(abs(finest.meanDragCoefficientLastConvectiveTime), 1.0e-30)
+        } ?? 0
         let activationNonIncreasing = zip(cases, cases.dropFirst())
             .allSatisfy { coarse, fine in
                 fine.controlVolumeLimiterActivationFraction
@@ -2136,7 +2373,8 @@ public enum MetalTranslatingBodyTopologyValidator {
             diameters: cases.map(\.diameterCells),
             values: cases.map(\.meanDragCoefficientLastConvectiveTime)
         )
-        let passed = cases.allSatisfy(\.passed)
+        let passed = cases.count >= 3
+            && cases.allSatisfy(\.passed)
             && finestTwoDragChange <= maximumFinestTwoDragChange
             && activationNonIncreasing
             && correctionNonIncreasing

@@ -80,10 +80,10 @@ translucent wing history and wingtip ribbons remain explicitly kinematic.
 | Native viewer | **Accepted engineering gate** | observation invariance, zero solver waits, Q/pressure/slice/pathline tests, exact checkpoint continuation |
 | Measured-bird ingestion/replay | **Plumbing accepted; science open** | schema, provenance, interpolation, Mach/domain preflight, production-Metal replay |
 | Measured dove external-force benchmark | **D28 and D32 numerically passed; fine pair not stabilized** | D32 RR3 completed all 15,104 steps and 187 registered bins; planar weighting plus D12/D16 and D28/D32 complete-dove direction censuses clear static direction redistribution at the locked 26.5 ms phase with exact Metal/CPU parity; force-history change remains `5.632%` against `5%`, so the full localized phase window, force-bearing wall/interpolation interaction, convergence, and experimental agreement remain open |
-| Published-condition high-Re sphere | **Open** | RR3 clears numerical gates, but D=8 wake averaging remains statistically unresolved |
+| Published-condition high-Re sphere | **D8 mode statistic rejected; D20 blocked** | Exact-prefix 30/60-time vector-force captures clear numerical gates, but the 60-time low-band dominance is `1.180 < 1.5`; more duration tightened drag uncertainty without stabilizing one D8 low mode |
 | Quantitative complete bird / free flight | **Solver gates implemented; same-specimen data blocked** | external-system momentum closes at `5.08e-5` relative RMS in the compact topology/gravity gate; schema-2 inertia, runtime aborts, and load/body ladders are ready; real complete specimen input is absent |
 
-The most important accepted flapping result is committed as [`flapping-wing-fixed-thickness-acceptance.json`](ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json). The current high-Re open question is committed as [`measured-wing-stationary-wall-recursive-regularization-duration.json`](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-duration.json).
+The most important accepted flapping result is committed as [`flapping-wing-fixed-thickness-acceptance.json`](ValidationArtifacts/flapping-wing-fixed-thickness-acceptance.json). The high-Re decision is committed as the retained [V1 single-period stop](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-period.json), [V2 single-period stop](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-period-v2.json), [60-time multimode result](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-duration-analysis.json), and [independent audit](ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-audit.json). The project-wide claim and data boundaries are maintained in [`Docs/SCIENTIFIC_BOUNDARIES.md`](Docs/SCIENTIFIC_BOUNDARIES.md).
 
 ## Formation Flight Observatory
 
@@ -1197,7 +1197,19 @@ The cheap ten-convective-time follow-up resolved half the ambiguity:
 - D=8 is not: ninth→tenth change `46.848%`; fifth→tenth change `29.219%`.
 - Every positivity, conservation, force-budget, control-isolation, and correction gate still passes.
 
-Therefore the next highest-ROI experiment is **D=8 only**: estimate its dominant shedding period, then report period-complete block means and uncertainty. That is more defensible—and far cheaper—than spending immediately on D=20 or treating adjacent one-convective-time windows as independent steady estimates.
+That D=8-only program is now complete and its negative results are retained.
+Two preregistered drag-only analyses rejected a single-period interpretation:
+the 30-time trace still produced a Fourier period of `2.492 tU/D` versus a
+`0.260 tU/D` autocorrelation selection. A literature-bounded vector-force
+multimode test then identified a low transverse mode and drag harmonic at 30
+times, but only two complete low-mode blocks fit. The exact-prefix 60-time
+extension supplied 11 blocks and tightened the relative 95% drag-confidence
+half-width to `4.394%`; nevertheless, the low-band dominance fell to
+`1.180 < 1.5` and its peak shifted to `St=0.2318`. More duration therefore did
+not stabilize one D8 mode. The independent audit reconstructs all `19/19`
+checks for each multimode analysis. D20 remains blocked; the next admissible
+question is D8 sub-cell placement/grid-orientation sensitivity, not another
+duration run or a relaxed spectral threshold.
 
 ## The force-accounting investigation
 
@@ -1388,10 +1400,17 @@ swift run birdflow validate flapping-wing --audit-inputs --chord-cells 16 --json
 # Published prescribed-wing production solve
 swift run -c release birdflow validate flapping-wing --chord-cells 16 --json
 
-# Current high-Re RR3 coarse-grid duration diagnostic
+# Current high-Re RR3 D8 vector-force duration diagnostic
 .build/release/birdflow validate translating-body \
   --high-re-stability --fixed-occupancy --stationary-wall \
-  --recursive-regularization-duration --json
+  --recursive-regularization-d8-multimode-duration \
+  --archive ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-duration.json
+
+python3 Scripts/analyze-stationary-wall-rr3-multimode.py \
+  --source ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-duration.json \
+  --preregistration ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-duration-preregistration.json \
+  --output ValidationArtifacts/measured-wing-stationary-wall-recursive-regularization-d8-multimode-duration-analysis.json
+python3 Scripts/audit-stationary-wall-rr3-multimode.py
 ```
 
 The fixed sphere and fixed wing are compact engineering canonicals, not substitutes for publication-scale domain and resolution studies. The accepted prescribed-wing composite is independently audited by:

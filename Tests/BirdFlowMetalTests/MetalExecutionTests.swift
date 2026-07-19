@@ -1927,6 +1927,36 @@ func productionMetalRecursiveRegularizationDurationIsolatedToCoarseGrid()
 }
 
 @Test
+func productionMetalRecursiveRegularizationMultimodeDurationArchivesVectorForce()
+    throws
+{
+    guard MTLCreateSystemDefaultDevice() != nil else { return }
+    let report = try MetalTranslatingBodyTopologyValidator
+        .runStationaryWallRR3D8MultimodeDurationCapture()
+
+    #expect(report.diagnosticCompleted)
+    #expect(report.passed)
+    #expect(report.allIndividualGatesPassed)
+    #expect(report.forceVectorSamplesArchived)
+    #expect(
+        report.classification
+            == "stationary-wall-rr3-d8-multimode-sixty-time-force-capture-complete"
+    )
+    #expect(report.numericalCase.diameterCells == 8)
+    #expect(report.numericalCase.requestedSteps == 6_000)
+    #expect(report.numericalCase.completedConvectiveTimes == 60)
+    #expect(report.numericalCase.samples.count == 6_000)
+    #expect(report.numericalCase.minimumObservedPopulation! > 0)
+    #expect(report.numericalCase.sourceAwareStabilityPassed)
+    #expect(report.numericalCase.forceBudgetPassed)
+    #expect(report.numericalCase.limiterNonIntrusivePassed)
+    #expect(report.numericalCase.samples.allSatisfy {
+        $0.transverseForceCoefficientY?.isFinite == true
+            && $0.transverseForceCoefficientZ?.isFinite == true
+    })
+}
+
+@Test
 func productionMetalRadialLimiterLocalizationConfirmsBulkSpread()
     throws
 {

@@ -1,0 +1,169 @@
+{
+  "analysisEndConvectiveTime": 60,
+  "analysisIdentifier": "stationary-wall-rr3-d8-multimode-duration-v2",
+  "analysisSampleCount": 5001,
+  "analysisStartConvectiveTime": 10,
+  "claimBoundary": "This duration extension can determine whether the identified D=8 low wake mode yields a stable complete-period mean-drag statistic. It cannot establish spatial convergence, validate D20, promote RR3 into bird replay, establish experimental agreement, or support a biological claim.",
+  "classification": "d8-multimode-force-history-unresolved",
+  "completeLowModePeriodDrag": {
+    "blockCount": 11,
+    "blocks": [
+      {
+        "endConvectiveTime": 14.314574812836312,
+        "index": 0,
+        "meanDragCoefficient": 1.3082603023387778,
+        "startConvectiveTime": 10.0
+      },
+      {
+        "endConvectiveTime": 18.629149625672625,
+        "index": 1,
+        "meanDragCoefficient": 1.1039783636864953,
+        "startConvectiveTime": 14.314574812836312
+      },
+      {
+        "endConvectiveTime": 22.943724438508937,
+        "index": 2,
+        "meanDragCoefficient": 1.3163442595846688,
+        "startConvectiveTime": 18.629149625672625
+      },
+      {
+        "endConvectiveTime": 27.25829925134525,
+        "index": 3,
+        "meanDragCoefficient": 1.339111615204614,
+        "startConvectiveTime": 22.943724438508937
+      },
+      {
+        "endConvectiveTime": 31.572874064181562,
+        "index": 4,
+        "meanDragCoefficient": 1.2213222117242877,
+        "startConvectiveTime": 27.25829925134525
+      },
+      {
+        "endConvectiveTime": 35.887448877017874,
+        "index": 5,
+        "meanDragCoefficient": 1.26904847026498,
+        "startConvectiveTime": 31.572874064181562
+      },
+      {
+        "endConvectiveTime": 40.20202368985419,
+        "index": 6,
+        "meanDragCoefficient": 1.3660460654903674,
+        "startConvectiveTime": 35.887448877017874
+      },
+      {
+        "endConvectiveTime": 44.5165985026905,
+        "index": 7,
+        "meanDragCoefficient": 1.1467160685460192,
+        "startConvectiveTime": 40.20202368985419
+      },
+      {
+        "endConvectiveTime": 48.83117331552681,
+        "index": 8,
+        "meanDragCoefficient": 1.2120137330889105,
+        "startConvectiveTime": 44.5165985026905
+      },
+      {
+        "endConvectiveTime": 53.145748128363124,
+        "index": 9,
+        "meanDragCoefficient": 1.1985133831798962,
+        "startConvectiveTime": 48.83117331552681
+      },
+      {
+        "endConvectiveTime": 57.460322941199436,
+        "index": 10,
+        "meanDragCoefficient": 1.237385558134158,
+        "startConvectiveTime": 53.145748128363124
+      }
+    ],
+    "confidence95HalfWidth": 0.054798531254315816,
+    "firstHalfMeanDragCoefficient": 1.2578033505077688,
+    "firstHalfSecondHalfRelativeDifference": 0.01551604818233447,
+    "meanDragCoefficient": 1.2471581846584705,
+    "relativeConfidence95HalfWidth": 0.0439387175808193,
+    "sampleStandardDeviation": 0.08157368367734695,
+    "secondHalfMeanDragCoefficient": 1.2382872131173885,
+    "standardError": 0.02459539104771805,
+    "studentT975": 2.228
+  },
+  "d20PlanningAuthorized": false,
+  "diameterCells": 8,
+  "dragHarmonic": {
+    "dominantToRunnerUpPowerRatio": 1.136957171849584,
+    "frequencyCyclesPerConvectiveTime": 0.4068674527012604,
+    "maximumFrequencyCyclesPerConvectiveTime": 0.56,
+    "minimumFrequencyCyclesPerConvectiveTime": 0.24,
+    "peakBinIndex": 20,
+    "peakPower": 28549.509412535597,
+    "periodConvectiveTimes": 2.457802887306012,
+    "runnerUpPower": 25110.45281159686,
+    "sampleCount": 5001,
+    "sampleSpacingConvectiveTime": 0.01,
+    "signalComponentCount": 1
+  },
+  "dragToTwiceLowModeFrequencyRelativeDifference": 0.1222699682061361,
+  "experimentalAgreementGateApplied": false,
+  "firstHalfLowTransverseMode": {
+    "dominantToRunnerUpPowerRatio": 1.0486177374050054,
+    "frequencyCyclesPerConvectiveTime": 0.15993602558976408,
+    "maximumFrequencyCyclesPerConvectiveTime": 0.28,
+    "minimumFrequencyCyclesPerConvectiveTime": 0.12,
+    "peakBinIndex": 4,
+    "peakPower": 2742.685346167239,
+    "periodConvectiveTimes": 6.2525,
+    "runnerUpPower": 2615.524464572296,
+    "sampleCount": 2501,
+    "sampleSpacingConvectiveTime": 0.01,
+    "signalComponentCount": 2
+  },
+  "fluidEvolutionExecuted": false,
+  "lowModeIdentified": false,
+  "lowModeSplitHalfFrequencyRelativeDifference": 0.22240762283515522,
+  "lowTransverseMode": {
+    "dominantToRunnerUpPowerRatio": 1.1804250995049015,
+    "frequencyCyclesPerConvectiveTime": 0.2317725484849388,
+    "maximumFrequencyCyclesPerConvectiveTime": 0.28,
+    "minimumFrequencyCyclesPerConvectiveTime": 0.12,
+    "peakBinIndex": 12,
+    "peakPower": 14860.302416105013,
+    "periodConvectiveTimes": 4.314574812836312,
+    "runnerUpPower": 12588.941409614028,
+    "sampleCount": 5001,
+    "sampleSpacingConvectiveTime": 0.01,
+    "signalComponentCount": 2
+  },
+  "nextAction": "Keep D20 blocked; test D=8 grid-orientation sensitivity before spending on a finer spatial ladder.",
+  "passed": true,
+  "periodCompleteStatisticPassed": false,
+  "productionModificationAuthorized": false,
+  "rr3BirdReplayPromotionAuthorized": false,
+  "schemaVersion": 1,
+  "scientificVerdict": "The D=8 vector-force history does not resolve a stable low wake mode and its drag harmonic under the literature-bounded frozen gates.",
+  "secondHalfLowTransverseMode": {
+    "dominantToRunnerUpPowerRatio": 4.879493935444201,
+    "frequencyCyclesPerConvectiveTime": 0.20568106155168575,
+    "maximumFrequencyCyclesPerConvectiveTime": 0.28,
+    "minimumFrequencyCyclesPerConvectiveTime": 0.12,
+    "peakBinIndex": 5,
+    "peakPower": 7611.039014619021,
+    "periodConvectiveTimes": 4.861896338223192,
+    "runnerUpPower": 1559.8008964276241,
+    "sampleCount": 2501,
+    "sampleSpacingConvectiveTime": 0.01,
+    "signalComponentCount": 2
+  },
+  "shearLayerBand": {
+    "dominantToRunnerUpPowerRatio": 1.231764312716531,
+    "frequencyCyclesPerConvectiveTime": 1.7777324008181952,
+    "maximumFrequencyCyclesPerConvectiveTime": 2.6,
+    "minimumFrequencyCyclesPerConvectiveTime": 1.4,
+    "peakBinIndex": 89,
+    "peakPower": 136.91250991439432,
+    "periodConvectiveTimes": 0.5625143579200972,
+    "runnerUpPower": 111.15154782528786,
+    "sampleCount": 5001,
+    "sampleSpacingConvectiveTime": 0.01,
+    "signalComponentCount": 2
+  },
+  "sourceCaptureReportSHA256": "c40756421c6bad821971ce45cdacd0f1d5a03f99facc74f78088e3c5975e852c",
+  "sourcePreregistrationSHA256": "44ac518cc81363de0f6dac78fda7cb57c9221aedae3a5f05f939483d5fc8da2d"
+}

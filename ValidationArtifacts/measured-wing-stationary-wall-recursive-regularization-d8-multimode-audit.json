@@ -1,0 +1,64 @@
+{
+  "auditIdentifier": "stationary-wall-rr3-d8-multimode-independent-v1",
+  "implementation": "standalone scalar OLS, trigonometric DFT, trapezoidal block integration, Student-t uncertainty, and decision reconstruction",
+  "passed": true,
+  "results": [
+    {
+      "analysisSHA256": "f035f8967144fe538ec82fb5ed8ab88f61a857c1ae1bba253b0b9e0a65b209bd",
+      "checks": {
+        "blockCount": true,
+        "blockMean": true,
+        "classification": true,
+        "confidence": true,
+        "d20Decision": true,
+        "dragFrequency": true,
+        "earlyLate": true,
+        "earlyLowFrequency": true,
+        "harmonicDifference": true,
+        "lateLowFrequency": true,
+        "lowDecision": true,
+        "lowFrequency": true,
+        "lowPowerRatio": true,
+        "preregistrationHash": true,
+        "sampleCount": true,
+        "shearFrequency": true,
+        "sourceHash": true,
+        "splitDifference": true,
+        "statisticDecision": true
+      },
+      "name": "thirty-time-v1",
+      "passed": true,
+      "preregistrationSHA256": "89b993a8896338597a628c8c6724a75a221746acee60cee5479587a42e75d88d",
+      "sourceSHA256": "09bc1134b61e85820b2dbb76cd6edadf2961a7e036dd861e8524d05f9a8bc6ca"
+    },
+    {
+      "analysisSHA256": "8a8a8f9908f05d359ab06fe58aaba388331e35bdab46e85d55ff2bef47fb0e6b",
+      "checks": {
+        "blockCount": true,
+        "blockMean": true,
+        "classification": true,
+        "confidence": true,
+        "d20Decision": true,
+        "dragFrequency": true,
+        "earlyLate": true,
+        "earlyLowFrequency": true,
+        "harmonicDifference": true,
+        "lateLowFrequency": true,
+        "lowDecision": true,
+        "lowFrequency": true,
+        "lowPowerRatio": true,
+        "preregistrationHash": true,
+        "sampleCount": true,
+        "shearFrequency": true,
+        "sourceHash": true,
+        "splitDifference": true,
+        "statisticDecision": true
+      },
+      "name": "sixty-time-v2",
+      "passed": true,
+      "preregistrationSHA256": "44ac518cc81363de0f6dac78fda7cb57c9221aedae3a5f05f939483d5fc8da2d",
+      "sourceSHA256": "c40756421c6bad821971ce45cdacd0f1d5a03f99facc74f78088e3c5975e852c"
+    }
+  ],
+  "schemaVersion": 1
+}
