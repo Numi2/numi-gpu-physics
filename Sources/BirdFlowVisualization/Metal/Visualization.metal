@@ -641,6 +641,56 @@ fragment float4 showcaseBackgroundFragment(
     return float4(base,1);
 }
 
+vertex RasterVertex showcasePostVertex(uint vid [[vertex_id]]) {
+    float2 positions[3]={float2(-1,-1),float2(3,-1),float2(-1,3)};
+    RasterVertex out;
+    out.position=float4(positions[vid],0,1);
+    out.world=float3(0);out.normal=float3(0,0,1);out.color=float4(1);
+    out.uv=0.5f*(positions[vid]+1.0f);
+    return out;
+}
+
+inline float showcaseBloomWeight(float3 color) {
+    float luminance=dot(color,float3(0.2126f,0.7152f,0.0722f));
+    return smoothstep(0.18f,0.82f,luminance);
+}
+
+fragment float4 showcaseBloomFragment(
+    RasterVertex in [[stage_in]],
+    texture2d<float> scene [[texture(0)]]) {
+    constexpr sampler s(filter::linear,address::clamp_to_edge);
+    float2 texel=1.0f/float2(scene.get_width(),scene.get_height());
+    const float weights[3]={0.40262f,0.24420f,0.05449f};
+    float3 bloom=float3(0);
+    for(int y=-2;y<=2;++y){
+        for(int x=-2;x<=2;++x){
+            float3 sampleColor=scene.sample(
+                s,in.uv+float2(x,y)*texel*4.2f).rgb;
+            float weight=weights[abs(x)]*weights[abs(y)];
+            bloom+=weight*sampleColor*showcaseBloomWeight(sampleColor);
+        }
+    }
+    return float4(bloom,1);
+}
+
+fragment float4 showcaseCompositeFragment(
+    RasterVertex in [[stage_in]],
+    constant float4& finishing [[buffer(0)]],
+    texture2d<float> scene [[texture(0)]],
+    texture2d<float> bloom [[texture(1)]]) {
+    constexpr sampler s(filter::linear,address::clamp_to_edge);
+    float3 base=scene.sample(s,in.uv).rgb;
+    float3 glow=bloom.sample(s,in.uv).rgb;
+    float3 color=(base+finishing.x*glow)*finishing.y;
+    float3 excess=max(color-0.94f,0.0f);
+    color=min(color-excess+0.06f*(1.0f-exp(-4.0f*excess)),1.0f);
+    float2 centered=in.uv-0.5f;
+    float vignette=1.0f-0.10f*smoothstep(0.28f,0.72f,length(centered));
+    color*=vignette;
+    color=mix(color,color*float3(0.96f,1.01f,1.05f),0.18f);
+    return float4(color,1);
+}
+
 vertex RasterVertex sliceVertex(
     constant VisualizationUniforms& u [[buffer(0)]],
     constant CameraUniforms& camera [[buffer(1)]],

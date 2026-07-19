@@ -73,7 +73,7 @@ final class VisualizationBackend {
     depthFormat: MTLPixelFormat = .depth32Float,
     blending: Bool = false
   ) throws -> MTLRenderPipelineState {
-    let key = "\(vertex)|\(fragment)|\(colorFormat.rawValue)|\(blending)"
+    let key = "\(vertex)|\(fragment)|\(colorFormat.rawValue)|\(depthFormat.rawValue)|\(blending)"
     if let existing = renderPipelines[key] { return existing }
     let descriptor = MTLRenderPipelineDescriptor()
     descriptor.vertexFunction = library.makeFunction(name: vertex)

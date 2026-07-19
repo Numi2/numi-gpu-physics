@@ -1,3 +1,4 @@
+import BirdFlowCore
 import BirdFlowMetal
 import Foundation
 import Metal
@@ -56,7 +57,7 @@ func formationPresentationUsesLockedDualDove() throws {
     wakeBridgePhaseCount: 48
   )
   #expect(audit.passed)
-  #expect(audit.schemaVersion == 5)
+  #expect(audit.schemaVersion == 6)
   #expect(audit.flyerCount == 2)
   #expect(audit.vertexCountPerFlyer == 2_157)
   #expect(audit.triangleCountPerFlyer == 3_968)
@@ -85,6 +86,21 @@ func formationPresentationUsesLockedDualDove() throws {
     audit.wakeIntersectionMarkerMode
       == "presentation-phase-ring-at-follower-plane"
   )
+  #expect(
+    audit.latticeBoltzmannDisplayMode
+      == "presentation-only-d3q19-collision-streaming-lens"
+  )
+  #expect(audit.latticeDirectionCount == 19)
+  #expect(audit.latticeRestPopulationCount == 1)
+  #expect(audit.latticeAxisDirectionCount == 6)
+  #expect(audit.latticeFaceDiagonalDirectionCount == 12)
+  #expect(audit.focusedMomentumExchangeDirectionIndex == 5)
+  #expect(audit.focusedMomentumExchangeDirection == [0, 0, 1])
+  #expect(audit.trailDrawCallMode == "single-degenerate-strip-batch")
+  #expect(
+    audit.postProcessingMode
+      == "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff"
+  )
   #expect(audit.focusedSourceTraceSampleCount == 4_820)
   #expect(audit.focusedSourceTraceDirectionIndex == 5)
   #expect(audit.wakeBridgePhaseCount == audit.capturePhaseCount)
@@ -100,6 +116,77 @@ func formationPresentationUsesLockedDualDove() throws {
   #expect(audit.tailScale[1] < 0.5 * audit.bodyAndWingScale[1])
   #expect(audit.presentationOnly)
   #expect(!audit.quantitativeForceAcceptanceReady)
+}
+
+@Test("formation lattice lens is the exact D3Q19 stencil")
+func formationLatticeLensUsesD3Q19() {
+  let summary = FormationObservatoryRenderer
+    .latticeBoltzmannDirectionSummary()
+  #expect(summary.total == D3Q19.count)
+  #expect(summary.rest == 1)
+  #expect(summary.axis == 6)
+  #expect(summary.faceDiagonal == 12)
+  #expect(summary.focusedDirection == SIMD3<Int32>(0, 0, 1))
+  #expect(D3Q19.directions.allSatisfy { direction in
+    [direction.x, direction.y, direction.z].filter { $0 != 0 }.count <= 2
+  })
+}
+
+@Test("formation lattice lens anchors to every archived positive-x wake ridge")
+func formationLatticeLensAnchorsToArchivedWake() throws {
+  struct SliceIndex: Decodable {
+    struct Entry: Decodable { let file: String }
+    let entries: [Entry]
+  }
+  let repository = URL(fileURLWithPath: #filePath)
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+  let directory = repository.appendingPathComponent(
+    "ValidationArtifacts/formation-flight-promotion/c20-best-z3-phase025/formation-flight-flow-slices",
+    isDirectory: true
+  )
+  let index = try JSONDecoder().decode(
+    SliceIndex.self,
+    from: Data(contentsOf: directory.appendingPathComponent("index.json"))
+  )
+  #expect(index.entries.count == 21)
+  for entry in index.entries {
+    let slice = try JSONDecoder().decode(
+      FormationFlightFlowSlice.self,
+      from: Data(contentsOf: directory.appendingPathComponent(entry.file))
+    )
+    let center = try #require(
+      FormationObservatoryRenderer.latticeLensCenter(
+        slice: slice,
+        leaderRoot: SIMD3<Float>(0, 0, 1.5),
+        followerRoot: SIMD3<Float>(0, 0, -1.5)
+      )
+    )
+    #expect(center.x >= 0.72 && center.x <= 2.35)
+    #expect(abs(center.z + 0.24) < 1e-6)
+    #expect(center.y.isFinite)
+  }
+}
+
+@Test("formation wake strips collapse into one degenerate batch")
+func formationWakeStripsUseSingleBatch() {
+  func vertex(_ x: Float) -> ColoredVertex {
+    ColoredVertex(
+      position: SIMD4<Float>(x, 0, 0, 1),
+      normal: SIMD4<Float>(0, 1, 0, 0),
+      color: SIMD4<Float>(1, 1, 1, 1)
+    )
+  }
+  let first = [vertex(0), vertex(1), vertex(2), vertex(3)]
+  let second = [vertex(10), vertex(11), vertex(12), vertex(13)]
+  let batch = FormationObservatoryRenderer.batchedTriangleStripVertices([
+    first, [], second,
+  ])
+  #expect(batch.count == first.count + second.count + 3)
+  #expect(batch[4].position == first.last?.position)
+  #expect(batch[5].position == second.first?.position)
+  #expect(batch[6].position == second.first?.position)
 }
 
 @Test("formation flow opacity preserves a low-vorticity velocity jet")

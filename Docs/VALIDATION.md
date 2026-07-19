@@ -2945,7 +2945,7 @@ and agrees with the retired CPU slice reconstruction to `1e-9` maximum
 vorticity difference. The decision, report SHA, index SHA, and every slice SHA
 are retained in
 `ValidationArtifacts/formation-flight-promotion/formation-flight-c20-discriminator-summary.json`.
-The native Metal V9 presentation uses two `2,157`-vertex, `3,968`-triangle
+The native Metal V10 presentation uses two `2,157`-vertex, `3,968`-triangle
 copies of the locked Deetjen OB F03 measured-derived dove sequence over source
 frames `27...121`, plus its velocity-matched `14 ms` visual closure. The
 leader/follower `Δφ=0.25` remains intentional. Its capture-side audit locks the
@@ -2961,11 +2961,19 @@ the misleading diagonal solid-gap/low-signal seam without modifying the
 archived arrays or owner mask. The no-overlay capture records that camera
 motion, temporal/spatial display transforms, wake guides, follower-plane ring,
 and doves are presentation-only; the right wing remains a bilateral-reflection
-assumption and none is quantitative force geometry. The separate V9 visual
-audit locks the renderer, figure-eight and field-display parameters, dove
-binaries, source and q5 evidence, archived CFD fields, output, and claim
-boundary and passes `57/57`. V8, V7, V6, windowed V5, V4, and invalid V3 remain
-archived; none entered CFD or force accounting.
+assumption and none is quantitative force geometry. V10 adds a presentation-only
+D3Q19 lens anchored to a real positive-`x` archived wake ridge: one rest node,
+six axial nodes, twelve face-diagonal nodes, outward streaming packets, and a
+gold positive-`z` q5 cue modulated by the complete focused source trace. No
+cube-corner or invented population is shown. Its `RGBA16Float` scene, 25-tap
+half-resolution bloom, bounded highlight shoulder, and single batched wake
+strip are presentation paths only. The separate V10 visual audit locks the
+renderer, exact stencil, q5 identity, figure-eight and field-display
+parameters, dove binaries, source evidence, archived CFD fields, output, claim
+boundary, and a high-edge-density burst detector added after a transient
+vertex-buffer binding defect was caught and corrected. V9, V8, V7, V6,
+windowed V5, V4, and invalid V3 remain archived; none entered CFD or force
+accounting.
 The phase-aligned c16/c20 maximum-selector normalized-power residual has RMS
 `0.0313`, maximum `0.1122` at follower phase `0.055`, and only `23.15%` of
 its absolute magnitude in the prior midstroke bands. Absolute residual tracks

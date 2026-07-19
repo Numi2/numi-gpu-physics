@@ -84,7 +84,7 @@ The most important accepted flapping result is committed as [`flapping-wing-fixe
 
 ## Formation Flight Observatory
 
-![Figure-eight cinematic Formation Flight Observatory with two phase-shifted measured-derived Deetjen doves and an evidence-bound c20 wake bridge](Docs/Media/formation-flight-observatory.gif)
+![Figure-eight cinematic Formation Flight Observatory with two phase-shifted measured-derived Deetjen doves, archived c20 wake evidence, and an exact D3Q19 collision-streaming lens](Docs/Media/formation-flight-observatory.gif)
 
 BirdFlowMetal can now place a leader and follower in the same D3Q19 fluid,
 assign each an independent wingbeat phase, and resolve force, root torque, and
@@ -94,7 +94,7 @@ without waiting for another bird dataset. The cinematic native Metal view uses
 two phase-shifted copies of the locked Deetjen OB F03 measured-derived complete
 dove surface: `2,157` vertices and `3,968` triangles per flyer over source
 frames `27...121`, followed by a velocity-matched `14 ms` presentation closure.
-The intentional `Δφ=0.25` leader/follower offset remains. V9 renders no HUD,
+The intentional `Δφ=0.25` leader/follower offset remains. V10 renders no HUD,
 label, or text panel and moves the camera through a smooth spherical
 figure-eight: one yaw cycle and two smaller pitch lobes expose multiple upper,
 lower, and side-quarter views without losing either bird or breaking the loop.
@@ -113,15 +113,43 @@ only that invisible solid gap from surrounding archived fluid samples, while
 joint vorticity/vertical-velocity opacity keeps the blue jet continuous. These
 are presentation transforms; the archived c20 arrays remain unchanged.
 
+V10 adds a scientific D3Q19 lattice lens on a real positive-`x` c20 wake
+ridge. Its center is the rest/collision population, six cyan axial nodes and
+twelve violet face-diagonal nodes are the complete moving stencil, and packets
+travel outward on all 18 links to visualize local streaming. The gold
+`q5=[0,0,+1]` packet is modulated by the passed phase-resolved leader boundary
+source trace, making the moving-boundary momentum-exchange connection visible
+without pretending that the lens is force-bearing geometry. A faint cube is
+only the lattice-cell frame; its eight corners are not populations. The lens,
+like the dove replay, is presentation-only.
+
+This is the kinetic update used by the solver: the 19 populations collide
+locally, the 18 moving populations stream to their neighbors, and their density
+and momentum moments recover the incompressible Navier--Stokes equations in the
+low-Mach limit. That locality is also why the production update maps efficiently
+to Metal GPU threads. At a moving wing link, reflected and corrected populations
+transfer momentum to the articulated boundary; the phase-resolved q5 cue makes
+that solver-to-load path visible without replacing the archived load ledger.
+
+The renderer now draws into `RGBA16Float`, applies a half-resolution 25-tap
+selective bloom and bounded highlight shoulder, then composites once into the
+sRGB GIF surface. Wake ribbons are joined into one degenerate triangle-strip
+batch instead of allocating and drawing every ribbon separately. The 25-tap
+kernel uses `69%` fewer texture samples than the rejected 81-tap prototype.
+An encoded high-edge-density audit was added after visual inspection caught a
+transient vertex-buffer binding error; the corrected loop restores the dove
+surface buffer explicitly before its wire pass.
+
 The dove surfaces, wingtip guides, wake ridges, and marker do not enter
 voxelization or fluid stepping; archived CFD and loads remain the prescribed
 wing canonical. The right wing remains a documented bilateral-reflection
 assumption and the tail retains its bounded presentation scale. The original
 scientific stop is unchanged: c16-to-c20 force change is `10.68%` against a
 frozen `5%` limit, while source curvature remains mixed at `0.884`. The
-48-frame forward-only loop is pixel-seamless, its encoded seam is `0.960x` the
-median adjacent-frame change, and the expanded deterministic visual audit
-passes `57/57` checks while keeping quantitative formation benefit and
+48-frame forward-only loop is pixel-seamless, its encoded seam is `0.979x` the
+median adjacent-frame change, and its maximum high-edge density is only
+`1.182x` the median. The expanded deterministic visual audit passes `64/64`
+checks while keeping quantitative formation benefit and
 biological claims fail-closed.
 
 ```bash

@@ -105,6 +105,19 @@ The camera follows a spherical figure-eight with `±0.34 rad` yaw,
 pitch lobes expose several angles while the wrapped phase makes its endpoint
 parameters exactly identical to frame zero.
 
+V10 also places an exact D3Q19 collision-streaming lens on the strongest
+available positive-`x` archived wake ridge at the selected downstream phase.
+The center represents the rest/collision population; six axial and twelve
+face-diagonal nodes reproduce the complete moving stencil, and phase-locked
+packets stream outward along all 18 links. The gold positive-`z` link is the
+locked leader `q5` direction and its luminance follows the same 4,820-sample
+boundary-source trace as the wake bridge. The cell frame, nodes, and packets
+are presentation-only; no interpolated or invented population enters the
+solver, force ledger, or archive. The scene is rendered through an
+`RGBA16Float` target with half-resolution 25-tap selective bloom and bounded
+highlight rolloff. All wake ribbons share one degenerate triangle-strip batch,
+reducing their per-frame buffer allocations and draw calls to one.
+
 The capture writes 48 unique frames plus a pixel-identical endpoint probe at
 `1120 x 630`. The local script requires a seamless endpoint, exactly 48 encoded
 frames, and a file below 10 MB before replacing
@@ -116,10 +129,13 @@ A capture-side dove audit requires the exact Dryad/eLife identity, CC0 license,
 presentation scale below half the wing scale after the first visual pass showed
 the reconstructed fan was too dominant. It also requires all `48/48` unique
 capture phases to resolve the cyclic archived field at minimum opacity `1.0`.
-A separate V9 manifest and `57/57` audit lock that sidecar, all dove/source/CFD
-hashes, the independent source and q5-trace audits, 21-slice combined hash,
-`7,581,213`-byte GIF, no-overlay figure-eight camera and spatial-display
-contracts, forward-only frame count, and encoded seam ratio `0.960`.
+A separate V10 manifest and fail-closed audit lock that sidecar, all
+dove/source/CFD hashes, the independent source and q5-trace audits, exact
+`1+6+12` D3Q19 topology, positive-`z` q5 cue, 21-slice combined hash,
+`8,024,801`-byte GIF, HDR/batching contract, no-overlay figure-eight camera,
+forward-only frame count, encoded seam ratio `0.979`, and a high-edge-density
+burst limit that detects transient geometry streaks.
+The independent V10 audit passes `64/64` checks.
 A dedicated archive smoke proves that simultaneous field capture preserves
 conservative owner accounting and reproduces the prior CPU vorticity extraction
 to `1e-9` maximum absolute difference. The capture script itself neither reruns

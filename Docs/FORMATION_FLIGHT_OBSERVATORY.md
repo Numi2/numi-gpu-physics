@@ -837,7 +837,7 @@ is measured-outline-derived and gap-filled; the right wing is a documented
 bilateral-reflection assumption; and the tail is a fixed parameterization
 derived from the processed surface. A first native-Metal pass revealed that
 scaling the reconstructed tail with full wing span made its fan dominate the
-scene. V9 retains the promoted part-aware presentation scales: `[16,16,7]` for
+scene. V10 retains the promoted part-aware presentation scales: `[16,16,7]` for
 body/wings and `[14,6,6]` for the tail. The audit requires tail lateral scale to
 stay below half the body/wing value.
 
@@ -845,7 +845,7 @@ Capture writes a machine-readable dove sidecar and refuses the GIF unless the
 dataset identity, Dryad/eLife DOI, CC0 license, exact topology, component
 evidence, two-flyer phase offset, loop window, closure duration, zero endpoint
 residual, and presentation-only claim boundary all match. It also requires all
-`48/48` unique phases to show the archived c20 field at full opacity. V9 uses
+`48/48` unique phases to show the archived c20 field at full opacity. V10 uses
 cyclic linear interpolation between adjacent members of the 21-state archive
 to remove visual stepping. This is a presentation transform only: no
 interpolated field enters force, power, convergence, or any solver claim.
@@ -862,22 +862,53 @@ from the displayed c20 vorticity and vertical-velocity arrays. Ridge color runs
 from cyan to violet with downstream wake age; its luminance follows the
 normalized reflected-population exchange from every sample of the passed c18
 leader `q5 [0,0,+1]` focused trace. The follower-plane ring is explicitly a
-presentation-phase locator, not a measured vortex boundary. The V9 camera
+presentation-phase locator, not a measured vortex boundary. The V10 camera
 follows a spherical figure-eight: yaw varies as `0.34 sin(2πφ)`, pitch as
 `0.10 sin(4πφ)`, and distance as `0.10 cos(2πφ)`. This produces two viewing
 lobes and several distinct upper/lower side-quarter angles while returning to
-identical parameters at the loop endpoint. The V9 manifest
-locks the renderer, dove binaries, all 21 CFD fields, the complete 4,820-step
-q5 trace and its independent audit, the no-overlay figure-eight camera
-contract, spatial-display contract, GIF hash, frame count, and loop seam. Its
-visual audit passes `57/57`.
+identical parameters at the loop endpoint.
+
+V10 adds a local D3Q19 lens whose position is recomputed at each archived
+phase from the strongest positive-`x` wake-ridge signal at the selected
+downstream station. The central node is the single rest/collision population;
+six axial nodes and twelve face-diagonal nodes are the exact 18 moving
+populations. There are deliberately no cube-corner populations. Animated
+packets move outward along each link to depict streaming. The gold positive-`z`
+packet is direction `q5`, and only its luminance is modulated by the complete
+leader q5 source trace. The visualization therefore preserves the topology and
+phase identity of the implemented lattice while remaining explicit that it is
+not a direct readback of 19 local populations.
+
+The underlying algorithm collides all 19 populations locally, streams the 18
+moving populations to neighboring cells, and recovers density and momentum as
+population moments. In the low-Mach limit those moments recover the
+incompressible Navier--Stokes equations. Local collision and fixed-neighbor
+streaming map directly to Metal threads; reflected and moving-wall-corrected
+populations at an articulated boundary supply the momentum exchange used by
+the existing phase-resolved force and torque ledger.
+
+The renderer performs the scene pass in `RGBA16Float`, extracts selective bloom
+through a half-resolution 25-tap kernel, applies a bounded highlight shoulder,
+and composites once to sRGB. The 25-tap kernel uses `69%` fewer texture samples
+than the rejected 81-tap prototype. All wake ribbons are joined by degenerate
+vertices and submitted as one triangle strip. During review, a transient burst
+of wireframe streaks exposed that the new lattice draw had displaced vertex
+buffer slot zero before the dove wire pass. The renderer now restores the
+dove surface buffer explicitly, and the independent audit measures maximum
+encoded high-edge density against the median to reject any recurrence.
+
+The V10 manifest locks the renderer, dove binaries, all 21 CFD fields, the
+complete 4,820-step q5 trace and its independent audit, exact `1+6+12` stencil,
+HDR/batching path, no-overlay figure-eight camera, GIF hash, frame count, loop
+seam, and transient-streak metric.
+The independent V10 visual audit passes `64/64` checks.
 
 The two doves and their wingtip guides do not enter voxelization, fluid
 stepping, loads, torque, or actuator power. Those remain the archived
 prescribed-wing canonical. Geometry curvature `0.150` is smooth, exact
 population-weighted source curvature `0.884` is mixed, and the original
 `10.68% > 5%` force-convergence stop remains governing even though the HUD is
-gone. The exact V8 unsmoothed-field binary, V7 restrained-camera binary, V6 HUD
+gone. The exact V9 seamless-field binary, V8 unsmoothed-field binary, V7 restrained-camera binary, V6 HUD
 binary, V4 synchronized procedural birds, and V3 invalid rotated partner-wing
 presentation are retained under `Docs/Media/Progress`.
 

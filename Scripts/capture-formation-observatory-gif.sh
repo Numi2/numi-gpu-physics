@@ -11,14 +11,16 @@ SUBCELL_SUMMARY="${5:-$ROOT/ValidationArtifacts/formation-flight-geometry-subcel
 SOURCE_SUMMARY="${6:-$ROOT/ValidationArtifacts/formation-flight-subcell-source-census/formation-flight-subcell-source-summary.json}"
 DOVE_MANIFEST="${7:-$ROOT/ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json}"
 FOCUSED_SOURCE_TRACE="${8:-$ROOT/ValidationArtifacts/formation-flight-focused-source-trace/formation-flight-focused-source-trace-report.json}"
-GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-dove-v9.json"
+GEOMETRY_AUDIT="$ROOT/ValidationArtifacts/formation-flight-observatory-dove-v10.json"
 V6_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v6-dual-dove-continuous-cfd.gif"
 V6_SHA256="54255ff84b855f2124ec0d6fbff2449bab740c6d9f61cef70c1ba89ea5298b61"
 V7_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v7-cinematic-wake-bridge.gif"
 V7_SHA256="1d0dc0835512739e54e6f67352a76ed7de960ef913d38350e3744619d8800e09"
 V8_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-18-v8-figure-eight-camera.gif"
 V8_SHA256="f4af3b62318d0fffd1d2e41fa157cf12e3a054400ba7ba6d4e9973448bde3564"
-V9_MANIFEST="$ROOT/ValidationArtifacts/formation-flight-observatory-visual-v9.json"
+V9_ARCHIVE="$ROOT/Docs/Media/Progress/2026-07-19-v9-seamless-field-figure-eight.gif"
+V9_SHA256="b17a669ee923ad17281316577c28c704b4ae27d86f912d59b5ec29f533cbb65e"
+V10_MANIFEST="$ROOT/ValidationArtifacts/formation-flight-observatory-visual-v10.json"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "ffmpeg is required to encode the formation GIF" >&2
@@ -34,16 +36,16 @@ trap cleanup EXIT
 mkdir -p "$(dirname "$OUTPUT")"
 if [[ "$OUTPUT" == "$DEFAULT_OUTPUT" ]]; then
   CURRENT_SHA="$(shasum -a 256 "$DEFAULT_OUTPUT" | awk '{print $1}')"
-  LOCKED_V9_SHA=""
-  if [[ -f "$V9_MANIFEST" ]]; then
-    LOCKED_V9_SHA="$(python3 - "$V9_MANIFEST" <<'PY'
+  LOCKED_V10_SHA=""
+  if [[ -f "$V10_MANIFEST" ]]; then
+    LOCKED_V10_SHA="$(python3 - "$V10_MANIFEST" <<'PY'
 import json, sys
 print(json.load(open(sys.argv[1]))["output"]["sha256"])
 PY
 )"
   fi
-  if [[ "$CURRENT_SHA" != "$V8_SHA256" && "$CURRENT_SHA" != "$LOCKED_V9_SHA" ]]; then
-    echo "current Formation GIF is neither the locked V8 predecessor nor V9" >&2
+  if [[ "$CURRENT_SHA" != "$V9_SHA256" && "$CURRENT_SHA" != "$LOCKED_V10_SHA" ]]; then
+    echo "current Formation GIF is neither the locked V9 predecessor nor V10" >&2
     exit 1
   fi
   if [[ ! -f "$V6_ARCHIVE" ]] \
@@ -73,6 +75,19 @@ PY
       exit 1
     fi
     cp "$DEFAULT_OUTPUT" "$V8_ARCHIVE"
+  fi
+  if [[ -f "$V9_ARCHIVE" ]]; then
+    ARCHIVE_SHA="$(shasum -a 256 "$V9_ARCHIVE" | awk '{print $1}')"
+    if [[ "$ARCHIVE_SHA" != "$V9_SHA256" ]]; then
+      echo "V9 progress archive does not match the locked predecessor" >&2
+      exit 1
+    fi
+  else
+    if [[ "$CURRENT_SHA" != "$V9_SHA256" ]]; then
+      echo "V9 progress archive is missing and cannot be recovered from V10" >&2
+      exit 1
+    fi
+    cp "$DEFAULT_OUTPUT" "$V9_ARCHIVE"
   fi
 fi
 cd "$ROOT"
@@ -105,7 +120,7 @@ ffmpeg -v error -y \
   -framerate 24 \
   -i "$FRAMES/frame-%03d.png" \
   -filter_complex \
-  "[0:v]fps=24,scale=1120:630:flags=lanczos,split[a][b];[a]palettegen=max_colors=160:reserve_transparent=0:stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a[v]" \
+  "[0:v]fps=24,scale=1120:630:flags=lanczos,split[a][b];[a]palettegen=max_colors=192:reserve_transparent=0:stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a[v]" \
   -map "[v]" \
   -frames:v 48 \
   -gifflags 0 \
@@ -156,6 +171,8 @@ if audit["capturePhasesWithVisibleFlow"] != audit["capturePhaseCount"]:
     raise SystemExit("formation CFD is not visible at every encoded phase")
 if audit["minimumFlowOpacity"] != 1:
     raise SystemExit("formation CFD opacity is not constant")
+if audit["schemaVersion"] != 6:
+    raise SystemExit("formation presentation audit schema changed")
 if audit["flowSpatialFilterMode"] != "gaussian-radius4-sigma2-with-solid-gap-fill-presentation-only":
     raise SystemExit("formation flow spatial presentation filter changed")
 if audit["flowOpacityMode"] != "joint-vorticity-and-vertical-velocity-signal":
@@ -166,6 +183,16 @@ if audit["wakeBridgeMode"] != "archived-c20-vorticity-ridge+c18-q5-luminance":
     raise SystemExit("formation wake bridge does not preserve its two-source evidence contract")
 if audit["wakeIntersectionMarkerMode"] != "presentation-phase-ring-at-follower-plane":
     raise SystemExit("formation wake intersection marker contract changed")
+if audit["latticeBoltzmannDisplayMode"] != "presentation-only-d3q19-collision-streaming-lens":
+    raise SystemExit("formation D3Q19 presentation lens changed")
+if [audit["latticeDirectionCount"], audit["latticeRestPopulationCount"], audit["latticeAxisDirectionCount"], audit["latticeFaceDiagonalDirectionCount"]] != [19, 1, 6, 12]:
+    raise SystemExit("formation D3Q19 population topology changed")
+if audit["focusedMomentumExchangeDirectionIndex"] != 5 or audit["focusedMomentumExchangeDirection"] != [0, 0, 1]:
+    raise SystemExit("formation focused q5 momentum-exchange direction changed")
+if audit["trailDrawCallMode"] != "single-degenerate-strip-batch":
+    raise SystemExit("formation wake draw-call batching changed")
+if audit["postProcessingMode"] != "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff":
+    raise SystemExit("formation HDR finishing path changed")
 if audit["focusedSourceTraceSampleCount"] != 4820 or audit["focusedSourceTraceDirectionIndex"] != 5:
     raise SystemExit("formation wake bridge is not locked to the complete leader-q5 trace")
 if audit["wakeBridgePhaseCount"] != audit["capturePhaseCount"]:

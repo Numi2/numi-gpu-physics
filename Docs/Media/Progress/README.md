@@ -294,7 +294,9 @@ its endpoint probe is pixel-identical and encoded seam is `0.943x` the median
 adjacent-frame change. The V8 audit passes `56/56`; camera motion is
 presentation-only and the scientific claim boundary is unchanged.
 
-The [current V9 Formation Observatory animation](../formation-flight-observatory.gif)
+V9 is preserved exactly as
+[`2026-07-19-v9-seamless-field-figure-eight.gif`](2026-07-19-v9-seamless-field-figure-eight.gif).
+It
 removes the diagonal dark beam that V8's wider camera path exposed in the flow
 plane. Isolation renders proved the stroke was not a wingtip guide or wake
 ridge. V9 applies a mask-aware radius-4, sigma-2 Gaussian presentation filter,
@@ -306,3 +308,19 @@ arrays and owner mask remain unchanged. The 48-frame `1120 × 630` binary is
 its endpoint probe is pixel-identical and encoded seam is `0.960x` the median
 adjacent-frame change. The V9 audit passes `57/57`; the spatial filtering and
 gap fill are presentation-only and the scientific boundary is unchanged.
+
+The [current V10 Formation Observatory animation](../formation-flight-observatory.gif)
+adds an exact D3Q19 collision-streaming lens on a positive-`x` archived c20
+wake ridge. The center is the rest population; six axial and twelve
+face-diagonal nodes are the 18 moving populations; and phase-locked packets
+stream outward on every link. The gold positive-`z` packet follows the complete
+leader-q5 source trace. `RGBA16Float` rendering, a half-resolution 25-tap
+selective bloom, bounded highlight rolloff, and one batched wake strip improve
+depth while reducing per-ribbon allocations and draws. Eight-angle review plus
+targeted adjacent-frame inspection caught and corrected a transient surface
+vertex-buffer binding error. The 48-frame `1120 × 630` binary is `8,024,801`
+bytes with SHA-256
+`e64059a079e2f6c51cfd9f5e288b9e219895ab446a51d51b668693ceb7e1d064`;
+its endpoint is pixel-identical, encoded seam is `0.979x` the median adjacent
+change, and maximum high-edge density is `1.182x` the median. The lens and all
+finishing remain presentation-only. The V10 audit passes `64/64` checks.

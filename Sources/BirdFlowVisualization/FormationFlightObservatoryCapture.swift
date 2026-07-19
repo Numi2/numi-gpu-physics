@@ -1,4 +1,5 @@
 import AppKit
+import BirdFlowCore
 import BirdFlowMetal
 import CoreText
 import Foundation
@@ -1407,6 +1408,18 @@ struct FormationDovePresentationAudit: Codable, Sendable {
   let minimumDisplayedSignalOpacity: Float
   let wakeBridgeMode: String
   let wakeIntersectionMarkerMode: String
+  let latticeBoltzmannDisplayMode: String
+  let latticeDirectionCount: Int
+  let latticeRestPopulationCount: Int
+  let latticeAxisDirectionCount: Int
+  let latticeFaceDiagonalDirectionCount: Int
+  let collisionPulseMode: String
+  let streamingPulseMode: String
+  let movingBoundaryExchangeMode: String
+  let focusedMomentumExchangeDirectionIndex: Int
+  let focusedMomentumExchangeDirection: [Int]
+  let trailDrawCallMode: String
+  let postProcessingMode: String
   let focusedSourceTraceSampleCount: Int
   let focusedSourceTraceDirectionIndex: Int
   let wakeBridgePhaseCount: Int
@@ -1436,6 +1449,8 @@ final class FormationObservatoryRenderer {
   private let trailPipeline: MTLRenderPipelineState
   private let wirePipeline: MTLRenderPipelineState
   private let backgroundPipeline: MTLRenderPipelineState
+  private let bloomPipeline: MTLRenderPipelineState
+  private let compositePipeline: MTLRenderPipelineState
   private let depthWriteState: MTLDepthStencilState
   private let depthReadState: MTLDepthStencilState
 
@@ -1460,24 +1475,36 @@ final class FormationObservatoryRenderer {
     surfacePipeline = try backend.render(
       vertex: "coloredSurfaceVertex",
       fragment: "showcaseDoveFragment",
-      colorFormat: .bgra8Unorm_srgb
+      colorFormat: .rgba16Float
     )
     trailPipeline = try backend.render(
       vertex: "coloredSurfaceVertex",
       fragment: "unlitFragment",
-      colorFormat: .bgra8Unorm_srgb,
+      colorFormat: .rgba16Float,
       blending: true
     )
     wirePipeline = try backend.render(
       vertex: "coloredSurfaceVertex",
       fragment: "showcaseWireFragment",
-      colorFormat: .bgra8Unorm_srgb,
+      colorFormat: .rgba16Float,
       blending: true
     )
     backgroundPipeline = try backend.render(
       vertex: "showcaseBackgroundVertex",
       fragment: "showcaseBackgroundFragment",
-      colorFormat: .bgra8Unorm_srgb
+      colorFormat: .rgba16Float
+    )
+    bloomPipeline = try backend.render(
+      vertex: "showcasePostVertex",
+      fragment: "showcaseBloomFragment",
+      colorFormat: .rgba16Float,
+      depthFormat: .invalid
+    )
+    compositePipeline = try backend.render(
+      vertex: "showcasePostVertex",
+      fragment: "showcaseCompositeFragment",
+      colorFormat: .bgra8Unorm_srgb,
+      depthFormat: .invalid
     )
     let write = MTLDepthStencilDescriptor()
     write.depthCompareFunction = .less
@@ -1555,12 +1582,33 @@ final class FormationObservatoryRenderer {
       )
     } ?? []
     let trails = wakeBridge + wingtipTrails
+    let batchedTrails = Self.batchedTriangleStripVertices(trails)
     let slice = flowSlice.map {
       flowSliceVertices($0, opacity: flowOpacity)
     } ?? []
+    let latticeCenter = flowSlice.flatMap {
+      Self.latticeLensCenter(
+        slice: $0,
+        leaderRoot: leaderRoot,
+        followerRoot: followerRoot
+      )
+    } ?? (simd_mix(
+      leaderRoot,
+      followerRoot,
+      SIMD3<Float>(repeating: 0.58)
+    ) + SIMD3<Float>(1.45, 0.24, 0))
+    let latticeLens = latticeBoltzmannLensVertices(
+      center: latticeCenter,
+      phase: phase,
+      focusedSourceIntensity: focusedSourceIntensity,
+      camera: camera
+    )
     let surfaceBuffer = try sharedBuffer(surfaces)
-    let trailBuffers = try trails.map(sharedBuffer)
+    let trailBuffer = batchedTrails.isEmpty
+      ? nil
+      : try sharedBuffer(batchedTrails)
     let sliceBuffer = slice.isEmpty ? nil : try sharedBuffer(slice)
+    let latticeBuffer = try sharedBuffer(latticeLens)
 
     let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(
       pixelFormat: .bgra8Unorm_srgb,
@@ -1570,6 +1618,22 @@ final class FormationObservatoryRenderer {
     )
     colorDescriptor.storageMode = .shared
     colorDescriptor.usage = [.renderTarget, .shaderRead]
+    let sceneDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+      pixelFormat: .rgba16Float,
+      width: width,
+      height: height,
+      mipmapped: false
+    )
+    sceneDescriptor.storageMode = .private
+    sceneDescriptor.usage = [.renderTarget, .shaderRead]
+    let bloomDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+      pixelFormat: .rgba16Float,
+      width: max(1, width / 2),
+      height: max(1, height / 2),
+      mipmapped: false
+    )
+    bloomDescriptor.storageMode = .private
+    bloomDescriptor.usage = [.renderTarget, .shaderRead]
     let depthDescriptor = MTLTextureDescriptor.texture2DDescriptor(
       pixelFormat: .depth32Float,
       width: width,
@@ -1579,11 +1643,13 @@ final class FormationObservatoryRenderer {
     depthDescriptor.storageMode = .private
     depthDescriptor.usage = [.renderTarget]
     guard let color = backend.device.makeTexture(descriptor: colorDescriptor),
+      let scene = backend.device.makeTexture(descriptor: sceneDescriptor),
+      let bloom = backend.device.makeTexture(descriptor: bloomDescriptor),
       let depth = backend.device.makeTexture(descriptor: depthDescriptor),
       let commandBuffer = backend.queue.makeCommandBuffer()
     else { throw VisualizationError.allocation(width * height * 8) }
     let pass = MTLRenderPassDescriptor()
-    pass.colorAttachments[0].texture = color
+    pass.colorAttachments[0].texture = scene
     pass.colorAttachments[0].loadAction = .clear
     pass.colorAttachments[0].storeAction = .store
     pass.colorAttachments[0].clearColor = MTLClearColorMake(0.002, 0.006, 0.016, 1)
@@ -1625,12 +1691,12 @@ final class FormationObservatoryRenderer {
         vertexCount: slice.count
       )
     }
-    for (index, buffer) in trailBuffers.enumerated() {
-      encoder.setVertexBuffer(buffer, offset: 0, index: 0)
+    if let trailBuffer {
+      encoder.setVertexBuffer(trailBuffer, offset: 0, index: 0)
       encoder.drawPrimitives(
         type: .triangleStrip,
         vertexStart: 0,
-        vertexCount: trails[index].count
+        vertexCount: batchedTrails.count
       )
     }
     encoder.setDepthStencilState(depthWriteState)
@@ -1652,14 +1718,59 @@ final class FormationObservatoryRenderer {
       vertexCount: surfaces.count
     )
     encoder.setDepthStencilState(depthReadState)
+    encoder.setTriangleFillMode(.fill)
+    encoder.setRenderPipelineState(trailPipeline)
+    encoder.setVertexBuffer(latticeBuffer, offset: 0, index: 0)
+    encoder.drawPrimitives(
+      type: .triangle,
+      vertexStart: 0,
+      vertexCount: latticeLens.count
+    )
+    encoder.setDepthStencilState(depthReadState)
     encoder.setRenderPipelineState(wirePipeline)
     encoder.setTriangleFillMode(.lines)
+    encoder.setVertexBuffer(surfaceBuffer, offset: 0, index: 0)
     encoder.drawPrimitives(
       type: .triangle,
       vertexStart: 0,
       vertexCount: surfaces.count
     )
     encoder.endEncoding()
+
+    let bloomPass = MTLRenderPassDescriptor()
+    bloomPass.colorAttachments[0].texture = bloom
+    bloomPass.colorAttachments[0].loadAction = .dontCare
+    bloomPass.colorAttachments[0].storeAction = .store
+    let bloomEncoder = commandBuffer.makeRenderCommandEncoder(
+      descriptor: bloomPass
+    )!
+    bloomEncoder.setRenderPipelineState(bloomPipeline)
+    bloomEncoder.setFragmentTexture(scene, index: 0)
+    bloomEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+    bloomEncoder.endEncoding()
+
+    let compositePass = MTLRenderPassDescriptor()
+    compositePass.colorAttachments[0].texture = color
+    compositePass.colorAttachments[0].loadAction = .dontCare
+    compositePass.colorAttachments[0].storeAction = .store
+    var finishing = SIMD4<Float>(0.22, 1.00, phase, 0)
+    let compositeEncoder = commandBuffer.makeRenderCommandEncoder(
+      descriptor: compositePass
+    )!
+    compositeEncoder.setRenderPipelineState(compositePipeline)
+    compositeEncoder.setFragmentTexture(scene, index: 0)
+    compositeEncoder.setFragmentTexture(bloom, index: 1)
+    compositeEncoder.setFragmentBytes(
+      &finishing,
+      length: MemoryLayout<SIMD4<Float>>.stride,
+      index: 0
+    )
+    compositeEncoder.drawPrimitives(
+      type: .triangle,
+      vertexStart: 0,
+      vertexCount: 3
+    )
+    compositeEncoder.endEncoding()
     commandBuffer.commit()
     commandBuffer.waitUntilCompleted()
     guard commandBuffer.status == .completed else {
@@ -2545,6 +2656,254 @@ final class FormationObservatoryRenderer {
     SIMD3<Float>(-relative.x, relative.y, relative.z)
   }
 
+  static func latticeBoltzmannDirectionSummary() -> (
+    total: Int,
+    rest: Int,
+    axis: Int,
+    faceDiagonal: Int,
+    focusedDirection: SIMD3<Int32>
+  ) {
+    var rest = 0
+    var axis = 0
+    var faceDiagonal = 0
+    for direction in D3Q19.directions {
+      let nonzero = [direction.x, direction.y, direction.z].filter { $0 != 0 }
+        .count
+      if nonzero == 0 {
+        rest += 1
+      } else if nonzero == 1 {
+        axis += 1
+      } else if nonzero == 2 {
+        faceDiagonal += 1
+      }
+    }
+    return (
+      D3Q19.directions.count,
+      rest,
+      axis,
+      faceDiagonal,
+      D3Q19.directions[5]
+    )
+  }
+
+  static func latticeLensCenter(
+    slice: FormationFlightFlowSlice,
+    leaderRoot: SIMD3<Float>,
+    followerRoot: SIMD3<Float>
+  ) -> SIMD3<Float>? {
+    guard slice.plane == "y",
+      slice.width > 2,
+      slice.height > 2,
+      slice.vorticityMagnitudePerSecond.count == slice.width * slice.height,
+      slice.verticalVelocityMetersPerSecond.count == slice.width * slice.height,
+      slice.ownerMask.count == slice.width * slice.height
+    else { return nil }
+    let chord = Float(slice.chordCells)
+    let z = (1 - 0.58) * leaderRoot.z + 0.58 * followerRoot.z
+    let zIndex = min(
+      slice.height - 2,
+      max(1, Int((z * chord + 0.5 * Float(slice.height)).rounded()))
+    )
+    var bestX: Float = 1.45
+    var bestScore: Float = -.infinity
+    let maximumVorticity = max(slice.maximumVorticityMagnitudePerSecond, 1e-8)
+    let maximumVertical = max(
+      slice.maximumAbsoluteVerticalVelocityMetersPerSecond,
+      1e-8
+    )
+    var bestVertical: Float = 0
+    for xIndex in 1..<(slice.width - 1) {
+      let x = (Float(xIndex) - 0.5 * Float(slice.width)) / chord
+      guard x >= 0.72, x <= 2.35 else { continue }
+      let index = xIndex + slice.width * zIndex
+      guard slice.ownerMask[index] == 0 else { continue }
+      let vorticity = max(slice.vorticityMagnitudePerSecond[index], 0)
+        / maximumVorticity
+      let vertical = abs(slice.verticalVelocityMetersPerSecond[index])
+        / maximumVertical
+      let score = vorticity + 0.24 * vertical
+      if score > bestScore {
+        bestScore = score
+        bestX = x
+        bestVertical = slice.verticalVelocityMetersPerSecond[index]
+      }
+    }
+    return SIMD3<Float>(
+      bestX,
+      0.24 + 0.12 * bestVertical / maximumVertical,
+      z
+    )
+  }
+
+  static func batchedTriangleStripVertices(
+    _ strips: [[ColoredVertex]]
+  ) -> [ColoredVertex] {
+    var result: [ColoredVertex] = []
+    for strip in strips where !strip.isEmpty {
+      if let last = result.last, let first = strip.first {
+        result.append(last)
+        result.append(first)
+        result.append(first)
+      }
+      result.append(contentsOf: strip)
+    }
+    return result
+  }
+
+  private func latticeBoltzmannLensVertices(
+    center: SIMD3<Float>,
+    phase: Float,
+    focusedSourceIntensity: Float,
+    camera: CameraState
+  ) -> [ColoredVertex] {
+    let spacing: Float = 0.47
+    let wrappedPhase = wrapped(phase)
+    let source = sqrt(min(max(focusedSourceIntensity, 0), 1))
+    let collision = exp(-52 * pow(sin(Float.pi * wrappedPhase), 2))
+    var result: [ColoredVertex] = []
+    result.reserveCapacity(1_100)
+
+    let corners = [Float(-1), Float(1)].flatMap { x in
+      [Float(-1), Float(1)].flatMap { y in
+        [Float(-1), Float(1)].map { z in
+          center + spacing * SIMD3<Float>(x, y, z)
+        }
+      }
+    }
+    for a in corners.indices {
+      for b in (a + 1)..<corners.count {
+        let delta = abs(corners[a] - corners[b])
+        let changedAxes = [delta.x, delta.y, delta.z].filter { $0 > 1e-6 }
+          .count
+        guard changedAxes == 1 else { continue }
+        appendBillboardSegment(
+          from: corners[a],
+          to: corners[b],
+          width: 0.006,
+          color: SIMD4<Float>(0.16, 0.58, 0.82, 0.13),
+          camera: camera,
+          to: &result
+        )
+      }
+    }
+
+    appendOctahedron(
+      center: center,
+      radius: 0.098 + 0.026 * collision,
+      color: SIMD4<Float>(
+        SIMD3<Float>(0.44, 0.92, 1.00) * (0.76 + 0.52 * collision),
+        0.88
+      ),
+      to: &result
+    )
+
+    for q in 1..<D3Q19.count {
+      let raw = D3Q19.directions[q]
+      let direction = SIMD3<Float>(Float(raw.x), Float(raw.y), Float(raw.z))
+      let endpoint = center + spacing * direction
+      let isAxis = abs(raw.x) + abs(raw.y) + abs(raw.z) == 1
+      let isFocused = q == 5
+      let baseColor: SIMD3<Float>
+      if isFocused {
+        baseColor = simd_mix(
+          SIMD3<Float>(0.92, 0.50, 0.16),
+          SIMD3<Float>(1.00, 0.88, 0.38),
+          SIMD3<Float>(repeating: source)
+        )
+      } else if isAxis {
+        baseColor = SIMD3<Float>(0.11, 0.78, 1.00)
+      } else {
+        baseColor = SIMD3<Float>(0.55, 0.32, 1.00)
+      }
+      appendBillboardSegment(
+        from: center,
+        to: endpoint,
+        width: isFocused ? 0.022 : 0.013,
+        color: SIMD4<Float>(baseColor, isFocused ? 0.46 : 0.22),
+        camera: camera,
+        to: &result
+      )
+
+      let pulseCenter = 0.10 + 0.80 * wrappedPhase
+      let halfLength: Float = isFocused ? 0.105 : 0.075
+      let start = max(0.025, pulseCenter - halfLength)
+      let end = min(0.985, pulseCenter + halfLength)
+      appendBillboardSegment(
+        from: simd_mix(center, endpoint, SIMD3<Float>(repeating: start)),
+        to: simd_mix(center, endpoint, SIMD3<Float>(repeating: end)),
+        width: isFocused ? 0.046 : 0.030,
+        color: SIMD4<Float>(
+          min(baseColor * (isFocused ? 1.42 : 1.16), 1.35),
+          isFocused ? 0.94 : 0.72
+        ),
+        camera: camera,
+        to: &result
+      )
+
+      let nodeRadius: Float = isAxis ? 0.056 : 0.046
+      appendOctahedron(
+        center: endpoint,
+        radius: nodeRadius + (isFocused ? 0.010 * source : 0),
+        color: SIMD4<Float>(
+          min(baseColor * (isFocused ? 1.20 : 0.88), 1.20),
+          isFocused ? 0.88 : 0.58
+        ),
+        to: &result
+      )
+    }
+    return result
+  }
+
+  private func appendBillboardSegment(
+    from start: SIMD3<Float>,
+    to end: SIMD3<Float>,
+    width: Float,
+    color: SIMD4<Float>,
+    camera: CameraState,
+    to result: inout [ColoredVertex]
+  ) {
+    let tangent = simd_normalize(end - start + SIMD3<Float>(1e-8, 0, 0))
+    let midpoint = 0.5 * (start + end)
+    let view = simd_normalize(camera.eye - midpoint)
+    var lateral = simd_cross(view, tangent)
+    if simd_length_squared(lateral) < 1e-8 {
+      lateral = simd_cross(SIMD3<Float>(0, 0, 1), tangent)
+    }
+    lateral = simd_normalize(lateral + SIMD3<Float>(1e-8, 0, 0))
+    appendQuad(
+      start - width * lateral,
+      start + width * lateral,
+      end + width * lateral,
+      end - width * lateral,
+      normal: view,
+      color: color,
+      to: &result
+    )
+  }
+
+  private func appendOctahedron(
+    center: SIMD3<Float>,
+    radius: Float,
+    color: SIMD4<Float>,
+    to result: inout [ColoredVertex]
+  ) {
+    let x = SIMD3<Float>(radius, 0, 0)
+    let y = SIMD3<Float>(0, radius, 0)
+    let z = SIMD3<Float>(0, 0, radius)
+    for (a, b, c) in [
+      (x, y, z), (y, -x, z), (-x, -y, z), (-y, x, z),
+      (y, x, -z), (-x, y, -z), (-y, -x, -z), (x, -y, -z),
+    ] {
+      appendTriangle(
+        center + a,
+        center + b,
+        center + c,
+        color: color,
+        to: &result
+      )
+    }
+  }
+
   static func figureEightCameraParameters(
     phase: Float
   ) -> SIMD3<Float> {
@@ -2569,7 +2928,7 @@ final class FormationObservatoryRenderer {
   ) -> FormationDovePresentationAudit {
     guard let dataset = doveDataset, let loop = doveLoop else {
       return FormationDovePresentationAudit(
-        schemaVersion: 5,
+        schemaVersion: 6,
         datasetIdentifier: "missing",
         scientificTier: "missing",
         sourceDatasetDOI: "missing",
@@ -2602,6 +2961,21 @@ final class FormationObservatoryRenderer {
           "archived-c20-vorticity-ridge+c18-q5-luminance",
         wakeIntersectionMarkerMode:
           "presentation-phase-ring-at-follower-plane",
+        latticeBoltzmannDisplayMode:
+          "presentation-only-d3q19-collision-streaming-lens",
+        latticeDirectionCount: D3Q19.count,
+        latticeRestPopulationCount: 1,
+        latticeAxisDirectionCount: 6,
+        latticeFaceDiagonalDirectionCount: 12,
+        collisionPulseMode: "phase-locked-central-rest-node",
+        streamingPulseMode: "outward-pulse-on-all-18-moving-links",
+        movingBoundaryExchangeMode:
+          "focused-leader-q5-source-modulates-positive-z-link",
+        focusedMomentumExchangeDirectionIndex: 5,
+        focusedMomentumExchangeDirection: [0, 0, 1],
+        trailDrawCallMode: "single-degenerate-strip-batch",
+        postProcessingMode:
+          "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff",
         focusedSourceTraceSampleCount: focusedSourceTraceSampleCount,
         focusedSourceTraceDirectionIndex: focusedSourceTraceDirectionIndex,
         wakeBridgePhaseCount: wakeBridgePhaseCount,
@@ -2636,6 +3010,7 @@ final class FormationObservatoryRenderer {
       Self.figureEightCameraParameters(phase: 0),
       Self.figureEightCameraParameters(phase: 1)
     )
+    let lattice = Self.latticeBoltzmannDirectionSummary()
     let passed = dataset.datasetIdentifier
       == "deetjen-ob-2018-12-11-f03-complete-surface-v1"
       && dataset.scientificTier == "derived-measured-complete-surface"
@@ -2662,11 +3037,16 @@ final class FormationObservatoryRenderer {
       && minimumFlowOpacity == 1
       && focusedSourceTraceSampleCount == 4_820
       && focusedSourceTraceDirectionIndex == 5
+      && lattice.total == 19
+      && lattice.rest == 1
+      && lattice.axis == 6
+      && lattice.faceDiagonal == 12
+      && lattice.focusedDirection == SIMD3<Int32>(0, 0, 1)
       && wakeBridgePhaseCount == capturePhaseCount
       && cameraEndpointResidual <= 1e-7
       && Self.doveTailScale.y < 0.5 * Self.doveBodyAndWingScale.y
     return FormationDovePresentationAudit(
-      schemaVersion: 5,
+      schemaVersion: 6,
       datasetIdentifier: dataset.datasetIdentifier,
       scientificTier: dataset.scientificTier,
       sourceDatasetDOI: dataset.sourceDatasetDOI,
@@ -2700,6 +3080,21 @@ final class FormationObservatoryRenderer {
         "archived-c20-vorticity-ridge+c18-q5-luminance",
       wakeIntersectionMarkerMode:
         "presentation-phase-ring-at-follower-plane",
+      latticeBoltzmannDisplayMode:
+        "presentation-only-d3q19-collision-streaming-lens",
+      latticeDirectionCount: lattice.total,
+      latticeRestPopulationCount: lattice.rest,
+      latticeAxisDirectionCount: lattice.axis,
+      latticeFaceDiagonalDirectionCount: lattice.faceDiagonal,
+      collisionPulseMode: "phase-locked-central-rest-node",
+      streamingPulseMode: "outward-pulse-on-all-18-moving-links",
+      movingBoundaryExchangeMode:
+        "focused-leader-q5-source-modulates-positive-z-link",
+      focusedMomentumExchangeDirectionIndex: 5,
+      focusedMomentumExchangeDirection: [0, 0, 1],
+      trailDrawCallMode: "single-degenerate-strip-batch",
+      postProcessingMode:
+        "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff",
       focusedSourceTraceSampleCount: focusedSourceTraceSampleCount,
       focusedSourceTraceDirectionIndex: focusedSourceTraceDirectionIndex,
       wakeBridgePhaseCount: wakeBridgePhaseCount,

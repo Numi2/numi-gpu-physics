@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed audit for the seamless-field Formation Observatory."""
+"""Fail-closed audit for the D3Q19 Formation Observatory."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image, ImageSequence
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v9.json"
+MANIFEST = ROOT / "ValidationArtifacts/formation-flight-observatory-visual-v10.json"
 
 
 def digest(path: Path) -> str:
@@ -69,6 +69,21 @@ adjacent = [
 median = float(np.median(adjacent))
 seam = float(np.sqrt(np.mean((frames[-1] - frames[0]) ** 2)))
 ratio = seam / max(median, 1e-12)
+edge_densities = []
+for frame in frames:
+    luminance = (
+        0.2126 * frame[:, :, 0]
+        + 0.7152 * frame[:, :, 1]
+        + 0.0722 * frame[:, :, 2]
+    )
+    horizontal = np.abs(luminance[:, 1:] - luminance[:, :-1])
+    vertical = np.abs(luminance[1:, :] - luminance[:-1, :])
+    edge_densities.append(
+        0.5 * (float(np.mean(horizontal > 35)) + float(np.mean(vertical > 35)))
+    )
+edge_density_median = float(np.median(edge_densities))
+edge_density_maximum = float(np.max(edge_densities))
+edge_density_ratio = edge_density_maximum / max(edge_density_median, 1e-12)
 check(
     "encoded seam remains ordinary motion",
     ratio <= manifest["output"]["maximumSeamToMedianAdjacentRMSRatio"],
@@ -78,6 +93,21 @@ check(
     "recorded seam ratio",
     math.isclose(ratio, manifest["output"]["seamToMedianAdjacentRMSRatio"], rel_tol=1e-12, abs_tol=1e-12),
     ratio,
+)
+check(
+    "no transient geometry streak burst",
+    edge_density_ratio <= manifest["output"]["maximumHighEdgeDensityRatio"],
+    edge_density_ratio,
+)
+check(
+    "recorded high-edge density ratio",
+    math.isclose(
+        edge_density_ratio,
+        manifest["output"]["encodedHighEdgeDensityRatio"],
+        rel_tol=1e-12,
+        abs_tol=1e-12,
+    ),
+    edge_density_ratio,
 )
 
 subcell = json.loads(
@@ -237,6 +267,28 @@ check(
     and dove["wakeBridgePhaseCount"] == dove["capturePhaseCount"],
 )
 check(
+    "exact D3Q19 presentation topology",
+    dove["latticeBoltzmannDisplayMode"]
+    == "presentation-only-d3q19-collision-streaming-lens"
+    and dove["latticeDirectionCount"] == 19
+    and dove["latticeRestPopulationCount"] == 1
+    and dove["latticeAxisDirectionCount"] == 6
+    and dove["latticeFaceDiagonalDirectionCount"] == 12,
+)
+check(
+    "phase-resolved q5 momentum-exchange cue",
+    dove["focusedMomentumExchangeDirectionIndex"] == 5
+    and dove["focusedMomentumExchangeDirection"] == [0, 0, 1]
+    and dove["movingBoundaryExchangeMode"]
+    == "focused-leader-q5-source-modulates-positive-z-link",
+)
+check(
+    "GPU-conscious cinematic path",
+    dove["trailDrawCallMode"] == "single-degenerate-strip-batch"
+    and dove["postProcessingMode"]
+    == "rgba16f-half-resolution-25-tap-bloom-highlight-rolloff",
+)
+check(
     "cinematic overlay lock",
     dove["overlayMode"] == "none-cinematic",
 )
@@ -263,14 +315,17 @@ check("GitHub Actions remain absent", not (ROOT / ".github").exists())
 
 passed = all(item["passed"] for item in checks)
 result = {
-    "schemaVersion": 7,
-    "title": "Seamless-field Formation Observatory visual audit",
+    "schemaVersion": 8,
+    "title": "D3Q19 Formation Observatory visual audit",
     "passed": passed,
     "checkCount": len(checks),
     "passedCheckCount": sum(item["passed"] for item in checks),
     "encodedMedianAdjacentRMS": median,
     "encodedSeamRMS": seam,
     "encodedSeamToMedianAdjacentRMSRatio": ratio,
+    "encodedMedianHighEdgeDensity": edge_density_median,
+    "encodedMaximumHighEdgeDensity": edge_density_maximum,
+    "encodedHighEdgeDensityRatio": edge_density_ratio,
     "checks": checks,
     "claimBoundary": manifest["claimBoundary"],
 }
