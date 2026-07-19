@@ -23,6 +23,27 @@ BirdFlowMetal advances a real D3Q19 fluid state on the GPU, evaluates articulate
 > [!IMPORTANT]
 > **Scientific status:** the coupled vertical slice is complete and the fixed-thickness prescribed flapping-wing canonical is quantitatively accepted. Complete measured-bird and free-flight results are **not** yet publication-ready. The repository keeps those boundaries explicit instead of converting engineering success into an aerodynamic claim.
 
+## Deetjen dove through flight
+
+The new flight direction preserves the complete Deetjen OB F03 source
+trajectory instead of subtracting body translation for a presentation loop.
+It advances all `144` non-periodic surface frames from `0...143 ms` through the
+Metal moving-boundary solver. The measured-derived body center has endpoint
+displacement `[0.187064, 0.044940, -0.008277] m` while body, bilateral wings,
+and tail retain their source timing and fixed indexed topology.
+
+```bash
+./Scripts/run-deetjen-through-flight.sh
+```
+
+The first locked D8 RR3 engineering run completed `4,576/4,576` fluid steps
+with finite loads and positive sampled populations. Its report is
+[`deetjen-dove-through-flight-v1.json`](ValidationArtifacts/deetjen-dove-through-flight-v1.json),
+and the direction/claim contract is
+[`Docs/DEETJEN_DOVE_THROUGH_FLIGHT.md`](Docs/DEETJEN_DOVE_THROUGH_FLIGHT.md).
+This is prescribed-motion CFD at the existing D8 engineering viscosity. It is
+not yet source-viscosity experimental agreement or load-responsive free flight.
+
 [Quick start](#quick-start) · [Validation scoreboard](#validation-scoreboard) · [Native viewer](#native-metal-viewer) · [Architecture](#architecture) · [Measured data](#measured-geometry-and-kinematics) · [Scientific limits](#scientific-boundary) · [Full validation contract](Docs/VALIDATION.md)
 
 ## Why this project is interesting

@@ -240,6 +240,33 @@ public struct MetalIndexedBirdSurfacePilotReport: Codable, Sendable {
     public let claimBoundary: String
 }
 
+/// A first-class, non-periodic replay of the complete Deetjen OB F03 source
+/// sequence. The surface's measured-derived body translation is preserved;
+/// this is distinct from the body-fixed presentation loop used by the README.
+public struct DeetjenDoveThroughFlightReport: Codable, Sendable {
+    public let schemaVersion: Int
+    public let datasetIdentifier: String
+    public let manifestSHA256: String
+    public let forceTargetIdentifier: String
+    public let forceTargetSHA256: String
+    public let sourceFrameCount: Int
+    public let sourceStartTimeSeconds: Double
+    public let sourceEndTimeSeconds: Double
+    public let sourceDurationSeconds: Double
+    public let startBodyCenterMeters: SIMD3<Double>
+    public let endBodyCenterMeters: SIMD3<Double>
+    public let measuredDerivedBodyDisplacementMeters: SIMD3<Double>
+    public let measuredDerivedBodyTravelMeters: Double
+    public let meanMeasuredDerivedBodyVelocityMetersPerSecond: SIMD3<Double>
+    public let sourceTranslationPreserved: Bool
+    public let prescribedMotion: Bool
+    public let pilot: MetalIndexedBirdSurfacePilotReport
+    public let fullSourceTimelineCompleted: Bool
+    public let passed: Bool
+    public let scientificVerdict: String
+    public let claimBoundary: String
+}
+
 public struct MetalIndexedBirdSurfaceCollisionPreRollCase: Codable, Sendable {
     public let collisionOperator: String
     public let requestedPreRollSteps: Int
@@ -3217,6 +3244,199 @@ public enum MetalIndexedBirdSurfacePilotValidator {
                     / Double(sourceDynamicViscosity),
             experimentalAgreementGateApplied: false
         )
+    }
+
+    /// Extends the bounded force-comparison pilot through the final source
+    /// frame while retaining the same D8 engineering scaling and force window.
+    public static func deetjenThroughFlightPlan(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75
+    ) throws -> MetalIndexedBirdSurfacePilotPlan {
+        let base = try plan(
+            surface: surface,
+            target: target,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells
+        )
+        guard surface.datasetIdentifier
+                == "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+              target.datasetIdentifier
+                == "deetjen-ob-2018-12-11-f03-measured-force-v1",
+              let sourceEnd = surface.frameTimesSeconds.last,
+              let forceEnd = target.timesSeconds.last,
+              abs(Double(sourceEnd) - forceEnd) <= 1e-7 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "Deetjen through-flight requires the locked OB F03 surface and synchronized force target"
+            )
+        }
+        let fullSourceSteps = Int(round(
+            Double(sourceEnd) / base.fluidTimeStepSeconds
+        ))
+        guard fullSourceSteps > base.totalFluidSteps,
+              abs(
+                Double(fullSourceSteps) * base.fluidTimeStepSeconds
+                    - Double(sourceEnd)
+              ) <= 1e-7,
+              fullSourceSteps % base.fluidStepsPerForceSample == 0,
+              fullSourceSteps / base.fluidStepsPerForceSample
+                == target.sampleCount - 1 else {
+            throw MeasuredBirdSurfaceSequenceError.invalidDataset(
+                "Deetjen source duration is not integral in the D8 flight timestep"
+            )
+        }
+        return MetalIndexedBirdSurfacePilotPlan(
+            cellSizeMeters: base.cellSizeMeters,
+            halfThicknessCells: base.halfThicknessCells,
+            paddingCells: base.paddingCells,
+            spongeWidthCells: base.spongeWidthCells,
+            spongeStrength: base.spongeStrength,
+            forceSamplesPerSecond: base.forceSamplesPerSecond,
+            fluidStepsPerForceSample: base.fluidStepsPerForceSample,
+            fluidTimeStepSeconds: base.fluidTimeStepSeconds,
+            totalFluidSteps: fullSourceSteps,
+            preRollFluidSteps: base.preRollFluidSteps,
+            comparisonForceSamples: base.comparisonForceSamples,
+            maximumSurfaceSpeedMetersPerSecond:
+                base.maximumSurfaceSpeedMetersPerSecond,
+            latticeReferenceSpeed: base.latticeReferenceSpeed,
+            maximumWallMach: base.maximumWallMach,
+            pilotTauPlus: base.pilotTauPlus,
+            pilotReynoldsNumber: base.pilotReynoldsNumber,
+            sourceAirDensityKilogramsPerCubicMeter:
+                base.sourceAirDensityKilogramsPerCubicMeter,
+            sourceDynamicViscosityPascalSeconds:
+                base.sourceDynamicViscosityPascalSeconds,
+            sourceConditionTauPlusAtPilotGrid:
+                base.sourceConditionTauPlusAtPilotGrid,
+            minimumAllowedTauPlus: base.minimumAllowedTauPlus,
+            sourceViscosityRepresentableAtPilotGrid:
+                base.sourceViscosityRepresentableAtPilotGrid,
+            maximumCellSizeForSourceViscosityMeters:
+                base.maximumCellSizeForSourceViscosityMeters,
+            pilotDynamicViscosityPascalSeconds:
+                base.pilotDynamicViscosityPascalSeconds,
+            pilotToSourceViscosityRatio:
+                base.pilotToSourceViscosityRatio,
+            experimentalAgreementGateApplied:
+                base.experimentalAgreementGateApplied
+        )
+    }
+
+    public static func simulateDeetjenThroughFlight(
+        surface: MeasuredBirdSurfaceSequence,
+        target: MeasuredBirdForceTarget,
+        cellSizeMeters: Float = 0.01,
+        halfThicknessCells: Float = 0.75
+    ) throws -> DeetjenDoveThroughFlightReport {
+        let plan = try deetjenThroughFlightPlan(
+            surface: surface,
+            target: target,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells
+        )
+#if canImport(Metal)
+        let backend = try MetalBackend(fastMath: false)
+        let replay = try MetalIndexedBirdSurfaceReplay(
+            backend: backend,
+            dataset: surface,
+            cellSizeMeters: cellSizeMeters,
+            halfThicknessCells: halfThicknessCells,
+            paddingCells: plan.paddingCells,
+            physicalAirDensity: sourceAirDensity,
+            targetReynoldsNumber: Float(plan.pilotReynoldsNumber),
+            latticeReferenceSpeed: Float(plan.latticeReferenceSpeed),
+            spongeWidthCells: plan.spongeWidthCells,
+            spongeStrength: Float(plan.spongeStrength)
+        )
+        let pilot = try replay.runCoarseForcePilot(
+            target: target,
+            plan: plan,
+            collisionOperator: .positivityPreservingRecursiveRegularizedBGK,
+            maximumFluidSteps: plan.totalFluidSteps,
+            populationDiagnosticStride: plan.fluidStepsPerForceSample,
+            stopAtFirstNegativePopulation: true
+        )
+        let sourceStart = surface.frameTimesSeconds.first!
+        let sourceEnd = surface.frameTimesSeconds.last!
+        let startBody = surface.bodyState(timeSeconds: sourceStart)
+        let endBody = surface.bodyState(timeSeconds: sourceEnd)
+        let displacement = endBody.positionMeters - startBody.positionMeters
+        var bodyTravel: Float = 0
+        var previousBodyPosition = startBody.positionMeters
+        for frameTime in surface.frameTimesSeconds.dropFirst() {
+            let bodyPosition = surface.bodyState(
+                timeSeconds: frameTime
+            ).positionMeters
+            let segment = bodyPosition - previousBodyPosition
+            bodyTravel += sqrt(
+                segment.x * segment.x
+                    + segment.y * segment.y
+                    + segment.z * segment.z
+            )
+            previousBodyPosition = bodyPosition
+        }
+        let duration = sourceEnd - sourceStart
+        let completed = pilot.completedFluidSteps == plan.totalFluidSteps
+            && abs(
+                Double(plan.totalFluidSteps) * plan.fluidTimeStepSeconds
+                    - Double(sourceEnd)
+            ) <= 1e-7
+        let passed = completed
+            && pilot.integrationGatePassed
+            && pilot.allLoadsFinite
+            && pilot.allSampledPopulationsFinite
+            && pilot.sampledPopulationPositivityPassed
+            && pilot.firstNegativePopulationStep == nil
+            && pilot.firstNonFiniteLoadStep == nil
+            && pilot.firstNonFinitePopulationStep == nil
+        let toDouble: (SIMD3<Float>) -> SIMD3<Double> = {
+            SIMD3<Double>(Double($0.x), Double($0.y), Double($0.z))
+        }
+        return DeetjenDoveThroughFlightReport(
+            schemaVersion: 1,
+            datasetIdentifier: surface.datasetIdentifier,
+            manifestSHA256: surface.manifestSHA256,
+            forceTargetIdentifier: target.datasetIdentifier,
+            forceTargetSHA256: target.targetSHA256,
+            sourceFrameCount: surface.frameCount,
+            sourceStartTimeSeconds: Double(sourceStart),
+            sourceEndTimeSeconds: Double(sourceEnd),
+            sourceDurationSeconds: Double(duration),
+            startBodyCenterMeters: toDouble(startBody.positionMeters),
+            endBodyCenterMeters: toDouble(endBody.positionMeters),
+            measuredDerivedBodyDisplacementMeters: toDouble(displacement),
+            measuredDerivedBodyTravelMeters: Double(bodyTravel),
+            meanMeasuredDerivedBodyVelocityMetersPerSecond:
+                toDouble(displacement / duration),
+            sourceTranslationPreserved: true,
+            prescribedMotion: true,
+            pilot: pilot,
+            fullSourceTimelineCompleted: completed,
+            passed: passed,
+            scientificVerdict: passed
+                ? (
+                    "The complete non-periodic 143 ms Deetjen source sequence "
+                        + "advanced through the Metal moving-boundary solver "
+                        + "with its measured-derived body translation intact."
+                )
+                : (
+                    "The Deetjen through-flight path stopped before the full "
+                        + "source timeline cleared its engineering gates."
+                ),
+            claimBoundary: (
+                "This is prescribed-motion CFD over the measured-derived "
+                    + "Deetjen surface sequence. The right wing remains a "
+                    + "bilateral reconstruction and the D8 engineering "
+                    + "viscosity exceeds the source condition. The body does "
+                    + "not respond to computed loads, so this is not a "
+                    + "free-flight prediction or experimental-agreement claim."
+            )
+        )
+#else
+        throw BirdFlowError.metalUnavailable
+#endif
     }
 
     public static func refinementPlan(

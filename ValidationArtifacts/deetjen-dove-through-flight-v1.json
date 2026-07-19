@@ -1,0 +1,5351 @@
+{
+  "claimBoundary" : "This is prescribed-motion CFD over the measured-derived Deetjen surface sequence. The right wing remains a bilateral reconstruction and the D8 engineering viscosity exceeds the source condition. The body does not respond to computed loads, so this is not a free-flight prediction or experimental-agreement claim.",
+  "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+  "endBodyCenterMeters" : [
+    0.13033391535282135,
+    0.0443078838288784,
+    -0.032643016427755356
+  ],
+  "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+  "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+  "fullSourceTimelineCompleted" : true,
+  "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+  "meanMeasuredDerivedBodyVelocityMetersPerSecond" : [
+    1.3081406354904175,
+    0.314267098903656,
+    -0.057878777384757996
+  ],
+  "measuredDerivedBodyDisplacementMeters" : [
+    0.18706412613391876,
+    0.044940195977687836,
+    -0.008276665583252907
+  ],
+  "measuredDerivedBodyTravelMeters" : 0.24186548590660095,
+  "passed" : true,
+  "pilot" : {
+    "allComponentsPresentAtComparisonSamples" : true,
+    "allLoadsFinite" : true,
+    "allSampledPopulationsFinite" : true,
+    "claimBoundary" : "This is a bounded engineering pilot for startup, sign, phase, moving-boundary force accounting, and sampled population positivity. Its viscosity is 68.1 times the measured source condition, so its force errors are descriptive only and cannot establish experimental agreement or quantitative bird flight.",
+    "collisionLimiterActivationCount" : 28,
+    "collisionLimiterActivationFractionOfCellSteps" : 1.791503767788353e-08,
+    "collisionOperator" : "positivity-preserving-recursive-regularized-bgk",
+    "completedFluidSteps" : 4576,
+    "datasetIdentifier" : "deetjen-ob-2018-12-11-f03-complete-surface-v1",
+    "deviceName" : "Apple M4",
+    "endpointImpulseXNewtonSeconds" : 0.05933386281132701,
+    "endpointImpulseZNewtonSeconds" : 0.1374272639751435,
+    "endpointMeanForceXNewtons" : 0.5989059818619713,
+    "endpointMeanForceZNewtons" : 1.5037000804023946,
+    "endpointNormalizedRMSError" : 5.676027623198696,
+    "endpointPeakTimeSeconds" : 0.082,
+    "experimentalAgreementGateApplied" : false,
+    "forceEstimator" : "conservative-moving-domain-mode-6",
+    "forceTargetIdentifier" : "deetjen-ob-2018-12-11-f03-measured-force-v1",
+    "forceTargetSHA256" : "0ec3caf21e4b22c2f7dd81e9d5b129fec2d0535dac147d486446975144d6b12c",
+    "gridX" : 75,
+    "gridY" : 69,
+    "gridZ" : 66,
+    "integrationGatePassed" : true,
+    "intervalMeanForceXNewtons" : 0.03451888815046632,
+    "intervalMeanForceZNewtons" : 1.8562559670305507,
+    "intervalMeanImpulseXNewtonSeconds" : 0.003813219806179417,
+    "intervalMeanImpulseZNewtonSeconds" : 0.17363080951571477,
+    "intervalMeanNormalizedRMSError" : 2.2638867092530095,
+    "intervalMeanPeakTimeSeconds" : 0.1065,
+    "manifestSHA256" : "ad42148aa9ee72d994d668ba16f8b6572cb8b192b77539fe66d97586ed9e1a13",
+    "maximumCollisionRestriction" : 0.6996561884880066,
+    "measuredImpulseXNewtonSeconds" : 0.014511779299165029,
+    "measuredImpulseZNewtonSeconds" : 0.13272799291498957,
+    "measuredMeanForceXNewtons" : 0.15597300613155055,
+    "measuredMeanForceZNewtons" : 1.420231978407525,
+    "measuredPeakTimeSeconds" : 0.068,
+    "minimumSampledPopulation" : 0.0002813739702105522,
+    "periodicBoundaries" : false,
+    "plan" : {
+      "cellSizeMeters" : 0.009999999776482582,
+      "comparisonForceSamples" : 187,
+      "experimentalAgreementGateApplied" : false,
+      "fluidStepsPerForceSample" : 16,
+      "fluidTimeStepSeconds" : 3.125e-05,
+      "forceSamplesPerSecond" : 2000,
+      "halfThicknessCells" : 0.75,
+      "latticeReferenceSpeed" : 0.07884504971306883,
+      "maximumCellSizeForSourceViscosityMeters" : 0.00293754225011834,
+      "maximumSurfaceSpeedMetersPerSecond" : 25.23041534423828,
+      "maximumWallMach" : 0.13656363447940487,
+      "minimumAllowedTauPlus" : 0.5000500082969666,
+      "paddingCells" : 12,
+      "pilotDynamicViscosityPascalSeconds" : 0.0012586503496184523,
+      "pilotReynoldsNumber" : 1892.305555796951,
+      "pilotTauPlus" : 0.5009999871253967,
+      "pilotToSourceViscosityRatio" : 68.07194967379765,
+      "preRollFluidSteps" : 800,
+      "sourceAirDensityKilogramsPerCubicMeter" : 1.1799999475479126,
+      "sourceConditionTauPlusAtPilotGrid" : 0.5000146901488479,
+      "sourceDynamicViscosityPascalSeconds" : 1.8490000002202578e-05,
+      "sourceViscosityRepresentableAtPilotGrid" : false,
+      "spongeStrength" : 0.07999999821186066,
+      "spongeWidthCells" : 6,
+      "totalFluidSteps" : 4576
+    },
+    "populationDiagnosticStride" : 16,
+    "recordedComparisonSamples" : 187,
+    "recordedPopulationDiagnosticSamples" : 286,
+    "runtimeSeconds" : 15.573374032974243,
+    "sampledPopulationPositivityPassed" : true,
+    "samples" : [
+      {
+        "componentSolidCellCounts" : [
+          451,
+          283,
+          279,
+          509
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.8131694793701172,
+          -0.46024566888809204,
+          2.000946044921875
+        ],
+        "endpointResidualXNewtons" : -1.0170013752119025,
+        "endpointResidualZNewtons" : 1.9380531180621443,
+        "intervalMeanComputedForceNewtons" : [
+          -1.4492156840860844,
+          -0.8809500224888325,
+          0.5776557922363281
+        ],
+        "intervalMeanResidualXNewtons" : -1.6530475799278697,
+        "intervalMeanResidualZNewtons" : 0.5147628653765975,
+        "measuredForceXNewtons" : 0.20383189584178524,
+        "measuredForceZNewtons" : 0.0628929268597306,
+        "minimumPopulation" : 0.020462647080421448,
+        "sourceFrameCoordinate" : 25,
+        "sourceTimeSeconds" : 0.025,
+        "targetSampleIndex" : 50
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          276,
+          268,
+          509
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.074798822402954,
+          -0.1348400115966797,
+          2.102294921875
+        ],
+        "endpointResidualXNewtons" : -1.2447885213107734,
+        "endpointResidualZNewtons" : 2.0471869705622483,
+        "intervalMeanComputedForceNewtons" : [
+          -1.7359194234013557,
+          -0.8574243113398552,
+          1.9630241394042969
+        ],
+        "intervalMeanResidualXNewtons" : -1.905909122309175,
+        "intervalMeanResidualZNewtons" : 1.9079161880915452,
+        "measuredForceXNewtons" : 0.16998969890781926,
+        "measuredForceZNewtons" : 0.055107951312751716,
+        "minimumPopulation" : 0.02058655396103859,
+        "sourceFrameCoordinate" : 25.5,
+        "sourceTimeSeconds" : 0.0255,
+        "targetSampleIndex" : 51
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          260,
+          269,
+          509
+        ],
+        "endpointComputedForceNewtons" : [
+          -6.653843402862549,
+          0.8513615131378174,
+          0.56671142578125
+        ],
+        "endpointResidualXNewtons" : -6.788249570840798,
+        "endpointResidualZNewtons" : 0.5182669191957913,
+        "intervalMeanComputedForceNewtons" : [
+          -1.1927941367030144,
+          -0.38468752801418304,
+          -0.3230152130126953
+        ],
+        "intervalMeanResidualXNewtons" : -1.3272003046812637,
+        "intervalMeanResidualZNewtons" : -0.37145971959815405,
+        "measuredForceXNewtons" : 0.13440616797824942,
+        "measuredForceZNewtons" : 0.04844450658545871,
+        "minimumPopulation" : 0.021090319380164146,
+        "sourceFrameCoordinate" : 26,
+        "sourceTimeSeconds" : 0.026,
+        "targetSampleIndex" : 52
+      },
+      {
+        "componentSolidCellCounts" : [
+          465,
+          264,
+          266,
+          513
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.124053478240967,
+          -0.4167499542236328,
+          0.351409912109375
+        ],
+        "endpointResidualXNewtons" : -2.2222241106629754,
+        "endpointResidualZNewtons" : 0.307803721422746,
+        "intervalMeanComputedForceNewtons" : [
+          -1.5839128643274307,
+          -0.47060203924775124,
+          0.3638420104980469
+        ],
+        "intervalMeanResidualXNewtons" : -1.6820834967494394,
+        "intervalMeanResidualZNewtons" : 0.32023581981141785,
+        "measuredForceXNewtons" : 0.09817063242200852,
+        "measuredForceZNewtons" : 0.04360619068662902,
+        "minimumPopulation" : 0.021189048886299133,
+        "sourceFrameCoordinate" : 26.5,
+        "sourceTimeSeconds" : 0.0265,
+        "targetSampleIndex" : 53
+      },
+      {
+        "componentSolidCellCounts" : [
+          462,
+          274,
+          268,
+          516
+        ],
+        "endpointComputedForceNewtons" : [
+          -5.396036148071289,
+          0.8322687149047852,
+          5.951904296875
+        ],
+        "endpointResidualXNewtons" : -5.458531311150196,
+        "endpointResidualZNewtons" : 5.91062100236808,
+        "intervalMeanComputedForceNewtons" : [
+          -1.0114735215902328,
+          -0.5650022476911545,
+          0.9558029174804688
+        ],
+        "intervalMeanResidualXNewtons" : -1.0739686846691399,
+        "intervalMeanResidualZNewtons" : 0.9145196229735488,
+        "measuredForceXNewtons" : 0.06249516307890691,
+        "measuredForceZNewtons" : 0.041283294506919956,
+        "minimumPopulation" : 0.02078741416335106,
+        "sourceFrameCoordinate" : 27,
+        "sourceTimeSeconds" : 0.027,
+        "targetSampleIndex" : 54
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          275,
+          271,
+          510
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.09909534454345703,
+          -0.9752106666564941,
+          2.128326416015625
+        ],
+        "endpointResidualXNewtons" : -0.12775270389061186,
+        "endpointResidualZNewtons" : 2.0862130140018027,
+        "intervalMeanComputedForceNewtons" : [
+          -0.6271056830883026,
+          -0.33237864077091217,
+          2.134855270385742
+        ],
+        "intervalMeanResidualXNewtons" : -0.6557630424354575,
+        "intervalMeanResidualZNewtons" : 2.09274186837192,
+        "measuredForceXNewtons" : 0.028657359347154836,
+        "measuredForceZNewtons" : 0.042113402013822424,
+        "minimumPopulation" : 0.02069571055471897,
+        "sourceFrameCoordinate" : 27.5,
+        "sourceTimeSeconds" : 0.0275,
+        "targetSampleIndex" : 55
+      },
+      {
+        "componentSolidCellCounts" : [
+          454,
+          272,
+          270,
+          515
+        ],
+        "endpointComputedForceNewtons" : [
+          3.687547445297241,
+          -0.8923535346984863,
+          1.887451171875
+        ],
+        "endpointResidualXNewtons" : 3.6896117882561192,
+        "endpointResidualZNewtons" : 1.840804501814554,
+        "intervalMeanComputedForceNewtons" : [
+          -0.4709990471601486,
+          -0.7532344907522202,
+          0.8152446746826172
+        ],
+        "intervalMeanResidualXNewtons" : -0.46893470420127054,
+        "intervalMeanResidualZNewtons" : 0.7685980046221712,
+        "measuredForceXNewtons" : -0.0020643429588780918,
+        "measuredForceZNewtons" : 0.046646670060446,
+        "minimumPopulation" : 0.019807912409305573,
+        "sourceFrameCoordinate" : 28,
+        "sourceTimeSeconds" : 0.028,
+        "targetSampleIndex" : 56
+      },
+      {
+        "componentSolidCellCounts" : [
+          462,
+          284,
+          269,
+          511
+        ],
+        "endpointComputedForceNewtons" : [
+          0.48932695388793945,
+          -0.3326761722564697,
+          2.89422607421875
+        ],
+        "endpointResidualXNewtons" : 0.5177852964908864,
+        "endpointResidualZNewtons" : 2.8389076466594636,
+        "intervalMeanComputedForceNewtons" : [
+          2.030662551522255,
+          -0.2080458328127861,
+          4.386852264404297
+        ],
+        "intervalMeanResidualXNewtons" : 2.059120894125202,
+        "intervalMeanResidualZNewtons" : 4.3315338368450105,
+        "measuredForceXNewtons" : -0.028458342602946975,
+        "measuredForceZNewtons" : 0.055318427559286246,
+        "minimumPopulation" : 0.020834052935242653,
+        "sourceFrameCoordinate" : 28.5,
+        "sourceTimeSeconds" : 0.0285,
+        "targetSampleIndex" : 57
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          275,
+          286,
+          509
+        ],
+        "endpointComputedForceNewtons" : [
+          1.5890460014343262,
+          0.8094531297683716,
+          2.941650390625
+        ],
+        "endpointResidualXNewtons" : 1.6384918057603965,
+        "endpointResidualZNewtons" : 2.8732198520613736,
+        "intervalMeanComputedForceNewtons" : [
+          -1.7313902080059052,
+          -0.23130666837096214,
+          -0.4650611877441406
+        ],
+        "intervalMeanResidualXNewtons" : -1.6819444036798348,
+        "intervalMeanResidualZNewtons" : -0.5334917263077671,
+        "measuredForceXNewtons" : -0.049445804326070424,
+        "measuredForceZNewtons" : 0.0684305385636265,
+        "minimumPopulation" : 0.020737355574965477,
+        "sourceFrameCoordinate" : 29,
+        "sourceTimeSeconds" : 0.029,
+        "targetSampleIndex" : 58
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          285,
+          280,
+          500
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.6899538040161133,
+          -0.8151243925094604,
+          1.7786865234375
+        ],
+        "endpointResidualXNewtons" : -1.625813606884186,
+        "endpointResidualZNewtons" : 1.6925445346877646,
+        "intervalMeanComputedForceNewtons" : [
+          0.12985356152057648,
+          -0.2287622168660164,
+          2.143146514892578
+        ],
+        "intervalMeanResidualXNewtons" : 0.1939937586525037,
+        "intervalMeanResidualZNewtons" : 2.0570045261428427,
+        "measuredForceXNewtons" : -0.06414019713192723,
+        "measuredForceZNewtons" : 0.08614198874973536,
+        "minimumPopulation" : 0.020993441343307495,
+        "sourceFrameCoordinate" : 29.5,
+        "sourceTimeSeconds" : 0.0295,
+        "targetSampleIndex" : 59
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          283,
+          280,
+          506
+        ],
+        "endpointComputedForceNewtons" : [
+          1.94264817237854,
+          0.5969376564025879,
+          3.7932586669921875
+        ],
+        "endpointResidualXNewtons" : 2.014544311126988,
+        "endpointResidualZNewtons" : 3.6847901583238083,
+        "intervalMeanComputedForceNewtons" : [
+          -2.843871757388115,
+          -0.2809610366821289,
+          -0.22126737236976624
+        ],
+        "intervalMeanResidualXNewtons" : -2.771975618639667,
+        "intervalMeanResidualZNewtons" : -0.3297358810381454,
+        "measuredForceXNewtons" : -0.07189613874844783,
+        "measuredForceZNewtons" : 0.10846850866837915,
+        "minimumPopulation" : 0.021033471450209618,
+        "sourceFrameCoordinate" : 30,
+        "sourceTimeSeconds" : 0.03,
+        "targetSampleIndex" : 60
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          288,
+          293,
+          509
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.1646366119384766,
+          -0.3033255934715271,
+          0.9262886047363281
+        ],
+        "endpointResidualXNewtons" : -1.0922926886909945,
+        "endpointResidualZNewtons" : 0.7909979340564162,
+        "intervalMeanComputedForceNewtons" : [
+          -0.06345253437757492,
+          -0.6140898242592812,
+          2.10402512550354
+        ],
+        "intervalMeanResidualXNewtons" : 0.008891388869907091,
+        "intervalMeanResidualZNewtons" : 1.968734454823628,
+        "measuredForceXNewtons" : -0.07234392324748201,
+        "measuredForceZNewtons" : 0.13529067067991202,
+        "minimumPopulation" : 0.021221572533249855,
+        "sourceFrameCoordinate" : 30.5,
+        "sourceTimeSeconds" : 0.0305,
+        "targetSampleIndex" : 61
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          287,
+          302,
+          512
+        ],
+        "endpointComputedForceNewtons" : [
+          -5.4275126457214355,
+          1.636396884918213,
+          10.048553466796875
+        ],
+        "endpointResidualXNewtons" : -5.3621055256044405,
+        "endpointResidualZNewtons" : 9.882183839700184,
+        "intervalMeanComputedForceNewtons" : [
+          -3.2976200729608536,
+          -0.4833451956510544,
+          0.08733534812927246
+        ],
+        "intervalMeanResidualXNewtons" : -3.232212952843859,
+        "intervalMeanResidualZNewtons" : -0.07903427896741821,
+        "measuredForceXNewtons" : -0.0654071201169947,
+        "measuredForceZNewtons" : 0.16636962709669068,
+        "minimumPopulation" : 0.021111896261572838,
+        "sourceFrameCoordinate" : 31,
+        "sourceTimeSeconds" : 0.031,
+        "targetSampleIndex" : 62
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          298,
+          308,
+          514
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.666604518890381,
+          0.06666088104248047,
+          1.3309249877929688
+        ],
+        "endpointResidualXNewtons" : -2.6153025863322203,
+        "endpointResidualZNewtons" : 1.12955564079788,
+        "intervalMeanComputedForceNewtons" : [
+          -1.6010839752852917,
+          0.2957730256021023,
+          1.2872967720031738
+        ],
+        "intervalMeanResidualXNewtons" : -1.5497820427271312,
+        "intervalMeanResidualZNewtons" : 1.085927425008085,
+        "measuredForceXNewtons" : -0.05130193255816041,
+        "measuredForceZNewtons" : 0.2013693469950889,
+        "minimumPopulation" : 0.021255411207675934,
+        "sourceFrameCoordinate" : 31.5,
+        "sourceTimeSeconds" : 0.0315,
+        "targetSampleIndex" : 63
+      },
+      {
+        "componentSolidCellCounts" : [
+          457,
+          305,
+          315,
+          514
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.5138988494873047,
+          1.405077576637268,
+          9.76739501953125
+        ],
+        "endpointResidualXNewtons" : -2.483380355187449,
+        "endpointResidualZNewtons" : 9.527511218008945,
+        "intervalMeanComputedForceNewtons" : [
+          -3.576491966843605,
+          -0.11801832541823387,
+          0.6573920249938965
+        ],
+        "intervalMeanResidualXNewtons" : -3.5459734725437495,
+        "intervalMeanResidualZNewtons" : 0.4175082234715905,
+        "measuredForceXNewtons" : -0.030518494299855668,
+        "measuredForceZNewtons" : 0.23988380152230598,
+        "minimumPopulation" : 0.021352114155888557,
+        "sourceFrameCoordinate" : 32,
+        "sourceTimeSeconds" : 0.032,
+        "targetSampleIndex" : 64
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          314,
+          321,
+          513
+        ],
+        "endpointComputedForceNewtons" : [
+          -3.3013129234313965,
+          -0.22284626960754395,
+          1.2998199462890625
+        ],
+        "endpointResidualXNewtons" : -3.2975271210817247,
+        "endpointResidualZNewtons" : 1.0183528432360942,
+        "intervalMeanComputedForceNewtons" : [
+          -1.330410972237587,
+          0.17394817247986794,
+          1.6856842041015625
+        ],
+        "intervalMeanResidualXNewtons" : -1.326625169887915,
+        "intervalMeanResidualZNewtons" : 1.4042171010485942,
+        "measuredForceXNewtons" : -0.003785802349671897,
+        "measuredForceZNewtons" : 0.2814671030529683,
+        "minimumPopulation" : 0.02148832194507122,
+        "sourceFrameCoordinate" : 32.5,
+        "sourceTimeSeconds" : 0.0325,
+        "targetSampleIndex" : 65
+      },
+      {
+        "componentSolidCellCounts" : [
+          454,
+          323,
+          331,
+          501
+        ],
+        "endpointComputedForceNewtons" : [
+          0.2399606704711914,
+          1.1585354804992676,
+          10.671409606933594
+        ],
+        "endpointResidualXNewtons" : 0.2119839726368323,
+        "endpointResidualZNewtons" : 10.345745352089164,
+        "intervalMeanComputedForceNewtons" : [
+          -3.307176500558853,
+          -0.22743883728981018,
+          0.6981348991394043
+        ],
+        "intervalMeanResidualXNewtons" : -3.335153198393212,
+        "intervalMeanResidualZNewtons" : 0.372470644294975,
+        "measuredForceXNewtons" : 0.027976697834359115,
+        "measuredForceZNewtons" : 0.3256642548444293,
+        "minimumPopulation" : 0.021409431472420692,
+        "sourceFrameCoordinate" : 33,
+        "sourceTimeSeconds" : 0.033,
+        "targetSampleIndex" : 66
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          317,
+          329,
+          507
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.5768234729766846,
+          0.23802757263183594,
+          2.4339065551757812
+        ],
+        "endpointResidualXNewtons" : -1.6405404025196337,
+        "endpointResidualZNewtons" : 2.0618665101449323,
+        "intervalMeanComputedForceNewtons" : [
+          -0.6112259030342102,
+          -0.23471389710903168,
+          2.397141933441162
+        ],
+        "intervalMeanResidualXNewtons" : -0.6749428325771595,
+        "intervalMeanResidualZNewtons" : 2.025101888410313,
+        "measuredForceXNewtons" : 0.06371692954294927,
+        "measuredForceZNewtons" : 0.3720400450308489,
+        "minimumPopulation" : 0.02141343057155609,
+        "sourceFrameCoordinate" : 33.5,
+        "sourceTimeSeconds" : 0.0335,
+        "targetSampleIndex" : 67
+      },
+      {
+        "componentSolidCellCounts" : [
+          460,
+          317,
+          329,
+          506
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.6812257766723633,
+          1.4720289707183838,
+          12.966934204101562
+        ],
+        "endpointResidualXNewtons" : -0.7835387612104007,
+        "endpointResidualZNewtons" : 12.546730403634012,
+        "intervalMeanComputedForceNewtons" : [
+          -2.4205175787210464,
+          0.20151428878307343,
+          1.0875282287597656
+        ],
+        "intervalMeanResidualXNewtons" : -2.5228305632590837,
+        "intervalMeanResidualZNewtons" : 0.6673244282922142,
+        "measuredForceXNewtons" : 0.10231298453803742,
+        "measuredForceZNewtons" : 0.42020380046755146,
+        "minimumPopulation" : 0.021314136683940887,
+        "sourceFrameCoordinate" : 34,
+        "sourceTimeSeconds" : 0.034,
+        "targetSampleIndex" : 68
+      },
+      {
+        "componentSolidCellCounts" : [
+          464,
+          330,
+          334,
+          506
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.1282405853271484,
+          -0.10104668140411377,
+          2.4146881103515625
+        ],
+        "endpointResidualXNewtons" : -1.2708769924042889,
+        "endpointResidualZNewtons" : 1.944859909783979,
+        "intervalMeanComputedForceNewtons" : [
+          -0.1538589745759964,
+          -0.016675688326358795,
+          2.535189628601074
+        ],
+        "intervalMeanResidualXNewtons" : -0.2964953816531368,
+        "intervalMeanResidualZNewtons" : 2.0653614280334907,
+        "measuredForceXNewtons" : 0.1426364070771404,
+        "measuredForceZNewtons" : 0.4698282005675836,
+        "minimumPopulation" : 0.021338563412427902,
+        "sourceFrameCoordinate" : 34.5,
+        "sourceTimeSeconds" : 0.0345,
+        "targetSampleIndex" : 69
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          336,
+          333,
+          500
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.5815515518188477,
+          1.9686552286148071,
+          15.980461120605469
+        ],
+        "endpointResidualXNewtons" : -2.7651632228668266,
+        "endpointResidualZNewtons" : 15.45980006635048,
+        "intervalMeanComputedForceNewtons" : [
+          -2.506702482700348,
+          0.115894615650177,
+          1.4081130027770996
+        ],
+        "intervalMeanResidualXNewtons" : -2.690314153748327,
+        "intervalMeanResidualZNewtons" : 0.8874519485221113,
+        "measuredForceXNewtons" : 0.18361167104797904,
+        "measuredForceZNewtons" : 0.5206610542549883,
+        "minimumPopulation" : 0.021306077018380165,
+        "sourceFrameCoordinate" : 35,
+        "sourceTimeSeconds" : 0.035,
+        "targetSampleIndex" : 70
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          337,
+          346,
+          500
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.0796403884887695,
+          0.08155655860900879,
+          2.867462158203125
+        ],
+        "endpointResidualXNewtons" : -2.3039083496677106,
+        "endpointResidualZNewtons" : 2.294932418955991,
+        "intervalMeanComputedForceNewtons" : [
+          -0.41775909066200256,
+          -0.08184840530157089,
+          2.5258665084838867
+        ],
+        "intervalMeanResidualXNewtons" : -0.6420270518409434,
+        "intervalMeanResidualZNewtons" : 1.9533367692367527,
+        "measuredForceXNewtons" : 0.2242679611789409,
+        "measuredForceZNewtons" : 0.572529739247134,
+        "minimumPopulation" : 0.021377570927143097,
+        "sourceFrameCoordinate" : 35.5,
+        "sourceTimeSeconds" : 0.0355,
+        "targetSampleIndex" : 71
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          346,
+          341,
+          505
+        ],
+        "endpointComputedForceNewtons" : [
+          12.395586013793945,
+          0.8185994029045105,
+          -0.7157440185546875
+        ],
+        "endpointResidualXNewtons" : 12.131806057999786,
+        "endpointResidualZNewtons" : -1.3410827954707103,
+        "intervalMeanComputedForceNewtons" : [
+          -1.5476684868335724,
+          0.1680324748158455,
+          0.7627182006835938
+        ],
+        "intervalMeanResidualXNewtons" : -1.811448442627733,
+        "intervalMeanResidualZNewtons" : 0.13737942376757095,
+        "measuredForceXNewtons" : 0.2637799557941607,
+        "measuredForceZNewtons" : 0.6253387769160228,
+        "minimumPopulation" : 0.02138650044798851,
+        "sourceFrameCoordinate" : 36,
+        "sourceTimeSeconds" : 0.036,
+        "targetSampleIndex" : 72
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          343,
+          351,
+          502
+        ],
+        "endpointComputedForceNewtons" : [
+          1.4413907527923584,
+          0.3107264041900635,
+          2.3152542114257812
+        ],
+        "endpointResidualXNewtons" : 1.1398956183128495,
+        "endpointResidualZNewtons" : 1.636192536146159,
+        "intervalMeanComputedForceNewtons" : [
+          1.436217799782753,
+          -0.1915203258395195,
+          2.8021912574768066
+        ],
+        "intervalMeanResidualXNewtons" : 1.134722665303244,
+        "intervalMeanResidualZNewtons" : 2.1231295821971843,
+        "measuredForceXNewtons" : 0.30149513447950904,
+        "measuredForceZNewtons" : 0.6790616752796224,
+        "minimumPopulation" : 0.02171592228114605,
+        "sourceFrameCoordinate" : 36.5,
+        "sourceTimeSeconds" : 0.0365,
+        "targetSampleIndex" : 73
+      },
+      {
+        "componentSolidCellCounts" : [
+          458,
+          344,
+          354,
+          500
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.5698466300964355,
+          2.59755277633667,
+          22.721473693847656
+        ],
+        "endpointResidualXNewtons" : -4.9067928518957995,
+        "endpointResidualZNewtons" : 21.987745054691857,
+        "intervalMeanComputedForceNewtons" : [
+          -1.3688386678695679,
+          0.2717408388853073,
+          1.913093090057373
+        ],
+        "intervalMeanResidualXNewtons" : -1.7057848896689316,
+        "intervalMeanResidualZNewtons" : 1.1793644509015744,
+        "measuredForceXNewtons" : 0.3369462217993638,
+        "measuredForceZNewtons" : 0.7337286391557987,
+        "minimumPopulation" : 0.02182910591363907,
+        "sourceFrameCoordinate" : 37,
+        "sourceTimeSeconds" : 0.037,
+        "targetSampleIndex" : 74
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          359,
+          348,
+          501
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.0270442962646484,
+          0.3310275077819824,
+          2.8758010864257812
+        ],
+        "endpointResidualXNewtons" : -1.3968929467287656,
+        "endpointResidualZNewtons" : 2.0863891261576293,
+        "intervalMeanComputedForceNewtons" : [
+          -0.1532587707042694,
+          -0.05672227963805199,
+          2.043654441833496
+        ],
+        "intervalMeanResidualXNewtons" : -0.5231074211683866,
+        "intervalMeanResidualZNewtons" : 1.2542424815653441,
+        "measuredForceXNewtons" : 0.36984865046411713,
+        "measuredForceZNewtons" : 0.7894119602681519,
+        "minimumPopulation" : 0.022033650428056717,
+        "sourceFrameCoordinate" : 37.5,
+        "sourceTimeSeconds" : 0.0375,
+        "targetSampleIndex" : 75
+      },
+      {
+        "componentSolidCellCounts" : [
+          460,
+          363,
+          346,
+          501
+        ],
+        "endpointComputedForceNewtons" : [
+          4.089584827423096,
+          1.9641773700714111,
+          10.810661315917969
+        ],
+        "endpointResidualXNewtons" : 3.689500588058407,
+        "endpointResidualZNewtons" : 9.964450489234515,
+        "intervalMeanComputedForceNewtons" : [
+          -1.1965760588645935,
+          0.052241384983062744,
+          1.9184317588806152
+        ],
+        "intervalMeanResidualXNewtons" : -1.596660298229282,
+        "intervalMeanResidualZNewtons" : 1.0722209321971616,
+        "measuredForceXNewtons" : 0.40008423936468845,
+        "measuredForceZNewtons" : 0.8462108266834536,
+        "minimumPopulation" : 0.02219342067837715,
+        "sourceFrameCoordinate" : 38,
+        "sourceTimeSeconds" : 0.038,
+        "targetSampleIndex" : 76
+      },
+      {
+        "componentSolidCellCounts" : [
+          458,
+          362,
+          357,
+          497
+        ],
+        "endpointComputedForceNewtons" : [
+          0.8117191791534424,
+          -0.34760236740112305,
+          2.5543289184570312
+        ],
+        "endpointResidualXNewtons" : 0.384045706364158,
+        "endpointResidualZNewtons" : 1.6500919917976895,
+        "intervalMeanComputedForceNewtons" : [
+          1.5922736376523972,
+          -0.2059752233326435,
+          2.6975483894348145
+        ],
+        "intervalMeanResidualXNewtons" : 1.1646001648631128,
+        "intervalMeanResidualZNewtons" : 1.7933114627754727,
+        "measuredForceXNewtons" : 0.42767347278928436,
+        "measuredForceZNewtons" : 0.9042369266593416,
+        "minimumPopulation" : 0.02230369672179222,
+        "sourceFrameCoordinate" : 38.5,
+        "sourceTimeSeconds" : 0.0385,
+        "targetSampleIndex" : 77
+      },
+      {
+        "componentSolidCellCounts" : [
+          460,
+          362,
+          357,
+          496
+        ],
+        "endpointComputedForceNewtons" : [
+          18.74909019470215,
+          0.21777403354644775,
+          -7.685798645019531
+        ],
+        "endpointResidualXNewtons" : 18.29635051787777,
+        "endpointResidualZNewtons" : -8.649400262276526,
+        "intervalMeanComputedForceNewtons" : [
+          0.25882989168167114,
+          0.3073319047689438,
+          0.6279449462890625
+        ],
+        "intervalMeanResidualXNewtons" : -0.19390978514270862,
+        "intervalMeanResidualZNewtons" : -0.3356566709679316,
+        "measuredForceXNewtons" : 0.45273967682437977,
+        "measuredForceZNewtons" : 0.9636016172569941,
+        "minimumPopulation" : 0.02210586704313755,
+        "sourceFrameCoordinate" : 39,
+        "sourceTimeSeconds" : 0.039,
+        "targetSampleIndex" : 78
+      },
+      {
+        "componentSolidCellCounts" : [
+          464,
+          364,
+          372,
+          488
+        ],
+        "endpointComputedForceNewtons" : [
+          3.6912665367126465,
+          -0.5294923782348633,
+          2.5270538330078125
+        ],
+        "endpointResidualXNewtons" : 3.215797642580364,
+        "endpointResidualZNewtons" : 1.5026491140538518,
+        "intervalMeanComputedForceNewtons" : [
+          4.6583238542079926,
+          -0.5592363476753235,
+          3.504790782928467
+        ],
+        "intervalMeanResidualXNewtons" : 4.18285496007571,
+        "intervalMeanResidualZNewtons" : 2.480386063974506,
+        "measuredForceXNewtons" : 0.47546889413228255,
+        "measuredForceZNewtons" : 1.0244047189539607,
+        "minimumPopulation" : 0.02211715094745159,
+        "sourceFrameCoordinate" : 39.5,
+        "sourceTimeSeconds" : 0.0395,
+        "targetSampleIndex" : 79
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          364,
+          366,
+          491
+        ],
+        "endpointComputedForceNewtons" : [
+          6.518564224243164,
+          1.184572458267212,
+          6.5277099609375
+        ],
+        "endpointResidualXNewtons" : 6.022494888959191,
+        "endpointResidualZNewtons" : 5.44098556858965,
+        "intervalMeanComputedForceNewtons" : [
+          0.34580883383750916,
+          0.1575399711728096,
+          1.0017094612121582
+        ],
+        "intervalMeanResidualXNewtons" : -0.1502605014464642,
+        "intervalMeanResidualZNewtons" : -0.08501493113569158,
+        "measuredForceXNewtons" : 0.49606933528397334,
+        "measuredForceZNewtons" : 1.0867243923478498,
+        "minimumPopulation" : 0.02222353219985962,
+        "sourceFrameCoordinate" : 40,
+        "sourceTimeSeconds" : 0.04,
+        "targetSampleIndex" : 80
+      },
+      {
+        "componentSolidCellCounts" : [
+          451,
+          363,
+          374,
+          488
+        ],
+        "endpointComputedForceNewtons" : [
+          1.3762352466583252,
+          -0.4139230251312256,
+          1.8558273315429688
+        ],
+        "endpointResidualXNewtons" : 0.8615012246758276,
+        "endpointResidualZNewtons" : 0.7052200678737712,
+        "intervalMeanComputedForceNewtons" : [
+          1.3990229070186615,
+          -0.16782644391059875,
+          1.7665090560913086
+        ],
+        "intervalMeanResidualXNewtons" : 0.8842888850361639,
+        "intervalMeanResidualZNewtons" : 0.6159017924221111,
+        "measuredForceXNewtons" : 0.5147340219824976,
+        "measuredForceZNewtons" : 1.1506072636691975,
+        "minimumPopulation" : 0.02247248776257038,
+        "sourceFrameCoordinate" : 40.5,
+        "sourceTimeSeconds" : 0.0405,
+        "targetSampleIndex" : 81
+      },
+      {
+        "componentSolidCellCounts" : [
+          450,
+          372,
+          369,
+          495
+        ],
+        "endpointComputedForceNewtons" : [
+          6.625271320343018,
+          -0.6446846723556519,
+          6.878593444824219
+        ],
+        "endpointResidualXNewtons" : 6.09366156162013,
+        "endpointResidualZNewtons" : 5.662535319476239,
+        "intervalMeanComputedForceNewtons" : [
+          -0.05677900090813637,
+          -0.002778388559818268,
+          1.6067287921905518
+        ],
+        "intervalMeanResidualXNewtons" : -0.588388759631024,
+        "intervalMeanResidualZNewtons" : 0.39067066684257257,
+        "measuredForceXNewtons" : 0.5316097587228876,
+        "measuredForceZNewtons" : 1.2160581253479792,
+        "minimumPopulation" : 0.02240353636443615,
+        "sourceFrameCoordinate" : 41,
+        "sourceTimeSeconds" : 0.041,
+        "targetSampleIndex" : 82
+      },
+      {
+        "componentSolidCellCounts" : [
+          449,
+          366,
+          370,
+          479
+        ],
+        "endpointComputedForceNewtons" : [
+          1.6826927661895752,
+          -0.29955077171325684,
+          2.1395263671875
+        ],
+        "endpointResidualXNewtons" : 1.1359178385611726,
+        "endpointResidualZNewtons" : 0.8564972337379526,
+        "intervalMeanComputedForceNewtons" : [
+          2.508192129433155,
+          -0.10604221001267433,
+          1.8570005893707275
+        ],
+        "intervalMeanResidualXNewtons" : 1.9614172018047524,
+        "intervalMeanResidualZNewtons" : 0.5739714559211802,
+        "measuredForceXNewtons" : 0.5467749276284026,
+        "measuredForceZNewtons" : 1.2830291334495474,
+        "minimumPopulation" : 0.022426437586545944,
+        "sourceFrameCoordinate" : 41.5,
+        "sourceTimeSeconds" : 0.0415,
+        "targetSampleIndex" : 83
+      },
+      {
+        "componentSolidCellCounts" : [
+          455,
+          361,
+          370,
+          480
+        ],
+        "endpointComputedForceNewtons" : [
+          8.550994873046875,
+          -0.4882643222808838,
+          2.2503585815429688
+        ],
+        "endpointResidualXNewtons" : 7.9907671187241425,
+        "endpointResidualZNewtons" : 0.8989493115144365,
+        "intervalMeanComputedForceNewtons" : [
+          0.5277779772877693,
+          -0.34343403577804565,
+          1.4130449295043945
+        ],
+        "intervalMeanResidualXNewtons" : -0.03244977703496332,
+        "intervalMeanResidualZNewtons" : 0.06163565947586225,
+        "measuredForceXNewtons" : 0.5602277543227326,
+        "measuredForceZNewtons" : 1.3514092700285323,
+        "minimumPopulation" : 0.02243051677942276,
+        "sourceFrameCoordinate" : 42,
+        "sourceTimeSeconds" : 0.042,
+        "targetSampleIndex" : 84
+      },
+      {
+        "componentSolidCellCounts" : [
+          455,
+          360,
+          365,
+          474
+        ],
+        "endpointComputedForceNewtons" : [
+          2.9749648571014404,
+          0.9784276485443115,
+          0.7687339782714844
+        ],
+        "endpointResidualXNewtons" : 2.4030792508701806,
+        "endpointResidualZNewtons" : -0.6522816532063049,
+        "intervalMeanComputedForceNewtons" : [
+          3.102965325117111,
+          -0.2950051724910736,
+          1.3056468963623047
+        ],
+        "intervalMeanResidualXNewtons" : 2.5310797188858514,
+        "intervalMeanResidualZNewtons" : -0.11536873511548462,
+        "measuredForceXNewtons" : 0.5718856062312596,
+        "measuredForceZNewtons" : 1.4210156314777893,
+        "minimumPopulation" : 0.022381454706192017,
+        "sourceFrameCoordinate" : 42.5,
+        "sourceTimeSeconds" : 0.0425,
+        "targetSampleIndex" : 85
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          374,
+          364,
+          470
+        ],
+        "endpointComputedForceNewtons" : [
+          7.5651044845581055,
+          -0.08303731679916382,
+          3.422618865966797
+        ],
+        "endpointResidualXNewtons" : 6.9835098325321345,
+        "endpointResidualZNewtons" : 1.9310303262808117,
+        "intervalMeanComputedForceNewtons" : [
+          0.8644864931702614,
+          0.19780920445919037,
+          1.434668779373169
+        ],
+        "intervalMeanResidualXNewtons" : 0.28289184114429067,
+        "intervalMeanResidualZNewtons" : -0.0569197603128162,
+        "measuredForceXNewtons" : 0.5815946520259707,
+        "measuredForceZNewtons" : 1.4915885396859851,
+        "minimumPopulation" : 0.02227516658604145,
+        "sourceFrameCoordinate" : 43,
+        "sourceTimeSeconds" : 0.043,
+        "targetSampleIndex" : 86
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          365,
+          379,
+          475
+        ],
+        "endpointComputedForceNewtons" : [
+          3.4813055992126465,
+          0.18404316902160645,
+          1.3170051574707031
+        ],
+        "endpointResidualXNewtons" : 2.8921575451083785,
+        "endpointResidualZNewtons" : -0.24578720302977142,
+        "intervalMeanComputedForceNewtons" : [
+          3.1563766822218895,
+          -0.43796079233288765,
+          1.4286686182022095
+        ],
+        "intervalMeanResidualXNewtons" : 2.5672286281176215,
+        "intervalMeanResidualZNewtons" : -0.13412374229826507,
+        "measuredForceXNewtons" : 0.5891480541042681,
+        "measuredForceZNewtons" : 1.5627923605004745,
+        "minimumPopulation" : 0.022400852292776108,
+        "sourceFrameCoordinate" : 43.5,
+        "sourceTimeSeconds" : 0.0435,
+        "targetSampleIndex" : 87
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          383,
+          384,
+          464
+        ],
+        "endpointComputedForceNewtons" : [
+          5.6595258712768555,
+          -0.8467369079589844,
+          2.6817855834960938
+        ],
+        "endpointResidualXNewtons" : 5.065215845396727,
+        "endpointResidualZNewtons" : 1.0475623362953537,
+        "intervalMeanComputedForceNewtons" : [
+          1.0719761699438095,
+          -0.31201623380184174,
+          1.5904709100723267
+        ],
+        "intervalMeanResidualXNewtons" : 0.4776661440636809,
+        "intervalMeanResidualZNewtons" : -0.04375233712841342,
+        "measuredForceXNewtons" : 0.5943100258801286,
+        "measuredForceZNewtons" : 1.63422324720074,
+        "minimumPopulation" : 0.022353852167725563,
+        "sourceFrameCoordinate" : 44,
+        "sourceTimeSeconds" : 0.044,
+        "targetSampleIndex" : 88
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          375,
+          372,
+          454
+        ],
+        "endpointComputedForceNewtons" : [
+          2.7531936168670654,
+          0.14812707901000977,
+          1.9574089050292969
+        ],
+        "endpointResidualXNewtons" : 2.1563509072526363,
+        "endpointResidualZNewtons" : 0.2519849105606249,
+        "intervalMeanComputedForceNewtons" : [
+          2.9179927855730057,
+          -0.21279743313789368,
+          1.2279372215270996
+        ],
+        "intervalMeanResidualXNewtons" : 2.3211500759585766,
+        "intervalMeanResidualZNewtons" : -0.4774867729415724,
+        "measuredForceXNewtons" : 0.5968427096144293,
+        "measuredForceZNewtons" : 1.705423994468672,
+        "minimumPopulation" : 0.02224672958254814,
+        "sourceFrameCoordinate" : 44.5,
+        "sourceTimeSeconds" : 0.0445,
+        "targetSampleIndex" : 89
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          378,
+          381,
+          454
+        ],
+        "endpointComputedForceNewtons" : [
+          5.136106491088867,
+          -2.6844606399536133,
+          3.0452728271484375
+        ],
+        "endpointResidualXNewtons" : 4.539573567485682,
+        "endpointResidualZNewtons" : 1.2693677279358928,
+        "intervalMeanComputedForceNewtons" : [
+          1.0613831505179405,
+          -0.57462278008461,
+          1.6930180788040161
+        ],
+        "intervalMeanResidualXNewtons" : 0.46485022691475564,
+        "intervalMeanResidualZNewtons" : -0.08288702040852858,
+        "measuredForceXNewtons" : 0.5965329236031849,
+        "measuredForceZNewtons" : 1.7759050992125447,
+        "minimumPopulation" : 0.02240801230072975,
+        "sourceFrameCoordinate" : 45,
+        "sourceTimeSeconds" : 0.045,
+        "targetSampleIndex" : 90
+      },
+      {
+        "componentSolidCellCounts" : [
+          470,
+          374,
+          383,
+          446
+        ],
+        "endpointComputedForceNewtons" : [
+          2.361996650695801,
+          -0.9324893951416016,
+          3.497523307800293
+        ],
+        "endpointResidualXNewtons" : 1.768780372117523,
+        "endpointResidualZNewtons" : 1.6523530326417373,
+        "intervalMeanComputedForceNewtons" : [
+          3.373954951763153,
+          -0.6261965334415436,
+          1.9615160822868347
+        ],
+        "intervalMeanResidualXNewtons" : 2.7807386731848753,
+        "intervalMeanResidualZNewtons" : 0.11634580712827902,
+        "measuredForceXNewtons" : 0.5932162785782779,
+        "measuredForceZNewtons" : 1.8451702751585557,
+        "minimumPopulation" : 0.02262270450592041,
+        "sourceFrameCoordinate" : 45.5,
+        "sourceTimeSeconds" : 0.0455,
+        "targetSampleIndex" : 91
+      },
+      {
+        "componentSolidCellCounts" : [
+          457,
+          386,
+          375,
+          443
+        ],
+        "endpointComputedForceNewtons" : [
+          3.5725960731506348,
+          -1.247727394104004,
+          2.5839438438415527
+        ],
+        "endpointResidualXNewtons" : 2.985799252903631,
+        "endpointResidualZNewtons" : 0.6711996025147544,
+        "intervalMeanComputedForceNewtons" : [
+          1.185888808220625,
+          -0.49226170778274536,
+          2.049907863140106
+        ],
+        "intervalMeanResidualXNewtons" : 0.5990919879736213,
+        "intervalMeanResidualZNewtons" : 0.13716362181330788,
+        "measuredForceXNewtons" : 0.5867968202470036,
+        "measuredForceZNewtons" : 1.9127442413267983,
+        "minimumPopulation" : 0.02258267067372799,
+        "sourceFrameCoordinate" : 46,
+        "sourceTimeSeconds" : 0.046,
+        "targetSampleIndex" : 92
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          376,
+          385,
+          451
+        ],
+        "endpointComputedForceNewtons" : [
+          2.374791383743286,
+          -2.135840654373169,
+          1.028493881225586
+        ],
+        "endpointResidualXNewtons" : 1.797530306505676,
+        "endpointResidualZNewtons" : -0.9497067461193571,
+        "intervalMeanComputedForceNewtons" : [
+          3.177406370639801,
+          -0.6859543099999428,
+          1.8579802513122559
+        ],
+        "intervalMeanResidualXNewtons" : 2.600145293402191,
+        "intervalMeanResidualZNewtons" : -0.1202203760326872,
+        "measuredForceXNewtons" : 0.57726107723761,
+        "measuredForceZNewtons" : 1.978200627344943,
+        "minimumPopulation" : 0.022761909291148186,
+        "sourceFrameCoordinate" : 46.5,
+        "sourceTimeSeconds" : 0.0465,
+        "targetSampleIndex" : 93
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          382,
+          385,
+          444
+        ],
+        "endpointComputedForceNewtons" : [
+          2.1858201026916504,
+          -2.9402642250061035,
+          3.121708869934082
+        ],
+        "endpointResidualXNewtons" : 1.6211340552382394,
+        "endpointResidualZNewtons" : 1.0805206831439973,
+        "intervalMeanComputedForceNewtons" : [
+          0.8952123746275902,
+          -0.5107867009937763,
+          2.1239439249038696
+        ],
+        "intervalMeanResidualXNewtons" : 0.3305263271741793,
+        "intervalMeanResidualZNewtons" : 0.0827557381137849,
+        "measuredForceXNewtons" : 0.5646860474534109,
+        "measuredForceZNewtons" : 2.0411881867900847,
+        "minimumPopulation" : 0.023088153451681137,
+        "sourceFrameCoordinate" : 47,
+        "sourceTimeSeconds" : 0.047,
+        "targetSampleIndex" : 94
+      },
+      {
+        "componentSolidCellCounts" : [
+          458,
+          384,
+          381,
+          441
+        ],
+        "endpointComputedForceNewtons" : [
+          2.388225555419922,
+          -2.881657600402832,
+          3.519622802734375
+        ],
+        "endpointResidualXNewtons" : 1.838984435653088,
+        "endpointResidualZNewtons" : 1.4181688380315522,
+        "intervalMeanComputedForceNewtons" : [
+          3.4514564871788025,
+          -0.5408625416457653,
+          3.569955974817276
+        ],
+        "intervalMeanResidualXNewtons" : 2.9022153674119684,
+        "intervalMeanResidualZNewtons" : 1.4685020101144532,
+        "measuredForceXNewtons" : 0.5492411197668339,
+        "measuredForceZNewtons" : 2.1014539647028228,
+        "minimumPopulation" : 0.022870289161801338,
+        "sourceFrameCoordinate" : 47.5,
+        "sourceTimeSeconds" : 0.0475,
+        "targetSampleIndex" : 95
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          397,
+          384,
+          436
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.25677490234375,
+          -4.1141743659973145,
+          6.745391845703125
+        ],
+        "endpointResidualXNewtons" : -2.7879590491401913,
+        "endpointResidualZNewtons" : 4.586529442127167,
+        "intervalMeanComputedForceNewtons" : [
+          1.09312504529953,
+          -0.6072016283869743,
+          2.7738723754882812
+        ],
+        "intervalMeanResidualXNewtons" : 0.5619408985030889,
+        "intervalMeanResidualZNewtons" : 0.6150099719123232,
+        "measuredForceXNewtons" : 0.5311841467964411,
+        "measuredForceZNewtons" : 2.158862403575958,
+        "minimumPopulation" : 0.022357705980539322,
+        "sourceFrameCoordinate" : 48,
+        "sourceTimeSeconds" : 0.048,
+        "targetSampleIndex" : 96
+      },
+      {
+        "componentSolidCellCounts" : [
+          457,
+          382,
+          388,
+          441
+        ],
+        "endpointComputedForceNewtons" : [
+          2.243316650390625,
+          0.7384357452392578,
+          3.82513427734375
+        ],
+        "endpointResidualXNewtons" : 1.7324647357342609,
+        "endpointResidualZNewtons" : 1.6117248301699978,
+        "intervalMeanComputedForceNewtons" : [
+          2.5126675963401794,
+          -0.4893224164843559,
+          2.9572505950927734
+        ],
+        "intervalMeanResidualXNewtons" : 2.0018156816838153,
+        "intervalMeanResidualZNewtons" : 0.7438411479190212,
+        "measuredForceXNewtons" : 0.510851914656364,
+        "measuredForceZNewtons" : 2.213409447173752,
+        "minimumPopulation" : 0.022967960685491562,
+        "sourceFrameCoordinate" : 48.5,
+        "sourceTimeSeconds" : 0.0485,
+        "targetSampleIndex" : 97
+      },
+      {
+        "componentSolidCellCounts" : [
+          457,
+          384,
+          393,
+          441
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.707468032836914,
+          -5.487313270568848,
+          8.29669189453125
+        ],
+        "endpointResidualXNewtons" : -5.196113289264033,
+        "endpointResidualZNewtons" : 6.031461392436359,
+        "intervalMeanComputedForceNewtons" : [
+          0.944329023361206,
+          -0.5428085327148438,
+          3.464853286743164
+        ],
+        "intervalMeanResidualXNewtons" : 0.45568376693408735,
+        "intervalMeanResidualZNewtons" : 1.1996227846482728,
+        "measuredForceXNewtons" : 0.4886452564271187,
+        "measuredForceZNewtons" : 2.2652305020948913,
+        "minimumPopulation" : 0.022610899060964584,
+        "sourceFrameCoordinate" : 49,
+        "sourceTimeSeconds" : 0.049,
+        "targetSampleIndex" : 98
+      },
+      {
+        "componentSolidCellCounts" : [
+          457,
+          406,
+          405,
+          442
+        ],
+        "endpointComputedForceNewtons" : [
+          1.6886978149414062,
+          0.20008373260498047,
+          5.381011962890625
+        ],
+        "endpointResidualXNewtons" : 1.2236885912717725,
+        "endpointResidualZNewtons" : 3.066411179462864,
+        "intervalMeanComputedForceNewtons" : [
+          2.3343082666397095,
+          -0.2882675528526306,
+          3.4106712341308594
+        ],
+        "intervalMeanResidualXNewtons" : 1.8692990429700758,
+        "intervalMeanResidualZNewtons" : 1.0960704507030985,
+        "measuredForceXNewtons" : 0.4650092236696338,
+        "measuredForceZNewtons" : 2.314600783427761,
+        "minimumPopulation" : 0.023081224411725998,
+        "sourceFrameCoordinate" : 49.5,
+        "sourceTimeSeconds" : 0.0495,
+        "targetSampleIndex" : 99
+      },
+      {
+        "componentSolidCellCounts" : [
+          452,
+          402,
+          413,
+          441
+        ],
+        "endpointComputedForceNewtons" : [
+          -7.124629974365234,
+          -3.884608030319214,
+          4.7581787109375
+        ],
+        "endpointResidualXNewtons" : -7.56503916148527,
+        "endpointResidualZNewtons" : 2.3962523579895807,
+        "intervalMeanComputedForceNewtons" : [
+          1.0976804494857788,
+          -1.0085774436593056,
+          4.133274078369141
+        ],
+        "intervalMeanResidualXNewtons" : 0.6572712623657426,
+        "intervalMeanResidualZNewtons" : 1.7713477254212213,
+        "measuredForceXNewtons" : 0.4404091871200361,
+        "measuredForceZNewtons" : 2.3619263529479193,
+        "minimumPopulation" : 0.022656360641121864,
+        "sourceFrameCoordinate" : 50,
+        "sourceTimeSeconds" : 0.05,
+        "targetSampleIndex" : 100
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          412,
+          409,
+          445
+        ],
+        "endpointComputedForceNewtons" : [
+          2.749741554260254,
+          0.2508354187011719,
+          3.39239501953125
+        ],
+        "endpointResidualXNewtons" : 2.334437118800161,
+        "endpointResidualZNewtons" : 0.9846706892250254,
+        "intervalMeanComputedForceNewtons" : [
+          1.6143678426742554,
+          -0.2048998698592186,
+          4.7897796630859375
+        ],
+        "intervalMeanResidualXNewtons" : 1.1990634072141626,
+        "intervalMeanResidualZNewtons" : 2.382055332779713,
+        "measuredForceXNewtons" : 0.4153044354600928,
+        "measuredForceZNewtons" : 2.4077243303062246,
+        "minimumPopulation" : 0.02248738706111908,
+        "sourceFrameCoordinate" : 50.5,
+        "sourceTimeSeconds" : 0.0505,
+        "targetSampleIndex" : 101
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          411,
+          414,
+          443
+        ],
+        "endpointComputedForceNewtons" : [
+          -9.185930252075195,
+          -7.615289688110352,
+          16.444091796875
+        ],
+        "endpointResidualXNewtons" : -9.57605181500762,
+        "endpointResidualZNewtons" : 13.991500270053365,
+        "intervalMeanComputedForceNewtons" : [
+          0.6222769618034363,
+          -1.1999188512563705,
+          5.10810661315918
+        ],
+        "intervalMeanResidualXNewtons" : 0.23215539887101128,
+        "intervalMeanResidualZNewtons" : 2.6555150863375445,
+        "measuredForceXNewtons" : 0.390121562932425,
+        "measuredForceZNewtons" : 2.452591526821635,
+        "minimumPopulation" : 0.02244654670357704,
+        "sourceFrameCoordinate" : 51,
+        "sourceTimeSeconds" : 0.051,
+        "targetSampleIndex" : 102
+      },
+      {
+        "componentSolidCellCounts" : [
+          462,
+          422,
+          410,
+          444
+        ],
+        "endpointComputedForceNewtons" : [
+          0.8392848968505859,
+          -0.5101947784423828,
+          4.4539794921875
+        ],
+        "endpointResidualXNewtons" : 0.47405448965457825,
+        "endpointResidualZNewtons" : 1.9568173163938476,
+        "intervalMeanComputedForceNewtons" : [
+          1.1317031383514404,
+          -0.25712910294532776,
+          3.570589065551758
+        ],
+        "intervalMeanResidualXNewtons" : 0.7664727311554327,
+        "intervalMeanResidualZNewtons" : 1.0734268897581054,
+        "measuredForceXNewtons" : 0.3652304071960077,
+        "measuredForceZNewtons" : 2.4971621757936524,
+        "minimumPopulation" : 0.02249744161963463,
+        "sourceFrameCoordinate" : 51.5,
+        "sourceTimeSeconds" : 0.0515,
+        "targetSampleIndex" : 103
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          420,
+          417,
+          449
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.6499099731445312,
+          -5.834717273712158,
+          -7.75860595703125
+        ],
+        "endpointResidualXNewtons" : -0.9908352756469585,
+        "endpointResidualZNewtons" : -10.300663305182015,
+        "intervalMeanComputedForceNewtons" : [
+          1.1744864583015442,
+          -1.291477769613266,
+          4.525373458862305
+        ],
+        "intervalMeanResidualXNewtons" : 0.8335611557991169,
+        "intervalMeanResidualZNewtons" : 1.9833161107115393,
+        "measuredForceXNewtons" : 0.3409253025024273,
+        "measuredForceZNewtons" : 2.5420573481507653,
+        "minimumPopulation" : 0.02146928384900093,
+        "sourceFrameCoordinate" : 52,
+        "sourceTimeSeconds" : 0.052,
+        "targetSampleIndex" : 104
+      },
+      {
+        "componentSolidCellCounts" : [
+          467,
+          439,
+          416,
+          453
+        ],
+        "endpointComputedForceNewtons" : [
+          1.2801942825317383,
+          -0.7110495567321777,
+          1.74615478515625
+        ],
+        "endpointResidualXNewtons" : 0.962780432806315,
+        "endpointResidualZNewtons" : -0.8416758454600184,
+        "intervalMeanComputedForceNewtons" : [
+          0.04229116439819336,
+          -0.2918740436434746,
+          2.7909011840820312
+        ],
+        "intervalMeanResidualXNewtons" : -0.27512268532722994,
+        "intervalMeanResidualZNewtons" : 0.20307055346576286,
+        "measuredForceXNewtons" : 0.3174138497254233,
+        "measuredForceZNewtons" : 2.5878306306162684,
+        "minimumPopulation" : 0.022662453353405,
+        "sourceFrameCoordinate" : 52.5,
+        "sourceTimeSeconds" : 0.0525,
+        "targetSampleIndex" : 105
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          427,
+          422,
+          452
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.832826614379883,
+          -3.7481374740600586,
+          -9.89459228515625
+        ],
+        "endpointResidualXNewtons" : -3.1276409336323505,
+        "endpointResidualZNewtons" : -12.529508403922495,
+        "intervalMeanComputedForceNewtons" : [
+          0.4076656699180603,
+          -0.8112959861755371,
+          3.7931137084960938
+        ],
+        "intervalMeanResidualXNewtons" : 0.11285135066559238,
+        "intervalMeanResidualZNewtons" : 1.1581975897298475,
+        "measuredForceXNewtons" : 0.2948143192524679,
+        "measuredForceZNewtons" : 2.634916118766246,
+        "minimumPopulation" : 0.022714760154485703,
+        "sourceFrameCoordinate" : 53,
+        "sourceTimeSeconds" : 0.053,
+        "targetSampleIndex" : 106
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          411,
+          423,
+          455
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.5293760299682617,
+          -1.419386386871338,
+          4.972412109375
+        ],
+        "endpointResidualXNewtons" : -0.8025374540890184,
+        "endpointResidualZNewtons" : 2.2888269186684447,
+        "intervalMeanComputedForceNewtons" : [
+          -0.9885775446891785,
+          -0.6677461117506027,
+          3.737548828125
+        ],
+        "intervalMeanResidualXNewtons" : -1.2617389688099352,
+        "intervalMeanResidualZNewtons" : 1.0539636374184447,
+        "measuredForceXNewtons" : 0.2731614241207568,
+        "measuredForceZNewtons" : 2.6835851907065553,
+        "minimumPopulation" : 0.022645052522420883,
+        "sourceFrameCoordinate" : 53.5,
+        "sourceTimeSeconds" : 0.0535,
+        "targetSampleIndex" : 107
+      },
+      {
+        "componentSolidCellCounts" : [
+          472,
+          428,
+          421,
+          458
+        ],
+        "endpointComputedForceNewtons" : [
+          -16.851863861083984,
+          -5.477809429168701,
+          17.03997802734375
+        ],
+        "endpointResidualXNewtons" : -17.10428278264774,
+        "endpointResidualZNewtons" : 14.306060425994616,
+        "intervalMeanComputedForceNewtons" : [
+          -0.3106781244277954,
+          -0.9326676949858665,
+          6.743438720703125
+        ],
+        "intervalMeanResidualXNewtons" : -0.563097045991552,
+        "intervalMeanResidualZNewtons" : 4.009521119353991,
+        "measuredForceXNewtons" : 0.25241892156375656,
+        "measuredForceZNewtons" : 2.7339176013491335,
+        "minimumPopulation" : 0.021902821958065033,
+        "sourceFrameCoordinate" : 54,
+        "sourceTimeSeconds" : 0.054,
+        "targetSampleIndex" : 108
+      },
+      {
+        "componentSolidCellCounts" : [
+          468,
+          428,
+          425,
+          454
+        ],
+        "endpointComputedForceNewtons" : [
+          0.12725257873535156,
+          0.2678995132446289,
+          8.844970703125
+        ],
+        "endpointResidualXNewtons" : -0.10524414842788893,
+        "endpointResidualZNewtons" : 6.059180396524085,
+        "intervalMeanComputedForceNewtons" : [
+          0.07591515779495239,
+          -0.5709462091326714,
+          7.841255187988281
+        ],
+        "intervalMeanResidualXNewtons" : -0.1565815693682881,
+        "intervalMeanResidualZNewtons" : 5.055464881387366,
+        "measuredForceXNewtons" : 0.2324967271632405,
+        "measuredForceZNewtons" : 2.785790306600915,
+        "minimumPopulation" : 0.022792037576436996,
+        "sourceFrameCoordinate" : 54.5,
+        "sourceTimeSeconds" : 0.0545,
+        "targetSampleIndex" : 109
+      },
+      {
+        "componentSolidCellCounts" : [
+          468,
+          423,
+          438,
+          474
+        ],
+        "endpointComputedForceNewtons" : [
+          -11.480947494506836,
+          -5.090761184692383,
+          6.71466064453125
+        ],
+        "endpointResidualXNewtons" : -11.694217654248828,
+        "endpointResidualZNewtons" : 3.875776022717012,
+        "intervalMeanComputedForceNewtons" : [
+          -0.39655739068984985,
+          -1.0545455887913704,
+          7.533313751220703
+        ],
+        "intervalMeanResidualXNewtons" : -0.6098275504318411,
+        "intervalMeanResidualZNewtons" : 4.6944291294064655,
+        "measuredForceXNewtons" : 0.2132701597419913,
+        "measuredForceZNewtons" : 2.838884621814238,
+        "minimumPopulation" : 0.022060835734009743,
+        "sourceFrameCoordinate" : 55,
+        "sourceTimeSeconds" : 0.055,
+        "targetSampleIndex" : 110
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          416,
+          416,
+          483
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.9307012557983398,
+          -2.207169532775879,
+          6.15643310546875
+        ],
+        "endpointResidualXNewtons" : -2.1253007123089627,
+        "endpointResidualZNewtons" : 3.263723515113064,
+        "intervalMeanComputedForceNewtons" : [
+          -1.921446681022644,
+          -0.9503228738903999,
+          5.858974456787109
+        ],
+        "intervalMeanResidualXNewtons" : -2.116046137533267,
+        "intervalMeanResidualZNewtons" : 2.9662648664314233,
+        "measuredForceXNewtons" : 0.19459945651062263,
+        "measuredForceZNewtons" : 2.892709590355686,
+        "minimumPopulation" : 0.02069763094186783,
+        "sourceFrameCoordinate" : 55.5,
+        "sourceTimeSeconds" : 0.0555,
+        "targetSampleIndex" : 111
+      },
+      {
+        "componentSolidCellCounts" : [
+          473,
+          424,
+          424,
+          479
+        ],
+        "endpointComputedForceNewtons" : [
+          -13.573395729064941,
+          -3.7333407402038574,
+          4.1856689453125
+        ],
+        "endpointResidualXNewtons" : -13.74974415768531,
+        "endpointResidualZNewtons" : 1.2390314614561548,
+        "intervalMeanComputedForceNewtons" : [
+          -0.8535004258155823,
+          -1.2492639794945717,
+          6.2412261962890625
+        ],
+        "intervalMeanResidualXNewtons" : -1.0298488544359499,
+        "intervalMeanResidualZNewtons" : 3.2945887124327173,
+        "measuredForceXNewtons" : 0.1763484286203676,
+        "measuredForceZNewtons" : 2.946637483856345,
+        "minimumPopulation" : 0.02172132022678852,
+        "sourceFrameCoordinate" : 56,
+        "sourceTimeSeconds" : 0.056,
+        "targetSampleIndex" : 112
+      },
+      {
+        "componentSolidCellCounts" : [
+          472,
+          431,
+          432,
+          489
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.8885226249694824,
+          -0.7306461334228516,
+          7.541748046875
+        ],
+        "endpointResidualXNewtons" : -2.0469242610047087,
+        "endpointResidualZNewtons" : 4.541801467319671,
+        "intervalMeanComputedForceNewtons" : [
+          -2.274321049451828,
+          -0.9780673384666443,
+          6.891181945800781
+        ],
+        "intervalMeanResidualXNewtons" : -2.4327226854870543,
+        "intervalMeanResidualZNewtons" : 3.8912353662454526,
+        "measuredForceXNewtons" : 0.1584016360352264,
+        "measuredForceZNewtons" : 2.9999465795553286,
+        "minimumPopulation" : 0.021004611626267433,
+        "sourceFrameCoordinate" : 56.5,
+        "sourceTimeSeconds" : 0.0565,
+        "targetSampleIndex" : 113
+      },
+      {
+        "componentSolidCellCounts" : [
+          474,
+          431,
+          424,
+          496
+        ],
+        "endpointComputedForceNewtons" : [
+          -14.243071556091309,
+          -2.2919998168945312,
+          2.873291015625
+        ],
+        "endpointResidualXNewtons" : -14.383751054641122,
+        "endpointResidualZNewtons" : -0.1785757463150479,
+        "intervalMeanComputedForceNewtons" : [
+          -1.8267502188682556,
+          -1.325256235897541,
+          8.33297348022461
+        ],
+        "intervalMeanResidualXNewtons" : -1.9674297174180688,
+        "intervalMeanResidualZNewtons" : 5.281106718284562,
+        "measuredForceXNewtons" : 0.14067949854981315,
+        "measuredForceZNewtons" : 3.051866761940048,
+        "minimumPopulation" : 0.021420583128929138,
+        "sourceFrameCoordinate" : 57,
+        "sourceTimeSeconds" : 0.057,
+        "targetSampleIndex" : 114
+      },
+      {
+        "componentSolidCellCounts" : [
+          464,
+          432,
+          413,
+          501
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.8188896179199219,
+          -0.7521963119506836,
+          7.1781005859375
+        ],
+        "endpointResidualXNewtons" : -1.9420400176266495,
+        "endpointResidualZNewtons" : 4.076475881828015,
+        "intervalMeanComputedForceNewtons" : [
+          -2.779109090566635,
+          -1.211998000741005,
+          8.0716552734375
+        ],
+        "intervalMeanResidualXNewtons" : -2.9022594902733627,
+        "intervalMeanResidualZNewtons" : 4.970030569328015,
+        "measuredForceXNewtons" : 0.12315039970672753,
+        "measuredForceZNewtons" : 3.1016247041094847,
+        "minimumPopulation" : 0.021647827699780464,
+        "sourceFrameCoordinate" : 57.5,
+        "sourceTimeSeconds" : 0.0575,
+        "targetSampleIndex" : 115
+      },
+      {
+        "componentSolidCellCounts" : [
+          465,
+          429,
+          422,
+          499
+        ],
+        "endpointComputedForceNewtons" : [
+          -14.400716781616211,
+          -1.528794288635254,
+          1.3173828125
+        ],
+        "endpointResidualXNewtons" : -14.506555204148789,
+        "endpointResidualZNewtons" : -1.8311039957083417,
+        "intervalMeanComputedForceNewtons" : [
+          -2.535533756017685,
+          -1.3004150390625,
+          8.75096321105957
+        ],
+        "intervalMeanResidualXNewtons" : -2.6413721785502626,
+        "intervalMeanResidualZNewtons" : 5.602476402851229,
+        "measuredForceXNewtons" : 0.10583842253257758,
+        "measuredForceZNewtons" : 3.1484868082083417,
+        "minimumPopulation" : 0.021434109658002853,
+        "sourceFrameCoordinate" : 58,
+        "sourceTimeSeconds" : 0.058,
+        "targetSampleIndex" : 116
+      },
+      {
+        "componentSolidCellCounts" : [
+          478,
+          425,
+          434,
+          517
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.1382598876953125,
+          -2.0380945205688477,
+          9.3480224609375
+        ],
+        "endpointResidualXNewtons" : -4.22708515832154,
+        "endpointResidualZNewtons" : 6.156223319829936,
+        "intervalMeanComputedForceNewtons" : [
+          -3.1887558847665787,
+          -1.1878333687782288,
+          8.222930908203125
+        ],
+        "intervalMeanResidualXNewtons" : -3.277581155392806,
+        "intervalMeanResidualZNewtons" : 5.031131767095561,
+        "measuredForceXNewtons" : 0.08882527062622708,
+        "measuredForceZNewtons" : 3.191799141107565,
+        "minimumPopulation" : 0.02182423323392868,
+        "sourceFrameCoordinate" : 58.5,
+        "sourceTimeSeconds" : 0.0585,
+        "targetSampleIndex" : 117
+      },
+      {
+        "componentSolidCellCounts" : [
+          477,
+          434,
+          447,
+          521
+        ],
+        "endpointComputedForceNewtons" : [
+          -10.944937705993652,
+          1.1235685348510742,
+          -1.321075439453125
+        ],
+        "endpointResidualXNewtons" : -11.017183097886885,
+        "endpointResidualZNewtons" : -4.55209936934135,
+        "intervalMeanComputedForceNewtons" : [
+          -2.449649203568697,
+          -0.869792640209198,
+          8.209369659423828
+        ],
+        "intervalMeanResidualXNewtons" : -2.521894595461929,
+        "intervalMeanResidualZNewtons" : 4.9783457295356035,
+        "measuredForceXNewtons" : 0.07224539189323237,
+        "measuredForceZNewtons" : 3.2310239298882246,
+        "minimumPopulation" : 0.02106202021241188,
+        "sourceFrameCoordinate" : 59,
+        "sourceTimeSeconds" : 0.059,
+        "targetSampleIndex" : 118
+      },
+      {
+        "componentSolidCellCounts" : [
+          470,
+          446,
+          414,
+          523
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.669028282165527,
+          -1.251194953918457,
+          7.9596710205078125
+        ],
+        "endpointResidualXNewtons" : -4.725302556332103,
+        "endpointResidualZNewtons" : 4.693899271400676,
+        "intervalMeanComputedForceNewtons" : [
+          -3.366684705018997,
+          -0.8073959946632385,
+          6.1950178146362305
+        ],
+        "intervalMeanResidualXNewtons" : -3.422958979185573,
+        "intervalMeanResidualZNewtons" : 2.9292460655290946,
+        "measuredForceXNewtons" : 0.056274274166575704,
+        "measuredForceZNewtons" : 3.265771749107136,
+        "minimumPopulation" : 0.02167811244726181,
+        "sourceFrameCoordinate" : 59.5,
+        "sourceTimeSeconds" : 0.0595,
+        "targetSampleIndex" : 119
+      },
+      {
+        "componentSolidCellCounts" : [
+          472,
+          438,
+          411,
+          530
+        ],
+        "endpointComputedForceNewtons" : [
+          -16.65656280517578,
+          1.0535697937011719,
+          4.0152435302734375
+        ],
+        "endpointResidualXNewtons" : -16.697673827518713,
+        "endpointResidualZNewtons" : 0.7194159191265679,
+        "intervalMeanComputedForceNewtons" : [
+          -2.6029618121683598,
+          -0.6380586624145508,
+          8.364099502563477
+        ],
+        "intervalMeanResidualXNewtons" : -2.6440728345112903,
+        "intervalMeanResidualZNewtons" : 5.068271891416607,
+        "measuredForceXNewtons" : 0.04111102234293072,
+        "measuredForceZNewtons" : 3.2958276111468696,
+        "minimumPopulation" : 0.021574977785348892,
+        "sourceFrameCoordinate" : 60,
+        "sourceTimeSeconds" : 0.06,
+        "targetSampleIndex" : 120
+      },
+      {
+        "componentSolidCellCounts" : [
+          473,
+          426,
+          436,
+          533
+        ],
+        "endpointComputedForceNewtons" : [
+          -3.2673916816711426,
+          -0.9182591438293457,
+          8.9033203125
+        ],
+        "endpointResidualXNewtons" : -3.2943489548770137,
+        "endpointResidualZNewtons" : 5.582152083556595,
+        "intervalMeanComputedForceNewtons" : [
+          -3.593270257115364,
+          -0.6443990468978882,
+          8.466264724731445
+        ],
+        "intervalMeanResidualXNewtons" : -3.6202275303212352,
+        "intervalMeanResidualZNewtons" : 5.1450964957880405,
+        "measuredForceXNewtons" : 0.026957273205871067,
+        "measuredForceZNewtons" : 3.321168228943405,
+        "minimumPopulation" : 0.02147739753127098,
+        "sourceFrameCoordinate" : 60.5,
+        "sourceTimeSeconds" : 0.0605,
+        "targetSampleIndex" : 121
+      },
+      {
+        "componentSolidCellCounts" : [
+          478,
+          431,
+          461,
+          534
+        ],
+        "endpointComputedForceNewtons" : [
+          -15.115180015563965,
+          2.339684247970581,
+          1.7032470703125
+        ],
+        "endpointResidualXNewtons" : -15.129175004937565,
+        "endpointResidualZNewtons" : -1.6387201931333055,
+        "intervalMeanComputedForceNewtons" : [
+          -3.091638758778572,
+          -0.3282931298017502,
+          8.554200172424316
+        ],
+        "intervalMeanResidualXNewtons" : -3.1056337481521714,
+        "intervalMeanResidualZNewtons" : 5.21223290897851,
+        "measuredForceXNewtons" : 0.013994989373599331,
+        "measuredForceZNewtons" : 3.3419672634458055,
+        "minimumPopulation" : 0.021082503721117973,
+        "sourceFrameCoordinate" : 61,
+        "sourceTimeSeconds" : 0.061,
+        "targetSampleIndex" : 122
+      },
+      {
+        "componentSolidCellCounts" : [
+          483,
+          412,
+          458,
+          540
+        ],
+        "endpointComputedForceNewtons" : [
+          -6.229300498962402,
+          0.44495391845703125,
+          8.194137573242188
+        ],
+        "endpointResidualXNewtons" : -6.231666154373869,
+        "endpointResidualZNewtons" : 4.8355518063616,
+        "intervalMeanComputedForceNewtons" : [
+          -4.780134730041027,
+          -0.5611950866878033,
+          6.417354583740234
+        ],
+        "intervalMeanResidualXNewtons" : -4.782500385452494,
+        "intervalMeanResidualZNewtons" : 3.0587688168596467,
+        "measuredForceXNewtons" : 0.002365655411466716,
+        "measuredForceZNewtons" : 3.3585857668805876,
+        "minimumPopulation" : 0.020835913717746735,
+        "sourceFrameCoordinate" : 61.5,
+        "sourceTimeSeconds" : 0.0615,
+        "targetSampleIndex" : 123
+      },
+      {
+        "componentSolidCellCounts" : [
+          483,
+          432,
+          424,
+          552
+        ],
+        "endpointComputedForceNewtons" : [
+          -24.49005126953125,
+          6.430492401123047,
+          9.921409606933594
+        ],
+        "endpointResidualXNewtons" : -24.48220428354406,
+        "endpointResidualZNewtons" : 6.549863229768599,
+        "intervalMeanComputedForceNewtons" : [
+          -3.6590508073568344,
+          0.39414533972740173,
+          7.745965480804443
+        ],
+        "intervalMeanResidualXNewtons" : -3.6512038213696463,
+        "intervalMeanResidualZNewtons" : 4.374419103639449,
+        "measuredForceXNewtons" : -0.007846985987188023,
+        "measuredForceZNewtons" : 3.3715463771649943,
+        "minimumPopulation" : 0.021529706194996834,
+        "sourceFrameCoordinate" : 62,
+        "sourceTimeSeconds" : 0.062,
+        "targetSampleIndex" : 124
+      },
+      {
+        "componentSolidCellCounts" : [
+          481,
+          439,
+          423,
+          547
+        ],
+        "endpointComputedForceNewtons" : [
+          -8.475513458251953,
+          -0.41701626777648926,
+          11.951278686523438
+        ],
+        "endpointResidualXNewtons" : -8.45888437454167,
+        "endpointResidualZNewtons" : 8.569786801690281,
+        "intervalMeanComputedForceNewtons" : [
+          -5.95207242295146,
+          -0.4839172214269638,
+          10.792892217636108
+        ],
+        "intervalMeanResidualXNewtons" : -5.935443339241177,
+        "intervalMeanResidualZNewtons" : 7.411400332802952,
+        "measuredForceXNewtons" : -0.016629083710282905,
+        "measuredForceZNewtons" : 3.381491884833156,
+        "minimumPopulation" : 0.02162472903728485,
+        "sourceFrameCoordinate" : 62.5,
+        "sourceTimeSeconds" : 0.0625,
+        "targetSampleIndex" : 125
+      },
+      {
+        "componentSolidCellCounts" : [
+          474,
+          436,
+          440,
+          557
+        ],
+        "endpointComputedForceNewtons" : [
+          -19.4783878326416,
+          3.840226650238037,
+          6.733180999755859
+        ],
+        "endpointResidualXNewtons" : -19.45434510006273,
+        "endpointResidualZNewtons" : 3.344049871448289,
+        "intervalMeanComputedForceNewtons" : [
+          -4.23170118778944,
+          -0.1699124053120613,
+          9.263558268547058
+        ],
+        "intervalMeanResidualXNewtons" : -4.207658455210568,
+        "intervalMeanResidualZNewtons" : 5.874427140239488,
+        "measuredForceXNewtons" : -0.02404273257887176,
+        "measuredForceZNewtons" : 3.3891311283075702,
+        "minimumPopulation" : 0.02089989185333252,
+        "sourceFrameCoordinate" : 63,
+        "sourceTimeSeconds" : 0.063,
+        "targetSampleIndex" : 126
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          426,
+          438,
+          557
+        ],
+        "endpointComputedForceNewtons" : [
+          -5.155416965484619,
+          0.3258565664291382,
+          8.50979995727539
+        ],
+        "endpointResidualXNewtons" : -5.1251914820101145,
+        "endpointResidualZNewtons" : 5.1146227374601665,
+        "intervalMeanComputedForceNewtons" : [
+          -5.398671880364418,
+          -1.1646279469132423,
+          8.625514686107635
+        ],
+        "intervalMeanResidualXNewtons" : -5.368446396889913,
+        "intervalMeanResidualZNewtons" : 5.230337466292411,
+        "measuredForceXNewtons" : -0.030225483474504926,
+        "measuredForceZNewtons" : 3.395177219815224,
+        "minimumPopulation" : 0.020397450774908066,
+        "sourceFrameCoordinate" : 63.5,
+        "sourceTimeSeconds" : 0.0635,
+        "targetSampleIndex" : 127
+      },
+      {
+        "componentSolidCellCounts" : [
+          483,
+          406,
+          424,
+          557
+        ],
+        "endpointComputedForceNewtons" : [
+          -21.468467712402344,
+          4.247661590576172,
+          9.419312477111816
+        ],
+        "endpointResidualXNewtons" : -21.43308440610956,
+        "endpointResidualZNewtons" : 6.0190281390902625,
+        "intervalMeanComputedForceNewtons" : [
+          -4.53669111430645,
+          0.04296047240495682,
+          8.469864904880524
+        ],
+        "intervalMeanResidualXNewtons" : -4.501307808013666,
+        "intervalMeanResidualZNewtons" : 5.06958056685897,
+        "measuredForceXNewtons" : -0.03538330629278368,
+        "measuredForceZNewtons" : 3.400284338021554,
+        "minimumPopulation" : 0.02045573480427265,
+        "sourceFrameCoordinate" : 64,
+        "sourceTimeSeconds" : 0.064,
+        "targetSampleIndex" : 128
+      },
+      {
+        "componentSolidCellCounts" : [
+          478,
+          414,
+          421,
+          558
+        ],
+        "endpointComputedForceNewtons" : [
+          -3.5641000270843506,
+          0.34734201431274414,
+          8.597539901733398
+        ],
+        "endpointResidualXNewtons" : -3.5243226333815247,
+        "endpointResidualZNewtons" : 5.1925504977531,
+        "intervalMeanComputedForceNewtons" : [
+          -5.227203086018562,
+          -0.5387552008032799,
+          8.91197782754898
+        ],
+        "intervalMeanResidualXNewtons" : -5.1874256923157365,
+        "intervalMeanResidualZNewtons" : 5.506988423568682,
+        "measuredForceXNewtons" : -0.03977739370282586,
+        "measuredForceZNewtons" : 3.404989403980299,
+        "minimumPopulation" : 0.020379094406962395,
+        "sourceFrameCoordinate" : 64.5,
+        "sourceTimeSeconds" : 0.0645,
+        "targetSampleIndex" : 129
+      },
+      {
+        "componentSolidCellCounts" : [
+          479,
+          429,
+          444,
+          555
+        ],
+        "endpointComputedForceNewtons" : [
+          -14.90905475616455,
+          4.504778861999512,
+          21.729976654052734
+        ],
+        "endpointResidualXNewtons" : -14.865349174369902,
+        "endpointResidualZNewtons" : 18.320312796696804,
+        "intervalMeanComputedForceNewtons" : [
+          -2.2972382865846157,
+          0.027022678405046463,
+          8.082892715930939
+        ],
+        "intervalMeanResidualXNewtons" : -2.253532704789967,
+        "intervalMeanResidualZNewtons" : 4.673228858575009,
+        "measuredForceXNewtons" : -0.043705581794648514,
+        "measuredForceZNewtons" : 3.4096638573559295,
+        "minimumPopulation" : 0.01981007121503353,
+        "sourceFrameCoordinate" : 65,
+        "sourceTimeSeconds" : 0.065,
+        "targetSampleIndex" : 130
+      },
+      {
+        "componentSolidCellCounts" : [
+          465,
+          438,
+          450,
+          559
+        ],
+        "endpointComputedForceNewtons" : [
+          -6.232038974761963,
+          -0.1363081932067871,
+          12.565840721130371
+        ],
+        "endpointResidualXNewtons" : -6.184559399512576,
+        "endpointResidualZNewtons" : 9.151361924129834,
+        "intervalMeanComputedForceNewtons" : [
+          -5.8094456270337105,
+          -0.549539603292942,
+          13.32032698392868
+        ],
+        "intervalMeanResidualXNewtons" : -5.761966051784324,
+        "intervalMeanResidualZNewtons" : 9.905848186928143,
+        "measuredForceXNewtons" : -0.04747957524938715,
+        "measuredForceZNewtons" : 3.414478797000538,
+        "minimumPopulation" : 0.020764127373695374,
+        "sourceFrameCoordinate" : 65.5,
+        "sourceTimeSeconds" : 0.0655,
+        "targetSampleIndex" : 131
+      },
+      {
+        "componentSolidCellCounts" : [
+          464,
+          412,
+          418,
+          570
+        ],
+        "endpointComputedForceNewtons" : [
+          -9.89442253112793,
+          5.168363571166992,
+          4.1649932861328125
+        ],
+        "endpointResidualXNewtons" : -9.843022949109894,
+        "endpointResidualZNewtons" : 0.7456087439570722,
+        "intervalMeanComputedForceNewtons" : [
+          -6.152408003807068,
+          0.20008844882249832,
+          10.83295625448227
+        ],
+        "intervalMeanResidualXNewtons" : -6.101008421789033,
+        "intervalMeanResidualZNewtons" : 7.4135717123065294,
+        "measuredForceXNewtons" : -0.05139958201803466,
+        "measuredForceZNewtons" : 3.4193845421757403,
+        "minimumPopulation" : 0.01943838596343994,
+        "sourceFrameCoordinate" : 66,
+        "sourceTimeSeconds" : 0.066,
+        "targetSampleIndex" : 132
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          415,
+          412,
+          569
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.983060598373413,
+          -0.29277873039245605,
+          5.628517150878906
+        ],
+        "endpointResidualXNewtons" : -1.9273322662208883,
+        "endpointResidualZNewtons" : 2.204413279106652,
+        "intervalMeanComputedForceNewtons" : [
+          -3.8514319360256195,
+          -0.5433380156755447,
+          5.868127763271332
+        ],
+        "intervalMeanResidualXNewtons" : -3.7957036038730947,
+        "intervalMeanResidualZNewtons" : 2.4440238914990777,
+        "measuredForceXNewtons" : -0.055728332152524714,
+        "measuredForceZNewtons" : 3.424103871772254,
+        "minimumPopulation" : 0.02001524344086647,
+        "sourceFrameCoordinate" : 66.5,
+        "sourceTimeSeconds" : 0.0665,
+        "targetSampleIndex" : 133
+      },
+      {
+        "componentSolidCellCounts" : [
+          471,
+          432,
+          431,
+          566
+        ],
+        "endpointComputedForceNewtons" : [
+          -8.158008575439453,
+          7.14008092880249,
+          8.142574310302734
+        ],
+        "endpointResidualXNewtons" : -8.097341866838818,
+        "endpointResidualZNewtons" : 4.714437037051793,
+        "intervalMeanComputedForceNewtons" : [
+          -2.2880925871431828,
+          0.1947883516550064,
+          6.574969053268433
+        ],
+        "intervalMeanResidualXNewtons" : -2.2274258785425474,
+        "intervalMeanResidualZNewtons" : 3.1468317800174908,
+        "measuredForceXNewtons" : -0.060666708600635354,
+        "measuredForceZNewtons" : 3.428137273250942,
+        "minimumPopulation" : 0.01990981586277485,
+        "sourceFrameCoordinate" : 67,
+        "sourceTimeSeconds" : 0.067,
+        "targetSampleIndex" : 134
+      },
+      {
+        "componentSolidCellCounts" : [
+          480,
+          421,
+          444,
+          574
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.582667350769043,
+          1.095438003540039,
+          8.488164901733398
+        ],
+        "endpointResidualXNewtons" : -4.516334055183619,
+        "endpointResidualZNewtons" : 5.0573863369366485,
+        "intervalMeanComputedForceNewtons" : [
+          -3.619082361459732,
+          -0.009202927350997925,
+          8.258967876434326
+        ],
+        "intervalMeanResidualXNewtons" : -3.552749065874308,
+        "intervalMeanResidualZNewtons" : 4.828189311637576,
+        "measuredForceXNewtons" : -0.06633329558542411,
+        "measuredForceZNewtons" : 3.43077856479675,
+        "minimumPopulation" : 0.020213911309838295,
+        "sourceFrameCoordinate" : 67.5,
+        "sourceTimeSeconds" : 0.0675,
+        "targetSampleIndex" : 135
+      },
+      {
+        "componentSolidCellCounts" : [
+          482,
+          425,
+          436,
+          579
+        ],
+        "endpointComputedForceNewtons" : [
+          7.31865930557251,
+          4.805877685546875,
+          7.475301742553711
+        ],
+        "endpointResidualXNewtons" : 7.391409316924947,
+        "endpointResidualZNewtons" : 4.044161790492633,
+        "intervalMeanComputedForceNewtons" : [
+          -3.338171124458313,
+          0.0054022520780563354,
+          7.979458451271057
+        ],
+        "intervalMeanResidualXNewtons" : -3.2654211131058752,
+        "intervalMeanResidualZNewtons" : 4.548318499209979,
+        "measuredForceXNewtons" : -0.07275001135243767,
+        "measuredForceZNewtons" : 3.431139952061078,
+        "minimumPopulation" : 0.0202613677829504,
+        "sourceFrameCoordinate" : 68,
+        "sourceTimeSeconds" : 0.068,
+        "targetSampleIndex" : 136
+      },
+      {
+        "componentSolidCellCounts" : [
+          473,
+          423,
+          437,
+          578
+        ],
+        "endpointComputedForceNewtons" : [
+          -3.9901490211486816,
+          0.732489824295044,
+          8.712772369384766
+        ],
+        "endpointResidualXNewtons" : -3.9103134189608104,
+        "endpointResidualZNewtons" : 5.284585941088801,
+        "intervalMeanComputedForceNewtons" : [
+          -3.8233927339315414,
+          -0.3005644381046295,
+          7.7034056186676025
+        ],
+        "intervalMeanResidualXNewtons" : -3.74355713174367,
+        "intervalMeanResidualZNewtons" : 4.275219190371638,
+        "measuredForceXNewtons" : -0.07983560218787106,
+        "measuredForceZNewtons" : 3.4281864282959646,
+        "minimumPopulation" : 0.019694961607456207,
+        "sourceFrameCoordinate" : 68.5,
+        "sourceTimeSeconds" : 0.0685,
+        "targetSampleIndex" : 137
+      },
+      {
+        "componentSolidCellCounts" : [
+          474,
+          424,
+          440,
+          576
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.983791351318359,
+          5.998366355895996,
+          10.383670806884766
+        ],
+        "endpointResidualXNewtons" : -4.896383239474888,
+        "endpointResidualZNewtons" : 6.962890937352324,
+        "intervalMeanComputedForceNewtons" : [
+          -3.4791602566838264,
+          -0.04348744451999664,
+          8.602695107460022
+        ],
+        "intervalMeanResidualXNewtons" : -3.391752144840355,
+        "intervalMeanResidualZNewtons" : 5.18191523792758,
+        "measuredForceXNewtons" : -0.0874081118434713,
+        "measuredForceZNewtons" : 3.420779869532442,
+        "minimumPopulation" : 0.020600853487849236,
+        "sourceFrameCoordinate" : 69,
+        "sourceTimeSeconds" : 0.069,
+        "targetSampleIndex" : 138
+      },
+      {
+        "componentSolidCellCounts" : [
+          474,
+          427,
+          442,
+          575
+        ],
+        "endpointComputedForceNewtons" : [
+          -6.624362945556641,
+          0.03934144973754883,
+          10.42555046081543
+        ],
+        "endpointResidualXNewtons" : -6.529166420798687,
+        "endpointResidualZNewtons" : 7.017817653625508,
+        "intervalMeanComputedForceNewtons" : [
+          -4.091383635997772,
+          -0.16699616611003876,
+          9.501951813697815
+        ],
+        "intervalMeanResidualXNewtons" : -3.996187111239818,
+        "intervalMeanResidualZNewtons" : 6.094219006507894,
+        "measuredForceXNewtons" : -0.09519652475795398,
+        "measuredForceZNewtons" : 3.4077328071899218,
+        "minimumPopulation" : 0.02113923616707325,
+        "sourceFrameCoordinate" : 69.5,
+        "sourceTimeSeconds" : 0.0695,
+        "targetSampleIndex" : 139
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          440,
+          438,
+          570
+        ],
+        "endpointComputedForceNewtons" : [
+          -19.193923950195312,
+          7.319924831390381,
+          10.051279067993164
+        ],
+        "endpointResidualXNewtons" : -19.091063246526165,
+        "endpointResidualZNewtons" : 6.663408479977615,
+        "intervalMeanComputedForceNewtons" : [
+          -5.1718975976109505,
+          -0.328211173415184,
+          9.141501307487488
+        ],
+        "intervalMeanResidualXNewtons" : -5.069036893941804,
+        "intervalMeanResidualZNewtons" : 5.753630719471939,
+        "measuredForceXNewtons" : -0.10286070366914643,
+        "measuredForceZNewtons" : 3.387870588015549,
+        "minimumPopulation" : 0.021528618410229683,
+        "sourceFrameCoordinate" : 70,
+        "sourceTimeSeconds" : 0.07,
+        "targetSampleIndex" : 140
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          435,
+          447,
+          565
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.687722206115723,
+          -0.8463811874389648,
+          9.808677673339844
+        ],
+        "endpointResidualXNewtons" : -4.577704525096547,
+        "endpointResidualZNewtons" : 6.4485789234087925,
+        "intervalMeanComputedForceNewtons" : [
+          -4.229086212813854,
+          -0.14537933468818665,
+          9.693717122077942
+        ],
+        "intervalMeanResidualXNewtons" : -4.119068531794679,
+        "intervalMeanResidualZNewtons" : 6.333618372146891,
+        "measuredForceXNewtons" : -0.11001768101917495,
+        "measuredForceZNewtons" : 3.360098749931051,
+        "minimumPopulation" : 0.02117915078997612,
+        "sourceFrameCoordinate" : 70.5,
+        "sourceTimeSeconds" : 0.0705,
+        "targetSampleIndex" : 141
+      },
+      {
+        "componentSolidCellCounts" : [
+          467,
+          439,
+          448,
+          570
+        ],
+        "endpointComputedForceNewtons" : [
+          14.424905776977539,
+          4.378851890563965,
+          -1.458282470703125
+        ],
+        "endpointResidualXNewtons" : 14.541177337075833,
+        "endpointResidualZNewtons" : -4.781752999680961,
+        "intervalMeanComputedForceNewtons" : [
+          -2.583016976714134,
+          -0.21679861843585968,
+          7.981694340705872
+        ],
+        "intervalMeanResidualXNewtons" : -2.4667454166158396,
+        "intervalMeanResidualZNewtons" : 4.6582238117280355,
+        "measuredForceXNewtons" : -0.11627156009829448,
+        "measuredForceZNewtons" : 3.3234705289778357,
+        "minimumPopulation" : 0.021569322794675827,
+        "sourceFrameCoordinate" : 71,
+        "sourceTimeSeconds" : 0.071,
+        "targetSampleIndex" : 142
+      },
+      {
+        "componentSolidCellCounts" : [
+          462,
+          435,
+          438,
+          572
+        ],
+        "endpointComputedForceNewtons" : [
+          1.9937565326690674,
+          0.7784116268157959,
+          4.307075500488281
+        ],
+        "endpointResidualXNewtons" : 2.115000470385611,
+        "endpointResidualZNewtons" : 1.029827379324744,
+        "intervalMeanComputedForceNewtons" : [
+          -0.33789002522826195,
+          0.051463812589645386,
+          2.8891592025756836
+        ],
+        "intervalMeanResidualXNewtons" : -0.21664608751171838,
+        "intervalMeanResidualZNewtons" : -0.38808891858785355,
+        "measuredForceXNewtons" : -0.12124393771654357,
+        "measuredForceZNewtons" : 3.277248121163537,
+        "minimumPopulation" : 0.021290501579642296,
+        "sourceFrameCoordinate" : 71.5,
+        "sourceTimeSeconds" : 0.0715,
+        "targetSampleIndex" : 143
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          428,
+          439,
+          571
+        ],
+        "endpointComputedForceNewtons" : [
+          7.516078472137451,
+          5.3868513107299805,
+          1.6474628448486328
+        ],
+        "endpointResidualXNewtons" : 7.640680392543897,
+        "endpointResidualZNewtons" : -1.5734883343603587,
+        "intervalMeanComputedForceNewtons" : [
+          -1.1941979005932808,
+          0.06101125478744507,
+          5.899223446846008
+        ],
+        "intervalMeanResidualXNewtons" : -1.0695959801868355,
+        "intervalMeanResidualZNewtons" : 2.6782722676370168,
+        "measuredForceXNewtons" : -0.12460192040644524,
+        "measuredForceZNewtons" : 3.2209511792089915,
+        "minimumPopulation" : 0.02170369029045105,
+        "sourceFrameCoordinate" : 72,
+        "sourceTimeSeconds" : 0.072,
+        "targetSampleIndex" : 144
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          428,
+          437,
+          563
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.822768211364746,
+          1.0250635147094727,
+          7.543857574462891
+        ],
+        "endpointResidualXNewtons" : -2.696686858066428,
+        "endpointResidualZNewtons" : 4.389470323394173,
+        "intervalMeanComputedForceNewtons" : [
+          -0.9855625592172146,
+          -0.07841666787862778,
+          4.994534492492676
+        ],
+        "intervalMeanResidualXNewtons" : -0.8594812059188965,
+        "intervalMeanResidualZNewtons" : 1.8401472414239577,
+        "measuredForceXNewtons" : -0.1260813532983181,
+        "measuredForceZNewtons" : 3.154387251068718,
+        "minimumPopulation" : 0.021633287891745567,
+        "sourceFrameCoordinate" : 72.5,
+        "sourceTimeSeconds" : 0.0725,
+        "targetSampleIndex" : 145
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          440,
+          453,
+          555
+        ],
+        "endpointComputedForceNewtons" : [
+          12.635298728942871,
+          4.195587158203125,
+          0.19431686401367188
+        ],
+        "endpointResidualXNewtons" : 12.7608023704913,
+        "endpointResidualZNewtons" : -2.8833444263479797,
+        "intervalMeanComputedForceNewtons" : [
+          -1.449644573032856,
+          -0.35966333746910095,
+          7.262403964996338
+        ],
+        "intervalMeanResidualXNewtons" : -1.3241409314844268,
+        "intervalMeanResidualZNewtons" : 4.184742674634686,
+        "measuredForceXNewtons" : -0.12550364154842922,
+        "measuredForceZNewtons" : 3.0776612903616516,
+        "minimumPopulation" : 0.02125357650220394,
+        "sourceFrameCoordinate" : 73,
+        "sourceTimeSeconds" : 0.073,
+        "targetSampleIndex" : 146
+      },
+      {
+        "componentSolidCellCounts" : [
+          462,
+          432,
+          434,
+          550
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.649299144744873,
+          0.15256357192993164,
+          7.1241455078125
+        ],
+        "endpointResidualXNewtons" : -1.5265137635261519,
+        "endpointResidualZNewtons" : 4.13298105053171,
+        "intervalMeanComputedForceNewtons" : [
+          -1.5618294961750507,
+          -0.600896492600441,
+          6.155126929283142
+        ],
+        "intervalMeanResidualXNewtons" : -1.4390441149563296,
+        "intervalMeanResidualZNewtons" : 3.1639624720023525,
+        "measuredForceXNewtons" : -0.1227853812187211,
+        "measuredForceZNewtons" : 2.9911644572807896,
+        "minimumPopulation" : 0.021435700356960297,
+        "sourceFrameCoordinate" : 73.5,
+        "sourceTimeSeconds" : 0.0735,
+        "targetSampleIndex" : 147
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          437,
+          437,
+          549
+        ],
+        "endpointComputedForceNewtons" : [
+          12.76465892791748,
+          4.679869651794434,
+          -4.349571228027344
+        ],
+        "endpointResidualXNewtons" : 12.88259977221742,
+        "endpointResidualZNewtons" : -7.245116672476212,
+        "intervalMeanComputedForceNewtons" : [
+          -1.0729280039668083,
+          -0.05327172577381134,
+          6.126526355743408
+        ],
+        "intervalMeanResidualXNewtons" : -0.9549871596668688,
+        "intervalMeanResidualZNewtons" : 3.23098091129454,
+        "measuredForceXNewtons" : -0.11794084429993956,
+        "measuredForceZNewtons" : 2.895545444448868,
+        "minimumPopulation" : 0.020816607400774956,
+        "sourceFrameCoordinate" : 74,
+        "sourceTimeSeconds" : 0.074,
+        "targetSampleIndex" : 148
+      },
+      {
+        "componentSolidCellCounts" : [
+          468,
+          444,
+          434,
+          540
+        ],
+        "endpointComputedForceNewtons" : [
+          1.58907151222229,
+          1.31803297996521,
+          2.3889617919921875
+        ],
+        "endpointResidualXNewtons" : 1.700149633661964,
+        "endpointResidualZNewtons" : -0.40270797917054013,
+        "intervalMeanComputedForceNewtons" : [
+          0.9821215383708477,
+          -0.025081008672714233,
+          1.5885710716247559
+        ],
+        "intervalMeanResidualXNewtons" : 1.0931996598105216,
+        "intervalMeanResidualZNewtons" : -1.2030986995379718,
+        "measuredForceXNewtons" : -0.11107812143967394,
+        "measuredForceZNewtons" : 2.7916697711627276,
+        "minimumPopulation" : 0.022412534803152084,
+        "sourceFrameCoordinate" : 74.5,
+        "sourceTimeSeconds" : 0.0745,
+        "targetSampleIndex" : 149
+      },
+      {
+        "componentSolidCellCounts" : [
+          471,
+          445,
+          437,
+          535
+        ],
+        "endpointComputedForceNewtons" : [
+          6.569121360778809,
+          2.3287649154663086,
+          -3.61468505859375
+        ],
+        "endpointResidualXNewtons" : 6.67151169658607,
+        "endpointResidualZNewtons" : -6.295258461567391,
+        "intervalMeanComputedForceNewtons" : [
+          -0.05828201770782471,
+          0.0183391273021698,
+          4.230057001113892
+        ],
+        "intervalMeanResidualXNewtons" : 0.044108318099436744,
+        "intervalMeanResidualZNewtons" : 1.5494835981402502,
+        "measuredForceXNewtons" : -0.10239033580726145,
+        "measuredForceZNewtons" : 2.6805734029736414,
+        "minimumPopulation" : 0.021964315325021744,
+        "sourceFrameCoordinate" : 75,
+        "sourceTimeSeconds" : 0.075,
+        "targetSampleIndex" : 150
+      },
+      {
+        "componentSolidCellCounts" : [
+          470,
+          450,
+          415,
+          534
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.9916963577270508,
+          0.7337279319763184,
+          3.224607467651367
+        ],
+        "endpointResidualXNewtons" : -0.8995526844661029,
+        "endpointResidualZNewtons" : 0.6611908604738086,
+        "intervalMeanComputedForceNewtons" : [
+          0.49535156413912773,
+          -0.14576219022274017,
+          2.9143131971359253
+        ],
+        "intervalMeanResidualXNewtons" : 0.5874952374000756,
+        "intervalMeanResidualZNewtons" : 0.3508965899583667,
+        "measuredForceXNewtons" : -0.09214367326094786,
+        "measuredForceZNewtons" : 2.5634166071775586,
+        "minimumPopulation" : 0.022228512912988663,
+        "sourceFrameCoordinate" : 75.5,
+        "sourceTimeSeconds" : 0.0755,
+        "targetSampleIndex" : 151
+      },
+      {
+        "componentSolidCellCounts" : [
+          458,
+          444,
+          433,
+          541
+        ],
+        "endpointComputedForceNewtons" : [
+          11.544731140136719,
+          -0.43669772148132324,
+          -9.23343276977539
+        ],
+        "endpointResidualXNewtons" : 11.625395048236054,
+        "endpointResidualZNewtons" : -11.674875253472552,
+        "intervalMeanComputedForceNewtons" : [
+          -0.4180815890431404,
+          -0.07368616759777069,
+          4.391344428062439
+        ],
+        "intervalMeanResidualXNewtons" : -0.33741768094380475,
+        "intervalMeanResidualZNewtons" : 1.9499019443652776,
+        "measuredForceXNewtons" : -0.08066390809933566,
+        "measuredForceZNewtons" : 2.4414424836971613,
+        "minimumPopulation" : 0.02240006811916828,
+        "sourceFrameCoordinate" : 76,
+        "sourceTimeSeconds" : 0.076,
+        "targetSampleIndex" : 152
+      },
+      {
+        "componentSolidCellCounts" : [
+          451,
+          438,
+          443,
+          539
+        ],
+        "endpointComputedForceNewtons" : [
+          3.1830601692199707,
+          0.7541828155517578,
+          -0.979888916015625
+        ],
+        "endpointResidualXNewtons" : 3.251382819667453,
+        "endpointResidualZNewtons" : -3.2958315587156597,
+        "intervalMeanComputedForceNewtons" : [
+          1.7661059610545635,
+          -0.14168879389762878,
+          -0.9434300661087036
+        ],
+        "intervalMeanResidualXNewtons" : 1.8344286115020458,
+        "intervalMeanResidualZNewtons" : -3.2593727088087383,
+        "measuredForceXNewtons" : -0.0683226504474824,
+        "measuredForceZNewtons" : 2.3159426427000347,
+        "minimumPopulation" : 0.021963179111480713,
+        "sourceFrameCoordinate" : 76.5,
+        "sourceTimeSeconds" : 0.0765,
+        "targetSampleIndex" : 153
+      },
+      {
+        "componentSolidCellCounts" : [
+          451,
+          441,
+          457,
+          522
+        ],
+        "endpointComputedForceNewtons" : [
+          12.616302490234375,
+          -0.3186216354370117,
+          -7.451168060302734
+        ],
+        "endpointResidualXNewtons" : 12.67182638055391,
+        "endpointResidualZNewtons" : -9.639398605421325,
+        "intervalMeanComputedForceNewtons" : [
+          0.8620932474732399,
+          0.017193317413330078,
+          2.6056967973709106
+        ],
+        "intervalMeanResidualXNewtons" : 0.9176171377927745,
+        "intervalMeanResidualZNewtons" : 0.41746625225232004,
+        "measuredForceXNewtons" : -0.05552389031953462,
+        "measuredForceZNewtons" : 2.1882305451185906,
+        "minimumPopulation" : 0.02236221544444561,
+        "sourceFrameCoordinate" : 77,
+        "sourceTimeSeconds" : 0.077,
+        "targetSampleIndex" : 154
+      },
+      {
+        "componentSolidCellCounts" : [
+          446,
+          451,
+          443,
+          519
+        ],
+        "endpointComputedForceNewtons" : [
+          1.3496683835983276,
+          0.13829421997070312,
+          0.8624954223632812
+        ],
+        "endpointResidualXNewtons" : 1.3923592256444004,
+        "endpointResidualZNewtons" : -1.197126040248071,
+        "intervalMeanComputedForceNewtons" : [
+          1.2671059481799603,
+          -0.13086971640586853,
+          -0.020745277404785156
+        ],
+        "intervalMeanResidualXNewtons" : 1.309796790226033,
+        "intervalMeanResidualZNewtons" : -2.0803667400161374,
+        "measuredForceXNewtons" : -0.04269084204607267,
+        "measuredForceZNewtons" : 2.0596214626113523,
+        "minimumPopulation" : 0.02238708734512329,
+        "sourceFrameCoordinate" : 77.5,
+        "sourceTimeSeconds" : 0.0775,
+        "targetSampleIndex" : 155
+      },
+      {
+        "componentSolidCellCounts" : [
+          443,
+          451,
+          444,
+          524
+        ],
+        "endpointComputedForceNewtons" : [
+          13.871542930603027,
+          -2.6293578147888184,
+          -8.416915893554688
+        ],
+        "endpointResidualXNewtons" : 13.901795740322418,
+        "endpointResidualZNewtons" : -10.348332950189779,
+        "intervalMeanComputedForceNewtons" : [
+          -0.025081738829612732,
+          -0.47742414474487305,
+          3.107340097427368
+        ],
+        "intervalMeanResidualXNewtons" : 0.005171070889778605,
+        "intervalMeanResidualZNewtons" : 1.1759230407922778,
+        "measuredForceXNewtons" : -0.030252809719391337,
+        "measuredForceZNewtons" : 1.9314170566350903,
+        "minimumPopulation" : 0.022313911467790604,
+        "sourceFrameCoordinate" : 78,
+        "sourceTimeSeconds" : 0.078,
+        "targetSampleIndex" : 156
+      },
+      {
+        "componentSolidCellCounts" : [
+          446,
+          451,
+          446,
+          517
+        ],
+        "endpointComputedForceNewtons" : [
+          1.133387565612793,
+          -0.7259402275085449,
+          0.366424560546875
+        ],
+        "endpointResidualXNewtons" : 1.152019407921367,
+        "endpointResidualZNewtons" : -1.4384676839369888,
+        "intervalMeanComputedForceNewtons" : [
+          1.015029363334179,
+          -0.10527554154396057,
+          -0.6235089302062988
+        ],
+        "intervalMeanResidualXNewtons" : 1.033661205642753,
+        "intervalMeanResidualZNewtons" : -2.428401174690163,
+        "measuredForceXNewtons" : -0.018631842308573975,
+        "measuredForceZNewtons" : 1.8048922444838638,
+        "minimumPopulation" : 0.02219584584236145,
+        "sourceFrameCoordinate" : 78.5,
+        "sourceTimeSeconds" : 0.0785,
+        "targetSampleIndex" : 157
+      },
+      {
+        "componentSolidCellCounts" : [
+          450,
+          464,
+          447,
+          515
+        ],
+        "endpointComputedForceNewtons" : [
+          14.774148941040039,
+          -4.29109525680542,
+          -9.098701477050781
+        ],
+        "endpointResidualXNewtons" : 14.782378150619774,
+        "endpointResidualZNewtons" : -10.779983686455846,
+        "intervalMeanComputedForceNewtons" : [
+          1.0239069163799286,
+          -0.4917372167110443,
+          2.2015018463134766
+        ],
+        "intervalMeanResidualXNewtons" : 1.0321361259596629,
+        "intervalMeanResidualZNewtons" : 0.520219636908412,
+        "measuredForceXNewtons" : -0.008229209579734324,
+        "measuredForceZNewtons" : 1.6812822094050646,
+        "minimumPopulation" : 0.02209547907114029,
+        "sourceFrameCoordinate" : 79,
+        "sourceTimeSeconds" : 0.079,
+        "targetSampleIndex" : 158
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          454,
+          454,
+          514
+        ],
+        "endpointComputedForceNewtons" : [
+          1.1911287307739258,
+          0.15764188766479492,
+          0.022480010986328125
+        ],
+        "endpointResidualXNewtons" : 1.190540739639164,
+        "endpointResidualZNewtons" : -1.5392879685730352,
+        "intervalMeanComputedForceNewtons" : [
+          1.300915528088808,
+          -0.15028631687164307,
+          -1.1368768215179443
+        ],
+        "intervalMeanResidualXNewtons" : 1.3003275369540463,
+        "intervalMeanResidualZNewtons" : -2.6986448010773074,
+        "measuredForceXNewtons" : 0.0005879911347617325,
+        "measuredForceZNewtons" : 1.5617679795593633,
+        "minimumPopulation" : 0.022257456555962563,
+        "sourceFrameCoordinate" : 79.5,
+        "sourceTimeSeconds" : 0.0795,
+        "targetSampleIndex" : 159
+      },
+      {
+        "componentSolidCellCounts" : [
+          457,
+          460,
+          449,
+          516
+        ],
+        "endpointComputedForceNewtons" : [
+          17.440595626831055,
+          -4.266101837158203,
+          -9.42782211303711
+        ],
+        "endpointResidualXNewtons" : 17.43309596580756,
+        "endpointResidualZNewtons" : -10.875281907362854,
+        "intervalMeanComputedForceNewtons" : [
+          0.8492424041032791,
+          -0.6431786417961121,
+          2.022016763687134
+        ],
+        "intervalMeanResidualXNewtons" : 0.8417427430797836,
+        "intervalMeanResidualZNewtons" : 0.5745569693613894,
+        "measuredForceXNewtons" : 0.007499661023495495,
+        "measuredForceZNewtons" : 1.4474597943257443,
+        "minimumPopulation" : 0.02232549339532852,
+        "sourceFrameCoordinate" : 80,
+        "sourceTimeSeconds" : 0.08,
+        "targetSampleIndex" : 160
+      },
+      {
+        "componentSolidCellCounts" : [
+          455,
+          461,
+          449,
+          516
+        ],
+        "endpointComputedForceNewtons" : [
+          1.8284894227981567,
+          -0.11880731582641602,
+          -0.0072021484375
+        ],
+        "endpointResidualXNewtons" : 1.816244826729481,
+        "endpointResidualZNewtons" : -1.3465804640574095,
+        "intervalMeanComputedForceNewtons" : [
+          1.070219211280346,
+          -0.3588718771934509,
+          -1.4691352844238281
+        ],
+        "intervalMeanResidualXNewtons" : 1.0579746152116702,
+        "intervalMeanResidualZNewtons" : -2.808513600043738,
+        "measuredForceXNewtons" : 0.01224459606867568,
+        "measuredForceZNewtons" : 1.3393783156199095,
+        "minimumPopulation" : 0.022232774645090103,
+        "sourceFrameCoordinate" : 80.5,
+        "sourceTimeSeconds" : 0.0805,
+        "targetSampleIndex" : 161
+      },
+      {
+        "componentSolidCellCounts" : [
+          455,
+          458,
+          446,
+          509
+        ],
+        "endpointComputedForceNewtons" : [
+          22.11895751953125,
+          -5.91079568862915,
+          -11.493709564208984
+        ],
+        "endpointResidualXNewtons" : 22.10432624290954,
+        "endpointResidualZNewtons" : -12.732143995794543,
+        "intervalMeanComputedForceNewtons" : [
+          1.0100339092314243,
+          -0.6006036400794983,
+          1.2330236434936523
+        ],
+        "intervalMeanResidualXNewtons" : 0.995402632609713,
+        "intervalMeanResidualZNewtons" : -0.005410788091906316,
+        "measuredForceXNewtons" : 0.01463127662171134,
+        "measuredForceZNewtons" : 1.2384344315855587,
+        "minimumPopulation" : 0.022254208102822304,
+        "sourceFrameCoordinate" : 81,
+        "sourceTimeSeconds" : 0.081,
+        "targetSampleIndex" : 162
+      },
+      {
+        "componentSolidCellCounts" : [
+          451,
+          451,
+          439,
+          509
+        ],
+        "endpointComputedForceNewtons" : [
+          2.6354730129241943,
+          -0.7329707145690918,
+          -0.9446144104003906
+        ],
+        "endpointResidualXNewtons" : 2.620925497403874,
+        "endpointResidualZNewtons" : -2.090023197977591,
+        "intervalMeanComputedForceNewtons" : [
+          1.0987279042601585,
+          -0.21134880185127258,
+          -2.0910532474517822
+        ],
+        "intervalMeanResidualXNewtons" : 1.0841803887398378,
+        "intervalMeanResidualZNewtons" : -3.2364620350289828,
+        "measuredForceXNewtons" : 0.014547515520320735,
+        "measuredForceZNewtons" : 1.1454087875772005,
+        "minimumPopulation" : 0.02245379611849785,
+        "sourceFrameCoordinate" : 81.5,
+        "sourceTimeSeconds" : 0.0815,
+        "targetSampleIndex" : 163
+      },
+      {
+        "componentSolidCellCounts" : [
+          450,
+          449,
+          453,
+          503
+        ],
+        "endpointComputedForceNewtons" : [
+          30.298324584960938,
+          -6.851569652557373,
+          -11.365314483642578
+        ],
+        "endpointResidualXNewtons" : 30.286355692189016,
+        "endpointResidualZNewtons" : -12.42624669276597,
+        "intervalMeanComputedForceNewtons" : [
+          2.1442153714597225,
+          -0.5622894465923309,
+          0.35069894790649414
+        ],
+        "intervalMeanResidualXNewtons" : 2.132246478687799,
+        "intervalMeanResidualZNewtons" : -0.7102332612168971,
+        "measuredForceXNewtons" : 0.011968892771923346,
+        "measuredForceZNewtons" : 1.0609322091233913,
+        "minimumPopulation" : 0.022607579827308655,
+        "sourceFrameCoordinate" : 82,
+        "sourceTimeSeconds" : 0.082,
+        "targetSampleIndex" : 164
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          447,
+          440,
+          510
+        ],
+        "endpointComputedForceNewtons" : [
+          2.5064990520477295,
+          -1.096757411956787,
+          -0.3301353454589844
+        ],
+        "endpointResidualXNewtons" : 2.4995334098809696,
+        "endpointResidualZNewtons" : -1.3156032719256117,
+        "intervalMeanComputedForceNewtons" : [
+          1.177433431148529,
+          -0.5285780467092991,
+          -1.0226497650146484
+        ],
+        "intervalMeanResidualXNewtons" : 1.170467788981769,
+        "intervalMeanResidualZNewtons" : -2.0081176914812757,
+        "measuredForceXNewtons" : 0.0069656421667600305,
+        "measuredForceZNewtons" : 0.9854679264666273,
+        "minimumPopulation" : 0.022787006571888924,
+        "sourceFrameCoordinate" : 82.5,
+        "sourceTimeSeconds" : 0.0825,
+        "targetSampleIndex" : 165
+      },
+      {
+        "componentSolidCellCounts" : [
+          453,
+          454,
+          441,
+          497
+        ],
+        "endpointComputedForceNewtons" : [
+          3.249052047729492,
+          -4.949182033538818,
+          -9.895938873291016
+        ],
+        "endpointResidualXNewtons" : 3.2493448063112202,
+        "endpointResidualZNewtons" : -10.81523503413101,
+        "intervalMeanComputedForceNewtons" : [
+          -0.028379280120134354,
+          -0.6262266561388969,
+          0.6215412616729736
+        ],
+        "intervalMeanResidualXNewtons" : -0.028086521538406475,
+        "intervalMeanResidualZNewtons" : -0.2977548991670219,
+        "measuredForceXNewtons" : -0.0002927585817278783,
+        "measuredForceZNewtons" : 0.9192961608399955,
+        "minimumPopulation" : 0.022931674495339394,
+        "sourceFrameCoordinate" : 83,
+        "sourceTimeSeconds" : 0.083,
+        "targetSampleIndex" : 166
+      },
+      {
+        "componentSolidCellCounts" : [
+          450,
+          444,
+          437,
+          488
+        ],
+        "endpointComputedForceNewtons" : [
+          3.1109793186187744,
+          0.09630584716796875,
+          -3.3474655151367188
+        ],
+        "endpointResidualXNewtons" : 3.120515754834017,
+        "endpointResidualZNewtons" : -4.2099669422579185,
+        "intervalMeanComputedForceNewtons" : [
+          1.2776215635240078,
+          -0.1438927799463272,
+          -4.198024034500122
+        ],
+        "intervalMeanResidualXNewtons" : 1.2871579997392504,
+        "intervalMeanResidualZNewtons" : -5.060525461621322,
+        "measuredForceXNewtons" : -0.009536436215242618,
+        "measuredForceZNewtons" : 0.8625014271212,
+        "minimumPopulation" : 0.023170897737145424,
+        "sourceFrameCoordinate" : 83.5,
+        "sourceTimeSeconds" : 0.0835,
+        "targetSampleIndex" : 167
+      },
+      {
+        "componentSolidCellCounts" : [
+          448,
+          441,
+          418,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          9.31864070892334,
+          -4.556748390197754,
+          -9.860260009765625
+        ],
+        "endpointResidualXNewtons" : 9.339039435656941,
+        "endpointResidualZNewtons" : -10.675223043323387,
+        "intervalMeanComputedForceNewtons" : [
+          1.444100197404623,
+          -0.46683763712644577,
+          -1.7169651985168457
+        ],
+        "intervalMeanResidualXNewtons" : 1.4644989241382238,
+        "intervalMeanResidualZNewtons" : -2.5319282320746073,
+        "measuredForceXNewtons" : -0.02039872673360072,
+        "measuredForceZNewtons" : 0.8149630335577618,
+        "minimumPopulation" : 0.02309614047408104,
+        "sourceFrameCoordinate" : 84,
+        "sourceTimeSeconds" : 0.084,
+        "targetSampleIndex" : 168
+      },
+      {
+        "componentSolidCellCounts" : [
+          448,
+          430,
+          414,
+          500
+        ],
+        "endpointComputedForceNewtons" : [
+          2.184276580810547,
+          0.21331894397735596,
+          -1.4392623901367188
+        ],
+        "endpointResidualXNewtons" : 2.2167022615240763,
+        "endpointResidualZNewtons" : -2.2156121564637794,
+        "intervalMeanComputedForceNewtons" : [
+          1.2702386118471622,
+          -0.22843427956104279,
+          -3.001927375793457
+        ],
+        "intervalMeanResidualXNewtons" : 1.3026642925606915,
+        "intervalMeanResidualZNewtons" : -3.7782771421205177,
+        "measuredForceXNewtons" : -0.03242568071352932,
+        "measuredForceZNewtons" : 0.7763497663270607,
+        "minimumPopulation" : 0.023082010447978973,
+        "sourceFrameCoordinate" : 84.5,
+        "sourceTimeSeconds" : 0.0845,
+        "targetSampleIndex" : 169
+      },
+      {
+        "componentSolidCellCounts" : [
+          449,
+          422,
+          406,
+          500
+        ],
+        "endpointComputedForceNewtons" : [
+          25.170616149902344,
+          -5.426886558532715,
+          -12.848228454589844
+        ],
+        "endpointResidualXNewtons" : 25.215708242918232,
+        "endpointResidualZNewtons" : -13.59434893933819,
+        "intervalMeanComputedForceNewtons" : [
+          1.6412869095802307,
+          -0.5958121307194233,
+          -1.1378841400146484
+        ],
+        "intervalMeanResidualXNewtons" : 1.6863790025961185,
+        "intervalMeanResidualZNewtons" : -1.8840046247629942,
+        "measuredForceXNewtons" : -0.045092093015887756,
+        "measuredForceZNewtons" : 0.7461204847483459,
+        "minimumPopulation" : 0.02307804301381111,
+        "sourceFrameCoordinate" : 85,
+        "sourceTimeSeconds" : 0.085,
+        "targetSampleIndex" : 170
+      },
+      {
+        "componentSolidCellCounts" : [
+          445,
+          418,
+          410,
+          498
+        ],
+        "endpointComputedForceNewtons" : [
+          2.5630507469177246,
+          -0.7705060243606567,
+          -2.5158004760742188
+        ],
+        "endpointResidualXNewtons" : 2.6208746855086815,
+        "endpointResidualZNewtons" : -3.2393334558076843,
+        "intervalMeanComputedForceNewtons" : [
+          1.6322306767106056,
+          -0.4740271382033825,
+          -4.255073547363281
+        ],
+        "intervalMeanResidualXNewtons" : 1.6900546153015623,
+        "intervalMeanResidualZNewtons" : -4.978606527096747,
+        "measuredForceXNewtons" : -0.057823938590956754,
+        "measuredForceZNewtons" : 0.7235329797334658,
+        "minimumPopulation" : 0.022676320746541023,
+        "sourceFrameCoordinate" : 85.5,
+        "sourceTimeSeconds" : 0.0855,
+        "targetSampleIndex" : 171
+      },
+      {
+        "componentSolidCellCounts" : [
+          443,
+          411,
+          408,
+          496
+        ],
+        "endpointComputedForceNewtons" : [
+          15.54952621459961,
+          -3.1622471809387207,
+          -11.34619140625
+        ],
+        "endpointResidualXNewtons" : 15.619552503941748,
+        "endpointResidualZNewtons" : -12.053854955325795,
+        "intervalMeanComputedForceNewtons" : [
+          1.8924401365220547,
+          -0.32635608315467834,
+          -1.9214515686035156
+        ],
+        "intervalMeanResidualXNewtons" : 1.9624664258641922,
+        "intervalMeanResidualZNewtons" : -2.62911511767931,
+        "measuredForceXNewtons" : -0.07002628934213742,
+        "measuredForceZNewtons" : 0.7076635490757942,
+        "minimumPopulation" : 0.021802034229040146,
+        "sourceFrameCoordinate" : 86,
+        "sourceTimeSeconds" : 0.086,
+        "targetSampleIndex" : 172
+      },
+      {
+        "componentSolidCellCounts" : [
+          443,
+          407,
+          400,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          1.0883948802947998,
+          -0.8981544971466064,
+          -2.8260269165039062
+        ],
+        "endpointResidualXNewtons" : 1.1695099131657267,
+        "endpointResidualZNewtons" : -3.523465934960228,
+        "intervalMeanComputedForceNewtons" : [
+          1.7775091528892517,
+          -0.07960093766450882,
+          -3.70133638381958
+        ],
+        "intervalMeanResidualXNewtons" : 1.8586241857601786,
+        "intervalMeanResidualZNewtons" : -4.398775402275902,
+        "measuredForceXNewtons" : -0.0811150328709268,
+        "measuredForceZNewtons" : 0.6974390184563222,
+        "minimumPopulation" : 0.023226378485560417,
+        "sourceFrameCoordinate" : 86.5,
+        "sourceTimeSeconds" : 0.0865,
+        "targetSampleIndex" : 173
+      },
+      {
+        "componentSolidCellCounts" : [
+          445,
+          407,
+          388,
+          495
+        ],
+        "endpointComputedForceNewtons" : [
+          7.261462211608887,
+          -2.6092936992645264,
+          -8.842803955078125
+        ],
+        "endpointResidualXNewtons" : 7.352012288355474,
+        "endpointResidualZNewtons" : -9.534485308482447,
+        "intervalMeanComputedForceNewtons" : [
+          1.0913012586534023,
+          -0.4983598366379738,
+          -1.6104235649108887
+        ],
+        "intervalMeanResidualXNewtons" : 1.1818513353999898,
+        "intervalMeanResidualZNewtons" : -2.3021049183152105,
+        "measuredForceXNewtons" : -0.09055007674658738,
+        "measuredForceZNewtons" : 0.691681353404322,
+        "minimumPopulation" : 0.02318517118692398,
+        "sourceFrameCoordinate" : 87,
+        "sourceTimeSeconds" : 0.087,
+        "targetSampleIndex" : 174
+      },
+      {
+        "componentSolidCellCounts" : [
+          445,
+          399,
+          390,
+          498
+        ],
+        "endpointComputedForceNewtons" : [
+          2.313723564147949,
+          -0.23127412796020508,
+          -2.4545440673828125
+        ],
+        "endpointResidualXNewtons" : 2.4115908061686118,
+        "endpointResidualZNewtons" : -3.143706922827757,
+        "intervalMeanComputedForceNewtons" : [
+          1.135917030274868,
+          -0.2515266388654709,
+          -3.0456624031066895
+        ],
+        "intervalMeanResidualXNewtons" : 1.2337842722955303,
+        "intervalMeanResidualZNewtons" : -3.734825258551634,
+        "measuredForceXNewtons" : -0.09786724202066238,
+        "measuredForceZNewtons" : 0.6891628554449446,
+        "minimumPopulation" : 0.023258833214640617,
+        "sourceFrameCoordinate" : 87.5,
+        "sourceTimeSeconds" : 0.0875,
+        "targetSampleIndex" : 175
+      },
+      {
+        "componentSolidCellCounts" : [
+          448,
+          385,
+          392,
+          495
+        ],
+        "endpointComputedForceNewtons" : [
+          1.4586524963378906,
+          -0.7581110000610352,
+          -11.74652099609375
+        ],
+        "endpointResidualXNewtons" : 1.5613582864192201,
+        "endpointResidualZNewtons" : -12.435188760808728,
+        "intervalMeanComputedForceNewtons" : [
+          0.8704222142696381,
+          -0.27069373428821564,
+          -2.0759549140930176
+        ],
+        "intervalMeanResidualXNewtons" : 0.9731280043509676,
+        "intervalMeanResidualZNewtons" : -2.7646226788079957,
+        "measuredForceXNewtons" : -0.10270579008132949,
+        "measuredForceZNewtons" : 0.688667764714978,
+        "minimumPopulation" : 0.022821921855211258,
+        "sourceFrameCoordinate" : 88,
+        "sourceTimeSeconds" : 0.088,
+        "targetSampleIndex" : 176
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          369,
+          378,
+          491
+        ],
+        "endpointComputedForceNewtons" : [
+          1.9512343406677246,
+          -0.15722441673278809,
+          -3.5860366821289062
+        ],
+        "endpointResidualXNewtons" : 2.056062932978627,
+        "endpointResidualZNewtons" : -4.275091207429304,
+        "intervalMeanComputedForceNewtons" : [
+          2.3334669284522533,
+          -0.22702957689762115,
+          -4.8152899742126465
+        ],
+        "intervalMeanResidualXNewtons" : 2.438295520763156,
+        "intervalMeanResidualZNewtons" : -5.504344499513044,
+        "measuredForceXNewtons" : -0.10482859231090266,
+        "measuredForceZNewtons" : 0.6890545253003977,
+        "minimumPopulation" : 0.023345716297626495,
+        "sourceFrameCoordinate" : 88.5,
+        "sourceTimeSeconds" : 0.0885,
+        "targetSampleIndex" : 177
+      },
+      {
+        "componentSolidCellCounts" : [
+          453,
+          368,
+          373,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          2.688873529434204,
+          0.5347452163696289,
+          -7.502525329589844
+        ],
+        "endpointResidualXNewtons" : 2.7930059802242146,
+        "endpointResidualZNewtons" : -8.191837809018477,
+        "intervalMeanComputedForceNewtons" : [
+          1.0644958838820457,
+          0.005436763167381287,
+          -2.059882640838623
+        ],
+        "intervalMeanResidualXNewtons" : 1.1686283346720563,
+        "intervalMeanResidualZNewtons" : -2.749195120267256,
+        "measuredForceXNewtons" : -0.10413245079001063,
+        "measuredForceZNewtons" : 0.689312479428633,
+        "minimumPopulation" : 0.02297188714146614,
+        "sourceFrameCoordinate" : 89,
+        "sourceTimeSeconds" : 0.089,
+        "targetSampleIndex" : 178
+      },
+      {
+        "componentSolidCellCounts" : [
+          448,
+          369,
+          363,
+          485
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.12148398160934448,
+          -0.01601409912109375,
+          -1.4508590698242188
+        ],
+        "endpointResidualXNewtons" : -0.02083691850669095,
+        "endpointResidualZNewtons" : -2.13946656918353,
+        "intervalMeanComputedForceNewtons" : [
+          0.284689262509346,
+          0.1992051750421524,
+          -1.8746514320373535
+        ],
+        "intervalMeanResidualXNewtons" : 0.38533632561199954,
+        "intervalMeanResidualZNewtons" : -2.563258931396665,
+        "measuredForceXNewtons" : -0.10064706310265353,
+        "measuredForceZNewtons" : 0.6886074993593116,
+        "minimumPopulation" : 0.022865265607833862,
+        "sourceFrameCoordinate" : 89.5,
+        "sourceTimeSeconds" : 0.0895,
+        "targetSampleIndex" : 179
+      },
+      {
+        "componentSolidCellCounts" : [
+          448,
+          370,
+          361,
+          491
+        ],
+        "endpointComputedForceNewtons" : [
+          9.486698150634766,
+          0.04418456554412842,
+          -10.255882263183594
+        ],
+        "endpointResidualXNewtons" : 9.581220684211017,
+        "endpointResidualZNewtons" : -10.942195101866789,
+        "intervalMeanComputedForceNewtons" : [
+          0.5231846272945404,
+          -0.20307748019695282,
+          -1.4747467041015625
+        ],
+        "intervalMeanResidualXNewtons" : 0.6177071608707918,
+        "intervalMeanResidualZNewtons" : -2.1610595427847565,
+        "measuredForceXNewtons" : -0.09452253357625134,
+        "measuredForceZNewtons" : 0.6863128386831943,
+        "minimumPopulation" : 0.022975333034992218,
+        "sourceFrameCoordinate" : 90,
+        "sourceTimeSeconds" : 0.09,
+        "targetSampleIndex" : 180
+      },
+      {
+        "componentSolidCellCounts" : [
+          442,
+          367,
+          357,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          1.999733567237854,
+          0.17823302745819092,
+          -2.8344573974609375
+        ],
+        "endpointResidualXNewtons" : 2.0857405133940046,
+        "endpointResidualZNewtons" : -3.516481188514957,
+        "intervalMeanComputedForceNewtons" : [
+          1.9567850641906261,
+          -0.18866177648305893,
+          -3.7337470054626465
+        ],
+        "intervalMeanResidualXNewtons" : 2.0427920103467767,
+        "intervalMeanResidualZNewtons" : -4.415770796516666,
+        "measuredForceXNewtons" : -0.08600694615615068,
+        "measuredForceZNewtons" : 0.6820237910540196,
+        "minimumPopulation" : 0.023075319826602936,
+        "sourceFrameCoordinate" : 90.5,
+        "sourceTimeSeconds" : 0.0905,
+        "targetSampleIndex" : 181
+      },
+      {
+        "componentSolidCellCounts" : [
+          446,
+          349,
+          356,
+          487
+        ],
+        "endpointComputedForceNewtons" : [
+          3.328613519668579,
+          0.8914494514465332,
+          -13.629814147949219
+        ],
+        "endpointResidualXNewtons" : 3.404030498632085,
+        "endpointResidualZNewtons" : -14.305371102877256,
+        "intervalMeanComputedForceNewtons" : [
+          0.7484295554459095,
+          -0.33417966589331627,
+          -2.204655170440674
+        ],
+        "intervalMeanResidualXNewtons" : 0.8238465344094155,
+        "intervalMeanResidualZNewtons" : -2.880212125368711,
+        "measuredForceXNewtons" : -0.07541697896350594,
+        "measuredForceZNewtons" : 0.6755569549280371,
+        "minimumPopulation" : 0.021190013736486435,
+        "sourceFrameCoordinate" : 91,
+        "sourceTimeSeconds" : 0.091,
+        "targetSampleIndex" : 182
+      },
+      {
+        "componentSolidCellCounts" : [
+          447,
+          339,
+          348,
+          487
+        ],
+        "endpointComputedForceNewtons" : [
+          2.1658213138580322,
+          -0.15592080354690552,
+          -2.6171493530273438
+        ],
+        "endpointResidualXNewtons" : 2.228926809400007,
+        "endpointResidualZNewtons" : -3.2840858203870633,
+        "intervalMeanComputedForceNewtons" : [
+          4.2677661925554276,
+          0.06168890744447708,
+          -6.212070941925049
+        ],
+        "intervalMeanResidualXNewtons" : 4.330871688097402,
+        "intervalMeanResidualZNewtons" : -6.879007409284768,
+        "measuredForceXNewtons" : -0.06310549554197453,
+        "measuredForceZNewtons" : 0.6669364673597198,
+        "minimumPopulation" : 0.02186606265604496,
+        "sourceFrameCoordinate" : 91.5,
+        "sourceTimeSeconds" : 0.0915,
+        "targetSampleIndex" : 183
+      },
+      {
+        "componentSolidCellCounts" : [
+          447,
+          354,
+          380,
+          486
+        ],
+        "endpointComputedForceNewtons" : [
+          0.5058364868164062,
+          1.6508638858795166,
+          0.856201171875
+        ],
+        "endpointResidualXNewtons" : 0.5552667428286813,
+        "endpointResidualZNewtons" : 0.19983097580843512,
+        "intervalMeanComputedForceNewtons" : [
+          -1.1457847133278847,
+          -0.34407949075102806,
+          0.07999801635742188
+        ],
+        "intervalMeanResidualXNewtons" : -1.0963544573156097,
+        "intervalMeanResidualZNewtons" : -0.576372179709143,
+        "measuredForceXNewtons" : -0.04943025601227501,
+        "measuredForceZNewtons" : 0.6563701960665649,
+        "minimumPopulation" : 0.022401614114642143,
+        "sourceFrameCoordinate" : 92,
+        "sourceTimeSeconds" : 0.092,
+        "targetSampleIndex" : 184
+      },
+      {
+        "componentSolidCellCounts" : [
+          451,
+          362,
+          357,
+          494
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.9144818782806396,
+          0.8438898324966431,
+          -0.010528564453125
+        ],
+        "endpointResidualXNewtons" : -0.8797545559509647,
+        "endpointResidualZNewtons" : -0.654747184021261,
+        "intervalMeanComputedForceNewtons" : [
+          -1.43918889015913,
+          0.7732372842729092,
+          0.22173357009887695
+        ],
+        "intervalMeanResidualXNewtons" : -1.4044615678294552,
+        "intervalMeanResidualZNewtons" : -0.422485049469259,
+        "measuredForceXNewtons" : -0.03472732232967494,
+        "measuredForceZNewtons" : 0.644218619568136,
+        "minimumPopulation" : 0.022557856515049934,
+        "sourceFrameCoordinate" : 92.5,
+        "sourceTimeSeconds" : 0.0925,
+        "targetSampleIndex" : 185
+      },
+      {
+        "componentSolidCellCounts" : [
+          453,
+          371,
+          359,
+          492
+        ],
+        "endpointComputedForceNewtons" : [
+          4.472020626068115,
+          0.7352933883666992,
+          9.186996459960938
+        ],
+        "endpointResidualXNewtons" : 4.491312197590482,
+        "endpointResidualZNewtons" : 8.556038110384373,
+        "intervalMeanComputedForceNewtons" : [
+          -0.36536021530628204,
+          -0.014371611177921295,
+          -0.13501834869384766
+        ],
+        "intervalMeanResidualXNewtons" : -0.3460686437839145,
+        "intervalMeanResidualZNewtons" : -0.7659766982704125,
+        "measuredForceXNewtons" : -0.019291571522367566,
+        "measuredForceZNewtons" : 0.6309583495765648,
+        "minimumPopulation" : 0.020567407831549644,
+        "sourceFrameCoordinate" : 93,
+        "sourceTimeSeconds" : 0.093,
+        "targetSampleIndex" : 186
+      },
+      {
+        "componentSolidCellCounts" : [
+          454,
+          357,
+          345,
+          494
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.6487817764282227,
+          -0.3232687711715698,
+          0.7019195556640625
+        ],
+        "endpointResidualXNewtons" : -2.6454164560202806,
+        "endpointResidualZNewtons" : 0.08477806809946142,
+        "intervalMeanComputedForceNewtons" : [
+          -5.253043331205845,
+          0.558630034327507,
+          2.8348751068115234
+        ],
+        "intervalMeanResidualXNewtons" : -5.249678010797902,
+        "intervalMeanResidualZNewtons" : 2.217733619246922,
+        "measuredForceXNewtons" : -0.003365320407942067,
+        "measuredForceZNewtons" : 0.6171414875646011,
+        "minimumPopulation" : 0.021819913759827614,
+        "sourceFrameCoordinate" : 93.5,
+        "sourceTimeSeconds" : 0.0935,
+        "targetSampleIndex" : 187
+      },
+      {
+        "componentSolidCellCounts" : [
+          446,
+          348,
+          338,
+          500
+        ],
+        "endpointComputedForceNewtons" : [
+          4.489980220794678,
+          2.2679502964019775,
+          -5.1210479736328125
+        ],
+        "endpointResidualXNewtons" : 4.47711500930832,
+        "endpointResidualZNewtons" : -5.72439968061386,
+        "intervalMeanComputedForceNewtons" : [
+          1.8672256171703339,
+          -0.07532982528209686,
+          -1.6325082778930664
+        ],
+        "intervalMeanResidualXNewtons" : 1.854360405683976,
+        "intervalMeanResidualZNewtons" : -2.2358599848741143,
+        "measuredForceXNewtons" : 0.012865211486357796,
+        "measuredForceZNewtons" : 0.603351706981048,
+        "minimumPopulation" : 0.02267465740442276,
+        "sourceFrameCoordinate" : 94,
+        "sourceTimeSeconds" : 0.094,
+        "targetSampleIndex" : 188
+      },
+      {
+        "componentSolidCellCounts" : [
+          441,
+          348,
+          342,
+          493
+        ],
+        "endpointComputedForceNewtons" : [
+          1.6890394687652588,
+          -0.22420871257781982,
+          -1.4220733642578125
+        ],
+        "endpointResidualXNewtons" : 1.6597727432694684,
+        "endpointResidualZNewtons" : -2.012231649494546,
+        "intervalMeanComputedForceNewtons" : [
+          4.688200131058693,
+          -0.36594507843255997,
+          -4.088723182678223
+        ],
+        "intervalMeanResidualXNewtons" : 4.658933405562903,
+        "intervalMeanResidualZNewtons" : -4.678881467914956,
+        "measuredForceXNewtons" : 0.029266725495790284,
+        "measuredForceZNewtons" : 0.5901582852367334,
+        "minimumPopulation" : 0.022729448974132538,
+        "sourceFrameCoordinate" : 94.5,
+        "sourceTimeSeconds" : 0.0945,
+        "targetSampleIndex" : 189
+      },
+      {
+        "componentSolidCellCounts" : [
+          439,
+          352,
+          368,
+          494
+        ],
+        "endpointComputedForceNewtons" : [
+          11.452040672302246,
+          1.2277297973632812,
+          -7.250274658203125
+        ],
+        "endpointResidualXNewtons" : 11.406290249914015,
+        "endpointResidualZNewtons" : -7.828344785934244,
+        "intervalMeanComputedForceNewtons" : [
+          1.072124421596527,
+          0.12734189629554749,
+          -1.5664300918579102
+        ],
+        "intervalMeanResidualXNewtons" : 1.0263739992082968,
+        "intervalMeanResidualZNewtons" : -2.1445002195890295,
+        "measuredForceXNewtons" : 0.04575042238823039,
+        "measuredForceZNewtons" : 0.5780701277311194,
+        "minimumPopulation" : 0.023202182725071907,
+        "sourceFrameCoordinate" : 95,
+        "sourceTimeSeconds" : 0.095,
+        "targetSampleIndex" : 190
+      },
+      {
+        "componentSolidCellCounts" : [
+          435,
+          342,
+          367,
+          493
+        ],
+        "endpointComputedForceNewtons" : [
+          5.824584007263184,
+          -0.6417665481567383,
+          -4.783172607421875
+        ],
+        "endpointResidualXNewtons" : 5.762324215512221,
+        "endpointResidualZNewtons" : -5.350665369719137,
+        "intervalMeanComputedForceNewtons" : [
+          9.32842692732811,
+          0.27723944187164307,
+          -6.107149124145508
+        ],
+        "intervalMeanResidualXNewtons" : 9.266167135577147,
+        "intervalMeanResidualZNewtons" : -6.67464188644277,
+        "measuredForceXNewtons" : 0.062259791750962294,
+        "measuredForceZNewtons" : 0.5674927622972626,
+        "minimumPopulation" : 0.022994617000222206,
+        "sourceFrameCoordinate" : 95.5,
+        "sourceTimeSeconds" : 0.0955,
+        "targetSampleIndex" : 191
+      },
+      {
+        "componentSolidCellCounts" : [
+          438,
+          351,
+          363,
+          498
+        ],
+        "endpointComputedForceNewtons" : [
+          9.197975158691406,
+          3.3820741176605225,
+          -0.147918701171875
+        ],
+        "endpointResidualXNewtons" : 9.119219187884825,
+        "endpointResidualZNewtons" : -0.7066106108585741,
+        "intervalMeanComputedForceNewtons" : [
+          0.07609738409519196,
+          0.2572358287870884,
+          -1.1421642303466797
+        ],
+        "intervalMeanResidualXNewtons" : -0.0026585867113883,
+        "intervalMeanResidualZNewtons" : -1.7008561400333788,
+        "measuredForceXNewtons" : 0.07875597080658026,
+        "measuredForceZNewtons" : 0.5586919096866991,
+        "minimumPopulation" : 0.022268231958150864,
+        "sourceFrameCoordinate" : 96,
+        "sourceTimeSeconds" : 0.096,
+        "targetSampleIndex" : 192
+      },
+      {
+        "componentSolidCellCounts" : [
+          442,
+          344,
+          356,
+          491
+        ],
+        "endpointComputedForceNewtons" : [
+          1.9701122045516968,
+          0.6685149669647217,
+          -0.7758331298828125
+        ],
+        "endpointResidualXNewtons" : 1.8749101325776862,
+        "endpointResidualZNewtons" : -1.327600358114588,
+        "intervalMeanComputedForceNewtons" : [
+          2.7244712822139263,
+          0.5378609150648117,
+          -1.8868684768676758
+        ],
+        "intervalMeanResidualXNewtons" : 2.629269210239916,
+        "intervalMeanResidualZNewtons" : -2.4386357050994514,
+        "measuredForceXNewtons" : 0.09520207197401054,
+        "measuredForceZNewtons" : 0.5517672282317757,
+        "minimumPopulation" : 0.020327143371105194,
+        "sourceFrameCoordinate" : 96.5,
+        "sourceTimeSeconds" : 0.0965,
+        "targetSampleIndex" : 193
+      },
+      {
+        "componentSolidCellCounts" : [
+          445,
+          361,
+          340,
+          488
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.0105690956115723,
+          2.962538003921509,
+          4.959747314453125
+        ],
+        "endpointResidualXNewtons" : -1.1221172045010077,
+        "endpointResidualZNewtons" : 4.41310823482396,
+        "intervalMeanComputedForceNewtons" : [
+          -0.15203756839036942,
+          0.1678355559706688,
+          -0.6135835647583008
+        ],
+        "intervalMeanResidualXNewtons" : -0.2635856772798048,
+        "intervalMeanResidualZNewtons" : -1.1602226443874666,
+        "measuredForceXNewtons" : 0.1115481088894354,
+        "measuredForceZNewtons" : 0.5466390796291657,
+        "minimumPopulation" : 0.023131435737013817,
+        "sourceFrameCoordinate" : 97,
+        "sourceTimeSeconds" : 0.097,
+        "targetSampleIndex" : 194
+      },
+      {
+        "componentSolidCellCounts" : [
+          445,
+          361,
+          344,
+          491
+        ],
+        "endpointComputedForceNewtons" : [
+          0.4607350826263428,
+          -0.22173094749450684,
+          -1.146270751953125
+        ],
+        "endpointResidualXNewtons" : 0.33301665338022857,
+        "endpointResidualZNewtons" : -1.6893205645513993,
+        "intervalMeanComputedForceNewtons" : [
+          -0.7026570588350296,
+          0.5221686325967312,
+          0.041428565979003906
+        ],
+        "intervalMeanResidualXNewtons" : -0.8303754880811438,
+        "intervalMeanResidualZNewtons" : -0.5016212466192704,
+        "measuredForceXNewtons" : 0.1277184292461142,
+        "measuredForceZNewtons" : 0.5430498125982743,
+        "minimumPopulation" : 0.023040544241666794,
+        "sourceFrameCoordinate" : 97.5,
+        "sourceTimeSeconds" : 0.0975,
+        "targetSampleIndex" : 195
+      },
+      {
+        "componentSolidCellCounts" : [
+          443,
+          346,
+          345,
+          493
+        ],
+        "endpointComputedForceNewtons" : [
+          6.6782941818237305,
+          2.6369330883026123,
+          0.064453125
+        ],
+        "endpointResidualXNewtons" : 6.534690534017937,
+        "endpointResidualZNewtons" : -0.47612632940368516,
+        "intervalMeanComputedForceNewtons" : [
+          1.0651925913989544,
+          -0.07776926085352898,
+          -1.0647821426391602
+        ],
+        "intervalMeanResidualXNewtons" : 0.9215889435931606,
+        "intervalMeanResidualZNewtons" : -1.6053615970428452,
+        "measuredForceXNewtons" : 0.14360364780579385,
+        "measuredForceZNewtons" : 0.5405794544036852,
+        "minimumPopulation" : 0.022936733439564705,
+        "sourceFrameCoordinate" : 98,
+        "sourceTimeSeconds" : 0.098,
+        "targetSampleIndex" : 196
+      },
+      {
+        "componentSolidCellCounts" : [
+          438,
+          334,
+          338,
+          499
+        ],
+        "endpointComputedForceNewtons" : [
+          2.4046640396118164,
+          -0.17557764053344727,
+          -2.048187255859375
+        ],
+        "endpointResidualXNewtons" : 2.2456052644466005,
+        "endpointResidualZNewtons" : -2.586861494082528,
+        "intervalMeanComputedForceNewtons" : [
+          2.657246522605419,
+          0.2608383148908615,
+          -2.216764450073242
+        ],
+        "intervalMeanResidualXNewtons" : 2.498187747440203,
+        "intervalMeanResidualZNewtons" : -2.7554386882963953,
+        "measuredForceXNewtons" : 0.15905877516521577,
+        "measuredForceZNewtons" : 0.5386742382231532,
+        "minimumPopulation" : 0.023250633850693703,
+        "sourceFrameCoordinate" : 98.5,
+        "sourceTimeSeconds" : 0.0985,
+        "targetSampleIndex" : 197
+      },
+      {
+        "componentSolidCellCounts" : [
+          446,
+          334,
+          337,
+          496
+        ],
+        "endpointComputedForceNewtons" : [
+          12.827215194702148,
+          2.312445640563965,
+          1.869781494140625
+        ],
+        "endpointResidualXNewtons" : 12.653306675282357,
+        "endpointResidualZNewtons" : 1.333096122468079,
+        "intervalMeanComputedForceNewtons" : [
+          1.9539195448160172,
+          0.271141916513443,
+          -1.0736465454101562
+        ],
+        "intervalMeanResidualXNewtons" : 1.7800110253962262,
+        "intervalMeanResidualZNewtons" : -1.6103319170827022,
+        "measuredForceXNewtons" : 0.17390851941979096,
+        "measuredForceZNewtons" : 0.5366853716725459,
+        "minimumPopulation" : 0.022389834746718407,
+        "sourceFrameCoordinate" : 99,
+        "sourceTimeSeconds" : 0.099,
+        "targetSampleIndex" : 198
+      },
+      {
+        "componentSolidCellCounts" : [
+          440,
+          329,
+          327,
+          501
+        ],
+        "endpointComputedForceNewtons" : [
+          2.027517557144165,
+          0.5810518264770508,
+          -0.724578857421875
+        ],
+        "endpointResidualXNewtons" : 1.8395578350433803,
+        "endpointResidualZNewtons" : -1.258493819493494,
+        "intervalMeanComputedForceNewtons" : [
+          3.030473053455353,
+          0.20382855832576752,
+          -1.215219497680664
+        ],
+        "intervalMeanResidualXNewtons" : 2.842513331354568,
+        "intervalMeanResidualZNewtons" : -1.749134459752283,
+        "measuredForceXNewtons" : 0.18795972210078465,
+        "measuredForceZNewtons" : 0.533914962071619,
+        "minimumPopulation" : 0.021839292719960213,
+        "sourceFrameCoordinate" : 99.5,
+        "sourceTimeSeconds" : 0.0995,
+        "targetSampleIndex" : 199
+      },
+      {
+        "componentSolidCellCounts" : [
+          433,
+          315,
+          326,
+          496
+        ],
+        "endpointComputedForceNewtons" : [
+          14.751832962036133,
+          1.5397977828979492,
+          2.2406005859375
+        ],
+        "endpointResidualXNewtons" : 14.55081314774073,
+        "endpointResidualZNewtons" : 1.71093461779425,
+        "intervalMeanComputedForceNewtons" : [
+          1.5342431142926216,
+          0.10786710679531097,
+          -0.85736083984375
+        ],
+        "intervalMeanResidualXNewtons" : 1.3332232999972182,
+        "intervalMeanResidualZNewtons" : -1.387026807987,
+        "measuredForceXNewtons" : 0.20101981429540342,
+        "measuredForceZNewtons" : 0.5296659681432501,
+        "minimumPopulation" : 0.020625585690140724,
+        "sourceFrameCoordinate" : 100,
+        "sourceTimeSeconds" : 0.1,
+        "targetSampleIndex" : 200
+      },
+      {
+        "componentSolidCellCounts" : [
+          439,
+          322,
+          318,
+          492
+        ],
+        "endpointComputedForceNewtons" : [
+          5.191471576690674,
+          -0.7937977313995361,
+          -1.663818359375
+        ],
+        "endpointResidualXNewtons" : 4.978552285062494,
+        "endpointResidualZNewtons" : -2.187111609719573,
+        "intervalMeanComputedForceNewtons" : [
+          4.433129161596298,
+          -0.05588224530220032,
+          -1.7180805206298828
+        ],
+        "intervalMeanResidualXNewtons" : 4.2202098699681185,
+        "intervalMeanResidualZNewtons" : -2.2413737709744557,
+        "measuredForceXNewtons" : 0.21291929162817952,
+        "measuredForceZNewtons" : 0.5232932503445727,
+        "minimumPopulation" : 0.01965094916522503,
+        "sourceFrameCoordinate" : 100.5,
+        "sourceTimeSeconds" : 0.1005,
+        "targetSampleIndex" : 201
+      },
+      {
+        "componentSolidCellCounts" : [
+          442,
+          318,
+          327,
+          487
+        ],
+        "endpointComputedForceNewtons" : [
+          5.660004138946533,
+          1.505713701248169,
+          1.501007080078125
+        ],
+        "endpointResidualXNewtons" : 5.4364684852647835,
+        "endpointResidualZNewtons" : 0.9867540462003594,
+        "intervalMeanComputedForceNewtons" : [
+          1.452434305101633,
+          0.18634949624538422,
+          -0.6157588958740234
+        ],
+        "intervalMeanResidualXNewtons" : 1.2288986514198834,
+        "intervalMeanResidualZNewtons" : -1.130011929751789,
+        "measuredForceXNewtons" : 0.22353565368174963,
+        "measuredForceZNewtons" : 0.5142530338777656,
+        "minimumPopulation" : 0.02270706370472908,
+        "sourceFrameCoordinate" : 101,
+        "sourceTimeSeconds" : 0.101,
+        "targetSampleIndex" : 202
+      },
+      {
+        "componentSolidCellCounts" : [
+          439,
+          325,
+          303,
+          485
+        ],
+        "endpointComputedForceNewtons" : [
+          2.690248966217041,
+          -0.07798290252685547,
+          -1.4600830078125
+        ],
+        "endpointResidualXNewtons" : 2.4574329141906226,
+        "endpointResidualZNewtons" : -1.9622312633923076,
+        "intervalMeanComputedForceNewtons" : [
+          2.2127145677804947,
+          0.312041237950325,
+          -1.0476455688476562
+        ],
+        "intervalMeanResidualXNewtons" : 1.9798985157540765,
+        "intervalMeanResidualZNewtons" : -1.5497938244274638,
+        "measuredForceXNewtons" : 0.23281605202641828,
+        "measuredForceZNewtons" : 0.5021482555798076,
+        "minimumPopulation" : 0.021829137578606606,
+        "sourceFrameCoordinate" : 101.5,
+        "sourceTimeSeconds" : 0.1015,
+        "targetSampleIndex" : 203
+      },
+      {
+        "componentSolidCellCounts" : [
+          440,
+          319,
+          311,
+          486
+        ],
+        "endpointComputedForceNewtons" : [
+          8.286123275756836,
+          0.2661571502685547,
+          -2.306610107421875
+        ],
+        "endpointResidualXNewtons" : 8.045327293414882,
+        "endpointResidualZNewtons" : -2.793377451094729,
+        "intervalMeanComputedForceNewtons" : [
+          1.2028956152498722,
+          -0.17030058801174164,
+          -1.0715789794921875
+        ],
+        "intervalMeanResidualXNewtons" : 0.9620996329079181,
+        "intervalMeanResidualZNewtons" : -1.5583463231650416,
+        "measuredForceXNewtons" : 0.24079598234195412,
+        "measuredForceZNewtons" : 0.4867673436728542,
+        "minimumPopulation" : 0.02248038724064827,
+        "sourceFrameCoordinate" : 102,
+        "sourceTimeSeconds" : 0.102,
+        "targetSampleIndex" : 204
+      },
+      {
+        "componentSolidCellCounts" : [
+          445,
+          320,
+          293,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.2636690139770508,
+          -0.14244866371154785,
+          -1.31597900390625
+        ],
+        "endpointResidualXNewtons" : -0.5112806737244903,
+        "endpointResidualZNewtons" : -1.7840930636918877,
+        "intervalMeanComputedForceNewtons" : [
+          2.3790571354329586,
+          0.23397552967071533,
+          -0.9152145385742188
+        ],
+        "intervalMeanResidualXNewtons" : 2.1314454756855192,
+        "intervalMeanResidualZNewtons" : -1.3833285983598564,
+        "measuredForceXNewtons" : 0.24761165974743948,
+        "measuredForceZNewtons" : 0.4681140597856378,
+        "minimumPopulation" : 0.02241218090057373,
+        "sourceFrameCoordinate" : 102.5,
+        "sourceTimeSeconds" : 0.1025,
+        "targetSampleIndex" : 205
+      },
+      {
+        "componentSolidCellCounts" : [
+          442,
+          319,
+          306,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          16.189952850341797,
+          -0.34354257583618164,
+          -5.522430419921875
+        ],
+        "endpointResidualXNewtons" : 15.936448684043791,
+        "endpointResidualZNewtons" : -5.968856612328819,
+        "intervalMeanComputedForceNewtons" : [
+          1.7069417089223862,
+          0.183818019926548,
+          -1.11767578125
+        ],
+        "intervalMeanResidualXNewtons" : 1.4534375426243804,
+        "intervalMeanResidualZNewtons" : -1.5641019736569441,
+        "measuredForceXNewtons" : 0.2535041662980057,
+        "measuredForceZNewtons" : 0.44642619240694414,
+        "minimumPopulation" : 0.02120083197951317,
+        "sourceFrameCoordinate" : 103,
+        "sourceTimeSeconds" : 0.103,
+        "targetSampleIndex" : 206
+      },
+      {
+        "componentSolidCellCounts" : [
+          447,
+          320,
+          321,
+          491
+        ],
+        "endpointComputedForceNewtons" : [
+          5.1867170333862305,
+          0.052199363708496094,
+          -3.947601318359375
+        ],
+        "endpointResidualXNewtons" : 4.927903004306749,
+        "endpointResidualZNewtons" : -4.369782490999232,
+        "intervalMeanComputedForceNewtons" : [
+          6.974609911441803,
+          -0.26270468160510063,
+          -2.803455352783203
+        ],
+        "intervalMeanResidualXNewtons" : 6.715795882362322,
+        "intervalMeanResidualZNewtons" : -3.2256365254230603,
+        "measuredForceXNewtons" : 0.25881402907948114,
+        "measuredForceZNewtons" : 0.42218117263985744,
+        "minimumPopulation" : 0.020869087427854538,
+        "sourceFrameCoordinate" : 103.5,
+        "sourceTimeSeconds" : 0.1035,
+        "targetSampleIndex" : 207
+      },
+      {
+        "componentSolidCellCounts" : [
+          453,
+          314,
+          321,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          -4.971485614776611,
+          0.9136004447937012,
+          1.277313232421875
+        ],
+        "endpointResidualXNewtons" : -5.235451209046075,
+        "endpointResidualZNewtons" : 0.8812261207348967,
+        "intervalMeanComputedForceNewtons" : [
+          2.108485445380211,
+          0.49979959428310394,
+          -1.1311569213867188
+        ],
+        "intervalMeanResidualXNewtons" : 1.8445198511107472,
+        "intervalMeanResidualZNewtons" : -1.5272440330736972,
+        "measuredForceXNewtons" : 0.2639655942694636,
+        "measuredForceZNewtons" : 0.3960871116869783,
+        "minimumPopulation" : 0.020446855574846268,
+        "sourceFrameCoordinate" : 104,
+        "sourceTimeSeconds" : 0.104,
+        "targetSampleIndex" : 208
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          323,
+          315,
+          490
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.7303240299224854,
+          -0.040312767028808594,
+          0.103240966796875
+        ],
+        "endpointResidualXNewtons" : -1.9997654592797605,
+        "endpointResidualZNewtons" : -0.26581738412609895,
+        "intervalMeanComputedForceNewtons" : [
+          -2.116981226950884,
+          0.6803730428218842,
+          -0.39510345458984375
+        ],
+        "intervalMeanResidualXNewtons" : -2.386422656308159,
+        "intervalMeanResidualZNewtons" : -0.7641618055128176,
+        "measuredForceXNewtons" : 0.26944142935727516,
+        "measuredForceZNewtons" : 0.36905835092297395,
+        "minimumPopulation" : 0.020355647429823875,
+        "sourceFrameCoordinate" : 104.5,
+        "sourceTimeSeconds" : 0.1045,
+        "targetSampleIndex" : 209
+      },
+      {
+        "componentSolidCellCounts" : [
+          454,
+          328,
+          315,
+          486
+        ],
+        "endpointComputedForceNewtons" : [
+          0.7135252952575684,
+          0.06465530395507812,
+          -3.693939208984375
+        ],
+        "endpointResidualXNewtons" : 0.43777732352068616,
+        "endpointResidualZNewtons" : -4.036114578780619,
+        "intervalMeanComputedForceNewtons" : [
+          0.8052351772785187,
+          -0.057993337512016296,
+          -0.4946880340576172
+        ],
+        "intervalMeanResidualXNewtons" : 0.5294872055416364,
+        "intervalMeanResidualZNewtons" : -0.8368634038538617,
+        "measuredForceXNewtons" : 0.2757479717368822,
+        "measuredForceZNewtons" : 0.3421753697962445,
+        "minimumPopulation" : 0.021311143413186073,
+        "sourceFrameCoordinate" : 105,
+        "sourceTimeSeconds" : 0.105,
+        "targetSampleIndex" : 210
+      },
+      {
+        "componentSolidCellCounts" : [
+          450,
+          328,
+          320,
+          483
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.3003978729248047,
+          0.4815030097961426,
+          -0.183837890625
+        ],
+        "endpointResidualXNewtons" : -0.5837724950836052,
+        "endpointResidualZNewtons" : -0.5004676936222231,
+        "intervalMeanComputedForceNewtons" : [
+          0.28010403737425804,
+          0.22194945812225342,
+          -1.7961921691894531
+        ],
+        "intervalMeanResidualXNewtons" : -0.0032705847845425073,
+        "intervalMeanResidualZNewtons" : -2.1128219721866763,
+        "measuredForceXNewtons" : 0.28337462215880055,
+        "measuredForceZNewtons" : 0.3166298029972231,
+        "minimumPopulation" : 0.02144014462828636,
+        "sourceFrameCoordinate" : 105.5,
+        "sourceTimeSeconds" : 0.1055,
+        "targetSampleIndex" : 211
+      },
+      {
+        "componentSolidCellCounts" : [
+          452,
+          329,
+          312,
+          484
+        ],
+        "endpointComputedForceNewtons" : [
+          22.505544662475586,
+          -0.8707447052001953,
+          -1.857757568359375
+        ],
+        "endpointResidualXNewtons" : 22.212795367040638,
+        "endpointResidualZNewtons" : -2.151413931562722,
+        "intervalMeanComputedForceNewtons" : [
+          4.026865787804127,
+          0.11997415125370026,
+          -0.9912757873535156
+        ],
+        "intervalMeanResidualXNewtons" : 3.73411649236918,
+        "intervalMeanResidualZNewtons" : -1.2849321505568625,
+        "measuredForceXNewtons" : 0.29274929543494693,
+        "measuredForceZNewtons" : 0.2936563632033469,
+        "minimumPopulation" : 0.021599464118480682,
+        "sourceFrameCoordinate" : 106,
+        "sourceTimeSeconds" : 0.106,
+        "targetSampleIndex" : 212
+      },
+      {
+        "componentSolidCellCounts" : [
+          443,
+          336,
+          333,
+          484
+        ],
+        "endpointComputedForceNewtons" : [
+          15.964682579040527,
+          1.1972928047180176,
+          -4.493316650390625
+        ],
+        "endpointResidualXNewtons" : 15.660488625802584,
+        "endpointResidualZNewtons" : -4.7677712731959865,
+        "intervalMeanComputedForceNewtons" : [
+          18.905657589435577,
+          -1.0254801288247108,
+          -5.927377700805664
+        ],
+        "intervalMeanResidualXNewtons" : 18.601463636197636,
+        "intervalMeanResidualZNewtons" : -6.2018323236110255,
+        "measuredForceXNewtons" : 0.30419395323794335,
+        "measuredForceZNewtons" : 0.2744546228053611,
+        "minimumPopulation" : 0.021862804889678955,
+        "sourceFrameCoordinate" : 106.5,
+        "sourceTimeSeconds" : 0.1065,
+        "targetSampleIndex" : 213
+      },
+      {
+        "componentSolidCellCounts" : [
+          449,
+          331,
+          344,
+          487
+        ],
+        "endpointComputedForceNewtons" : [
+          -21.31690216064453,
+          2.5566611289978027,
+          13.92230224609375
+        ],
+        "endpointResidualXNewtons" : -21.63478594978673,
+        "endpointResidualZNewtons" : 13.66219742670684,
+        "intervalMeanComputedForceNewtons" : [
+          5.548666790127754,
+          0.753488801419735,
+          -1.1644153594970703
+        ],
+        "intervalMeanResidualXNewtons" : 5.230783000985556,
+        "intervalMeanResidualZNewtons" : -1.4245201788839816,
+        "measuredForceXNewtons" : 0.3178837891421976,
+        "measuredForceZNewtons" : 0.2601048193869113,
+        "minimumPopulation" : 0.022230638191103935,
+        "sourceFrameCoordinate" : 107,
+        "sourceTimeSeconds" : 0.107,
+        "targetSampleIndex" : 214
+      },
+      {
+        "componentSolidCellCounts" : [
+          447,
+          327,
+          324,
+          492
+        ],
+        "endpointComputedForceNewtons" : [
+          -3.1025195121765137,
+          0.09328341484069824,
+          0.99017333984375
+        ],
+        "endpointResidualXNewtons" : -3.43633305054499,
+        "endpointResidualZNewtons" : 0.7386903246184547,
+        "intervalMeanComputedForceNewtons" : [
+          -1.5367488041520119,
+          0.12921269610524178,
+          -0.44838523864746094
+        ],
+        "intervalMeanResidualXNewtons" : -1.870562342520488,
+        "intervalMeanResidualZNewtons" : -0.6998682538727562,
+        "measuredForceXNewtons" : 0.3338135383684762,
+        "measuredForceZNewtons" : 0.25148301522529526,
+        "minimumPopulation" : 0.022100141271948814,
+        "sourceFrameCoordinate" : 107.5,
+        "sourceTimeSeconds" : 0.1075,
+        "targetSampleIndex" : 215
+      },
+      {
+        "componentSolidCellCounts" : [
+          451,
+          324,
+          322,
+          493
+        ],
+        "endpointComputedForceNewtons" : [
+          -28.734981536865234,
+          1.5317916870117188,
+          -1.3829345703125
+        ],
+        "endpointResidualXNewtons" : -29.086755464774683,
+        "endpointResidualZNewtons" : -1.6321164803673978,
+        "intervalMeanComputedForceNewtons" : [
+          -1.8397106379270554,
+          -0.5871080383658409,
+          0.4835071563720703
+        ],
+        "intervalMeanResidualXNewtons" : -2.191484565836502,
+        "intervalMeanResidualZNewtons" : 0.23432524631717244,
+        "measuredForceXNewtons" : 0.3517739279094467,
+        "measuredForceZNewtons" : 0.24918191005489787,
+        "minimumPopulation" : 0.02216334454715252,
+        "sourceFrameCoordinate" : 108,
+        "sourceTimeSeconds" : 0.108,
+        "targetSampleIndex" : 216
+      },
+      {
+        "componentSolidCellCounts" : [
+          459,
+          326,
+          315,
+          492
+        ],
+        "endpointComputedForceNewtons" : [
+          -11.411355972290039,
+          1.4876246452331543,
+          1.391265869140625
+        ],
+        "endpointResidualXNewtons" : -11.782696622313741,
+        "endpointResidualZNewtons" : 1.1378216814074884,
+        "intervalMeanComputedForceNewtons" : [
+          -13.75274646282196,
+          0.6592034734785557,
+          1.1918144226074219
+        ],
+        "intervalMeanResidualXNewtons" : -14.124087112845663,
+        "intervalMeanResidualZNewtons" : 0.9383702348742853,
+        "measuredForceXNewtons" : 0.3713406500237029,
+        "measuredForceZNewtons" : 0.25344418773313665,
+        "minimumPopulation" : 0.02234308421611786,
+        "sourceFrameCoordinate" : 108.5,
+        "sourceTimeSeconds" : 0.1085,
+        "targetSampleIndex" : 217
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          326,
+          323,
+          492
+        ],
+        "endpointComputedForceNewtons" : [
+          -8.92530345916748,
+          -1.6929211616516113,
+          -0.756591796875
+        ],
+        "endpointResidualXNewtons" : -9.317180945676096,
+        "endpointResidualZNewtons" : -1.0207070719510742,
+        "intervalMeanComputedForceNewtons" : [
+          -2.0575751215219498,
+          -0.7758737057447433,
+          0.7521762847900391
+        ],
+        "intervalMeanResidualXNewtons" : -2.449452608030566,
+        "intervalMeanResidualZNewtons" : 0.4880610097139649,
+        "measuredForceXNewtons" : 0.39187748650861615,
+        "measuredForceZNewtons" : 0.2641152750760742,
+        "minimumPopulation" : 0.022415118291974068,
+        "sourceFrameCoordinate" : 109,
+        "sourceTimeSeconds" : 0.109,
+        "targetSampleIndex" : 218
+      },
+      {
+        "componentSolidCellCounts" : [
+          468,
+          323,
+          315,
+          491
+        ],
+        "endpointComputedForceNewtons" : [
+          4.879034042358398,
+          1.0512065887451172,
+          -2.73065185546875
+        ],
+        "endpointResidualXNewtons" : 4.466479674348104,
+        "endpointResidualZNewtons" : -3.0112734937291337,
+        "intervalMeanComputedForceNewtons" : [
+          1.723420575261116,
+          -0.19743958860635757,
+          -2.032228469848633
+        ],
+        "intervalMeanResidualXNewtons" : 1.3108662072508215,
+        "intervalMeanResidualZNewtons" : -2.3128501081090165,
+        "measuredForceXNewtons" : 0.4125543680102946,
+        "measuredForceZNewtons" : 0.2806216382603836,
+        "minimumPopulation" : 0.022271186113357544,
+        "sourceFrameCoordinate" : 109.5,
+        "sourceTimeSeconds" : 0.1095,
+        "targetSampleIndex" : 219
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          311,
+          322,
+          489
+        ],
+        "endpointComputedForceNewtons" : [
+          1.6849710941314697,
+          -0.5192668437957764,
+          -2.650543212890625
+        ],
+        "endpointResidualXNewtons" : 1.252590832435835,
+        "endpointResidualZNewtons" : -2.9525223503709306,
+        "intervalMeanComputedForceNewtons" : [
+          3.6754597425460815,
+          0.4386863559484482,
+          -0.8859157562255859
+        ],
+        "intervalMeanResidualXNewtons" : 3.243079480850447,
+        "intervalMeanResidualZNewtons" : -1.1878948937058915,
+        "measuredForceXNewtons" : 0.4323802616956347,
+        "measuredForceZNewtons" : 0.3019791374803055,
+        "minimumPopulation" : 0.021950118243694305,
+        "sourceFrameCoordinate" : 110,
+        "sourceTimeSeconds" : 0.11,
+        "targetSampleIndex" : 220
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          325,
+          309,
+          489
+        ],
+        "endpointComputedForceNewtons" : [
+          6.5685811042785645,
+          -1.3126580715179443,
+          -1.8973388671875
+        ],
+        "endpointResidualXNewtons" : 6.118331216617669,
+        "endpointResidualZNewtons" : -2.2241723960588895,
+        "intervalMeanComputedForceNewtons" : [
+          7.9789071679115295,
+          -1.2838206216692924,
+          -3.0031166076660156
+        ],
+        "intervalMeanResidualXNewtons" : 7.528657280250634,
+        "intervalMeanResidualZNewtons" : -3.329950136537405,
+        "measuredForceXNewtons" : 0.450249887660895,
+        "measuredForceZNewtons" : 0.32683352887138944,
+        "minimumPopulation" : 0.02104330062866211,
+        "sourceFrameCoordinate" : 110.5,
+        "sourceTimeSeconds" : 0.1105,
+        "targetSampleIndex" : 221
+      },
+      {
+        "componentSolidCellCounts" : [
+          456,
+          315,
+          303,
+          480
+        ],
+        "endpointComputedForceNewtons" : [
+          -17.092809677124023,
+          -1.8219671249389648,
+          6.437744140625
+        ],
+        "endpointResidualXNewtons" : -17.557812070816716,
+        "endpointResidualZNewtons" : 6.084211990355669,
+        "intervalMeanComputedForceNewtons" : [
+          3.8361459523439407,
+          0.25063588470220566,
+          -0.7050113677978516
+        ],
+        "intervalMeanResidualXNewtons" : 3.3711435586512475,
+        "intervalMeanResidualZNewtons" : -1.0585435180671823,
+        "measuredForceXNewtons" : 0.46500239369269336,
+        "measuredForceZNewtons" : 0.35353215026933077,
+        "minimumPopulation" : 0.022150754928588867,
+        "sourceFrameCoordinate" : 111,
+        "sourceTimeSeconds" : 0.111,
+        "targetSampleIndex" : 222
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          306,
+          313,
+          477
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.8288893699645996,
+          -0.2381000518798828,
+          0.567901611328125
+        ],
+        "endpointResidualXNewtons" : -1.3043786194240252,
+        "endpointResidualZNewtons" : 0.18767908009234202,
+        "intervalMeanComputedForceNewtons" : [
+          -1.9232078939676285,
+          -0.4218442589044571,
+          -0.7082996368408203
+        ],
+        "intervalMeanResidualXNewtons" : -2.398697143427054,
+        "intervalMeanResidualZNewtons" : -1.0885221680766033,
+        "measuredForceXNewtons" : 0.4754892494594255,
+        "measuredForceZNewtons" : 0.380222531235783,
+        "minimumPopulation" : 0.02180556207895279,
+        "sourceFrameCoordinate" : 111.5,
+        "sourceTimeSeconds" : 0.1115,
+        "targetSampleIndex" : 223
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          308,
+          301,
+          481
+        ],
+        "endpointComputedForceNewtons" : [
+          3.4068989753723145,
+          -3.7249135971069336,
+          -8.055938720703125
+        ],
+        "endpointResidualXNewtons" : 2.926251269902175,
+        "endpointResidualZNewtons" : -8.460909319031128,
+        "intervalMeanComputedForceNewtons" : [
+          0.9720756486058235,
+          -1.3422282040119171,
+          -0.7118721008300781
+        ],
+        "intervalMeanResidualXNewtons" : 0.491427943135684,
+        "intervalMeanResidualZNewtons" : -1.11684269915808,
+        "measuredForceXNewtons" : 0.4806477054701395,
+        "measuredForceZNewtons" : 0.4049705983280019,
+        "minimumPopulation" : 0.021960075944662094,
+        "sourceFrameCoordinate" : 112,
+        "sourceTimeSeconds" : 0.112,
+        "targetSampleIndex" : 224
+      },
+      {
+        "componentSolidCellCounts" : [
+          463,
+          296,
+          306,
+          487
+        ],
+        "endpointComputedForceNewtons" : [
+          4.587984561920166,
+          2.7221574783325195,
+          -1.80615234375
+        ],
+        "endpointResidualXNewtons" : 4.108409393200597,
+        "endpointResidualZNewtons" : -2.232041119464591,
+        "intervalMeanComputedForceNewtons" : [
+          2.5900660902261734,
+          -0.9170929491519928,
+          -1.9341068267822266
+        ],
+        "intervalMeanResidualXNewtons" : 2.1104909215066048,
+        "intervalMeanResidualZNewtons" : -2.3599956024968174,
+        "measuredForceXNewtons" : 0.4795751687195686,
+        "measuredForceZNewtons" : 0.42588877571459105,
+        "minimumPopulation" : 0.021982107311487198,
+        "sourceFrameCoordinate" : 112.5,
+        "sourceTimeSeconds" : 0.1125,
+        "targetSampleIndex" : 225
+      },
+      {
+        "componentSolidCellCounts" : [
+          454,
+          294,
+          316,
+          487
+        ],
+        "endpointComputedForceNewtons" : [
+          6.268674373626709,
+          -3.9297139644622803,
+          -7.23944091796875
+        ],
+        "endpointResidualXNewtons" : 5.797075523900385,
+        "endpointResidualZNewtons" : -7.680703933683924,
+        "intervalMeanComputedForceNewtons" : [
+          3.0817250087857246,
+          -0.00502564013004303,
+          -1.6405696868896484
+        ],
+        "intervalMeanResidualXNewtons" : 2.6101261590594,
+        "intervalMeanResidualZNewtons" : -2.0818327026048227,
+        "measuredForceXNewtons" : 0.4715988497263245,
+        "measuredForceZNewtons" : 0.44126301571517407,
+        "minimumPopulation" : 0.021332478150725365,
+        "sourceFrameCoordinate" : 113,
+        "sourceTimeSeconds" : 0.113,
+        "targetSampleIndex" : 226
+      },
+      {
+        "componentSolidCellCounts" : [
+          453,
+          313,
+          299,
+          487
+        ],
+        "endpointComputedForceNewtons" : [
+          2.3061091899871826,
+          -3.80361270904541,
+          -1.9830322265625
+        ],
+        "endpointResidualXNewtons" : 1.8497748851798372,
+        "endpointResidualZNewtons" : -2.432700147542918,
+        "intervalMeanComputedForceNewtons" : [
+          1.5581076592206955,
+          -1.5432149469852448,
+          -1.401458740234375
+        ],
+        "intervalMeanResidualXNewtons" : 1.1017733544133501,
+        "intervalMeanResidualZNewtons" : -1.851126661214793,
+        "measuredForceXNewtons" : 0.45633430480734544,
+        "measuredForceZNewtons" : 0.44966792098041797,
+        "minimumPopulation" : 0.02194502204656601,
+        "sourceFrameCoordinate" : 113.5,
+        "sourceTimeSeconds" : 0.1135,
+        "targetSampleIndex" : 227
+      },
+      {
+        "componentSolidCellCounts" : [
+          458,
+          287,
+          305,
+          496
+        ],
+        "endpointComputedForceNewtons" : [
+          10.267727851867676,
+          -2.256732940673828,
+          -15.453125
+        ],
+        "endpointResidualXNewtons" : 9.834001375147285,
+        "endpointResidualZNewtons" : -15.903185724129303,
+        "intervalMeanComputedForceNewtons" : [
+          1.685809850692749,
+          0.08575057983398438,
+          -2.024873733520508
+        ],
+        "intervalMeanResidualXNewtons" : 1.2520833739723574,
+        "intervalMeanResidualZNewtons" : -2.4749344576498116,
+        "measuredForceXNewtons" : 0.4337264767203916,
+        "measuredForceZNewtons" : 0.4500607241293037,
+        "minimumPopulation" : 0.02171616442501545,
+        "sourceFrameCoordinate" : 114,
+        "sourceTimeSeconds" : 0.114,
+        "targetSampleIndex" : 228
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          304,
+          305,
+          494
+        ],
+        "endpointComputedForceNewtons" : [
+          3.1106209754943848,
+          -2.170257091522217,
+          -2.159515380859375
+        ],
+        "endpointResidualXNewtons" : 2.7065530353318765,
+        "endpointResidualZNewtons" : -2.6013631294913537,
+        "intervalMeanComputedForceNewtons" : [
+          1.2636784128844738,
+          -1.5351451337337494,
+          -1.238302230834961
+        ],
+        "intervalMeanResidualXNewtons" : 0.8596104727219654,
+        "intervalMeanResidualZNewtons" : -1.68014997946694,
+        "measuredForceXNewtons" : 0.40406794016250835,
+        "measuredForceZNewtons" : 0.44184774863197895,
+        "minimumPopulation" : 0.02181963622570038,
+        "sourceFrameCoordinate" : 114.5,
+        "sourceTimeSeconds" : 0.1145,
+        "targetSampleIndex" : 229
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          295,
+          291,
+          493
+        ],
+        "endpointComputedForceNewtons" : [
+          -3.0648529529571533,
+          -1.9517078399658203,
+          -0.44671630859375
+        ],
+        "endpointResidualXNewtons" : -3.4328443536078064,
+        "endpointResidualZNewtons" : -0.8716368259297296,
+        "intervalMeanComputedForceNewtons" : [
+          1.0253534652292728,
+          -0.510006844997406,
+          -1.6028594970703125
+        ],
+        "intervalMeanResidualXNewtons" : 0.65736206457862,
+        "intervalMeanResidualZNewtons" : -2.027780014406292,
+        "measuredForceXNewtons" : 0.36799140065065283,
+        "measuredForceZNewtons" : 0.42492051733597963,
+        "minimumPopulation" : 0.02191842347383499,
+        "sourceFrameCoordinate" : 115,
+        "sourceTimeSeconds" : 0.115,
+        "targetSampleIndex" : 230
+      },
+      {
+        "componentSolidCellCounts" : [
+          474,
+          287,
+          309,
+          493
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.7787888050079346,
+          -0.2516007423400879,
+          -0.267974853515625
+        ],
+        "endpointResidualXNewtons" : -2.1052255367325334,
+        "endpointResidualZNewtons" : -0.6676369479723804,
+        "intervalMeanComputedForceNewtons" : [
+          -2.378313794732094,
+          -0.7699852883815765,
+          0.1535968780517578
+        ],
+        "intervalMeanResidualXNewtons" : -2.7047505264566927,
+        "intervalMeanResidualZNewtons" : -0.24606521640499757,
+        "measuredForceXNewtons" : 0.32643673172459875,
+        "measuredForceZNewtons" : 0.3996620944567554,
+        "minimumPopulation" : 0.02182423695921898,
+        "sourceFrameCoordinate" : 115.5,
+        "sourceTimeSeconds" : 0.1155,
+        "targetSampleIndex" : 231
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          299,
+          292,
+          499
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.241316080093384,
+          -3.086009979248047,
+          -0.451171875
+        ],
+        "endpointResidualXNewtons" : -2.521912292756639,
+        "endpointResidualZNewtons" : -0.8180986208057162,
+        "intervalMeanComputedForceNewtons" : [
+          -0.488005593419075,
+          -1.205424815416336,
+          -1.0937786102294922
+        ],
+        "intervalMeanResidualXNewtons" : -0.7686018060823301,
+        "intervalMeanResidualZNewtons" : -1.4607053560352083,
+        "measuredForceXNewtons" : 0.2805962126632551,
+        "measuredForceZNewtons" : 0.3669267458057162,
+        "minimumPopulation" : 0.021864701062440872,
+        "sourceFrameCoordinate" : 116,
+        "sourceTimeSeconds" : 0.116,
+        "targetSampleIndex" : 232
+      },
+      {
+        "componentSolidCellCounts" : [
+          466,
+          288,
+          295,
+          494
+        ],
+        "endpointComputedForceNewtons" : [
+          -1.3482115268707275,
+          -0.825016975402832,
+          -1.006561279296875
+        ],
+        "endpointResidualXNewtons" : -1.5800557868092473,
+        "endpointResidualZNewtons" : -1.334558374078544,
+        "intervalMeanComputedForceNewtons" : [
+          -1.2037710137665272,
+          -1.1284825652837753,
+          -0.01904296875
+        ],
+        "intervalMeanResidualXNewtons" : -1.435615273705047,
+        "intervalMeanResidualZNewtons" : -0.3470400635316691,
+        "measuredForceXNewtons" : 0.23184425993851981,
+        "measuredForceZNewtons" : 0.3279970947816691,
+        "minimumPopulation" : 0.021991198882460594,
+        "sourceFrameCoordinate" : 116.5,
+        "sourceTimeSeconds" : 0.1165,
+        "targetSampleIndex" : 233
+      },
+      {
+        "componentSolidCellCounts" : [
+          461,
+          294,
+          309,
+          493
+        ],
+        "endpointComputedForceNewtons" : [
+          -2.029675006866455,
+          -4.243290901184082,
+          -2.216705322265625
+        ],
+        "endpointResidualXNewtons" : -2.21133421327953,
+        "endpointResidualZNewtons" : -2.5012280036330425,
+        "intervalMeanComputedForceNewtons" : [
+          -0.4324749857187271,
+          -0.46562474966049194,
+          -1.1392784118652344
+        ],
+        "intervalMeanResidualXNewtons" : -0.614134192131802,
+        "intervalMeanResidualZNewtons" : -1.423801093232652,
+        "measuredForceXNewtons" : 0.18165920641307487,
+        "measuredForceZNewtons" : 0.28452268136741754,
+        "minimumPopulation" : 0.02211378887295723,
+        "sourceFrameCoordinate" : 117,
+        "sourceTimeSeconds" : 0.117,
+        "targetSampleIndex" : 234
+      },
+      {
+        "componentSolidCellCounts" : [
+          464,
+          303,
+          297,
+          497
+        ],
+        "endpointComputedForceNewtons" : [
+          -0.9134335517883301,
+          -1.7264838218688965,
+          -0.5142822265625
+        ],
+        "endpointResidualXNewtons" : -1.044978028221061,
+        "endpointResidualZNewtons" : -0.7527250032560732,
+        "intervalMeanComputedForceNewtons" : [
+          -0.6734476909041405,
+          -1.370026245713234,
+          -0.7109565734863281
+        ],
+        "intervalMeanResidualXNewtons" : -0.8049921673368715,
+        "intervalMeanResidualZNewtons" : -0.9493993501799013,
+        "measuredForceXNewtons" : 0.131544476432731,
+        "measuredForceZNewtons" : 0.23844277669357314,
+        "minimumPopulation" : 0.021450389176607132,
+        "sourceFrameCoordinate" : 117.5,
+        "sourceTimeSeconds" : 0.1175,
+        "targetSampleIndex" : 235
+      },
+      {
+        "componentSolidCellCounts" : [
+          469,
+          302,
+          305,
+          499
+        ],
+        "endpointComputedForceNewtons" : [
+          -12.531444549560547,
+          -3.95709228515625,
+          10.673828125
+        ],
+        "endpointResidualXNewtons" : -12.61439975025855,
+        "endpointResidualZNewtons" : 10.481932787403156,
+        "intervalMeanComputedForceNewtons" : [
+          -0.89359937235713,
+          -0.35595184564590454,
+          -0.8611621856689453
+        ],
+        "intervalMeanResidualXNewtons" : -0.9765545730551326,
+        "intervalMeanResidualZNewtons" : -1.0530575232657888,
+        "measuredForceXNewtons" : 0.08295520069800252,
+        "measuredForceZNewtons" : 0.19189533759684343,
+        "minimumPopulation" : 0.02168642356991768,
+        "sourceFrameCoordinate" : 118,
+        "sourceTimeSeconds" : 0.118,
+        "targetSampleIndex" : 236
+      }
+    ],
+    "schemaVersion" : 1,
+    "scientificVerdict" : "The viscosity-floor coarse pilot completed the phase-locked measured-motion Metal path with finite positive sampled populations and all four surface components present."
+  },
+  "prescribedMotion" : true,
+  "schemaVersion" : 1,
+  "scientificVerdict" : "The complete non-periodic 143 ms Deetjen source sequence advanced through the Metal moving-boundary solver with its measured-derived body translation intact.",
+  "sourceDurationSeconds" : 0.14300000667572021,
+  "sourceEndTimeSeconds" : 0.14300000667572021,
+  "sourceFrameCount" : 144,
+  "sourceStartTimeSeconds" : 0,
+  "sourceTranslationPreserved" : true,
+  "startBodyCenterMeters" : [
+    -0.05673021078109741,
+    -0.0006323134293779731,
+    -0.02436635084450245
+  ]
+}

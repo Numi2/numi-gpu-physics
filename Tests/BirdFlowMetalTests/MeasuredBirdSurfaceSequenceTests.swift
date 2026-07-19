@@ -126,6 +126,67 @@ func measuredBirdForceTargetLocksAxesTimingAndCoreWindow() throws {
 }
 
 @Test
+func deetjenThroughFlightPlanPreservesMeasuredBodyTranslation() throws {
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: measuredBirdSurfaceManifestURL
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: measuredBirdForceTargetURL,
+        surface: surface
+    )
+    let plan = try MetalIndexedBirdSurfacePilotValidator
+        .deetjenThroughFlightPlan(surface: surface, target: target)
+    #expect(plan.totalFluidSteps == 4_576)
+    #expect(plan.fluidStepsPerForceSample == 16)
+    #expect(
+        plan.totalFluidSteps / plan.fluidStepsPerForceSample
+            == target.sampleCount - 1
+    )
+    #expect(
+        abs(
+            Double(plan.totalFluidSteps) * plan.fluidTimeStepSeconds
+                - 0.143
+        ) <= 1e-12
+    )
+
+    let start = surface.bodyState(
+        timeSeconds: surface.frameTimesSeconds.first!
+    )
+    let end = surface.bodyState(
+        timeSeconds: surface.frameTimesSeconds.last!
+    )
+    let displacement = end.positionMeters - start.positionMeters
+    #expect(abs(displacement.x - 0.187_064) <= 2e-6)
+    #expect(abs(displacement.y - 0.044_940_2) <= 2e-6)
+    #expect(abs(displacement.z + 0.008_276_66) <= 2e-6)
+    #expect(displacement.x > 0)
+    #expect(start.velocityMetersPerSecond.x.isFinite)
+    #expect(end.velocityMetersPerSecond.x.isFinite)
+
+    var bodyTravel: Float = 0
+    var previousBodyPosition = start.positionMeters
+    for frameTime in surface.frameTimesSeconds.dropFirst() {
+        let bodyPosition = surface.bodyState(
+            timeSeconds: frameTime
+        ).positionMeters
+        let segment = bodyPosition - previousBodyPosition
+        bodyTravel += sqrt(
+            segment.x * segment.x
+                + segment.y * segment.y
+                + segment.z * segment.z
+        )
+        previousBodyPosition = bodyPosition
+    }
+    let endpointDistance = sqrt(
+        displacement.x * displacement.x
+            + displacement.y * displacement.y
+            + displacement.z * displacement.z
+    )
+    #expect(abs(bodyTravel - 0.241_865) <= 2e-6)
+    #expect(bodyTravel > endpointDistance)
+}
+
+@Test
 func measuredBirdCoarsePilotPlanLocksCostAndClaimBoundary() throws {
     let surface = try MeasuredBirdSurfaceSequenceLoader.load(
         manifestURL: measuredBirdSurfaceManifestURL

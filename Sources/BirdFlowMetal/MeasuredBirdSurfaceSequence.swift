@@ -26,6 +26,17 @@ public struct MeasuredBirdSurfacePointState: Sendable {
     public let velocityMetersPerSecond: SIMD3<Float>
 }
 
+/// Mean position and velocity of one segmented surface component.
+///
+/// For the Deetjen complete-surface sequence the body component centroid is
+/// the measured-derived translation track used by the through-flight mode. It
+/// is deliberately computed from the registered surface instead of inventing
+/// a separate body trajectory.
+public struct MeasuredBirdSurfaceComponentState: Sendable, Equatable {
+    public let positionMeters: SIMD3<Float>
+    public let velocityMetersPerSecond: SIMD3<Float>
+}
+
 public struct MeasuredBirdSurfaceSequence: Sendable {
     public let schemaVersion: Int
     public let datasetIdentifier: String
@@ -119,6 +130,41 @@ public struct MeasuredBirdSurfaceSequence: Sendable {
             positionMeters: first + interval.blend * delta,
             velocityMetersPerSecond: delta / interval.duration
         )
+    }
+
+    public func componentState(
+        timeSeconds: Float,
+        partIdentifier: UInt8
+    ) -> MeasuredBirdSurfaceComponentState {
+        guard let component = components.first(where: {
+            $0.partIdentifier == partIdentifier
+        }) else {
+            preconditionFailure(
+                "surface component \(partIdentifier) is not present"
+            )
+        }
+        var position = SIMD3<Float>.zero
+        var velocity = SIMD3<Float>.zero
+        let end = component.vertexOffset + component.vertexCount
+        for vertexIndex in component.vertexOffset..<end {
+            let point = state(
+                timeSeconds: timeSeconds,
+                vertexIndex: vertexIndex
+            )
+            position += point.positionMeters
+            velocity += point.velocityMetersPerSecond
+        }
+        let inverseCount = 1 / Float(component.vertexCount)
+        return MeasuredBirdSurfaceComponentState(
+            positionMeters: position * inverseCount,
+            velocityMetersPerSecond: velocity * inverseCount
+        )
+    }
+
+    public func bodyState(
+        timeSeconds: Float
+    ) -> MeasuredBirdSurfaceComponentState {
+        componentState(timeSeconds: timeSeconds, partIdentifier: 1)
     }
 
     func packedPoints() -> [SIMD4<Float>] {

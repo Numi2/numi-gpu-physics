@@ -177,6 +177,10 @@ private struct Arguments {
         [--force-target TARGET.json] \
         [--archive FILE] [--json]
 
+    Deetjen through-flight simulation:
+      birdflow simulate deetjen-dove [--input MANIFEST.json] \
+        [--force-target TARGET.json] [--archive FILE] [--json]
+
       Targeted D28/D32 moving-boundary component replay:
         birdflow replay measured-bird-surface --input MANIFEST.json \
           --force-target TARGET.json \
@@ -194,6 +198,72 @@ private struct Arguments {
           --source-targeted-boundary-case D28_OR_D32_TARGETED_CASE.json \
           --targeted-reference-length-cells 28|32 \
           [--archive FILE] [--json]
+    """
+}
+
+private struct DeetjenDoveSimulationArguments {
+    var inputPath =
+        "ValidationInputs/deetjen-ob-f03-surface-v1/manifest.json"
+    var forceTargetPath =
+        "ValidationInputs/deetjen-ob-f03-force-v1.json"
+    var archivePath: String?
+    var json = false
+
+    init(_ values: [String]) throws {
+        var index = 3
+        while index < values.count {
+            switch values[index] {
+            case "--input":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--input requires the Deetjen surface manifest"
+                    )
+                }
+                inputPath = values[index]
+            case "--force-target":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--force-target requires the synchronized force JSON"
+                    )
+                }
+                forceTargetPath = values[index]
+            case "--archive":
+                index += 1
+                guard index < values.count else {
+                    throw CLIError.invalidArgument(
+                        "--archive requires an output JSON path"
+                    )
+                }
+                archivePath = values[index]
+            case "--json":
+                json = true
+            case "--help", "-h":
+                print(Self.help)
+                Foundation.exit(EXIT_SUCCESS)
+            default:
+                throw CLIError.invalidArgument(
+                    "Unknown Deetjen through-flight option: \(values[index])"
+                )
+            }
+            index += 1
+        }
+    }
+
+    static let help = """
+    birdflow simulate deetjen-dove [options]
+
+      --input MANIFEST.json     Complete Deetjen surface sequence
+      --force-target TARGET.json
+                                Synchronized measured-force target
+      --archive FILE            Write the complete simulation report
+      --json                    Print the complete report as JSON
+
+    With no path options the command uses the committed OB F03 inputs under
+    ValidationInputs. It advances the entire non-periodic 0...143 ms source
+    sequence with measured-derived body translation preserved. The D8 RR3
+    profile is an engineering simulation, not a free-flight prediction.
     """
 }
 
@@ -3658,6 +3728,49 @@ private func runMeasuredWingReplay(_ values: [String]) throws {
         }
         print("passed: \(report.passed)")
         print("complete_bird_replay_ready: \(report.completeBirdReplayReady)")
+    }
+}
+
+private func runDeetjenDoveSimulation(_ values: [String]) throws {
+    let arguments = try DeetjenDoveSimulationArguments(values)
+    let surface = try MeasuredBirdSurfaceSequenceLoader.load(
+        manifestURL: URL(fileURLWithPath: arguments.inputPath)
+    )
+    let target = try MeasuredBirdForceTargetLoader.load(
+        targetURL: URL(fileURLWithPath: arguments.forceTargetPath),
+        surface: surface
+    )
+    let report = try MetalIndexedBirdSurfacePilotValidator
+        .simulateDeetjenThroughFlight(surface: surface, target: target)
+    if let archivePath = arguments.archivePath {
+        try writeJSON(report, to: archivePath)
+    }
+    if arguments.json {
+        try printJSON(report)
+    } else {
+        print("Deetjen dove through-flight")
+        print("dataset: \(report.datasetIdentifier)")
+        print(
+            "source: \(report.sourceFrameCount) frames, "
+                + String(format: "%.3f s", report.sourceDurationSeconds)
+        )
+        let displacement = report.measuredDerivedBodyDisplacementMeters
+        print(
+            "body displacement [m]: "
+                + String(
+                    format: "%.6f, %.6f, %.6f",
+                    displacement.x,
+                    displacement.y,
+                    displacement.z
+                )
+        )
+        print(
+            "Metal: \(report.pilot.completedFluidSteps)/"
+                + "\(report.pilot.plan.totalFluidSteps) steps, "
+                + "\(report.pilot.collisionOperator)"
+        )
+        print("passed: \(report.passed)")
+        print("scientific boundary: \(report.claimBoundary)")
     }
 }
 
@@ -8416,6 +8529,20 @@ private func run(_ values: [String]) throws {
         default:
             throw CLIError.invalidArgument(
                 "Use: birdflow validate <shear-wave|moving-wall|translating-body|sphere|wing|flapping-wing|formation-flight|direction-composition|fine-direction-census|fine-direction-phase-window> [options]"
+            )
+        }
+    } else if values.count > 1, values[1] == "simulate" {
+        guard values.count > 2 else {
+            throw CLIError.invalidArgument(
+                "Use: birdflow simulate deetjen-dove [options]"
+            )
+        }
+        switch values[2] {
+        case "deetjen-dove":
+            try runDeetjenDoveSimulation(values)
+        default:
+            throw CLIError.invalidArgument(
+                "Use: birdflow simulate deetjen-dove [options]"
             )
         }
     } else if values.count > 1, values[1] == "replay" {
